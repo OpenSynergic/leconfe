@@ -1,0 +1,9 @@
+@import "../../vendor/filament/filament/resources/css/app.css";
+
+.filament-tables-actions-cell {
+    @apply py-0;
+}
+
+/* .filament-tables-container {
+    @apply border-0;
+} */

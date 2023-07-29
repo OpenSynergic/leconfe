@@ -1,0 +1,8 @@
+Wizard Installation
+1. System
+Setup default setting dan setting yg perlu input dari user.
+
+2. Conference
+
+
+
