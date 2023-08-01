@@ -120,14 +120,14 @@ class AuthorsStep extends Component implements HasWizardStep, HasTable
                         ->extraAttributes([
                             'class' => 'text-xs'
                         ])
-                        ->color('secondary')
+                        ->color('gray')
                 ]),
                 TextColumn::make('email')
                     ->extraAttributes([
                         'class' => 'text-xs'
                     ])
-                    ->color('secondary')
-                    ->icon('heroicon-o-mail')
+                    ->color('gray')
+                    ->icon('heroicon-o-envelope')
                     ->alignStart()
             ])->from('lg')
         ];

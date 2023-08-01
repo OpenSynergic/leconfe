@@ -14,7 +14,7 @@ class ManageSubmissions extends ManageRecords
 
     protected static string $view = 'filament.resources.submission-resource.pages.list-submission';
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [];
     }

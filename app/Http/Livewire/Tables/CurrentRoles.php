@@ -4,14 +4,18 @@ namespace App\Http\Livewire\Tables;
 
 use App\Models\Role;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
 use Livewire\Component;
 use Filament\Tables;
 use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Builder;
 
-class CurrentRoles extends Component implements Tables\Contracts\HasTable
+class CurrentRoles extends Component implements HasTable, HasForms
 {
-    use Tables\Concerns\InteractsWithTable;
+    use InteractsWithTable, InteractsWithForms;
 
     public function render()
     {

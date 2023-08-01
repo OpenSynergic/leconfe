@@ -10,9 +10,9 @@
     "require": {
         "php": "^8.1",
         "akaunting/laravel-setting": "^1.2",
-        "filament/filament": "^2.0",
-        "filament/spatie-laravel-media-library-plugin": "^2.0",
-        "filament/spatie-laravel-tags-plugin": "^2.0",
+        "filament/filament": "^3.0",
+        "filament/spatie-laravel-media-library-plugin": "^3.0",
+        "filament/spatie-laravel-tags-plugin": "^3.0",
         "genealabs/laravel-model-caching": "^0.13.4",
         "guzzlehttp/guzzle": "^7.2",
         "kra8/laravel-snowflake": "^2.2",
@@ -20,7 +20,6 @@
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
         "lorisleiva/laravel-actions": "^2.5",
-        "mohamedsabil83/filament-forms-tinyeditor": "^1.7",
         "plank/laravel-metable": "^5.4",
         "spatie/eloquent-sortable": "^4.0",
         "spatie/laravel-medialibrary": "^10.7",
@@ -31,6 +30,7 @@
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.8",
         "fakerphp/faker": "^1.9.1",
+        "filament/upgrade": "^3.0",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",
         "mockery/mockery": "^1.4.4",
@@ -53,7 +53,8 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan filament:upgrade"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"

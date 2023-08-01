@@ -1,5 +1,5 @@
-<x-filament::form wire:submit.prevent="submit">
+<form wire:submit="submit">
     {{ $this->form }}
 
     <x-filament::button type="submit">Save</x-filament::button>
-</x-filament::form>
+</form>

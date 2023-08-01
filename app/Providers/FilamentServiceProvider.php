@@ -25,7 +25,7 @@ class FilamentServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Filament::serving(function () {
-            $this->setupTheme();
+            // $this->setupTheme();
             $this->setupFileUploads();
             $this->setupFormat();
         });

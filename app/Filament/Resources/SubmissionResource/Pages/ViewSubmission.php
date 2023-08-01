@@ -24,7 +24,7 @@ class ViewSubmission extends Page
         abort_unless(static::getResource()::canView($this->getRecord()), 403);
     }
 
-    protected function getTitle(): string
+    public function getTitle(): string
     {
         return $this->record->status == Submission::STATUS_WIZARD ? 'Submission Wizard' : 'Submission';
     }

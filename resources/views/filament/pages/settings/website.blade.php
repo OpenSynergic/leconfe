@@ -16,10 +16,10 @@
             </x-slot:buttons>
 
             <x-vertical-tabs.content>
-              <livewire:forms.date-time-setting-form />
+              {{-- <livewire:forms.date-time-setting-form /> --}}
             </x-vertical-tabs.content>
             <x-vertical-tabs.content>
-              <livewire:forms.privacy-statement />
+              {{-- <livewire:forms.privacy-statement /> --}}
             </x-vertical-tabs.content>
         </x-vertical-tabs>
         </x-tabs.content>

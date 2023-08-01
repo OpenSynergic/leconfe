@@ -13,13 +13,12 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\Actions\Action;
-use Filament\Pages\Concerns\HasFormActions;
 use Filament\Resources\Pages\Page;
 use FilamentTiptapEditor\TiptapEditor;
 
 class CreateSubmission extends Page implements HasForms
 {
-    use InteractsWithForms, HasFormActions;
+    use InteractsWithForms;
 
     protected static ?string $title = '';
 
@@ -53,7 +52,7 @@ class CreateSubmission extends Page implements HasForms
             TextInput::make('meta.title')
                 ->required(),
             CheckboxList::make('topics')
-                
+
                 ->required(),
             Section::make('Privacy Consent')
                 ->schema([
@@ -62,19 +61,6 @@ class CreateSubmission extends Page implements HasForms
                         ->required()
                         ->label('Yes, I agree to have my data collected and stored according to the privacy statement.')
                 ]),
-        ];
-    }
-
-    protected function getFormActions(): array
-    {
-        return [
-            Action::make('create')
-                ->label('Begin Submission')
-                ->extraAttributes([
-                    'class' => 'w-full'
-                ])
-                ->submit('create')
-                ->keyBindings(['mod+s'])
         ];
     }
 

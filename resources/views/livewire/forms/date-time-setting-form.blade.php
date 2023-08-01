@@ -7,9 +7,9 @@
                 characters</a>.
         </p>
     </div>
-    <x-filament::form wire:submit.prevent="submit">
+    <form wire:submit="create">
         {{ $this->form }}
 
         <x-filament::button type="submit">Save</x-filament::button>
-    </x-filament::form>
+    </form>
 </div>

@@ -44,7 +44,7 @@ class SubmissionFiles extends Component implements Tables\Contracts\HasTable
                 ->label('Download All Files')
                 ->button()
                 ->hidden(fn () => $this->record->getMedia('files')->isEmpty())
-                ->color('secondary')
+                ->color('gray')
                 ->action(function () {
                     $downloads = $this->record->getMedia('files');
                     return MediaStream::create('files.zip')->addMedia($downloads);

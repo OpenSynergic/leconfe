@@ -19,6 +19,10 @@ class Submission extends Model implements HasMedia
 
     const STATUS_WIZARD = 1;
     const STATUS_ACTIVE = 2;
+    const STATUS_REVIEW = 3;
+    const STATUS_READY_TO_PUBLISH = 4;
+    const STATUS_PUBLISHED = 5;
+    const STATUS_DECLINED = 99;
 
     /**
      * The attributes that are mass assignable.

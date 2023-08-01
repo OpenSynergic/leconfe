@@ -8,6 +8,7 @@ use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Livewire\Component;
 
@@ -17,7 +18,7 @@ class DateTimeSettingForm extends Component implements HasForms
 {
     use InteractsWithForms;
 
-    public $data;
+    public ?array $data = [];
 
     protected function getFormStatePath(): string
     {
@@ -36,25 +37,27 @@ class DateTimeSettingForm extends Component implements HasForms
         return view('livewire.forms.date-time-setting-form');
     }
 
-    protected function getFormSchema(): array
+    public function form(Form $form): Form
     {
         $now = now()->hours(16);
 
-        return [
-            Radio::make('format.date')
-                ->options(fn () => collect([
-                    'F j, Y',
-                    'F j Y',
-                    'j F Y',
-                    'Y F j',
-                ])->mapWithKeys(fn ($format) => [$format => $now->format($format)])),
-            Radio::make('format.time')
-                ->options(fn () => collect([
-                    'h:i A',
-                    'g:ia',
-                    'H:i',
-                ])->mapWithKeys(fn ($format) => [$format => $now->format($format)])),
-        ];
+        return $form
+            ->schema([
+                Radio::make('format.date')
+                    ->options(fn () => collect([
+                        'F j, Y',
+                        'F j Y',
+                        'j F Y',
+                        'Y F j',
+                    ])->mapWithKeys(fn ($format) => [$format => $now->format($format)])),
+                Radio::make('format.time')
+                    ->options(fn () => collect([
+                        'h:i A',
+                        'g:ia',
+                        'H:i',
+                    ])->mapWithKeys(fn ($format) => [$format => $now->format($format)])),
+            ])
+            ->statePath('data');
     }
 
     public function submit()

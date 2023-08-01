@@ -12,7 +12,7 @@ class ManageConferenceManagement extends ManageRecords
 {
     protected static string $resource = ConferenceManagementResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             Actions\CreateAction::make()

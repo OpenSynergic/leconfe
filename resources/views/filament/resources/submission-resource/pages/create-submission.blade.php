@@ -20,7 +20,7 @@
                 <x-filament::form wire:submit.prevent="submit">
                     {{ $this->form }}
 
-                    <x-filament::form.actions :actions="$this->getCachedFormActions()" :full-width="$this->hasFullWidthFormActions()" />
+                    {{-- <x-filament::form.actions :actions="$this->getCachedFormActions()" :full-width="$this->hasFullWidthFormActions()" /> --}}
                 </x-filament::form>
             </div>
         @endif
