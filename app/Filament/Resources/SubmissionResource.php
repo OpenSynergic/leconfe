@@ -5,11 +5,13 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\SubmissionResource\Pages;
 use App\Filament\Resources\SubmissionResource\RelationManagers;
 use App\Models\Submission;
+use App\Schemas\SubmissionSchema;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -27,26 +29,15 @@ class SubmissionResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
+        return (SubmissionSchema::table($table))
             ->columns([
-                Tables\Columns\TextColumn::make('title')
-                    ->getStateUsing(fn (Submission $record) => $record->getMeta('title'))
-                    ->searchable(query: function (Builder $query, string $search): Builder {
-                        return $query
-                            ->whereMeta('title', 'like', "%{$search}%");
-                    })
-            ])
-            ->filters([
-                //
+                TextColumn::make('user.name')
             ])
             ->actions([
                 Tables\Actions\Action::make('view')
                     ->url(fn (Submission $record) => static::getUrl('view', [
                         'record' => $record->id,
-                        // 'step' => $record->submission_progress
                     ])),
-                // Tables\Actions\EditAction::make(),
-                // Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -61,5 +52,10 @@ class SubmissionResource extends Resource
             'complete' => Pages\CompleteSubmission::route('/complete/{record}'),
             'view' => Pages\ViewSubmission::route('/{record}'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }

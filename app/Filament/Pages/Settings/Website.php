@@ -2,8 +2,8 @@
 
 namespace App\Filament\Pages\Settings;
 
-use App\Http\Livewire\Forms\DateTimeSettingForm;
-use App\Http\Livewire\Forms\PrivacyStatement;
+use App\Livewire\Forms\DateTimeSettingForm;
+use App\Livewire\Forms\PrivacyStatementForm;
 use App\Infolists\Components\BladeEntry;
 use App\Infolists\Components\LivewireEntry;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -30,18 +30,19 @@ class Website extends Page implements HasInfolists, HasForms
     public function infolist(Infolist $infolist): Infolist
     {
         return $infolist
-            ->state([])
             ->schema([
                 Tabs::make('Label')
                     ->tabs([
                         Tabs\Tab::make('Appearance')
+                            ->schema([]),
+                        Tabs\Tab::make('Setup')
                             ->schema([
                                 Section::make('Date and Time Formats')
                                     ->description(new HtmlString(<<<'HTML'
-                                            Please select the desired format for dates and times. You may also enter a custom format using
-                                        special <a href="https://www.php.net/manual/en/function.strftime.php#refsect1-function.strftime-parameters" target="_blank"
-                                            class="filament-link inline-flex items-center justify-center gap-0.5 font-medium outline-none hover:underline focus:underline text-sm text-primary-600 hover:text-primary-500 filament-tables-link-action">format characters</a>.
-                                        HTML))
+                                        Please select the desired format for dates and times. You may also enter a custom format using
+                                    special <a href="https://www.php.net/manual/en/function.strftime.php#refsect1-function.strftime-parameters" target="_blank"
+                                        class="filament-link inline-flex items-center justify-center gap-0.5 font-medium outline-none hover:underline focus:underline text-sm text-primary-600 hover:text-primary-500 filament-tables-link-action">format characters</a>.
+                                    HTML))
                                     ->schema([
                                         LivewireEntry::make('datetimesetting', DateTimeSettingForm::class),
                                     ])
@@ -49,14 +50,12 @@ class Website extends Page implements HasInfolists, HasForms
                                 Section::make('Privacy Statement')
                                     ->description('This statement will be displayed during user registration as well as on the public privacy page. Please note that in certain jurisdictions, there may be legal requirements mandating the disclosure of your data handling practices within this privacy policy.')
                                     ->schema([
-                                        LivewireEntry::make('privacystatement', PrivacyStatement::class),
-                                        BladeEntry::make('test', 'test dsadas'),
+                                        LivewireEntry::make('PrivacyStatementForm', PrivacyStatementForm::class),
                                     ])
                                     ->aside(),
                             ]),
-                        Tabs\Tab::make('Setup')
-                            ->schema([]),
                     ])
+                    ->contained(),
             ]);
     }
 }

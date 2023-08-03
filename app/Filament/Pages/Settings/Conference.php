@@ -3,11 +3,19 @@
 namespace App\Filament\Pages\Settings;
 
 use Closure;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Infolists\Components\Tabs;
+use Filament\Infolists\Concerns\InteractsWithInfolists;
+use Filament\Infolists\Contracts\HasInfolists;
+use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Route;
 
-class Conference extends Page
+class Conference extends Page implements HasInfolists, HasForms
 {
+    use InteractsWithInfolists, InteractsWithForms;
+
     protected static ?string $navigationGroup = 'Settings';
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
@@ -21,14 +29,22 @@ class Conference extends Page
     {
     }
 
-    public static function getRoutes(): Closure
+    public function infolist(Infolist $infolist): Infolist
     {
-        return function () {
-            $slug = static::getSlug();
-
-            Route::get('settings/' . $slug, static::class)
-                ->middleware(static::getMiddlewares())
-                ->name($slug);
-        };
+        return $infolist
+            ->schema([
+                Tabs::make('Label')
+                    ->tabs([
+                        Tabs\Tab::make('General')
+                            ->schema([]),
+                        Tabs\Tab::make('Topics')
+                            ->schema([]),
+                        Tabs\Tab::make('Speakers')
+                            ->schema([]),
+                        Tabs\Tab::make('Venues')
+                            ->schema([]),
+                    ])
+                    ->contained(false),
+            ]);
     }
 }

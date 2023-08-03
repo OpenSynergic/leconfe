@@ -19,8 +19,6 @@ class ManageSubmissions extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
-            // Action::make('create')
-            //     ->,
             Action::make('create')
                 ->button()
                 ->hidden(fn () => setting('disable_submission'))
@@ -38,7 +36,7 @@ class ManageSubmissions extends ManageRecords
             ,
             'review' => Tab::make('Review')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', Submission::STATUS_REVIEW)),
-            'archived' => Tab::make('Archived')
+            'archived' => Tab::make('Published')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', Submission::STATUS_PUBLISHED)),
         ];
     }

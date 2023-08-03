@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Administration;
 
-use App\Actions\Conferences\SetCurrentConference;
-use App\Actions\Conferences\UpdateConference;
+use App\Actions\Conferences\ConferenceSetCurrentAction;
+use App\Actions\Conferences\ConferenceUpdateAction;
 use App\Filament\Resources\Administration\ConferenceManagementResource\Pages;
 use App\Filament\Resources\Administration\ConferenceManagementResource\RelationManagers;
 use App\Models\Conference;
@@ -48,7 +48,6 @@ class ConferenceManagementResource extends Resource
                             ->optionsLimit(250)
                             ->options(fn () => Country::all()->pluck('name', 'id')),
                     ]),
-                TinyEditor::make('meta.description'),
                 Checkbox::make('current')
                     ->label('Set this conference as the currently active one')
             ])
@@ -70,33 +69,35 @@ class ConferenceManagementResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\Action::make('current')
-                    ->label('Set as current')
-                    ->color('success')
-                    ->icon('heroicon-o-check')
-                    ->requiresConfirmation()
-                    ->hidden(fn ($record) =>  $record->id == setting('current_conference'))
-                    ->successNotificationTitle(fn () => "Current conference is changed")
-                    ->action(function ($record, Tables\Actions\Action $action) {
-                        try {
-                            SetCurrentConference::run($record);
-                        } catch (\Throwable $th) {
-                            $action->failure();
-                            return;
-                        }
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\Action::make('current')
+                        ->label('Set as current')
+                        ->color('success')
+                        ->icon('heroicon-o-check')
+                        ->requiresConfirmation()
+                        ->hidden(fn ($record) =>  $record->id == setting('current_conference'))
+                        ->successNotificationTitle(fn () => "Current conference is changed")
+                        ->action(function ($record, Tables\Actions\Action $action) {
+                            try {
+                                ConferenceSetCurrentAction::run($record);
+                            } catch (\Throwable $th) {
+                                $action->failure();
+                                return;
+                            }
 
-                        $action->success();
-                    }),
-                Tables\Actions\EditAction::make()
-                    ->modalWidth('2xl')
-                    ->mutateRecordDataUsing(function (Conference $record, array $data) {
-                        $data['meta'] = $record->getAllMeta();
-                        $data['current'] = $record->id == setting('current_conference');
+                            $action->success();
+                        }),
+                    Tables\Actions\EditAction::make()
+                        ->modalWidth('2xl')
+                        ->mutateRecordDataUsing(function (Conference $record, array $data) {
+                            $data['meta'] = $record->getAllMeta();
+                            $data['current'] = $record->id == setting('current_conference');
 
-                        return $data;
-                    })
-                    ->using(fn (Conference $record, array $data) => UpdateConference::run($data, $record)),
-                Tables\Actions\DeleteAction::make(),
+                            return $data;
+                        })
+                        ->using(fn (Conference $record, array $data) => ConferenceUpdateAction::run($data, $record)),
+                    Tables\Actions\DeleteAction::make(),
+                ]),
             ])
             ->bulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),

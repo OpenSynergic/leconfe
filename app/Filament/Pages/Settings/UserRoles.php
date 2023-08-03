@@ -2,12 +2,22 @@
 
 namespace App\Filament\Pages\Settings;
 
+use App\Infolists\Components\LivewireEntry;
+use App\Livewire\Tables\RolesTable;
+use App\Livewire\Tables\UsersTable;
+use App\Models\Role;
 use App\Models\User;
+use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Infolists\Components\Tabs;
+use Filament\Infolists\Concerns\InteractsWithInfolists;
+use Filament\Infolists\Contracts\HasInfolists;
+use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
-use Spatie\Tags\Tag;
 
-class UserRoles extends Page
+class UserRoles extends Page implements HasInfolists
 {
+    use InteractsWithInfolists;
+
     protected static ?string $navigationGroup = 'Settings';
 
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
@@ -15,4 +25,31 @@ class UserRoles extends Page
     protected static string $view = 'filament.pages.settings.user-roles';
 
     protected static ?string $title = 'Users & Roles';
+
+    public function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Tabs::make('Label')
+                    ->tabs([
+                        Tabs\Tab::make('Users')
+                            ->icon('heroicon-o-users')
+                            ->schema([
+                                LivewireEntry::make('users', UsersTable::class)
+                                    ->lazy(),
+                            ]),
+                        Tabs\Tab::make('Roles')
+                            ->icon('heroicon-o-shield-check')
+                            ->schema([
+                                LivewireEntry::make('roles', RolesTable::class)
+                                    ->lazy(),
+                            ]),
+                        Tabs\Tab::make('Access Options')
+                            ->icon('heroicon-o-key')
+                            ->schema([]),
+                    ])
+                    ->contained(false)
+                    ->persistTabInQueryString(),
+            ]);
+    }
 }

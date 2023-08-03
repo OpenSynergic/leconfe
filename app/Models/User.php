@@ -3,15 +3,17 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Filament\Models\Contracts\HasName;
-use GeneaLabs\LaravelModelCaching\Traits\Cachable;
-use Kra8\Snowflake\HasShortflakePrimary;
 use Plank\Metable\Metable;
 use Squire\Models\Country;
+use Illuminate\Support\Str;
+use Laravel\Sanctum\HasApiTokens;
+use Filament\Models\Contracts\HasName;
+use Illuminate\Notifications\Notifiable;
+use Kra8\Snowflake\HasShortflakePrimary;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements HasName
 {
@@ -47,6 +49,13 @@ class User extends Authenticatable implements HasName
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected function name(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => trim("{$this->family_name} {$this->given_name}"),
+        );
+    }
 
     public function getFilamentName(): string
     {

@@ -34,4 +34,11 @@ class LivewireEntry extends Entry
 
         return $this;
     }
+
+    public function lazy(bool $lazy = true)
+    {
+        $this->viewData(['lazy' => $lazy]);
+
+        return $this;
+    }
 }

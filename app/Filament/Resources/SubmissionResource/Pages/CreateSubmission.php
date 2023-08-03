@@ -2,19 +2,14 @@
 
 namespace App\Filament\Resources\SubmissionResource\Pages;
 
-use App\Actions\Submissions\CreateSubmissionAction;
+use App\Actions\Submissions\SubmissionCreateAction;
 use App\Filament\Resources\SubmissionResource;
-use App\Models\Submission;
 use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Pages\Actions\Action;
 use Filament\Resources\Pages\Page;
-use FilamentTiptapEditor\TiptapEditor;
 
 class CreateSubmission extends Page implements HasForms
 {
@@ -67,7 +62,7 @@ class CreateSubmission extends Page implements HasForms
     {
         $data = $this->form->getState();
 
-        $submission = CreateSubmissionAction::run($data);
+        $submission = SubmissionCreateAction::run($data);
 
         return redirect()->to(SubmissionResource::getUrl('view', [$submission]));
     }

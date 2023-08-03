@@ -8,12 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Kra8\Snowflake\HasShortflakePrimary;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 
 class Author extends Model implements Sortable
 {
-    use HasFactory, Cachable, Metable, SortableTrait;
+    use HasFactory, Cachable, Metable, SortableTrait, HasShortflakePrimary;
 
     protected $fillable = [
         'email',

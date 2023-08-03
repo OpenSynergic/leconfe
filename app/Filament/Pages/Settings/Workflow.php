@@ -2,7 +2,7 @@
 
 namespace App\Filament\Pages\Settings;
 
-use App\Actions\Settings\UpdateSettingsAction;
+use App\Actions\Settings\SettingUpdateAction;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Toggle;
@@ -58,6 +58,6 @@ class Workflow extends Page implements HasInfolists
 
     public function submit()
     {
-        UpdateSettingsAction::run($this->form->getState());
+        SettingUpdateAction::run($this->form->getState());
     }
 }
