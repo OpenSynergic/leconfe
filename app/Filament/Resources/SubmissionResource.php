@@ -28,13 +28,6 @@ class SubmissionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->headerActions([
-                Tables\Actions\Action::make('create')
-                    ->button()
-                    ->hidden(fn () => setting('disable_submission'))
-                    ->url(static::getUrl('create'))
-                    ->label('New Submission')
-            ])
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->getStateUsing(fn (Submission $record) => $record->getMeta('title'))

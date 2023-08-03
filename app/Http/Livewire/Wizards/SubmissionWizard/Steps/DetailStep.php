@@ -50,7 +50,7 @@ class DetailStep extends Component implements HasForms, HasWizardStep
     protected function getFormSchema(): array
     {
         return [
-            Card::make([
+            Section::make([
                 Section::make('Submission Details')
                     ->description('Please provide the following details to help us manage your submission in our system.')
                     ->aside()
@@ -62,9 +62,9 @@ class DetailStep extends Component implements HasForms, HasWizardStep
                             ->placeholder('')
                             ->model($this->record)
                             ->type('submissionKeywords'),
-                        TinyEditor::make('meta.abstract')
-                            ->required()
-                            ->profile('basic'),
+                        // TinyEditor::make('meta.abstract')
+                        //     ->required()
+                        //     ->profile('basic'),
                     ])
             ])
         ];

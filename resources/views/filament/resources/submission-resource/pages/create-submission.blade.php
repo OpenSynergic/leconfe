@@ -16,12 +16,12 @@
                 </div>
             </div>
         @else
-            <div class="bg-white w-full rounded-xl p-4">
-                <x-filament::form wire:submit.prevent="submit">
+            <div class="bg-white dark:bg-gray-900 w-full rounded-xl p-4">
+                <form wire:submit="submit" class="space-y-4">
                     {{ $this->form }}
-
-                    {{-- <x-filament::form.actions :actions="$this->getCachedFormActions()" :full-width="$this->hasFullWidthFormActions()" /> --}}
-                </x-filament::form>
+                    
+                     <x-filament::button type="submit">Save</x-filament::button>
+                </form>
             </div>
         @endif
     </div>

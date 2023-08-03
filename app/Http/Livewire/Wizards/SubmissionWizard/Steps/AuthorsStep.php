@@ -13,6 +13,8 @@ use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\DeleteAction;
@@ -29,9 +31,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Squire\Models\Country;
 
-class AuthorsStep extends Component implements HasWizardStep, HasTable
+class AuthorsStep extends Component implements HasWizardStep, HasTable, HasForms
 {
-    use InteractsWithTable;
+    use InteractsWithTable, InteractsWithForms;
 
     public Submission $record;
 

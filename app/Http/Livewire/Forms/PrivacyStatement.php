@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Forms;
 use App\Actions\Settings\UpdateSettingsAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -39,8 +40,8 @@ class PrivacyStatement extends Component implements HasForms
     {
 
         return [
-            TinyEditor::make('privacy_statement')
-                ->helperText('This statement will be displayed during user registration as well as on the public privacy page. Please note that in certain jurisdictions, there may be legal requirements mandating the disclosure of your data handling practices within this privacy policy.')
+            RichEditor::make('privacy_statement')
+                ->label('')
         ];
     }
 

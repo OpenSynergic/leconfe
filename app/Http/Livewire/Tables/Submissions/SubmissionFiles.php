@@ -11,14 +11,17 @@ use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\Layout\Split;
-use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Media;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
 use Spatie\MediaLibrary\Support\MediaStream;
 
-class SubmissionFiles extends Component implements Tables\Contracts\HasTable
+class SubmissionFiles extends Component implements HasTable, HasForms
 {
-    use Tables\Concerns\InteractsWithTable;
+    use InteractsWithForms, InteractsWithTable;
 
     public Submission $record;
 

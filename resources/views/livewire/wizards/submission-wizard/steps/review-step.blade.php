@@ -168,20 +168,20 @@
     </div>
     <div class="flex items-center justify-between">
         <div>
-            <x-forms::button icon="heroicon-o-chevron-left" x-show="! isFirstStep()" x-cloak x-on:click="previousStep"
+            <x-filament::button icon="heroicon-o-chevron-left" x-show="! isFirstStep()" x-cloak x-on:click="previousStep"
                 color="secondary" size="sm">
                 {{ __('forms::components.wizard.buttons.previous_step.label') }}
-            </x-forms::button>
+            </x-filament::button>
         </div>
         <div>
-            <x-forms::button x-cloak x-on:click="$dispatch('open-modal', {id: 'modalSubmisionWizardConfirmation'})"
+            <x-filament::button x-cloak x-on:click="$dispatch('open-modal', {id: 'modalSubmisionWizardConfirmation'})"
                 wire:loading.class.delay="opacity-70 cursor-wait" size="sm">
                 Submit
-            </x-forms::button>
+            </x-filament::button>
         </div>
     </div>
 
-    <x-filament-support::modal id="modalSubmisionWizardConfirmation">
+    <x-filament::modal id="modalSubmisionWizardConfirmation">
         <x-slot name="header">
             <x-filament::modal.heading>
                 Submit
@@ -204,5 +204,5 @@
                 </x-filament::button>
             </div>
         </x-slot>
-    </x-filament-support::modal>
+    </x-filament::modal>
 </div>

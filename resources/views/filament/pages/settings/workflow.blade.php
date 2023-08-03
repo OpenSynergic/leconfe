@@ -1,5 +1,5 @@
 <x-filament::page>
-    <x-tabs>
+    {{-- <x-tabs>
         <x-slot:buttons>
             <x-tabs.button>Submission</x-tabs.button>
             <x-tabs.button>Review</x-tabs.button>
@@ -23,5 +23,15 @@
         <x-tabs.content>
             Review Content
         </x-tabs.content>
-    </x-tabs>
+    </x-tabs> --}}
+
+    <form wire:submit="submit" class="space-y-4">
+        {{ $this->form }}
+
+        <x-filament::button type="submit">
+            Submit
+        </x-filament::button>
+    </form>
+
+    <x-filament-actions::modals />
 </x-filament::page>
