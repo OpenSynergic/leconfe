@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Filament\Resources\Administration;
+namespace App\UI\Panel\Resources\Administration;
 
 use App\Actions\Conferences\ConferenceSetCurrentAction;
 use App\Actions\Conferences\ConferenceUpdateAction;
-use App\Filament\Resources\Administration\ConferenceManagementResource\Pages;
-use App\Filament\Resources\Administration\ConferenceManagementResource\RelationManagers;
+use App\UI\Panel\Resources\Administration\ConferenceManagementResource\Pages;
+use App\UI\Panel\Resources\Administration\ConferenceManagementResource\RelationManagers;
 use App\Models\Conference;
 use Filament\Forms;
 use Filament\Forms\Components\Checkbox;

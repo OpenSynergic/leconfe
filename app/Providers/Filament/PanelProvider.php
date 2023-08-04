@@ -42,12 +42,12 @@ class PanelProvider extends FilamentPanelProvider
             ->colors([
                 'primary' => Color::Indigo,
             ])
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->discoverResources(in: app_path('UI/Panel/Resources'), for: 'App\\UI\\Panel\\Resources')
+            ->discoverPages(in: app_path('UI/Panel/Pages'), for: 'App\\UI\\Panel\\Pages')
             ->pages([
                 Pages\Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            ->discoverWidgets(in: app_path('UI/Panel/Widgets'), for: 'App\\UI\\Panel\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Pages\Settings;
+namespace App\UI\Panel\Pages\Settings;
 
 use App\Livewire\Panel\Forms\DateTimeSettingForm;
 use App\Livewire\Panel\Forms\PrivacyStatementForm;
@@ -25,7 +25,7 @@ class Website extends Page implements HasInfolists, HasForms
 
     protected static ?string $navigationIcon = 'heroicon-o-globe-americas';
 
-    protected static string $view = 'filament.pages.settings.website';
+    protected static string $view = 'panel.pages.settings.website';
 
     public function infolist(Infolist $infolist): Infolist
     {

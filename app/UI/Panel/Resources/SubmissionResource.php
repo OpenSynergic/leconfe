@@ -1,22 +1,18 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\UI\Panel\Resources;
 
-use App\Filament\Resources\SubmissionResource\Pages;
-use App\Filament\Resources\SubmissionResource\RelationManagers;
+use App\UI\Panel\Resources\SubmissionResource\Pages;
 use App\Models\Submission;
 use App\Schemas\SubmissionSchema;
-use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\GlobalSearch\GlobalSearchResult;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 class SubmissionResource extends Resource
@@ -36,6 +32,13 @@ class SubmissionResource extends Resource
     {
         return parent::getGlobalSearchEloquentQuery()->with(['user']);
     }
+
+    public static function getRecordTitle(?Model $record): string | Htmlable | null
+    {
+        return $record?->getMeta('title') ?? static::getModelLabel();
+    }
+
+
 
     public static function getEloquentQuery(): Builder
     {

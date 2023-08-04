@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Pages\Settings;
+namespace App\UI\Panel\Pages\Settings;
 
 use App\Infolists\Components\LivewireEntry;
 use App\Livewire\Panel\Tables\RolesTable;
@@ -22,7 +22,7 @@ class UserRoles extends Page implements HasInfolists
 
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
 
-    protected static string $view = 'filament.pages.settings.user-roles';
+    protected static string $view = 'panel.pages.settings.user-roles';
 
     protected static ?string $title = 'Users & Roles';
 

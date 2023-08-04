@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Pages\Settings;
+namespace App\UI\Panel\Pages\Settings;
 
 use Closure;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -20,7 +20,7 @@ class Conference extends Page implements HasInfolists, HasForms
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.pages.settings.conference';
+    protected static string $view = 'panel.pages.settings.conference';
 
     protected ?string $heading = 'Conference Settings';
 

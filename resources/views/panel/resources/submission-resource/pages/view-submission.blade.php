@@ -9,7 +9,7 @@
             </x-slot:buttons>
 
             <x-tabs.content>
-                <livewire:components.submissions.workflow-submission :record="$record" />
+                {{-- <livewire:panel.components.submissions.workflow-submission :record="$record" /> --}}
             </x-tabs.content>
             <x-tabs.content>
                 publication

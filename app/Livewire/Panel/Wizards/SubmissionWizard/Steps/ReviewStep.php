@@ -3,7 +3,7 @@
 namespace App\Livewire\Panel\Wizards\SubmissionWizard\Steps;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
-use App\Filament\Resources\SubmissionResource;
+use App\UI\Panel\Resources\SubmissionResource;
 use App\Livewire\Panel\Wizards\SubmissionWizard\Contracts\HasWizardStep;
 use App\Models\Submission;
 use Filament\Notifications\Notification;

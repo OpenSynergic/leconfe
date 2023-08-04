@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\SubmissionResource\Pages;
+namespace App\UI\Panel\Resources\SubmissionResource\Pages;
 
-use App\Filament\Resources\SubmissionResource;
+use App\UI\Panel\Resources\SubmissionResource;
 use App\Models\Submission;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;

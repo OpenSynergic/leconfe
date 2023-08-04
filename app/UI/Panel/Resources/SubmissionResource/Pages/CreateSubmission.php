@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\SubmissionResource\Pages;
+namespace App\UI\Panel\Resources\SubmissionResource\Pages;
 
 use App\Actions\Submissions\SubmissionCreateAction;
-use App\Filament\Resources\SubmissionResource;
+use App\UI\Panel\Resources\SubmissionResource;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
@@ -19,7 +19,7 @@ class CreateSubmission extends Page implements HasForms
 
     protected static string $resource = SubmissionResource::class;
 
-    protected static string $view = 'filament.resources.submission-resource.pages.create-submission';
+    protected static string $view = 'panel.resources.submission-resource.pages.create-submission';
 
     public $data;
 

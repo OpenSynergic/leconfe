@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Pages\Settings;
+namespace App\UI\Panel\Pages\Settings;
 
 use App\Actions\Settings\SettingUpdateAction;
 use Filament\Forms\Components\Placeholder;
@@ -23,7 +23,7 @@ class Workflow extends Page implements HasInfolists
     // TODO carikan icon untuk halaman workflow
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'filament.pages.settings.workflow';
+    protected static string $view = 'panel.pages.settings.workflow';
 
     public ?array $data = [];
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\SubmissionResource\Pages;
+namespace App\UI\Panel\Resources\SubmissionResource\Pages;
 
-use App\Filament\Resources\SubmissionResource;
+use App\UI\Panel\Resources\SubmissionResource;
 use App\Models\Submission;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
@@ -15,7 +15,7 @@ class CompleteSubmission extends Page
 
     protected static string $resource = SubmissionResource::class;
 
-    protected static string $view = 'filament.resources.submission-resource.pages.complete-submission';
+    protected static string $view = 'panel.resources.submission-resource.pages.complete-submission';
 
     public function mount(Submission $record)
     {
