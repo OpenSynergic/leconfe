@@ -17,7 +17,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements HasName
 {
-    use HasApiTokens, HasFactory, Notifiable, Metable, HasShortflakePrimary, Cachable;
+    use HasApiTokens, HasFactory, Notifiable, Metable, HasShortflakePrimary;
 
     /**
      * The attributes that are mass assignable.
