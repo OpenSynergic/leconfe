@@ -14,7 +14,7 @@ WIP
 
 ## Requirements ⚙️
 
-Leconfe is a regular Laravel application, so it can be installed on any server that meets the [Laravel server requirements](https://laravel.com/docs/10.x/deployment#server-requirements). In addition to the Laravel requirements, Eddy requires the following:
+Leconfe is a regular Laravel application, so it can be installed on any server that meets the [Laravel server requirements](https://laravel.com/docs/10.x/deployment#server-requirements).
 
 ## Local development 💻
 
