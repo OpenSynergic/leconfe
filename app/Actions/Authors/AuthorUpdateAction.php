@@ -6,7 +6,7 @@ use App\Models\Author;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class UpdateAuthor
+class AuthorUpdateAction
 {
     use AsAction;
 
