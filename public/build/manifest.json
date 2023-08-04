@@ -1,0 +1,12 @@
+{
+  "resources/css/filament/panel/theme.css": {
+    "file": "assets/theme-45dfd949.css",
+    "isEntry": true,
+    "src": "resources/css/filament/panel/theme.css"
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-f0622975.js",
+    "isEntry": true,
+    "src": "resources/js/app.js"
+  }
+}

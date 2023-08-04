@@ -5,7 +5,7 @@ namespace App\Providers\Filament;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\Widgets;
-use Filament\PanelProvider;
+use Filament\PanelProvider as FilamentPanelProvider;
 use Illuminate\Foundation\Vite;
 use Filament\Support\Colors\Color;
 use Filament\Http\Middleware\Authenticate;
@@ -19,15 +19,15 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 
-class AdminPanelProvider extends PanelProvider
+class PanelProvider extends FilamentPanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
             ->default()
-            ->id('admin')
-            ->viteTheme('resources/css/filament/admin/theme.css')
-            ->path('admin')
+            ->id('panel')
+            ->viteTheme('resources/css/filament/panel/theme.css')
+            ->path('panel')
             ->maxContentWidth('full')
             // ->topNavigation()
             // ->navigation(false)
