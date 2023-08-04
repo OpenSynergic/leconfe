@@ -2,8 +2,8 @@
 
 namespace App\Filament\Pages\Settings;
 
-use App\Livewire\Forms\DateTimeSettingForm;
-use App\Livewire\Forms\PrivacyStatementForm;
+use App\Livewire\Panel\Forms\DateTimeSettingForm;
+use App\Livewire\Panel\Forms\PrivacyStatementForm;
 use App\Infolists\Components\BladeEntry;
 use App\Infolists\Components\LivewireEntry;
 use Filament\Forms\Concerns\InteractsWithForms;

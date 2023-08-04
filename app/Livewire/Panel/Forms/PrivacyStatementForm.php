@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Livewire\Forms;
+namespace App\Livewire\Panel\Forms;
 
 use App\Actions\Settings\SettingUpdateAction;
-use App\Livewire\Traits\PlaceholderTrait;
+use App\Livewire\Panel\Traits\PlaceholderTrait;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -30,7 +30,7 @@ class PrivacyStatementForm extends Component implements HasForms
 
     public function render()
     {
-        return view('livewire.forms.privacy-statement');
+        return view('livewire.panel.forms.privacy-statement');
     }
 
     protected function getFormSchema(): array

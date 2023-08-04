@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Livewire\Wizards\SubmissionWizard\Steps;
+namespace App\Livewire\Panel\Wizards\SubmissionWizard\Steps;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
-use App\Livewire\Wizards\SubmissionWizard\Contracts\HasWizardStep;
+use App\Livewire\Panel\Wizards\SubmissionWizard\Contracts\HasWizardStep;
 use App\Models\Submission;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Hidden;
@@ -38,7 +38,7 @@ class ForTheEditorsStep extends Component implements HasForms, HasWizardStep
 
     public function render()
     {
-        return view('livewire.wizards.submission-wizard.steps.for-the-editors-step');
+        return view('livewire.panel.wizards.submission-wizard.steps.for-the-editors-step');
     }
 
     protected function getFormModel(): string

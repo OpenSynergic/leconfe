@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Tables\Submissions;
+namespace App\Livewire\Panel\Tables\Submissions;
 
 use App\Models\Submission;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -27,7 +27,7 @@ class SubmissionFilesTable extends Component implements HasTable, HasForms
 
     public function render()
     {
-        return view('livewire.tables.submissions.submission-files');
+        return view('livewire.panel.tables.submissions.submission-files');
     }
 
     protected function getTableQuery(): Builder

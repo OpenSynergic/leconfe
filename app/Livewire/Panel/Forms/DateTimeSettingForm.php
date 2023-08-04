@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Livewire\Forms;
+namespace App\Livewire\Panel\Forms;
 
 use App\Actions\Settings\SettingUpdateAction;
-use App\Livewire\Traits\PlaceholderTrait;
+use App\Livewire\Panel\Traits\PlaceholderTrait;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\TimePicker;
@@ -35,7 +35,7 @@ class DateTimeSettingForm extends Component implements HasForms
 
     public function render()
     {
-        return view('livewire.forms.date-time-setting-form');
+        return view('livewire.panel.forms.date-time-setting-form');
     }
 
     public function form(Form $form): Form

@@ -3,8 +3,8 @@
 namespace App\Filament\Pages\Settings;
 
 use App\Infolists\Components\LivewireEntry;
-use App\Livewire\Tables\RolesTable;
-use App\Livewire\Tables\UsersTable;
+use App\Livewire\Panel\Tables\RolesTable;
+use App\Livewire\Panel\Tables\UsersTable;
 use App\Models\Role;
 use App\Models\User;
 use Filament\Infolists\Components\RepeatableEntry;

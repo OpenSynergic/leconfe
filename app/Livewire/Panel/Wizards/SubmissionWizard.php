@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Livewire\Wizards;
+namespace App\Livewire\Panel\Wizards;
 
-use App\Livewire\Wizards\SubmissionWizard\Steps\AuthorsStep;
-use App\Livewire\Wizards\SubmissionWizard\Steps\DetailStep;
-use App\Livewire\Wizards\SubmissionWizard\Steps\ForTheEditorsStep;
-use App\Livewire\Wizards\SubmissionWizard\Steps\ReviewStep;
-use App\Livewire\Wizards\SubmissionWizard\Steps\UploadFilesStep;
+use App\Livewire\Panel\Wizards\SubmissionWizard\Steps\AuthorsStep;
+use App\Livewire\Panel\Wizards\SubmissionWizard\Steps\DetailStep;
+use App\Livewire\Panel\Wizards\SubmissionWizard\Steps\ForTheEditorsStep;
+use App\Livewire\Panel\Wizards\SubmissionWizard\Steps\ReviewStep;
+use App\Livewire\Panel\Wizards\SubmissionWizard\Steps\UploadFilesStep;
 use App\Models\Submission;
 use Livewire\Component;
 
@@ -16,7 +16,7 @@ class SubmissionWizard extends Component
 
     public function render()
     {
-        return view('livewire.wizards.submission-wizard');
+        return view('livewire.panel.wizards.submission-wizard');
     }
 
     public function steps(): array

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Wizards\SubmissionWizard\Contracts;
+namespace App\Livewire\Panel\Wizards\SubmissionWizard\Contracts;
 
 interface HasWizardStep
 {

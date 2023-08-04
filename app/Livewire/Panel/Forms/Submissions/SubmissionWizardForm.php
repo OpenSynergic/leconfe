@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Forms\Submissions;
+namespace App\Livewire\Panel\Forms\Submissions;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Filament\Resources\SubmissionResource;
@@ -99,7 +99,7 @@ class SubmissionWizardForm extends Component implements HasForms
 
     public function render()
     {
-        return view('livewire.forms.submissions.submission-wizard-form');
+        return view('livewire.panel.forms.submissions.submission-wizard-form');
     }
 
     public function submit()

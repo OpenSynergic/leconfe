@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Livewire\Wizards\SubmissionWizard\Steps;
+namespace App\Livewire\Panel\Wizards\SubmissionWizard\Steps;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
-use App\Livewire\Wizards\SubmissionWizard\Contracts\HasWizardStep;
+use App\Livewire\Panel\Wizards\SubmissionWizard\Contracts\HasWizardStep;
 use App\Models\Submission;
 use Filament\Forms\Components\BaseFileUpload;
 use Filament\Forms\Components\Card;
@@ -28,7 +28,7 @@ class UploadFilesStep extends Component implements HasWizardStep
 
     public function render()
     {
-        return view('livewire.wizards.submission-wizard.steps.upload-files-step');
+        return view('livewire.panel.wizards.submission-wizard.steps.upload-files-step');
     }
 
     public function nextStep()

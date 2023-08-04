@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Components\Submissions;
+namespace App\Livewire\Panel\Components\Submissions;
 
 use App\Models\Submission;
 use Livewire\Component;
@@ -11,6 +11,6 @@ class WorkflowSubmission extends Component
 
     public function render()
     {
-        return view('livewire.components.submissions.workflow-submission');
+        return view('livewire.panel.components.submissions.workflow-submission');
     }
 }

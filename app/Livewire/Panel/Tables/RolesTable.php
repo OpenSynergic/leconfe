@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Livewire\Tables;
+namespace App\Livewire\Panel\Tables;
 
-use App\Livewire\Traits\PlaceholderTrait;
+use App\Livewire\Panel\Traits\PlaceholderTrait;
 use App\Schemas\RoleSchema;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -17,7 +17,7 @@ class RolesTable extends Component implements HasTable, HasForms
 
     public function render()
     {
-        return view('livewire.tables.table');
+        return view('livewire.panel.tables.table');
     }
 
     public function table(Table $table): Table

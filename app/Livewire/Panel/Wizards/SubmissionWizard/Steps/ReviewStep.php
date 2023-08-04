@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Livewire\Wizards\SubmissionWizard\Steps;
+namespace App\Livewire\Panel\Wizards\SubmissionWizard\Steps;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Filament\Resources\SubmissionResource;
-use App\Livewire\Wizards\SubmissionWizard\Contracts\HasWizardStep;
+use App\Livewire\Panel\Wizards\SubmissionWizard\Contracts\HasWizardStep;
 use App\Models\Submission;
 use Filament\Notifications\Notification;
 use Livewire\Component;
@@ -22,7 +22,7 @@ class ReviewStep extends Component implements HasWizardStep
 
     public function render()
     {
-        return view('livewire.wizards.submission-wizard.steps.review-step');
+        return view('livewire.panel.wizards.submission-wizard.steps.review-step');
     }
 
     // TODO Tambahkan nama conference

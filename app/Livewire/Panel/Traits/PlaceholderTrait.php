@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Traits;
+namespace App\Livewire\Panel\Traits;
 
 use Illuminate\Support\Facades\Blade;
 
