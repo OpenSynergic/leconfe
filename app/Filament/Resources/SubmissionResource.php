@@ -115,8 +115,7 @@ class SubmissionResource extends Resource
             'index' => Pages\ManageSubmissions::route('/'),
             'create' => Pages\CreateSubmission::route('/create'),
             'complete' => Pages\CompleteSubmission::route('/complete/{record}'),
-            // 'view' => Pages\ViewSubmission::route('/{record}'),
-            'view' => Pages\LihatSubmission::route('/{record}'),
+            'view' => Pages\ViewSubmission::route('/{record}'),
         ];
     }
 
