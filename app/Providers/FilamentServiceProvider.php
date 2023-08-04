@@ -9,6 +9,7 @@ use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TimePicker;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Vite;
 
 class FilamentServiceProvider extends ServiceProvider
@@ -37,9 +38,12 @@ class FilamentServiceProvider extends ServiceProvider
 
     protected function setupAssets()
     {
-        FilamentAsset::register([
-            Js::make('conference', Vite::asset('resources/js/app.js')),
-        ]);
+        Filament::registerRenderHook(
+            'panels::scripts.before',
+            fn () => Blade::render(<<<Blade
+                    @vite(['resources/js/app.js'])
+                Blade)
+        );
     }
 
     protected function setupFileUploads()

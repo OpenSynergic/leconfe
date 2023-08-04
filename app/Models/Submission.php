@@ -20,7 +20,7 @@ class Submission extends Model implements HasMedia
     const STATUS_WIZARD = 1;
     const STATUS_ACTIVE = 2;
     const STATUS_REVIEW = 3;
-    const STATUS_READY_TO_PUBLISH = 4;
+    const STATUS_ACCEPTED = 4;
     const STATUS_PUBLISHED = 5;
     const STATUS_DECLINED = 99;
 
@@ -33,6 +33,11 @@ class Submission extends Model implements HasMedia
         'submission_progress',
         'status'
     ];
+
+    // protected $casts = [
+    //     'status' => ProductStatusEnum::class
+    // ];
+
 
     /**
      * The "booted" method of the model.
