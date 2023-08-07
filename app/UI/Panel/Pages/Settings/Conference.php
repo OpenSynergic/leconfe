@@ -2,6 +2,8 @@
 
 namespace App\UI\Panel\Pages\Settings;
 
+use App\Infolists\Components\LivewireEntry;
+use App\Livewire\TopicTable;
 use Closure;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -36,12 +38,19 @@ class Conference extends Page implements HasInfolists, HasForms
                 Tabs::make('Label')
                     ->tabs([
                         Tabs\Tab::make('General')
+                            ->icon('heroicon-m-window')
                             ->schema([]),
                         Tabs\Tab::make('Topics')
-                            ->schema([]),
+                            ->icon('heroicon-m-chat-bubble-left')
+                            ->schema([
+                                LivewireEntry::make('topics', TopicTable::class)
+                                ->lazy()
+                            ]),
                         Tabs\Tab::make('Speakers')
+                            ->icon('heroicon-m-users')
                             ->schema([]),
                         Tabs\Tab::make('Venues')
+                            ->icon('heroicon-m-home-modern')
                             ->schema([]),
                     ])
                     ->contained(false),

@@ -24,6 +24,8 @@ class Conference extends Model implements HasMedia
         'title',
     ];
 
+   
+
     public static function current()
     {
         return static::find(setting('current_conference'));
