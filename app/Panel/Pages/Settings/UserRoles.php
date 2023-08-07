@@ -1,13 +1,10 @@
 <?php
 
-namespace App\UI\Panel\Pages\Settings;
+namespace App\Panel\Pages\Settings;
 
 use App\Infolists\Components\LivewireEntry;
 use App\Livewire\Panel\Tables\RolesTable;
 use App\Livewire\Panel\Tables\UsersTable;
-use App\Models\Role;
-use App\Models\User;
-use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
@@ -35,13 +32,13 @@ class UserRoles extends Page implements HasInfolists
                         Tabs\Tab::make('Users')
                             ->icon('heroicon-o-users')
                             ->schema([
-                            LivewireEntry::make('users', UsersTable::class)
+                                LivewireEntry::make('users', UsersTable::class)
                                     ->lazy(),
                             ]),
                         Tabs\Tab::make('Roles')
                             ->icon('heroicon-o-shield-check')
                             ->schema([
-                                
+
 
                                 LivewireEntry::make('roles', RolesTable::class)
                                     ->lazy(),
