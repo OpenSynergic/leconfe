@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Panel\Tables;
 
 use App\Models\Topic;
 use App\Schemas\TopicSchema;
@@ -23,7 +23,7 @@ class TopicTable extends Component implements HasForms, HasTable
 
     public function render(): View
     {
-        return view('livewire.topic-table');
+        return view('livewire.panel.tables.topic-table');
     }
 
     public function table(Table $table): Table

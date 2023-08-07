@@ -1,34 +1,34 @@
 <?php
 
 namespace App\Schemas;
-use App\Models\Topic;
-use Filament\Forms\Set;
+
+use App\Models\Speaker;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
 use Filament\Forms\Components\Grid;
+use App\Actions\Conference\CreateSpeakerAction;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Columns\TagsColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\DeleteAction;
 
-use Filament\Tables\Actions\ViewAction;
-
-class TopicSchema
+class SpeakerSchema
 {
+
     public static function table(Table $table) : Table
     {
         return $table
-        ->query(Topic::query())
-        ->heading('Topic')
+        ->query(Speaker::query())
+        ->heading('Speaker')
         ->columns([
             TextColumn::make('name'),
-
-
-
-        ])
+            TagsColumn::make('expertise'),
+            ])
 
         ->filters([
 
@@ -37,8 +37,8 @@ class TopicSchema
         ->headerActions([
             CreateAction::make()
             ->modalWidth('2xl')
-             ->form(static::formSchemas())
-            ->using(fn(array $data) => CreateTopicAction::run($data)),
+            ->form(static::formSchemas())
+            ->using(fn(array $data) => CreateSpeakerAction::run($data))
         ])
 
         ->actions([
@@ -47,13 +47,11 @@ class TopicSchema
             ActionGroup::make([
                 EditAction::make()
                 ->modalWidth('2xl')
-                ->form(fn() => static::formSchemas()),
+                ->form(static::formSchemas()),
                 DeleteAction::make()
-            ]),
 
-
-        ]);
-
+            ])
+            ]);
 
 
 
@@ -71,15 +69,13 @@ class TopicSchema
             Grid::make()
             ->schema([
                 TextInput::make('name')
-                ->live()
-                ->afterStateUpdated(fn(Set $set, ?string $state ) => $set('slug', Str::slug($state)))
                 ->required(),
-                TextInput::make('slug')
-                ->required(),
+               TagsInput::make('expertise')
+               ->required()
+               ->placeholder(''),
             ])
+
         ];
     }
 
 }
-
-
