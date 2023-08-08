@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Actions\Conference;
+namespace App\Actions\Conferences;
+
 
 use App\Models\Speaker;
 use Exception;
@@ -13,8 +14,11 @@ class CreateSpeakerAction
 
     public function handle($data)
     {
-       $speaker = Speaker::create($data);
-
-       return $speaker;
+        try {
+            $speaker = Speaker::create($data);
+            return $speaker;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

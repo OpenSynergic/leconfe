@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Speaker extends Model
+class Speaker extends Model implements HasMedia
 {
-    use HasFactory;
-    protected $fillable = ['name', 'expertise'];
+    use HasFactory, InteractsWithMedia;
+    protected $fillable = ['name', 'expertise', 'description'];
     protected $casts = ['expertise' => 'array'];
 }

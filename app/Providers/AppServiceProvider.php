@@ -34,8 +34,8 @@ class AppServiceProvider extends ServiceProvider
     {
         // As these are concerned with application correctness,
         // leave them enabled all the time.
-        Model::preventAccessingMissingAttributes();
-        Model::preventSilentlyDiscardingAttributes();
+        // Model::preventAccessingMissingAttributes();
+        // Model::preventSilentlyDiscardingAttributes();
 
         // Since this is a performance concern only, don’t halt
         // production for violations.
@@ -45,7 +45,7 @@ class AppServiceProvider extends ServiceProvider
     protected function setupMorph()
     {
         Relation::enforceMorphMap([
-            // 
+            //
         ]);
     }
 

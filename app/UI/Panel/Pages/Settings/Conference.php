@@ -11,6 +11,7 @@ use Filament\Infolists\Components\Tabs;
 use App\Livewire\Panel\Tables\TopicTable;
 use App\Infolists\Components\LivewireEntry;
 use App\Livewire\Panel\Tables\SpeakerTable;
+use App\Livewire\Panel\Tables\VenueTable;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
@@ -45,7 +46,7 @@ class Conference extends Page implements HasInfolists, HasForms
                             ->icon('heroicon-m-chat-bubble-left')
                             ->schema([
                                 LivewireEntry::make('topics', TopicTable::class)
-                                ->lazy()
+                                    ->lazy()
                             ]),
                         Tabs\Tab::make('Speakers')
                             ->icon('heroicon-m-users')
@@ -54,7 +55,9 @@ class Conference extends Page implements HasInfolists, HasForms
                             ]),
                         Tabs\Tab::make('Venues')
                             ->icon('heroicon-m-home-modern')
-                            ->schema([]),
+                            ->schema([
+                                LivewireEntry::make('venue', VenueTable::class)
+                            ]),
                     ])
                     ->contained(false),
             ]);
