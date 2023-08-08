@@ -1,8 +1,8 @@
 <?php
 
-namespace App\UI\Panel\Resources;
+namespace App\Panel\Resources;
 
-use App\UI\Panel\Resources\SubmissionResource\Pages;
+use App\Panel\Resources\SubmissionResource\Pages;
 use App\Models\Submission;
 use App\Schemas\SubmissionSchema;
 use Filament\GlobalSearch\GlobalSearchResult;

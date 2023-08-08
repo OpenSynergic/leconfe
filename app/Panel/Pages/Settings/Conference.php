@@ -1,10 +1,9 @@
 <?php
 
-namespace App\UI\Panel\Pages\Settings;
+namespace App\Panel\Pages\Settings;
 
 use App\Infolists\Components\LivewireEntry;
 use App\Livewire\TopicTable;
-use Closure;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Components\Tabs;
@@ -12,7 +11,6 @@ use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
-use Illuminate\Support\Facades\Route;
 
 class Conference extends Page implements HasInfolists, HasForms
 {
@@ -25,7 +23,6 @@ class Conference extends Page implements HasInfolists, HasForms
     protected static string $view = 'panel.pages.settings.conference';
 
     protected ?string $heading = 'Conference Settings';
-
 
     public function mount()
     {
@@ -44,7 +41,7 @@ class Conference extends Page implements HasInfolists, HasForms
                             ->icon('heroicon-m-chat-bubble-left')
                             ->schema([
                                 LivewireEntry::make('topics', TopicTable::class)
-                                ->lazy()
+                                    ->lazy()
                             ]),
                         Tabs\Tab::make('Speakers')
                             ->icon('heroicon-m-users')

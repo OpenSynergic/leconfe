@@ -3,7 +3,7 @@
 namespace App\Livewire\Panel\Forms\Submissions;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
-use App\UI\Panel\Resources\SubmissionResource;
+use App\Panel\Resources\SubmissionResource;
 use App\Models\Submission;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\FileUpload;

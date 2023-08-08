@@ -40,10 +40,10 @@ class PanelProvider extends FilamentPanelProvider
             ->emailVerification()
             ->profile()
             ->colors([
-                'primary' => Color::Indigo,
+                'primary' => Color::Cyan,
             ])
-            ->discoverResources(in: app_path('UI/Panel/Resources'), for: 'App\\UI\\Panel\\Resources')
-            ->discoverPages(in: app_path('UI/Panel/Pages'), for: 'App\\UI\\Panel\\Pages')
+            ->discoverResources(in: app_path('Panel/Resources'), for: 'App\\Panel\\Resources')
+            ->discoverPages(in: app_path('Panel/Pages'), for: 'App\\Panel\\Pages')
             ->pages([
                 Pages\Dashboard::class,
             ])

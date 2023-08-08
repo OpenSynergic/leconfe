@@ -1,9 +1,9 @@
 <?php
 
-namespace App\UI\Panel\Resources\SubmissionResource\Pages;
+namespace App\Panel\Resources\SubmissionResource\Pages;
 
 use App\Actions\Submissions\SubmissionCreateAction;
-use App\UI\Panel\Resources\SubmissionResource;
+use App\Panel\Resources\SubmissionResource;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;

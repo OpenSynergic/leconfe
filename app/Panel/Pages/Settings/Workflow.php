@@ -1,6 +1,6 @@
 <?php
 
-namespace App\UI\Panel\Pages\Settings;
+namespace App\Panel\Pages\Settings;
 
 use App\Actions\Settings\SettingUpdateAction;
 use Filament\Forms\Components\Placeholder;
