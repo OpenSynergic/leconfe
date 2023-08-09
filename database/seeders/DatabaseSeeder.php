@@ -6,6 +6,8 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Database\Seeders\Dev\UserSeeder;
+use Database\Seeders\Developments\DevelopmentSeeder;
+use Database\Seeders\Productions\ProductionSeeder;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -16,7 +18,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(RoleSeeder::class);
-        $this->call(UserSeeder::class);
+        if (config('app.env') === 'production') {
+            $this->call(ProductionSeeder::class);
+        } else {
+            $this->call(DevelopmentSeeder::class);
+        }
     }
 }

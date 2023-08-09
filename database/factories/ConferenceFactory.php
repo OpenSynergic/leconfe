@@ -2,21 +2,21 @@
 
 namespace Database\Factories;
 
-use App\Models\Submission;
-use App\Models\User;
+use App\Models\Conference;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Squire\Models\Country;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Submission>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Conference>
  */
-class SubmissionFactory extends Factory
+class ConferenceFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var class-string<\Illuminate\Database\Eloquent\Model>
      */
-    protected $model = Submission::class;
+    protected $model = Conference::class;
 
     /**
      * Define the model's default state.
@@ -26,7 +26,7 @@ class SubmissionFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::inRandomOrder()->first()->id,
+            'name' => fake()->sentence(3),
         ];
     }
 
@@ -35,9 +35,11 @@ class SubmissionFactory extends Factory
      */
     public function configure(): static
     {
-        return $this->afterCreating(function (Submission $submission) {
-            $submission->setManyMeta([
-                'title' => fake()->sentence(),
+        return $this->afterCreating(function (Conference $conference) {
+            $conference->setManyMeta([
+                'publisher_name' => fake()->company(),
+                'affiliation' => fake()->company(),
+                'country' => Country::inRandomOrder()->first()->id,
             ]);
         });
     }

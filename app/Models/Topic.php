@@ -11,6 +11,22 @@ class Topic extends Model
 
     protected $fillable = [
         'name',
-        'slug'
+        'slug',
+        'conference_id'
     ];
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (Topic $topic) {
+            $topic->conference_id ??= Conference::current()?->id;
+        });
+    }
+
+    public function conference()
+    {
+        return $this->belongsTo(Conference::class);
+    }
 }

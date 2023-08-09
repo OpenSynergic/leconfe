@@ -34,10 +34,6 @@ class Submission extends Model implements HasMedia
         'status'
     ];
 
-    // protected $casts = [
-    //     'status' => ProductStatusEnum::class
-    // ];
-
 
     /**
      * The "booted" method of the model.
@@ -45,6 +41,7 @@ class Submission extends Model implements HasMedia
     protected static function booted(): void
     {
         static::creating(function (Submission $submission) {
+            $submission->submission_progress ??= 1;
             $submission->user_id ??= Auth::id();
             $submission->conference_id ??= Conference::current()?->id;
         });

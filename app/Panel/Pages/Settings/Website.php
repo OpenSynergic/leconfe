@@ -17,9 +17,9 @@ use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
 use Illuminate\Support\HtmlString;
 
-class Website extends Page implements HasInfolists, HasForms
+class Website extends Page implements HasInfolists
 {
-    use InteractsWithInfolists, InteractsWithForms;
+    use InteractsWithInfolists;
 
     protected static ?string $navigationGroup = 'Settings';
 
@@ -44,13 +44,15 @@ class Website extends Page implements HasInfolists, HasForms
                                         class="filament-link inline-flex items-center justify-center gap-0.5 font-medium outline-none hover:underline focus:underline text-sm text-primary-600 hover:text-primary-500 filament-tables-link-action">format characters</a>.
                                     HTML))
                                     ->schema([
-                                        LivewireEntry::make('datetimesetting', DateTimeSettingForm::class),
+                                        LivewireEntry::make('datetimesetting', DateTimeSettingForm::class)
+                                            ->lazy(),
                                     ])
                                     ->aside(),
                                 Section::make('Privacy Statement')
                                     ->description('This statement will be displayed during user registration as well as on the public privacy page. Please note that in certain jurisdictions, there may be legal requirements mandating the disclosure of your data handling practices within this privacy policy.')
                                     ->schema([
-                                        LivewireEntry::make('PrivacyStatementForm', PrivacyStatementForm::class),
+                                        LivewireEntry::make('PrivacyStatementForm', PrivacyStatementForm::class)
+                                            ->lazy(),
                                     ])
                                     ->aside(),
                             ]),

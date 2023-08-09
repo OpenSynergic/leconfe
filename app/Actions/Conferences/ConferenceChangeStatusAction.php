@@ -3,22 +3,21 @@
 namespace App\Actions\Conferences;
 
 use App\Models\Conference;
+use App\Models\Enums\ConferenceStatus;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class ConferenceSetCurrentAction
+class ConferenceChangeStatusAction
 {
     use AsAction;
 
-    public function handle(Conference $conference)
+    public function handle(Conference $conference, ConferenceStatus $status)
     {
         try {
             DB::beginTransaction();
-
-            Conference::query()->update(['is_current' => 0]);
-
-            $conference->is_current = 1;
-            $conference->save();
+            $conference->update([
+                'status' => $status,
+            ]);
 
             DB::commit();
         } catch (\Throwable $th) {
@@ -26,5 +25,7 @@ class ConferenceSetCurrentAction
 
             throw $th;
         }
+
+        return $conference;
     }
 }

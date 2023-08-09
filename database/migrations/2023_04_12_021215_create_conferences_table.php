@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('conferences', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('name');
+            $table->enum('status', ['Active', 'Archived'])->default('Active');
+            $table->integer('is_current')->default(0);
             $table->timestamps();
         });
     }

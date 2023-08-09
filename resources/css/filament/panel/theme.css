@@ -69,3 +69,7 @@ body {
     @apply animate-in fade-in duration-500;
     /* @apply animate-out fade-in duration-500; */
 }
+
+.fi-dropdown-panel {
+    @apply !max-w-[17rem];
+}

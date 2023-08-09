@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Developments;
 
 use App\Models\Submission;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -13,8 +13,6 @@ class SubmissionSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 0; $i < 100; $i++) {
-            Submission::insert(Submission::factory(50000)->make()->toArray());
-        }
+        Submission::factory()->count(50)->create();
     }
 }

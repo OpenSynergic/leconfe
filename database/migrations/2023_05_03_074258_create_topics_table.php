@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('slug');
             $table->string('type')->nullable();
             $table->integer('order_column')->nullable();
+            $table->foreignId('conference_id')->constrained();
 
             $table->timestamps();
         });

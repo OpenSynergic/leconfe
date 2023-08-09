@@ -14,7 +14,6 @@ class ConferenceUpdateAction
     {
         try {
             DB::beginTransaction();
-
             $conference->update($data);
 
             if (array_key_exists('meta', $data) && is_array($data['meta'])) {
