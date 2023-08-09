@@ -34,6 +34,7 @@ class SpeakerSchema
                     ->width(80)
                     ->height(80),
                 TextColumn::make('name'),
+                TextColumn::make('affiliation'),
                 TextColumn::make('expertise'),
 
 
@@ -77,6 +78,8 @@ class SpeakerSchema
                     TagsInput::make('expertise')
                         ->required()
                         ->placeholder(''),
+                    TextInput::make('affiliation')
+                        ->required(),
                     SpatieMediaLibraryFileUpload::make('image')
                         ->responsiveImages()
                         ->image(),
