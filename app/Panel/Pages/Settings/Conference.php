@@ -1,20 +1,16 @@
 <?php
 
-namespace App\UI\Panel\Pages\Settings;
+namespace App\Panel\Pages\Settings;
 
-use Closure;
-use Filament\Pages\Page;
-use Filament\Infolists\Infolist;
-use Illuminate\Support\Facades\Route;
+use App\Infolists\Components\LivewireEntry;
+use App\Livewire\TopicTable;
+use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Components\Tabs;
-use App\Livewire\Panel\Tables\TopicTable;
-use App\Infolists\Components\LivewireEntry;
-use App\Livewire\Panel\Tables\SpeakerTable;
-use App\Livewire\Panel\Tables\VenueTable;
-use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
+use Filament\Infolists\Contracts\HasInfolists;
+use Filament\Infolists\Infolist;
+use Filament\Pages\Page;
 
 class Conference extends Page implements HasInfolists, HasForms
 {
@@ -27,7 +23,6 @@ class Conference extends Page implements HasInfolists, HasForms
     protected static string $view = 'panel.pages.settings.conference';
 
     protected ?string $heading = 'Conference Settings';
-
 
     public function mount()
     {
@@ -50,14 +45,10 @@ class Conference extends Page implements HasInfolists, HasForms
                             ]),
                         Tabs\Tab::make('Speakers')
                             ->icon('heroicon-m-users')
-                            ->schema([
-                                LivewireEntry::make('speakers', SpeakerTable::class)
-                            ]),
+                            ->schema([]),
                         Tabs\Tab::make('Venues')
                             ->icon('heroicon-m-home-modern')
-                            ->schema([
-                                LivewireEntry::make('venue', VenueTable::class)
-                            ]),
+                            ->schema([]),
                     ])
                     ->contained(false),
             ]);

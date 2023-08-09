@@ -1,9 +1,9 @@
 <?php
 
-namespace App\UI\Panel\Resources\Administration\ConferenceManagementResource\Pages;
+namespace App\Panel\Resources\Administration\ConferenceManagementResource\Pages;
 
 use App\Actions\Conferences\ConferenceCreateAction;
-use App\UI\Panel\Resources\Administration\ConferenceManagementResource;
+use App\Panel\Resources\Administration\ConferenceManagementResource;
 use App\Models\Conference;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ManageRecords;

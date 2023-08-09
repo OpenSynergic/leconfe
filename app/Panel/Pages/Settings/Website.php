@@ -1,6 +1,6 @@
 <?php
 
-namespace App\UI\Panel\Pages\Settings;
+namespace App\Panel\Pages\Settings;
 
 use App\Livewire\Panel\Forms\DateTimeSettingForm;
 use App\Livewire\Panel\Forms\PrivacyStatementForm;
