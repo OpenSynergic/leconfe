@@ -25,16 +25,13 @@ class VenueSchema
             ->query(Venue::query())
             ->heading('Venue')
             ->columns([
+                TextColumn::make('name'),
+                TextColumn::make('location')
+                    ->wrap(),
                 SpatieMediaLibraryImageColumn::make('image')
                     ->width(80)
                     ->height(80)
                     ->label(''),
-                TextColumn::make('name'),
-                TextColumn::make('location')
-                    ->wrap(),
-
-
-
             ])
 
             ->headerActions([
@@ -74,7 +71,7 @@ class VenueSchema
                     SpatieMediaLibraryFileUpload::make('image')
                         ->responsiveImages()
                         ->image()
-
+                        ->label('Venue Photo')
                 ])
         ];
     }

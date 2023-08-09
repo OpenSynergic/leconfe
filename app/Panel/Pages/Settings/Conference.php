@@ -2,15 +2,17 @@
 
 namespace App\Panel\Pages\Settings;
 
-use App\Infolists\Components\LivewireEntry;
-use App\Livewire\TopicTable;
-use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Pages\Page;
+use Filament\Infolists\Infolist;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Components\Tabs;
-use Filament\Infolists\Concerns\InteractsWithInfolists;
+use App\Livewire\Panel\Tables\TopicTable;
+use App\Infolists\Components\LivewireEntry;
+use App\Livewire\Panel\Tables\SpeakerTable;
+use App\Livewire\Panel\Tables\VenueTable;
 use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Infolists\Infolist;
-use Filament\Pages\Page;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Infolists\Concerns\InteractsWithInfolists;
 
 class Conference extends Page implements HasInfolists, HasForms
 {
@@ -45,10 +47,16 @@ class Conference extends Page implements HasInfolists, HasForms
                             ]),
                         Tabs\Tab::make('Speakers')
                             ->icon('heroicon-m-users')
-                            ->schema([]),
+                            ->schema([
+                                LiveWireEntry::make('speakers', SpeakerTable::class)
+                                    ->lazy()
+                            ]),
                         Tabs\Tab::make('Venues')
                             ->icon('heroicon-m-home-modern')
-                            ->schema([]),
+                            ->schema([
+                                LivewireEntry::make('venues', VenueTable::class)
+                                    ->lazy()
+                            ]),
                     ])
                     ->contained(false),
             ]);

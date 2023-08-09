@@ -30,14 +30,11 @@ class SpeakerSchema
             ->heading('Speaker')
             ->columns([
                 SpatieMediaLibraryImageColumn::make('image')
-                    ->label('Photo')
                     ->width(80)
                     ->height(80),
                 TextColumn::make('name'),
                 TextColumn::make('affiliation'),
                 TextColumn::make('expertise'),
-
-
             ])
 
             ->filters([])
@@ -57,7 +54,6 @@ class SpeakerSchema
                         ->modalWidth('2xl')
                         ->form(static::formSchemas()),
                     DeleteAction::make()
-
                 ])
             ]);
     }
@@ -82,10 +78,10 @@ class SpeakerSchema
                         ->required(),
                     SpatieMediaLibraryFileUpload::make('image')
                         ->responsiveImages()
-                        ->image(),
+                        ->image()
+                        ->label('Profile Picture'),
                     Textarea::make('description'),
                 ])
-
         ];
     }
 }

@@ -26,9 +26,6 @@ class TopicSchema
             ->heading('Topic')
             ->columns([
                 TextColumn::make('name'),
-
-
-
             ])
 
             ->filters([])
@@ -49,8 +46,6 @@ class TopicSchema
                         ->form(fn () => static::formSchemas()),
                     DeleteAction::make()
                 ]),
-
-
             ]);
     }
 

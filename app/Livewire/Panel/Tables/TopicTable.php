@@ -2,17 +2,17 @@
 
 namespace App\Livewire\Panel\Tables;
 
-use App\Models\Topic;
-use App\Schemas\TopicSchema;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
 use Filament\Tables;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
+use App\Models\Topic;
 use Livewire\Component;
+use Filament\Tables\Table;
+use App\Schemas\TopicSchema;
 use Illuminate\Contracts\View\View;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Tables\Concerns\InteractsWithTable;
 
 class TopicTable extends Component implements HasForms, HasTable
 {
@@ -30,6 +30,4 @@ class TopicTable extends Component implements HasForms, HasTable
     {
         return TopicSchema::table($table);
     }
-
-
 }
