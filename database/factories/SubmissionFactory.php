@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Conference;
 use App\Models\Submission;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -27,6 +28,7 @@ class SubmissionFactory extends Factory
     {
         return [
             'user_id' => User::inRandomOrder()->first()->id,
+            'conference_id' => Conference::inRandomOrder()->first()->id,
         ];
     }
 

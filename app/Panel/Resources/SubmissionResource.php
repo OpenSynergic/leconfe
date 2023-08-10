@@ -39,10 +39,9 @@ class SubmissionResource extends Resource
     }
 
 
-
     public static function getEloquentQuery(): Builder
     {
-        return static::getModel()::with(['meta']);
+        return parent::getEloquentQuery()->with(['meta']);
     }
 
     public static function getGlobalSearchResults(string $search): Collection
@@ -97,7 +96,9 @@ class SubmissionResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return (SubmissionSchema::table($table))
+        $table = SubmissionSchema::table($table);
+
+        return $table
             ->columns([
                 TextColumn::make('user.name')
             ])

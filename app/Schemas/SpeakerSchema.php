@@ -26,12 +26,10 @@ use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 
 class SpeakerSchema
 {
-
     public static function table(Table $table): Table
     {
         return $table
-            ->query(Speaker::query())
-            ->heading('Speaker')
+            // ->heading('Speaker')
             ->columns([
                 SpatieMediaLibraryImageColumn::make('photo')
                     ->collection('speaker_photos')
@@ -41,24 +39,22 @@ class SpeakerSchema
                     ->extraImgAttributes([
                         'style' => 'box-shadow: 0px 20px 50px -10px rgba(0, 0, 0, 0.3);'
                     ]),
-                TextColumn::make('name'),
+                TextColumn::make('name')
+                    ->searchable(),
+                TextColumn::make('position'),
                 TextColumn::make('affiliation'),
-                TextColumn::make('expertise')
-                    ->listWithLineBreaks(),
             ])
-
-            ->filters([])
-
-            ->headerActions([
-                CreateAction::make()
-                    ->modalWidth('2xl')
-                    ->form(static::formSchemas())
-                    ->using(fn (array $data) => CreateSpeakerAction::run($data))
-            ])
-
+            ->reorderable('order_column')
+            // ->headerActions([
+            //     CreateAction::make()
+            //         ->modalWidth('2xl')
+            //         ->form(static::formSchemas())
+            //         ->using(fn (array $data) => CreateSpeakerAction::run($data))
+            // ])
             ->actions([
                 ViewAction::make()
-                    ->infolist(static::infoListSchemas()),
+                    ->infolist(static::infoListSchemas())
+                    ->modalHeading(''),
                 ActionGroup::make([
                     EditAction::make()
                         ->modalWidth('2xl')
@@ -85,13 +81,10 @@ class SpeakerSchema
                         ->collection('speaker_photos')
                         ->label(''),
                     TextInput::make('name')
-                        ->required()
-                        ->label('Name'),
-                    TagsInput::make('expertise')
-                        ->required()
-                        ->placeholder(''),
-                    TextInput::make('affiliation')
                         ->required(),
+                    TextInput::make('position')
+                        ->placeholder('Keynote Speaker'),
+                    TextInput::make('affiliation'),
                     Textarea::make('description'),
                 ])
         ];
@@ -109,22 +102,18 @@ class SpeakerSchema
                         ->circular()
                         ->alignCenter()
                         ->label('')
-                        ->columnSpan(3),
+                        ->columnSpan(2),
                     GridInfolist::make()
                         ->schema([
                             TextEntry::make('name')
                                 ->weight(FontWeight::Bold)
-                                ->label(''),
-                            TextEntry::make('expertise')
-                                ->label('')
-                                ->color('secondary')
-                                ->icon('heroicon-o-trophy'),
+                                ->label('Name'),
                             TextEntry::make('affiliation')
                                 ->label('')
                                 ->color('secondary')
                                 ->icon('heroicon-o-building-library'),
                         ])
-                        ->columnSpan(8),
+                        ->columnSpan(9),
                 ]),
             Section::make([
                 TextEntry::make('description')

@@ -6,21 +6,21 @@ use Filament\Facades\Filament;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\EloquentSortable\Sortable;
+use Spatie\EloquentSortable\SortableTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Speaker extends Model implements HasMedia
+class Speaker extends Model implements HasMedia, Sortable
 {
-    use HasFactory, InteractsWithMedia, Cachable;
+    use HasFactory, InteractsWithMedia, Cachable, SortableTrait;
 
     protected $fillable = [
         'name',
-        'expertise',
         'affiliation',
-        'description'
+        'description',
+        'position',
     ];
-
-    protected $casts = ['expertise' => 'array'];
 
     /**
      * The "booted" method of the model.

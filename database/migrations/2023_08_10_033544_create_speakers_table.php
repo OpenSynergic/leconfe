@@ -16,9 +16,10 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Conference::class)->constrained();
             $table->string('name');
-            $table->string('expertise');
-            $table->string('affiliation');
+            $table->string('position')->nullable();
+            $table->string('affiliation')->nullable;
             $table->text('description')->nullable();
+            $table->unsignedInteger('order_column')->nullable();
             $table->timestamps();
         });
     }

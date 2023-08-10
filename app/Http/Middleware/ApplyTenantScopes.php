@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Scopes\TenantScope;
 use App\Models\Speaker;
 use App\Models\Submission;
 use App\Models\Topic;
@@ -24,21 +25,13 @@ class ApplyTenantScopes
         $conference = Filament::getTenant();
 
         // All model scopes for conference are applied here.
-        Submission::addGlobalScope(
-            fn (Builder $query) => $query->whereBelongsTo($conference),
-        );
+        Submission::addGlobalScope(new TenantScope);
 
-        Topic::addGlobalScope(
-            fn (Builder $query) => $query->whereBelongsTo($conference),
-        );
+        Topic::addGlobalScope(new TenantScope);
 
-        Venue::addGlobalScope(
-            fn (Builder $query) => $query->whereBelongsTo($conference),
-        );
+        Venue::addGlobalScope(new TenantScope);
 
-        Speaker::addGlobalScope(
-            fn (Builder $query) => $query->whereBelongsTo($conference),
-        );
+        Speaker::addGlobalScope(new TenantScope);
 
         return $next($request);
     }

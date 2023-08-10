@@ -22,24 +22,9 @@ class TopicSchema
     public static function table(Table $table): Table
     {
         return $table
-            ->query(Topic::query())
-            ->heading('Topic')
             ->columns([
                 TextColumn::make('name'),
-
-
-
             ])
-
-            ->filters([])
-
-            ->headerActions([
-                CreateAction::make()
-                    ->modalWidth('2xl')
-                    ->form(static::formSchemas())
-                    ->using(fn (array $data) => CreateTopicAction::run($data)),
-            ])
-
             ->actions([
                 ViewAction::make()
                     ->form(static::formSchemas()),
@@ -49,8 +34,6 @@ class TopicSchema
                         ->form(fn () => static::formSchemas()),
                     DeleteAction::make()
                 ]),
-
-
             ]);
     }
 

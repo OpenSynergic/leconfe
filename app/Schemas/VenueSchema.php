@@ -28,23 +28,13 @@ class VenueSchema
     public static function table(Table $table): Table
     {
         return $table
-            ->query(Venue::query())
-            ->heading('Venue')
             ->columns([
-                TextColumn::make('name'),
+                TextColumn::make('name')
+                    ->searchable(),
                 TextColumn::make('location'),
                 SpatieMediaLibraryImageColumn::make('photo')
                     ->collection('venue_photos')
             ])
-
-            ->headerActions([
-                CreateAction::make()
-                    ->model(Venue::class)
-                    ->modalWidth('2xl')
-                    ->form(static::formSchemas())
-                    ->using(fn (array $data) => CreateVenueAction::run($data)),
-            ])
-
             ->actions([
                 ViewAction::make()
                     ->infolist(static::infoListSchemas()),

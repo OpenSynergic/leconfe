@@ -18,7 +18,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Conference extends Model implements HasMedia, HasName, HasAvatar
 {
-    use HasFactory, Cachable, Metable, InteractsWithMedia, HasShortflakePrimary;
+    use HasFactory, Metable, InteractsWithMedia, HasShortflakePrimary;
 
     static protected Conference $current;
 
@@ -68,6 +68,16 @@ class Conference extends Model implements HasMedia, HasName, HasAvatar
     public function submission(): HasMany
     {
         return $this->hasMany(Submission::class);
+    }
+
+    public function speakers(): HasMany
+    {
+        return $this->hasMany(Speaker::class);
+    }
+
+    public function venues(): HasMany
+    {
+        return $this->hasMany(Venue::class);
     }
 
     public function getFilamentName(): string

@@ -11,6 +11,7 @@ use App\Models\Topic;
 use App\Models\Venue;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
@@ -39,7 +40,7 @@ class Conference extends Page implements HasInfolists, HasForms
     {
         return $infolist
             ->schema([
-                Tabs::make('Label')
+                Tabs::make('conference_settings')
                     ->tabs([
                         Tabs\Tab::make('General')
                             ->icon('heroicon-m-window')
@@ -49,20 +50,6 @@ class Conference extends Page implements HasInfolists, HasForms
                             ->badge(fn () => Topic::count())
                             ->schema([
                                 LivewireEntry::make('topics', TopicTable::class)
-                                    ->lazy()
-                            ]),
-                        Tabs\Tab::make('Speakers')
-                            ->icon('heroicon-m-users')
-                            ->badge(fn () => Speaker::count())
-                            ->schema([
-                                LivewireEntry::make('topics', SpeakerTable::class)
-                                    ->lazy()
-                            ]),
-                        Tabs\Tab::make('Venues')
-                            ->icon('heroicon-m-home-modern')
-                            ->badge(fn () => Venue::count())
-                            ->schema([
-                                LivewireEntry::make('topics', VenueTable::class)
                                     ->lazy()
                             ]),
                     ])
