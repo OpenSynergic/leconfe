@@ -20,10 +20,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Collection;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements HasName, HasTenants, HasDefaultTenant
 {
-    use HasApiTokens, HasFactory, Notifiable, Metable, HasShortflakePrimary;
+    use HasApiTokens, HasFactory, Notifiable, Metable, HasShortflakePrimary, HasRoles;
 
     /**
      * The attributes that are mass assignable.

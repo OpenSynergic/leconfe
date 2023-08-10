@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Enums\ConferenceStatus;
+use App\Models\Enums\ConferenceType;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasName;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
@@ -19,6 +20,8 @@ class Conference extends Model implements HasMedia, HasName, HasAvatar
 {
     use HasFactory, Cachable, Metable, InteractsWithMedia, HasShortflakePrimary;
 
+    static protected Conference $current;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -27,6 +30,7 @@ class Conference extends Model implements HasMedia, HasName, HasAvatar
     protected $fillable = [
         'name',
         'is_current',
+        'type',
         'status',
     ];
 
@@ -37,12 +41,17 @@ class Conference extends Model implements HasMedia, HasName, HasAvatar
      */
     protected $casts = [
         'status' => ConferenceStatus::class,
+        'type' => ConferenceType::class,
     ];
 
 
     public static function current()
     {
-        return static::where('is_current', true)->first();
+        if (!isset(static::$current)) {
+            static::$current = static::where('is_current', true)->first();
+        }
+
+        return static::$current;
     }
 
     protected static function booted(): void

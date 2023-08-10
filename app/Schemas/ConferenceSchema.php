@@ -7,8 +7,10 @@ use App\Actions\Conferences\ConferenceSetCurrentAction;
 use App\Actions\Conferences\ConferenceUpdateAction;
 use App\Models\Conference;
 use App\Models\Enums\ConferenceStatus;
+use App\Models\Enums\ConferenceType;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
@@ -47,6 +49,8 @@ class ConferenceSchema
                 //         return $query
                 //             ->whereMeta('title', 'like', "%{$search}%");
                 //     }),
+                TextColumn::make('type')
+                    ->badge(),
                 TextColumn::make('status')
                     ->badge(),
                 IconColumn::make('current')
@@ -146,6 +150,9 @@ class ConferenceSchema
             TextInput::make('name')
                 ->required(),
             Textarea::make('meta.short_description'),
+            Radio::make('type')
+                ->required()
+                ->options(ConferenceType::array()),
             Grid::make()
                 ->schema([
                     TextInput::make('meta.publisher_name'),

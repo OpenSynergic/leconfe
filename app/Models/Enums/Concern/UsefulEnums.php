@@ -18,4 +18,9 @@ trait UsefulEnums
     {
         return array_combine(self::names(), self::values());
     }
+
+    public static function random(): static
+    {
+        return self::fromValue(self::values()[array_rand(self::values())]);
+    }
 }

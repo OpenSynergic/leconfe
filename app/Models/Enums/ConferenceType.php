@@ -6,12 +6,13 @@ use App\Models\Enums\Concern\UsefulEnums;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
-enum ConferenceStatus: string  implements HasLabel, HasColor
+enum ConferenceType: string  implements HasLabel, HasColor
 {
     use UsefulEnums;
 
-    case Active = 'Active';
-    case Archived = 'Archived';
+    case Offline = 'Offline';
+    case Online = 'Online';
+    case Hybrid = 'Hybrid';
 
     public function getLabel(): ?string
     {
@@ -21,8 +22,9 @@ enum ConferenceStatus: string  implements HasLabel, HasColor
     public function getColor(): string | array | null
     {
         return match ($this) {
-            self::Active => 'primary',
-            self::Archived => 'gray',
+            self::Offline => 'primary',
+            self::Online => 'warning',
+            self::Hybrid => 'success',
         };
     }
 }
