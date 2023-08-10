@@ -3,13 +3,13 @@
 namespace App\Panel\Pages\Settings;
 
 use Filament\Pages\Page;
+use App\Livewire\TopicTable;
+use App\Livewire\SpeakerTable;
 use Filament\Infolists\Infolist;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Components\Tabs;
-use App\Livewire\Panel\Tables\TopicTable;
 use App\Infolists\Components\LivewireEntry;
-use App\Livewire\Panel\Tables\SpeakerTable;
-use App\Livewire\Panel\Tables\VenueTable;
+use App\Livewire\VenueTable;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
@@ -48,7 +48,7 @@ class Conference extends Page implements HasInfolists, HasForms
                         Tabs\Tab::make('Speaker')
                             ->icon('heroicon-m-users')
                             ->schema([
-                                LiveWireEntry::make('speakers', SpeakerTable::class)
+                                LivewireEntry::make('speakers', SpeakerTable::class)
                                     ->lazy()
                             ]),
                         Tabs\Tab::make('Venues')

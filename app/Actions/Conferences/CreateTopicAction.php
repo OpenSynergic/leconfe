@@ -11,11 +11,7 @@ class CreateTopicAction
 
     public function handle($data)
     {
-        try {
-            $topic = Topic::create($data);
-        } catch (\Throwable $th) {
-            throw $th;
-        }
+        $topic = Topic::create($data);
 
         return $topic;
     }
