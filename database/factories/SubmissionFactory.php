@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Submission;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -10,6 +12,13 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class SubmissionFactory extends Factory
 {
     /**
+     * The name of the factory's corresponding model.
+     *
+     * @var class-string<\Illuminate\Database\Eloquent\Model>
+     */
+    protected $model = Submission::class;
+
+    /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
@@ -17,7 +26,19 @@ class SubmissionFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'user_id' => User::inRandomOrder()->first()->id,
         ];
+    }
+
+    /**
+     * Configure the model factory.
+     */
+    public function configure(): static
+    {
+        return $this->afterCreating(function (Submission $submission) {
+            $submission->setManyMeta([
+                'title' => fake()->sentence(),
+            ]);
+        });
     }
 }

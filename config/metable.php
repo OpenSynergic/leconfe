@@ -15,6 +15,9 @@ return [
      * by the first appropriate handler in the list.
      */
     'datatypes' => [
+        App\Metable\DataType\SubmissionStatusHandler::class,
+
+
         Plank\Metable\DataType\BooleanHandler::class,
         Plank\Metable\DataType\NullHandler::class,
         Plank\Metable\DataType\IntegerHandler::class,

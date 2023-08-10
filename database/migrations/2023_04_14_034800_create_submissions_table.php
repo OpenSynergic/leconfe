@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Enums\SubmissionStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,8 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('conference_id')->constrained();
-            $table->string('submission_progress')->default('detail')->nullable();
-            $table->unsignedInteger('status')->default(1);
+            $table->enum('status', SubmissionStatus::array())->default(SubmissionStatus::Wizard->value);
             $table->timestamps();
         });
     }

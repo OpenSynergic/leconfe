@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Http\Middleware\ApplyTenantScopes;
+use App\Models\Conference;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\Widgets;
@@ -16,6 +18,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 
@@ -24,16 +27,23 @@ class PanelProvider extends FilamentPanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
+            ->login()
             ->default()
             ->id('panel')
-            ->viteTheme('resources/css/filament/panel/theme.css')
             ->path('panel')
             ->maxContentWidth('full')
-            // ->topNavigation()
-            // ->navigation(false)
-            // ->sidebarWidth('210px')
-            // ->sidebarCollapsibleOnDesktop()
-            ->login()
+            ->viteTheme('resources/css/filament/panel/theme.css')
+            ->tenant(Conference::class)
+            ->tenantMiddleware([
+                ApplyTenantScopes::class
+            ], true)
+            ->navigationGroups([
+                NavigationGroup::make()
+                    ->label('Settings'),
+                NavigationGroup::make()
+                    ->label('Administration'),
+
+            ])
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->registration()
             ->passwordReset()

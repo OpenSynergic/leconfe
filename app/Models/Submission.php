@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Enums\SubmissionStatus;
 use App\Models\Traits\HasTopics;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,26 +18,24 @@ class Submission extends Model implements HasMedia
 {
     use HasFactory, HasTags, HasTopics, Metable, HasShortflakePrimary, InteractsWithMedia, Cachable;
 
-    const STATUS_WIZARD = 1;
-    const STATUS_ACTIVE = 2;
-    const STATUS_REVIEW = 3;
-    const STATUS_ACCEPTED = 4;
-    const STATUS_PUBLISHED = 5;
-    const STATUS_DECLINED = 99;
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'submission_progress',
-        'status'
+        'status',
     ];
 
-    // protected $casts = [
-    //     'status' => ProductStatusEnum::class
-    // ];
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'status' => SubmissionStatus::class,
+    ];
+
 
 
     /**
