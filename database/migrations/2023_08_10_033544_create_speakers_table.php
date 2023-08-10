@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Conference;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('speakers', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(Conference::class)->constrained();
             $table->string('name');
             $table->string('expertise');
             $table->string('affiliation');

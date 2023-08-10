@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Traits\HasTopics;
+use Filament\Facades\Filament;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -36,8 +37,6 @@ class Submission extends Model implements HasMedia
         'status' => SubmissionStatus::class,
     ];
 
-
-
     /**
      * The "booted" method of the model.
      */
@@ -45,7 +44,7 @@ class Submission extends Model implements HasMedia
     {
         static::creating(function (Submission $submission) {
             $submission->user_id ??= Auth::id();
-            $submission->conference_id ??= Conference::current()?->id;
+            $submission->conference_id ??= Filament::getTenant()?->getKey();
         });
     }
 

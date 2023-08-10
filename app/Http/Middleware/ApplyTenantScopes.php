@@ -2,8 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Speaker;
 use App\Models\Submission;
 use App\Models\Topic;
+use App\Models\Venue;
 use Closure;
 use Filament\Facades\Filament;
 use Illuminate\Http\Request;
@@ -27,6 +29,14 @@ class ApplyTenantScopes
         );
 
         Topic::addGlobalScope(
+            fn (Builder $query) => $query->whereBelongsTo($conference),
+        );
+
+        Venue::addGlobalScope(
+            fn (Builder $query) => $query->whereBelongsTo($conference),
+        );
+
+        Speaker::addGlobalScope(
             fn (Builder $query) => $query->whereBelongsTo($conference),
         );
 

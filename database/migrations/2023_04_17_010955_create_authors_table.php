@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Submission;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,7 +15,7 @@ return new class extends Migration
         Schema::create('authors', function (Blueprint $table) {
             $table->id();
             $table->string('email');
-            $table->foreignId('submission_id')->constrained();
+            $table->foreignIdFor(Submission::class)->constrained();
             $table->unsignedBigInteger('order_column');
             $table->timestamps();
         });

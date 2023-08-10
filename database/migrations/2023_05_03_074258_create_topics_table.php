@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Conference;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,7 +19,7 @@ return new class extends Migration
             $table->text('slug');
             $table->string('type')->nullable();
             $table->integer('order_column')->nullable();
-            $table->foreignId('conference_id')->constrained();
+            $table->foreignIdFor(Conference::class)->constrained();
 
             $table->timestamps();
         });

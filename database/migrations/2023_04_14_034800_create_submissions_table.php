@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\Conference;
 use App\Models\Enums\SubmissionStatus;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,8 +16,8 @@ return new class extends Migration
     {
         Schema::create('submissions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('conference_id')->constrained();
+            $table->foreignIdFor(User::class)->constrained();
+            $table->foreignIdFor(Conference::class)->constrained();
             $table->enum('status', SubmissionStatus::array())->default(SubmissionStatus::Wizard->value);
             $table->timestamps();
         });
