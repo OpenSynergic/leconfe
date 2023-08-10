@@ -18,7 +18,7 @@ class SubmissionPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_submission');
+        return true;
     }
 
     /**
@@ -30,7 +30,7 @@ class SubmissionPolicy
      */
     public function view(User $user, Submission $submission): bool
     {
-        return $user->can('view_submission');
+        return true;
     }
 
     /**
@@ -41,7 +41,7 @@ class SubmissionPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_submission');
+        return true;
     }
 
     /**
@@ -53,7 +53,7 @@ class SubmissionPolicy
      */
     public function update(User $user, Submission $submission): bool
     {
-        return $user->can('update_submission');
+        return true;
     }
 
     /**
@@ -65,7 +65,7 @@ class SubmissionPolicy
      */
     public function delete(User $user, Submission $submission): bool
     {
-        return $user->can('delete_submission');
+        return true;
     }
 
     /**
@@ -76,7 +76,7 @@ class SubmissionPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_submission');
+        return true;
     }
 
     /**
@@ -88,7 +88,7 @@ class SubmissionPolicy
      */
     public function forceDelete(User $user, Submission $submission): bool
     {
-        return $user->can('force_delete_submission');
+        return true;
     }
 
     /**
@@ -99,7 +99,7 @@ class SubmissionPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_submission');
+        return true;
     }
 
     /**
@@ -111,7 +111,7 @@ class SubmissionPolicy
      */
     public function restore(User $user, Submission $submission): bool
     {
-        return $user->can('restore_submission');
+        return true;
     }
 
     /**
@@ -122,7 +122,7 @@ class SubmissionPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_submission');
+        return true;
     }
 
     /**
@@ -134,7 +134,7 @@ class SubmissionPolicy
      */
     public function replicate(User $user, Submission $submission): bool
     {
-        return $user->can('replicate_submission');
+        return true;
     }
 
     /**
@@ -147,5 +147,4 @@ class SubmissionPolicy
     {
         return $user->can('reorder_submission');
     }
-
 }

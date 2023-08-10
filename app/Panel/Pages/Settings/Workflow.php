@@ -18,10 +18,12 @@ class Workflow extends Page implements HasInfolists
 {
     use InteractsWithInfolists;
 
+    protected static ?int $navigationSort = 4;
+
     protected static ?string $navigationGroup = 'Settings';
 
     // TODO carikan icon untuk halaman workflow
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-arrows-right-left';
 
     protected static string $view = 'panel.pages.settings.workflow';
 

@@ -18,6 +18,8 @@ class Conference extends Page implements HasInfolists, HasForms
 {
     use InteractsWithInfolists, InteractsWithForms;
 
+    protected static ?int $navigationSort = 1;
+
     protected static ?string $navigationGroup = 'Settings';
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';

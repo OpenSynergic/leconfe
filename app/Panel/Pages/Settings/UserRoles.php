@@ -15,6 +15,8 @@ class UserRoles extends Page implements HasInfolists
 {
     use InteractsWithInfolists;
 
+    protected static ?int $navigationSort = 3;
+
     protected static ?string $navigationGroup = 'Settings';
 
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';

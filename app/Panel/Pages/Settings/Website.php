@@ -21,6 +21,8 @@ class Website extends Page implements HasInfolists
 {
     use InteractsWithInfolists;
 
+    protected static ?int $navigationSort = 2;
+
     protected static ?string $navigationGroup = 'Settings';
 
     protected static ?string $navigationIcon = 'heroicon-o-globe-americas';
