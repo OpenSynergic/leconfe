@@ -3,7 +3,9 @@
 namespace App\Panel\Pages\Settings;
 
 use App\Infolists\Components\LivewireEntry;
+use App\Livewire\SpeakerTable;
 use App\Livewire\TopicTable;
+use App\Livewire\VenueTable;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Components\Tabs;
@@ -45,10 +47,16 @@ class Conference extends Page implements HasInfolists, HasForms
                             ]),
                         Tabs\Tab::make('Speakers')
                             ->icon('heroicon-m-users')
-                            ->schema([]),
+                            ->schema([
+                                LivewireEntry::make('topics', SpeakerTable::class)
+                                    ->lazy()
+                            ]),
                         Tabs\Tab::make('Venues')
                             ->icon('heroicon-m-home-modern')
-                            ->schema([]),
+                            ->schema([
+                                LivewireEntry::make('topics', VenueTable::class)
+                                    ->lazy()
+                            ]),
                     ])
                     ->contained(false),
             ]);

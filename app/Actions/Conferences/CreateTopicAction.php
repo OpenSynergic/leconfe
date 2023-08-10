@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Conference;
+namespace App\Actions\Conferences;
 
 use App\Models\Topic;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -11,8 +11,8 @@ class CreateTopicAction
 
     public function handle($data)
     {
-       $topic = Topic::create($data);
+        $topic = Topic::create($data);
 
-       return $topic;
+        return $topic;
     }
 }
