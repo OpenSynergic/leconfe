@@ -42,8 +42,6 @@ Thank you for considering contributing to Leconfe! Here are some guidelines to h
 -   Always use pagination on index pages.
 -   The following Eloquent protections are enabled by default
     -   Prevent Lazy Loading to avoid N+1 queries
-    -   Prevent silently discarding attributes
-    -   Prevents accessing missing attributes
     -   Require a morph map when using polymorphic relations
 
 ## Security Vulnerabilities
