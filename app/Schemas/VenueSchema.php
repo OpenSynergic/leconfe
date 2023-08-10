@@ -14,7 +14,16 @@ use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\DeleteAction;
 use App\Actions\Conferences\CreateVenueAction;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\Textarea;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\Split;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
+use Filament\Support\Enums\FontWeight;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 
 class VenueSchema
@@ -28,10 +37,6 @@ class VenueSchema
                 TextColumn::make('name'),
                 TextColumn::make('location')
                     ->wrap(),
-                SpatieMediaLibraryImageColumn::make('image')
-                    ->width(80)
-                    ->height(80)
-                    ->label(''),
             ])
 
             ->headerActions([
@@ -43,7 +48,7 @@ class VenueSchema
 
             ->actions([
                 ViewAction::make()
-                    ->form(static::formSchemas()),
+                    ->infolist(static::infoListSchemas()),
                 ActionGroup::make([
                     EditAction::make()
                         ->modalWidth('2xl')
@@ -68,11 +73,34 @@ class VenueSchema
                         ->required(),
                     TextInput::make('location')
                         ->required(),
-                    SpatieMediaLibraryFileUpload::make('image')
-                        ->responsiveImages()
-                        ->image()
-                        ->label('Venue Photo')
+                    FileUpload::make('image')
+                        ->required()
+                        ->multiple(),
+                    Textarea::make('description')
                 ])
+        ];
+    }
+
+    public static function infoListSchemas(): array
+    {
+        return [
+            Section::make('Venue')
+                ->schema([
+                    ImageEntry::make('image')
+                        ->width(150)
+                        ->height(150)
+                        ->label(''),
+                    TextEntry::make('name')
+                        ->weight(FontWeight::Bold)
+                        ->label('')
+                        ->color('secondary'),
+                    TextEntry::make('location')
+                        ->label('Location')
+                        ->color('secondary')
+                        ->icon('heroicon-m-map-pin'),
+                    TextEntry::make('description')
+                        ->color('secondary')
+                ]),
         ];
     }
 }

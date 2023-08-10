@@ -13,15 +13,6 @@ class Venue extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
-    protected $fillable = ['name', 'location'];
-
-
-    public function registerMediaConversions(Media $media = null): void
-    {
-        $this
-            ->addMediaConversion('my-conversion')
-            ->greyscale()
-            ->quality(80)
-            ->withResponsiveImages();
-    }
+    protected $fillable = ['name', 'location', 'description', 'image'];
+    protected $casts = ['image' => 'array'];
 }

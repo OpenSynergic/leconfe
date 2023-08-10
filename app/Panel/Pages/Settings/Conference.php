@@ -45,7 +45,7 @@ class Conference extends Page implements HasInfolists, HasForms
                                 LivewireEntry::make('topics', TopicTable::class)
                                     ->lazy()
                             ]),
-                        Tabs\Tab::make('Speakers')
+                        Tabs\Tab::make('Speaker')
                             ->icon('heroicon-m-users')
                             ->schema([
                                 LiveWireEntry::make('speakers', SpeakerTable::class)

@@ -10,6 +10,6 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 class Speaker extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
-    protected $fillable = ['name', 'expertise', 'affiliation',  'description'];
+    protected $fillable = ['profile_photo', 'name', 'expertise', 'affiliation',  'description'];
     protected $casts = ['expertise' => 'array'];
 }

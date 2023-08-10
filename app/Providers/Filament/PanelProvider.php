@@ -41,6 +41,7 @@ class PanelProvider extends FilamentPanelProvider
             ->profile()
             ->colors([
                 'primary' => Color::Cyan,
+                'secondary' => Color::Gray
             ])
             ->discoverResources(in: app_path('Panel/Resources'), for: 'App\\Panel\\Resources')
             ->discoverPages(in: app_path('Panel/Pages'), for: 'App\\Panel\\Pages')
