@@ -12,8 +12,7 @@ class CreateVenueAction
     public function handle($data)
     {
         try {
-            $venue = Venue::create($data);
-            return $venue;
+            Venue::create($data);
         } catch (\Throwable $th) {
             throw $th;
         }
