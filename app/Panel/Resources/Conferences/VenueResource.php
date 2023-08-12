@@ -2,17 +2,12 @@
 
 namespace App\Panel\Resources\Conferences;
 
-use App\Panel\Resources\Conferences\VenueResource\Pages;
-use App\Panel\Resources\Conferences\VenueResource\RelationManagers;
 use App\Models\Venue;
+use App\Panel\Resources\Conferences\VenueResource\Pages;
 use App\Schemas\VenueSchema;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class VenueResource extends Resource
 {

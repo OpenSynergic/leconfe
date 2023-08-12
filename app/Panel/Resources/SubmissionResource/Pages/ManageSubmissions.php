@@ -2,14 +2,11 @@
 
 namespace App\Panel\Resources\SubmissionResource\Pages;
 
-use App\Panel\Resources\SubmissionResource;
 use App\Models\Submission;
+use App\Panel\Resources\SubmissionResource;
 use Filament\Actions\Action;
-use Filament\Actions\CreateAction;
-use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords\Tab;
 use Filament\Resources\Pages\ManageRecords;
-use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 
 class ManageSubmissions extends ManageRecords
@@ -23,10 +20,9 @@ class ManageSubmissions extends ManageRecords
                 ->button()
                 ->hidden(fn () => setting('disable_submission'))
                 ->url(static::$resource::getUrl('create'))
-                ->label('New Submission')
+                ->label('New Submission'),
         ];
     }
-
 
     public function getTabs(): array
     {

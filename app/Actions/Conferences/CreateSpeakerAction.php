@@ -13,6 +13,7 @@ class CreateSpeakerAction
     {
         try {
             $speaker = Speaker::create($data);
+
             return $speaker;
         } catch (\Throwable $th) {
             throw $th;

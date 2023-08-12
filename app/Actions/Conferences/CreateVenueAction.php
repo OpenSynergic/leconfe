@@ -13,6 +13,7 @@ class CreateVenueAction
     {
         try {
             $venue = Venue::create($data);
+
             return $venue;
         } catch (\Throwable $th) {
             throw $th;

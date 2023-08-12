@@ -14,7 +14,7 @@ class ManageSpeakers extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
+            Actions\CreateAction::make(),
             // ->form(fn () => dd((app(PersistentMiddleware::class))->getPersistentMiddleware())),
         ];
     }

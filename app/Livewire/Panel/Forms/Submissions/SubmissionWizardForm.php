@@ -4,13 +4,10 @@ namespace App\Livewire\Panel\Forms\Submissions;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Panel\Resources\SubmissionResource;
-use App\Models\Submission;
-use Filament\Forms\Components\Card;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\SpatieTagsInput;
-use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ViewField;
 use Filament\Forms\Components\Wizard;
@@ -18,10 +15,8 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification;
-use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Support\HtmlString;
 use Livewire\Component;
-use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class SubmissionWizardForm extends Component implements HasForms
 {
@@ -60,8 +55,8 @@ class SubmissionWizardForm extends Component implements HasForms
                                         ->type('submissionKeywords'),
                                     RichEditor::make('meta.abstract')
                                         ->required(),
-                                ])
-                        ])
+                                ]),
+                        ]),
                     ]),
                 Wizard\Step::make('Upload Files')
                     ->schema([
@@ -73,9 +68,9 @@ class SubmissionWizardForm extends Component implements HasForms
                                     FileUpload::make('files')
                                         ->multiple()
                                         // ->required()
-                                        ->previewable(false)
-                                ])
-                        ])
+                                        ->previewable(false),
+                                ]),
+                        ]),
                     ]),
                 Wizard\Step::make('Authors')
                     ->schema([
@@ -85,15 +80,15 @@ class SubmissionWizardForm extends Component implements HasForms
                             ->schema([
                                 ViewField::make('author')
                                     ->label('')
-                                    ->view('test')
-                            ])
+                                    ->view('test'),
+                            ]),
                     ]),
                 Wizard\Step::make('Review')
                     ->schema([
                         // ...
                     ]),
             ])
-                ->submitAction(new HtmlString('<button type="submit">Submit</button>'))
+                ->submitAction(new HtmlString('<button type="submit">Submit</button>')),
         ];
     }
 
@@ -108,13 +103,13 @@ class SubmissionWizardForm extends Component implements HasForms
         SubmissionUpdateAction::run($data, $this->record);
 
         Notification::make()
-            ->title("New Submission")
-            ->body("A new paper has been submitted to which an editor needs to be assigned. " .  $this->record->getMeta('title'))
+            ->title('New Submission')
+            ->body('A new paper has been submitted to which an editor needs to be assigned. '.$this->record->getMeta('title'))
             ->warning()
             ->actions([
                 Action::make('view')
                     ->label('View Submission')
-                    ->url(SubmissionResource::getUrl('view', $this->record))
+                    ->url(SubmissionResource::getUrl('view', $this->record)),
             ])
             ->sendToDatabase(auth()->user());
     }

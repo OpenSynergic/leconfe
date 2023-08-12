@@ -3,15 +3,10 @@
 namespace App\Panel\Pages\Settings;
 
 use App\Infolists\Components\LivewireEntry;
-use App\Livewire\SpeakerTable;
 use App\Livewire\TopicTable;
-use App\Livewire\VenueTable;
-use App\Models\Speaker;
 use App\Models\Topic;
-use App\Models\Venue;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
@@ -50,7 +45,7 @@ class Conference extends Page implements HasInfolists, HasForms
                             ->badge(fn () => Topic::count())
                             ->schema([
                                 LivewireEntry::make('topics', TopicTable::class)
-                                    ->lazy()
+                                    ->lazy(),
                             ]),
                     ])
                     ->contained(false),

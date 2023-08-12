@@ -2,17 +2,12 @@
 
 namespace App\Panel\Resources\Conferences;
 
-use App\Panel\Resources\Conferences\SpeakerResource\Pages;
-use App\Panel\Resources\Conferences\SpeakerResource\RelationManagers;
 use App\Models\Speaker;
+use App\Panel\Resources\Conferences\SpeakerResource\Pages;
 use App\Schemas\SpeakerSchema;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SpeakerResource extends Resource
 {

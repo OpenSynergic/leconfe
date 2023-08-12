@@ -2,9 +2,8 @@
 
 namespace App\Panel\Resources\SubmissionResource\Pages;
 
-use App\Panel\Resources\SubmissionResource;
 use App\Models\Submission;
-use Filament\Resources\Pages\Concerns\InteractsWithRecord;
+use App\Panel\Resources\SubmissionResource;
 use Filament\Resources\Pages\Page;
 
 class CompleteSubmission extends Page

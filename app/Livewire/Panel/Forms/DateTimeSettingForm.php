@@ -3,16 +3,12 @@
 namespace App\Livewire\Panel\Forms;
 
 use App\Actions\Settings\SettingUpdateAction;
-use App\Livewire\Panel\Traits\PlaceholderTrait;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Livewire\Component;
-
 
 // TODO tambahkan custom format field, dan juga lakukan validasi bahwa format yang diinput valid
 class DateTimeSettingForm extends Component implements HasForms
@@ -29,7 +25,7 @@ class DateTimeSettingForm extends Component implements HasForms
     public function mount(): void
     {
         $this->form->fill([
-            'format' => setting('format')
+            'format' => setting('format'),
         ]);
     }
 
@@ -67,7 +63,7 @@ class DateTimeSettingForm extends Component implements HasForms
         SettingUpdateAction::run($this->form->getState());
 
         Notification::make('setting_saved')
-            ->title("Settings saved")
+            ->title('Settings saved')
             ->success()
             ->send();
     }

@@ -2,26 +2,22 @@
 
 namespace App\Schemas;
 
-use App\Models\Venue;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
 use Filament\Forms\Components\Grid;
-use Filament\Support\Enums\FontWeight;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Support\Enums\FontWeight;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Infolists\Components\Section;
-use Filament\Infolists\Components\TextEntry;
-use App\Actions\Conferences\CreateVenueAction;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
-use Illuminate\Database\Eloquent\Model;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 
 class VenueSchema
 {
@@ -33,7 +29,7 @@ class VenueSchema
                     ->searchable(),
                 TextColumn::make('location'),
                 SpatieMediaLibraryImageColumn::make('photo')
-                    ->collection('venue_photos')
+                    ->collection('venue_photos'),
             ])
             ->actions([
                 ViewAction::make()
@@ -42,8 +38,8 @@ class VenueSchema
                     EditAction::make()
                         ->modalWidth('2xl')
                         ->form(static::formSchemas()),
-                    DeleteAction::make()
-                ])
+                    DeleteAction::make(),
+                ]),
             ]);
     }
 
@@ -65,8 +61,8 @@ class VenueSchema
                     SpatieMediaLibraryFileUpload::make('photo')
                         ->collection('venue_photos')
                         ->required(),
-                    Textarea::make('description')
-                ])
+                    Textarea::make('description'),
+                ]),
         ];
     }
 
@@ -89,7 +85,7 @@ class VenueSchema
                         ->color('secondary')
                         ->icon('heroicon-m-map-pin'),
                     TextEntry::make('description')
-                        ->color('secondary')
+                        ->color('secondary'),
                 ]),
         ];
     }

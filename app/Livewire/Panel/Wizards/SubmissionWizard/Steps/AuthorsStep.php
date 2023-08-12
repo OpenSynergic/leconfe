@@ -8,17 +8,13 @@ use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Livewire\Panel\Wizards\SubmissionWizard\Contracts\HasWizardStep;
 use App\Models\Author;
 use App\Models\Submission;
-use Closure;
-use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
@@ -26,7 +22,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Squire\Models\Country;
@@ -54,7 +49,7 @@ class AuthorsStep extends Component implements HasWizardStep, HasTable, HasForms
         }
 
         SubmissionUpdateAction::run([
-            'submission_progress' => 'for-the-editor'
+            'submission_progress' => 'for-the-editor',
         ], $this->record);
 
         $this->dispatchBrowserEvent('next-wizard-step');
@@ -87,7 +82,7 @@ class AuthorsStep extends Component implements HasWizardStep, HasTable, HasForms
                 ->optionsLimit(250)
                 ->options(fn () => Country::all()->pluck('name', 'id')),
             TextInput::make('meta.affiliation')
-                ->label('Affiliation')
+                ->label('Affiliation'),
         ];
     }
 
@@ -98,7 +93,7 @@ class AuthorsStep extends Component implements HasWizardStep, HasTable, HasForms
                 ->label('Add Author')
                 ->modalWidth('2xl')
                 ->form($this->getAuthorFormSchema())
-                ->using(fn (array $data) => AuthorCreateAction::run($this->record, $data))
+                ->using(fn (array $data) => AuthorCreateAction::run($this->record, $data)),
         ];
     }
 
@@ -120,18 +115,18 @@ class AuthorsStep extends Component implements HasWizardStep, HasTable, HasForms
                     TextColumn::make('affiliation')
                         ->getStateUsing(fn ($record) => $record->getMeta('affiliation'))
                         ->extraAttributes([
-                            'class' => 'text-xs'
+                            'class' => 'text-xs',
                         ])
-                        ->color('gray')
+                        ->color('gray'),
                 ]),
                 TextColumn::make('email')
                     ->extraAttributes([
-                        'class' => 'text-xs'
+                        'class' => 'text-xs',
                     ])
                     ->color('gray')
                     ->icon('heroicon-o-envelope')
-                    ->alignStart()
-            ])->from('lg')
+                    ->alignStart(),
+            ])->from('lg'),
         ];
     }
 
@@ -142,11 +137,12 @@ class AuthorsStep extends Component implements HasWizardStep, HasTable, HasForms
                 ->modalWidth('2xl')
                 ->mutateRecordDataUsing(function ($data, Author $record) {
                     $data['meta'] = $record->getAllMeta()->toArray();
+
                     return $data;
                 })
                 ->form($this->getAuthorFormSchema())
                 ->using(fn (array $data, Author $record) => AuthorUpdateAction::run($data, $record)),
-            DeleteAction::make()
+            DeleteAction::make(),
         ];
     }
 

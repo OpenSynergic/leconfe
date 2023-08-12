@@ -4,24 +4,23 @@ namespace App\Providers\Filament;
 
 use App\Http\Middleware\ApplyTenantScopes;
 use App\Models\Conference;
-use Filament\Pages;
-use Filament\Panel;
-use Filament\Widgets;
-use Filament\PanelProvider as FilamentPanelProvider;
-use Illuminate\Foundation\Vite;
-use Filament\Support\Colors\Color;
 use Filament\Http\Middleware\Authenticate;
-use Illuminate\Session\Middleware\StartSession;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Session\Middleware\AuthenticateSession;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationGroup;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Filament\Pages;
+use Filament\Panel;
+use Filament\PanelProvider as FilamentPanelProvider;
+use Filament\Support\Colors\Color;
+use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Session\Middleware\AuthenticateSession;
+use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class PanelProvider extends FilamentPanelProvider
 {
@@ -35,7 +34,7 @@ class PanelProvider extends FilamentPanelProvider
             ->maxContentWidth('full')
             ->renderHook(
                 'panels::scripts.before',
-                fn () => Blade::render(<<<Blade
+                fn () => Blade::render(<<<'Blade'
                         @vite(['resources/panel/js/panel.js'])
                     Blade)
             )
@@ -63,9 +62,10 @@ class PanelProvider extends FilamentPanelProvider
     protected function getTenantMiddleware(): array
     {
         return [
-            ApplyTenantScopes::class
+            ApplyTenantScopes::class,
         ];
     }
+
     protected function getNavigationGroups(): array
     {
         return [

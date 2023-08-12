@@ -2,7 +2,6 @@
 
 namespace App\Metable\DataType;
 
-use Plank\Metable\DataType\HandlerInterface;
 use App\Models\Enums\SubmissionStatus;
 
 /**

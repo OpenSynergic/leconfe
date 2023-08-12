@@ -13,7 +13,7 @@ class CreateMetaTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('meta')) {
+        if (! Schema::hasTable('meta')) {
             Schema::create('meta', function (Blueprint $table) {
                 $table->id();
                 $table->string('metable_type');

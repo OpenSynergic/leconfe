@@ -2,17 +2,12 @@
 
 namespace App\Panel\Resources\Conferences;
 
-use App\Panel\Resources\Conferences\TopicResource\Pages;
-use App\Panel\Resources\Conferences\TopicResource\RelationManagers;
 use App\Models\Topic;
+use App\Panel\Resources\Conferences\TopicResource\Pages;
 use App\Schemas\TopicSchema;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TopicResource extends Resource
 {
