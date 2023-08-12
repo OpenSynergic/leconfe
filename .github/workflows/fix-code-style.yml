@@ -18,7 +18,6 @@ jobs:
       - name: Install dependencies
         run: |
           composer install --no-interaction
-          pnpm install
       - name: Run Pint
         run: composer pint
       # - name: Run Prettier
