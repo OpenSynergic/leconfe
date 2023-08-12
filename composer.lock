@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c04eff2652540edaa3649ec2710c956a",
+    "content-hash": "b6e50e1cb80b68d9a96cdca5b7343d28",
     "packages": [
         {
             "name": "akaunting/laravel-setting",
@@ -5432,11 +5432,17 @@
         },
         {
             "name": "rahmanramsi/livewire-page-group",
-            "version": "dev-main",
+            "version": "v0.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rahmanramsi/livewire-page-group.git",
+                "reference": "0f57f86eb23f8b693c5639aeec20b607e3fefd23"
+            },
             "dist": {
-                "type": "path",
-                "url": "packages/livewire-page-group",
-                "reference": "68231665aa2df9d692bab48ac9a97c3b34d34184"
+                "type": "zip",
+                "url": "https://api.github.com/repos/rahmanramsi/livewire-page-group/zipball/0f57f86eb23f8b693c5639aeec20b607e3fefd23",
+                "reference": "0f57f86eb23f8b693c5639aeec20b607e3fefd23",
+                "shasum": ""
             },
             "require": {
                 "illuminate/contracts": "^10.0",
@@ -5468,28 +5474,7 @@
                     "Rahmanramsi\\LivewirePageGroup\\Database\\Factories\\": "database/factories/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Rahmanramsi\\LivewirePageGroup\\Tests\\": "tests/"
-                }
-            },
-            "scripts": {
-                "post-autoload-dump": [
-                    "@php ./vendor/bin/testbench package:discover --ansi"
-                ],
-                "analyse": [
-                    "vendor/bin/phpstan analyse"
-                ],
-                "test": [
-                    "vendor/bin/pest"
-                ],
-                "test-coverage": [
-                    "vendor/bin/pest --coverage"
-                ],
-                "format": [
-                    "vendor/bin/pint"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -5507,9 +5492,11 @@
                 "livewire-page-group",
                 "rahmanramsi"
             ],
-            "transport-options": {
-                "relative": true
-            }
+            "support": {
+                "issues": "https://github.com/rahmanramsi/livewire-page-group/issues",
+                "source": "https://github.com/rahmanramsi/livewire-page-group/tree/v0.0.3"
+            },
+            "time": "2023-08-12T03:25:03+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
@@ -12313,8 +12300,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "awcodes/filament-tiptap-editor": 15,
-        "rahmanramsi/livewire-page-group": 20
+        "awcodes/filament-tiptap-editor": 15
     },
     "prefer-stable": true,
     "prefer-lowest": false,
