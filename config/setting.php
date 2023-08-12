@@ -10,7 +10,7 @@ return [
     | Auto-save every time the application shuts down
     |
     */
-    'auto_save'         => true,
+    'auto_save' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -22,10 +22,10 @@ return [
     |
     */
     'cache' => [
-        'enabled'       => true,
-        'key'           => 'setting',
-        'ttl'           => 3600,
-        'auto_clear'    => true,
+        'enabled' => true,
+        'key' => 'setting',
+        'ttl' => 3600,
+        'auto_clear' => true,
     ],
 
     /*
@@ -38,7 +38,7 @@ return [
     | Supported: "database", "json", "memory"
     |
     */
-    'driver'            => 'database',
+    'driver' => 'database',
 
     /*
     |--------------------------------------------------------------------------
@@ -50,10 +50,10 @@ return [
     |
     */
     'database' => [
-        'connection'    => null,
-        'table'         => 'settings',
-        'key'           => 'key',
-        'value'         => 'value',
+        'connection' => null,
+        'table' => 'settings',
+        'key' => 'key',
+        'value' => 'value',
     ],
 
     /*
@@ -65,7 +65,7 @@ return [
     |
     */
     'json' => [
-        'path'          => storage_path() . '/settings.json',
+        'path' => storage_path().'/settings.json',
     ],
 
     /*

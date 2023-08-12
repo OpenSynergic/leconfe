@@ -5,15 +5,7 @@ namespace App\Livewire\Panel\Wizards\SubmissionWizard\Steps;
 use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Livewire\Panel\Wizards\SubmissionWizard\Contracts\HasWizardStep;
 use App\Models\Submission;
-use Filament\Forms\Components\BaseFileUpload;
-use Filament\Forms\Components\Card;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
 use Livewire\Component;
-use Livewire\TemporaryUploadedFile;
 
 class UploadFilesStep extends Component implements HasWizardStep
 {
@@ -38,9 +30,8 @@ class UploadFilesStep extends Component implements HasWizardStep
         }
 
         SubmissionUpdateAction::run([
-            'submission_progress' => 'authors'
+            'submission_progress' => 'authors',
         ], $this->record);
-
 
         $this->dispatchBrowserEvent('next-wizard-step');
     }

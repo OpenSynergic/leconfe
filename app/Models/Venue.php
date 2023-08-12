@@ -25,8 +25,8 @@ class Venue extends Model implements HasMedia
      */
     protected static function booted(): void
     {
-        static::creating(function (Speaker $speaker) {
-            $speaker->conference_id ??= Filament::getTenant()?->getKey();
+        static::creating(function (Venue $venue) {
+            $venue->conference_id ??= Filament::getTenant()?->getKey();
         });
     }
 }

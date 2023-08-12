@@ -2,21 +2,21 @@
 
 namespace App\Livewire\Panel\Tables\Submissions;
 
+use App\Models\Media;
 use App\Models\Submission;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
-use Livewire\Component;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\Layout\Split;
-use Illuminate\Database\Eloquent\Builder;
-use App\Models\Media;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Illuminate\Database\Eloquent\Builder;
+use Livewire\Component;
 use Spatie\MediaLibrary\Support\MediaStream;
 
 class SubmissionFilesTable extends Component implements HasTable, HasForms
@@ -50,6 +50,7 @@ class SubmissionFilesTable extends Component implements HasTable, HasForms
                 ->color('gray')
                 ->action(function () {
                     $downloads = $this->record->getMedia('files');
+
                     return MediaStream::create('files.zip')->addMedia($downloads);
                 }),
             Action::make('upload')
@@ -69,9 +70,9 @@ class SubmissionFilesTable extends Component implements HasTable, HasForms
                         ->visibility('private')
                         ->saveRelationshipsUsing(static function (SpatieMediaLibraryFileUpload $component) {
                             $component->saveUploadedFiles();
-                        })
+                        }),
                 ])
-                ->action(fn () => null)
+                ->action(fn () => null),
         ];
     }
 
@@ -100,9 +101,9 @@ class SubmissionFilesTable extends Component implements HasTable, HasForms
                 ->modalWidth('2xl')
                 ->modalHeading('Edit file')
                 ->form([
-                    TextInput::make('file_name')
+                    TextInput::make('file_name'),
                 ]),
-            DeleteAction::make()
+            DeleteAction::make(),
         ];
     }
 }

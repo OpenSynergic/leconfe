@@ -48,7 +48,6 @@ class Handler extends ExceptionHandler
     }
 
     protected function unauthenticated($request, AuthenticationException $exception)
-
     {
 
         return $this->shouldReturnJson($request, $exception)

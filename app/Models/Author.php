@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use Plank\Metable\Metable;
-use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Kra8\Snowflake\HasShortflakePrimary;
+use Plank\Metable\Metable;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 
@@ -33,7 +32,8 @@ class Author extends Model implements Sortable
                 if (filled($this->getMeta('public_name'))) {
                     return $this->getMeta('public_name');
                 }
-                return $this->getMeta('given_name') . ' ' . $this->getMeta('family_name');
+
+                return $this->getMeta('given_name').' '.$this->getMeta('family_name');
             }
         );
     }
@@ -45,6 +45,7 @@ class Author extends Model implements Sortable
                 if ($this->hasMeta('affiliation') && filled($this->getMeta('affiliation'))) {
                     return $this->getMeta('affiliation');
                 }
+
                 return null;
             }
         );

@@ -196,6 +196,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\FilamentServiceProvider::class,
         App\Providers\Filament\PanelProvider::class,
+        App\Providers\WebsiteServiceProvider::class,
 
     ],
 

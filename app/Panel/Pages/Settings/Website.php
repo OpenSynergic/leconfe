@@ -2,15 +2,11 @@
 
 namespace App\Panel\Pages\Settings;
 
+use App\Infolists\Components\LivewireEntry;
 use App\Livewire\Panel\Forms\DateTimeSettingForm;
 use App\Livewire\Panel\Forms\PrivacyStatementForm;
-use App\Infolists\Components\BladeEntry;
-use App\Infolists\Components\LivewireEntry;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\Tabs;
-use Filament\Infolists\Components\ViewEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;

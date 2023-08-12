@@ -6,7 +6,7 @@ use App\Models\Enums\Concern\UsefulEnums;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
-enum ConferenceType: string  implements HasLabel, HasColor
+enum ConferenceType: string implements HasLabel, HasColor
 {
     use UsefulEnums;
 
@@ -19,7 +19,7 @@ enum ConferenceType: string  implements HasLabel, HasColor
         return $this->name;
     }
 
-    public function getColor(): string | array | null
+    public function getColor(): string|array|null
     {
         return match ($this) {
             self::Offline => 'primary',

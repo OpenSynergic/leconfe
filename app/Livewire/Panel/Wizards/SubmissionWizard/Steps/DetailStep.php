@@ -5,7 +5,6 @@ namespace App\Livewire\Panel\Wizards\SubmissionWizard\Steps;
 use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Livewire\Panel\Wizards\SubmissionWizard\Contracts\HasWizardStep;
 use App\Models\Submission;
-use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\SpatieTagsInput;
@@ -27,7 +26,7 @@ class DetailStep extends Component implements HasForms, HasWizardStep
     {
         $this->form->fill([
             'meta' => $record->getAllMeta(),
-            'submission_progress' => 'upload-files'
+            'submission_progress' => 'upload-files',
         ]);
     }
 
@@ -40,7 +39,6 @@ class DetailStep extends Component implements HasForms, HasWizardStep
     {
         return $this->record;
     }
-
 
     public function render()
     {
@@ -65,8 +63,8 @@ class DetailStep extends Component implements HasForms, HasWizardStep
                         // TinyEditor::make('meta.abstract')
                         //     ->required()
                         //     ->profile('basic'),
-                    ])
-            ])
+                    ]),
+            ]),
         ];
     }
 

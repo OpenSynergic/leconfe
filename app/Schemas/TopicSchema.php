@@ -2,44 +2,26 @@
 
 namespace App\Schemas;
 
-use App\Models\Topic;
-use Filament\Forms\Set;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Illuminate\Support\Str;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Forms\Set;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\DeleteAction;
-use App\Actions\Conferences\CreateTopicAction;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
 class TopicSchema
 {
     public static function table(Table $table): Table
     {
         return $table
-            ->query(Topic::query())
-            ->heading('Topic')
             ->columns([
                 TextColumn::make('name'),
-
-
-
             ])
-
-            ->filters([])
-
-            ->headerActions([
-                CreateAction::make()
-                    ->modalWidth('2xl')
-                    ->form(static::formSchemas())
-                    ->using(fn (array $data) => CreateTopicAction::run($data)),
-            ])
-
             ->actions([
                 ViewAction::make()
                     ->form(static::formSchemas()),
@@ -47,10 +29,8 @@ class TopicSchema
                     EditAction::make()
                         ->modalWidth('2xl')
                         ->form(fn () => static::formSchemas()),
-                    DeleteAction::make()
+                    DeleteAction::make(),
                 ]),
-
-
             ]);
     }
 
@@ -71,7 +51,7 @@ class TopicSchema
                         ->required(),
                     TextInput::make('slug')
                         ->required(),
-                ])
+                ]),
         ];
     }
 }

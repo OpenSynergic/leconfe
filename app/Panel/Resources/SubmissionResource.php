@@ -2,14 +2,14 @@
 
 namespace App\Panel\Resources;
 
-use App\Panel\Resources\SubmissionResource\Pages;
 use App\Models\Submission;
+use App\Panel\Resources\SubmissionResource\Pages;
 use App\Schemas\SubmissionSchema;
 use Filament\GlobalSearch\GlobalSearchResult;
 use Filament\Resources\Resource;
-use Filament\Tables\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -33,16 +33,14 @@ class SubmissionResource extends Resource
         return parent::getGlobalSearchEloquentQuery()->with(['user']);
     }
 
-    public static function getRecordTitle(?Model $record): string | Htmlable | null
+    public static function getRecordTitle(?Model $record): string|Htmlable|null
     {
         return $record?->getMeta('title') ?? static::getModelLabel();
     }
 
-
-
     public static function getEloquentQuery(): Builder
     {
-        return static::getModel()::with(['meta']);
+        return parent::getEloquentQuery()->with(['meta']);
     }
 
     public static function getGlobalSearchResults(string $search): Collection
@@ -94,12 +92,13 @@ class SubmissionResource extends Resource
         return ['title', 'description'];
     }
 
-
     public static function table(Table $table): Table
     {
-        return (SubmissionSchema::table($table))
+        $table = SubmissionSchema::table($table);
+
+        return $table
             ->columns([
-                TextColumn::make('user.name')
+                TextColumn::make('user.name'),
             ])
             ->actions([
                 Tables\Actions\Action::make('view')

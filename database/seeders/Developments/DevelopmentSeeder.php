@@ -6,7 +6,6 @@ namespace Database\Seeders\Developments;
 
 use Database\Seeders\Productions\ProductionSeeder;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class DevelopmentSeeder extends Seeder
 {

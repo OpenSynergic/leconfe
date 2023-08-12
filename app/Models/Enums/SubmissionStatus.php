@@ -3,10 +3,9 @@
 namespace App\Models\Enums;
 
 use App\Models\Enums\Concern\UsefulEnums;
-use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
-enum SubmissionStatus: string  implements HasLabel
+enum SubmissionStatus: string implements HasLabel
 {
     use UsefulEnums;
 

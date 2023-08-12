@@ -33,11 +33,10 @@ class CreateSubmission extends Page implements HasForms
         $this->form->fill([]);
     }
 
-
     protected function getViewData(): array
     {
         return [
-            'disable_submission' => setting('disable_submission')
+            'disable_submission' => setting('disable_submission'),
         ];
     }
 
@@ -53,7 +52,7 @@ class CreateSubmission extends Page implements HasForms
                     Checkbox::make('privacy_consent')
                         ->inline()
                         ->required()
-                        ->label('Yes, I agree to have my data collected and stored according to the privacy statement.')
+                        ->label('Yes, I agree to have my data collected and stored according to the privacy statement.'),
                 ]),
         ];
     }
@@ -66,7 +65,6 @@ class CreateSubmission extends Page implements HasForms
 
         return redirect()->to(SubmissionResource::getUrl('view', [$submission]));
     }
-
 
     // protected function getBreadcrumbs(): array
     // {

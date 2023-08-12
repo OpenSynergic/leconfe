@@ -5,19 +5,19 @@ namespace App\Models\Enums;
 use App\Models\Enums\Concern\UsefulEnums;
 use Filament\Support\Contracts\HasLabel;
 
-enum UserRole: string  implements HasLabel
+enum UserRole: string implements HasLabel
 {
-  use UsefulEnums;
+    use UsefulEnums;
 
-  case SuperAdmin = 'SuperAdmin';
-  case Admin = 'Admin';
-  case Editor = 'Editor';
-  case Reviewer = 'Reviewer';
-  case Author = 'Author';
-  case Participant = 'Participant';
+    case SuperAdmin = 'SuperAdmin';
+    case Admin = 'Admin';
+    case Editor = 'Editor';
+    case Reviewer = 'Reviewer';
+    case Author = 'Author';
+    case Participant = 'Participant';
 
-  public function getLabel(): ?string
-  {
-    return $this->name;
-  }
+    public function getLabel(): ?string
+    {
+        return $this->name;
+    }
 }
