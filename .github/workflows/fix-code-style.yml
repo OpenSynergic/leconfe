@@ -11,18 +11,18 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ github.head_ref }}
-      - name: Set up PNPM
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
+      # - name: Set up PNPM
+      #   uses: pnpm/action-setup@v2
+      #   with:
+      #     version: 8
       - name: Install dependencies
         run: |
           composer install --no-interaction
           pnpm install
       - name: Run Pint
         run: composer pint
-      - name: Run Prettier
-        run: pnpm run prettier
+      # - name: Run Prettier
+      #   run: pnpm run prettier
       - name: Pull changes
         run: git pull
       - name: Commit changes
