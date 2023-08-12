@@ -42,7 +42,7 @@ class SpeakerSchema
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('position'),
-                TextColumn::make('affiliation'),
+                TextColumn::make('affiliation',)
             ])
             ->reorderable('order_column')
             // ->headerActions([

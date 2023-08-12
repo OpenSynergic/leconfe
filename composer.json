@@ -15,6 +15,7 @@
         "filament/filament": "^3.0",
         "filament/spatie-laravel-media-library-plugin": "^3.0",
         "filament/spatie-laravel-tags-plugin": "^3.0",
+        "gehrisandro/tailwind-merge-laravel": "^0.2.1",
         "genealabs/laravel-model-caching": "^0.13.4",
         "guzzlehttp/guzzle": "^7.2",
         "kra8/laravel-snowflake": "^2.2",
@@ -23,7 +24,7 @@
         "laravel/tinker": "^2.8",
         "lorisleiva/laravel-actions": "^2.5",
         "plank/laravel-metable": "^5.4",
-        "rahmanramsi/livewire-page-group": "^0.0.1",
+        "rahmanramsi/livewire-page-group": "dev-main",
         "spatie/eloquent-sortable": "^4.0",
         "spatie/laravel-medialibrary": "^10.7",
         "spatie/laravel-permission": "^5.10",
@@ -83,5 +84,11 @@
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "path",
+            "url": "packages/*"
+        }
+    ]
 }

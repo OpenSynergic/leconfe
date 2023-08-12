@@ -29,22 +29,11 @@ class FilamentServiceProvider extends ServiceProvider
     {
 
         Filament::serving(function () {
-
-            $this->setupAssets();
             $this->setupFileUploads();
             $this->setupFormat();
         });
     }
 
-    protected function setupAssets()
-    {
-        Filament::registerRenderHook(
-            'panels::scripts.before',
-            fn () => Blade::render(<<<Blade
-                    @vite(['resources/js/app.js'])
-                Blade)
-        );
-    }
 
     protected function setupFileUploads()
     {

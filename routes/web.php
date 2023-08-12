@@ -15,9 +15,9 @@ use Illuminate\Support\Facades\Storage;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Route::get('local/temp/{path}', function (string $path, Request $request) {
     abort_if(!$request->hasValidSignature(), 401);

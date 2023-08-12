@@ -14,7 +14,7 @@ class Topic extends Model
     protected $fillable = [
         'name',
         'slug',
-        'conference_id'
+        'conference_id',
     ];
 
     /**

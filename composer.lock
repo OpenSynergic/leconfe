@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "55747252bda65e7b824c0ee9e6ea6cb7",
+    "content-hash": "c04eff2652540edaa3649ec2710c956a",
     "packages": [
         {
             "name": "akaunting/laravel-setting",
@@ -1922,6 +1922,150 @@
                 }
             ],
             "time": "2022-02-20T15:07:15+00:00"
+        },
+        {
+            "name": "gehrisandro/tailwind-merge-laravel",
+            "version": "v0.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gehrisandro/tailwind-merge-laravel.git",
+                "reference": "2d6d974ba381cd14e5ef80c8a59c6502afb007b3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gehrisandro/tailwind-merge-laravel/zipball/2d6d974ba381cd14e5ef80c8a59c6502afb007b3",
+                "reference": "2d6d974ba381cd14e5ef80c8a59c6502afb007b3",
+                "shasum": ""
+            },
+            "require": {
+                "gehrisandro/tailwind-merge-php": "^v0.0.1",
+                "guzzlehttp/guzzle": "^7.5.1",
+                "laravel/framework": "^10.9.0",
+                "php": "^8.1.0"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.10.2",
+                "orchestra/testbench": "^v8.0.8",
+                "pestphp/pest": "^v2.12.2",
+                "pestphp/pest-plugin-arch": "^2.1.2",
+                "pestphp/pest-plugin-mock": "^2.0.0",
+                "pestphp/pest-plugin-type-coverage": "^2.0.0",
+                "phpstan/phpstan": "^1.10.19",
+                "rector/rector": "^0.14.8",
+                "symfony/var-dumper": "^6.3"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "TailwindMerge\\Laravel\\TailwindMergeServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "TailwindMerge\\Laravel\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sandro Gehri",
+                    "email": "sandrogehri@gmail.com"
+                }
+            ],
+            "description": "TailwindMerge for Laravel merges multiple Tailwind CSS classes by automatically resolving conflicts between them",
+            "keywords": [
+                "classes",
+                "laravel",
+                "merge",
+                "php",
+                "tailwindcss"
+            ],
+            "support": {
+                "issues": "https://github.com/gehrisandro/tailwind-merge-laravel/issues",
+                "source": "https://github.com/gehrisandro/tailwind-merge-laravel/tree/v0.2.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/gehrisandro",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-08-10T20:24:15+00:00"
+        },
+        {
+            "name": "gehrisandro/tailwind-merge-php",
+            "version": "v0.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gehrisandro/tailwind-merge-php.git",
+                "reference": "346ee055a77ec8c9cfa3e3263c4c83c1e66794f7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gehrisandro/tailwind-merge-php/zipball/346ee055a77ec8c9cfa3e3263c4c83c1e66794f7",
+                "reference": "346ee055a77ec8c9cfa3e3263c4c83c1e66794f7",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^9.46.0|^10.9.0",
+                "php": "^8.1.0"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.10.0",
+                "nunomaduro/collision": "^7.5.2",
+                "pestphp/pest": "dev-develop as 2.6.2",
+                "pestphp/pest-plugin-arch": "^2.1.2",
+                "pestphp/pest-plugin-mock": "^2.0.0",
+                "pestphp/pest-plugin-type-coverage": "^2.0.0",
+                "phpstan/phpstan": "^1.10.15",
+                "rector/rector": "^0.14.8",
+                "symfony/var-dumper": "^6.2.10"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/TailwindMerge.php"
+                ],
+                "psr-4": {
+                    "TailwindMerge\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sandro Gehri",
+                    "email": "sandrogehri@gmail.com"
+                }
+            ],
+            "description": "TailwindMerge for PHP merges multiple Tailwind CSS classes by automatically resolving conflicts between them",
+            "keywords": [
+                "classes",
+                "merge",
+                "php",
+                "tailwindcss"
+            ],
+            "support": {
+                "issues": "https://github.com/gehrisandro/tailwind-merge-php/issues",
+                "source": "https://github.com/gehrisandro/tailwind-merge-php/tree/v0.0.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/gehrisandro",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-06-16T08:00:45+00:00"
         },
         {
             "name": "genealabs/laravel-model-caching",
@@ -5288,17 +5432,11 @@
         },
         {
             "name": "rahmanramsi/livewire-page-group",
-            "version": "v0.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/rahmanramsi/livewire-page-group.git",
-                "reference": "4783a708ce28d484c5664739f4ce4bb16cc609db"
-            },
+            "version": "dev-main",
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/rahmanramsi/livewire-page-group/zipball/4783a708ce28d484c5664739f4ce4bb16cc609db",
-                "reference": "4783a708ce28d484c5664739f4ce4bb16cc609db",
-                "shasum": ""
+                "type": "path",
+                "url": "packages/livewire-page-group",
+                "reference": "68231665aa2df9d692bab48ac9a97c3b34d34184"
             },
             "require": {
                 "illuminate/contracts": "^10.0",
@@ -5330,7 +5468,28 @@
                     "Rahmanramsi\\LivewirePageGroup\\Database\\Factories\\": "database/factories/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Rahmanramsi\\LivewirePageGroup\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "post-autoload-dump": [
+                    "@php ./vendor/bin/testbench package:discover --ansi"
+                ],
+                "analyse": [
+                    "vendor/bin/phpstan analyse"
+                ],
+                "test": [
+                    "vendor/bin/pest"
+                ],
+                "test-coverage": [
+                    "vendor/bin/pest --coverage"
+                ],
+                "format": [
+                    "vendor/bin/pint"
+                ]
+            },
             "license": [
                 "MIT"
             ],
@@ -5348,11 +5507,9 @@
                 "livewire-page-group",
                 "rahmanramsi"
             ],
-            "support": {
-                "issues": "https://github.com/rahmanramsi/livewire-page-group/issues",
-                "source": "https://github.com/rahmanramsi/livewire-page-group/tree/v0.0.1"
-            },
-            "time": "2023-08-07T07:21:07+00:00"
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "ralouphie/getallheaders",
@@ -12156,7 +12313,8 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "awcodes/filament-tiptap-editor": 15
+        "awcodes/filament-tiptap-editor": 15,
+        "rahmanramsi/livewire-page-group": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
