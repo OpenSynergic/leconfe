@@ -14,7 +14,6 @@ use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
 use Illuminate\Support\HtmlString;
-use Livewire\Livewire;
 
 class Website extends Page implements HasInfolists
 {
@@ -45,7 +44,7 @@ class Website extends Page implements HasInfolists
                                     ->schema([
                                         LivewireEntry::make('GeneralSettingForm', GeneralSettingForm::class, [
                                             'record' => Filament::getTenant(),
-                                        ])
+                                        ]),
                                     ])
                                     ->aside(),
                                 //         ]),

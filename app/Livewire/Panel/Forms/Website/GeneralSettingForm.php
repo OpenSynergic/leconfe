@@ -4,16 +4,14 @@ namespace App\Livewire\Panel\Forms\Website;
 
 use App\Actions\Conferences\ConferenceUpdateAction;
 use App\Models\Conference;
-use Filament\Forms;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
-use Livewire\Component;
 use Illuminate\Contracts\View\View;
+use Livewire\Component;
 
 class GeneralSettingForm extends Component implements HasForms
 {
@@ -39,7 +37,7 @@ class GeneralSettingForm extends Component implements HasForms
                     ->collection('logo')
                     ->image()
                     ->conversion('thumb'),
-                RichEditor::make('meta.page_footer')
+                RichEditor::make('meta.page_footer'),
 
             ])
             ->statePath('data')
