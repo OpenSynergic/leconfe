@@ -2,25 +2,25 @@
 
 namespace App\Providers\Filament;
 
-use App\Http\Middleware\ApplyTenantScopes;
-use App\Models\Conference;
-use Filament\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Navigation\NavigationGroup;
 use Filament\Pages;
 use Filament\Panel;
-use Filament\PanelProvider as FilamentPanelProvider;
-use Filament\Support\Colors\Color;
 use Filament\Widgets;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use App\Models\Conference;
+use Filament\Support\Colors\Color;
+use Illuminate\Support\Facades\Blade;
+use Filament\Navigation\NavigationGroup;
+use App\Http\Middleware\ApplyTenantScopes;
+use Filament\Http\Middleware\Authenticate;
+use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Filament\PanelProvider as FilamentPanelProvider;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
-use Illuminate\Session\Middleware\StartSession;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 
 class PanelProvider extends FilamentPanelProvider
 {
@@ -92,10 +92,7 @@ class PanelProvider extends FilamentPanelProvider
 
     protected function getWidgets(): array
     {
-        return [
-            Widgets\AccountWidget::class,
-            Widgets\FilamentInfoWidget::class,
-        ];
+        return [];
     }
 
     protected function getMiddleware(): array
