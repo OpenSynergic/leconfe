@@ -2,9 +2,6 @@
 
 namespace App\Panel\Pages\Settings;
 
-use App\Infolists\Components\LivewireEntry;
-use App\Livewire\TopicTable;
-use App\Models\Topic;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Components\Tabs;
