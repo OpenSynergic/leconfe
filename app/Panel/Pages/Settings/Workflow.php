@@ -9,10 +9,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Notifications\Actions\Action;
-use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Filament\Support\Enums\Alignment;
 
 class Workflow extends Page implements HasInfolists
 {
@@ -46,7 +43,7 @@ class Workflow extends Page implements HasInfolists
                                     ->label('')
                                     ->content('Prevent user from submitting new paper to conferences.'),
                                 Toggle::make('disable_submission')
-                                    ->label('Disable Submission')
+                                    ->label('Disable Submission'),
                             ]),
                         Tabs\Tab::make('Review')
                             ->schema([

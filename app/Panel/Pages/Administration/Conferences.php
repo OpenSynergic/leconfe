@@ -6,7 +6,6 @@ use App\Infolists\Components\LivewireEntry;
 use App\Livewire\Panel\Tables\ConferenceTable;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
@@ -28,7 +27,7 @@ class Conferences extends Page implements HasForms, HasInfolists
         return $infolist
             ->schema([
                 LivewireEntry::make('conference-table', ConferenceTable::class)
-                    ->lazy()
+                    ->lazy(),
             ]);
     }
 }

@@ -9,7 +9,6 @@ use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\SpatieTagsInput;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Livewire\Component;
@@ -27,7 +26,7 @@ class ForTheEditorsStep extends Component implements HasForms, HasWizardStep
     {
         $this->form->fill([
             'meta' => $record->getAllMeta(),
-            'submission_progress' => 'review'
+            'submission_progress' => 'review',
         ]);
     }
 
@@ -64,8 +63,8 @@ class ForTheEditorsStep extends Component implements HasForms, HasWizardStep
                             ->label('Comments for the Editor')
                             ->profile('basic')
                             ->helperText('Please include any additional information that you believe would be valuable for our editorial staff to consider while evaluating your submission. This could include relevant background information, prior research, or any other context that may be helpful in assessing the quality and significance of your work.'),
-                    ])
-            ])
+                    ]),
+            ]),
         ];
     }
 

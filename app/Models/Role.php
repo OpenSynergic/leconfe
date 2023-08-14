@@ -8,10 +8,13 @@ use Spatie\Permission\Models\Role as Model;
 
 class Role extends Model
 {
-  use HasShortflakePrimary, Cachable;
+    use HasShortflakePrimary, Cachable;
 
-  public const ADMIN = 'Admin';
-  public const AUTHOR = 'Author';
-  public const EDITOR = 'Editor';
-  public const REVIEWER = 'Reviewer';
+    public const ADMIN = 'Admin';
+
+    public const AUTHOR = 'Author';
+
+    public const EDITOR = 'Editor';
+
+    public const REVIEWER = 'Reviewer';
 }

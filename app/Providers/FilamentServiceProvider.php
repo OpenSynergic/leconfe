@@ -2,15 +2,11 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TimePicker;
-use Filament\Support\Assets\Js;
-use Filament\Support\Facades\FilamentAsset;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Vite;
+use Illuminate\Support\ServiceProvider;
 
 class FilamentServiceProvider extends ServiceProvider
 {
@@ -29,21 +25,9 @@ class FilamentServiceProvider extends ServiceProvider
     {
 
         Filament::serving(function () {
-
-            $this->setupAssets();
             $this->setupFileUploads();
             $this->setupFormat();
         });
-    }
-
-    protected function setupAssets()
-    {
-        Filament::registerRenderHook(
-            'panels::scripts.before',
-            fn () => Blade::render(<<<Blade
-                    @vite(['resources/js/app.js'])
-                Blade)
-        );
     }
 
     protected function setupFileUploads()
@@ -52,9 +36,8 @@ class FilamentServiceProvider extends ServiceProvider
         // Saat ini SpatieMediaLibraryFileUpload hanya support file validation dengan mime type.
         // Solusi mungkin buat custom component upload dengan menggunakan library seperti dropzone, atau yang lainnya.
         SpatieMediaLibraryFileUpload::configureUsing(function (SpatieMediaLibraryFileUpload $fileUpload): void {
-            $fileUpload->maxSize(config('media-library.max_file_size') / 1024)
-                // ->acceptedFileTypes(config('media-library.accepted_file_types'))
-            ;
+            $fileUpload->maxSize(config('media-library.max_file_size') / 1024);
+            // ->acceptedFileTypes(config('media-library.accepted_file_types'))
         });
     }
 

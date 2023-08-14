@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Models\Submission;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
@@ -39,36 +38,37 @@ class AppServiceProvider extends ServiceProvider
 
         // Since this is a performance concern only, don’t halt
         // production for violations.
-        Model::preventLazyLoading(!$this->app->isProduction());
+        Model::preventLazyLoading(! $this->app->isProduction());
     }
 
     protected function setupMorph()
     {
         Relation::enforceMorphMap([
-            // 
+            //
         ]);
     }
 
     protected function setupLog()
     {
-        if ($this->app->isProduction()) return;
+        if ($this->app->isProduction()) {
+            return;
+        }
 
         // Log a warning if we spend more than 1000ms on a single query.
         DB::listen(function ($query) {
             if ($query->time > 1000) {
-                Log::warning("An individual database query exceeded 1 second.", [
-                    'sql' => $query->sql
+                Log::warning('An individual database query exceeded 1 second.', [
+                    'sql' => $query->sql,
                 ]);
             }
         });
-
 
         if ($this->app->runningInConsole()) {
             // Log slow commands.
             $this->app[ConsoleKernel::class]->whenCommandLifecycleIsLongerThan(
                 5000,
                 function ($startedAt, $input, $status) {
-                    Log::warning("A command took longer than 5 seconds.");
+                    Log::warning('A command took longer than 5 seconds.');
                 }
             );
         } else {
@@ -76,7 +76,7 @@ class AppServiceProvider extends ServiceProvider
             $this->app[HttpKernel::class]->whenRequestLifecycleIsLongerThan(
                 5000,
                 function ($startedAt, $request, $response) {
-                    Log::warning("A request took longer than 5 seconds.");
+                    Log::warning('A request took longer than 5 seconds.');
                 }
             );
         }

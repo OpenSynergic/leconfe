@@ -16,21 +16,20 @@ use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
-use Squire\Models\Country;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Squire\Models\Country;
 
 class ConferenceSchema
 {
     public static function table(Table $table): Table
     {
-        $currentConference  = Conference::current();
-        $query              = Conference::query();
-
+        $currentConference = Conference::current();
+        $query = Conference::query();
 
         return $table
             ->query($query)
@@ -68,11 +67,12 @@ class ConferenceSchema
                         ->color('success')
                         ->icon('heroicon-o-check')
                         ->requiresConfirmation()
-                        ->hidden(fn ($record) =>  $record->getKey() == $currentConference?->getKey())
-                        ->successNotificationTitle(fn () => "Current conference is changed")
+                        ->hidden(fn ($record) => $record->getKey() == $currentConference?->getKey())
+                        ->successNotificationTitle(fn () => 'Current conference is changed')
                         ->visible(function (Conference $record) use ($currentConference): bool {
-                            if ($record->getKey() == $currentConference?->getKey()) return false;
-
+                            if ($record->getKey() == $currentConference?->getKey()) {
+                                return false;
+                            }
 
                             return $record->status == ConferenceStatus::Active;
                         })
@@ -81,6 +81,7 @@ class ConferenceSchema
                                 ConferenceSetCurrentAction::run($record);
                             } catch (\Throwable $th) {
                                 $action->failure();
+
                                 return;
                             }
 
@@ -90,7 +91,9 @@ class ConferenceSchema
                     Tables\Actions\Action::make('archive_conference')
                         ->requiresConfirmation()
                         ->visible(function (Conference $record) use ($currentConference): bool {
-                            if ($record->getKey() == $currentConference?->getKey()) return false;
+                            if ($record->getKey() == $currentConference?->getKey()) {
+                                return false;
+                            }
 
                             return $record->status == ConferenceStatus::Active;
                         })
@@ -101,6 +104,7 @@ class ConferenceSchema
                                 ConferenceChangeStatusAction::run($record, ConferenceStatus::Archived);
                             } catch (\Throwable $th) {
                                 $action->failure();
+
                                 return;
                             }
 
@@ -108,7 +112,7 @@ class ConferenceSchema
                         }),
                     Tables\Actions\EditAction::make()
                         ->modalWidth('2xl')
-                        ->visible(function (Conference $record) use ($currentConference): bool {
+                        ->visible(function (Conference $record): bool {
                             return $record->status == ConferenceStatus::Active;
                         })
                         ->mutateRecordDataUsing(function (Conference $record, array $data) {
@@ -121,8 +125,9 @@ class ConferenceSchema
                         ->using(fn (Conference $record, array $data) => ConferenceUpdateAction::run($data, $record)),
                     Tables\Actions\DeleteAction::make()
                         ->visible(function (Conference $record) use ($currentConference): bool {
-                            if ($record->getKey() == $currentConference?->getKey()) return false;
-
+                            if ($record->getKey() == $currentConference?->getKey()) {
+                                return false;
+                            }
 
                             return $record->status == ConferenceStatus::Active;
                         }),
@@ -164,7 +169,7 @@ class ConferenceSchema
                         ->optionsLimit(250),
                 ]),
             Checkbox::make('current')
-                ->label('Set this conference as the currently active one')
+                ->label('Set this conference as the currently active one'),
         ];
     }
 }

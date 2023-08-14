@@ -2,15 +2,20 @@
     "private": true,
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "prettier": "npx prettier --write ."
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.4",
         "@tailwindcss/typography": "^0.5.9",
         "autoprefixer": "^10.4.14",
+        "daisyui": "^3.5.1",
         "laravel-vite-plugin": "^0.7.8",
         "postcss": "^8.4.27",
         "postcss-nesting": "^12.0.0",
+        "prettier": "^2.7.1",
+        "prettier-plugin-blade": "^1.5.3",
+        "prettier-plugin-tailwindcss": "^0.3.0",
         "tailwindcss": "^3.3.3",
         "tailwindcss-animate": "^1.0.6",
         "tippy.js": "^6.3.7",

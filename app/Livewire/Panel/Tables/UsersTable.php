@@ -6,10 +6,10 @@ use App\Livewire\Panel\Traits\PlaceholderTrait;
 use App\Schemas\UserSchema;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Livewire\Component;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Livewire\Component;
 
 class UsersTable extends Component implements HasTable, HasForms
 {
