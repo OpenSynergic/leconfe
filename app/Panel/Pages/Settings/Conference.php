@@ -35,20 +35,13 @@ class Conference extends Page implements HasInfolists, HasForms
     {
         return $infolist
             ->schema([
-                Tabs::make('conference_settings')
-                    ->tabs([
-                        Tabs\Tab::make('General')
-                            ->icon('heroicon-m-window')
-                            ->schema([]),
-                        Tabs\Tab::make('Topics')
-                            ->icon('heroicon-m-chat-bubble-left')
-                            ->badge(fn () => Topic::count())
-                            ->schema([
-                                LivewireEntry::make('topics', TopicTable::class)
-                                    ->lazy(),
-                            ]),
-                    ])
-                    ->contained(false),
+                // Tabs::make('conference_settings')
+                //     ->tabs([
+                //         Tabs\Tab::make('General')
+                //             ->icon('heroicon-m-window')
+                //             ->schema([]),
+                //     ])
+                //     ->contained(false),
             ]);
     }
 }
