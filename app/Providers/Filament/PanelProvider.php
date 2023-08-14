@@ -51,6 +51,8 @@ class PanelProvider extends FilamentPanelProvider
             ->profile()
             ->colors([
                 'primary' => Color::Cyan,
+
+
             ])
             ->discoverResources(in: app_path('Panel/Resources'), for: 'App\\Panel\\Resources')
             ->discoverPages(in: app_path('Panel/Pages'), for: 'App\\Panel\\Pages')
@@ -58,10 +60,7 @@ class PanelProvider extends FilamentPanelProvider
                 Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('UI/Panel/Widgets'), for: 'App\\UI\\Panel\\Widgets')
-            ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
-            ])
+            ->widgets([])
             ->databaseNotifications()
             ->databaseNotificationsPolling('120s')
             ->middleware([
