@@ -4,13 +4,11 @@ namespace App\Livewire\Panel\Forms\Website;
 
 use App\Actions\Conferences\ConferenceUpdateAction;
 use App\Models\Conference;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
-use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
