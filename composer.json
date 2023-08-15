@@ -26,6 +26,7 @@
         "mohamedsabil83/filament-forms-tinyeditor": "^2.0",
         "plank/laravel-metable": "^5.4",
         "rahmanramsi/livewire-page-group": "^0.0.3",
+        "ryangjchandler/filament-navigation": "^1.0@beta",
         "spatie/eloquent-sortable": "^4.0",
         "spatie/laravel-medialibrary": "^10.7",
         "spatie/laravel-permission": "^5.10",
@@ -59,7 +60,8 @@
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi",
-            "@php artisan filament:upgrade"
+            "@php artisan filament:upgrade",
+            "@php artisan icons:cache"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"

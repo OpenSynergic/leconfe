@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Navigation;
 use App\Models\Scopes\TenantScope;
 use App\Models\Speaker;
 use App\Models\Submission;
@@ -21,16 +22,16 @@ class ApplyTenantScopes
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $conference = Filament::getTenant();
-
         // All model scopes for conference are applied here.
-        Submission::addGlobalScope(new TenantScope);
-
-        Topic::addGlobalScope(new TenantScope);
-
-        Venue::addGlobalScope(new TenantScope);
-
-        Speaker::addGlobalScope(new TenantScope);
+        foreach ([
+            Submission::class,
+            Topic::class,
+            Venue::class,
+            Speaker::class,
+            Navigation::class,
+        ] as $model) {
+            $model::addGlobalScope(new TenantScope);
+        }
 
         return $next($request);
     }

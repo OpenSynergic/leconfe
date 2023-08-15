@@ -1,6 +1,6 @@
 {
   "resources/panel/css/panel.css": {
-    "file": "assets/panel-7953d22e.css",
+    "file": "assets/panel-bd99cb2b.css",
     "isEntry": true,
     "src": "resources/panel/css/panel.css"
   },
@@ -10,12 +10,12 @@
     "src": "resources/panel/js/panel.js"
   },
   "resources/website/css/website.css": {
-    "file": "assets/website-8620f7cc.css",
+    "file": "assets/website-3f890ae6.css",
     "isEntry": true,
     "src": "resources/website/css/website.css"
   },
   "resources/website/js/website.js": {
-    "file": "assets/website-d75efa0a.js",
+    "file": "assets/website-05c27011.js",
     "isEntry": true,
     "src": "resources/website/js/website.js"
   }

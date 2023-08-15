@@ -4,6 +4,8 @@ namespace App\Providers\Filament;
 
 use App\Http\Middleware\ApplyTenantScopes;
 use App\Models\Conference;
+use App\Models\Navigation;
+use App\Panel\Resources\NavigationResource;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TimePicker;
@@ -16,6 +18,7 @@ use Filament\Panel;
 use Filament\PanelProvider as FilamentPanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets;
+use Guava\FilamentIconPicker\Forms\IconPicker;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -24,6 +27,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use RyanChandler\FilamentNavigation\FilamentNavigation;
 
 class PanelProvider extends FilamentPanelProvider
 {
@@ -61,7 +65,12 @@ class PanelProvider extends FilamentPanelProvider
             ->databaseNotifications()
             ->databaseNotificationsPolling('120s')
             ->middleware($this->getMiddleware(), true)
-            ->authMiddleware($this->getAuthMiddleware(), true);
+            ->authMiddleware($this->getAuthMiddleware(), true)
+            ->plugin(
+                FilamentNavigation::make()
+                    ->usingModel(Navigation::class)
+                    ->usingResource(NavigationResource::class)
+            );
     }
 
     protected function getTenantMiddleware(): array

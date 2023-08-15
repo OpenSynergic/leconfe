@@ -36,6 +36,9 @@ document.addEventListener("alpine:init", () => {
                             this.$refs.navigationDropdown.style.marginLeft =
                                 navElement.offsetWidth / 2 + "px";
                         },
+                        isNavigationMenuOpen(key){
+                            return this.navigationMenuOpen == true && this.navigationMenu == key;
+                        },
                         navigationMenuClearCloseTimeout() {
                             clearTimeout(this.navigationMenuCloseTimeout);
                         },

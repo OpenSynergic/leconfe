@@ -20,37 +20,14 @@
 
 <body class="page page-{{ strtolower($livewire->getTitle()) }} antialiased" x-data>
     <div class="flex flex-col h-full gap-2 min-h-screen">
+        
+        {{-- Load Header Layout --}}
         @include('website.layouts.header')
-        <div class="mx-auto max-w-7xl flex flex-col lg:grid grid-cols-12 gap-2 grow w-full">
-            <div class="page-leftbar">
-                <div class="card card-compact bg-white border">
-                    <div class="card-body">
-                        <h2 class="card-title">Shoes!</h2>
-                        <p>If a dog chews shoes whose shoes does he choose?</p>
-                        <div class="card-actions justify-end">
-                            <button class="btn btn-primary btn-sm">Buy Now</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="page-content">
-                    {{ $slot }}
-            </div>
-            <div class="page-rightbar">
-                <div class="card card-compact bg-white border">
-                    <div class="card-body">
-                        <h2 class="card-title">Shoes!</h2>
-                        <p>If a dog chews shoes whose shoes does he choose?</p>
-                        <div class="card-actions justify-end">
-                            <button class="btn btn-primary btn-sm">Buy Now</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="page-footer mx-auto max-w-7xl p-2 mt-auto w-full prose prose-sm">
-            {!! $currentConference?->getMeta('page_footer') !!}
-        </div>
+
+        @include('website.layouts.main')
+
+        {{-- Load Footer Layout --}}
+        @include('website.layouts.footer')
     </div>
 
 </body>

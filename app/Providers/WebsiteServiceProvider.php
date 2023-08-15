@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Middleware\Website\ApplyCurrentConference;
 use App\Website\Pages\Home;
 use Illuminate\Support\Facades\Blade;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
@@ -16,6 +17,9 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
             ->path('')
             ->layout('website.layouts.app')
             ->homePage(Home::class)
+            ->middleware([
+                ApplyCurrentConference::class
+            ], true)
             ->discoverPages(in: app_path('Website/Pages'), for: 'App\\Website\\Pages');
     }
 

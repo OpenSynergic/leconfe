@@ -6,6 +6,7 @@ use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ConferenceType;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasName;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -17,9 +18,13 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Conference extends Model implements HasMedia, HasName, HasAvatar
 {
-    use HasFactory, Metable, InteractsWithMedia, HasShortflakePrimary;
+    use HasFactory, Cachable, Metable, InteractsWithMedia, HasShortflakePrimary;
 
     protected static Conference $current;
+
+    // protected $with = [
+    //     'meta',
+    // ];
 
     /**
      * The attributes that are mass assignable.
@@ -45,7 +50,7 @@ class Conference extends Model implements HasMedia, HasName, HasAvatar
 
     public static function current(): ?Conference
     {
-        if (! isset(static::$current)) {
+        if (!isset(static::$current)) {
             static::$current = static::where('is_current', true)->first();
         }
 
@@ -76,6 +81,16 @@ class Conference extends Model implements HasMedia, HasName, HasAvatar
     public function venues(): HasMany
     {
         return $this->hasMany(Venue::class);
+    }
+
+    public function navigations(): HasMany
+    {
+        return $this->hasMany(Navigation::class);
+    }
+
+    public function getNavigationItems(string $handle): array
+    {
+        return $this->navigations()->firstWhere('handle', $handle)?->items ?? [];
     }
 
     public function getFilamentName(): string
