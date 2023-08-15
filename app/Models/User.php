@@ -53,6 +53,7 @@ class User extends Authenticatable implements HasName, HasTenants, HasDefaultTen
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
 
     protected function name(): Attribute

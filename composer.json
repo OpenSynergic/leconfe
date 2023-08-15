@@ -29,7 +29,8 @@
         "spatie/laravel-medialibrary": "^10.7",
         "spatie/laravel-permission": "^5.10",
         "spatie/laravel-tags": "^4.3",
-        "squirephp/countries-en": "^3.4"
+        "squirephp/countries-en": "^3.4",
+        "stechstudio/filament-impersonate": "^3.4"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.8",
