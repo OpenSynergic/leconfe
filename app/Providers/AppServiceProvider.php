@@ -99,6 +99,8 @@ class AppServiceProvider extends ServiceProvider
 
     protected function setupView()
     {
-        View::share('currentConference', Conference::current());
+        if (!$this->app->runningInConsole()) {
+            View::share('currentConference', Conference::current());
+        }
     }
 }
