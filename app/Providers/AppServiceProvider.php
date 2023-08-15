@@ -41,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Since this is a performance concern only, don’t halt
         // production for violations.
-        Model::preventLazyLoading(!$this->app->isProduction());
+        Model::preventLazyLoading(! $this->app->isProduction());
     }
 
     protected function setupMorph()
@@ -99,7 +99,7 @@ class AppServiceProvider extends ServiceProvider
 
     protected function setupView()
     {
-        if (!$this->app->runningInConsole()) {
+        if (! $this->app->runningInConsole()) {
             View::share('currentConference', Conference::current());
         }
     }
