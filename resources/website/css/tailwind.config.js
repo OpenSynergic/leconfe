@@ -10,9 +10,21 @@ export default {
             fontFamily: {
                 sans: ['var(--font-family)', ...defaultTheme.fontFamily.sans],
             },
+            typography: (theme) => ({
+                'sm': {
+                  css: {
+                    p: {
+                        'margin-top': '0.5rem',
+                      },
+                  },
+                },
+              }),
         },
     },
-    plugins: [require('daisyui')],
+    plugins: [
+        require('@tailwindcss/typography'),
+        require('daisyui'),
+    ],
     daisyui: {
         themes: [
             {
@@ -21,10 +33,10 @@ export default {
                         '[data-theme=winter]'
                     ],
                     // primary: colors.sky[600],
-                    'base-100': colors.slate[100],
-                    'base-200': colors.slate[200],
+                    'base-100': '#F1F6FA',
                     '--rounded-box': '0.5rem',
                     '--btn-text-case': 'none',
+                    // '--padding-card': '1rem',
                 },
             },
         ], // true: all themes | false: only light + dark | array: specific themes like this ["light", "dark", "cupcake"]

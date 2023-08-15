@@ -4,6 +4,9 @@ namespace App\Providers\Filament;
 
 use App\Http\Middleware\ApplyTenantScopes;
 use App\Models\Conference;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\TimePicker;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -32,6 +35,8 @@ class PanelProvider extends FilamentPanelProvider
             ->id('panel')
             ->path('panel')
             ->maxContentWidth('full')
+            ->homeUrl(fn () => route('livewirePageGroup.website.pages.home'))
+            ->bootUsing(fn () => $this->setupFilamentComponent())
             ->renderHook(
                 'panels::scripts.before',
                 fn () => Blade::render(<<<'Blade'
@@ -118,5 +123,23 @@ class PanelProvider extends FilamentPanelProvider
         return [
             Authenticate::class,
         ];
+    }
+
+    protected function setupFilamentComponent()
+    {
+        // TODO Validasi file type menggunakan dengan menggunakan format extension, bukan dengan mime type, hal ini agar mempermudah pengguna dalam melakukan setting file apa saja yang diperbolehkan
+        // Saat ini SpatieMediaLibraryFileUpload hanya support file validation dengan mime type.
+        // Solusi mungkin buat custom component upload dengan menggunakan library seperti dropzone, atau yang lainnya.
+        SpatieMediaLibraryFileUpload::configureUsing(function (SpatieMediaLibraryFileUpload $fileUpload): void {
+            $fileUpload->maxSize(config('media-library.max_file_size') / 1024);
+            // ->acceptedFileTypes(config('media-library.accepted_file_types'))
+        });
+        DatePicker::configureUsing(function (DatePicker $datePicker): void {
+            $datePicker->displayFormat(setting('format.date'));
+        });
+
+        TimePicker::configureUsing(function (TimePicker $timePicker): void {
+            $timePicker->displayFormat(setting('format.time'));
+        });
     }
 }

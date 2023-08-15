@@ -5,7 +5,7 @@
         </div>
         <x-website::navigation />
         <div class="navbar-end gap-x-4 hidden lg:inline-flex">
-            @if (auth()->user())
+            @if (\Filament\Facades\Filament::getDefaultPanel()->auth()->user())
                 <a href="{{ route('filament.panel.tenant') }}" class="btn btn-sm btn-primary rounded-full px-4">Dashboard</a>
             @else
                 <a href="{{ route('filament.panel.tenant') }}" class="btn btn-sm btn-ghost rounded-full px-4">Register</a>

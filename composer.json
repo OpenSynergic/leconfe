@@ -10,7 +10,7 @@
     "require": {
         "php": "^8.1",
         "akaunting/laravel-setting": "^1.2",
-        "awcodes/filament-tiptap-editor": "^3.0@alpha",
+        "awcodes/filament-tiptap-editor": "^3.0@beta",
         "binarytorch/larecipe": "^2.6",
         "filament/filament": "^3.0",
         "filament/spatie-laravel-media-library-plugin": "^3.0",
@@ -23,6 +23,7 @@
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
         "lorisleiva/laravel-actions": "^2.5",
+        "mohamedsabil83/filament-forms-tinyeditor": "^2.0",
         "plank/laravel-metable": "^5.4",
         "rahmanramsi/livewire-page-group": "^0.0.3",
         "spatie/eloquent-sortable": "^4.0",

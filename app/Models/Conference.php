@@ -43,9 +43,9 @@ class Conference extends Model implements HasMedia, HasName, HasAvatar
         'type' => ConferenceType::class,
     ];
 
-    public static function current()
+    public static function current(): ?Conference
     {
-        if (! isset(static::$current)) {
+        if (!isset(static::$current)) {
             static::$current = static::where('is_current', true)->first();
         }
 

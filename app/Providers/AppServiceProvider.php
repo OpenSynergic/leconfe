@@ -2,12 +2,14 @@
 
 namespace App\Providers;
 
+use App\Models\Conference;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -27,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->setupModel();
         $this->setupStorage();
+        $this->setupView();
     }
 
     protected function setupModel()
@@ -38,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Since this is a performance concern only, don’t halt
         // production for violations.
-        Model::preventLazyLoading(! $this->app->isProduction());
+        Model::preventLazyLoading(!$this->app->isProduction());
     }
 
     protected function setupMorph()
@@ -92,5 +95,10 @@ class AppServiceProvider extends ServiceProvider
                 array_merge($options, ['path' => $path])
             );
         });
+    }
+
+    protected function setupView()
+    {
+        View::share('currentConference', Conference::current());
     }
 }

@@ -10,8 +10,10 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
+use FilamentTiptapEditor\TiptapEditor;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
+use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class GeneralSettingForm extends Component implements HasForms
 {
@@ -37,7 +39,7 @@ class GeneralSettingForm extends Component implements HasForms
                     ->collection('logo')
                     ->image()
                     ->conversion('thumb'),
-                RichEditor::make('meta.page_footer'),
+                TinyEditor::make('meta.page_footer'),
 
             ])
             ->statePath('data')
