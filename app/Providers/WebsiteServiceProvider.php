@@ -18,7 +18,7 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
             ->layout('website.layouts.app')
             ->homePage(Home::class)
             ->middleware([
-                ApplyCurrentConference::class
+                ApplyCurrentConference::class,
             ], true)
             ->discoverPages(in: app_path('Website/Pages'), for: 'App\\Website\\Pages');
     }

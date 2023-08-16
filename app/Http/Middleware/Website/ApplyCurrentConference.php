@@ -22,7 +22,6 @@ class ApplyCurrentConference
         // $currentConference = Conference::current();
         // dd($currentConference->navigations()->firstWhere('handle', 'user-navigation-menu')->items);
 
-
         return $next($request);
     }
 }

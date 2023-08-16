@@ -9,7 +9,6 @@ use App\Models\Submission;
 use App\Models\Topic;
 use App\Models\Venue;
 use Closure;
-use Filament\Facades\Filament;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 

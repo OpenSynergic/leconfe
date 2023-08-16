@@ -3,7 +3,6 @@
 namespace App\Panel\Resources;
 
 use Filament\Facades\Filament;
-use RyanChandler\FilamentNavigation\Filament\Resources\NavigationResource as Resource;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
@@ -19,6 +18,7 @@ use Filament\Tables\Table;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
+use RyanChandler\FilamentNavigation\Filament\Resources\NavigationResource as Resource;
 use RyanChandler\FilamentNavigation\Models\Navigation;
 
 class NavigationResource extends Resource
@@ -39,7 +39,7 @@ class NavigationResource extends Resource
                         ->reactive()
                         ->debounce()
                         ->afterStateUpdated(function (?string $state, Set $set) {
-                            if (!$state) {
+                            if (! $state) {
                                 return;
                             }
 
