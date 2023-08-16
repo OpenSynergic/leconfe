@@ -13,10 +13,4 @@ Utilizing the power of [Filament](https://filamentphp.com/), this package provid
        └── Resources
 ```
 
-## Creating a Page
-
-WIP
-
-## Creating a Resource
-
-WIP
+All the documentation for Filament can be found [here](https://filamentphp.com/docs/3.x/panels/installation).

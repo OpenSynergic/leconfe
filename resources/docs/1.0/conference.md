@@ -24,10 +24,10 @@ Beside that, there's some additional folder that you need to know:
     ├── Actions
     ├── Infolists
     ├── Livewire
-    ├── Metable
     └── Models
         └── Enums
     ├── Panel
+    ├── Website
     └── Schemas
 ```
 
@@ -42,3 +42,15 @@ To create `Entry` component for infolist, you can use `php artisan make:infolist
 To create `Layout` component for infolist, you can use `php artisan make:infolist-layout` command.
 
 To learn more about infolists, check out the [Filament Infolists](https://filamentphp.com/docs/3.x/infolists/getting-started) documentation.
+
+### The `Livewire` Directory
+The `Livewire` directory contains the [Livewire](https://livewire.laravel.com/docs/quickstart) components that will be used in the application. To create a new Livewire component, you can use the `php artisan make:livewire` command.
+
+### The `Models/Enums` Directory
+The `Models/Enums` directory contains all of the PHP enums related to the models.
+
+### The `Panel` Directory
+The `Panel` directory contains all of the [Filament](https://filamentphp.com/docs/3.x/getting-started) resources that will be used in the application. This is where all admin panel resources are defined.
+
+### The `Website` Directory
+The `Website` directory contains all of the main pages of the website. This is where all website resources are defined.
