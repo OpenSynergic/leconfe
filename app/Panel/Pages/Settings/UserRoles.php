@@ -40,7 +40,6 @@ class UserRoles extends Page implements HasInfolists
                         Tabs\Tab::make('Roles')
                             ->icon('heroicon-o-shield-check')
                             ->schema([
-
                                 LivewireEntry::make('roles', RolesTable::class)
                                     ->lazy(),
                             ]),

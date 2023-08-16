@@ -17,12 +17,14 @@ use Illuminate\Support\Collection;
 use Kra8\Snowflake\HasShortflakePrimary;
 use Laravel\Sanctum\HasApiTokens;
 use Plank\Metable\Metable;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
 use Squire\Models\Country;
 
-class User extends Authenticatable implements HasName, HasTenants, HasDefaultTenant
+class User extends Authenticatable implements HasName, HasTenants, HasDefaultTenant, HasMedia
 {
-    use HasApiTokens, HasFactory, Notifiable, Metable, HasShortflakePrimary, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, Metable, HasShortflakePrimary, HasRoles, InteractsWithMedia;
 
     /**
      * The attributes that are mass assignable.
@@ -53,6 +55,7 @@ class User extends Authenticatable implements HasName, HasTenants, HasDefaultTen
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
 
     protected function name(): Attribute
@@ -114,5 +117,10 @@ class User extends Authenticatable implements HasName, HasTenants, HasDefaultTen
     public function getDefaultTenant(Panel $panel): ?Model
     {
         return Conference::current();
+    }
+
+    public function submissions()
+    {
+        return $this->hasMany(Submission::class);
     }
 }

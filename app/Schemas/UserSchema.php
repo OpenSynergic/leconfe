@@ -3,11 +3,14 @@
 namespace App\Schemas;
 
 use App\Actions\User\UserCreateAction;
+use App\Actions\User\UserDeleteAction;
 use App\Actions\User\UserUpdateAction;
+use App\Models\Role;
 use App\Models\User;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Tables\Actions\ActionGroup;
@@ -20,6 +23,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Squire\Models\Country;
+use STS\FilamentImpersonate\Tables\Actions\Impersonate;
 
 class UserSchema
 {
@@ -51,15 +55,20 @@ class UserSchema
             ])
             ->actions([
                 ActionGroup::make([
+                    Impersonate::make()
+                        ->grouped()
+                        ->label(fn (Model $record) => "Login as {$record->given_name}")
+                        ->icon('heroicon-m-key')
+                        ->redirectTo('panel'),
                     EditAction::make()
                         ->modalWidth('2xl')
                         ->form(fn () => static::formSchemas())
                         ->mutateRecordDataUsing(fn ($data, Model $record) => array_merge($data, ['meta' => $record->getAllMeta()->toArray()]))
-                        ->using(fn (array $data, Model $record) => UserUpdateAction::run($record, $data)),
-                    DeleteAction::make(),
-                ])
-                    ->button()
-                    ->label('Actions'),
+                        ->using(fn (array $data, Model $record) => UserUpdateAction::run($data, $record)),
+                    DeleteAction::make()
+                        ->hidden(fn (Model $record) => $record->given_name == Role::ADMIN)
+                        ->using(fn (?array $data, Model $record) => UserDeleteAction::run($data, $record)),
+                ]),
             ])
             ->queryStringIdentifier('users')
             ->bulkActions([
@@ -76,6 +85,13 @@ class UserSchema
     public static function formSchemas(): array
     {
         return [
+            Grid::make()->schema([
+                SpatieMediaLibraryFileUpload::make('user_profile')
+                    ->collection('users_profiles')
+                    ->avatar()
+                    ->alignCenter()
+                    ->label(''),
+            ])->columns(1),
             Grid::make()
                 ->schema([
                     TextInput::make('given_name')
