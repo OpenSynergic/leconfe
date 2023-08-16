@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6698e5e1825f10d4f2c5baf74e2377d6",
+    "content-hash": "194e011a6e9a1377e07e696ac13bf1cd",
     "packages": [
         {
             "name": "akaunting/laravel-setting",
@@ -5582,16 +5582,16 @@
         },
         {
             "name": "rahmanramsi/livewire-page-group",
-            "version": "v0.0.3",
+            "version": "v0.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rahmanramsi/livewire-page-group.git",
-                "reference": "0f57f86eb23f8b693c5639aeec20b607e3fefd23"
+                "reference": "cbd0db715a63a9fa7dd97b6aca1e9599835b2a7c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rahmanramsi/livewire-page-group/zipball/0f57f86eb23f8b693c5639aeec20b607e3fefd23",
-                "reference": "0f57f86eb23f8b693c5639aeec20b607e3fefd23",
+                "url": "https://api.github.com/repos/rahmanramsi/livewire-page-group/zipball/cbd0db715a63a9fa7dd97b6aca1e9599835b2a7c",
+                "reference": "cbd0db715a63a9fa7dd97b6aca1e9599835b2a7c",
                 "shasum": ""
             },
             "require": {
@@ -5644,9 +5644,9 @@
             ],
             "support": {
                 "issues": "https://github.com/rahmanramsi/livewire-page-group/issues",
-                "source": "https://github.com/rahmanramsi/livewire-page-group/tree/v0.0.3"
+                "source": "https://github.com/rahmanramsi/livewire-page-group/tree/v0.0.4"
             },
-            "time": "2023-08-12T03:25:03+00:00"
+            "time": "2023-08-16T03:08:11+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
