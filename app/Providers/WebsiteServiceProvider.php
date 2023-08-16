@@ -2,12 +2,10 @@
 
 namespace App\Providers;
 
-use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Http\Middleware\Website\ApplyCurrentConference;
 use App\Website\Pages\Home;
-use Filament\Facades\Filament;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
