@@ -2,6 +2,8 @@ name: fix-code-style
 
 on:
   push:
+    branches:
+      - main
 
 jobs:
   fix-code-style:

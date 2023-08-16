@@ -5,6 +5,8 @@ namespace App\Panel\Pages\Settings;
 use App\Infolists\Components\LivewireEntry;
 use App\Livewire\Panel\Forms\DateTimeSettingForm;
 use App\Livewire\Panel\Forms\PrivacyStatementForm;
+use App\Livewire\Panel\Forms\Website\GeneralSettingForm;
+use Filament\Facades\Filament;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
@@ -29,10 +31,26 @@ class Website extends Page implements HasInfolists
     {
         return $infolist
             ->schema([
-                Tabs::make('Label')
+                Tabs::make('Website Settings')
                     ->tabs([
                         Tabs\Tab::make('Appearance')
-                            ->schema([]),
+                            ->schema([
+                                // Tabs::make('Label')
+                                //     ->tabs([
+                                //         Tabs\Tab::make('General')
+                                //             ->schema([
+                                Section::make('General')
+                                    ->description('General Information about the conference.')
+                                    ->schema([
+                                        LivewireEntry::make('GeneralSettingForm', GeneralSettingForm::class, [
+                                            'record' => Filament::getTenant(),
+                                        ]),
+                                    ])
+                                    ->aside(),
+                                //         ]),
+                                // ])
+                                // ->contained(),
+                            ]),
                         Tabs\Tab::make('Setup')
                             ->schema([
                                 Section::make('Date and Time Formats')
@@ -55,7 +73,7 @@ class Website extends Page implements HasInfolists
                                     ->aside(),
                             ]),
                     ])
-                    ->contained(),
+                    ->contained(false),
             ]);
     }
 }

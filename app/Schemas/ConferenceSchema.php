@@ -41,13 +41,13 @@ class ConferenceSchema
                     ->grow(false),
                 TextColumn::make('name')
                     ->searchable(),
-                // TextColumn::make('meta.short_description')
-                //     ->toggleable()
-                //     ->getStateUsing(fn (Conference $record) => $record->getMeta('short_description'))
-                //     ->searchable(query: function (Builder $query, string $search): Builder {
-                //         return $query
-                //             ->whereMeta('title', 'like', "%{$search}%");
-                //     }),
+                TextColumn::make('meta.short_description')
+                    ->toggleable()
+                    ->getStateUsing(fn (Conference $record) => $record->getMeta('short_description'))
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query
+                            ->whereMeta('title', 'like', "%{$search}%");
+                    }),
                 TextColumn::make('type')
                     ->badge(),
                 TextColumn::make('status')
