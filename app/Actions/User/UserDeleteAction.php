@@ -4,7 +4,6 @@ namespace App\Actions\User;
 
 use App\Models\User;
 use Lorisleiva\Actions\Concerns\AsAction;
-use PhpParser\Node\Stmt\TryCatch;
 
 class UserDeleteAction
 {
@@ -18,6 +17,7 @@ class UserDeleteAction
         } catch (\Throwable $th) {
             throw $th;
         }
+
         return $user;
     }
 }

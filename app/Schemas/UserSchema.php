@@ -2,30 +2,28 @@
 
 namespace App\Schemas;
 
-use App\Models\Role;
-use App\Models\User;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Squire\Models\Country;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Radio;
-use Illuminate\Support\Facades\Hash;
-use Filament\Forms\Components\Select;
 use App\Actions\User\UserCreateAction;
 use App\Actions\User\UserDeleteAction;
 use App\Actions\User\UserUpdateAction;
+use App\Models\Role;
+use App\Models\User;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Model;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification;
+use Filament\Forms\Form;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Hash;
+use Squire\Models\Country;
 use STS\FilamentImpersonate\Tables\Actions\Impersonate;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
 class UserSchema
 {
@@ -69,8 +67,8 @@ class UserSchema
                         ->using(fn (array $data, Model $record) => UserUpdateAction::run($data, $record)),
                     DeleteAction::make()
                         ->hidden(fn (Model $record) => $record->given_name == Role::ADMIN)
-                        ->using(fn (?array $data, Model $record) => UserDeleteAction::run($data, $record))
-                ])
+                        ->using(fn (?array $data, Model $record) => UserDeleteAction::run($data, $record)),
+                ]),
             ])
             ->queryStringIdentifier('users')
             ->bulkActions([
@@ -102,12 +100,12 @@ class UserSchema
                 ]),
             TextInput::make('email')
                 ->disabled(fn (?Model $record) => $record)
-                ->dehydrated(fn (?Model $record) => !$record)
+                ->dehydrated(fn (?Model $record) => ! $record)
                 ->unique(ignoreRecord: true),
             Grid::make()
                 ->schema([
                     TextInput::make('password')
-                        ->required(fn (?Model $record) => !$record)
+                        ->required(fn (?Model $record) => ! $record)
                         ->password()
                         ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                         ->dehydrated(fn ($state) => filled($state))
