@@ -2,7 +2,6 @@
 
 namespace App\Actions\User;
 
-use App\Models\Submission;
 use App\Models\User;
 use Lorisleiva\Actions\Concerns\AsAction;
 use PhpParser\Node\Stmt\TryCatch;
