@@ -19,9 +19,6 @@ class ApplyCurrentConference
     {
         View::share('currentConference', Conference::current());
 
-        // $currentConference = Conference::current();
-        // dd($currentConference->navigations()->firstWhere('handle', 'user-navigation-menu')->items);
-
         return $next($request);
     }
 }
