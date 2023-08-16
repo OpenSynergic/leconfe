@@ -2,22 +2,20 @@
 
 namespace App\Schemas;
 
-use App\Models\User;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Squire\Models\Country;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Radio;
-use Illuminate\Support\Facades\Hash;
-use Filament\Forms\Components\Select;
 use App\Actions\User\UserCreateAction;
 use App\Actions\User\UserDeleteAction;
 use App\Actions\User\UserUpdateAction;
 use App\Models\User;
+use App\Models\User;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\CreateAction;
@@ -26,11 +24,13 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Hash;
+use Squire\Models\Country;
 use Squire\Models\Country;
 use STS\FilamentImpersonate\Tables\Actions\Impersonate;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
 class UserSchema
 {
@@ -81,8 +81,8 @@ class UserSchema
                             }
                         })
                         ->form(fn () => static::formSchemasDelete())
-                        ->using(fn (array $data, Model $record) => UserDeleteAction::run($data, $record))
-                ])
+                        ->using(fn (array $data, Model $record) => UserDeleteAction::run($data, $record)),
+                ]),
             ])
             ->queryStringIdentifier('users')
             ->bulkActions([
@@ -104,7 +104,7 @@ class UserSchema
                     ->collection('users_profiles')
                     ->avatar()
                     ->alignCenter()
-                    ->label('')
+                    ->label(''),
             ])->columns(1),
             Grid::make()
                 ->schema([
@@ -114,12 +114,12 @@ class UserSchema
                 ]),
             TextInput::make('email')
                 ->disabled(fn (?Model $record) => $record)
-                ->dehydrated(fn (?Model $record) => !$record)
+                ->dehydrated(fn (?Model $record) => ! $record)
                 ->unique(ignoreRecord: true),
             Grid::make()
                 ->schema([
                     TextInput::make('password')
-                        ->required(fn (?Model $record) => !$record)
+                        ->required(fn (?Model $record) => ! $record)
                         ->password()
                         ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                         ->dehydrated(fn ($state) => filled($state))

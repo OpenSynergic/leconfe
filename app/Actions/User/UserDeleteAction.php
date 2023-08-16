@@ -2,7 +2,6 @@
 
 namespace App\Actions\User;
 
-use App\Models\Submission;
 use App\Models\User;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -17,6 +16,6 @@ class UserDeleteAction
             $user->delete();
         }
 
-        return dd("User data is stored temporarily for next action");
+        return dd('User data is stored temporarily for next action');
     }
 }
