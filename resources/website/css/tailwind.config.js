@@ -24,6 +24,7 @@ export default {
     plugins: [
         require('@tailwindcss/typography'),
         require('daisyui'),
+        require("tailwindcss-animate"),
     ],
     daisyui: {
         themes: [
