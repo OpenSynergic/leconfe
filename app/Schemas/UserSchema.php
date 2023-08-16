@@ -7,22 +7,24 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Squire\Models\Country;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Radio;
 use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Components\Select;
 use App\Actions\User\UserCreateAction;
+use App\Actions\User\UserDeleteAction;
 use App\Actions\User\UserUpdateAction;
 use Filament\Forms\Components\Section;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
 use STS\FilamentImpersonate\Tables\Actions\Impersonate;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
 class UserSchema
 {
@@ -65,13 +67,15 @@ class UserSchema
                         ->before(function (DeleteAction $action, Model $record) {
                             if ($record->given_name === 'admin') {
                                 Notification::make()
+                                    ->title('Failed Deleted Admin User')
                                     ->danger()
-                                    ->title('You can\'t delete admin user')
-                                    ->persistent()
+
                                     ->send();
                                 $action->halt();
                             }
-                        }),
+                        })
+                        ->form(fn () => static::formSchemasDelete())
+                        ->using(fn (array $data, Model $record) => UserDeleteAction::run($data, $record))
                 ])
             ])
             ->queryStringIdentifier('users')
@@ -89,6 +93,13 @@ class UserSchema
     public static function formSchemas(): array
     {
         return [
+            Grid::make()->schema([
+                SpatieMediaLibraryFileUpload::make('user_profile')
+                    ->collection('users_profiles')
+                    ->avatar()
+                    ->alignCenter()
+                    ->label('')
+            ])->columns(1),
             Grid::make()
                 ->schema([
                     TextInput::make('given_name')
@@ -127,6 +138,17 @@ class UserSchema
                             TextInput::make('meta.affiliation'),
                         ]),
                 ]),
+        ];
+    }
+
+    public static function formSchemasDelete(): array
+    {
+        return [
+            Radio::make('options')
+                ->options([
+                    'save' => 'save user data related to submission files',
+                    'delete' => 'delete anyways',
+                ])->required(),
         ];
     }
 }
