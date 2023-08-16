@@ -2,6 +2,7 @@
 
 namespace App\Schemas;
 
+use App\Models\Role;
 use App\Models\User;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
@@ -13,22 +14,16 @@ use Filament\Forms\Components\Select;
 use App\Actions\User\UserCreateAction;
 use App\Actions\User\UserDeleteAction;
 use App\Actions\User\UserUpdateAction;
-use App\Models\User;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Hash;
-use Squire\Models\Country;
 use STS\FilamentImpersonate\Tables\Actions\Impersonate;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
@@ -63,6 +58,9 @@ class UserSchema
             ->actions([
                 ActionGroup::make([
                     Impersonate::make()
+                        ->grouped()
+                        ->label(fn (Model $record) => "Login as {$record->given_name}")
+                        ->icon('heroicon-m-key')
                         ->redirectTo('panel'),
                     EditAction::make()
                         ->modalWidth('2xl')
@@ -70,18 +68,8 @@ class UserSchema
                         ->mutateRecordDataUsing(fn ($data, Model $record) => array_merge($data, ['meta' => $record->getAllMeta()->toArray()]))
                         ->using(fn (array $data, Model $record) => UserUpdateAction::run($data, $record)),
                     DeleteAction::make()
-                        ->before(function (DeleteAction $action, Model $record) {
-                            if ($record->given_name === 'admin') {
-                                Notification::make()
-                                    ->title('Failed Deleted Admin User')
-                                    ->danger()
-
-                                    ->send();
-                                $action->halt();
-                            }
-                        })
-                        ->form(fn () => static::formSchemasDelete())
-                        ->using(fn (array $data, Model $record) => UserDeleteAction::run($data, $record))
+                        ->hidden(fn (Model $record) => $record->given_name == Role::ADMIN)
+                        ->using(fn (?array $data, Model $record) => UserDeleteAction::run($data, $record))
                 ])
             ])
             ->queryStringIdentifier('users')
@@ -144,17 +132,6 @@ class UserSchema
                             TextInput::make('meta.affiliation'),
                         ]),
                 ]),
-        ];
-    }
-
-    public static function formSchemasDelete(): array
-    {
-        return [
-            Radio::make('options')
-                ->options([
-                    'save' => 'save user data related to submission files',
-                    'delete' => 'delete anyways',
-                ])->required(),
         ];
     }
 }

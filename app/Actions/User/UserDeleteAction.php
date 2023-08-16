@@ -5,18 +5,20 @@ namespace App\Actions\User;
 use App\Models\Submission;
 use App\Models\User;
 use Lorisleiva\Actions\Concerns\AsAction;
+use PhpParser\Node\Stmt\TryCatch;
 
 class UserDeleteAction
 {
     use AsAction;
 
-    public function handle(array $data, User $user)
+    public function handle($data, User $user)
     {
-        if ($data['options'] === 'delete' || is_null($data['options'])) {
+        try {
             $user->submissions()->delete();
-            $user->delete();
+            $user->delete($data);
+        } catch (\Throwable $th) {
+            throw $th;
         }
-
-        return dd("User data is stored temporarily for next action");
+        return $user;
     }
 }
