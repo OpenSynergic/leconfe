@@ -12,6 +12,7 @@
         "akaunting/laravel-setting": "^1.2",
         "awcodes/filament-tiptap-editor": "^3.0@beta",
         "binarytorch/larecipe": "^2.6",
+        "coolsam/flatpickr": "^3.0",
         "filament/filament": "^3.0",
         "filament/spatie-laravel-media-library-plugin": "^3.0",
         "filament/spatie-laravel-tags-plugin": "^3.0",

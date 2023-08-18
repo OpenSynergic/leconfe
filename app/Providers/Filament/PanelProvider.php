@@ -6,6 +6,8 @@ use App\Http\Middleware\ApplyTenantScopes;
 use App\Models\Conference;
 use App\Models\Navigation;
 use App\Panel\Resources\NavigationResource;
+use Carbon\Carbon;
+use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TimePicker;
@@ -139,11 +141,17 @@ class PanelProvider extends FilamentPanelProvider
             // ->acceptedFileTypes(config('media-library.accepted_file_types'))
         });
         DatePicker::configureUsing(function (DatePicker $datePicker): void {
-            $datePicker->displayFormat(setting('format.date'));
+            $datePicker->format(setting('format.date'));
         });
 
         TimePicker::configureUsing(function (TimePicker $timePicker): void {
-            $timePicker->displayFormat(setting('format.time'));
+            $timePicker->format(setting('format.time'));
+        });
+
+        Flatpickr::configureUsing(function (Flatpickr $flatpickr): void {
+            // $flatpickr
+            //     ->dateFormat(setting('format.date'));
+            //     ->dehydrateStateUsing(fn($state) => dd(Carbon::createFromFormat(setting('format.date'), $state)));
         });
     }
 }
