@@ -15,8 +15,8 @@ class ManageAnnouncements extends ManageRecords
     {
         return [
             Actions\CreateAction::make()
-                ->using(fn(array $data) => AnnouncementCreateAction::run($data, $data['send_email'])),
-                // ->using(fn(array $data) => dd($data)),
+                ->using(fn (array $data) => AnnouncementCreateAction::run($data, $data['send_email'])),
+            // ->using(fn(array $data) => dd($data)),
         ];
     }
 }

@@ -17,9 +17,9 @@ class AnnouncementCreateAction
 
             $announcement = Announcement::create($data);
 
-            if($sendEmail){
+            if ($sendEmail) {
                 // TODO Create a job to send email
-                
+
             }
 
             DB::commit();

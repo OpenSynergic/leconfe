@@ -2,16 +2,12 @@
 
 namespace App\Panel\Resources\Conferences;
 
-use App\Panel\Resources\Conferences\AnnouncementResource\Pages;
 use App\Models\Announcement;
+use App\Panel\Resources\Conferences\AnnouncementResource\Pages;
 use App\Schemas\AnnouncementSchema;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class AnnouncementResource extends Resource
 {
@@ -30,11 +26,11 @@ class AnnouncementResource extends Resource
     {
         return AnnouncementSchema::table($table);
     }
-    
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ManageAnnouncements::route('/'),
         ];
-    }    
+    }
 }

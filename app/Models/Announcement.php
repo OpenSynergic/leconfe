@@ -25,7 +25,7 @@ class Announcement extends Model
      * @var array
      */
     protected $casts = [
-        // 'expires_at' => 'date',   
+        // 'expires_at' => 'date',
     ];
 
     protected static function booted(): void
