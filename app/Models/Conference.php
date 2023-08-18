@@ -83,6 +83,11 @@ class Conference extends Model implements HasMedia, HasName, HasAvatar
         return $this->hasMany(Venue::class);
     }
 
+    public function announcements(): HasMany
+    {
+        return $this->hasMany(Announcement::class);
+    }
+
     public function navigations(): HasMany
     {
         return $this->hasMany(Navigation::class);
