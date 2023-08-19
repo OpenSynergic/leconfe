@@ -3,7 +3,6 @@
 namespace App\Providers\Filament;
 
 use App\Http\Middleware\ApplyTenantScopes;
-use App\Models\Announcement;
 use App\Models\Conference;
 use App\Models\Navigation;
 use App\Panel\Resources\NavigationResource;

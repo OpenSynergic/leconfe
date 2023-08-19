@@ -3,8 +3,8 @@
 namespace App\Panel\Livewire\Wizards\SubmissionWizard\Steps;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
-use App\Panel\Livewire\Wizards\SubmissionWizard\Contracts\HasWizardStep;
 use App\Models\Submission;
+use App\Panel\Livewire\Wizards\SubmissionWizard\Contracts\HasWizardStep;
 use Livewire\Component;
 
 class UploadFilesStep extends Component implements HasWizardStep
