@@ -3,9 +3,9 @@
 namespace App\Panel\Pages\Settings;
 
 use App\Infolists\Components\LivewireEntry;
-use App\Livewire\Panel\Forms\DateTimeSettingForm;
-use App\Livewire\Panel\Forms\PrivacyStatementForm;
-use App\Livewire\Panel\Forms\Website\GeneralSettingForm;
+use App\Panel\Livewire\Forms\DateTimeSettingForm;
+use App\Panel\Livewire\Forms\PrivacyStatementForm;
+use App\Panel\Livewire\Forms\Website\GeneralSettingForm;
 use Filament\Facades\Filament;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\Tabs;

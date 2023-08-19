@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Http\Middleware\ApplyTenantScopes;
+use App\Models\Announcement;
 use App\Models\Conference;
 use App\Models\Navigation;
 use App\Panel\Resources\NavigationResource;
@@ -60,6 +61,7 @@ class PanelProvider extends FilamentPanelProvider
             ->discoverResources(in: app_path('Panel/Resources'), for: 'App\\Panel\\Resources')
             ->discoverPages(in: app_path('Panel/Pages'), for: 'App\\Panel\\Pages')
             ->discoverWidgets(in: app_path('Panel/Widgets'), for: 'App\\Panel\\Widgets')
+            ->discoverLivewireComponents(in: app_path('Panel/Livewire'), for: 'App\\Panel\\Livewire')
             ->pages($this->getPages())
             ->widgets($this->getWidgets())
             ->databaseNotifications()

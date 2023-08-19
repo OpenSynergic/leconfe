@@ -3,7 +3,7 @@
 namespace App\Panel\Pages\Administration;
 
 use App\Infolists\Components\LivewireEntry;
-use App\Livewire\Panel\Tables\ConferenceTable;
+use App\Panel\Livewire\Tables\ConferenceTable;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
