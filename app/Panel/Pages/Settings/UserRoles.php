@@ -3,8 +3,8 @@
 namespace App\Panel\Pages\Settings;
 
 use App\Infolists\Components\LivewireEntry;
-use App\Livewire\Panel\Tables\RolesTable;
-use App\Livewire\Panel\Tables\UsersTable;
+use App\Panel\Livewire\Tables\RolesTable;
+use App\Panel\Livewire\Tables\UsersTable;
 use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
