@@ -3,6 +3,7 @@
 namespace App\Panel\Resources\Conferences;
 
 use App\Models\Speaker;
+use App\Panel\Resources\Concern\HasNavigationBadge;
 use App\Panel\Resources\Conferences\SpeakerResource\Pages;
 use App\Schemas\SpeakerSchema;
 use Filament\Forms\Form;
@@ -11,6 +12,8 @@ use Filament\Tables\Table;
 
 class SpeakerResource extends Resource
 {
+    use HasNavigationBadge;
+
     protected static ?string $navigationGroup = 'Conferences';
 
     protected static ?string $model = Speaker::class;
@@ -32,10 +35,5 @@ class SpeakerResource extends Resource
         return [
             'index' => Pages\ManageSpeakers::route('/'),
         ];
-    }
-
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
     }
 }
