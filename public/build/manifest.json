@@ -1,5 +1,4 @@
 {
-
   "resources/panel/css/panel.css": {
     "file": "assets/panel-63d7e875.css",
     "isEntry": true,
@@ -11,7 +10,7 @@
     "src": "resources/panel/js/panel.js"
   },
   "resources/website/css/website.css": {
-    "file": "assets/website-bfc64bba.css",
+    "file": "assets/website-06883c3b.css",
     "isEntry": true,
     "src": "resources/website/css/website.css"
   },
