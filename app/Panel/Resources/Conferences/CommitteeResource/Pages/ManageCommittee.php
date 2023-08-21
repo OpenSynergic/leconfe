@@ -2,14 +2,11 @@
 
 namespace App\Panel\Resources\Conferences\CommitteeResource\Pages;
 
-use Filament\Actions;
-use Illuminate\Database\Eloquent\Builder;
-use App\Infolists\Components\LivewireEntry;
-use Filament\Resources\Pages\ManageRecords;
-use Filament\Resources\Pages\ListRecords\Tab;
 use App\Actions\Committee\CommitteMemberInsertAction;
-use App\Livewire\CommitteeMemberTable;
 use App\Panel\Resources\Conferences\CommitteeResource;
+use Filament\Actions;
+use Filament\Resources\Pages\ListRecords\Tab;
+use Filament\Resources\Pages\ManageRecords;
 
 class ManageCommittee extends ManageRecords
 {

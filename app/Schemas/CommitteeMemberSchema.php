@@ -2,21 +2,20 @@
 
 namespace App\Schemas;
 
-use App\Models\User;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
+use App\Actions\Committee\CommitteMemberInsertAction;
 use App\Models\CommitteeMember;
+use App\Models\User;
 use Filament\Forms\Components\Grid;
-use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Select;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Tables\Actions\ActionGroup as ActionsActionGroup;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
-use App\Actions\Committee\CommitteMemberInsertAction;
-use Filament\Tables\Actions\ActionGroup as ActionsActionGroup;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 
 class CommitteeMemberSchema
 {
@@ -35,7 +34,7 @@ class CommitteeMemberSchema
                     EditAction::make()
                         ->modalWidth('2xl')
                         ->form(fn () => static::formSchemas()),
-                    DeleteAction::make()
+                    DeleteAction::make(),
                 ]),
             ])
             ->queryStringIdentifier('committee_members')
@@ -43,12 +42,12 @@ class CommitteeMemberSchema
                 CreateAction::make()
                     ->modalWidth('2xl')
                     ->form(fn () => static::formSchemas())
-                    ->using(fn (array $data) => CommitteMemberInsertAction::run($data))
+                    ->using(fn (array $data) => CommitteMemberInsertAction::run($data)),
             ])
             ->filters([])
             ->reorderable('order_column')
             ->bulkActions([
-                DeleteBulkAction::make()
+                DeleteBulkAction::make(),
             ]);
     }
 

@@ -3,8 +3,6 @@
 namespace App\Actions\Committee;
 
 use App\Models\Committee;
-use App\Models\CommitteeMember;
-use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class CommitteInsertAction

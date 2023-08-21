@@ -3,16 +3,17 @@
 namespace App\Models;
 
 use Filament\Facades\Filament;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Committee extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'conference_id',
         'position',
-        'description'
+        'description',
 
     ];
 

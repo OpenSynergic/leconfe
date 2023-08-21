@@ -3,22 +3,17 @@
 namespace App\Schemas;
 
 use App\Actions\Committee\CommitteInsertAction;
-use Filament\Forms\Form;
 use App\Models\Committee;
-use Filament\Tables\Table;
-use Filament\Actions\ActionGroup;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
 use Filament\Tables\Actions\ActionGroup as ActionsActionGroup;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\DeleteAction;
-use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Actions\DeleteBulkAction;
-use Spatie\Tags\Tag;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 
 class CommitteeSchema
 {
@@ -35,20 +30,20 @@ class CommitteeSchema
                     EditAction::make()
                         ->modalWidth('2xl')
                         ->form(fn () => static::formSchemas()),
-                    DeleteAction::make()
-                ])
+                    DeleteAction::make(),
+                ]),
             ])
             ->queryStringIdentifier('committees')
             ->headerActions([
                 CreateAction::make()
                     ->modalWidth('2xl')
                     ->form(fn () => static::formSchemas())
-                    ->using(fn ($data) => CommitteInsertAction::run($data))
+                    ->using(fn ($data) => CommitteInsertAction::run($data)),
 
             ])
             ->filters([])
             ->bulkActions([
-                DeleteBulkAction::make()
+                DeleteBulkAction::make(),
             ]);
     }
 

@@ -12,6 +12,7 @@ class CommitteMemberInsertAction
     public function handle($data)
     {
         $committee_member = CommitteeMember::create($data);
+
         return $committee_member;
     }
 }

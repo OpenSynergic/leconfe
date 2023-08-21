@@ -10,8 +10,8 @@ use Spatie\EloquentSortable\SortableTrait;
 class CommitteeMember extends Model implements Sortable
 {
     use HasFactory, SortableTrait;
-    protected $fillable = ['committee_id', 'name'];
 
+    protected $fillable = ['committee_id', 'name'];
 
     public function buildSortQuery()
     {
