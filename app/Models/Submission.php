@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Enums\SubmissionStatus;
+use App\Models\Meta\SubmissionMeta;
 use App\Models\Traits\HasTopics;
 use Filament\Facades\Filament;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
@@ -36,6 +37,11 @@ class Submission extends Model implements HasMedia
     protected $casts = [
         'status' => SubmissionStatus::class,
     ];
+
+    protected function getMetaClassName(): string
+    {
+        return SubmissionMeta::class;
+    }
 
     /**
      * The "booted" method of the model.

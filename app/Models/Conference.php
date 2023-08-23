@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ConferenceType;
+use App\Models\Meta\ConferenceMeta;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasName;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
@@ -47,6 +48,11 @@ class Conference extends Model implements HasMedia, HasName, HasAvatar
         'status' => ConferenceStatus::class,
         'type' => ConferenceType::class,
     ];
+
+    protected function getMetaClassName(): string
+    {
+        return ConferenceMeta::class;
+    }
 
     public static function current(): ?Conference
     {
