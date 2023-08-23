@@ -6,5 +6,5 @@ use App\Models\Meta;
 
 class UserMeta extends Meta
 {
-    protected $table = 'users_meta';
+    protected $table = 'user_meta';
 }

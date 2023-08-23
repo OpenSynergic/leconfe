@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('submissions_meta', function (Blueprint $table) {
+        Schema::create('submission_meta', function (Blueprint $table) {
             $table->id();
             $table->string('metable_type');
             $table->unsignedBigInteger('metable_id');
@@ -40,7 +40,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('submissions_meta');
+        Schema::dropIfExists('submission_meta');
         Schema::dropIfExists('submissions');
     }
 };

@@ -6,5 +6,5 @@ use App\Models\Meta;
 
 class SubmissionMeta extends Meta
 {
-    protected $table = 'submissions_meta';
+    protected $table = 'submission_meta';
 }

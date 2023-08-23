@@ -6,5 +6,5 @@ use App\Models\Meta;
 
 class ConferenceMeta extends Meta
 {
-    protected $table = 'conferences_meta';
+    protected $table = 'conference_meta';
 }

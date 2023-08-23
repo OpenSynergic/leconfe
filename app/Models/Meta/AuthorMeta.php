@@ -6,5 +6,5 @@ use App\Models\Meta;
 
 class AuthorMeta extends Meta
 {
-    protected $table = 'authors_meta';
+    protected $table = 'author_meta';
 }

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('authors_meta', function (Blueprint $table) {
+        Schema::create('author_meta', function (Blueprint $table) {
             $table->id();
             $table->string('metable_type');
             $table->unsignedBigInteger('metable_id');
@@ -38,7 +38,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('authors_meta');
+        Schema::dropIfExists('author_meta');
         Schema::dropIfExists('authors');
     }
 };
