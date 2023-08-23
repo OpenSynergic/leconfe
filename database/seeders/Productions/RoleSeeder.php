@@ -15,7 +15,7 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         foreach ([Role::ADMIN, Role::AUTHOR, Role::EDITOR, Role::REVIEWER] as $role) {
-            Role::create(['name' => $role]);
+            Role::updateOrCreate(['name' => $role]);
         }
     }
 }

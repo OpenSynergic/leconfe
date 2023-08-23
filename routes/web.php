@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\InstallationController;
+use App\Livewire\InstallationWizard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -30,3 +32,11 @@ Route::get('local/temp/{path}', function (string $path, Request $request) {
 })
     ->where('path', '.*')
     ->name('local.temp');
+
+
+// Route::get('/installation', InstallationWizard::class)->name('installation');
+
+// Route::resource('installation', InstallationController::class)
+//     ->only([
+//         'index'
+//     ]);

@@ -21,9 +21,10 @@ class LivewireEntry extends Entry
 
     public function toHtml(): string
     {
-        return Blade::render('@livewire($component, $viewData)', [
+        return Blade::render('@livewire($component, $viewData, key($key))', [
             'component' => $this->getState(),
             'viewData' => $this->viewData,
+            'key' => 'data'
         ]);
     }
 
@@ -37,7 +38,7 @@ class LivewireEntry extends Entry
 
     public function lazy(bool $lazy = true)
     {
-        $this->viewData(['lazy' => $lazy]);
+        $this->viewData(['lazy' => $lazy,]);
 
         return $this;
     }

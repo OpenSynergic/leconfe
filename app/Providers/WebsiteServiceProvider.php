@@ -6,12 +6,7 @@ use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Http\Middleware\Website\ApplyCurrentConference;
 use App\Website\Pages\Home;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Session\Middleware\AuthenticateSession;
-use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\PageGroupServiceProvider;
 
@@ -22,16 +17,10 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
         return $pageGroup
             ->id('website')
             ->path('')
-            ->layout('website.layouts.app')
+            ->layout('website.components.layouts.app')
             ->homePage(Home::class)
             ->middleware([
-                EncryptCookies::class,
-                AddQueuedCookiesToResponse::class,
-                StartSession::class,
-                AuthenticateSession::class,
-                ShareErrorsFromSession::class,
-                VerifyCsrfToken::class,
-                SubstituteBindings::class,
+                'web',
                 ApplyCurrentConference::class,
             ], true)
             ->discoverPages(in: app_path('Website/Pages'), for: 'App\\Website\\Pages');

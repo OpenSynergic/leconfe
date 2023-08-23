@@ -1,3 +1,7 @@
+@props([
+    'livewire'
+])
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
@@ -19,17 +23,7 @@
 </head>
 
 <body class="page page-{{ strtolower($livewire->getTitle()) }} antialiased" x-data>
-    <div class="flex flex-col h-full gap-2 min-h-screen">
-        
-        {{-- Load Header Layout --}}
-        @include('website.layouts.header')
-
-        @include('website.layouts.main')
-
-        {{-- Load Footer Layout --}}
-        @include('website.layouts.footer')
-    </div>
-
+    {{ $slot }}
 </body>
 
 </html>
