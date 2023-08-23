@@ -21,7 +21,7 @@ return new class extends Migration
             $table->integer('is_current')->default(0);
             $table->timestamps();
         });
-        
+
         Schema::create('conference_meta', function (Blueprint $table) {
             $table->id();
             $table->string('metable_type');
