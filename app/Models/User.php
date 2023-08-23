@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Models\Meta\UserMeta;
 use Filament\Models\Contracts\HasDefaultTenant;
 use Filament\Models\Contracts\HasName;
 use Filament\Models\Contracts\HasTenants;
@@ -57,6 +58,11 @@ class User extends Authenticatable implements HasName, HasTenants, HasDefaultTen
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    protected function getMetaClassName(): string
+    {
+        return UserMeta::class;
+    }
 
     protected function name(): Attribute
     {
