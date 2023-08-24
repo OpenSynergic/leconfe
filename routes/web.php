@@ -33,7 +33,6 @@ Route::get('local/temp/{path}', function (string $path, Request $request) {
     ->where('path', '.*')
     ->name('local.temp');
 
-
 // Route::get('/installation', InstallationWizard::class)->name('installation');
 
 // Route::resource('installation', InstallationController::class)

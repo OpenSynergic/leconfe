@@ -10,6 +10,6 @@ return [
         'mbstring',
         'tokenizer',
         'xml',
-        
-    ]    
+
+    ],
 ];

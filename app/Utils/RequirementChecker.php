@@ -4,14 +4,14 @@ namespace App\Utils;
 
 use Illuminate\Support\Arr;
 
-class RequirementChecker 
+class RequirementChecker
 {
     public function __construct()
     {
 
     }
 
-    public function php($phpVersion = PHP_VERSION)  : bool
+    public function php($phpVersion = PHP_VERSION): bool
     {
         if (version_compare(app()->getPhpMinVersion(), $phpVersion, '>=')) {
             return false;
@@ -20,26 +20,26 @@ class RequirementChecker
         return true;
     }
 
-    public function phpExtensions(array $extensions = []) : array
+    public function phpExtensions(array $extensions = []): array
     {
         $extensions = [
             ...app()->getRequiredPhpExtensions(),
             ...$extensions,
         ];
 
-        return Arr::mapWithKeys($extensions, function($extension, $key){
+        return Arr::mapWithKeys($extensions, function ($extension, $key) {
             return [$extension => extension_loaded($extension)];
         });
     }
 
-    public function isRequirementsMet() : bool
+    public function isRequirementsMet(): bool
     {
-        if(!$this->php()){
+        if (! $this->php()) {
             return false;
         }
 
-        foreach($this->phpExtensions() as $extension => $loaded){
-            if(!$loaded){
+        foreach ($this->phpExtensions() as $extension => $loaded) {
+            if (! $loaded) {
                 return false;
             }
         }

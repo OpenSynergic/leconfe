@@ -3,7 +3,6 @@
 namespace App\Livewire\Forms\Installation;
 
 use App\Actions\User\UserCreateAction;
-use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Rule;
 use Livewire\Form;
@@ -29,7 +28,7 @@ class AccountForm extends Form
     {
         try {
             DB::beginTransaction();
-            
+
             UserCreateAction::run($this->all());
 
             DB::commit();
