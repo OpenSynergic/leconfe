@@ -13,7 +13,7 @@ class ConferenceForm extends Form
 
     #[Rule('required')]
     public $type = 'Offline';
-    
+
     #[Rule('required')]
     public $current = true;
 

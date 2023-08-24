@@ -4,17 +4,17 @@ namespace App\Utils;
 
 use Illuminate\Support\Arr;
 
-class PermissionChecker 
+class PermissionChecker
 {
     public function checkFolder($path)
     {
         $path = base_path($path);
 
-        if(!is_dir($path)){
+        if (! is_dir($path)) {
             return false;
         }
 
-        if(!is_writable($path)){
+        if (! is_writable($path)) {
             return false;
         }
 
@@ -23,7 +23,7 @@ class PermissionChecker
 
     public function checkFolders(array $paths)
     {
-        $paths = Arr::mapWithKeys($paths, function($path, $key){
+        $paths = Arr::mapWithKeys($paths, function ($path, $key) {
             return [$path => $this->checkFolder($path)];
         });
 
@@ -32,8 +32,8 @@ class PermissionChecker
 
     public function isFoldersWritable(array $paths)
     {
-        foreach($paths as $path){
-            if(!$this->checkFolder($path)){
+        foreach ($paths as $path) {
+            if (! $this->checkFolder($path)) {
                 return false;
             }
         }

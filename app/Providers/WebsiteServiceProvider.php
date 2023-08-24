@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use App\Http\Middleware\EncryptCookies;
-use App\Http\Middleware\VerifyCsrfToken;
 use App\Http\Middleware\Website\ApplyCurrentConference;
 use App\Website\Pages\Home;
 use Illuminate\Support\Facades\Blade;

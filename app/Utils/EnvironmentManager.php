@@ -5,7 +5,8 @@ namespace App\Utils;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Artisan;
 
-class EnvironmentManager {
+class EnvironmentManager
+{
     /**
      * @var string
      */
@@ -29,7 +30,7 @@ class EnvironmentManager {
         return $this->envPath;
     }
 
-    public function installation($envs = []) : bool
+    public function installation($envs = []): bool
     {
         $defaultEnvs = [
             'APP_ENV' => 'production',
@@ -55,12 +56,10 @@ class EnvironmentManager {
             'ACCEPTED_FILE_TYPES' => 'image/*,.pdf,.doc,.docx,.zip,.xls,xlsx,.odt,.txt,.xml',
         ];
 
-
         $envs = array_merge($defaultEnvs, $envs);
 
         // Delete existing .env file
-        if(file_exists($this->envPath()))
-        {
+        if (file_exists($this->envPath())) {
             unlink($this->envPath());
         }
 
@@ -80,8 +79,8 @@ class EnvironmentManager {
     /**
      * Change a specific key in the .env file.
      *
-     * @param string $key
-     * @param string $value
+     * @param  string  $key
+     * @param  string  $value
      */
     public function changeEnv($key, $value)
     {
@@ -92,7 +91,7 @@ class EnvironmentManager {
         file_put_contents($this->envPath(), $envFile);
     }
 
-    public function writeFromEmptyEnv($key,$value)
+    public function writeFromEmptyEnv($key, $value)
     {
         $envFile = file_get_contents($this->envPath());
 

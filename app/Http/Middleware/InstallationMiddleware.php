@@ -17,19 +17,17 @@ class InstallationMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        
+
         // Allow livewire update route
         if (Route::getCurrentRoute()->uri === 'livewire/update') {
             return $next($request);
         }
-        
+
         $installationPage = Installation::getSlug();
 
-
-        if (!app()->isInstalled() && Route::getCurrentRoute()->uri !== $installationPage) {
+        if (! app()->isInstalled() && Route::getCurrentRoute()->uri !== $installationPage) {
             return redirect($installationPage);
         }
-
 
         return $next($request);
     }

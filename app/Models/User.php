@@ -4,8 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use Filament\Models\Contracts\FilamentUser;
 use App\Models\Meta\UserMeta;
+use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasDefaultTenant;
 use Filament\Models\Contracts\HasName;
 use Filament\Models\Contracts\HasTenants;
@@ -64,7 +64,7 @@ class User extends Authenticatable implements HasName, HasTenants, HasDefaultTen
     {
         return true;
     }
-  
+
     protected function getMetaClassName(): string
     {
         return UserMeta::class;

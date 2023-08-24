@@ -28,11 +28,14 @@ class Installation extends Page
     public ConferenceForm $conference;
 
     public function mount()
-    {   
-        if(app()->isInstalled()) return redirect('/');
+    {
+        if (app()->isInstalled()) {
+            return redirect('/');
+        }
 
-        if(file_exists(base_path('.env'))){
+        if (file_exists(base_path('.env'))) {
             unlink(base_path('.env'));
+
             return redirect(static::getSlug());
         }
 
@@ -59,8 +62,10 @@ class Installation extends Page
     public function stepDatabase()
     {
         $this->database->validate();
-        if(!$this->database->checkConnection()) return false;
-        
+        if (! $this->database->checkConnection()) {
+            return false;
+        }
+
     }
 
     public function stepAccount()
@@ -71,9 +76,10 @@ class Installation extends Page
 
     public function install()
     {
-        if(!$this->validateInstallation())return;
+        if (! $this->validateInstallation()) {
+            return;
+        }
 
-        
         app(EnvironmentManager::class)->installation();
 
         $this->database->process();
@@ -84,17 +90,19 @@ class Installation extends Page
 
         // create empty file on storage path
         touch(storage_path('installed'));
-        
+
         return redirect('/');
     }
-    
-    public function validateInstallation() : bool
+
+    public function validateInstallation(): bool
     {
         $this->account->validate();
         $this->database->validate();
         $this->conference->validate();
-        if(!$this->database->checkConnection()) return false;
+        if (! $this->database->checkConnection()) {
+            return false;
+        }
 
         return true;
-    } 
+    }
 }
