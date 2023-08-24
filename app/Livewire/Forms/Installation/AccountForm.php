@@ -11,19 +11,19 @@ use Livewire\Form;
 class AccountForm extends Form
 {
     #[Rule('required')]
-    public $given_name = 'Rahman';
+    public $given_name = null;
 
     #[Rule('required')]
-    public $family_name = 'Ramsi';
+    public $family_name = null;
 
     #[Rule('required|email')]
-    public $email = 'rahmanramsi19@gmail.com';
+    public $email = null;
 
     #[Rule('required|confirmed')]
-    public $password = 'password';
+    public $password = null;
 
     #[Rule('required')]
-    public $password_confirmation = 'password';
+    public $password_confirmation = null;
 
     public function process()
     {

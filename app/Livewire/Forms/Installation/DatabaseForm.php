@@ -16,13 +16,13 @@ class DatabaseForm extends Form
     public $connection = 'mysql';
 
     #[Rule('required')]
-    public $username = 'root_db';
+    public $username = null;
 
     #[Rule('required')]
-    public $password = 'password';
+    public $password = null;
 
     #[Rule('required')]
-    public $name = 'conf';
+    public $name = null;
 
     #[Rule('required')]
     public $host = '127.0.0.1';
