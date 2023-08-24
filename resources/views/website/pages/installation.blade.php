@@ -2,7 +2,7 @@
     <div class="space-y-4 pt-16 pb-20 px-1 sm:px-4">
         <h1 class="text-center text-4xl font-medium mb-10">Logo Leconfe</h1>
         <p class="font-semibold ">Version {{ app()->getAppVersion() }}</p>
-        <form wire:submit='install'>
+        <form wire:submit.prevent='install'>
             <div class="card bg-white text-sm">
                 <div class="card-body space-y-6">
                     @error('install')

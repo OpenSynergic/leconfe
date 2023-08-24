@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+use Illuminate\Encryption\Encrypter;
 use Illuminate\Support\Facades\Artisan;
 
 class EnvironmentManager {
@@ -28,11 +29,13 @@ class EnvironmentManager {
         return $this->envPath;
     }
 
-    public function writeEnvWithCurrentConfiguration($envs = []) : bool
+    public function installation($envs = []) : bool
     {
         $defaultEnvs = [
             'APP_ENV' => 'production',
             'APP_DEBUG' => 'true',
+            'APP_URL' => url('/'),
+            'APP_KEY' => 'base64:'.base64_encode(Encrypter::generateKey(config('app.cipher'))),
             'DB_CONNECTION' => config('database.default'),
             'DB_HOST' => config('database.connections.mysql.host'),
             'DB_PORT' => config('database.connections.mysql.port'),
@@ -52,23 +55,21 @@ class EnvironmentManager {
             'ACCEPTED_FILE_TYPES' => 'image/*,.pdf,.doc,.docx,.zip,.xls,xlsx,.odt,.txt,.xml',
         ];
 
+
         $envs = array_merge($defaultEnvs, $envs);
 
-        if(!file_exists($this->envPath()) || filesize($this->envPath()) == 0){
-            // Create the .env file
-            file_put_contents($this->envPath(), '');
-
-            // Write the .env file
-            foreach ($envs as $key => $value) {
-                $this->writeFromEmptyEnv($key, $value);
-            }
-        } else {
-            // Overwrite the .env file
-            foreach ($envs as $key => $value) {
-                $this->changeEnv($key, $value);
-            }
+        // Delete existing .env file
+        if(file_exists($this->envPath()))
+        {
+            unlink($this->envPath());
         }
 
+        file_put_contents($this->envPath(), '');
+
+        // Write the .env file
+        foreach ($envs as $key => $value) {
+            $this->writeFromEmptyEnv($key, $value);
+        }
 
         // Clear config cache
         Artisan::call('config:clear');

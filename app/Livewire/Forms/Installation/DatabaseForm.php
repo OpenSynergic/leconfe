@@ -51,7 +51,7 @@ class DatabaseForm extends Form
             ]);
         }
 
-        
+
         Config::set("database.connections.$connection", $connectionArray);
 
         try {
@@ -63,24 +63,18 @@ class DatabaseForm extends Form
 
             return false;
         }
-
     }
 
     public function migrate()
     {
         Artisan::call('optimize:clear');
-        
-        if (app(EnvironmentManager::class)->writeEnvWithCurrentConfiguration()) {
-            Artisan::call('key:generate --force');
-            Artisan::call('optimize:clear');
-            Artisan::call('storage:link');
-            Artisan::call('migrate:fresh --force --seed');
-        }
+        Artisan::call('storage:link');
+        Artisan::call('migrate:fresh --force --seed');
     }
 
     public function process()
     {
-        if(!$this->checkConnection()) return false;
+        if (!$this->checkConnection()) return false;
 
         $this->migrate();
     }

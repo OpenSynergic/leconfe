@@ -1,5 +1,7 @@
 -   ## [Conference](/{{route}}/{{version}}/conference)
 -   ## [Getting Started](/{{route}}/{{version}}/getting-started)
+-   ## Application
+    - [Events](/{{route}}/{{version}}/application/events)  
 -   ## Panel
     -   [Introduction](/{{route}}/{{version}}/panel/introduction)
 -   ## Website

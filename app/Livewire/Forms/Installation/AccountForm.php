@@ -25,15 +25,12 @@ class AccountForm extends Form
     #[Rule('required')]
     public $password_confirmation = 'password';
 
-    public function createAccount()
+    public function process()
     {
         try {
             DB::beginTransaction();
-            dd($this->only(['email']));
-            User::updateOrCreate(
-                $this->only(['given_name', 'family_name', 'password']),
-                $this->only(['email']),
-            );
+            
+            UserCreateAction::run($this->all());
 
             DB::commit();
         } catch (\Throwable $th) {

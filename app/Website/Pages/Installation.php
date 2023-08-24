@@ -2,16 +2,13 @@
 
 namespace App\Website\Pages;
 
+use App\Events\AppInstalled;
 use App\Http\Middleware\Website\ApplyCurrentConference;
 use App\Livewire\Forms\Installation\AccountForm;
 use App\Livewire\Forms\Installation\ConferenceForm;
 use App\Livewire\Forms\Installation\DatabaseForm;
-use App\Livewire\Forms\Installation\UserForm;
 use App\Utils\EnvironmentManager;
 use App\Utils\PermissionChecker;
-use App\Utils\RequirementChecker;
-use Illuminate\Support\Facades\Route;
-use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 
 class Installation extends Page
@@ -32,6 +29,11 @@ class Installation extends Page
 
     public function mount()
     {
+        if(file_exists(base_path('.env'))){
+            unlink(base_path('.env'));
+            return redirect(static::getSlug());
+        }
+
         $this->checkPermission();
     }
 
@@ -68,21 +70,25 @@ class Installation extends Page
     public function install()
     {
         $this->validateInstallation();
-        $this->database->process();
-        $this->account->createAccount();
-        // try {
-        // } catch (\Throwable $th) {
-        //     $this->addError('install', $th->getMessage());
-        // }
-        // throw $th;
 
+        app(EnvironmentManager::class)->installation();
+
+        $this->database->process();
+        $this->account->process();
+        $this->conference->process();
+
+        AppInstalled::dispatch();
+
+        // create empty file on storage path
+        touch(storage_path('installed'));
         
+        return redirect('/');
     }
     
     public function validateInstallation(){
         $this->account->validate();
         $this->database->validate();
         $this->conference->validate();
-        if($this->database->checkConnection()) return false;
+        if($this->database->checkConnection()) return;
     } 
 }
