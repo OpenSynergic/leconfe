@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use Filament\Models\Contracts\FilamentUser;
 use App\Models\Meta\UserMeta;
 use Filament\Models\Contracts\HasDefaultTenant;
 use Filament\Models\Contracts\HasName;
@@ -23,7 +24,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
 use Squire\Models\Country;
 
-class User extends Authenticatable implements HasName, HasTenants, HasDefaultTenant, HasMedia
+class User extends Authenticatable implements HasName, HasTenants, HasDefaultTenant, HasMedia, FilamentUser
 {
     use HasApiTokens, HasFactory, Notifiable, Metable, HasShortflakePrimary, HasRoles, InteractsWithMedia;
 
@@ -59,6 +60,11 @@ class User extends Authenticatable implements HasName, HasTenants, HasDefaultTen
         'password' => 'hashed',
     ];
 
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
+    }
+  
     protected function getMetaClassName(): string
     {
         return UserMeta::class;

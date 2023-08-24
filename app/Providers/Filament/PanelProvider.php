@@ -113,13 +113,14 @@ class PanelProvider extends FilamentPanelProvider
     protected function getMiddleware(): array
     {
         return [
-            EncryptCookies::class,
-            AddQueuedCookiesToResponse::class,
-            StartSession::class,
-            AuthenticateSession::class,
-            ShareErrorsFromSession::class,
-            VerifyCsrfToken::class,
-            SubstituteBindings::class,
+            // EncryptCookies::class,
+            // AddQueuedCookiesToResponse::class,
+            // StartSession::class,
+            // AuthenticateSession::class,
+            // ShareErrorsFromSession::class,
+            // VerifyCsrfToken::class,
+            // SubstituteBindings::class,
+            'web',
             DisableBladeIconComponents::class,
             DispatchServingFilamentEvent::class,
         ];

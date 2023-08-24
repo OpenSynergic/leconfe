@@ -1,6 +1,6 @@
 {
   "resources/panel/css/panel.css": {
-    "file": "assets/panel-bd99cb2b.css",
+    "file": "assets/panel-1266e2f7.css",
     "isEntry": true,
     "src": "resources/panel/css/panel.css"
   },
@@ -10,7 +10,7 @@
     "src": "resources/panel/js/panel.js"
   },
   "resources/website/css/website.css": {
-    "file": "assets/website-06883c3b.css",
+    "file": "assets/website-05e3b441.css",
     "isEntry": true,
     "src": "resources/website/css/website.css"
   },
