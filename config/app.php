@@ -212,6 +212,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
+        'Block' => \App\Facades\Block::class,
         'Setting' => Akaunting\Setting\Facade::class,
     ])->toArray(),
 

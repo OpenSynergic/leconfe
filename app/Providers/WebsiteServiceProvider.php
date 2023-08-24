@@ -2,9 +2,12 @@
 
 namespace App\Providers;
 
+use App\Managers\BlockManager;
+use App\Facades\Block;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Http\Middleware\Website\ApplyCurrentConference;
+use App\Website\Blocks\ExampleBlock;
 use App\Website\Pages\Home;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Routing\Middleware\SubstituteBindings;
@@ -17,6 +20,16 @@ use Rahmanramsi\LivewirePageGroup\PageGroupServiceProvider;
 
 class WebsiteServiceProvider extends PageGroupServiceProvider
 {
+    public function register()
+    {
+        parent::register();
+
+        // Register blocks
+        Block::registerBlocks([
+            ExampleBlock::class,
+        ]);
+    }
+
     public function pageGroup(PageGroup $pageGroup): PageGroup
     {
         return $pageGroup
@@ -24,6 +37,9 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
             ->path('')
             ->layout('website.layouts.app')
             ->homePage(Home::class)
+            ->bootUsing(function () {
+                BlockManager::boot();
+            })
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

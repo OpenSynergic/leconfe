@@ -1,5 +1,8 @@
 <div class="page-rightbar">
-    <div class="block space-y-2">
+    @foreach(Block::getBlocks(position: 'right') as $block)
+        @livewire($block) 
+    @endforeach
+    {{-- <div class="block space-y-2">
         <h2 class="card-title">Dummy !</h2>
         <div class="card card-compact bg-white border">
             <div class="card-body">
@@ -9,5 +12,5 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 </div>
