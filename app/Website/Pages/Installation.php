@@ -86,10 +86,13 @@ class Installation extends Page
         return redirect('/');
     }
     
-    public function validateInstallation(){
+    public function validateInstallation() : bool
+    {
         $this->account->validate();
         $this->database->validate();
         $this->conference->validate();
-        if($this->database->checkConnection()) return false;
+        if(!$this->database->checkConnection()) return false;
+
+        return true;
     } 
 }

@@ -63,6 +63,8 @@ class DatabaseForm extends Form
 
             return false;
         }
+
+        return true;
     }
 
     public function migrate()
