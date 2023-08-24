@@ -69,8 +69,9 @@ class Installation extends Page
 
     public function install()
     {
-        $this->validateInstallation();
+        if(!$this->validateInstallation())return;
 
+        
         app(EnvironmentManager::class)->installation();
 
         $this->database->process();
@@ -89,6 +90,6 @@ class Installation extends Page
         $this->account->validate();
         $this->database->validate();
         $this->conference->validate();
-        if($this->database->checkConnection()) return;
+        if($this->database->checkConnection()) return false;
     } 
 }
