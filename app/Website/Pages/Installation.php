@@ -28,7 +28,9 @@ class Installation extends Page
     public ConferenceForm $conference;
 
     public function mount()
-    {
+    {   
+        if(app()->isInstalled()) return redirect('/');
+
         if(file_exists(base_path('.env'))){
             unlink(base_path('.env'));
             return redirect(static::getSlug());
