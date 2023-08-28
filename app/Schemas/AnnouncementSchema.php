@@ -2,6 +2,7 @@
 
 namespace App\Schemas;
 
+use App\Actions\Announcements\AnnouncementUpdateAction;
 use App\Models\UserContent;
 use Carbon\Carbon;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
@@ -38,7 +39,17 @@ class AnnouncementSchema
                 Action::make('view')
                     ->icon('heroicon-o-eye')
                     ->color('gray'),
-                EditAction::make(),
+                EditAction::make()
+                    ->using(fn (UserContent $record, $data) => AnnouncementUpdateAction::run($data, $record))
+                    ->mutateRecordDataUsing(function ($data, $record) {
+                        $userContentMeta = $record->getAllMeta();
+
+                        $data['short_description'] = $userContentMeta['short_description'];
+                        $data['user_content'] = $userContentMeta['user_content'];
+                        $data['expires_at'] = $userContentMeta['expires_at'];
+
+                        return $data;
+                    }),
             ])
             ->bulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),
