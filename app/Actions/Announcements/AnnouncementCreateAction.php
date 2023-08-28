@@ -2,7 +2,7 @@
 
 namespace App\Actions\Announcements;
 
-use App\Models\Announcement;
+use App\Models\UserContent;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -15,7 +15,13 @@ class AnnouncementCreateAction
         try {
             DB::beginTransaction();
 
-            $announcement = Announcement::create($data);
+            $announcement = UserContent::create($data);
+
+            $announcement->setManyMeta([
+                'short_description' => $data['short_description'] ?? null,
+                'user_content' => $data['user_content'] ?? null,
+                'expires_at' => $data['expires_at'] ?? null,
+            ]);
 
             if ($sendEmail) {
                 // TODO Create a job to send email

@@ -2,21 +2,20 @@
 
 namespace App\Models;
 
+use App\Models\Meta\UserContentMeta;
 use DateTimeInterface;
 use Filament\Facades\Filament;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Plank\Metable\Metable;
 
-class Announcement extends Model
+class UserContent extends Model
 {
-    use HasFactory, Cachable;
+    use HasFactory, Cachable, Metable;
 
     protected $fillable = [
         'title',
-        'short_description',
-        'announcement',
-        'expires_at',
     ];
 
     /**
@@ -30,9 +29,14 @@ class Announcement extends Model
 
     protected static function booted(): void
     {
-        static::creating(function (Announcement $announcement) {
+        static::creating(function (UserContent $announcement) {
             $announcement->conference_id ??= Filament::getTenant()?->getKey();
         });
+    }
+
+    protected function getMetaClassName(): string
+    {
+        return UserContentMeta::class;
     }
 
     /**

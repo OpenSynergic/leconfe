@@ -2,7 +2,7 @@
 
 namespace App\Schemas;
 
-use App\Models\Announcement;
+use App\Models\UserContent;
 use Carbon\Carbon;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\Checkbox;
@@ -13,6 +13,7 @@ use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class AnnouncementSchema
@@ -27,7 +28,8 @@ class AnnouncementSchema
                 TextColumn::make('title')
                     ->searchable(),
                 TextColumn::make('expires_at')
-                    ->date(setting('format.date')),
+                    ->date(setting('format.date'))
+                    ->getStateUsing(fn (UserContent $record) => $record->getMeta('expires_at')),
             ])
             ->filters([
                 //
@@ -56,9 +58,10 @@ class AnnouncementSchema
             TextInput::make('title')
                 ->required(),
             TinyEditor::make('short_description')
-                ->helperText('A concise overview intended for display alongside the announcement heading.'),
-            TinyEditor::make('announcement')
-                ->helperText('The complete textual content of the announcement.'),
+                ->helperText('A concise overview intended to display alongside the announcement heading.'),
+            TinyEditor::make('user_content')
+                ->label('Announcement content')
+                ->helperText('The complete announcement content.'),
             Flatpickr::make('expires_at')
                 ->dateFormat(setting('format.date'))
                 ->formatStateUsing(function ($state) {
