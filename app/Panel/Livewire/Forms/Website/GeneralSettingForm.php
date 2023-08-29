@@ -46,7 +46,7 @@ class GeneralSettingForm extends Component implements HasForms
 
     public function submit(): void
     {
-        ConferenceUpdateAction::run($this->form->getState(), $this->record);
+        ConferenceUpdateAction::run($this->record, $this->form->getState());
 
         Notification::make('setting_saved')
             ->title('Settings saved')

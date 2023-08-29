@@ -16,6 +16,8 @@ class Conferences extends Page implements HasForms, HasInfolists
     use InteractsWithInfolists;
     use InteractsWithForms;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $navigationGroup = 'Administration';
 
     protected static ?string $navigationIcon = 'heroicon-o-window';

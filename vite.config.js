@@ -7,10 +7,15 @@ export default defineConfig({
             input: [
                 "resources/panel/css/panel.css",
                 "resources/panel/js/panel.js",
-                "resources/website/css/website.css",
-                "resources/website/js/website.js",
+                "resources/conference/css/conference.css",
+                "resources/conference/js/conference.js",
             ],
             refresh: true,
         }),
     ],
+    resolve: {
+        alias: {
+            "@": "/resources",
+        },
+    },
 });

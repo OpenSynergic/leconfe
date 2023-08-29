@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Models\Enums\ConferenceStatus;
 use App\Models\Meta\UserMeta;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasDefaultTenant;
@@ -100,7 +101,7 @@ class User extends Authenticatable implements HasName, HasTenants, HasDefaultTen
 
     public function canAccessTenant(Model $tenant): bool
     {
-        if ($tenant->getKey() == Conference::current()->getKey()) {
+        if ($tenant->getKey() == Conference::current()?->getKey()) {
             return true;
         }
 
@@ -123,7 +124,10 @@ class User extends Authenticatable implements HasName, HasTenants, HasDefaultTen
      */
     public function getTenants(Panel $panel): array|Collection
     {
-        return Conference::all();
+        return Conference::query()
+            ->with('media')
+            ->where('status', '!=', ConferenceStatus::Archived)
+            ->get();
     }
 
     public function getDefaultTenant(Panel $panel): ?Model
