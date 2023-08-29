@@ -6,7 +6,6 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Panel;
-use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -17,8 +16,10 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\PanelProvider as FilamentPanelProvider;
 
-class AdministrationPanelProvider extends PanelProvider
+
+class AdministrationPanelProvider extends FilamentPanelProvider
 {
     public function panel(Panel $panel): Panel
     {
@@ -26,10 +27,7 @@ class AdministrationPanelProvider extends PanelProvider
             ->id('administration')
             ->path('administration')
             ->homeUrl(fn () => route('livewirePageGroup.website.pages.home'))
-            ->colors([
-                'primary' => Color::Cyan,
-                'info' => Color::Purple,
-            ])
+            ->colors(PanelProvider::getColors())
             ->renderHook(
                 'panels::sidebar.nav.start',
                 fn () => view('administration.components.sidebar.nav-start')
@@ -42,20 +40,8 @@ class AdministrationPanelProvider extends PanelProvider
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
             ])
-            ->middleware([
-                EncryptCookies::class,
-                AddQueuedCookiesToResponse::class,
-                StartSession::class,
-                AuthenticateSession::class,
-                ShareErrorsFromSession::class,
-                VerifyCsrfToken::class,
-                SubstituteBindings::class,
-                DisableBladeIconComponents::class,
-                DispatchServingFilamentEvent::class,
-            ])
-            ->authMiddleware([
-                Authenticate::class,
-            ]);
+            ->middleware(PanelProvider::getMiddleware())
+            ->authMiddleware(PanelProvider::getAuthMiddleware());
     }
 
     /**

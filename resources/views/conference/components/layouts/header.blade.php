@@ -6,10 +6,10 @@
         <x-conference::navigation :items="$currentConference->getNavigationItems('primary-navigation-menu')"/>
         <div class="navbar-end gap-x-4 hidden lg:inline-flex">
             @if (\Filament\Facades\Filament::getDefaultPanel()->auth()->user())
-                <a href="{{ route('filament.panel.tenant') }}" class="btn btn-sm btn-primary rounded-full px-4">Dashboard</a>
+                <x-conference::link :href="route('filament.panel.tenant')" :spa="false" class="btn btn-sm btn-primary rounded-full px-4">Dashboard</x-conference::link>
             @else
-                <a href="{{ route('filament.panel.tenant') }}" class="btn btn-sm btn-ghost rounded-full px-4">Register</a>
-                <a href="{{ route('filament.panel.tenant') }}" class="btn btn-sm rounded-full px-4">Login</a>
+                <x-conference::link href="route('filament.panel.tenant')" :spa="false" class="btn btn-sm btn-ghost rounded-full px-4">Register</x-conference::link>
+                <x-conference::link href="route('filament.panel.tenant')" :spa="false" class="btn btn-sm rounded-full px-4">Login</x-conference::link>
             @endif
         </div>
     </div>

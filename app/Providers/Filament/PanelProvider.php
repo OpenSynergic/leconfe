@@ -41,7 +41,7 @@ class PanelProvider extends FilamentPanelProvider
             ->path('panel')
             ->maxContentWidth('full')
             ->homeUrl(fn () => route('livewirePageGroup.website.pages.home'))
-            ->bootUsing(fn () => $this->setupFilamentComponent())
+            ->bootUsing(fn () => static::setupFilamentComponent())
             // ->renderHook(
             //     'panels::sidebar.footer',
             //     fn () => view('panel.components.sidebar.footer')
@@ -54,31 +54,31 @@ class PanelProvider extends FilamentPanelProvider
             )
             ->viteTheme('resources/panel/css/panel.css')
             ->tenant(Conference::class)
-            ->tenantMiddleware($this->getTenantMiddleware(), true)
+            ->tenantMiddleware(static::getTenantMiddleware(), true)
             ->tenantMenuItems([
                 MenuItem::make()
                     ->label('Administration')
                     ->url(fn (): string => route('filament.administration.pages.dashboard'))
                     ->icon('heroicon-m-cog-8-tooth'),
             ])
-            ->navigationGroups($this->getNavigationGroups())
-            ->navigationItems($this->getNavigationItems())
+            ->navigationGroups(static::getNavigationGroups())
+            ->navigationItems(static::getNavigationItems())
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->registration()
             ->passwordReset()
             ->emailVerification()
             ->profile()
-            ->colors($this->getColors())
+            ->colors(static::getColors())
             ->discoverResources(in: app_path('Panel/Resources'), for: 'App\\Panel\\Resources')
             ->discoverPages(in: app_path('Panel/Pages'), for: 'App\\Panel\\Pages')
             ->discoverWidgets(in: app_path('Panel/Widgets'), for: 'App\\Panel\\Widgets')
             ->discoverLivewireComponents(in: app_path('Panel/Livewire'), for: 'App\\Panel\\Livewire')
-            ->pages($this->getPages())
-            ->widgets($this->getWidgets())
+            ->pages(static::getPages())
+            ->widgets(static::getWidgets())
             ->databaseNotifications()
             ->databaseNotificationsPolling('120s')
-            ->middleware($this->getMiddleware(), true)
-            ->authMiddleware($this->getAuthMiddleware(), true)
+            ->middleware(static::getMiddleware(), true)
+            ->authMiddleware(static::getAuthMiddleware(), true)
             ->plugin(
                 FilamentNavigation::make()
                     ->usingModel(Navigation::class)
@@ -94,14 +94,14 @@ class PanelProvider extends FilamentPanelProvider
         Blade::anonymousComponentPath(resource_path('views/panel/components'), 'panel');
     }
 
-    protected function getTenantMiddleware(): array
+    public static function getTenantMiddleware(): array
     {
         return [
             ApplyTenantScopes::class,
         ];
     }
 
-    protected function getNavigationGroups(): array
+    public static function getNavigationGroups(): array
     {
         return [
             NavigationGroup::make()
@@ -111,32 +111,32 @@ class PanelProvider extends FilamentPanelProvider
         ];
     }
 
-    protected function getNavigationItems(): array
+    public static function getNavigationItems(): array
     {
         return [
         ];
     }
 
-    protected function getColors(): array
+    public static function getColors(): array
     {
         return [
             'primary' => Color::hex('#09b8ed'),
         ];
     }
 
-    protected function getPages(): array
+    public static function getPages(): array
     {
         return [
             Pages\Dashboard::class,
         ];
     }
 
-    protected function getWidgets(): array
+    public static function getWidgets(): array
     {
         return [];
     }
 
-    protected function getMiddleware(): array
+    public static function getMiddleware(): array
     {
         return [
             // EncryptCookies::class,
@@ -152,14 +152,14 @@ class PanelProvider extends FilamentPanelProvider
         ];
     }
 
-    protected function getAuthMiddleware(): array
+    public static function getAuthMiddleware(): array
     {
         return [
             Authenticate::class,
         ];
     }
 
-    protected function setupFilamentComponent()
+    public static function setupFilamentComponent()
     {
         // TODO Validasi file type menggunakan dengan menggunakan format extension, bukan dengan mime type, hal ini agar mempermudah pengguna dalam melakukan setting file apa saja yang diperbolehkan
         // Saat ini SpatieMediaLibraryFileUpload hanya support file validation dengan mime type.

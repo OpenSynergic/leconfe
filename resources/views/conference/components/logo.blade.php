@@ -1,12 +1,14 @@
 @props([
-    'url' => url('/'),
+    'href' => url('/'),
 ])
 
 @if ($currentConference->hasMedia('logo'))
-    <a href="{{ $url }}">
+    <x-conference::link :href="$href">
         <img src="{{ $currentConference->getFirstMediaUrl('logo','tenant') }}" alt="{{ $currentConference->name }}"
-            class="max-h-12 w-auto">
-    </a>
+        class="max-h-12 w-auto">
+    </x-conference::link>
 @else
-    <a class="text-2xl font-semibold" href="{{ $url }}">{{ $currentConference->name }}</a>
+    <x-conference::link :href="$href" class="text-2xl font-semibold">
+        {{ $currentConference->name }}
+    </x-conference::link>
 @endif
