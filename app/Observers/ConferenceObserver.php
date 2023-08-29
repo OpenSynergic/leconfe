@@ -20,8 +20,8 @@ class ConferenceObserver
     public function created(Conference $conference): void
     {
         Navigation::create([
-            'name' => 'User Navigation Menu',
-            'handle' => 'user-navigation-menu',
+            'name' => 'Primary Navigation Menu',
+            'handle' => 'primary-navigation-menu',
             'conference_id' => $conference->getKey(),
             'items' => [],
         ]);
