@@ -6,17 +6,24 @@ use Illuminate\Contracts\View\View;
 
 class Block extends \Livewire\Component
 {
-    protected static string | null $position = 'right';
+    protected string | null $position = 'right';
 
-    protected static int | null $sort = 1;
+    protected string | null $name = "Block";
 
-    protected static string | View | null $view = null;
+    protected int | null $sort = 1;
 
-    protected static bool $active = true;
+    protected string | View | null $view = null;
+
+    protected bool $active = true;
 
     public function getViewData(): array
     {
         return [];
+    }
+
+    public function getBlockName(): string
+    {
+        return $this->name;
     }
 
     public function getSetting(string $name)
@@ -27,21 +34,32 @@ class Block extends \Livewire\Component
 
     public function getPosition(): string | null
     {
-        return $this->getSetting('position') ?? static::$position;
+        return $this->getSetting('position') ?? $this->position;
     }
 
     public function getSort(): int | null
     {
-        return $this->getSetting('sort') ?? static::$sort;
+        return $this->getSetting('sort') ?? $this->sort;
     }
 
     public function isActive(): bool
     {
-        return $this->getSetting('active') ?? static::$active;
+        return $this->getSetting('active') ?? $this->active;
     }
 
     public function render(): View
     {
-        return view(static::$view, $this->getViewData());
+        return view($this->view, $this->getViewData());
+    }
+
+    public function getSettings()
+    {
+        return [
+            'class' => static::class,
+            'name' => $this->getBlockName(),
+            'position' => $this->getPosition(),
+            'sort' => $this->getSort(),
+            'active' => $this->isActive()
+        ];
     }
 }
