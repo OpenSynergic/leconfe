@@ -9,6 +9,7 @@ use App\Http\Middleware\VerifyCsrfToken;
 use App\Http\Middleware\Website\ApplyCurrentConference;
 use App\Http\Middleware\IdentifyCurrentConference;
 use App\Website\Blocks\ExampleBlock;
+use App\Website\Blocks\LeftBlock;
 use App\Website\Pages\Home;
 use Illuminate\Support\Facades\Blade;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
@@ -23,6 +24,7 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
         // Register blocks
         Block::registerBlocks([
             ExampleBlock::class,
+            LeftBlock::class
         ]);
     }
 
