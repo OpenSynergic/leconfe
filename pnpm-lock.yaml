@@ -8,6 +8,9 @@ dependencies:
   motion:
     specifier: ^10.16.2
     version: 10.16.2
+  sortablejs:
+    specifier: ^1.15.0
+    version: 1.15.0
   tailwind-merge:
     specifier: ^1.14.0
     version: 1.14.0
@@ -1059,6 +1062,10 @@ packages:
     dependencies:
       queue-microtask: 1.2.3
     dev: true
+
+  /sortablejs@1.15.0:
+    resolution: {integrity: sha512-bv9qgVMjUMf89wAvM6AxVvS/4MX3sPeN0+agqShejLU5z5GX4C75ow1O2e5k4L6XItUyAK3gH6AxSbXrOM5e8w==}
+    dev: false
 
   /source-map-js@1.0.2:
     resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==}
