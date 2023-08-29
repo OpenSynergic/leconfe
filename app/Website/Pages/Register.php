@@ -12,8 +12,8 @@ class Register extends Page
     {
         //
     }
-    
-    public function getBreadcrumbs() : array
+
+    public function getBreadcrumbs(): array
     {
         return [];
     }
