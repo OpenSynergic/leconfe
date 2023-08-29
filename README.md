@@ -21,6 +21,9 @@ Leconfe is a regular Laravel application that can be installed on any server tha
 
 WIP
 
+## Documentation
+Serve the app using `php artisan serve` and visit [http://localhost:8000/docs](http://localhost:8000/docs) to view the documentation.
+
 ## Contributing 🤝
 
 Thank you for considering contributing to Leconfe! Here are some guidelines to help you get started:
