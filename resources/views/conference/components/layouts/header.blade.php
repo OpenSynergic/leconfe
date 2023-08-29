@@ -8,8 +8,8 @@
             @if (\Filament\Facades\Filament::getDefaultPanel()->auth()->user())
                 <x-conference::link :href="route('filament.panel.tenant')" :spa="false" class="btn btn-sm btn-primary rounded-full px-4">Dashboard</x-conference::link>
             @else
-                <x-conference::link href="route('filament.panel.tenant')" :spa="false" class="btn btn-sm btn-ghost rounded-full px-4">Register</x-conference::link>
-                <x-conference::link href="route('filament.panel.tenant')" :spa="false" class="btn btn-sm rounded-full px-4">Login</x-conference::link>
+                <x-conference::link :href="route('filament.panel.tenant')" :spa="false" class="btn btn-sm btn-ghost rounded-full px-4">Register</x-conference::link>
+                <x-conference::link :href="route('filament.panel.tenant')" :spa="false" class="btn btn-sm rounded-full px-4">Login</x-conference::link>
             @endif
         </div>
     </div>
