@@ -3,6 +3,7 @@
 namespace App\Managers;
 
 use App\Classes\Block;
+use Illuminate\Support\Collection;
 use Livewire\Livewire;
 use Livewire\Mechanisms\ComponentRegistry;
 
@@ -30,19 +31,21 @@ class BlockManager
         static::$blocks = array_merge(static::$blocks, $blocks);
     }
 
-    public function getBlocks(string $position): array
+    public function getBlocks(string $position, bool $includeInactive = false): Collection
     {
         return collect(static::$blocks)
             ->map(function ($blockClass) {
                 return app($blockClass);
             })
-            ->reject(function (Block $block) use ($position) {
-                return !$block->isActive() && $block->getPosition() != $position;
+            ->reject(function (Block $block) use ($position, $includeInactive) {
+                if ($includeInactive) {
+                    return $block->getPosition() != $position;
+                }
+                return !$block->isActive() || $block->getPosition() != $position;
             })
             ->sort(function (Block $block) {
                 return $block->getSort();
-            })
-            ->toArray();
+            });
     }
 
     public function getBlockSettings()
