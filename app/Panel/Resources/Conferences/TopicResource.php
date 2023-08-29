@@ -3,7 +3,6 @@
 namespace App\Panel\Resources\Conferences;
 
 use App\Models\Topic;
-use App\Panel\Resources\Concern\HasNavigationBadge;
 use App\Panel\Resources\Conferences\TopicResource\Pages;
 use App\Schemas\TopicSchema;
 use Filament\Forms\Form;
@@ -12,8 +11,6 @@ use Filament\Tables\Table;
 
 class TopicResource extends Resource
 {
-    use HasNavigationBadge;
-
     protected static ?string $navigationGroup = 'Conferences';
 
     protected static ?string $model = Topic::class;
@@ -35,10 +32,5 @@ class TopicResource extends Resource
         return [
             'index' => Pages\ManageTopics::route('/'),
         ];
-    }
-
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
     }
 }

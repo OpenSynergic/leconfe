@@ -1,6 +1,20 @@
 {
+  "resources/assets/images/logo.png": {
+    "file": "assets/logo-913f6b43.png",
+    "src": "resources/assets/images/logo.png"
+  },
+  "resources/conference/css/conference.css": {
+    "file": "assets/conference-1b57ceb7.css",
+    "isEntry": true,
+    "src": "resources/conference/css/conference.css"
+  },
+  "resources/conference/js/conference.js": {
+    "file": "assets/conference-05c27011.js",
+    "isEntry": true,
+    "src": "resources/conference/js/conference.js"
+  },
   "resources/panel/css/panel.css": {
-    "file": "assets/panel-1266e2f7.css",
+    "file": "assets/panel-624b4908.css",
     "isEntry": true,
     "src": "resources/panel/css/panel.css"
   },
@@ -8,15 +22,5 @@
     "file": "assets/panel-f0622975.js",
     "isEntry": true,
     "src": "resources/panel/js/panel.js"
-  },
-  "resources/website/css/website.css": {
-    "file": "assets/website-05e3b441.css",
-    "isEntry": true,
-    "src": "resources/website/css/website.css"
-  },
-  "resources/website/js/website.js": {
-    "file": "assets/website-05c27011.js",
-    "isEntry": true,
-    "src": "resources/website/js/website.js"
   }
 }

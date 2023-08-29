@@ -3,7 +3,9 @@
 namespace Database\Factories;
 
 use App\Models\Conference;
+use App\Models\Enums\ConferenceStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 use Squire\Models\Country;
 
 /**
@@ -25,8 +27,14 @@ class ConferenceFactory extends Factory
      */
     public function definition(): array
     {
+        $name = 'Conference';
+        $city = fake()->city();
+        $year = fake()->year();
+
         return [
-            'name' => fake()->sentence(3),
+            'name' => $name.' '.$city.' '.$year,
+            'path' => Str::slug($city),
+            'status' => fake()->boolean(80) ? ConferenceStatus::Upcoming : ConferenceStatus::Archived,
         ];
     }
 

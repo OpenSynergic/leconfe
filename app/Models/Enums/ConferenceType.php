@@ -22,7 +22,7 @@ enum ConferenceType: string implements HasLabel, HasColor
     public function getColor(): string|array|null
     {
         return match ($this) {
-            self::Offline => 'primary',
+            self::Offline => 'info',
             self::Online => 'warning',
             self::Hybrid => 'success',
         };

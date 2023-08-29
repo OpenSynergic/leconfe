@@ -10,8 +10,9 @@ enum ConferenceStatus: string implements HasLabel, HasColor
 {
     use UsefulEnums;
 
-    case Active = 'Active';
+    case Current = 'Current';
     case Archived = 'Archived';
+    case Upcoming = 'Upcoming';
 
     public function getLabel(): ?string
     {
@@ -21,8 +22,9 @@ enum ConferenceStatus: string implements HasLabel, HasColor
     public function getColor(): string|array|null
     {
         return match ($this) {
-            self::Active => 'primary',
+            self::Current => 'primary',
             self::Archived => 'gray',
+            self::Upcoming => 'info',
         };
     }
 }

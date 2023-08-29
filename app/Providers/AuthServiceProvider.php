@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
+
+use App\Models\Role;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -27,5 +29,9 @@ class AuthServiceProvider extends ServiceProvider
                 return false;
             });
         }
+
+        Gate::before(function ($user, $ability) {
+            return $user->hasRole(Role::ADMIN) ? true : null;
+        });
     }
 }

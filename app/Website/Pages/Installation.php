@@ -3,7 +3,7 @@
 namespace App\Website\Pages;
 
 use App\Events\AppInstalled;
-use App\Http\Middleware\Website\ApplyCurrentConference;
+use App\Http\Middleware\IdentifyCurrentConference;
 use App\Livewire\Forms\Installation\AccountForm;
 use App\Livewire\Forms\Installation\ConferenceForm;
 use App\Livewire\Forms\Installation\DatabaseForm;
@@ -16,7 +16,7 @@ class Installation extends Page
     protected static string $view = 'website.pages.installation';
 
     protected static string|array $withoutRouteMiddleware = [
-        ApplyCurrentConference::class,
+        IdentifyCurrentConference::class,
     ];
 
     public array $folders = [];

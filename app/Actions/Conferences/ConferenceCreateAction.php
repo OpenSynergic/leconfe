@@ -17,11 +17,11 @@ class ConferenceCreateAction
 
             $conference = Conference::create($data);
 
-            if (array_key_exists('meta', $data) && is_array($data['meta'])) {
+            if (data_get($data, 'meta')) {
                 $conference->setManyMeta($data['meta']);
             }
 
-            if (array_key_exists('current', $data)) {
+            if (data_get($data, 'is_current')) {
                 ConferenceSetCurrentAction::run($conference);
             }
 
