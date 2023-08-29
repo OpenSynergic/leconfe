@@ -1,0 +1,20 @@
+<?php
+
+namespace {{ namespace }};
+
+use Rahmanramsi\LivewirePageGroup\Pages\Page;
+
+class {{ class }} extends Page
+{
+    protected static string $view = '{{ view }}';
+
+    public function mount()
+    {
+        //
+    }
+    
+    public function getBreadcrumbs() : array
+    {
+        return [];
+    }
+}
