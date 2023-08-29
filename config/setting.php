@@ -96,7 +96,7 @@ return [
         'format' => [
             'date' => 'j F Y',
             'time' => 'h:i A',
-        ]
+        ],
     ],
 
     /*

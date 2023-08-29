@@ -15,12 +15,12 @@ class Login extends Page
     use WithRateLimiting;
 
     protected static string $view = 'website.pages.login';
-    
+
     #[Rule('required|email')]
-    public null|string $email = null;
+    public ?string $email = null;
 
     #[Rule('required')]
-    public null|string $password = null;
+    public ?string $password = null;
 
     #[Rule('boolean')]
     public bool $remember = false;
@@ -32,7 +32,7 @@ class Login extends Page
         }
     }
 
-    public function getBreadcrumbs() : array
+    public function getBreadcrumbs(): array
     {
         return [
             url('/') => 'Home',
@@ -40,7 +40,7 @@ class Login extends Page
         ];
     }
 
-    public function login() : ?LoginResponse
+    public function login(): ?LoginResponse
     {
         try {
             $this->rateLimit(5);
