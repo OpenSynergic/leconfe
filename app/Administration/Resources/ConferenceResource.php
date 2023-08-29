@@ -5,7 +5,6 @@ namespace App\Administration\Resources;
 use App\Actions\Conferences\ConferenceSetCurrentAction;
 use App\Administration\Resources\ConferenceResource\Pages;
 use App\Models\Conference;
-use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ConferenceType;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\Checkbox;
