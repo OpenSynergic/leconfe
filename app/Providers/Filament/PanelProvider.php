@@ -14,6 +14,7 @@ use Filament\Forms\Components\TimePicker;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationGroup;
 use Filament\Pages;
 use Filament\Panel;
@@ -41,6 +42,10 @@ class PanelProvider extends FilamentPanelProvider
             ->maxContentWidth('full')
             ->homeUrl(fn () => route('livewirePageGroup.website.pages.home'))
             ->bootUsing(fn () => $this->setupFilamentComponent())
+            // ->renderHook(
+            //     'panels::sidebar.footer',
+            //     fn () => view('panel.components.sidebar.footer')
+            // )
             ->renderHook(
                 'panels::scripts.before',
                 fn () => Blade::render(<<<'Blade'
@@ -50,7 +55,14 @@ class PanelProvider extends FilamentPanelProvider
             ->viteTheme('resources/panel/css/panel.css')
             ->tenant(Conference::class)
             ->tenantMiddleware($this->getTenantMiddleware(), true)
+            ->tenantMenuItems([
+                MenuItem::make()
+                    ->label('Administration')
+                    ->url(fn (): string => route('filament.administration.pages.dashboard'))
+                    ->icon('heroicon-m-cog-8-tooth'),
+            ])
             ->navigationGroups($this->getNavigationGroups())
+            ->navigationItems($this->getNavigationItems())
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->registration()
             ->passwordReset()
@@ -74,6 +86,14 @@ class PanelProvider extends FilamentPanelProvider
             );
     }
 
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
+        Blade::anonymousComponentPath(resource_path('views/panel/components'), 'panel');
+    }
+
     protected function getTenantMiddleware(): array
     {
         return [
@@ -91,10 +111,16 @@ class PanelProvider extends FilamentPanelProvider
         ];
     }
 
+    protected function getNavigationItems(): array
+    {
+        return [
+        ];
+    }
+
     protected function getColors(): array
     {
         return [
-            'primary' => Color::Cyan,
+            'primary' => Color::hex('#09b8ed'),
         ];
     }
 

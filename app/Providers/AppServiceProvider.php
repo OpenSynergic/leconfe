@@ -2,14 +2,12 @@
 
 namespace App\Providers;
 
-use App\Models\Conference;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -29,7 +27,6 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->setupModel();
         $this->setupStorage();
-        $this->setupView();
     }
 
     protected function setupModel()
@@ -95,12 +92,5 @@ class AppServiceProvider extends ServiceProvider
                 array_merge($options, ['path' => $path])
             );
         });
-    }
-
-    protected function setupView()
-    {
-        if (! $this->app->runningInConsole()) {
-            // View::share('currentConference', Conference::current());
-        }
     }
 }
