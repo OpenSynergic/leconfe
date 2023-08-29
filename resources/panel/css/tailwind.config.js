@@ -8,6 +8,7 @@ export default {
         "./resources/views/vendor/**/*.blade.php",
         "./resources/views/panel/**/*.blade.php",
         "./resources/views/administration/**/*.blade.php",
+        './resources/views/examples/**/*.blade.php',
         "./vendor/filament/**/*.blade.php",
         "./vendor/awcodes/filament-tiptap-editor/resources/**/*.blade.php",
     ],

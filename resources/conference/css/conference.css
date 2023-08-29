@@ -14,7 +14,7 @@
 }
 
 .page-content {
-    @apply order-first lg:order-none col-span-12 lg:col-span-6 card card-compact bg-white border rounded-none lg:rounded-lg h-full;
+    @apply order-first lg:order-none col-span-12 lg:col-span-6 card card-compact bg-white border rounded-none lg:rounded-lg h-fit;
 }
 
 .page-leftbar,

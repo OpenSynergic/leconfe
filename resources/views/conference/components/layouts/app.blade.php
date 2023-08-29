@@ -1,5 +1,5 @@
 <x-conference::layouts.base :livewire="$livewire">
-    <div class="flex flex-col h-full gap-2 min-h-screen">
+    <div class="flex flex-col h-full gap-3 min-h-screen">
         
         {{-- Load Header Layout --}}
         <x-conference::layouts.header />

@@ -98,7 +98,7 @@ class Conference extends Model implements HasMedia, HasName, HasAvatar
 
     public function getNavigationItems(string $handle): array
     {
-        return $this->navigations()->firstWhere('handle', $handle)?->items ?? [];
+        return $this->navigations->firstWhere('handle', $handle)?->items ?? [];
     }
 
     public function getFilamentName(): string
