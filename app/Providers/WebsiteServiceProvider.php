@@ -8,6 +8,7 @@ use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Http\Middleware\Website\ApplyCurrentConference;
 use App\Website\Blocks\ExampleBlock;
+use App\Website\Blocks\LeftBlock;
 use App\Website\Pages\Home;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Routing\Middleware\SubstituteBindings;
@@ -27,6 +28,7 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
         // Register blocks
         Block::registerBlocks([
             ExampleBlock::class,
+            LeftBlock::class
         ]);
     }
 
