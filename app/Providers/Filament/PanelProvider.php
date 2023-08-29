@@ -35,7 +35,6 @@ class PanelProvider extends FilamentPanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->login()
             ->default()
             ->id('panel')
             ->path('panel')
@@ -64,10 +63,6 @@ class PanelProvider extends FilamentPanelProvider
             ->navigationGroups(static::getNavigationGroups())
             ->navigationItems(static::getNavigationItems())
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
-            ->registration()
-            ->passwordReset()
-            ->emailVerification()
-            ->profile()
             ->colors(static::getColors())
             ->discoverResources(in: app_path('Panel/Resources'), for: 'App\\Panel\\Resources')
             ->discoverPages(in: app_path('Panel/Pages'), for: 'App\\Panel\\Pages')

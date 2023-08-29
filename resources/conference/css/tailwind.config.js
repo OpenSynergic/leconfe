@@ -7,12 +7,24 @@ export default {
     content: [
         './resources/views/conference/**/*.blade.php',
         './resources/views/website/**/*.blade.php',
+        './resources/views/examples/**/*.blade.php',
     ],
     theme: {
         extend: {
             fontFamily: {
                 sans: ['var(--font-family)', ...defaultTheme.fontFamily.sans],
             },
+            typography: (theme) => ({
+                DEFAULT: {
+                  css: {
+                    a: {
+                        'text-decoration': 'none',
+                    }
+        
+                    // ...
+                  },
+                },
+              }),
         },
     },
     darkMode: 'class',
