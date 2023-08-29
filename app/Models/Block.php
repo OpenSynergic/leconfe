@@ -11,7 +11,7 @@ class Block extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        'class',
         'conference_id',
         'position',
         'sort',
