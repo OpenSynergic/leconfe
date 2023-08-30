@@ -5,7 +5,6 @@
 >
     <div>
         <div class="space-y-2">
-            <span class="text-lg"{{ $getLabel() }}</span>
             <ul class="max-w-xs flex flex-col space-y-2" x-data="blockSortableContainer({
                 state: $wire.$entangle('{{ $getStatePath() }}'),
                 statePath: '{{ $getStatePath() }}',
