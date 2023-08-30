@@ -1,7 +1,8 @@
 import Sortable from 'sortablejs'
 
 document.addEventListener('alpine:init', () => {
-    Alpine.data('blockSortableContainer', ({ statePath }) => ({
+    Alpine.data('blockSortableContainer', ({ state, statePath }) => ({
+        state,
         statePath,
         sortable: null,
         init() {
