@@ -16,6 +16,7 @@ class UserContent extends Model
 
     protected $fillable = [
         'title',
+        'content_type',
     ];
 
     /**

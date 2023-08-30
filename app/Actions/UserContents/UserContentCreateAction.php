@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Actions\Announcements;
+namespace App\Actions\UserContents;
 
 use App\Models\UserContent;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class AnnouncementCreateAction
+class UserContentCreateAction
 {
     use AsAction;
 
@@ -15,13 +15,15 @@ class AnnouncementCreateAction
         try {
             DB::beginTransaction();
 
-            $announcement = UserContent::create($data);
+            $userContent = UserContent::create($data);
 
-            $announcement->setManyMeta([
-                'short_description' => $data['short_description'] ?? null,
-                'user_content' => $data['user_content'] ?? null,
-                'expires_at' => $data['expires_at'] ?? null,
-            ]);
+            unset($data['title']);
+            unset($data['content_type']);
+            if (isset($data['send_email'])) {
+                unset($data['send_email']);
+            }
+            
+            $userContent->setManyMeta($data);
 
             if ($sendEmail) {
                 // TODO Create a job to send email
@@ -35,6 +37,6 @@ class AnnouncementCreateAction
             throw $th;
         }
 
-        return $announcement;
+        return $userContent;
     }
 }

@@ -6,6 +6,7 @@ use App\Infolists\Components\LivewireEntry;
 use App\Panel\Livewire\Forms\DateTimeSettingForm;
 use App\Panel\Livewire\Forms\PrivacyStatementForm;
 use App\Panel\Livewire\Forms\Website\GeneralSettingForm;
+use App\Panel\Livewire\Tables\StaticPageTable;
 use Filament\Facades\Filament;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\Tabs;
@@ -71,6 +72,12 @@ class Website extends Page implements HasInfolists
                                             ->lazy(),
                                     ])
                                     ->aside(),
+                            ]),
+                        Tabs\Tab::make('Static Page')
+                            ->icon('heroicon-o-shield-check')
+                            ->schema([
+                                LivewireEntry::make('static_page', StaticPageTable::class)
+                                    ->lazy(),
                             ]),
                     ])
                     ->contained(false),

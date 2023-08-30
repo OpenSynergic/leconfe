@@ -2,6 +2,7 @@
 
 namespace App\Panel\Resources\Conferences;
 
+use App\Models\Enums\ContentType;
 use App\Models\UserContent;
 use App\Panel\Resources\Conferences\AnnouncementResource\Pages;
 use App\Schemas\AnnouncementSchema;
@@ -27,6 +28,13 @@ class AnnouncementResource extends Resource
     public static function table(Table $table): Table
     {
         return AnnouncementSchema::table($table);
+    }
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $data['content_type'] = ContentType::Announcement;
+    
+        return $data;
     }
 
     public static function getPages(): array

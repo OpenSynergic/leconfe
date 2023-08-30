@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Conference;
+use App\Models\Enums\ContentType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,9 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Conference::class);
             $table->string('title');
-            // $table->text('short_description')->nullable();
-            // $table->text('user_content')->nullable();
-            // $table->date('expires_at')->nullable();
+            $table->enum('content_type', ContentType::array());
             $table->timestamps();
         });
 

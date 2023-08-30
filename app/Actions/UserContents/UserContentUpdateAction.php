@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Actions\Announcements;
+namespace App\Actions\UserContents;
 
 use App\Models\UserContent;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class AnnouncementUpdateAction
+class UserContentUpdateAction
 {
     use AsAction;
 
@@ -16,12 +16,10 @@ class AnnouncementUpdateAction
             DB::beginTransaction();
 
             $userContent->update($data);
+            
+            unset($data['title']);
 
-            $userContent->syncMeta([
-                'short_description' => $data['short_description'] ?? null,
-                'user_content' => $data['user_content'] ?? null,
-                'expires_at' => $data['expires_at'] ?? null,
-            ]);
+            $userContent->syncMeta($data);
 
             // if ($sendEmail) {
             //     // TODO Create a job to send email

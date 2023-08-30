@@ -2,7 +2,9 @@
 
 namespace App\Schemas;
 
-use App\Actions\Announcements\AnnouncementUpdateAction;
+use App\Actions\UserContents\UserContentUpdateAction;
+use App\Models\Enums\ConferenceStatus;
+use App\Models\Enums\ContentType;
 use App\Models\UserContent;
 use Carbon\Carbon;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
@@ -24,6 +26,7 @@ class AnnouncementSchema
         // dd(Announcement::first()->expires_at->__toString());
 
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->where('content_type', ContentType::Announcement)->with(['conference']))
             ->defaultPaginationPageOption(5)
             ->columns([
                 TextColumn::make('title')
@@ -38,9 +41,32 @@ class AnnouncementSchema
             ->actions([
                 Action::make('view')
                     ->icon('heroicon-o-eye')
+                    ->url(function ($record) {
+                        $conference  = $record->conference;
+                        $contentType = ltrim(strtolower(preg_replace('/[A-Z]([A-Z](?![a-z]))*/', '-$0', $record->content_type)), '-');
+
+                        switch ($conference->status->value) {
+                            case ConferenceStatus::Current->value:
+                                return 
+                                    route('livewirePageGroup.current-conference.pages.static-page', [
+                                        'content_type' => $contentType,
+                                        'user_content' => $record->id
+                                    ]);
+                                break;
+                            
+                            default:
+                                return
+                                    route('livewirePageGroup.archive-conference.pages.static-page', [
+                                        'conference' => $conference->id,
+                                        'content_type' => $contentType,
+                                        'user_content' => $record->id
+                                    ]);
+                                break;
+                        }
+                    })
                     ->color('gray'),
                 EditAction::make()
-                    ->using(fn (UserContent $record, $data) => AnnouncementUpdateAction::run($data, $record))
+                    ->using(fn (UserContent $record, $data) => UserContentUpdateAction::run($data, $record))
                     ->mutateRecordDataUsing(function ($data, $record) {
                         $userContentMeta = $record->getAllMeta();
 
