@@ -25,9 +25,13 @@ class SidebarSettingForm extends \Livewire\Component implements HasForms
     public function mount()
     {
         $this->form->fill([
-            'sidebar' => setting('sidebar', SidebarPosition::Both) == SidebarPosition::Both
-                ? [SidebarPosition::Left, SidebarPosition::Right]
-                : [setting('sidebar')],
+            'sidebar' =>  match (setting('sidebar')) {
+                SidebarPosition::Left => [SidebarPosition::Left],
+                SidebarPosition::Right => [SidebarPosition::Right],
+                SidebarPosition::Both => [SidebarPosition::Left, SidebarPosition::Right],
+                SidebarPosition::None => [],
+                default => [SidebarPosition::Left, SidebarPosition::Right],
+            },
             'blocks' => [
                 'left' => Block::getBlocks(position: 'left', includeInactive: true)
                     ->map(
@@ -79,7 +83,6 @@ class SidebarSettingForm extends \Livewire\Component implements HasForms
                         SidebarPosition::Left => 'Left Sidebar',
                         SidebarPosition::Right => 'Right Sidebar',
                     ])
-                    ->required()
                     ->reactive()
                     ->helperText(__('If you choose both sidebars, the layout will have three columns.')),
                 BlockComponent::make('blocks.left')
@@ -106,17 +109,20 @@ class SidebarSettingForm extends \Livewire\Component implements HasForms
             }
         }
 
-        if ($this->sidebar) {
-            $sidebar = collect($this->sidebar);
-            $sidebarPosiiton = $sidebar->first();
+        $sidebar = collect($this->sidebar);
+        $sidebarPosition = $sidebar->first();
 
-            if ($sidebar->count() >= 2) {
-                $sidebarPosiiton = SidebarPosition::Both;
-            }
-            SettingUpdateAction::run([
-                'sidebar' => str($sidebarPosiiton)->lower(),
-            ]);
+        if ($sidebar->isEmpty()) {
+            $sidebarPosition = SidebarPosition::None;
         }
+
+        if ($sidebar->count() >= 2) {
+            $sidebarPosition = SidebarPosition::Both;
+        }
+
+        SettingUpdateAction::run([
+            'sidebar' => str($sidebarPosition)->lower(),
+        ]);
 
         Notification::make()
             ->title(__('Success'))
