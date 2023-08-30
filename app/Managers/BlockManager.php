@@ -18,6 +18,7 @@ class BlockManager
         if (!static::$blocks) {
             return;
         }
+
         foreach (static::$blocks as $blockClass) {
             if (is_subclass_of($blockClass, \Livewire\Component::class)) {
                 $componentName = app(ComponentRegistry::class)->getName($blockClass);
@@ -34,21 +35,17 @@ class BlockManager
     public function getBlocks(string $position, bool $includeInactive = false): Collection
     {
         return collect(static::$blocks)
-            ->map(function ($blockClass) {
-                return app($blockClass);
-            })
+            ->map(fn ($block) => app($block))
             ->reject(function (Block $block) use ($position, $includeInactive) {
                 if ($includeInactive) {
                     return $block->getPosition() != $position;
                 }
                 return !$block->isActive() || $block->getPosition() != $position;
             })
-            ->sort(function (Block $block) {
-                return $block->getSort();
-            });
+            ->sortBy(fn (Block $block) => $block->getSort());
     }
 
-    public function getBlockSettings()
+    public function getBlockSettings(): array
     {
         return static::$blockSettings;
     }
