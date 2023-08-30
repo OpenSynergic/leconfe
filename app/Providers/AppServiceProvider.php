@@ -31,7 +31,6 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->setupModel();
         $this->setupStorage();
-        $this->setupView();
     }
 
     protected function setupModel()
@@ -97,12 +96,5 @@ class AppServiceProvider extends ServiceProvider
                 array_merge($options, ['path' => $path])
             );
         });
-    }
-
-    protected function setupView()
-    {
-        if (!$this->app->runningInConsole()) {
-            // View::share('currentConference', Conference::current());
-        }
     }
 }

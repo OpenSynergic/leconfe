@@ -29,6 +29,7 @@
         "mohamedsabil83/filament-forms-tinyeditor": "^2.0",
         "plank/laravel-metable": "^5.4",
         "rahmanramsi/livewire-page-group": "^0.0.4",
+        "rickselby/laravel-gate-cache": "^3.6",
         "ryangjchandler/filament-navigation": "^1.0@beta",
         "spatie/eloquent-sortable": "^4.0",
         "spatie/laravel-medialibrary": "^10.7",

@@ -4,7 +4,9 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Models\Enums\ConferenceStatus;
 use App\Models\Meta\UserMeta;
+use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasDefaultTenant;
 use Filament\Models\Contracts\HasName;
 use Filament\Models\Contracts\HasTenants;
@@ -23,7 +25,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
 use Squire\Models\Country;
 
-class User extends Authenticatable implements HasName, HasTenants, HasDefaultTenant, HasMedia
+class User extends Authenticatable implements HasName, HasTenants, HasDefaultTenant, HasMedia, FilamentUser
 {
     use HasApiTokens, HasFactory, Notifiable, Metable, HasShortflakePrimary, HasRoles, InteractsWithMedia;
 
@@ -58,6 +60,11 @@ class User extends Authenticatable implements HasName, HasTenants, HasDefaultTen
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
+    }
 
     protected function getMetaClassName(): string
     {
@@ -94,7 +101,7 @@ class User extends Authenticatable implements HasName, HasTenants, HasDefaultTen
 
     public function canAccessTenant(Model $tenant): bool
     {
-        if ($tenant->getKey() == Conference::current()->getKey()) {
+        if ($tenant->getKey() == Conference::current()?->getKey()) {
             return true;
         }
 
@@ -117,7 +124,10 @@ class User extends Authenticatable implements HasName, HasTenants, HasDefaultTen
      */
     public function getTenants(Panel $panel): array|Collection
     {
-        return Conference::all();
+        return Conference::query()
+            ->with('media')
+            ->where('status', '!=', ConferenceStatus::Archived)
+            ->get();
     }
 
     public function getDefaultTenant(Panel $panel): ?Model

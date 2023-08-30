@@ -3,6 +3,7 @@
 namespace App\Actions\Conferences;
 
 use App\Models\Conference;
+use App\Models\Enums\ConferenceStatus;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -15,9 +16,11 @@ class ConferenceSetCurrentAction
         try {
             DB::beginTransaction();
 
-            Conference::query()->update(['is_current' => 0]);
+            Conference::query()
+                ->where('status', ConferenceStatus::Current->value)
+                ->update(['status' => ConferenceStatus::Archived->value]);
 
-            $conference->is_current = 1;
+            $conference->status = ConferenceStatus::Current;
             $conference->save();
 
             DB::commit();

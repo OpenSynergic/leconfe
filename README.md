@@ -21,6 +21,9 @@ Leconfe is a regular Laravel application that can be installed on any server tha
 
 WIP
 
+## Documentation
+Serve the app using `php artisan serve` and visit [http://localhost:8000/docs](http://localhost:8000/docs) to view the documentation.
+
 ## Contributing 🤝
 
 Thank you for considering contributing to Leconfe! Here are some guidelines to help you get started:
@@ -38,7 +41,6 @@ Thank you for considering contributing to Leconfe! Here are some guidelines to h
 
 -   Encrypt all sensitive data in Eloquent models.
 -   Each Eloquent model should have a corresponding [Policy](https://laravel.com/docs/10.x/authorization#creating-policies) to handle authorization.
--   Each Eloquent model should have a corresponding [Resource](https://laravel.com/docs/10.x/eloquent-resources) to handle serialization.
 -   All actions should be Logged.
 -   Always use pagination on index pages.
 -   The following Eloquent protections are enabled by default

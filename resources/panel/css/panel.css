@@ -24,7 +24,11 @@
 }
 
 .fi-topbar nav {
-    @apply lg:rounded-xl lg:ring-1 lg:ring-gray-950/5 lg:!mx-8 lg:my-4;
+    @apply lg:rounded-xl lg:ring-1 lg:ring-gray-950/5 lg:!mx-8 lg:mt-4;
+}
+
+.fi-sidebar-nav {
+    @apply h-full;
 }
 
 body {

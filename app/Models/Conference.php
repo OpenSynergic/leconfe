@@ -21,8 +21,7 @@ class Conference extends Model implements HasMedia, HasName, HasAvatar
 {
     use HasFactory, Cachable, Metable, InteractsWithMedia, HasShortflakePrimary;
 
-    protected static Conference $current;
-
+    protected static ?Conference $current;
     // protected $with = [
     //     'meta',
     // ];
@@ -37,6 +36,7 @@ class Conference extends Model implements HasMedia, HasName, HasAvatar
         'is_current',
         'type',
         'status',
+        'path',
     ];
 
     /**
@@ -52,15 +52,6 @@ class Conference extends Model implements HasMedia, HasName, HasAvatar
     protected function getMetaClassName(): string
     {
         return ConferenceMeta::class;
-    }
-
-    public static function current(): ?Conference
-    {
-        if (! isset(static::$current)) {
-            static::$current = static::where('is_current', true)->first();
-        }
-
-        return static::$current;
     }
 
     protected static function booted(): void
@@ -101,7 +92,7 @@ class Conference extends Model implements HasMedia, HasName, HasAvatar
 
     public function getNavigationItems(string $handle): array
     {
-        return $this->navigations()->firstWhere('handle', $handle)?->items ?? [];
+        return $this->navigations->firstWhere('handle', $handle)?->items ?? [];
     }
 
     public function getFilamentName(): string
@@ -117,14 +108,29 @@ class Conference extends Model implements HasMedia, HasName, HasAvatar
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('tenant')
+            ->keepOriginalImageFormat()
             ->width(50);
 
         $this->addMediaConversion('thumb')
-            ->width(400)
-            ->sharpen(10);
+            ->keepOriginalImageFormat()
+            ->width(400);
 
         $this->addMediaConversion('thumb-xl')
-            ->width(800)
-            ->sharpen(10);
+            ->keepOriginalImageFormat()
+            ->width(800);
+    }
+
+    public static function current(): ?self
+    {
+        if (! isset(static::$current)) {
+            static::$current = static::where('status', ConferenceStatus::Current)->first();
+        }
+
+        return static::$current;
+    }
+
+    public function isCurrent()
+    {
+        return $this->status == ConferenceStatus::Current;
     }
 }

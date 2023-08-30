@@ -10,17 +10,18 @@ class ConferenceUpdateAction
 {
     use AsAction;
 
-    public function handle(array $data, Conference $conference)
+    public function handle(Conference $conference, array $data)
     {
         try {
             DB::beginTransaction();
+
             $conference->update($data);
 
-            if (array_key_exists('meta', $data) && is_array($data['meta'])) {
-                $conference->setManyMeta($data['meta']);
+            if (data_get($data, 'meta')) {
+                $conference->setManyMeta(data_get($data, 'meta'));
             }
 
-            if (array_key_exists('current', $data) && $data['current'] === true) {
+            if (data_get($data, 'is_current')) {
                 ConferenceSetCurrentAction::run($conference);
             }
 

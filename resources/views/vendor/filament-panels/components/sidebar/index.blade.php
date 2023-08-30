@@ -89,7 +89,6 @@
         {{ \Filament\Support\Facades\FilamentView::renderHook('panels::sidebar.nav.start') }}
 
         @if (filament()->hasTenancy() && auth()->user()?->canAccessMultipleTenant())
-        {{-- @if (filament()->hasTenancy()) --}}
             <div
                 @if (filament()->isSidebarCollapsibleOnDesktop())
                     x-bind:class="$store.sidebar.isOpen ? '-mx-2' : '-mx-4'"
