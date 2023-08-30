@@ -3,10 +3,10 @@
 namespace App\Panel\Pages\Settings;
 
 use App\Infolists\Components\LivewireEntry;
-use App\Panel\Livewire\Forms\Blocks\BlockSettingForm;
 use App\Panel\Livewire\Forms\DateTimeSettingForm;
 use App\Panel\Livewire\Forms\PrivacyStatementForm;
 use App\Panel\Livewire\Forms\Website\GeneralSettingForm;
+use App\Panel\Livewire\Forms\Website\SidebarSettingForm;
 use Filament\Facades\Filament;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\Tabs;
@@ -36,10 +36,6 @@ class Website extends Page implements HasInfolists
                     ->tabs([
                         Tabs\Tab::make('Appearance')
                             ->schema([
-                                // Tabs::make('Label')
-                                //     ->tabs([
-                                //         Tabs\Tab::make('General')
-                                //             ->schema([
                                 Section::make('General')
                                     ->description('General Information about the conference.')
                                     ->schema([
@@ -48,17 +44,14 @@ class Website extends Page implements HasInfolists
                                         ]),
                                     ])
                                     ->aside(),
-                                Section::make('Blocks')
-                                    ->description('Blocks are used to display content on the website. You can create as many blocks as you want and then add them to the website.')
+                                Section::make('Sidebar')
+                                    ->description("The sidebar appears on either the right, left, or both sides of the website.")
                                     ->schema([
-                                        LivewireEntry::make('BlockSettingForm', BlockSettingForm::class, [
+                                        LivewireEntry::make('SidebarSettingForm', SidebarSettingForm::class, [
                                             'record' => Filament::getTenant(),
                                         ]),
                                     ])
                                     ->aside(),
-                                //         ]),
-                                // ])
-                                // ->contained(),
                             ]),
                         Tabs\Tab::make('Setup')
                             ->schema([

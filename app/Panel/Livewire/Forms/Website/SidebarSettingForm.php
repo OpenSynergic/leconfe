@@ -1,26 +1,33 @@
 <?php
 
-namespace App\Panel\Livewire\Forms\Blocks;
+namespace App\Panel\Livewire\Forms\Website;
 
 use App\Actions\Blocks\UpdateBlockSettingsAction;
+use App\Actions\Settings\SettingUpdateAction;
 use App\Classes\Block as BlockUtility;
 use App\Facades\Block;
 use App\Forms\Components\Block as BlockComponent;
-use Awcodes\Shout\Components\Shout;
+use App\Models\Constants\SidebarPosition;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 
-class BlockSettingForm extends \Livewire\Component implements HasForms
+class SidebarSettingForm extends \Livewire\Component implements HasForms
 {
     use InteractsWithForms;
 
     public array $blocks = [];
 
+    public array $sidebar;
+
     public function mount()
     {
         $this->form->fill([
+            'sidebar' => setting('sidebar', SidebarPosition::Both) == SidebarPosition::Both
+                ? [SidebarPosition::Left, SidebarPosition::Right]
+                : [setting('sidebar')],
             'blocks' => [
                 'left' => Block::getBlocks(position: 'left', includeInactive: true)
                     ->map(
@@ -40,10 +47,6 @@ class BlockSettingForm extends \Livewire\Component implements HasForms
         ]);
     }
 
-    public function toggleStatus($statePath, $blockSetting, $uuid)
-    {
-    }
-
     public function updateBlocks($statePath, $blockSettings)
     {
         $blocks = [];
@@ -54,8 +57,8 @@ class BlockSettingForm extends \Livewire\Component implements HasForms
             // The block is being moved to a new position.
             if ($originalState != $statePath) {
                 $block->position = $statePath == 'blocks.left' ? 'left' : 'right';
-                $block->sort = $sort;
             }
+            $block->sort = $sort;
             $block->active = $enabled == 'enabled';
             $blocks[$uuid] = $block;
         }
@@ -67,10 +70,27 @@ class BlockSettingForm extends \Livewire\Component implements HasForms
     {
         return $form
             ->schema([
+                CheckboxList::make('sidebar')
+                    ->options([
+                        SidebarPosition::Left => 'Left',
+                        SidebarPosition::Right => 'Right',
+                    ])
+                    ->descriptions([
+                        SidebarPosition::Left => 'Left Sidebar',
+                        SidebarPosition::Right => 'Right Sidebar',
+                    ])
+                    ->required()
+                    ->reactive()
+                    ->helperText(__('If you choose both sidebars, the layout will have three columns.')),
                 BlockComponent::make('blocks.left')
-                    ->label(__("Left Sidebar")),
+                    ->label(__("Left Sidebar"))
+                    ->hidden(fn () => !in_array(SidebarPosition::Left, $this->sidebar))
+                    ->reactive(),
                 BlockComponent::make('blocks.right')
-                    ->label(__("Right Sidebar")),
+                    ->label(__("Right Sidebar"))
+                    ->hidden(fn () => !in_array(SidebarPosition::Right, $this->sidebar))
+                    ->reactive(),
+
             ]);
     }
 
@@ -84,6 +104,18 @@ class BlockSettingForm extends \Livewire\Component implements HasForms
                     'active' => $block->active
                 ]);
             }
+        }
+
+        if ($this->sidebar) {
+            $sidebar = collect($this->sidebar);
+            $sidebarPosiiton = $sidebar->first();
+
+            if ($sidebar->count() >= 2) {
+                $sidebarPosiiton = SidebarPosition::Both;
+            }
+            SettingUpdateAction::run([
+                'sidebar' => str($sidebarPosiiton)->lower(),
+            ]);
         }
 
         Notification::make()
