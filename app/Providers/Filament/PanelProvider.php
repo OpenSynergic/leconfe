@@ -37,7 +37,7 @@ class PanelProvider extends FilamentPanelProvider
         return $panel
             ->default()
             ->id('panel')
-            ->path('panel')
+            ->path(config('app.filament.panel_path'))
             ->maxContentWidth('full')
             ->homeUrl(fn () => route('livewirePageGroup.website.pages.home'))
             ->bootUsing(fn () => static::setupFilamentComponent())
@@ -57,7 +57,8 @@ class PanelProvider extends FilamentPanelProvider
             ->tenantMenuItems([
                 MenuItem::make()
                     ->label('Administration')
-                    ->url(fn (): string => route('filament.administration.pages.dashboard'))
+                    ->url(fn (): string => url('administration'))
+                    // ->url(fn (): string => route('filament.administration.pages.dashboard'))
                     ->icon('heroicon-m-cog-8-tooth'),
             ])
             ->navigationGroups(static::getNavigationGroups())
@@ -156,14 +157,15 @@ class PanelProvider extends FilamentPanelProvider
 
     public static function setupFilamentComponent()
     {
-        // Carbon::serializeUsing(function ($carbon) {
-        //     return $carbon->format(setting('format.date')); // Customize the format as per your requirements
-        // });
         // TODO Validasi file type menggunakan dengan menggunakan format extension, bukan dengan mime type, hal ini agar mempermudah pengguna dalam melakukan setting file apa saja yang diperbolehkan
         // Saat ini SpatieMediaLibraryFileUpload hanya support file validation dengan mime type.
         // Solusi mungkin buat custom component upload dengan menggunakan library seperti dropzone, atau yang lainnya.
         SpatieMediaLibraryFileUpload::configureUsing(function (SpatieMediaLibraryFileUpload $fileUpload): void {
-            $fileUpload->maxSize(config('media-library.max_file_size') / 1024);
+            $fileUpload
+                ->imageResizeTargetWidth(1024)
+                ->imageResizeUpscale(false)
+                ->maxSize(config('media-library.max_file_size') / 1024);
+
             // ->acceptedFileTypes(config('media-library.accepted_file_types'))
         });
         DatePicker::configureUsing(function (DatePicker $datePicker): void {
@@ -178,15 +180,6 @@ class PanelProvider extends FilamentPanelProvider
             $flatpickr
                 ->dateFormat(setting('format.date'))
                 ->dehydrateStateUsing(fn ($state) => $state ? Carbon::createFromFormat(setting('format.date'), $state) : null);
-            // ->formatStateUsing(function ($state) {
-            //     if (blank($state)) {
-            //         return null;
-            //     }
-            //     return Carbon::parse($state)
-            //         ->translatedFormat(setting('format.date'));
-            // })
-            // ->dehydrateStateUsing(fn ($state) => dd($state));
-            // ->dehydrateStateUsing(fn ($state) => Carbon::createFromFormat(setting('format.date'), $state));
         });
     }
 }

@@ -19,6 +19,7 @@ use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
@@ -30,9 +31,20 @@ class UserSchema
     public static function table(Table $table): Table
     {
         return $table
+            ->striped()
             ->query(User::query())
             ->heading('Users')
             ->columns([
+                TextColumn::make('no')
+                    ->grow(false)
+                    ->state(
+                        static function (HasTable $livewire, \stdClass $rowLoop): string {
+                            return (string) ($rowLoop->iteration +
+                                ($livewire->getTableRecordsPerPage() * ($livewire->getTablePage() - 1
+                                ))
+                            );
+                        }
+                    ),
                 TextColumn::make('given_name')
                     ->size('sm')
                     ->searchable(),
