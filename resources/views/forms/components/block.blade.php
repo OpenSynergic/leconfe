@@ -9,6 +9,11 @@
                 state: $wire.$entangle('{{ $getStatePath() }}'),
                 statePath: '{{ $getStatePath() }}',
             })">
+            @if(!$getState())
+            <div>
+                <span class="text-gray-600">{{ __("Couldn't find any blocks.") }}</span>
+            </div>
+            @endif
         @if($getState())
                 @foreach ($getState() as $uuid => $block)
                     <li
