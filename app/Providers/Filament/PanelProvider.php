@@ -156,6 +156,9 @@ class PanelProvider extends FilamentPanelProvider
 
     public static function setupFilamentComponent()
     {
+        // Carbon::serializeUsing(function ($carbon) {
+        //     return $carbon->format(setting('format.date')); // Customize the format as per your requirements
+        // });
         // TODO Validasi file type menggunakan dengan menggunakan format extension, bukan dengan mime type, hal ini agar mempermudah pengguna dalam melakukan setting file apa saja yang diperbolehkan
         // Saat ini SpatieMediaLibraryFileUpload hanya support file validation dengan mime type.
         // Solusi mungkin buat custom component upload dengan menggunakan library seperti dropzone, atau yang lainnya.
@@ -172,9 +175,18 @@ class PanelProvider extends FilamentPanelProvider
         });
 
         Flatpickr::configureUsing(function (Flatpickr $flatpickr): void {
-            // $flatpickr
-            //     ->dateFormat(setting('format.date'));
-            //     ->dehydrateStateUsing(fn($state) => dd(Carbon::createFromFormat(setting('format.date'), $state)));
+            $flatpickr
+                ->dateFormat(setting('format.date'))
+                ->dehydrateStateUsing(fn ($state) => $state ? Carbon::createFromFormat(setting('format.date'), $state) : null);
+            // ->formatStateUsing(function ($state) {
+            //     if (blank($state)) {
+            //         return null;
+            //     }
+            //     return Carbon::parse($state)
+            //         ->translatedFormat(setting('format.date'));
+            // })
+            // ->dehydrateStateUsing(fn ($state) => dd($state));
+            // ->dehydrateStateUsing(fn ($state) => Carbon::createFromFormat(setting('format.date'), $state));
         });
     }
 }

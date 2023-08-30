@@ -1,6 +1,6 @@
 <div class="navbar-container sticky top-0 z-[500] bg-primary text-white">
     <div class="navbar mx-auto max-w-7xl">
-        <div class="navbar-start">
+        <div class="navbar-start w-auto sm:w-1/2">
             <x-conference::logo/>
         </div>
         <x-conference::navigation :items="$currentConference->getNavigationItems('primary-navigation-menu')"/>

@@ -22,7 +22,7 @@ return [
         Plank\Metable\DataType\IntegerHandler::class,
         Plank\Metable\DataType\FloatHandler::class,
         Plank\Metable\DataType\StringHandler::class,
-        Plank\Metable\DataType\DateTimeHandler::class,
+        App\Metable\DataType\DateTimeHandler::class,
         Plank\Metable\DataType\ArrayHandler::class,
         Plank\Metable\DataType\ModelHandler::class,
         Plank\Metable\DataType\ModelCollectionHandler::class,

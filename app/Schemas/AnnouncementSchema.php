@@ -100,7 +100,7 @@ class AnnouncementSchema
                 ->label('Announcement content')
                 ->helperText('The complete announcement content.'),
             Flatpickr::make('expires_at')
-                ->dateFormat(setting('format.date'))
+                // ->dateFormat(setting('format.date'))
                 ->formatStateUsing(function ($state) {
                     if (blank($state)) {
                         return null;

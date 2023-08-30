@@ -23,9 +23,6 @@ class Conference extends Model implements HasMedia, HasName, HasAvatar
     use HasFactory, Cachable, Metable, InteractsWithMedia, HasShortflakePrimary;
 
     protected static ?Conference $current;
-    // protected $with = [
-    //     'meta',
-    // ];
 
     /**
      * The attributes that are mass assignable.
@@ -79,6 +76,11 @@ class Conference extends Model implements HasMedia, HasName, HasAvatar
     public function venues(): HasMany
     {
         return $this->hasMany(Venue::class);
+    }
+
+    public function topics(): HasMany
+    {
+        return $this->hasMany(Topic::class);
     }
 
     public function announcements(): HasMany
