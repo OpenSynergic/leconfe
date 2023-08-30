@@ -9,8 +9,8 @@
                         alt="{{ $currentConference->name }}">
                 </div>
                 @endif
-                <div class="cf-information space-y-2">
-                    <div class="flex flex-wrap justify-between">
+                <div class="cf-information space-y-2 w-full">
+                    <div class="flex flex-wrap justify-between items-center">
                         <h3 class="text-lg">{{ $currentConference->name }}</h3>
                         <div>
                             <div class="badge badge-info badge-sm  uppercase">{{ $currentConference->type }}</div>

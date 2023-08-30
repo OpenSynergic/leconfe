@@ -23,6 +23,6 @@ class DateTimeHandler extends PlankDateTimeHandler
      */
     public function unserializeValue(string $value)
     {
-        return Carbon::createFromFormat($this->format, $value)->translatedFormat(setting('format.date'));
+        return Carbon::createFromFormat($this->format, $value)->format(setting('format.date'));
     }
 }
