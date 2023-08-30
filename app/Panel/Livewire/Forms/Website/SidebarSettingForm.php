@@ -127,6 +127,6 @@ class SidebarSettingForm extends \Livewire\Component implements HasForms
 
     public function render()
     {
-        return view('panel.livewire.forms.blocks.block-setting-form');
+        return view('panel.livewire.forms.sidebar.sidebar-setting-form');
     }
 }
