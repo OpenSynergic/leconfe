@@ -13,7 +13,6 @@ use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -21,6 +20,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use Squire\Models\Country;
 
 class ConferenceResource extends Resource
@@ -49,13 +49,9 @@ class ConferenceResource extends Resource
                                 TextInput::make('path')
                                     ->rule('alpha_dash')
                                     ->required(),
-                                Flatpickr::make('meta.date_held')
-                                    ->columnSpan([
-                                        'sm' => 2,
-                                    ]),
-                                Textarea::make('meta.description')
-                                    ->autosize()
-                                    ->rows(6)
+                                TextInput::make('meta.location'),
+                                Flatpickr::make('meta.date_held'),
+                                TinyEditor::make('meta.description')
                                     ->columnSpan([
                                         'sm' => 2,
                                     ]),
