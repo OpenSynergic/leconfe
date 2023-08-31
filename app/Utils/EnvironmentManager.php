@@ -52,7 +52,7 @@ class EnvironmentManager
             'MAIL_FROM_ADDRESS' => config('mail.mailers.smtp.from.address'),
             'MAIL_FROM_NAME' => config('mail.mailers.smtp.from.name'),
             'MAIL_MAILER' => config('mail.default'),
-            'MAX_FILE_UPLOAD_SIZE' => '5',
+            'MAX_FILE_UPLOAD_SIZE' => '10',
             'ACCEPTED_FILE_TYPES' => 'image/*,.pdf,.doc,.docx,.zip,.xls,xlsx,.odt,.txt,.xml',
         ];
 
