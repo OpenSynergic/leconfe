@@ -44,7 +44,7 @@ return [
             'visibility' => 'public',
             'throw' => false,
         ],
-       
+
         'media-library' => [
             'driver' => 'local',
             'root' => storage_path('app/public/media'),

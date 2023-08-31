@@ -220,5 +220,5 @@ return [
     'filament' => [
         'panel_path' => env('PANEL_PATH', 'panel'),
         'administration_path' => env('ADMINISTRATION_PATH', 'administration'),
-    ]
+    ],
 ];

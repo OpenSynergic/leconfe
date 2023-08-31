@@ -18,7 +18,7 @@ use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
 use Illuminate\Support\HtmlString;
 
-class SiteSettings extends Page  implements HasInfolists, HasForms
+class SiteSettings extends Page implements HasInfolists, HasForms
 {
     use InteractsWithInfolists, InteractsWithForms;
 
@@ -46,7 +46,7 @@ class SiteSettings extends Page  implements HasInfolists, HasForms
                             ->icon('heroicon-m-window')
                             ->schema([
                                 BladeEntry::make('general')
-                                    ->blade('{{ $this->setupForm }}')
+                                    ->blade('{{ $this->setupForm }}'),
                             ]),
                     ])
                     ->contained(false),
@@ -89,19 +89,19 @@ class SiteSettings extends Page  implements HasInfolists, HasForms
                             ])->mapWithKeys(fn ($format) => [$format => $now->format($format)])),
                     ])
                     ->aside(),
-                    Actions::make([
-                        Action::make('save')
-                            ->successNotificationTitle('Saved!')
-                            ->action(function (Action $action) {
-                                try {
-                                    SettingUpdateAction::run($this->setupForm->getState());
+                Actions::make([
+                    Action::make('save')
+                        ->successNotificationTitle('Saved!')
+                        ->action(function (Action $action) {
+                            try {
+                                SettingUpdateAction::run($this->setupForm->getState());
 
-                                    $action->sendSuccessNotification();
-                                } catch (\Throwable $th) {
-                                    $action->sendFailureNotification();
-                                }
-                            }),
-                    ])->alignRight(),
+                                $action->sendSuccessNotification();
+                            } catch (\Throwable $th) {
+                                $action->sendFailureNotification();
+                            }
+                        }),
+                ])->alignRight(),
             ]);
     }
 }
