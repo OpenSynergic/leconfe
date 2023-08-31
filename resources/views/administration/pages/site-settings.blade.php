@@ -1,3 +1,3 @@
 <x-filament-panels::page>
-  {{ $this->infolist }}
+    {{ $this->infolist }}
 </x-filament-panels::page>
