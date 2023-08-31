@@ -34,7 +34,7 @@ class EnvironmentManager
     {
         $defaultEnvs = [
             'APP_ENV' => 'production',
-            'APP_DEBUG' => 'true',
+            'APP_DEBUG' => 'false',
             'APP_URL' => url('/'),
             'APP_KEY' => 'base64:'.base64_encode(Encrypter::generateKey(config('app.cipher'))),
             'DB_CONNECTION' => config('database.default'),
