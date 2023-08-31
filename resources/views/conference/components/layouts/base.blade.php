@@ -11,7 +11,7 @@
 
     <title>
         {{ filled($title = strip_tags($livewire->getTitle())) ? "{$title} - " : null }}
-        {{ $currentConference->name }}
+        {{ isset($currentConference) ? $currentConference->name : config('app.name') }}
     </title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
