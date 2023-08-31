@@ -21,8 +21,7 @@ trait HasTopics
     public function topics(): MorphToMany
     {
         return $this
-            ->morphToMany(Topic::class)
-            ->ordered();
+            ->morphToMany(Topic::class, 'topicable');
     }
 
     public function attachTopics(array|ArrayAccess|Topic $topics, string $type = null): static

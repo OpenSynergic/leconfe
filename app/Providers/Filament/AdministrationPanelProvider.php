@@ -13,9 +13,10 @@ class AdministrationPanelProvider extends FilamentPanelProvider
     {
         return $panel
             ->id('administration')
-            ->path('administration')
+            ->path(config('app.filament.administration_path'))
             ->homeUrl(fn () => route('livewirePageGroup.website.pages.home'))
             ->colors(PanelProvider::getColors())
+            ->bootUsing(fn () => PanelProvider::setupFilamentComponent())
             ->renderHook(
                 'panels::sidebar.nav.start',
                 fn () => view('administration.components.sidebar.nav-start')

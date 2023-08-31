@@ -13,14 +13,15 @@ use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use Squire\Models\Country;
 
 class ConferenceResource extends Resource
@@ -49,13 +50,9 @@ class ConferenceResource extends Resource
                                 TextInput::make('path')
                                     ->rule('alpha_dash')
                                     ->required(),
-                                Flatpickr::make('meta.date_held')
-                                    ->columnSpan([
-                                        'sm' => 2,
-                                    ]),
-                                Textarea::make('meta.description')
-                                    ->autosize()
-                                    ->rows(6)
+                                TextInput::make('meta.location'),
+                                Flatpickr::make('meta.date_held'),
+                                TinyEditor::make('meta.description')
                                     ->columnSpan([
                                         'sm' => 2,
                                     ]),
@@ -122,10 +119,21 @@ class ConferenceResource extends Resource
             ->defaultPaginationPageOption(5)
             ->recordUrl(fn (Conference $record): ?string => route('filament.panel.pages.dashboard', $record))
             ->columns([
-                SpatieMediaLibraryImageColumn::make('logo')
-                    ->collection('logo')
-                    ->conversion('thumb')
-                    ->grow(false),
+                // SpatieMediaLibraryImageColumn::make('logo')
+                //     ->collection('logo')
+                //     ->conversion('thumb')
+                //     ->grow(false),
+
+                TextColumn::make('number')
+                    ->grow(false)
+                    ->state(
+                        static function (HasTable $livewire, \stdClass $rowLoop): string {
+                            return (string) ($rowLoop->iteration +
+                                ($livewire->getTableRecordsPerPage() * ($livewire->getTablePage() - 1
+                                ))
+                            );
+                        }
+                    ),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('type')

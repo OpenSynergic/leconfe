@@ -60,7 +60,7 @@ class AnnouncementSchema
             TinyEditor::make('announcement')
                 ->helperText('The complete textual content of the announcement.'),
             Flatpickr::make('expires_at')
-                ->dateFormat(setting('format.date'))
+                // ->dateFormat(setting('format.date'))
                 ->formatStateUsing(function ($state) {
                     if (blank($state)) {
                         return null;

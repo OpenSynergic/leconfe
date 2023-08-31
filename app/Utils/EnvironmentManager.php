@@ -34,7 +34,7 @@ class EnvironmentManager
     {
         $defaultEnvs = [
             'APP_ENV' => 'production',
-            'APP_DEBUG' => 'true',
+            'APP_DEBUG' => 'false',
             'APP_URL' => url('/'),
             'APP_KEY' => 'base64:'.base64_encode(Encrypter::generateKey(config('app.cipher'))),
             'DB_CONNECTION' => config('database.default'),
@@ -52,7 +52,7 @@ class EnvironmentManager
             'MAIL_FROM_ADDRESS' => config('mail.mailers.smtp.from.address'),
             'MAIL_FROM_NAME' => config('mail.mailers.smtp.from.name'),
             'MAIL_MAILER' => config('mail.default'),
-            'MAX_FILE_UPLOAD_SIZE' => '5',
+            'MAX_FILE_UPLOAD_SIZE' => '10',
             'ACCEPTED_FILE_TYPES' => 'image/*,.pdf,.doc,.docx,.zip,.xls,xlsx,.odt,.txt,.xml',
         ];
 
@@ -60,6 +60,7 @@ class EnvironmentManager
 
         // Delete existing .env file
         if (file_exists($this->envPath())) {
+            copy($this->envPath(), $this->envPath().'.bak');
             unlink($this->envPath());
         }
 

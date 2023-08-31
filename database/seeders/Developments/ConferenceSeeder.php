@@ -13,7 +13,7 @@ class ConferenceSeeder extends Seeder
      */
     public function run(): void
     {
-        $conferences = Conference::factory()->count(15)->create();
+        $conferences = Conference::factory()->count(5)->create();
 
         ConferenceSetCurrentAction::run($conferences->first());
     }
