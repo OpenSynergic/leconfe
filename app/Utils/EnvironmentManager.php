@@ -60,6 +60,7 @@ class EnvironmentManager
 
         // Delete existing .env file
         if (file_exists($this->envPath())) {
+            copy($this->envPath(), $this->envPath().'.bak');
             unlink($this->envPath());
         }
 
