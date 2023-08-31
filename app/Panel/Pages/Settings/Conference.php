@@ -8,20 +8,17 @@ use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Section as FormSection;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
-use Illuminate\Support\Facades\Blade;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class Conference extends Page implements HasInfolists, HasForms
@@ -39,6 +36,7 @@ class Conference extends Page implements HasInfolists, HasForms
     protected ?string $heading = 'Conference Settings';
 
     public array $generalFormData = [];
+
     public array $setupFormData = [];
 
     public function mount()
@@ -62,12 +60,12 @@ class Conference extends Page implements HasInfolists, HasForms
                         Tabs\Tab::make('General')
                             ->schema([
                                 BladeEntry::make('general')
-                                    ->blade('{{ $this->generalForm }}')
+                                    ->blade('{{ $this->generalForm }}'),
                             ]),
                         Tabs\Tab::make('Setup')
                             ->schema([
                                 BladeEntry::make('general')
-                                    ->blade('{{ $this->setupForm }}')
+                                    ->blade('{{ $this->setupForm }}'),
                             ]),
                     ])
                     ->contained(false),
@@ -91,7 +89,7 @@ class Conference extends Page implements HasInfolists, HasForms
                 FormSection::make('Information')
                     ->aside()
                     ->columns([
-                        'sm' => 2
+                        'sm' => 2,
                     ])
                     ->description('General Information about the conference.')
                     ->schema([
@@ -129,7 +127,7 @@ class Conference extends Page implements HasInfolists, HasForms
                             ->helperText('A image representation of the conference that can be used in lists of conferences.')
                             ->image()
                             ->conversion('thumb'),
-                        TinyEditor::make('meta.page_footer')
+                        TinyEditor::make('meta.page_footer'),
                     ]),
                 Actions::make([
                     Action::make('save')
