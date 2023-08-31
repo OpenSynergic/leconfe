@@ -9,6 +9,7 @@ use App\Facades\Block;
 use App\Forms\Components\Block as BlockComponent;
 use App\Models\Constants\SidebarPosition;
 use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
@@ -85,14 +86,17 @@ class SidebarSettingForm extends \Livewire\Component implements HasForms
                     ])
                     ->reactive()
                     ->helperText(__('If you choose both sidebars, the layout will have three columns.')),
-                BlockComponent::make('blocks.left')
-                    ->label(__("Left Sidebar"))
-                    ->hidden(fn () => !in_array(SidebarPosition::Left, $this->sidebar))
-                    ->reactive(),
-                BlockComponent::make('blocks.right')
-                    ->label(__("Right Sidebar"))
-                    ->hidden(fn () => !in_array(SidebarPosition::Right, $this->sidebar))
-                    ->reactive(),
+                Grid::make(2)
+                    ->schema([
+                        BlockComponent::make('blocks.left')
+                            ->label(__("Left Sidebar"))
+                            ->hidden(fn () => !in_array(SidebarPosition::Left, $this->sidebar))
+                            ->reactive(),
+                        BlockComponent::make('blocks.right')
+                            ->label(__("Right Sidebar"))
+                            ->hidden(fn () => !in_array(SidebarPosition::Right, $this->sidebar))
+                            ->reactive(),
+                    ])
 
             ]);
     }
