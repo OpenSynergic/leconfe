@@ -12,7 +12,7 @@ class Block extends \Livewire\Component
 
     protected int | null $sort = 1;
 
-    protected string | View | null $view = null;
+    protected string | null $view = null;
 
     protected bool $active = true;
 

@@ -7,7 +7,7 @@ use Illuminate\Contracts\View\View;
 
 class ExampleBlock extends Block
 {
-    protected string | View | null $view = 'website.blocks.example-block';
+    protected string | null $view = 'website.blocks.example-block';
 
     protected int | null $sort = 1;
 
