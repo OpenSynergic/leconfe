@@ -17,6 +17,8 @@ document.addEventListener('alpine:init', () => {
             })
         },
         update() {
+            // console.log(this.$wire)
+
             this.$wire.updateBlocks(this.statePath, this.sortable.toArray())
         },
     }))
