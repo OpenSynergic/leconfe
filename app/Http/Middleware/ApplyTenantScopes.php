@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Block;
 use App\Models\Navigation;
 use App\Models\Scopes\TenantScope;
 use App\Models\Speaker;
@@ -28,6 +29,7 @@ class ApplyTenantScopes
             Venue::class,
             Speaker::class,
             Navigation::class,
+            Block::class,
         ] as $model) {
             $model::addGlobalScope(new TenantScope);
         }
