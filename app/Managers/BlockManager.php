@@ -2,7 +2,7 @@
 
 namespace App\Managers;
 
-use App\Classes\Block;
+use App\Livewire\Block;
 use Illuminate\Support\Collection;
 use Livewire\Livewire;
 use Livewire\Mechanisms\ComponentRegistry;

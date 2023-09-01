@@ -5,7 +5,7 @@ namespace App\Panel\Pages\Settings;
 use App\Actions\Blocks\UpdateBlockSettingsAction;
 use App\Actions\Conferences\ConferenceUpdateAction;
 use App\Actions\Settings\SettingUpdateAction;
-use App\Classes\Block as ClassesBlock;
+use App\Livewire\Block as BlockComponent;
 use App\Facades\Block as FacadesBlock;
 use App\Forms\Components\Block;
 use App\Infolists\Components\BladeEntry;
@@ -61,14 +61,14 @@ class Conference extends Page implements HasInfolists, HasForms
                 'blocks' => [
                     'left' => FacadesBlock::getBlocks(position: 'left', includeInactive: true)
                         ->map(
-                            fn (ClassesBlock $block) => (object) $block->getSettings()
+                            fn (BlockComponent $block) => (object) $block->getSettings()
                         )
                         ->keyBy(
                             fn () => str()->uuid()->toString()
                         ),
                     'right' => FacadesBlock::getBlocks(position: 'right', includeInactive: true)
                         ->map(
-                            fn (ClassesBlock $block) => (object) $block->getSettings()
+                            fn (BlockComponent $block) => (object) $block->getSettings()
                         )
                         ->keyBy(
                             fn () => str()->uuid()->toString()
