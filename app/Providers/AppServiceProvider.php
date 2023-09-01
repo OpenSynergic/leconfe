@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Managers\BlockManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
@@ -12,12 +13,15 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+
     /**
      * Register any application services.
      */
     public function register(): void
     {
-
+        $this->app->singleton('block', function () {
+            return new BlockManager;
+        });
     }
 
     /**
@@ -38,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Since this is a performance concern only, don’t halt
         // production for violations.
-        Model::preventLazyLoading(! $this->app->isProduction());
+        Model::preventLazyLoading(!$this->app->isProduction());
     }
 
     protected function setupMorph()

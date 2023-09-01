@@ -2,12 +2,19 @@
 
 namespace App\Panel\Pages\Settings;
 
+use App\Actions\Blocks\UpdateBlockSettingsAction;
 use App\Actions\Conferences\ConferenceUpdateAction;
+use App\Facades\Block as FacadesBlock;
+use App\Forms\Components\BlockList;
 use App\Infolists\Components\BladeEntry;
+use App\Livewire\Block as BlockComponent;
+use App\Models\Enums\SidebarPosition;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section as FormSection;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
@@ -43,6 +50,31 @@ class Conference extends Page implements HasInfolists, HasForms
     {
         $this->generalForm->fill([
             ...Filament::getTenant()->attributesToArray(),
+            'sidebar' => [
+                'position' => match (Filament::getTenant()->getMeta('sidebar')) {
+                    SidebarPosition::Left->getValue() => [SidebarPosition::Left->getValue()],
+                    SidebarPosition::Right->getValue() => [SidebarPosition::Right->getValue()],
+                    SidebarPosition::Both->getValue() => [SidebarPosition::Left->getValue(), SidebarPosition::Right->getValue()],
+                    SidebarPosition::None->getValue() => [],
+                    default => [SidebarPosition::Left->getValue(), SidebarPosition::Right->getValue()],
+                },
+                'blocks' => [
+                    'left' => FacadesBlock::getBlocks(position: 'left', includeInactive: true)
+                        ->map(
+                            fn (BlockComponent $block) => (object) $block->getSettings()
+                        )
+                        ->keyBy(
+                            fn () => str()->uuid()->toString()
+                        ),
+                    'right' => FacadesBlock::getBlocks(position: 'right', includeInactive: true)
+                        ->map(
+                            fn (BlockComponent $block) => (object) $block->getSettings()
+                        )
+                        ->keyBy(
+                            fn () => str()->uuid()->toString()
+                        ),
+                ]
+            ],
             'meta' => Filament::getTenant()->getAllMeta()->toArray(),
         ]);
 
@@ -78,6 +110,26 @@ class Conference extends Page implements HasInfolists, HasForms
             'generalForm',
             'setupForm',
         ];
+    }
+
+    public function updateBlocks($statePath, $blockSettings)
+    {
+        $blocks = [];
+        foreach ($blockSettings as $sort => $blockSetting) {
+            $sort++; // To sort a number, take it from the array index.
+            list($uuid, $enabled, $originalState) = explode(':', $blockSetting);
+            $block = data_get($this, $originalState . '.' . $uuid);
+            // The block is being moved to a new position.
+            if ($originalState != $statePath) {
+                $block->position = str($statePath)->contains('blocks.left') ? 'left' : 'right';
+            }
+
+            $block->sort = $sort;
+            $block->active = $enabled == 'enabled';
+            $blocks[$uuid] = $block;
+        }
+
+        data_set($this, $statePath, $blocks);
     }
 
     public function generalForm(Form $form): Form
@@ -128,13 +180,61 @@ class Conference extends Page implements HasInfolists, HasForms
                             ->image()
                             ->conversion('thumb'),
                         TinyEditor::make('meta.page_footer'),
+                        CheckboxList::make('sidebar.position')
+                            ->options([
+                                SidebarPosition::Left->getValue() => SidebarPosition::Left->getLabel(),
+                                SidebarPosition::Right->getValue() => SidebarPosition::Right->getLabel(),
+                            ])
+                            ->descriptions([
+                                SidebarPosition::Left->getValue() => SidebarPosition::Left->getLabel() . ' Sidebar',
+                                SidebarPosition::Right->getValue() => SidebarPosition::Right->getLabel() . ' Sidebar',
+                            ])
+                            ->reactive()
+                            ->helperText(__('If you choose both sidebars, the layout will have three columns.')),
+                        Grid::make(2)
+                            ->schema([
+                                BlockList::make('sidebar.blocks.left')
+                                    ->label(__("Left Sidebar"))
+                                    ->reactive(),
+                                BlockList::make('sidebar.blocks.right')
+                                    ->label(__("Right Sidebar"))
+                                    ->reactive(),
+                            ])
                     ]),
                 Actions::make([
                     Action::make('save')
                         ->successNotificationTitle('Saved!')
+                        ->failureNotificationTitle('Data could not be saved.')
                         ->action(function (Action $action) {
                             try {
-                                ConferenceUpdateAction::run(Filament::getTenant(), $this->generalForm->getState());
+                                $formData = $this->generalForm->getState();
+                                ConferenceUpdateAction::run(Filament::getTenant(), $formData);
+
+                                $sidebarFormData = $formData['sidebar'];
+
+                                foreach ($sidebarFormData['blocks'] as $blocks) {
+                                    foreach ($blocks as $block) {
+                                        UpdateBlockSettingsAction::run($block->class, [
+                                            'position' => $block->position,
+                                            'sort' => $block->sort,
+                                            'active' => $block->active
+                                        ]);
+                                    }
+                                }
+
+                                $sidebar = collect($formData['sidebar']['position']);
+                                $sidebarPosition = $sidebar->first();
+
+                                if ($sidebar->isEmpty()) {
+                                    $sidebarPosition = SidebarPosition::None->getValue();
+                                }
+
+                                if ($sidebar->count() >= 2) {
+                                    $sidebarPosition = SidebarPosition::Both->getValue();
+                                }
+
+                                FIlament::getTenant()
+                                    ->setMeta('sidebar', $sidebarPosition);
 
                                 $action->sendSuccessNotification();
                             } catch (\Throwable $th) {

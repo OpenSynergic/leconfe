@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Managers\BlockManager;
+use App\Facades\Block;
+use App\Website\Blocks\ExampleBlock;
+use App\Website\Blocks\LeftBlock;
 use App\Http\Middleware\IdentifyCurrentConference;
 use App\Website\Pages\Home;
 use Illuminate\Support\Facades\Blade;
@@ -10,6 +14,17 @@ use Rahmanramsi\LivewirePageGroup\PageGroupServiceProvider;
 
 class WebsiteServiceProvider extends PageGroupServiceProvider
 {
+    public function register()
+    {
+        parent::register();
+
+        // Register blocks
+        Block::registerBlocks([
+            ExampleBlock::class,
+            LeftBlock::class
+        ]);
+    }
+
     public function pageGroup(PageGroup $pageGroup): PageGroup
     {
         return $pageGroup
@@ -17,6 +32,9 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
             ->path('')
             ->layout('conference.components.layouts.app')
             ->homePage(Home::class)
+            ->bootUsing(function () {
+                BlockManager::boot();
+            })
             ->middleware([
                 'web',
                 IdentifyCurrentConference::class,
