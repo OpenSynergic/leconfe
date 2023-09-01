@@ -9,9 +9,10 @@ enum UserRole: string implements HasLabel
 {
     use UsefulEnums;
 
-    case SuperAdmin = 'SuperAdmin';
     case Admin = 'Admin';
-    case Editor = 'Editor';
+    case ConferenceManager = 'Conference Manager';
+    case Director = 'Director';
+    case TrackDirector = 'Track Director';
     case Reviewer = 'Reviewer';
     case Author = 'Author';
     case Participant = 'Participant';

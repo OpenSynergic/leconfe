@@ -6,6 +6,7 @@ use App\Http\Middleware\ApplyTenantScopes;
 use App\Models\Conference;
 use App\Models\Navigation;
 use App\Panel\Resources\NavigationResource;
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Carbon\Carbon;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\DatePicker;
@@ -20,14 +21,7 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider as FilamentPanelProvider;
 use Filament\Support\Colors\Color;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
-use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Session\Middleware\AuthenticateSession;
-use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
 use RyanChandler\FilamentNavigation\FilamentNavigation;
 
 class PanelProvider extends FilamentPanelProvider
@@ -75,11 +69,7 @@ class PanelProvider extends FilamentPanelProvider
             ->databaseNotificationsPolling('120s')
             ->middleware(static::getMiddleware(), true)
             ->authMiddleware(static::getAuthMiddleware(), true)
-            ->plugin(
-                FilamentNavigation::make()
-                    ->usingModel(Navigation::class)
-                    ->usingResource(NavigationResource::class)
-            );
+            ->plugins(static::getPlugins());
     }
 
     /**
@@ -181,5 +171,14 @@ class PanelProvider extends FilamentPanelProvider
                 ->dateFormat(setting('format.date'))
                 ->dehydrateStateUsing(fn ($state) => $state ? Carbon::createFromFormat(setting('format.date'), $state) : null);
         });
+    }
+
+    public static function getPlugins()
+    {
+        return [
+            FilamentNavigation::make()
+                ->usingModel(Navigation::class)
+                ->usingResource(NavigationResource::class),
+        ];
     }
 }

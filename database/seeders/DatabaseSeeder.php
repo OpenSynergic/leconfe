@@ -17,8 +17,9 @@ class DatabaseSeeder extends Seeder
     {
         if (config('app.env') === 'production') {
             $this->call(ProductionSeeder::class);
-        } else {
-            $this->call(DevelopmentSeeder::class);
-        }
+            return;
+        } 
+
+        $this->call(DevelopmentSeeder::class);
     }
 }

@@ -22,6 +22,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Plank\Metable\Metable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 use Spatie\Permission\Traits\HasRoles;
 use Squire\Models\Country;
 
@@ -138,5 +139,24 @@ class User extends Authenticatable implements HasName, HasTenants, HasDefaultTen
     public function submissions()
     {
         return $this->hasMany(Submission::class);
+    }
+
+    /**
+     * Determine if the model may perform the given permission.
+     *
+     * @param  string|int|\Spatie\Permission\Contracts\Permission  $permission
+     * @param  string|null  $guardName
+     *
+     * @throws PermissionDoesNotExist
+     */
+    public function hasPermissionTo($permission, $guardName = null): bool
+    {
+        if ($this->getWildcardClass()) {
+            return $this->hasWildcardPermission($permission, $guardName);
+        }
+        
+        $permission = $this->filterPermission($permission, $guardName);
+        
+        return $this->hasDirectPermission($permission) || $this->hasPermissionViaRole($permission);
     }
 }

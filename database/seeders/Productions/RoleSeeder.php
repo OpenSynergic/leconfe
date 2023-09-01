@@ -4,6 +4,7 @@ namespace Database\Seeders\Productions;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Enums\UserRole;
 use App\Models\Role;
 use Illuminate\Database\Seeder;
 
@@ -14,7 +15,7 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        foreach ([Role::ADMIN, Role::AUTHOR, Role::EDITOR, Role::REVIEWER] as $role) {
+        foreach (UserRole::array() as $role) {
             Role::updateOrCreate(['name' => $role]);
         }
     }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Kra8\Snowflake\HasShortflakePrimary;
 use Spatie\Permission\Models\Role as Model;
 
@@ -10,11 +11,9 @@ class Role extends Model
 {
     use HasShortflakePrimary, Cachable;
 
-    public const ADMIN = 'Admin';
+    public function parent() : BelongsTo
+    {
+        return $this->belongsTo(Role::class, 'parent_id');
+    }
 
-    public const AUTHOR = 'Author';
-
-    public const EDITOR = 'Editor';
-
-    public const REVIEWER = 'Reviewer';
 }
