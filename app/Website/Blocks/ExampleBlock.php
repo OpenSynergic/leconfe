@@ -2,7 +2,7 @@
 
 namespace App\Website\Blocks;
 
-use App\Classes\Block;
+use App\Livewire\Block;
 use Illuminate\Contracts\View\View;
 
 class ExampleBlock extends Block

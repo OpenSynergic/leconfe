@@ -4,7 +4,7 @@ A block is a section of the page displayed on the front page. It can be found on
 
 # How to create
 
-To create a block, you need to create a class that extends the `\App\Classes\Block` class. The class must be located in the `app/Website/Blocks` directory.
+To create a block, you need to create a class that extends the `\App\Livewire\Block` class. The class must be located in the `app/Website/Blocks` directory.
 
 The class must have the following properties:
 
@@ -21,7 +21,7 @@ for example you can look at the following code:
 ```php
 namespace App\Website\Blocks;
 
-use App\Classes\Block;
+use App\Livewire\Block;
 use Illuminate\Contracts\View\View;
 
 class ExampleBlock extends Block

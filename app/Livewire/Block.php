@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Classes;
+namespace App\Livewire;
 
 use Illuminate\Contracts\View\View;
 
