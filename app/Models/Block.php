@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,7 +14,7 @@ class Block extends Model
         'conference_id',
         'position',
         'sort',
-        'active'
+        'active',
     ];
 
     protected $casts = [

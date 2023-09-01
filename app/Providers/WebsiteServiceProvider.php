@@ -2,11 +2,11 @@
 
 namespace App\Providers;
 
-use App\Managers\BlockManager;
 use App\Facades\Block;
+use App\Http\Middleware\IdentifyCurrentConference;
+use App\Managers\BlockManager;
 use App\Website\Blocks\ExampleBlock;
 use App\Website\Blocks\LeftBlock;
-use App\Http\Middleware\IdentifyCurrentConference;
 use App\Website\Pages\Home;
 use Illuminate\Support\Facades\Blade;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
@@ -21,7 +21,7 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
         // Register blocks
         Block::registerBlocks([
             ExampleBlock::class,
-            LeftBlock::class
+            LeftBlock::class,
         ]);
     }
 

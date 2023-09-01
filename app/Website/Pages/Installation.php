@@ -62,7 +62,7 @@ class Installation extends Page
     public function stepDatabase()
     {
         $this->database->validate();
-        if (!$this->database->checkConnection()) {
+        if (! $this->database->checkConnection()) {
             return false;
         }
     }
@@ -74,7 +74,7 @@ class Installation extends Page
 
     public function install()
     {
-        if (!$this->validateInstallation()) {
+        if (! $this->validateInstallation()) {
             return;
         }
 
@@ -97,7 +97,7 @@ class Installation extends Page
         $this->account->validate();
         $this->database->validate();
         $this->conference->validate();
-        if (!$this->database->checkConnection()) {
+        if (! $this->database->checkConnection()) {
             return false;
         }
 
