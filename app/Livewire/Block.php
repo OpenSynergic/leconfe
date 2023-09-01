@@ -4,11 +4,11 @@ namespace App\Livewire;
 
 use Illuminate\Contracts\View\View;
 
-class Block extends \Livewire\Component
+abstract class Block extends \Livewire\Component
 {
     protected string | null $position = 'right';
 
-    protected string | null $name = "Block";
+    protected string $name;
 
     protected int | null $sort = 1;
 

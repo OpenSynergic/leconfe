@@ -3,7 +3,6 @@
 namespace App\Website\Blocks;
 
 use App\Livewire\Block;
-use Illuminate\Contracts\View\View;
 
 class LeftBlock extends Block
 {
@@ -13,5 +12,5 @@ class LeftBlock extends Block
 
     protected string | null $position = 'left';
 
-    protected string | null $name = "Left Block";
+    protected string $name = "Left Block";
 }
