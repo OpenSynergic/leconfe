@@ -20,9 +20,11 @@ class BlockManager
         }
 
         foreach (static::$blocks as $blockClass) {
-            if (is_subclass_of($blockClass, \Livewire\Component::class)) {
+            if (is_subclass_of($blockClass, Block::class)) {
                 $componentName = app(ComponentRegistry::class)->getName($blockClass);
                 Livewire::component($componentName, $blockClass);
+            } else {
+                throw new \Exception("{$blockClass} must be an instance of " . Block::class);
             }
         }
     }
