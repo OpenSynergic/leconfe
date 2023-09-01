@@ -52,7 +52,7 @@ class Conference extends Page implements HasInfolists, HasForms
         $this->generalForm->fill([
             ...Filament::getTenant()->attributesToArray(),
             'sidebar' => [
-                'position' => match (setting('sidebar')) {
+                'position' => match (setting('sidebar', SidebarPosition::Both)) {
                     SidebarPosition::Left => [SidebarPosition::Left],
                     SidebarPosition::Right => [SidebarPosition::Right],
                     SidebarPosition::Both => [SidebarPosition::Left, SidebarPosition::Right],
