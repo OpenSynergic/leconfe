@@ -4,11 +4,10 @@ namespace App\Panel\Pages\Settings;
 
 use App\Actions\Blocks\UpdateBlockSettingsAction;
 use App\Actions\Conferences\ConferenceUpdateAction;
-use App\Actions\Settings\SettingUpdateAction;
-use App\Livewire\Block as BlockComponent;
 use App\Facades\Block as FacadesBlock;
 use App\Forms\Components\BlockList;
 use App\Infolists\Components\BladeEntry;
+use App\Livewire\Block as BlockComponent;
 use App\Models\Enums\SidebarPosition;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Facades\Filament;
@@ -52,11 +51,12 @@ class Conference extends Page implements HasInfolists, HasForms
         $this->generalForm->fill([
             ...Filament::getTenant()->attributesToArray(),
             'sidebar' => [
-                'position' => match (setting('sidebar', SidebarPosition::Both->getValue())) {
+                'position' => match (Filament::getTenant()->getMeta('sidebar')) {
                     SidebarPosition::Left->getValue() => [SidebarPosition::Left->getValue()],
                     SidebarPosition::Right->getValue() => [SidebarPosition::Right->getValue()],
                     SidebarPosition::Both->getValue() => [SidebarPosition::Left->getValue(), SidebarPosition::Right->getValue()],
-                    SidebarPosition::None->getValue() => []
+                    SidebarPosition::None->getValue() => [],
+                    default => [SidebarPosition::Left->getValue(), SidebarPosition::Right->getValue()],
                 },
                 'blocks' => [
                     'left' => FacadesBlock::getBlocks(position: 'left', includeInactive: true)
@@ -182,12 +182,12 @@ class Conference extends Page implements HasInfolists, HasForms
                         TinyEditor::make('meta.page_footer'),
                         CheckboxList::make('sidebar.position')
                             ->options([
-                                SidebarPosition::Left->getValue() => 'Left',
-                                SidebarPosition::Right->getValue() => 'Right',
+                                SidebarPosition::Left->getValue() => SidebarPosition::Left->getLabel(),
+                                SidebarPosition::Right->getValue() => SidebarPosition::Right->getLabel(),
                             ])
                             ->descriptions([
-                                SidebarPosition::Left->getValue() => 'Left Sidebar',
-                                SidebarPosition::Right->getValue() => 'Right Sidebar',
+                                SidebarPosition::Left->getValue() => SidebarPosition::Left->getLabel() . ' Sidebar',
+                                SidebarPosition::Right->getValue() => SidebarPosition::Right->getLabel() . ' Sidebar',
                             ])
                             ->reactive()
                             ->helperText(__('If you choose both sidebars, the layout will have three columns.')),
@@ -204,6 +204,7 @@ class Conference extends Page implements HasInfolists, HasForms
                 Actions::make([
                     Action::make('save')
                         ->successNotificationTitle('Saved!')
+                        ->failureNotificationTitle('Data could not be saved.')
                         ->action(function (Action $action) {
                             try {
                                 $formData = $this->generalForm->getState();
@@ -225,16 +226,15 @@ class Conference extends Page implements HasInfolists, HasForms
                                 $sidebarPosition = $sidebar->first();
 
                                 if ($sidebar->isEmpty()) {
-                                    $sidebarPosition = SidebarPosition::None;
+                                    $sidebarPosition = SidebarPosition::None->getValue();
                                 }
 
                                 if ($sidebar->count() >= 2) {
-                                    $sidebarPosition = SidebarPosition::Both;
+                                    $sidebarPosition = SidebarPosition::Both->getValue();
                                 }
 
-                                SettingUpdateAction::run([
-                                    'sidebar' => str($sidebarPosition)->lower(),
-                                ]);
+                                FIlament::getTenant()
+                                    ->setMeta('sidebar', $sidebarPosition);
 
                                 $action->sendSuccessNotification();
                             } catch (\Throwable $th) {
