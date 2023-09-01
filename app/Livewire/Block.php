@@ -6,13 +6,13 @@ use Illuminate\Contracts\View\View;
 
 abstract class Block extends \Livewire\Component
 {
-    protected string | null $position = 'right';
+    protected ?string $position = 'right';
 
     protected string $name;
 
-    protected int | null $sort = 1;
+    protected ?int $sort = 1;
 
-    protected string | null $view = null;
+    protected ?string $view = null;
 
     protected bool $active = true;
 
@@ -29,15 +29,16 @@ abstract class Block extends \Livewire\Component
     public function getSetting(string $name)
     {
         $blockSetting = \App\Models\Block::where('class', static::class)->first();
+
         return $blockSetting?->{$name};
     }
 
-    public function getPosition(): string | null
+    public function getPosition(): ?string
     {
         return $this->getSetting('position') ?? $this->position;
     }
 
-    public function getSort(): int | null
+    public function getSort(): ?int
     {
         return $this->getSetting('sort') ?? $this->sort;
     }
@@ -59,7 +60,7 @@ abstract class Block extends \Livewire\Component
             'name' => $this->getBlockName(),
             'position' => $this->getPosition(),
             'sort' => $this->getSort(),
-            'active' => $this->isActive()
+            'active' => $this->isActive(),
         ];
     }
 }

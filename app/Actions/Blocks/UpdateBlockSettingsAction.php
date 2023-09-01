@@ -2,15 +2,15 @@
 
 namespace App\Actions\Blocks;
 
-use Lorisleiva\Actions\Concerns\AsAction;
 use App\Models\Block;
 use Illuminate\Support\Facades\DB;
+use Lorisleiva\Actions\Concerns\AsAction;
 
 class UpdateBlockSettingsAction
 {
     use AsAction;
 
-    public function handle(string $blockName, array $settings) : Block
+    public function handle(string $blockName, array $settings): Block
     {
         try {
             DB::beginTransaction();

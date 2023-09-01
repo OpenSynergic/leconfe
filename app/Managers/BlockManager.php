@@ -15,7 +15,7 @@ class BlockManager
 
     public static function boot(): void
     {
-        if (!static::$blocks) {
+        if (! static::$blocks) {
             return;
         }
 
@@ -24,7 +24,7 @@ class BlockManager
                 $componentName = app(ComponentRegistry::class)->getName($blockClass);
                 Livewire::component($componentName, $blockClass);
             } else {
-                throw new \Exception("{$blockClass} must be an instance of " . Block::class);
+                throw new \Exception("{$blockClass} must be an instance of ".Block::class);
             }
         }
     }
@@ -42,7 +42,8 @@ class BlockManager
                 if ($includeInactive) {
                     return $block->getPosition() != $position;
                 }
-                return !$block->isActive() || $block->getPosition() != $position;
+
+                return ! $block->isActive() || $block->getPosition() != $position;
             })
             ->sortBy(fn (Block $block) => $block->getSort());
     }

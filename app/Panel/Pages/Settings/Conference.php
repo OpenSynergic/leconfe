@@ -73,7 +73,7 @@ class Conference extends Page implements HasInfolists, HasForms
                         ->keyBy(
                             fn () => str()->uuid()->toString()
                         ),
-                ]
+                ],
             ],
             'meta' => Filament::getTenant()->getAllMeta()->toArray(),
         ]);
@@ -117,8 +117,8 @@ class Conference extends Page implements HasInfolists, HasForms
         $blocks = [];
         foreach ($blockSettings as $sort => $blockSetting) {
             $sort++; // To sort a number, take it from the array index.
-            list($uuid, $enabled, $originalState) = explode(':', $blockSetting);
-            $block = data_get($this, $originalState . '.' . $uuid);
+            [$uuid, $enabled, $originalState] = explode(':', $blockSetting);
+            $block = data_get($this, $originalState.'.'.$uuid);
             // The block is being moved to a new position.
             if ($originalState != $statePath) {
                 $block->position = str($statePath)->contains('blocks.left') ? 'left' : 'right';
@@ -186,20 +186,20 @@ class Conference extends Page implements HasInfolists, HasForms
                                 SidebarPosition::Right->getValue() => SidebarPosition::Right->getLabel(),
                             ])
                             ->descriptions([
-                                SidebarPosition::Left->getValue() => SidebarPosition::Left->getLabel() . ' Sidebar',
-                                SidebarPosition::Right->getValue() => SidebarPosition::Right->getLabel() . ' Sidebar',
+                                SidebarPosition::Left->getValue() => SidebarPosition::Left->getLabel().' Sidebar',
+                                SidebarPosition::Right->getValue() => SidebarPosition::Right->getLabel().' Sidebar',
                             ])
                             ->reactive()
                             ->helperText(__('If you choose both sidebars, the layout will have three columns.')),
                         Grid::make(2)
                             ->schema([
                                 BlockList::make('sidebar.blocks.left')
-                                    ->label(__("Left Sidebar"))
+                                    ->label(__('Left Sidebar'))
                                     ->reactive(),
                                 BlockList::make('sidebar.blocks.right')
-                                    ->label(__("Right Sidebar"))
+                                    ->label(__('Right Sidebar'))
                                     ->reactive(),
-                            ])
+                            ]),
                     ]),
                 Actions::make([
                     Action::make('save')
@@ -217,7 +217,7 @@ class Conference extends Page implements HasInfolists, HasForms
                                         UpdateBlockSettingsAction::run($block->class, [
                                             'position' => $block->position,
                                             'sort' => $block->sort,
-                                            'active' => $block->active
+                                            'active' => $block->active,
                                         ]);
                                     }
                                 }

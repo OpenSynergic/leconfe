@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Facades\Block;
+use App\Http\Middleware\IdentifyCurrentConference;
 use App\Managers\BlockManager;
 use App\Facades\Block;
 use App\Http\Middleware\EncryptCookies;
@@ -24,7 +26,7 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
         // Register blocks
         Block::registerBlocks([
             ExampleBlock::class,
-            LeftBlock::class
+            LeftBlock::class,
         ]);
     }
 
