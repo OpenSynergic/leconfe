@@ -123,8 +123,7 @@ class ConferenceResource extends Resource
                 //     ->collection('logo')
                 //     ->conversion('thumb')
                 //     ->grow(false),
-
-                TextColumn::make('number')
+                TextColumn::make('no')
                     ->grow(false)
                     ->state(
                         static function (HasTable $livewire, \stdClass $rowLoop): string {

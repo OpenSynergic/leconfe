@@ -9,7 +9,13 @@ use Spatie\Permission\Models\Role as Model;
 
 class Role extends Model
 {
-    use HasShortflakePrimary, Cachable;
+    use HasShortflakePrimary;
+
+    protected $fillable = [
+        'parent_id',
+        'name',
+        'guard_name',
+    ];
 
     public function parent() : BelongsTo
     {

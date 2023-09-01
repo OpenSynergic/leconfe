@@ -2,10 +2,12 @@
 
 namespace App\Panel\Resources\RoleResource\Pages;
 
+use App\Actions\Roles\RoleCreateAction;
 use App\Panel\Resources\RoleResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 
 class CreateRole extends CreateRecord
 {
@@ -16,10 +18,11 @@ class CreateRole extends CreateRecord
      */
     protected function handleRecordCreation(array $data): Model
     {
-        $record = new ($this->getModel())($data);
+        $data['permissions'] = collect(data_get($data, 'permissions', []))
+            ->filter(fn (bool $value) => $value)
+            ->keys()
+            ->toArray();
 
-        $record->save();
-
-        return $record;
+       return RoleCreateAction::run($data);
     }
 }
