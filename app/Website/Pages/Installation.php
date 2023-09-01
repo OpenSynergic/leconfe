@@ -66,13 +66,11 @@ class Installation extends Page
         if (! $this->database->checkConnection()) {
             return false;
         }
-
     }
 
     public function stepAccount()
     {
         $this->account->validate();
-
     }
 
     public function install()

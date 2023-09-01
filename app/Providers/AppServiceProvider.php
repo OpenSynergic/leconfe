@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Managers\BlockManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +18,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-
+        $this->app->singleton('block', function () {
+            return new BlockManager;
+        });
     }
 
     /**

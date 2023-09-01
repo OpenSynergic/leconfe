@@ -2,7 +2,8 @@
 -   ## [Getting Started](/{{route}}/{{version}}/getting-started)
 -   ## Application
     - [Events](/{{route}}/{{version}}/application/events)  
-    - [Authorization](/{{route}}/{{version}}/application/Authorization)  
+    - [Authorization](/{{route}}/{{version}}/application/Authorization)
+    - [Blocks](/{{route}}/{{version}}/application/blocks)
 -   ## Panel
     -   [Introduction](/{{route}}/{{version}}/panel/introduction)
 -   ## Website
