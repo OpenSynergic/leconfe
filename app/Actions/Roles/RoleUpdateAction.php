@@ -6,16 +6,16 @@ use App\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class RoleCreateAction
+class RoleUpdateAction
 {
     use AsAction;
 
-    public function handle(array $data) : Role
+    public function handle(Role $role, array $data)
     {
         try {
             DB::beginTransaction();
 
-            $role = Role::create($data);
+            $role->update($data);
 
             if(isset($data['permissions'])) {
                 $role->syncPermissions($data['permissions']);

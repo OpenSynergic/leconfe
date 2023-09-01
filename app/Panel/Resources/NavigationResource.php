@@ -23,7 +23,7 @@ use RyanChandler\FilamentNavigation\Models\Navigation;
 
 class NavigationResource extends Resource
 {
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 99;
 
     protected static bool $shouldRegisterNavigation = true;
 

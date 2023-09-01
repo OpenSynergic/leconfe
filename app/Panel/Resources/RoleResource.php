@@ -2,22 +2,24 @@
 
 namespace App\Panel\Resources;
 
-use App\Panel\Resources\RoleResource\Pages;
-use App\Panel\Resources\RoleResource\RelationManagers;
-use App\Models\Role;
 use Filament\Forms;
-use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use App\Models\Role;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Checkbox;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Spatie\Permission\PermissionRegistrar;
+use App\Panel\Resources\RoleResource\Pages;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Panel\Resources\RoleResource\RelationManagers;
+use Filament\Tables\Contracts\HasTable;
 
 class RoleResource extends Resource
 {
@@ -28,7 +30,6 @@ class RoleResource extends Resource
     protected static ?string $navigationGroup = 'Settings';
 
     protected static ?int $navigationSort = 6;
-
 
     public static function getEloquentQuery(): Builder
     {
@@ -45,7 +46,7 @@ class RoleResource extends Resource
                         Select::make('parent_id')
                             ->label('Permission Level')
                             ->required()
-                            ->relationship('parent', 'name', fn($query) => $query->whereNull('parent_id'))
+                            ->relationship('parent', 'name', fn ($query) => $query->whereNull('parent_id'))
                             ->searchable()
                             ->preload(),
                     ])
@@ -54,6 +55,7 @@ class RoleResource extends Resource
                     ]),
                 Section::make('Advanced Permissions')
                     ->schema(static::getPermissionEntitySchema())
+                    ->collapsible(false)
                     ->columns([
                         'sm' => 4,
                     ])
@@ -65,6 +67,19 @@ class RoleResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('no')
+                    ->grow(false)
+                    ->extraCellAttributes([
+                        'style' => 'width: 1px',
+                    ])
+                    ->state(
+                        static function (HasTable $livewire, \stdClass $rowLoop): string {
+                            return (string) ($rowLoop->iteration +
+                                ($livewire->getTableRecordsPerPage() * ($livewire->getTablePage() - 1
+                                ))
+                            );
+                        }
+                    ),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('parent.name')
@@ -79,9 +94,9 @@ class RoleResource extends Resource
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
@@ -104,23 +119,31 @@ class RoleResource extends Resource
         ];
     }
 
-    public static function getPermissionEntitySchema() : array
+    public static function getPermissionEntitySchema(): array
     {
         $permissions = app(PermissionRegistrar::class)->getPermissions();
-        
-        $permissionsGroupedByEntity = $permissions->groupBy(function($permission){
+
+        $permissionsGroupedByEntity = $permissions->groupBy(function ($permission) {
+            // Split the permission name by the first colon
+            // Example : "User:update" become ["User", "update"]
             [$context, $action] = explode(':', $permission->name);
 
             return $context;
-        })->map(function($permissions, $key){
+        })->map(function ($permissions, $key) {
             return Section::make($key)
-                ->schema($permissions->map(fn($permission) => Checkbox::make($permission->id)->label($permission->name))
-                ->toArray()
-            );
+                ->columnSpan([
+                    'lg' => 2,
+                    'xl' => 1,
+                ])
+                ->schema(
+                    $permissions->map(function ($permission) {
+                        [, $action] = explode(':', $permission->name);
+
+                        return Checkbox::make('permissions.' . $permission->name)->label(Str::headline($action));
+                    })
+                        ->toArray()
+                );
         })->toArray();
-
-        
-
 
         return $permissionsGroupedByEntity;
     }

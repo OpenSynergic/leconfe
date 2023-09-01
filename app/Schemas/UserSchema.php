@@ -69,8 +69,10 @@ class UserSchema
                 ActionGroup::make([
                     Impersonate::make()
                         ->grouped()
+                        ->visible(fn($record) => auth()->user()->can('loginAs', $record))
                         ->label(fn (Model $record) => "Login as {$record->given_name}")
                         ->icon('heroicon-m-key')
+                        ->color('primary')
                         ->redirectTo('panel'),
                     EditAction::make()
                         ->modalWidth('2xl')
