@@ -7,7 +7,7 @@ use App\Actions\Conferences\ConferenceUpdateAction;
 use App\Actions\Settings\SettingUpdateAction;
 use App\Livewire\Block as BlockComponent;
 use App\Facades\Block as FacadesBlock;
-use App\Forms\Components\Block;
+use App\Forms\Components\BlockList;
 use App\Infolists\Components\BladeEntry;
 use App\Models\Constants\SidebarPosition;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
@@ -193,10 +193,10 @@ class Conference extends Page implements HasInfolists, HasForms
                             ->helperText(__('If you choose both sidebars, the layout will have three columns.')),
                         Grid::make(2)
                             ->schema([
-                                Block::make('sidebar.blocks.left')
+                                BlockList::make('sidebar.blocks.left')
                                     ->label(__("Left Sidebar"))
                                     ->reactive(),
-                                Block::make('sidebar.blocks.right')
+                                BlockList::make('sidebar.blocks.right')
                                     ->label(__("Right Sidebar"))
                                     ->reactive(),
                             ])
