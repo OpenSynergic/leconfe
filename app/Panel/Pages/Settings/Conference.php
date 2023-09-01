@@ -9,7 +9,7 @@ use App\Livewire\Block as BlockComponent;
 use App\Facades\Block as FacadesBlock;
 use App\Forms\Components\BlockList;
 use App\Infolists\Components\BladeEntry;
-use App\Models\Constants\SidebarPosition;
+use App\Models\Enums\SidebarPosition;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Actions;
@@ -52,11 +52,11 @@ class Conference extends Page implements HasInfolists, HasForms
         $this->generalForm->fill([
             ...Filament::getTenant()->attributesToArray(),
             'sidebar' => [
-                'position' => match (setting('sidebar', SidebarPosition::Both)) {
-                    SidebarPosition::Left => [SidebarPosition::Left],
-                    SidebarPosition::Right => [SidebarPosition::Right],
-                    SidebarPosition::Both => [SidebarPosition::Left, SidebarPosition::Right],
-                    SidebarPosition::None => []
+                'position' => match (setting('sidebar', SidebarPosition::Both->getValue())) {
+                    SidebarPosition::Left->getValue() => [SidebarPosition::Left->getValue()],
+                    SidebarPosition::Right->getValue() => [SidebarPosition::Right->getValue()],
+                    SidebarPosition::Both->getValue() => [SidebarPosition::Left->getValue(), SidebarPosition::Right->getValue()],
+                    SidebarPosition::None->getValue() => []
                 },
                 'blocks' => [
                     'left' => FacadesBlock::getBlocks(position: 'left', includeInactive: true)
@@ -182,12 +182,12 @@ class Conference extends Page implements HasInfolists, HasForms
                         TinyEditor::make('meta.page_footer'),
                         CheckboxList::make('sidebar.position')
                             ->options([
-                                SidebarPosition::Left => 'Left',
-                                SidebarPosition::Right => 'Right',
+                                SidebarPosition::Left->getValue() => 'Left',
+                                SidebarPosition::Right->getValue() => 'Right',
                             ])
                             ->descriptions([
-                                SidebarPosition::Left => 'Left Sidebar',
-                                SidebarPosition::Right => 'Right Sidebar',
+                                SidebarPosition::Left->getValue() => 'Left Sidebar',
+                                SidebarPosition::Right->getValue() => 'Right Sidebar',
                             ])
                             ->reactive()
                             ->helperText(__('If you choose both sidebars, the layout will have three columns.')),

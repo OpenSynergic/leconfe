@@ -1,7 +1,12 @@
 @php
-    $leftSidebarActive = \App\Models\Constants\SidebarPosition::isLeft();
-    $rightSidebarActive = \App\Models\Constants\SidebarPosition::isRight();
-    $bothSidebarActive = \App\Models\Constants\SidebarPosition::isBoth();
+    if(!function_exists('isSidebar')) {
+        function isSidebar($position): bool {
+            return setting('sidebar') == $position->getValue();
+        }
+    }
+    $leftSidebarActive = isSidebar(\App\Models\Enums\SidebarPosition::Left);
+    $rightSidebarActive = isSidebar(\App\Models\Enums\SidebarPosition::Right);
+    $bothSidebarActive = isSidebar(\App\Models\Enums\SidebarPosition::Both);
     $sidebarActive = $leftSidebarActive || $rightSidebarActive;
 @endphp
 <div class="page-main mx-auto max-w-7xl flex flex-col lg:grid grid-cols-12 gap-3 grow w-full">
