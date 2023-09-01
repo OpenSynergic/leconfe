@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Enums\UserRole;
 use App\Models\Role;
 use App\Models\User;
 
@@ -12,15 +13,15 @@ class RolePolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->can('Role:viewAny');
     }
-
+    
     /**
      * Determine whether the user can view the model.
      */
     public function view(User $user, Role $role): bool
     {
-        return true;
+        return $user->can('Role:view');
     }
 
     /**
@@ -28,7 +29,7 @@ class RolePolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return $user->can('Role:create');
     }
 
     /**
@@ -36,7 +37,11 @@ class RolePolicy
      */
     public function update(User $user, Role $role): bool
     {
-        return true;
+        if(in_array($role->name, UserRole::values())){
+            return false;
+        }
+
+        return $user->can('Role:update');
     }
 
     /**
@@ -44,22 +49,10 @@ class RolePolicy
      */
     public function delete(User $user, Role $role): bool
     {
-        return true;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Role $role): bool
-    {
-        return true;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Role $role): bool
-    {
-        return true;
+        if(in_array($role->name, UserRole::values())){
+            return false;
+        }
+        
+        return $user->can('Role:delete');
     }
 }

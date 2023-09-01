@@ -34,6 +34,7 @@ class Installation extends Page
         }
 
         if (file_exists(base_path('.env'))) {
+            copy(base_path('.env'), base_path('.env.bak'));
             unlink(base_path('.env'));
 
             return redirect(static::getSlug());

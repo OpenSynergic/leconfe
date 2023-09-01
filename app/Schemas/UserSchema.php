@@ -78,7 +78,6 @@ class UserSchema
                         ->mutateRecordDataUsing(fn ($data, Model $record) => array_merge($data, ['meta' => $record->getAllMeta()->toArray()]))
                         ->using(fn (array $data, Model $record) => UserUpdateAction::run($data, $record)),
                     DeleteAction::make()
-                        ->hidden(fn (Model $record) => $record->given_name == Role::ADMIN)
                         ->using(fn (?array $data, Model $record) => UserDeleteAction::run($data, $record)),
                 ]),
             ])

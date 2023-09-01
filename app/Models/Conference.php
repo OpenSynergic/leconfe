@@ -16,10 +16,12 @@ use Plank\Metable\Metable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class Conference extends Model implements HasMedia, HasName, HasAvatar
 {
-    use HasFactory, Cachable, Metable, InteractsWithMedia, HasShortflakePrimary;
+    use HasFactory, Cachable, Metable, InteractsWithMedia, HasShortflakePrimary, HasSlug;
 
     protected static ?Conference $current;
 
@@ -120,6 +122,16 @@ class Conference extends Model implements HasMedia, HasName, HasAvatar
         $this->addMediaConversion('thumb-xl')
             ->keepOriginalImageFormat()
             ->width(800);
+    }
+
+    /**
+     * Get the options for generating the slug.
+     */
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('path');
     }
 
     public static function current(): ?self

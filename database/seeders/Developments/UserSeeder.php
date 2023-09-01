@@ -4,6 +4,7 @@ namespace Database\Seeders\Developments;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Enums\UserRole;
 use App\Models\Role;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -22,7 +23,7 @@ class UserSeeder extends Seeder
             'password' => Hash::make('admin'),
         ]);
 
-        $user->assignRole(Role::ADMIN);
+        $user->assignRole(UserRole::Admin->value);
 
         \App\Models\User::factory(100)->create();
     }
