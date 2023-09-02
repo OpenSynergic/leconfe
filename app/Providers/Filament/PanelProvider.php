@@ -152,7 +152,9 @@ class PanelProvider extends FilamentPanelProvider
         // Solusi mungkin buat custom component upload dengan menggunakan library seperti dropzone, atau yang lainnya.
         SpatieMediaLibraryFileUpload::configureUsing(function (SpatieMediaLibraryFileUpload $fileUpload): void {
             $fileUpload
-                ->imageResizeTargetWidth(1024)
+                ->imageResizeTargetWidth(2048)
+                ->imageResizeTargetWidth(2048)
+                ->imageResizeMode('contain')
                 ->imageResizeUpscale(false)
                 ->maxSize(config('media-library.max_file_size') / 1024);
 
