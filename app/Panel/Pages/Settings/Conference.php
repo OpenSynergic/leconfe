@@ -323,24 +323,24 @@ class Conference extends Page implements HasInfolists, HasForms
                                         FormSection::make('Privacy Statement')
                                             ->schema([
                                                 TinyEditor::make('meta.privacy_statement')->label('Privacy Statement'),
+                                                Actions::make([
+                                                    Action::make('setup_save')
+                                                        ->label('Save')
+                                                        ->successNotificationTitle('Saved!')
+                                                        ->action(function (Action $action) {
+                                                            try {
+                                                                ConferenceUpdateAction::run(Filament::getTenant(), $this->setupForm->getState());
+
+                                                                $action->sendSuccessNotification();
+                                                            } catch (\Throwable $th) {
+                                                                $action->sendFailureNotification();
+                                                            }
+                                                        }),
+                                                ])->alignRight(),
                                             ])
                                             ->extraAttributes([
                                                 'class' => '!p-0',
                                             ]),
-                                        Actions::make([
-                                            Action::make('setup_save')
-                                                ->label('Save')
-                                                ->successNotificationTitle('Saved!')
-                                                ->action(function (Action $action) {
-                                                    try {
-                                                        ConferenceUpdateAction::run(Filament::getTenant(), $this->setupForm->getState());
-
-                                                        $action->sendSuccessNotification();
-                                                    } catch (\Throwable $th) {
-                                                        $action->sendFailureNotification();
-                                                    }
-                                                }),
-                                        ])->alignRight(),
                                     ]
                                 ),
                         ]
