@@ -4,7 +4,7 @@
     "src": "resources/assets/images/logo.png"
   },
   "resources/conference/css/conference.css": {
-    "file": "assets/conference-e47a1fa2.css",
+    "file": "assets/conference-7cc1cc0c.css",
     "isEntry": true,
     "src": "resources/conference/css/conference.css"
   },
@@ -14,12 +14,12 @@
     "src": "resources/conference/js/conference.js"
   },
   "resources/panel/css/panel.css": {
-    "file": "assets/panel-bfa1f24c.css",
+    "file": "assets/panel-876c4190.css",
     "isEntry": true,
     "src": "resources/panel/css/panel.css"
   },
   "resources/panel/js/panel.js": {
-    "file": "assets/panel-f0622975.js",
+    "file": "assets/panel-540e3665.js",
     "isEntry": true,
     "src": "resources/panel/js/panel.js"
   }

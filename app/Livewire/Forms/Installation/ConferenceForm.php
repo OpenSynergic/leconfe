@@ -16,7 +16,7 @@ class ConferenceForm extends Form
 
     #[Rule('required')]
     public $current = true;
-    
+
     #[Rule('required')]
     public $status = 'Current';
 

@@ -4,10 +4,8 @@ namespace App\Panel\Resources\RoleResource\Pages;
 
 use App\Actions\Roles\RoleCreateAction;
 use App\Panel\Resources\RoleResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
 
 class CreateRole extends CreateRecord
 {
@@ -23,6 +21,6 @@ class CreateRole extends CreateRecord
             ->keys()
             ->toArray();
 
-       return RoleCreateAction::run($data);
+        return RoleCreateAction::run($data);
     }
 }

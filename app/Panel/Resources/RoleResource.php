@@ -2,24 +2,25 @@
 
 namespace App\Panel\Resources;
 
-use Filament\Forms;
 use App\Models\Role;
-use Filament\Tables;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Illuminate\Support\Str;
-use Filament\Resources\Resource;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Checkbox;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
-use Illuminate\Database\Eloquent\Builder;
-use Spatie\Permission\PermissionRegistrar;
 use App\Panel\Resources\RoleResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Panel\Resources\RoleResource\RelationManagers;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
 
 class RoleResource extends Resource
 {
@@ -31,9 +32,11 @@ class RoleResource extends Resource
 
     protected static ?int $navigationSort = 6;
 
+    protected static ?Role $parentRole = null;
+
     public static function getEloquentQuery(): Builder
     {
-        return static::getModel()::query()->with('parent');
+        return static::getModel()::query();
     }
 
     public static function form(Form $form): Form
@@ -45,9 +48,23 @@ class RoleResource extends Resource
                         TextInput::make('name'),
                         Select::make('parent_id')
                             ->label('Permission Level')
-                            ->required()
                             ->relationship('parent', 'name', fn ($query) => $query->whereNull('parent_id'))
-                            ->searchable()
+                            ->live()
+                            ->afterStateUpdated(function (Set $set, ?string $state) {
+                                if (! $state) {
+                                    return;
+                                }
+
+                                $newParent = Role::find($state);
+
+                                app(PermissionRegistrar::class)
+                                    ->getPermissions()
+                                    ->each(function (Permission $permission) use ($set, $newParent) {
+                                        $condition = $newParent->hasPermissionOnAncestorsAndSelf($permission);
+
+                                        $set('permissions.'.$permission->name, $condition);
+                                    });
+                            })
                             ->preload(),
                     ])
                     ->columns([
@@ -58,7 +75,7 @@ class RoleResource extends Resource
                     ->collapsible(false)
                     ->columns([
                         'sm' => 4,
-                    ])
+                    ]),
             ])
             ->columns(2);
     }
@@ -90,6 +107,7 @@ class RoleResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
@@ -116,6 +134,7 @@ class RoleResource extends Resource
             'index' => Pages\ListRoles::route('/'),
             'create' => Pages\CreateRole::route('/create'),
             'edit' => Pages\EditRole::route('/{record}/edit'),
+            'view' => Pages\ViewRole::route('/{record}'),
         ];
     }
 
@@ -130,21 +149,44 @@ class RoleResource extends Resource
 
             return $context;
         })->map(function ($permissions, $key) {
-            return Section::make($key)
+            return Fieldset::make($key)
+                ->columns(1)
+                ->extraAttributes([
+                    'class' => 'h-full',
+                ])
+                ->disabled(fn ($record) => ! auth()->user()->can('assignPermissions', $record))
                 ->columnSpan([
                     'lg' => 2,
                     'xl' => 1,
                 ])
-                ->schema(
-                    $permissions->map(function ($permission) {
-                        [, $action] = explode(':', $permission->name);
+                ->schema($permissions->map(function ($permission) {
+                    [, $action] = explode(':', $permission->name);
 
-                        return Checkbox::make('permissions.' . $permission->name)->label(Str::headline($action));
-                    })
-                        ->toArray()
-                );
+                    return Checkbox::make('permissions.'.$permission->name)
+                        ->disabled(function (Get $get) use ($permission) {
+                            $parentId = $get('parent_id');
+
+                            if (! $parentId) {
+                                return false;
+                            }
+
+                            $parent = static::getParentRole($parentId);
+
+                            return $parent->hasPermissionOnAncestorsAndSelf($permission);
+                        })
+                        ->label(Str::headline($action));
+                })->toArray());
         })->toArray();
 
         return $permissionsGroupedByEntity;
+    }
+
+    public static function getParentRole(string $parentId)
+    {
+        if (static::$parentRole?->getKey() != $parentId) {
+            static::$parentRole = Role::find($parentId);
+        }
+
+        return static::$parentRole;
     }
 }

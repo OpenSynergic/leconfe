@@ -5,13 +5,12 @@ namespace App\Providers;
 // use Illuminate\Support\Facades\Gate;
 
 use App\Models\Enums\UserRole;
-use App\Models\Role;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Gate;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Contracts\Auth\Access\Authorizable;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
+use Spatie\Permission\Models\Permission;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -35,12 +34,14 @@ class AuthServiceProvider extends ServiceProvider
             });
         }
 
-        if (!$this->app->isProduction()) {
+        if (! $this->app->isProduction()) {
             Gate::before(function (Authorizable $user, string $ability) {
-                if (!Str::contains($ability, ':')) return null;
+                if (! Str::contains($ability, ':')) {
+                    return null;
+                }
 
                 $permission = Permission::getPermission(['name' => $ability]);
-                if (!$permission) {
+                if (! $permission) {
                     DB::transaction(function () use ($ability) {
                         $permission = Permission::create([
                             'name' => $ability,
@@ -52,8 +53,8 @@ class AuthServiceProvider extends ServiceProvider
             });
         }
 
-        Gate::before(function ($user, $ability) {
-            return $user->hasRole("Super Admin") ? true : null;
+        Gate::after(function ($user, $ability) {
+            return $user->hasRole('Super Admin') ? true : false;
         });
     }
 }

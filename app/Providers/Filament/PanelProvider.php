@@ -6,7 +6,6 @@ use App\Http\Middleware\ApplyTenantScopes;
 use App\Models\Conference;
 use App\Models\Navigation;
 use App\Panel\Resources\NavigationResource;
-use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Carbon\Carbon;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\DatePicker;

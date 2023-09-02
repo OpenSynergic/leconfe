@@ -11,9 +11,9 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
 
-class UsersTable extends Component implements HasTable, HasForms
+class UsersTable extends Component implements HasForms, HasTable
 {
-    use InteractsWithTable, InteractsWithForms, PlaceholderTrait;
+    use InteractsWithForms, InteractsWithTable, PlaceholderTrait;
 
     public function render()
     {

@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Spatie\MediaLibrary\Support\MediaStream;
 
-class SubmissionFilesTable extends Component implements HasTable, HasForms
+class SubmissionFilesTable extends Component implements HasForms, HasTable
 {
     use InteractsWithForms, InteractsWithTable;
 

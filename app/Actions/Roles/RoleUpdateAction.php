@@ -17,7 +17,7 @@ class RoleUpdateAction
 
             $role->update($data);
 
-            if(isset($data['permissions'])) {
+            if (isset($data['permissions'])) {
                 $role->syncPermissions($data['permissions']);
             }
 

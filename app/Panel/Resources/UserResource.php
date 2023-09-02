@@ -2,23 +2,15 @@
 
 namespace App\Panel\Resources;
 
-use App\Actions\User\UserCreateAction;
 use App\Actions\User\UserDeleteAction;
 use App\Actions\User\UserUpdateAction;
-use App\Panel\Resources\UserResource\Pages;
-use App\Panel\Resources\UserResource\RelationManagers;
 use App\Models\User;
+use App\Panel\Resources\UserResource\Pages;
 use Filament\Forms;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
@@ -26,7 +18,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
 use Squire\Models\Country;
 use STS\FilamentImpersonate\Tables\Actions\Impersonate;
@@ -67,10 +58,10 @@ class UserResource extends Resource
                                 Forms\Components\TextInput::make('email')
                                     ->columnSpan(['lg' => 2])
                                     ->disabled(fn (?User $record) => $record)
-                                    ->dehydrated(fn (?User $record) => !$record)
+                                    ->dehydrated(fn (?User $record) => ! $record)
                                     ->unique(ignoreRecord: true),
                                 Forms\Components\TextInput::make('password')
-                                    ->required(fn (?User $record) => !$record)
+                                    ->required(fn (?User $record) => ! $record)
                                     ->password()
                                     ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                                     ->dehydrated(fn ($state) => filled($state))
@@ -106,7 +97,7 @@ class UserResource extends Resource
                                 Forms\Components\Placeholder::make('created_at')
                                     ->label('Created at')
                                     ->content(fn (?User $record): ?string => $record?->created_at?->diffForHumans() ?? '-'),
-        
+
                                 Forms\Components\Placeholder::make('updated_at')
                                     ->label('Last modified at')
                                     ->content(fn (?User $record): ?string => $record?->updated_at?->diffForHumans() ?? '-'),
@@ -115,8 +106,8 @@ class UserResource extends Resource
                             ->schema([
                                 Forms\Components\CheckboxList::make('roles')
                                     ->label('')
-                                    ->disabled(fn () => !auth()->user()->can('User:assignRoles'))
-                                    ->relationship('roles', 'name')
+                                    ->disabled(fn () => ! auth()->user()->can('User:assignRoles'))
+                                    ->relationship('roles', 'name'),
                             ]),
                     ])
                     ->columnSpan(['lg' => 1]),
