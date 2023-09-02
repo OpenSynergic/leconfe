@@ -5,7 +5,6 @@ namespace Database\Seeders\Developments;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\Enums\UserRole;
-use App\Models\Role;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 

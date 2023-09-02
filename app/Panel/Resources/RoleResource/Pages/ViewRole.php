@@ -2,21 +2,21 @@
 
 namespace App\Panel\Resources\RoleResource\Pages;
 
-use App\Actions\Roles\RoleUpdateAction;
 use App\Panel\Resources\RoleResource;
 use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
-use Illuminate\Database\Eloquent\Model;
+use Filament\Resources\Pages\ViewRecord;
 use Spatie\Permission\PermissionRegistrar;
 
-class EditRole extends EditRecord
+class ViewRole extends ViewRecord
 {
     protected static string $resource = RoleResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
+            Actions\EditAction::make(),
             Actions\DeleteAction::make(),
+
         ];
     }
 
@@ -32,18 +32,5 @@ class EditRole extends EditRecord
             ->toArray();
 
         return $data;
-    }
-
-    /**
-     * @param  array<string, mixed>  $data
-     */
-    protected function handleRecordUpdate(Model $record, array $data): Model
-    {
-        $data['permissions'] = collect(data_get($data, 'permissions', []))
-            ->filter(fn (bool $value) => $value)
-            ->keys()
-            ->toArray();
-
-        return RoleUpdateAction::run($record, $data);
     }
 }

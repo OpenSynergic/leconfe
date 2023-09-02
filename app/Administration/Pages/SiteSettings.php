@@ -18,9 +18,9 @@ use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
 use Illuminate\Support\HtmlString;
 
-class SiteSettings extends Page implements HasInfolists, HasForms
+class SiteSettings extends Page implements HasForms, HasInfolists
 {
-    use InteractsWithInfolists, InteractsWithForms;
+    use InteractsWithForms, InteractsWithInfolists;
 
     protected static ?string $navigationIcon = 'heroicon-m-cog';
 

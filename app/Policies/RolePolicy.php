@@ -11,48 +11,65 @@ class RolePolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(User $user)
     {
-        return $user->can('Role:viewAny');
+        if ($user->can('Role:viewAny')) {
+            return true;
+        }
     }
-    
+
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Role $role): bool
+    public function view(User $user, Role $role)
     {
-        return $user->can('Role:view');
+        if ($user->can('Role:view')) {
+            return true;
+        }
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user)
     {
-        return $user->can('Role:create');
+        if ($user->can('Role:create')) {
+            return true;
+        }
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Role $role): bool
+    public function update(User $user, Role $role)
     {
-        if(in_array($role->name, UserRole::values())){
+        if (in_array($role->name, UserRole::values()) && app()->isProduction()) {
             return false;
         }
 
-        return $user->can('Role:update');
+        if ($user->can('Role:update')) {
+            return true;
+        }
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Role $role): bool
+    public function delete(User $user, Role $role)
     {
-        if(in_array($role->name, UserRole::values())){
+        if (in_array($role->name, UserRole::values())) {
             return false;
         }
-        
-        return $user->can('Role:delete');
+
+        if ($user->can('Role:delete')) {
+            return true;
+        }
+    }
+
+    public function assignPermissions(User $user, Role $role)
+    {
+        if ($user->can('Role:assignPermissions')) {
+            return true;
+        }
     }
 }

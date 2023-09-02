@@ -19,9 +19,9 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
-class Conference extends Model implements HasMedia, HasName, HasAvatar
+class Conference extends Model implements HasAvatar, HasMedia, HasName
 {
-    use HasFactory, Cachable, Metable, InteractsWithMedia, HasShortflakePrimary, HasSlug;
+    use Cachable, HasFactory, HasShortflakePrimary, HasSlug, InteractsWithMedia, Metable;
 
     protected static ?Conference $current;
 

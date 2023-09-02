@@ -4,21 +4,20 @@ namespace App\Panel\Livewire\Tables;
 
 use App\Panel\Livewire\Traits\PlaceholderTrait;
 use App\Panel\Resources\RoleResource;
-use Filament\Actions\CreateAction;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Tables;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
 
-class RolesTable extends Component implements HasTable, HasForms
+class RolesTable extends Component implements HasForms, HasTable
 {
-    use InteractsWithTable, InteractsWithForms, PlaceholderTrait;
+    use InteractsWithForms, InteractsWithTable, PlaceholderTrait;
 
     protected static string $resource = RoleResource::class;
 

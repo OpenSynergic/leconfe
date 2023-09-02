@@ -10,14 +10,14 @@ class RoleCreateAction
 {
     use AsAction;
 
-    public function handle(array $data) : Role
+    public function handle(array $data): Role
     {
         try {
             DB::beginTransaction();
 
             $role = Role::create($data);
 
-            if(isset($data['permissions'])) {
+            if (isset($data['permissions'])) {
                 $role->syncPermissions($data['permissions']);
             }
 

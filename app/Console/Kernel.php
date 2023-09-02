@@ -2,11 +2,24 @@
 
 namespace App\Console;
 
+use App\Actions;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
+    /**
+     * The Artisan commands provided by the application.
+     *
+     * @var array
+     */
+    protected $commands = [
+        Actions\Permissions\PermissionPersistAction::class,
+        Actions\Permissions\PermissionPopulateAction::class,
+        Actions\Roles\RolePersistAssignedPermissions::class,
+        Actions\Roles\RoleAssignDefaultPermissions::class,
+    ];
+
     /**
      * Define the application's command schedule.
      */
