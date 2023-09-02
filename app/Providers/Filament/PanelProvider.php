@@ -88,6 +88,7 @@ class PanelProvider extends FilamentPanelProvider
     public function boot(): void
     {
         Blade::anonymousComponentPath(resource_path('views/panel/components'), 'panel');
+        Blade::anonymousComponentPath(resource_path('views/forms/components'), 'form');
     }
 
     public static function getTenantMiddleware(): array
@@ -109,8 +110,7 @@ class PanelProvider extends FilamentPanelProvider
 
     public static function getNavigationItems(): array
     {
-        return [
-        ];
+        return [];
     }
 
     public static function getColors(): array
