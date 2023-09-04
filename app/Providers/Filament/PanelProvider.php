@@ -45,7 +45,7 @@ class PanelProvider extends FilamentPanelProvider
                     Blade)
             )
             ->viteTheme('resources/panel/css/panel.css')
-            ->tenant(Conference::class)
+            ->tenant(Conference::class, 'path')
             ->tenantMiddleware(static::getTenantMiddleware(), true)
             ->tenantMenuItems([
                 MenuItem::make()

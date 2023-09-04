@@ -2,6 +2,7 @@
 
 namespace App\Panel\Resources\PermissionResource\Pages;
 
+use App\Actions\Permissions\PermissionPersistAction;
 use App\Models\Permission;
 use App\Panel\Resources\PermissionResource;
 use Filament\Actions;
@@ -16,6 +17,14 @@ class ManagePermissions extends ManageRecords
         return [
             Actions\CreateAction::make()
                 ->using(fn (array $data) => Permission::create(['name' => data_get($data, 'context') . ':' . data_get($data, 'action')])),
+            Actions\ActionGroup::make([
+                Actions\Action::make('persist')
+                    ->requiresConfirmation()
+                    ->modalDescription('This will persist all permissions to storage.')
+                    ->label('Persist Permissions')
+                    ->action(fn () => PermissionPersistAction::run())
+            ])
+
         ];
     }
 }

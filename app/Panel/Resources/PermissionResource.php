@@ -14,9 +14,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
 use App\Panel\Resources\PermissionResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Panel\Resources\PermissionResource\RelationManagers;
-use Filament\Forms\Get;
+use Filament\Forms\Components\CheckboxList;
 
 class PermissionResource extends Resource
 {
@@ -48,11 +46,14 @@ class PermissionResource extends Resource
                 TextInput::make('context')
                     ->datalist(fn () => static::getEloquentQuery()->pluck('context')->unique()->sort()->values()->all())
                     ->dehydrateStateUsing(fn (string $state): string => Str::studly($state))
-                    ->helperText('Action must be StudlyCase'),
+                    ->helperText('Context must be StudlyCase'),
                 TextInput::make('action')
                     ->datalist(fn () => static::getEloquentQuery()->pluck('action')->unique()->sort()->values()->all())
                     ->helperText('Action must be camelCase')
                     ->dehydrateStateUsing(fn (string $state): string => Str::camel($state)),
+                CheckboxList::make('roles')
+                    ->relationship('roles', 'name')
+                    ->columns(2),
             ]);
     }
 
@@ -61,6 +62,10 @@ class PermissionResource extends Resource
         return $table
             // ->deferLoading()
             ->columns([
+                TextColumn::make('name')
+                    ->sortable()
+                    ->badge()
+                    ->searchable(),
                 TextColumn::make('context')
                     ->sortable()
                     ->formatStateUsing(fn (string $state): string => Str::headline($state))
@@ -69,6 +74,11 @@ class PermissionResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->formatStateUsing(fn (string $state): string => Str::headline($state)),
+                TextColumn::make('roles_count')
+                    ->label('Assigned Roles')
+                    ->counts('roles')
+                    ->badge()
+                    ->color(fn(int $state) => $state > 0 ? 'primary' : 'gray'),
             ])
             ->groups([
                 Group::make('context'),
