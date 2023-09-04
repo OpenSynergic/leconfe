@@ -6,6 +6,7 @@ use App\Actions\User\UserDeleteAction;
 use App\Actions\User\UserUpdateAction;
 use App\Models\User;
 use App\Panel\Resources\UserResource\Pages;
+use App\Tables\Columns\IndexColumn;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -119,16 +120,7 @@ class UserResource extends Resource
         return $table
             ->striped()
             ->columns([
-                TextColumn::make('no')
-                    ->grow(false)
-                    ->state(
-                        static function (HasTable $livewire, \stdClass $rowLoop): string {
-                            return (string) ($rowLoop->iteration +
-                                ($livewire->getTableRecordsPerPage() * ($livewire->getTablePage() - 1
-                                ))
-                            );
-                        }
-                    ),
+                IndexColumn::make('no'),
                 TextColumn::make('given_name')
                     ->size('sm')
                     ->searchable(),
