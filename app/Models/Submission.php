@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasTopics;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Meta\SubmissionMeta;
-use App\Models\Concerns\HasTopics;
 use Filament\Facades\Filament;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

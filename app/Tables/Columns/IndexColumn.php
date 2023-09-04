@@ -6,7 +6,6 @@ use Filament\Tables\Columns\TextColumn;
 
 class IndexColumn extends TextColumn
 {
-    
     protected function setUp(): void
     {
         parent::setUp();
@@ -14,7 +13,7 @@ class IndexColumn extends TextColumn
         $this->extraCellAttributes([
             'style' => 'width: 1px',
         ]);
-        
+
         $this->grow(false);
 
         $this->rowIndex();

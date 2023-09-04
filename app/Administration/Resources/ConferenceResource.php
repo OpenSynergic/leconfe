@@ -20,7 +20,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use Squire\Models\Country;
