@@ -4,6 +4,7 @@ namespace App\Panel\Resources;
 
 use App\Models\Role;
 use App\Panel\Resources\RoleResource\Pages;
+use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Section;
@@ -84,19 +85,7 @@ class RoleResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('no')
-                    ->grow(false)
-                    ->extraCellAttributes([
-                        'style' => 'width: 1px',
-                    ])
-                    ->state(
-                        static function (HasTable $livewire, \stdClass $rowLoop): string {
-                            return (string) ($rowLoop->iteration +
-                                ($livewire->getTableRecordsPerPage() * ($livewire->getTablePage() - 1
-                                ))
-                            );
-                        }
-                    ),
+                IndexColumn::make('no'),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('parent.name')
