@@ -31,8 +31,8 @@ class StaticPageSchema
                 TextColumn::make('title')
                     ->searchable(),
                 TextColumn::make('short_description')
-                    ->label('description')
-                    ->getStateUsing(fn (UserContent $record) => new HtmlString($record->getMeta('short_description')) ?? 'No description added'),
+                    ->label('Description')
+                    ->getStateUsing(fn (UserContent $record) => new HtmlString($record->getMeta('short_description') != '' ? $record->getMeta('short_description') : 'No description added')),
             ])
             ->filters([
                 //
