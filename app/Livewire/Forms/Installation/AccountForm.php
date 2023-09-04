@@ -3,6 +3,7 @@
 namespace App\Livewire\Forms\Installation;
 
 use App\Actions\User\UserCreateAction;
+use App\Models\Enums\UserRole;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Rule;
 use Livewire\Form;
@@ -29,7 +30,9 @@ class AccountForm extends Form
         try {
             DB::beginTransaction();
 
-            UserCreateAction::run($this->all());
+            $user = UserCreateAction::run($this->all());
+
+            $user->assignRole(UserRole::Admin->value);
 
             DB::commit();
         } catch (\Throwable $th) {

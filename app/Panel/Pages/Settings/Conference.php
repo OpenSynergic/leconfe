@@ -28,9 +28,9 @@ use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
-class Conference extends Page implements HasInfolists, HasForms
+class Conference extends Page implements HasForms, HasInfolists
 {
-    use InteractsWithInfolists, InteractsWithForms;
+    use InteractsWithForms, InteractsWithInfolists;
 
     protected static ?int $navigationSort = 1;
 
@@ -151,7 +151,8 @@ class Conference extends Page implements HasInfolists, HasForms
                             ->rule('alpha_dash')
                             ->required(),
                         TextInput::make('meta.location'),
-                        Flatpickr::make('meta.date_held'),
+                        Flatpickr::make('meta.date_held')
+                            ->rule('date'),
                         TinyEditor::make('meta.description')
                             ->columnSpan([
                                 'sm' => 2,
@@ -172,7 +173,6 @@ class Conference extends Page implements HasInfolists, HasForms
                             ->collection('logo')
                             ->image()
                             ->imageResizeUpscale(false)
-                            ->imageEditor()
                             ->conversion('thumb'),
                         SpatieMediaLibraryFileUpload::make('thumbnail')
                             ->collection('thumbnail')
@@ -238,6 +238,7 @@ class Conference extends Page implements HasInfolists, HasForms
 
                                 $action->sendSuccessNotification();
                             } catch (\Throwable $th) {
+                                throw $th;
                                 $action->sendFailureNotification();
                             }
                         }),

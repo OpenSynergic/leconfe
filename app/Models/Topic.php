@@ -11,7 +11,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Topic extends Model
 {
-    use HasFactory, Cachable, HasSlug;
+    use Cachable, HasFactory, HasSlug;
 
     protected $fillable = ['name', 'slug', 'conference_id'];
 

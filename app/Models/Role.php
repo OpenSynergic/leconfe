@@ -2,19 +2,33 @@
 
 namespace App\Models;
 
-use GeneaLabs\LaravelModelCaching\Traits\Cachable;
-use Kra8\Snowflake\HasShortflakePrimary;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role as Model;
+use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
 class Role extends Model
 {
-    use HasShortflakePrimary, Cachable;
+    use HasRecursiveRelationships;
 
-    public const ADMIN = 'Admin';
+    protected $fillable = [
+        'parent_id',
+        'name',
+        'guard_name',
+    ];
 
-    public const AUTHOR = 'Author';
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Role::class, 'parent_id');
+    }
 
-    public const EDITOR = 'Editor';
+    public function hasPermissionOnAncestors(Permission $permission)
+    {
+        return $this->ancestors->pluck('id')->intersect($permission->roles->pluck('id')->toArray())->isNotEmpty();
+    }
 
-    public const REVIEWER = 'Reviewer';
+    public function hasPermissionOnAncestorsAndSelf(Permission $permission)
+    {
+        return $this->ancestorsAndSelf->pluck('id')->intersect($permission->roles->pluck('id')->toArray())->isNotEmpty();
+    }
 }

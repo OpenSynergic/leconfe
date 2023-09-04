@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Meta\SubmissionMeta;
-use App\Models\Traits\HasTopics;
+use App\Models\Concerns\HasTopics;
 use Filament\Facades\Filament;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,7 +18,7 @@ use Spatie\Tags\HasTags;
 
 class Submission extends Model implements HasMedia
 {
-    use HasFactory, HasTags, HasTopics, Metable, HasShortflakePrimary, InteractsWithMedia, Cachable;
+    use Cachable, HasFactory, HasShortflakePrimary, HasTags, HasTopics, InteractsWithMedia, Metable;
 
     /**
      * The attributes that are mass assignable.

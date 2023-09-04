@@ -13,7 +13,7 @@ use Spatie\EloquentSortable\SortableTrait;
 
 class Author extends Model implements Sortable
 {
-    use HasFactory, Cachable, Metable, SortableTrait, HasShortflakePrimary;
+    use Cachable, HasFactory, HasShortflakePrimary, Metable, SortableTrait;
 
     protected $fillable = [
         'email',
