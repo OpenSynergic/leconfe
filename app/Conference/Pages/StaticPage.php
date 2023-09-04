@@ -39,11 +39,13 @@ class StaticPage extends Page
             default:
                 $contentTypeSlug = Route::current()->parameter('content_type');
                 $contentType = ucfirst(str_replace('-', '', ucwords($contentTypeSlug, '-')));
+                $contentTitle = ucfirst(str_replace('-', ' ', ucwords($contentTypeSlug, '-')));
 
                 // here will check if content_type is in ContentType::class. if not return 404;
 
-                $staticPageList = UserContent::where('content_type', $contentType)->get();
+                $staticPageList = UserContent::where('content_type', $contentType)->whereMeta('expires_at', '>', now())->get();
                 return [
+                    'contentTitle' => $contentTitle,
                     'contentTypeSlug' => $contentTypeSlug,
                     'staticPageList' => $staticPageList,
                 ];
