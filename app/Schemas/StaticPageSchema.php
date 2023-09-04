@@ -40,6 +40,7 @@ class StaticPageSchema
             ->headerActions([
                 CreateAction::make()
                     ->modalWidth('2xl')
+                    ->label('Add static page')
                     ->outlined()
                     ->form(fn () => static::formSchemas())
                     ->mutateFormDataUsing(function ($data) {
