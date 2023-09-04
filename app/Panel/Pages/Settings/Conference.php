@@ -229,10 +229,11 @@ class Conference extends Page implements HasInfolists, HasForms
             ->model(Filament::getTenant())
             ->schema([
                 VerticalTabs\Tabs::make()
+                    ->sticky()
                     ->schema([
+                        VerticalTabs\Tab::make('Tab 1'),
                         VerticalTabs\Tab::make('Information')
                             ->icon("heroicon-o-information-circle")
-                            ->sticky()
                             ->schema([
                                 FormSection::make('Information')
                                     ->description('General Information about the conference.')

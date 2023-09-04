@@ -7,7 +7,6 @@
     'alpineActive' => null,
     'badge' => null,
     'icon' => null,
-    'isSticky' => true,
     'iconColor' => 'gray',
     'iconPosition' => IconPosition::Before,
     'tag' => 'button',
@@ -45,8 +44,7 @@
                 'role' => 'tab',
             ])
             ->class([
-                'fi-tabs-item flex items-center gap-x-2 rounded-lg px-3 py-2 text-sm font-medium outline-none transition duration-75 sticky z-10',
-                'top-24' => $isSticky,
+                'fi-tabs-item flex items-center gap-x-2 rounded-lg px-3 py-2 text-sm font-medium outline-none transition duration-75',
                 $inactiveItemClasses => (! $hasAlpineActiveClasses) && (! $active),
                 $activeItemClasses => (! $hasAlpineActiveClasses) && $active,
             ])

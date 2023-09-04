@@ -1,7 +1,6 @@
 @php
     $isContained = $isContained();
 @endphp
-
 <div
     wire:ignore.self
     x-cloak
@@ -56,17 +55,15 @@
         x-ref="tabsData"
     />
 
-    <x-form::vertical-tabs :contained="$isContained" :label="$getLabel()">
+    <x-form::vertical-tabs :contained="$isContained" :label="$getLabel()" :is-sticky="$isSticky()">
         @foreach ($getChildComponentContainer()->getComponents() as $tab)
             @php
                 $tabId = $tab->getId();
             @endphp
-
             <x-form::vertical-tabs.item
                 :alpine-active="'tab === \'' . $tabId . '\''"
                 :badge="$tab->getBadge()"
                 :icon="$tab->getIcon()"
-                :is-sticky="$tab->isSticky()"
                 :icon-position="$tab->getIconPosition()"
                 :x-on:click="'tab = \'' . $tabId . '\''"
             >
