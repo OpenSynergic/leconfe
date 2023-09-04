@@ -7,6 +7,7 @@ use App\Actions\UserContents\UserContentUpdateAction;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ContentType;
 use App\Models\UserContent;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Tables\Actions\Action;
@@ -21,10 +22,8 @@ class StaticPageSchema
 {
     public static function table(Table $table): Table
     {
-        // dd(Announcement::first()->expires_at->__toString());
-
         return $table
-            ->query(UserContent::query()->where('content_type', ContentType::StaticPage)->with(['conference']))
+            ->query(Filament::getTenant()->staticPages()->with(['conference'])->getQuery())
             ->heading('Static page')
             ->defaultPaginationPageOption(5)
             ->recordUrl(fn ($record) => static::url($record))

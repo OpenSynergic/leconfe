@@ -74,7 +74,6 @@ class Website extends Page implements HasInfolists
                                     ->aside(),
                             ]),
                         Tabs\Tab::make('Static Page')
-                            ->icon('heroicon-o-shield-check')
                             ->schema([
                                 LivewireEntry::make('static_page', StaticPageTable::class)
                                     ->lazy(),
