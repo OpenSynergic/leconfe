@@ -56,7 +56,7 @@ class StaticPage extends Page
                 break;
             
             default:
-                $staticPageList = $userContent::where('content_type', $contentType)->whereMeta('expires_at', '>', now())->get();
+                $staticPageList = $userContent::whereMeta('expires_at', '>', now())->get();
                 return [
                     'contentTitle' => $contentTitle,
                     'contentTypeSlug' => $contentTypeSlug,

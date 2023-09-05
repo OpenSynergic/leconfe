@@ -23,7 +23,7 @@ class AnnouncementSchema
     public static function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query) => $query->where('content_type', ContentType::Announcement)->with(['conference']))
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['conference']))
             ->defaultPaginationPageOption(5)
             ->columns([
                 TextColumn::make('title')

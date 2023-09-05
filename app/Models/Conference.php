@@ -87,12 +87,12 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
 
     public function announcements(): HasMany
     {
-        return $this->hasMany(Announcement::class)->where('content_type', ContentType::Announcement);
+        return $this->hasMany(Announcement::class);
     }
 
     public function staticPages(): HasMany
     {
-        return $this->hasMany(StaticPage::class)->where('content_type', ContentType::StaticPage);
+        return $this->hasMany(StaticPage::class);
     }
 
     public function navigations(): HasMany
