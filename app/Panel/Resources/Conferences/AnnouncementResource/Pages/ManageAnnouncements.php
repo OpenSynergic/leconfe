@@ -3,6 +3,7 @@
 namespace App\Panel\Resources\Conferences\AnnouncementResource\Pages;
 
 use App\Actions\UserContents\UserContentCreateAction;
+use App\Models\Enums\ContentType;
 use App\Panel\Resources\Conferences\AnnouncementResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
@@ -15,7 +16,12 @@ class ManageAnnouncements extends ManageRecords
     {
         return [
             Actions\CreateAction::make()
-                ->using(fn (array $data) => UserContentCreateAction::run($data, $data['send_email'])),
+                ->using(fn (array $data) => UserContentCreateAction::run($data, $data['send_email'] ?? false))
+                ->mutateFormDataUsing(function ($data) {
+                    $data['content_type'] = ContentType::Announcement;
+                
+                    return $data;
+                }),
             // ->using(fn(array $data) => dd($data)),
         ];
     }

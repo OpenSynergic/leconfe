@@ -65,10 +65,7 @@ class AnnouncementSchema
                 EditAction::make()
                     ->using(fn (Announcement $record, $data) => UserContentUpdateAction::run($data, $record))
                     ->mutateRecordDataUsing(function ($data, $record) {
-                        // dd($record);
                         $userContentMeta = $record->getAllMeta();
-
-                        dd($userContentMeta);
 
                         $data['short_description'] = $userContentMeta['short_description'];
                         $data['user_content'] = $userContentMeta['user_content'];

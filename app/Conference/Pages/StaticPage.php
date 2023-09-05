@@ -4,6 +4,7 @@ namespace App\Conference\Pages;
 
 use App\Models\Announcement;
 use App\Models\Enums\ContentType;
+use App\Models\StaticPage as ModelsStaticPage;
 use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
@@ -39,7 +40,7 @@ class StaticPage extends Page
                 break;
             
             case ContentType::StaticPage->value:
-                $userContent = StaticPage::class;
+                $userContent = ModelsStaticPage::class;
                 break;
             
             default:

@@ -30,13 +30,6 @@ class AnnouncementResource extends Resource
         return AnnouncementSchema::table($table);
     }
 
-    protected function mutateFormDataBeforeCreate(array $data): array
-    {
-        $data['content_type'] = ContentType::Announcement;
-    
-        return $data;
-    }
-
     public static function getPages(): array
     {
         return [
