@@ -1,10 +1,12 @@
 <?php
 
-namespace Database\Seeders\Developments;
+namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use Database\Seeders\Productions\ProductionSeeder;
+use Database\Seeders\Developments\ConferenceSeeder;
+use Database\Seeders\Developments\SubmissionSeeder;
+use Database\Seeders\Developments\UserSeeder;
 use Illuminate\Database\Seeder;
 
 class DevelopmentSeeder extends Seeder

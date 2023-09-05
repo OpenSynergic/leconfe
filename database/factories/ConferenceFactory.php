@@ -48,6 +48,11 @@ class ConferenceFactory extends Factory
                 'publisher_name' => fake()->company(),
                 'affiliation' => fake()->company(),
                 'country' => Country::inRandomOrder()->first()->id,
+                'location' => fake()->city(),
+                'date_held' => fake()->dateTimeThisDecade(),
+                'description' => fake()->paragraphs(3, true),
+                'about' => fake()->paragraphs(4, true),
+                'page_footer' => view('examples.footer')->render(),
             ]);
         });
     }

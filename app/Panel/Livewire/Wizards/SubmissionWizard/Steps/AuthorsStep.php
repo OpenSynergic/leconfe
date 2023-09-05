@@ -26,9 +26,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Squire\Models\Country;
 
-class AuthorsStep extends Component implements HasWizardStep, HasTable, HasForms
+class AuthorsStep extends Component implements HasForms, HasTable, HasWizardStep
 {
-    use InteractsWithTable, InteractsWithForms;
+    use InteractsWithForms, InteractsWithTable;
 
     public Submission $record;
 

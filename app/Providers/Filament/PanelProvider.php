@@ -20,14 +20,7 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider as FilamentPanelProvider;
 use Filament\Support\Colors\Color;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
-use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Session\Middleware\AuthenticateSession;
-use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
 use RyanChandler\FilamentNavigation\FilamentNavigation;
 
 class PanelProvider extends FilamentPanelProvider
@@ -52,7 +45,7 @@ class PanelProvider extends FilamentPanelProvider
                     Blade)
             )
             ->viteTheme('resources/panel/css/panel.css')
-            ->tenant(Conference::class)
+            ->tenant(Conference::class, 'path')
             ->tenantMiddleware(static::getTenantMiddleware(), true)
             ->tenantMenuItems([
                 MenuItem::make()
@@ -75,11 +68,7 @@ class PanelProvider extends FilamentPanelProvider
             ->databaseNotificationsPolling('120s')
             ->middleware(static::getMiddleware(), true)
             ->authMiddleware(static::getAuthMiddleware(), true)
-            ->plugin(
-                FilamentNavigation::make()
-                    ->usingModel(Navigation::class)
-                    ->usingResource(NavigationResource::class)
-            );
+            ->plugins(static::getPlugins());
     }
 
     /**
@@ -162,7 +151,9 @@ class PanelProvider extends FilamentPanelProvider
         // Solusi mungkin buat custom component upload dengan menggunakan library seperti dropzone, atau yang lainnya.
         SpatieMediaLibraryFileUpload::configureUsing(function (SpatieMediaLibraryFileUpload $fileUpload): void {
             $fileUpload
-                ->imageResizeTargetWidth(1024)
+                ->imageResizeTargetWidth(2048)
+                ->imageResizeTargetWidth(2048)
+                ->imageResizeMode('contain')
                 ->imageResizeUpscale(false)
                 ->maxSize(config('media-library.max_file_size') / 1024);
 
@@ -181,5 +172,14 @@ class PanelProvider extends FilamentPanelProvider
                 ->dateFormat(setting('format.date'))
                 ->dehydrateStateUsing(fn ($state) => $state ? Carbon::createFromFormat(setting('format.date'), $state) : null);
         });
+    }
+
+    public static function getPlugins()
+    {
+        return [
+            FilamentNavigation::make()
+                ->usingModel(Navigation::class)
+                ->usingResource(NavigationResource::class),
+        ];
     }
 }

@@ -30,9 +30,9 @@ use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
-class Conference extends Page implements HasInfolists, HasForms
+class Conference extends Page implements HasForms, HasInfolists
 {
-    use InteractsWithInfolists, InteractsWithForms;
+    use InteractsWithForms, InteractsWithInfolists;
 
     protected static ?int $navigationSort = 1;
 
@@ -231,80 +231,39 @@ class Conference extends Page implements HasInfolists, HasForms
                 VerticalTabs\Tabs::make()
                     ->sticky()
                     ->schema([
-                        VerticalTabs\Tab::make('Tab 1'),
-                        VerticalTabs\Tab::make('Information')
-                            ->icon("heroicon-o-information-circle")
-                            ->schema([
-                                FormSection::make('Information')
-                                    ->description('General Information about the conference.')
-                                    ->schema([
-                                        SpatieMediaLibraryFileUpload::make('logo')
-                                            ->collection('logo')
-                                            ->image()
-                                            ->imageResizeUpscale(false)
-                                            ->imageEditor()
-                                            ->conversion('thumb'),
-                                        SpatieMediaLibraryFileUpload::make('thumbnail')
-                                            ->collection('thumbnail')
-                                            ->helperText('A image representation of the conference that can be used in lists of conferences.')
-                                            ->image()
-                                            ->conversion('thumb'),
-                                        TextInput::make('name')
-                                            ->required(),
-                                        TextInput::make('path')
-                                            ->rule('alpha_dash')
-                                            ->required(),
-                                        TextInput::make('meta.location'),
-                                        Flatpickr::make('meta.date_held'),
-                                        TinyEditor::make('meta.about')
-                                            ->label('About Conference'),
-                                        TinyEditor::make('meta.description'),
-                                        TinyEditor::make('meta.page_footer'),
-                                        Actions::make([
-                                            Action::make('save')
-                                                ->successNotificationTitle('Saved!')
-                                                ->failureNotificationTitle('Data could not be saved.')
-                                                ->action(function (Action $action) {
-                                                    try {
-                                                        $formData = $this->generalForm->getState();
-                                                        ConferenceUpdateAction::run(Filament::getTenant(), $formData);
-
-                                                        $sidebarFormData = $formData['sidebar'];
-
-                                                        foreach ($sidebarFormData['blocks'] as $blocks) {
-                                                            foreach ($blocks as $block) {
-                                                                UpdateBlockSettingsAction::run($block->class, [
-                                                                    'position' => $block->position,
-                                                                    'sort' => $block->sort,
-                                                                    'active' => $block->active,
-                                                                ]);
-                                                            }
-                                                        }
-
-                                                        $sidebar = collect($formData['sidebar']['position']);
-                                                        $sidebarPosition = $sidebar->first();
-
-                                                        if ($sidebar->isEmpty()) {
-                                                            $sidebarPosition = SidebarPosition::None->getValue();
-                                                        }
-
-                                                        if ($sidebar->count() >= 2) {
-                                                            $sidebarPosition = SidebarPosition::Both->getValue();
-                                                        }
-
-                                                        FIlament::getTenant()
-                                                            ->setMeta('sidebar', $sidebarPosition);
-
-                                                        $action->sendSuccessNotification();
-                                                    } catch (\Throwable $th) {
-                                                        $action->sendFailureNotification();
-                                                    }
-                                                }),
-                                        ])->alignRight(),
-                                    ]),
-                            ])
+                        TextInput::make('name')
+                            ->required(),
+                        TextInput::make('path')
+                            ->rule('alpha_dash')
+                            ->required(),
+                        TextInput::make('meta.location'),
+                        Flatpickr::make('meta.date_held')
+                            ->rule('date'),
+                        TinyEditor::make('meta.description')
+                            ->columnSpan([
+                                'sm' => 2,
+                            ]),
+                        TinyEditor::make('meta.about')
+                            ->label('About Conference')
+                            ->minHeight(300)
+                            ->columnSpan([
+                                'sm' => 2,
+                            ]),
+                        Actions::make([
+                            Action::make('save')
+                                ->successNotificationTitle('Saved!')
+                                ->failureNotificationTitle('Data could not be saved.')
+                                ->action(function (Action $action) {
+                                    try {
+                                        $formData = $this->generalForm->getState();
+                                        ConferenceUpdateAction::run(Filament::getTenant(), $formData);
+                                        $action->sendSuccessNotification();
+                                    } catch (\Throwable $th) {
+                                        $action->sendFailureNotification();
+                                    }
+                                }),
+                        ])->alignRight(),
                     ]),
-
             ]);
     }
 

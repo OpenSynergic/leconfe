@@ -1,9 +1,9 @@
 <?php
 
-namespace Database\Seeders\Productions;
+namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-
+use Database\Seeders\Productions\PermissionSeeder;
+use Database\Seeders\Productions\RoleSeeder;
 use Illuminate\Database\Seeder;
 
 class ProductionSeeder extends Seeder
@@ -13,6 +13,7 @@ class ProductionSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(PermissionSeeder::class);
         $this->call(RoleSeeder::class);
     }
 }

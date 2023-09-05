@@ -3,6 +3,7 @@
 namespace App\Actions\User;
 
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class UserCreateAction
@@ -11,10 +12,20 @@ class UserCreateAction
 
     public function handle($data)
     {
-        $user = User::create($data);
+        try {
+            DB::beginTransaction();
 
-        if (isset($data['meta'])) {
-            $user->setManyMeta($data['meta']);
+            $user = User::create($data);
+
+            if (data_get($data, 'meta')) {
+                $user->setManyMeta($data['meta']);
+            }
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            throw $th;
         }
 
         return $user;
