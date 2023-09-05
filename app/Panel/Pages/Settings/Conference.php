@@ -214,7 +214,7 @@ class Conference extends Page implements HasForms, HasInfolists
                                                         $action->sendFailureNotification();
                                                     }
                                                 }),
-                                        ])->alignRight()
+                                        ])->alignLeft()
                                     ]),
 
                             ])
@@ -266,7 +266,7 @@ class Conference extends Page implements HasForms, HasInfolists
                                                         $action->sendFailureNotification();
                                                     }
                                                 }),
-                                        ])->alignRight(),
+                                        ])->alignLeft(),
                                     ])
                             ])
                     ]),
@@ -302,7 +302,7 @@ class Conference extends Page implements HasForms, HasInfolists
                                                                 $action->sendFailureNotification();
                                                             }
                                                         }),
-                                                ])->alignRight(),
+                                                ])->alignLeft(),
                                             ])
                                             ->extraAttributes([
                                                 'class' => '!p-0',
