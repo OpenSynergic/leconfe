@@ -20,6 +20,6 @@ class RoleSeeder extends Seeder
             Role::updateOrCreate(['name' => $role]);
         }
 
-        RoleAssignDefaultPermissions::run();
+        // RoleAssignDefaultPermissions::run();
     }
 }

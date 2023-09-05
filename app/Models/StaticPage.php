@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Meta\UserContentMeta;
+use App\Models\Meta\StaticPageMeta;
 use DateTimeInterface;
 use Filament\Facades\Filament;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
@@ -10,9 +10,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Plank\Metable\Metable;
 
-class UserContent extends Model
+class StaticPage extends Model
 {
     use HasFactory, Cachable, Metable;
+
+    protected $table = 'user_contents';
 
     protected $fillable = [
         'title',
@@ -30,14 +32,14 @@ class UserContent extends Model
 
     protected static function booted(): void
     {
-        static::creating(function (UserContent $announcement) {
-            $announcement->conference_id ??= Filament::getTenant()?->getKey();
+        static::creating(function (StaticPage $staticPage) {
+            $staticPage->conference_id ??= Filament::getTenant()?->getKey();
         });
     }
 
     protected function getMetaClassName(): string
     {
-        return UserContentMeta::class;
+        return StaticPageMeta::class;
     }
 
     /**

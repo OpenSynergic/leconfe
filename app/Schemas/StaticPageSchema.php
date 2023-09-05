@@ -6,7 +6,7 @@ use App\Actions\UserContents\UserContentCreateAction;
 use App\Actions\UserContents\UserContentUpdateAction;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ContentType;
-use App\Models\UserContent;
+use App\Models\StaticPage;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -32,7 +32,7 @@ class StaticPageSchema
                     ->searchable(),
                 TextColumn::make('short_description')
                     ->label('Description')
-                    ->getStateUsing(fn (UserContent $record) => new HtmlString($record->getMeta('short_description') != '' ? $record->getMeta('short_description') : 'No description added')),
+                    ->getStateUsing(fn (StaticPage $record) => new HtmlString($record->getMeta('short_description') != '' ? $record->getMeta('short_description') : 'No description added')),
             ])
             ->filters([
                 //
@@ -56,7 +56,7 @@ class StaticPageSchema
                     ->url(fn ($record) => static::url($record))
                     ->color('gray'),
                 EditAction::make()
-                    ->using(fn (UserContent $record, $data) => UserContentUpdateAction::run($data, $record))
+                    ->using(fn (StaticPage $record, $data) => UserContentUpdateAction::run($data, $record))
                     ->form(static::formSchemas())
                     ->mutateRecordDataUsing(function ($data, $record) {
                         $userContentMeta = $record->getAllMeta();

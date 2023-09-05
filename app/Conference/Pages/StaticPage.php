@@ -2,7 +2,8 @@
 
 namespace App\Conference\Pages;
 
-use App\Models\UserContent;
+use App\Models\Announcement;
+use App\Models\Enums\ContentType;
 use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
@@ -28,22 +29,33 @@ class StaticPage extends Page
 
     protected function getViewData(): array
     {
+        $contentTypeSlug = Route::current()->parameter('content_type');
+        $contentType = ucfirst(str_replace('-', '', ucwords($contentTypeSlug, '-')));
+        $contentTitle = ucfirst(str_replace('-', ' ', ucwords($contentTypeSlug, '-')));
+
+        switch ($contentType) {
+            case ContentType::Announcement->value:
+                $userContent = Announcement::class;
+                break;
+            
+            case ContentType::StaticPage->value:
+                $userContent = StaticPage::class;
+                break;
+            
+            default:
+                break;
+        }
+
         switch (Route::currentRouteName()) {
             case 'livewirePageGroup.current-conference.pages.static-page':
-                $currentStaticPage = UserContent::where('id', Route::current()->parameter('user_content'))->first();
+                $currentStaticPage = $userContent::where('id', Route::current()->parameter('user_content'))->first();
                 return [
                     'currentStaticPage' => $currentStaticPage
                 ];
                 break;
             
             default:
-                $contentTypeSlug = Route::current()->parameter('content_type');
-                $contentType = ucfirst(str_replace('-', '', ucwords($contentTypeSlug, '-')));
-                $contentTitle = ucfirst(str_replace('-', ' ', ucwords($contentTypeSlug, '-')));
-
-                // here will check if content_type is in ContentType::class. if not return 404;
-
-                $staticPageList = UserContent::where('content_type', $contentType)->whereMeta('expires_at', '>', now())->get();
+                $staticPageList = $userContent::where('content_type', $contentType)->whereMeta('expires_at', '>', now())->get();
                 return [
                     'contentTitle' => $contentTitle,
                     'contentTypeSlug' => $contentTypeSlug,

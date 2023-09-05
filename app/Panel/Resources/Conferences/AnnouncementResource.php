@@ -2,8 +2,8 @@
 
 namespace App\Panel\Resources\Conferences;
 
+use App\Models\Announcement;
 use App\Models\Enums\ContentType;
-use App\Models\UserContent;
 use App\Panel\Resources\Conferences\AnnouncementResource\Pages;
 use App\Schemas\AnnouncementSchema;
 use Filament\Forms\Form;
@@ -12,7 +12,7 @@ use Filament\Tables\Table;
 
 class AnnouncementResource extends Resource
 {
-    protected static ?string $model = UserContent::class;
+    protected static ?string $model = Announcement::class;
 
     protected static ?string $modelLabel = 'Announcement';
 

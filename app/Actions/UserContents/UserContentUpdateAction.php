@@ -2,7 +2,7 @@
 
 namespace App\Actions\UserContents;
 
-use App\Models\UserContent;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -10,7 +10,7 @@ class UserContentUpdateAction
 {
     use AsAction;
 
-    public function handle(array $data, UserContent $userContent): UserContent
+    public function handle(array $data, Model $userContent): Model
     {
         try {
             DB::beginTransaction();

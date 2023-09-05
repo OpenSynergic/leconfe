@@ -3,15 +3,14 @@
 namespace App\Schemas;
 
 use App\Actions\UserContents\UserContentUpdateAction;
+use App\Models\Announcement;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ContentType;
-use App\Models\UserContent;
 use Carbon\Carbon;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
@@ -23,8 +22,6 @@ class AnnouncementSchema
 {
     public static function table(Table $table): Table
     {
-        // dd(Announcement::first()->expires_at->__toString());
-
         return $table
             ->modifyQueryUsing(fn (Builder $query) => $query->where('content_type', ContentType::Announcement)->with(['conference']))
             ->defaultPaginationPageOption(5)
@@ -33,7 +30,7 @@ class AnnouncementSchema
                     ->searchable(),
                 TextColumn::make('expires_at')
                     ->date(setting('format.date'))
-                    ->getStateUsing(fn (UserContent $record) => $record->getMeta('expires_at')),
+                    ->getStateUsing(fn (Announcement $record) => $record->getMeta('expires_at')),
             ])
             ->filters([
                 //
@@ -66,9 +63,12 @@ class AnnouncementSchema
                     })
                     ->color('gray'),
                 EditAction::make()
-                    ->using(fn (UserContent $record, $data) => UserContentUpdateAction::run($data, $record))
+                    ->using(fn (Announcement $record, $data) => UserContentUpdateAction::run($data, $record))
                     ->mutateRecordDataUsing(function ($data, $record) {
+                        // dd($record);
                         $userContentMeta = $record->getAllMeta();
+
+                        dd($userContentMeta);
 
                         $data['short_description'] = $userContentMeta['short_description'];
                         $data['user_content'] = $userContentMeta['user_content'];

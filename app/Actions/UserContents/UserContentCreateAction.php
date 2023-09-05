@@ -2,7 +2,9 @@
 
 namespace App\Actions\UserContents;
 
-use App\Models\UserContent;
+use App\Models\Announcement;
+use App\Models\Enums\ContentType;
+use App\Models\StaticPage;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -15,7 +17,18 @@ class UserContentCreateAction
         try {
             DB::beginTransaction();
 
-            $userContent = UserContent::create($data);
+            switch ($data['content_type']) {
+                case ContentType::Announcement:
+                    $userContent = Announcement::create($data);
+                    break;
+                
+                case ContentType::StaticPage:
+                    $userContent = StaticPage::create($data);
+                    break;
+                
+                default:
+                    break;
+            }
 
             unset($data['title']);
             unset($data['content_type']);
