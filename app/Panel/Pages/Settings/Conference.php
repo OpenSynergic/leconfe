@@ -167,7 +167,7 @@ class Conference extends Page implements HasForms, HasInfolists
                                             ])
                                             ->reactive()
                                             ->helperText(__('If you choose both sidebars, the layout will have three columns.')),
-                                        Grid::make(2)
+                                        Grid::make(3)
                                             ->schema([
                                                 BlockList::make('sidebar.blocks.left')
                                                     ->label(__('Left Sidebar'))
@@ -231,38 +231,44 @@ class Conference extends Page implements HasForms, HasInfolists
                 VerticalTabs\Tabs::make()
                     ->sticky()
                     ->schema([
-                        TextInput::make('name')
-                            ->required(),
-                        TextInput::make('path')
-                            ->rule('alpha_dash')
-                            ->required(),
-                        TextInput::make('meta.location'),
-                        Flatpickr::make('meta.date_held')
-                            ->rule('date'),
-                        TinyEditor::make('meta.description')
-                            ->columnSpan([
-                                'sm' => 2,
-                            ]),
-                        TinyEditor::make('meta.about')
-                            ->label('About Conference')
-                            ->minHeight(300)
-                            ->columnSpan([
-                                'sm' => 2,
-                            ]),
-                        Actions::make([
-                            Action::make('save')
-                                ->successNotificationTitle('Saved!')
-                                ->failureNotificationTitle('Data could not be saved.')
-                                ->action(function (Action $action) {
-                                    try {
-                                        $formData = $this->generalForm->getState();
-                                        ConferenceUpdateAction::run(Filament::getTenant(), $formData);
-                                        $action->sendSuccessNotification();
-                                    } catch (\Throwable $th) {
-                                        $action->sendFailureNotification();
-                                    }
-                                }),
-                        ])->alignRight(),
+                        VerticalTabs\Tab::make("Information")
+                            ->schema([
+                                FormSection::make("Information")
+                                    ->schema([
+                                        TextInput::make('name')
+                                            ->required(),
+                                        TextInput::make('path')
+                                            ->rule('alpha_dash')
+                                            ->required(),
+                                        TextInput::make('meta.location'),
+                                        Flatpickr::make('meta.date_held')
+                                            ->rule('date'),
+                                        TinyEditor::make('meta.description')
+                                            ->columnSpan([
+                                                'sm' => 2,
+                                            ]),
+                                        TinyEditor::make('meta.about')
+                                            ->label('About Conference')
+                                            ->minHeight(300)
+                                            ->columnSpan([
+                                                'sm' => 2,
+                                            ]),
+                                        Actions::make([
+                                            Action::make('save')
+                                                ->successNotificationTitle('Saved!')
+                                                ->failureNotificationTitle('Data could not be saved.')
+                                                ->action(function (Action $action) {
+                                                    try {
+                                                        $formData = $this->generalForm->getState();
+                                                        ConferenceUpdateAction::run(Filament::getTenant(), $formData);
+                                                        $action->sendSuccessNotification();
+                                                    } catch (\Throwable $th) {
+                                                        $action->sendFailureNotification();
+                                                    }
+                                                }),
+                                        ])->alignRight(),
+                                    ])
+                            ])
                     ]),
             ]);
     }

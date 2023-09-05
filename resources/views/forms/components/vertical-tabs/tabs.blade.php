@@ -32,12 +32,13 @@
         $attributes
             ->merge([
                 'id' => $getId(),
-                'wire:key' => "{$this->getId()}.{$getStatePath()}." . \Filament\Forms\Components\Tabs::class . '.container',
+                'wire:key' => "{$this->getId()}.{$getStatePath()}." . \App\Forms\Components\VerticalTabs\Tabs::class . '.container',
             ], escape: false)
             ->merge($getExtraAttributes(), escape: false)
             ->merge($getExtraAlpineAttributes(), escape: false)
             ->class([
-                'flex justify-center'
+                'flex',
+                'flex-row-reverse' => $getPosition() == 'right'
                 // 'fi-fo-tabs flex flex-col',
                 // 'fi-contained rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10' => $isContained,
             ])
@@ -47,8 +48,8 @@
         type="hidden"
         value="{{
             collect($getChildComponentContainer()->getComponents())
-                ->filter(static fn (\Filament\Forms\Components\Tabs\Tab $tab): bool => $tab->isVisible())
-                ->map(static fn (\Filament\Forms\Components\Tabs\Tab $tab) => $tab->getId())
+                ->filter(static fn (\App\Forms\Components\VerticalTabs\Tab $tab): bool => $tab->isVisible())
+                ->map(static fn (App\Forms\Components\VerticalTabs\Tab $tab) => $tab->getId())
                 ->values()
                 ->toJson()
         }}"
