@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Meta\AnnouncementMeta;
+use App\Models\Meta\StaticPageMeta;
 use DateTimeInterface;
 use Filament\Facades\Filament;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Plank\Metable\Metable;
 
-class Announcement extends Model
+class StaticPage extends Model
 {
     use HasFactory, Cachable, Metable;
 
@@ -32,14 +32,14 @@ class Announcement extends Model
 
     protected static function booted(): void
     {
-        static::creating(function (Announcement $announcement) {
-            $announcement->conference_id ??= Filament::getTenant()?->getKey();
+        static::creating(function (StaticPage $staticPage) {
+            $staticPage->conference_id ??= Filament::getTenant()?->getKey();
         });
     }
 
     protected function getMetaClassName(): string
     {
-        return AnnouncementMeta::class;
+        return StaticPageMeta::class;
     }
 
     /**

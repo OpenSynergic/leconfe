@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ConferenceType;
+use App\Models\Enums\ContentType;
 use App\Models\Meta\ConferenceMeta;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasName;
@@ -86,7 +87,12 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
 
     public function announcements(): HasMany
     {
-        return $this->hasMany(Announcement::class);
+        return $this->hasMany(Announcement::class)->where('content_type', ContentType::Announcement);
+    }
+
+    public function staticPages(): HasMany
+    {
+        return $this->hasMany(StaticPage::class)->where('content_type', ContentType::StaticPage);
     }
 
     public function navigations(): HasMany

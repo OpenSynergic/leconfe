@@ -7,8 +7,10 @@ use App\Actions\Conferences\ConferenceUpdateAction;
 use App\Facades\Block as FacadesBlock;
 use App\Forms\Components\BlockList;
 use App\Infolists\Components\BladeEntry;
+use App\Infolists\Components\LivewireEntry;
 use App\Livewire\Block as BlockComponent;
 use App\Models\Enums\SidebarPosition;
+use App\Panel\Livewire\Tables\StaticPageTable;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Actions;
@@ -98,6 +100,11 @@ class Conference extends Page implements HasForms, HasInfolists
                             ->schema([
                                 BladeEntry::make('general')
                                     ->blade('{{ $this->setupForm }}'),
+                            ]),
+                        Tabs\Tab::make('Static Page')
+                            ->schema([
+                                LivewireEntry::make('static_page', StaticPageTable::class)
+                                    ->lazy(),
                             ]),
                     ])
                     ->contained(false),
