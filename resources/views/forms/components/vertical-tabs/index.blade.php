@@ -12,7 +12,7 @@
                 'role' => 'tablist',
             ])
             ->class([
-                'flex flex-col w-56 dark:bg-gray-900 rounded-xl shadow-sm border dark:border-gray-800 border-gray-200 bg-white p-3 self-start',
+                'flex flex-col w-72 dark:bg-gray-900 rounded-xl shadow-sm border dark:border-gray-800 border-gray-200 bg-white p-3 self-start',
                 'sticky top-24 z-10' => $isSticky,
                 // 'fi-tabs flex max-w-full gap-x-1 overflow-x-auto',
                 // 'fi-contained border-b border-gray-200 px-3 py-2.5 dark:border-white/10' => $contained,

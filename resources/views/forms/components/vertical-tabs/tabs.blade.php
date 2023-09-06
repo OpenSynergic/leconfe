@@ -73,7 +73,9 @@
         @endforeach
     </x-form::vertical-tabs>
 
-    @foreach ($getChildComponentContainer()->getComponents() as $tab)
-        {{ $tab }}
-    @endforeach
+    <div class="flex flex-col w-full">
+        @foreach ($getChildComponentContainer()->getComponents() as $tab)
+            {{ $tab }}
+        @endforeach
+    </div>
 </div>

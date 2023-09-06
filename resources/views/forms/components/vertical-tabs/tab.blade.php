@@ -12,7 +12,7 @@
 
 <div
     x-bind:class="tab === @js($id) ? @js($visibleTabClasses) : @js($invisibleTabClasses)"
-    x-on:expand-concealing-component.window="
+        x-on:expand-concealing-component.window="
         error = $el.querySelector('[data-validation-error]')
 
         if (! error) {
