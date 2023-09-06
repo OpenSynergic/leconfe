@@ -1,4 +1,7 @@
 # Introduction
 
-In this section, I will explain only the customized aspects by our team. For the default or remaining information, you can refer to the.[Filament Documentation](https://filamentphp.com/docs/3.x/forms/installation)
+Utilizing the power of [Filament Form](https://filamentphp.com/docs/3.x/forms/installation), this package provides a way to easily build dynamic forms.
+
+This section will cover the extra features that extend the packages.
+
 

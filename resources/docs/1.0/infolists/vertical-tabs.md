@@ -3,7 +3,7 @@
 
 ## Normal Vertical Tab
 ```php
-use App\Forms\Components\VerticalTabs;
+use App\Infolists\Components\VerticalTabs;
 ...
 
 public function setupForm(Form $form): Form
@@ -28,7 +28,7 @@ public function setupForm(Form $form): Form
 To make vertical tabs sticky, simply use the `sticky()` method.
 
 ```php
-use App\Forms\Components\VerticalTabs;
+use App\Infolists\Components\VerticalTabs;
 
 VerticalTabs\Tabs::make()
     ->sticky()
