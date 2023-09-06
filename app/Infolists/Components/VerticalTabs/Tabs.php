@@ -9,9 +9,9 @@ class Tabs extends ComponentsTabs
 {
     protected string $view = 'infolists.components.vertical-tabs.tabs';
 
-    protected bool | Closure $sticky = false;
+    protected bool|Closure $sticky = false;
 
-    protected string | Closure $position = 'left';
+    protected string|Closure $position = 'left';
 
     public function position(string $position): static
     {
@@ -30,7 +30,7 @@ class Tabs extends ComponentsTabs
         return $this->position;
     }
 
-    public function sticky(bool | Closure $sticky = true): static
+    public function sticky(bool|Closure $sticky = true): static
     {
         $this->sticky = $this->evaluate($sticky);
 
