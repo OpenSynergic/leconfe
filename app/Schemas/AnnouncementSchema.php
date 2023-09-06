@@ -2,10 +2,9 @@
 
 namespace App\Schemas;
 
-use App\Actions\UserContents\UserContentUpdateAction;
+use App\Actions\Announcements\AnnouncementUpdateAction;
 use App\Models\Announcement;
 use App\Models\Enums\ConferenceStatus;
-use App\Models\Enums\ContentType;
 use Carbon\Carbon;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\Checkbox;
@@ -63,7 +62,7 @@ class AnnouncementSchema
                     })
                     ->color('gray'),
                 EditAction::make()
-                    ->using(fn (Announcement $record, $data) => UserContentUpdateAction::run($data, $record))
+                    ->using(fn (Announcement $record, $data) => AnnouncementUpdateAction::run($data, $record))
                     ->mutateRecordDataUsing(function ($data, $record) {
                         $userContentMeta = $record->getAllMeta();
 

@@ -2,8 +2,8 @@
 
 namespace App\Schemas;
 
-use App\Actions\UserContents\UserContentCreateAction;
-use App\Actions\UserContents\UserContentUpdateAction;
+use App\Actions\StaticPages\StaticPageCreateAction;
+use App\Actions\StaticPages\StaticPageUpdateAction;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ContentType;
 use App\Models\StaticPage;
@@ -48,7 +48,7 @@ class StaticPageSchema
 
                         return $data;
                     })
-                    ->using(fn (array $data) => UserContentCreateAction::run($data)),
+                    ->using(fn (array $data) => StaticPageCreateAction::run($data)),
             ])
             ->actions([
                 Action::make('view')
@@ -56,7 +56,7 @@ class StaticPageSchema
                     ->url(fn ($record) => static::url($record))
                     ->color('gray'),
                 EditAction::make()
-                    ->using(fn (StaticPage $record, $data) => UserContentUpdateAction::run($data, $record))
+                    ->using(fn (StaticPage $record, $data) => StaticPageUpdateAction::run($data, $record))
                     ->form(static::formSchemas())
                     ->mutateRecordDataUsing(function ($data, $record) {
                         $userContentMeta = $record->getAllMeta();

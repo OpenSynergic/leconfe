@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Actions\Announcements;
+namespace App\Actions\StaticPages;
 
 use App\Models\Announcement;
+use App\Models\Enums\ContentType;
+use App\Models\StaticPage;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class AnnouncementCreateAction
+class StaticPageCreateAction
 {
     use AsAction;
 
@@ -15,20 +17,17 @@ class AnnouncementCreateAction
         try {
             DB::beginTransaction();
 
-            $announcement = Announcement::create($data);
+            $staticPage = StaticPage::create($data);
 
             unset($data['title']);
             unset($data['content_type']);
-            if (isset($data['send_email'])) {
-                unset($data['send_email']);
-            }
             
-            $announcement->setManyMeta($data);
+            $staticPage->setManyMeta($data);
 
-            // if ($sendEmail) {
-            //     // TODO Create a job to send email
+            if ($sendEmail) {
+                // TODO Create a job to send email
 
-            // }
+            }
 
             DB::commit();
         } catch (\Throwable $th) {
@@ -37,6 +36,6 @@ class AnnouncementCreateAction
             throw $th;
         }
 
-        return $announcement;
+        return $staticPage;
     }
 }

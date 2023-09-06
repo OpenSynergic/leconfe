@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 
-class StaticPage extends Page
+class StaticPageList extends Page
 {
-    protected static string $view = 'conference.pages.static-page';
+    protected static string $view = 'conference.pages.static-page-list';
 
     public function mount()
     {
@@ -37,9 +37,12 @@ class StaticPage extends Page
                 break;
         }
 
-        $currentStaticPage = $userContent::where('id', Route::current()->parameter('user_content'))->first();
+        $staticPageList = $userContent::whereMeta('expires_at', '>', now())->get();
+        
         return [
-            'currentStaticPage' => $currentStaticPage
+            'contentTitle' => $contentTitle,
+            'contentTypeSlug' => $contentTypeSlug,
+            'staticPageList' => $staticPageList,
         ];
     }
 
@@ -47,7 +50,7 @@ class StaticPage extends Page
     {
         $slug = static::getSlug();
 
-        Route::get('{content_type}/{user_content}', static::class)
+        Route::get('{content_type}', static::class)
             ->middleware(static::getRouteMiddleware($pageGroup))
             ->withoutMiddleware(static::getWithoutRouteMiddleware($pageGroup))
             ->name((string) str($slug)->replace('/', '.'));

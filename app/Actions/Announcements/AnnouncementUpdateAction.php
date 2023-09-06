@@ -1,25 +1,29 @@
 <?php
 
-namespace App\Actions\UserContents;
+namespace App\Actions\Announcements;
 
+use App\Models\Announcement;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class UserContentUpdateAction
+class AnnouncementUpdateAction
 {
     use AsAction;
 
-    public function handle(array $data, Model $userContent): Model
+    public function handle(array $data, Announcement $announcement): Model
     {
         try {
             DB::beginTransaction();
 
-            $userContent->update($data);
+            $announcement->update($data);
             
             unset($data['title']);
+            if (isset($data['send_email'])) {
+                unset($data['send_email']);
+            }
 
-            $userContent->syncMeta($data);
+            $announcement->syncMeta($data);
 
             // if ($sendEmail) {
             //     // TODO Create a job to send email
@@ -33,6 +37,6 @@ class UserContentUpdateAction
             throw $th;
         }
 
-        return $userContent;
+        return $announcement;
     }
 }
