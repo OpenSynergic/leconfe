@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Actions\Speakers\SpeakerPositionPopulateDefaultDataAction;
 use App\Models\Conference;
 use App\Models\Enums\ConferenceStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;

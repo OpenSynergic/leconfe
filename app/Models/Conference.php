@@ -65,7 +65,7 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
             // TODO conference tidak bisa dihapus ketika ada data lain yg terkait dengan conference ini
         });
 
-        static::created(function (Conference $model){
+        static::created(function (Conference $model) {
             SpeakerPositionPopulateDefaultDataAction::run($model);
         });
     }

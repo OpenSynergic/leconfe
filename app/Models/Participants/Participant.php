@@ -16,7 +16,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Participant extends Model implements HasMedia, Sortable
 {
-    use BelongsToConference, HasFactory, HasShortflakePrimary, InteractsWithMedia, SortableTrait, Metable;
+    use BelongsToConference, HasFactory, HasShortflakePrimary, InteractsWithMedia, Metable, SortableTrait;
 
     /**
      * The table associated with the model.

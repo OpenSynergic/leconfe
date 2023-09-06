@@ -150,7 +150,7 @@ class PanelProvider extends FilamentPanelProvider
 
     public static function setupFilamentComponent()
     {
-        // TODO Validasi file type menggunakan dengan menggunakan format extension, bukan dengan mime type, 
+        // TODO Validasi file type menggunakan dengan menggunakan format extension, bukan dengan mime type,
         // hal ini agar mempermudah pengguna dalam melakukan setting file apa saja yang diperbolehkan
         // Saat ini SpatieMediaLibraryFileUpload hanya support file validation dengan mime type.
         // Solusi mungkin buat custom component upload dengan menggunakan library seperti dropzone, atau yang lainnya.

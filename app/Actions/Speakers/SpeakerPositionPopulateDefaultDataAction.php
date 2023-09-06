@@ -11,7 +11,7 @@ class SpeakerPositionPopulateDefaultDataAction
 {
     use AsAction;
 
-    public function handle(Conference $conference) : void 
+    public function handle(Conference $conference): void
     {
         try {
             DB::beginTransaction();
@@ -26,7 +26,6 @@ class SpeakerPositionPopulateDefaultDataAction
                     'conference_id' => $conference->getKey(),
                 ]);
             }
-
 
             DB::commit();
         } catch (\Throwable $th) {

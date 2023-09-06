@@ -4,8 +4,6 @@ namespace App\Http\Middleware;
 
 use App\Models\Block;
 use App\Models\Navigation;
-use App\Models\Participants\Participant;
-use App\Models\Participants\ParticipantPosition;
 use App\Models\Participants\Speaker;
 use App\Models\Participants\SpeakerPosition;
 use App\Models\Scopes\ConferenceScope;

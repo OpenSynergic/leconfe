@@ -11,10 +11,10 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -22,8 +22,6 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Actions\Action as TableAction;
-use Filament\Tables\Actions\DeleteAction;
 
 class SpeakerResource extends Resource
 {
@@ -65,6 +63,7 @@ class SpeakerResource extends Resource
                 Select::make('participant_position_id')
                     ->required()
                     ->relationship('position', 'name')
+                    ->native(false)
                     ->createOptionForm([
                         TextInput::make('name')
                             ->required(),
@@ -127,7 +126,7 @@ class SpeakerResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('position')
-                    ->relationship('position', 'name')
+                    ->relationship('position', 'name'),
             ]);
     }
 
@@ -137,6 +136,7 @@ class SpeakerResource extends Resource
             'index' => Pages\ManageSpeakers::route('/'),
         ];
     }
+
     public static function getWidgets(): array
     {
         return [
