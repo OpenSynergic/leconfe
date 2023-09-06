@@ -18,7 +18,6 @@ use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section as FormSection;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\Tabs as ComponentsTabs;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -168,6 +167,10 @@ class Conference extends Page implements HasForms, HasInfolists
                                             ->reactive()
                                             ->helperText(__('If you choose both sidebars, the layout will have three columns.')),
                                         Grid::make(3)
+                                            ->columns([
+                                                'xl' => 3,
+                                                'sm' => 3,
+                                            ])
                                             ->schema([
                                                 BlockList::make('sidebar.blocks.left')
                                                     ->label(__('Left Sidebar'))
@@ -232,26 +235,71 @@ class Conference extends Page implements HasForms, HasInfolists
                     ->sticky()
                     ->schema([
                         VerticalTabs\Tab::make("Information")
+                            ->icon("heroicon-o-information-circle")
                             ->schema([
                                 FormSection::make("Information")
                                     ->schema([
-                                        TextInput::make('name')
-                                            ->required(),
-                                        TextInput::make('path')
-                                            ->rule('alpha_dash')
-                                            ->required(),
-                                        TextInput::make('meta.location'),
-                                        Flatpickr::make('meta.date_held')
-                                            ->rule('date'),
-                                        TinyEditor::make('meta.description')
-                                            ->columnSpan([
-                                                'sm' => 2,
-                                            ]),
-                                        TinyEditor::make('meta.about')
-                                            ->label('About Conference')
-                                            ->minHeight(300)
-                                            ->columnSpan([
-                                                'sm' => 2,
+                                        Grid::make(2)
+                                            ->schema([
+                                                TextInput::make('name')
+                                                    ->required()
+                                                    ->columnSpan([
+                                                        'xl' => 1,
+                                                        'sm' => 2,
+                                                    ]),
+                                                TextInput::make('path')
+                                                    ->rule('alpha_dash')
+                                                    ->required()
+                                                    ->columnSpan([
+                                                        'xl' => 1,
+                                                        'sm' => 2,
+                                                    ]),
+                                                TextInput::make('meta.location')
+                                                    ->columnSpan([
+                                                        'xl' => 1,
+                                                        'sm' => 2,
+                                                    ]),
+                                                Flatpickr::make('meta.date_held')
+                                                    ->rule('date')
+                                                    ->columnSpan([
+                                                        'xl' => 1,
+                                                        'sm' => 2,
+                                                    ]),
+                                                SpatieMediaLibraryFileUpload::make('logo')
+                                                    ->collection('logo')
+                                                    ->image()
+                                                    ->imageResizeUpscale(false)
+                                                    ->conversion('thumb')
+                                                    ->columnSpan([
+                                                        'xl' => 1,
+                                                        'sm' => 2,
+                                                    ]),
+                                                SpatieMediaLibraryFileUpload::make('thumbnail')
+                                                    ->collection('thumbnail')
+                                                    ->helperText('A image representation of the conference that can be used in lists of conferences.')
+                                                    ->image()
+                                                    ->conversion('thumb')
+                                                    ->columnSpan([
+                                                        'xl' => 1,
+                                                        'sm' => 2,
+                                                    ]),
+                                                TinyEditor::make('meta.description')
+                                                    ->minHeight(300)
+
+                                                    ->columnSpan([
+                                                        'sm' => 2,
+                                                    ]),
+                                                TinyEditor::make('meta.about')
+                                                    ->label('About Conference')
+                                                    ->minHeight(300)
+                                                    ->columnSpan([
+                                                        'sm' => 2,
+                                                    ]),
+                                                TinyEditor::make('meta.page_footer')
+                                                    ->minHeight(300)
+                                                    ->columnSpan([
+                                                        'sm' => 2,
+                                                    ]),
                                             ]),
                                         Actions::make([
                                             Action::make('save')
