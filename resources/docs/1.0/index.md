@@ -4,6 +4,9 @@
     - [Events](/{{route}}/{{version}}/application/events)  
     - [Authorization](/{{route}}/{{version}}/application/Authorization)
     - [Blocks](/{{route}}/{{version}}/application/blocks)
+-   ## Forms
+    -   [Introduction](/{{route}}/{{version}}/forms/introduction)
+    -   [Vertical Tabs](/{{route}}/{{version}}/forms/vertical-tabs)
 -   ## Panel
     -   [Introduction](/{{route}}/{{version}}/panel/introduction)
 -   ## Website
