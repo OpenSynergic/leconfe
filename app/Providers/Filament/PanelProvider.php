@@ -98,8 +98,7 @@ class PanelProvider extends FilamentPanelProvider
 
     public static function getNavigationItems(): array
     {
-        return [
-        ];
+        return [];
     }
 
     public static function getColors(): array
