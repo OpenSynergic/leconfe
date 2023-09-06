@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Filament\Facades\Filament;
+use App\Models\Concerns\BelongsToConference;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,24 +11,9 @@ use Spatie\Sluggable\SlugOptions;
 
 class Topic extends Model
 {
-    use Cachable, HasFactory, HasSlug;
+    use BelongsToConference, Cachable, HasFactory, HasSlug;
 
     protected $fillable = ['name', 'slug', 'conference_id'];
-
-    /**
-     * The "booted" method of the model.
-     */
-    protected static function booted(): void
-    {
-        static::creating(function (Topic $topic) {
-            $topic->conference_id ??= Filament::getTenant()?->getKey();
-        });
-    }
-
-    public function conference()
-    {
-        return $this->belongsTo(Conference::class);
-    }
 
     /**
      * Get the options for generating the slug.

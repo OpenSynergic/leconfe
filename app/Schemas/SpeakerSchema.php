@@ -3,7 +3,7 @@
 namespace App\Schemas;
 
 use App\Actions\Conferences\CreateSpeakerAction;
-use App\Models\Speaker;
+use App\Models\Participants\Speaker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;

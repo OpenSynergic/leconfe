@@ -40,7 +40,6 @@ class UserResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-
             ->columns(3)
             ->schema([
                 Forms\Components\Grid::make()

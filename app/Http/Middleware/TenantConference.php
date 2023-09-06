@@ -4,16 +4,20 @@ namespace App\Http\Middleware;
 
 use App\Models\Block;
 use App\Models\Navigation;
-use App\Models\Scopes\TenantScope;
-use App\Models\Speaker;
+use App\Models\Participants\Participant;
+use App\Models\Participants\ParticipantPosition;
+use App\Models\Participants\Speaker;
+use App\Models\Participants\SpeakerPosition;
+use App\Models\Scopes\ConferenceScope;
 use App\Models\Submission;
 use App\Models\Topic;
 use App\Models\Venue;
 use Closure;
+use Filament\Facades\Filament;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ApplyTenantScopes
+class TenantConference
 {
     /**
      * Handle an incoming request.
@@ -22,7 +26,8 @@ class ApplyTenantScopes
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // All model scopes for conference are applied here.
+        app()->setCurrentConference(Filament::getTenant());
+
         foreach ([
             Submission::class,
             Topic::class,
@@ -30,8 +35,10 @@ class ApplyTenantScopes
             Speaker::class,
             Navigation::class,
             Block::class,
+            Speaker::class,
+            SpeakerPosition::class,
         ] as $model) {
-            $model::addGlobalScope(new TenantScope);
+            $model::addGlobalScope(new ConferenceScope);
         }
 
         return $next($request);

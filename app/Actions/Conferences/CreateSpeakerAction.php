@@ -2,7 +2,7 @@
 
 namespace App\Actions\Conferences;
 
-use App\Models\Speaker;
+use App\Models\Participants\Speaker;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class CreateSpeakerAction
