@@ -12,10 +12,5 @@ class Announcement extends UserContent
         parent::booted();
 
         static::addGlobalScope(new AnnouncementScope);
-
-        static::creating(function (UserContent $userContent) {
-            // $userContent->conference_id ??= Filament::getTenant()?->getKey();
-            dd($userContent);
-        });
     }
 }
