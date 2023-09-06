@@ -37,7 +37,7 @@
             ->merge($getExtraAttributes(), escape: false)
             ->merge($getExtraAlpineAttributes(), escape: false)
             ->class([
-                'flex',
+                'flex flex-col xl:flex-row mb-5',
                 'flex-row-reverse' => $getPosition() == 'right'
                 // 'fi-fo-tabs flex flex-col',
                 // 'fi-contained rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10' => $isContained,
@@ -56,12 +56,12 @@
         x-ref="tabsData"
     />
 
-    <x-form::vertical-tabs :contained="$isContained" :label="$getLabel()" :is-sticky="$isSticky()">
+    <x-panel::vertical-tabs :contained="$isContained" :label="$getLabel()" :is-sticky="$isSticky()">
         @foreach ($getChildComponentContainer()->getComponents() as $tab)
             @php
                 $tabId = $tab->getId();
             @endphp
-            <x-form::vertical-tabs.item
+            <x-panel::vertical-tabs.item
                 :alpine-active="'tab === \'' . $tabId . '\''"
                 :badge="$tab->getBadge()"
                 :icon="$tab->getIcon()"
@@ -69,11 +69,11 @@
                 :x-on:click="'tab = \'' . $tabId . '\''"
             >
                 {{ $tab->getLabel() }}
-            </x-form::vertical-tabs.item>
+            </x-panel::vertical-tabs.item>
         @endforeach
-    </x-form::vertical-tabs>
+    </x-panel::vertical-tabs>
 
-    <div class="flex flex-col w-full">
+    <div class="flex flex-col w-full mt-6 xl:mt-0">
         @foreach ($getChildComponentContainer()->getComponents() as $tab)
             {{ $tab }}
         @endforeach
