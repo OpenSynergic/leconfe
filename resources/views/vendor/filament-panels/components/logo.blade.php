@@ -6,6 +6,6 @@
             ])
         }}
     >
-    <img src="{{ Vite::asset('resources/assets/images/logo.png') }}" class="max-h-[2rem]" /> <span>Leconfe</span>
+    <img src="{{ Vite::asset('resources/assets/images/logo.png') }}" class="max-h-[2rem]" /> <span>{{ $brand }}</span>
 </div>
 @endif

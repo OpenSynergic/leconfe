@@ -11,7 +11,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Venue extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia, Cachable;
+    use Cachable, HasFactory, InteractsWithMedia;
 
     protected $fillable = ['name', 'location', 'description'];
 

@@ -6,6 +6,7 @@ use App\Actions\Conferences\ConferenceSetCurrentAction;
 use App\Administration\Resources\ConferenceResource\Pages;
 use App\Models\Conference;
 use App\Models\Enums\ConferenceType;
+use App\Tables\Columns\IndexColumn;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Grid;
@@ -19,7 +20,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use Squire\Models\Country;
@@ -123,17 +123,7 @@ class ConferenceResource extends Resource
                 //     ->collection('logo')
                 //     ->conversion('thumb')
                 //     ->grow(false),
-
-                TextColumn::make('number')
-                    ->grow(false)
-                    ->state(
-                        static function (HasTable $livewire, \stdClass $rowLoop): string {
-                            return (string) ($rowLoop->iteration +
-                                ($livewire->getTableRecordsPerPage() * ($livewire->getTablePage() - 1
-                                ))
-                            );
-                        }
-                    ),
+                IndexColumn::make('no'),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('type')

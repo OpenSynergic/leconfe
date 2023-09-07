@@ -13,7 +13,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Speaker extends Model implements HasMedia, Sortable
 {
-    use HasFactory, InteractsWithMedia, Cachable, SortableTrait;
+    use Cachable, HasFactory, InteractsWithMedia, SortableTrait;
 
     protected $fillable = [
         'name',
