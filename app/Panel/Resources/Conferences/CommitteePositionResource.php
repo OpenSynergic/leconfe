@@ -4,6 +4,7 @@ namespace App\Panel\Resources\Conferences;
 
 use App\Models\Participants\ParticipantPosition;
 use App\Tables\Columns\IndexColumn;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,7 +13,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\Rules\Unique;
 
-class SpeakerPositionResource extends Resource
+class CommitteePositionResource extends Resource
 {
     protected static bool $isDiscovered = false;
 
@@ -20,7 +21,12 @@ class SpeakerPositionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static string $positionType = 'speaker';
+    public static string $positionType = 'committee';
+
+    public static function getModelLabel(): string
+    {
+        return 'Committee Position';
+    }
 
     public static function getEloquentQuery(): Builder
     {
@@ -40,6 +46,10 @@ class SpeakerPositionResource extends Resource
                             ->where('type', static::$positionType)
                             ->where('conference_id', app()->getCurrentConference()->getKey());
                     }),
+                Select::make('parent_id')
+                    ->relationship('parent', 'name', fn ($query, null|ParticipantPosition $record) => $query
+                        ->when($record, fn ($query) => $query->whereNot('id', $record->getKey()))
+                        ->ofType(static::$positionType))
             ]);
     }
 
@@ -52,8 +62,10 @@ class SpeakerPositionResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('parent.name')
+                    ->badge(),
                 Tables\Columns\TextColumn::make('participants_count')
-                    ->label('Speakers')
+                    ->label('Committees')
                     ->counts('participants')
                     ->badge()
                     ->color(fn (int $state) => $state > 0 ? 'primary' : 'gray'),
@@ -69,14 +81,12 @@ class SpeakerPositionResource extends Resource
                         try {
                             $speakerCount = $record->participants()->count();
                             if ($speakerCount > 0) {
-                                throw new \Exception('Cannot delete ' . $record->name . ', there are speakers who are still associated with this position');
+                                throw new \Exception('Cannot delete ' . $record->name . ', there are ' . static::$positionType . ' who are still associated with this position');
                             }
 
                             return $record->delete();
                         } catch (\Throwable $th) {
                             $action->failureNotificationTitle($th->getMessage());
-                            // throw $th;
-
                         }
                     }),
             ])
@@ -88,7 +98,7 @@ class SpeakerPositionResource extends Resource
             ->emptyStateActions([
                 // Tables\Actions\CreateAction::make(),
             ])
-            ->heading('Speaker Positions Table')
+            ->heading('Committee Positions Table')
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->mutateFormDataUsing(function (array $data): array {
@@ -96,8 +106,8 @@ class SpeakerPositionResource extends Resource
 
                         return $data;
                     })
-                    ->label('New Speaker Position')
-                    ->modalHeading('New Speaker Position'),
+                    ->label('New Committee Position')
+                    ->modalHeading('New Committee` Position'),
             ]);
     }
 

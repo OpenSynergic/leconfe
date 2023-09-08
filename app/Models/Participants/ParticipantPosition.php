@@ -3,8 +3,10 @@
 namespace App\Models\Participants;
 
 use App\Models\Concerns\BelongsToConference;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 use Spatie\Sluggable\HasSlug;
@@ -42,5 +44,16 @@ class ParticipantPosition extends Model implements Sortable
         return SlugOptions::create()
             ->generateSlugsFrom('name')
             ->saveSlugsTo('slug');
+    }
+
+    public function participants(): MorphToMany
+    {
+        return $this
+            ->morphToMany(Participant::class, 'model', 'model_has_participants', 'model_id', 'participant_id');
+    }
+
+    public function scopeOfType(Builder $query, string $type): void
+    {
+        $query->where('type', $type);
     }
 }

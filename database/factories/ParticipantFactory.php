@@ -2,13 +2,16 @@
 
 namespace Database\Factories;
 
+use App\Models\Participants\Participant;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Person>
  */
-class PersonFactory extends Factory
+class ParticipantFactory extends Factory
 {
+    protected $model = Participant::class;
+
     /**
      * Define the model's default state.
      *
@@ -23,4 +26,16 @@ class PersonFactory extends Factory
             'country' => 'id',
         ];
     }
+
+    /**
+     * Configure the model factory.
+     */
+    // public function configure(): static
+    // {
+    //     return $this->afterCreating(function (Participant $participant) {
+    //         dispatch(fn() => $participant
+    //         ->addMediaFromUrl('https://picsum.photos/800')
+    //         ->toMediaCollection('photo'));
+    //     });
+    // }
 }

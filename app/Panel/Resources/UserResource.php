@@ -142,8 +142,7 @@ class UserResource extends Resource
                         ->color('primary')
                         ->redirectTo('panel'),
                     EditAction::make()
-                        ->modalWidth('2xl')
-                        ->form(fn () => static::formSchemas())
+                        ->modalWidth('full')
                         ->mutateRecordDataUsing(fn ($data, User $record) => array_merge($data, ['meta' => $record->getAllMeta()->toArray()]))
                         ->using(fn (array $data, User $record) => UserUpdateAction::run($data, $record)),
                     DeleteAction::make()

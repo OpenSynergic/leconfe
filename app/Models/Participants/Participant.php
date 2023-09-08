@@ -2,10 +2,12 @@
 
 namespace App\Models\Participants;
 
-use App\Models\Concerns\BelongsToConference;
 use App\Models\Meta\ParticipantMeta;
+use Database\Factories\ParticipantFactory;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Kra8\Snowflake\HasShortflakePrimary;
 use Plank\Metable\Metable;
 use Spatie\EloquentSortable\Sortable;
@@ -16,7 +18,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Participant extends Model implements HasMedia, Sortable
 {
-    use BelongsToConference, HasFactory, HasShortflakePrimary, InteractsWithMedia, Metable, SortableTrait;
+    use HasFactory, HasShortflakePrimary, InteractsWithMedia, Metable, SortableTrait;
 
     /**
      * The table associated with the model.
@@ -32,13 +34,18 @@ class Participant extends Model implements HasMedia, Sortable
      */
     protected $fillable = [
         'conference_id',
-        'participant_position_id',
-        'type',
+        // 'participant_position_id',
+        'email',
         'given_name',
         'family_name',
         'public_name',
         'country',
     ];
+
+    protected static function newFactory(): Factory
+    {
+        return ParticipantFactory::new();
+    }
 
     public function registerMediaConversions(Media $media = null): void
     {
@@ -58,5 +65,11 @@ class Participant extends Model implements HasMedia, Sortable
     protected function getMetaClassName(): string
     {
         return ParticipantMeta::class;
+    }
+
+    public function positions(): MorphToMany
+    {
+        return $this
+            ->morphedByMany(ParticipantPosition::class, 'model', 'model_has_participants', 'participant_id', 'model_id');
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Conference;
+use App\Models\Participants\Participant;
 use App\Models\Participants\ParticipantPosition;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -38,16 +39,23 @@ return new class extends Migration
 
         Schema::create('participants', function (Blueprint $table) {
             $table->id();
-            $table->string('email')->nullable();
-            $table->foreignIdFor(Conference::class)->constrained();
-            $table->foreignIdFor(ParticipantPosition::class)->constrained();
-            $table->string('type');
+            $table->string('email')->nullable()->unique();
+            // $table->foreignIdFor(Conference::class)->constrained();
+            // $table->foreignIdFor(ParticipantPosition::class)->constrained();
+            // $table->string('type');
             $table->string('given_name');
             $table->string('family_name')->nullable();
             $table->string('public_name')->nullable();
             $table->string('country')->nullable();
             $table->unsignedInteger('order_column')->nullable();
             $table->timestamps();
+        });
+
+        Schema::create('model_has_participants', function (Blueprint $table) {
+            $table->foreignIdFor(Participant::class)->constrained();
+            $table->morphs('model');
+
+            $table->primary(['model_id', 'model_type', 'participant_id']);
         });
 
     }

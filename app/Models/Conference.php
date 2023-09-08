@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Actions\Speakers\SpeakerPositionPopulateDefaultDataAction;
+use App\Actions\Participants\ParticipantPositionPopulateDefaultDataAction;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ConferenceType;
 use App\Models\Meta\ConferenceMeta;
@@ -66,7 +66,7 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
         });
 
         static::created(function (Conference $model) {
-            SpeakerPositionPopulateDefaultDataAction::run($model);
+            ParticipantPositionPopulateDefaultDataAction::run($model);
         });
     }
 

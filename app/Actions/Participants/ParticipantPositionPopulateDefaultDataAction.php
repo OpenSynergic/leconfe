@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Actions\Speakers;
+namespace App\Actions\Participants;
 
 use App\Models\Conference;
-use App\Models\Participants\SpeakerPosition;
+use App\Models\Participants\ParticipantPosition;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class SpeakerPositionPopulateDefaultDataAction
+class ParticipantPositionPopulateDefaultDataAction
 {
     use AsAction;
 
@@ -20,7 +20,7 @@ class SpeakerPositionPopulateDefaultDataAction
                 'Keynote Speaker',
                 'Plenary Speaker',
             ] as $speakerPosition) {
-                SpeakerPosition::firstOrCreate([
+                ParticipantPosition::firstOrCreate([
                     'name' => $speakerPosition,
                     'type' => 'speaker',
                     'conference_id' => $conference->getKey(),

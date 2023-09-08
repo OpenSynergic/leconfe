@@ -4,8 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\Block;
 use App\Models\Navigation;
-use App\Models\Participants\Speaker;
-use App\Models\Participants\SpeakerPosition;
+use App\Models\Participants\ParticipantPosition;
 use App\Models\Scopes\ConferenceScope;
 use App\Models\Submission;
 use App\Models\Topic;
@@ -30,11 +29,9 @@ class TenantConference
             Submission::class,
             Topic::class,
             Venue::class,
-            Speaker::class,
             Navigation::class,
             Block::class,
-            Speaker::class,
-            SpeakerPosition::class,
+            ParticipantPosition::class,
         ] as $model) {
             $model::addGlobalScope(new ConferenceScope);
         }
