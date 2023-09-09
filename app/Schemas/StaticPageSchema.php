@@ -106,7 +106,7 @@ class StaticPageSchema
                         ->required(),
                 ]),
             TinyEditor::make('user_content')
-                ->label('Announcement content')
+                ->label('Content')
                 ->helperText('The complete page content.'),
         ];
     }
