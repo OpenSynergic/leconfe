@@ -6,7 +6,6 @@ use App\Actions\Submissions\SubmissionCreateAction;
 use App\Infolists\Components\BladeEntry;
 use App\Models\Author;
 use App\Panel\Resources\SubmissionResource;
-use Closure;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
@@ -72,14 +71,14 @@ class CreateSubmission extends Page implements HasForms
                                 ->searchable(),
                             Hidden::make('category_name')
                                 ->dehydrated(false),
-                            TextInput::make("title")
+                            TextInput::make('title')
                                 ->required()
-                                ->placeholder("Enter title"),
+                                ->placeholder('Enter title'),
                             TagsInput::make('keywords')
                                 ->splitKeys([' ', 'Enter'])
                                 ->suggestions(fn (): array => ['Sample'])
-                                ->helperText("Press enter or spaces to add a keyword"),
-                            Textarea::make("asbtract")
+                                ->helperText('Press enter or spaces to add a keyword'),
+                            Textarea::make('asbtract')
                                 ->required()
 
                                 ->rows(4),
@@ -91,14 +90,14 @@ class CreateSubmission extends Page implements HasForms
                                 ->label('Yes, I agree to have my data collected and stored according to the privacy statement.'),
 
                         ])
-                            ->heading("Submission Details")
-                            ->description("Please provide the following details to help us manage your submission.")
-                            ->aside()
+                            ->heading('Submission Details')
+                            ->description('Please provide the following details to help us manage your submission.')
+                            ->aside(),
                     ]),
                 Wizard\Step::make('Upload files')
                     ->schema([
                         Section::make([
-                            Repeater::make("submission_files")
+                            Repeater::make('submission_files')
                                 ->schema([
                                     Select::make('article_type')
                                         ->options([
@@ -120,25 +119,25 @@ class CreateSubmission extends Page implements HasForms
                                         ->reactive()
                                         ->visible(function (Get $get) {
                                             return $get('article_type') !== null;
-                                        })
+                                        }),
                                 ])
-                                ->addActionLabel("Add submission file")
+                                ->addActionLabel('Add submission file'),
                         ])
-                            ->heading("Upload files")
-                            ->description("Provide any files our editorial team may need to evaluate your submission. In addition to the main work, you may wish to submit data sets, conflict of interest statements, or other supplementary files if these will be helpful for our editors.")
-                            ->aside()
+                            ->heading('Upload files')
+                            ->description('Provide any files our editorial team may need to evaluate your submission. In addition to the main work, you may wish to submit data sets, conflict of interest statements, or other supplementary files if these will be helpful for our editors.')
+                            ->aside(),
                     ]),
                 Wizard\Step::make('Add authors')
                     ->schema([
                         Section::make('Authors')
-                            ->description("Please provide the following details to help us manage your submission.")
+                            ->description('Please provide the following details to help us manage your submission.')
                             ->schema([
                                 Repeater::make('authors')
                                     ->label('')
                                     ->itemLabel('Author')
                                     ->schema([
                                         Select::make('author_id')
-                                            ->label("Name")
+                                            ->label('Name')
                                             ->searchable()
                                             ->preload()
                                             ->options(
@@ -154,19 +153,19 @@ class CreateSubmission extends Page implements HasForms
                                         Hidden::make('author_name')
                                             ->dehydrated(false),
                                     ])
-                                    ->addActionLabel("Add author")
+                                    ->addActionLabel('Add author'),
                             ])
-                            ->aside()
+                            ->aside(),
                     ]),
                 Wizard\Step::make('Summary')
                     ->schema([
-                        View::make('panel.resources.submission-resource.pages.submission-Summary')
+                        View::make('panel.resources.submission-resource.pages.submission-Summary'),
                     ]),
             ])
                 ->submitAction(
                     BladeEntry::make('button_save')
                         ->blade('<x-filament::button type="submit" class="ml-auto">Save</x-filament::button>')
-                )
+                ),
         ];
     }
 
@@ -175,6 +174,7 @@ class CreateSubmission extends Page implements HasForms
         $data = $this->form->getState();
         dd($data);
         $submission = SubmissionCreateAction::run($data);
+
         return redirect()->to(SubmissionResource::getUrl('view', [$submission->id]));
     }
 

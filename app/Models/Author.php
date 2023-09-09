@@ -39,7 +39,7 @@ class Author extends Model implements Sortable
                     return $this->getMeta('public_name');
                 }
 
-                return $this->getMeta('given_name') . ' ' . $this->getMeta('family_name');
+                return $this->getMeta('given_name').' '.$this->getMeta('family_name');
             }
         );
     }
