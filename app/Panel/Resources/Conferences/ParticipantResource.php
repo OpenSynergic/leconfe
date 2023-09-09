@@ -4,7 +4,7 @@ namespace App\Panel\Resources\Conferences;
 
 use App\Actions\Participants\DetachParticipantPositionByType;
 use App\Actions\Participants\ParticipantUpdateAction;
-use App\Models\Participants\Participant;
+use App\Models\Participant;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms;
 use Filament\Resources\Resource;

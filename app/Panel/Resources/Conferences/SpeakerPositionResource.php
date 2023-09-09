@@ -2,7 +2,7 @@
 
 namespace App\Panel\Resources\Conferences;
 
-use App\Models\Participants\ParticipantPosition;
+use App\Models\ParticipantPosition;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;

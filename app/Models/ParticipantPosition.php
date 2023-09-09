@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Participants;
+namespace App\Models;
 
 use App\Models\Concerns\BelongsToConference;
 use Illuminate\Database\Eloquent\Builder;

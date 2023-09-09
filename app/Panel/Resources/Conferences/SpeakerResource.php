@@ -3,8 +3,8 @@
 namespace App\Panel\Resources\Conferences;
 
 use App\Actions\Participants\ParticipantCreateAction;
-use App\Models\Participants\Participant;
-use App\Models\Participants\ParticipantPosition;
+use App\Models\Participant;
+use App\Models\ParticipantPosition;
 use App\Panel\Resources\Conferences\SpeakerResource\Pages;
 use App\Panel\Resources\Conferences\SpeakerResource\Widgets;
 use Filament\Forms;

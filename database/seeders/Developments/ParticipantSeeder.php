@@ -2,7 +2,7 @@
 
 namespace Database\Seeders\Developments;
 
-use App\Models\Participants\Participant;
+use App\Models\Participant;
 use Illuminate\Database\Seeder;
 
 class ParticipantSeeder extends Seeder

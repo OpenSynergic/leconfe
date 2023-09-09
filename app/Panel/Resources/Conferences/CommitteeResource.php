@@ -3,7 +3,7 @@
 namespace App\Panel\Resources\Conferences;
 
 use App\Actions\Participants\ParticipantCreateAction;
-use App\Models\Participants\Participant;
+use App\Models\Participant;
 use App\Panel\Resources\Conferences\CommitteeResource\Pages;
 use Filament\Forms;
 use Filament\Forms\Components\Actions\Action as FormAction;

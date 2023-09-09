@@ -2,7 +2,7 @@
 
 namespace App\Actions\Participants;
 
-use App\Models\Participants\Participant;
+use App\Models\Participant;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 

@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\Block;
 use App\Models\Navigation;
-use App\Models\Participants\ParticipantPosition;
+use App\Models\ParticipantPosition;
 use App\Models\Scopes\ConferenceScope;
 use App\Models\Submission;
 use App\Models\Topic;

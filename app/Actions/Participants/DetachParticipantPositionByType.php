@@ -2,7 +2,7 @@
 
 namespace App\Actions\Participants;
 
-use App\Models\Participants\Participant;
+use App\Models\Participant;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class DetachParticipantPositionByType

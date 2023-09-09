@@ -1,8 +1,8 @@
 <?php
 
 use App\Models\Conference;
-use App\Models\Participants\Participant;
-use App\Models\Participants\ParticipantPosition;
+use App\Models\Participant;
+use App\Models\ParticipantPosition;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

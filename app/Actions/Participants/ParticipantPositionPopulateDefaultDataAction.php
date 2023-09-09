@@ -3,7 +3,7 @@
 namespace App\Actions\Participants;
 
 use App\Models\Conference;
-use App\Models\Participants\ParticipantPosition;
+use App\Models\ParticipantPosition;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 

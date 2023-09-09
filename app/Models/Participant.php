@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Participants;
+namespace App\Models;
 
 use App\Models\Meta\ParticipantMeta;
 use Database\Factories\ParticipantFactory;
