@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Participant;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class ParticipantPolicy
 {
@@ -15,7 +14,7 @@ class ParticipantPolicy
     {
         return true;
     }
-    
+
     /**
      * Determine whether the user can view the model.
      */
