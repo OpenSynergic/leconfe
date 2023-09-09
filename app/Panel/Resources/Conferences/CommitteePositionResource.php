@@ -47,9 +47,9 @@ class CommitteePositionResource extends Resource
                             ->where('conference_id', app()->getCurrentConference()->getKey());
                     }),
                 Select::make('parent_id')
-                    ->relationship('parent', 'name', fn ($query, null|ParticipantPosition $record) => $query
+                    ->relationship('parent', 'name', fn ($query, ?ParticipantPosition $record) => $query
                         ->when($record, fn ($query) => $query->whereNot('id', $record->getKey()))
-                        ->ofType(static::$positionType))
+                        ->ofType(static::$positionType)),
             ]);
     }
 
@@ -81,7 +81,7 @@ class CommitteePositionResource extends Resource
                         try {
                             $speakerCount = $record->participants()->count();
                             if ($speakerCount > 0) {
-                                throw new \Exception('Cannot delete ' . $record->name . ', there are ' . static::$positionType . ' who are still associated with this position');
+                                throw new \Exception('Cannot delete '.$record->name.', there are '.static::$positionType.' who are still associated with this position');
                             }
 
                             return $record->delete();

@@ -3,25 +3,16 @@
 namespace App\Panel\Resources\Conferences;
 
 use App\Actions\Participants\ParticipantCreateAction;
-use App\Actions\Participants\ParticipantUpdateAction;
 use App\Models\Participants\Participant;
 use App\Panel\Resources\Conferences\CommitteeResource\Pages;
-use App\Panel\Resources\Conferences\CommitteeResource\Widgets;
-use App\Tables\Columns\IndexColumn;
 use Filament\Forms;
 use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -47,7 +38,7 @@ class CommitteeResource extends Resource
                 'positions' => fn ($query) => $query
                     ->where('type', CommitteePositionResource::$positionType),
                 'media',
-                'meta'
+                'meta',
             ])
             ->whereHas(
                 'positions',
@@ -65,27 +56,12 @@ class CommitteeResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\SpatieMediaLibraryFileUpload::make('photo')
-                    ->image()
-                    ->key('photo')
-                    ->collection('photo')
-                    ->conversion('thumb')
-                    ->alignCenter()
-                    ->columnSpan([
-                        'lg' => 2,
-                    ]),
-                Forms\Components\TextInput::make('given_name')
-                    ->required(),
-                Forms\Components\TextInput::make('family_name'),
-                Forms\Components\TextInput::make('email')
-                    ->unique(ignoreRecord: true)
-                    ->columnSpan([
-                        'lg' => 2,
-                    ]),
+                ...ParticipantResource::generalFormField(),
                 Forms\Components\Select::make('positions')
+                    ->label('Position')
                     ->required()
                     ->searchable()
-                    ->multiple()
+                    // ->multiple()
                     ->relationship(
                         name: 'positions',
                         titleAttribute: 'name',
@@ -100,7 +76,7 @@ class CommitteeResource extends Resource
                     ->createOptionForm(fn ($form) => CommitteePositionResource::form($form))
                     ->createOptionAction(
                         fn (FormAction $action) => $action->modalWidth('xl')
-                            ->modalHeading('Create Speaker Position')
+                            ->modalHeading('Create Committee Position')
                             ->mutateFormDataUsing(function (array $data): array {
                                 $data['type'] = CommitteePositionResource::$positionType;
 
@@ -113,30 +89,15 @@ class CommitteeResource extends Resource
                     ->columnSpan([
                         'lg' => 2,
                     ]),
-                Forms\Components\Fieldset::make('Detail')
-                    ->schema([
-                        Forms\Components\Grid::make(2)
-                            ->schema([
-                                Forms\Components\TextInput::make('meta.phone'),
-                                Forms\Components\TextInput::make('meta.orcid_id')
-                                    ->label('ORCID iD'),
-                                Forms\Components\TextInput::make('meta.affiliation'),
-                            ]),
-                    ]),
+                ...ParticipantResource::additionalFormField(),
+
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            // ->recordUrl(null)
-            // ->recordAction(null)
             ->reorderable('order_column')
-            // Disable because grouping with reorderable active is acting weird
-            // ->groups([
-            //     Group::make('position.name')
-            //         ->label('Position'),
-            // ])
             ->heading('Committee Table')
             ->headerActions([
                 ActionGroup::make([
@@ -182,7 +143,6 @@ class CommitteeResource extends Resource
                             Select::make('positions')
                                 ->required()
                                 ->searchable()
-                                ->multiple()
                                 ->options(
                                     fn () => CommitteePositionResource::getEloquentQuery()
                                         ->pluck('name', 'id')
@@ -197,52 +157,10 @@ class CommitteeResource extends Resource
                 ])->button(),
             ])
             ->columns([
-                IndexColumn::make('no')
-                    ->toggleable(),
-                SpatieMediaLibraryImageColumn::make('photo')
-                    ->collection('photo')
-                    ->conversion('avatar')
-                    ->width(50)
-                    ->height(50)
-                    ->extraCellAttributes([
-                        'style' => 'width: 1px',
-                    ])
-                    ->circular()
-                    ->toggleable(),
-                TextColumn::make('email')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('given_name')
-                    ->searchable()
-                    ->toggleable(),
-                TextColumn::make('family_name'),
-                TextColumn::make('positions.name')
-                    ->badge()
-                    ->limitList(3)
-                    ->listWithLineBreaks(),
+                ...ParticipantResource::generalTableColumns(),
             ])
             ->actions([
-                ActionGroup::make([
-                    EditAction::make()
-                        ->modalWidth('2xl')
-                        ->mutateRecordDataUsing(function (array $data, Participant $record) {
-                            $data['meta'] = $record->getAllMeta();
-
-                            return $data;
-                        })
-                        ->using(fn (array $data, Model $record) => ParticipantUpdateAction::run($record, $data)),
-                    DeleteAction::make()
-                        ->using(
-                            function (Participant $record) {
-                                $positions = $record
-                                    ->positions()
-                                    ->where('participant_positions.conference_id', app()->getCurrentConference()->getKey())
-                                    ->where('type', CommitteePositionResource::$positionType)
-                                    ->get();
-                                return $record->positions()->detach($positions);
-                            }
-                        ),
-                ]),
+                ...ParticipantResource::tableActions(CommitteePositionResource::$positionType),
             ])
             ->filters([
                 // SelectFilter::make('position')

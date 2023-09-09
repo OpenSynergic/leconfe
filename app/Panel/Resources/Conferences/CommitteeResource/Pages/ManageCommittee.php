@@ -2,7 +2,6 @@
 
 namespace App\Panel\Resources\Conferences\CommitteeResource\Pages;
 
-
 use App\Panel\Resources\Conferences\CommitteeResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;

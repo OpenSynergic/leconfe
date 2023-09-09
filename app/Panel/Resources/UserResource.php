@@ -5,6 +5,7 @@ namespace App\Panel\Resources;
 use App\Actions\User\UserDeleteAction;
 use App\Actions\User\UserUpdateAction;
 use App\Models\User;
+use App\Panel\Resources\Conferences\ParticipantResource;
 use App\Panel\Resources\UserResource\Pages;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms;
@@ -15,11 +16,11 @@ use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Hash;
-use Squire\Models\Country;
 use STS\FilamentImpersonate\Tables\Actions\Impersonate;
 
 class UserResource extends Resource
@@ -69,23 +70,20 @@ class UserResource extends Resource
                                     ->requiredWith('password')
                                     ->password()
                                     ->dehydrated(false),
-                                Forms\Components\Select::make('country')
-                                    ->searchable()
-                                    ->columnSpan(['lg' => 2])
-                                    ->options(fn () => Country::all()->pluck('name', 'id'))
-                                    ->preload(),
+                                ...ParticipantResource::additionalFormField(),
                             ])
                             ->columns(2),
-                        Forms\Components\Section::make('User Details')
-                            ->schema([
-                                Forms\Components\Grid::make(2)
-                                    ->schema([
-                                        Forms\Components\TextInput::make('meta.phone'),
-                                        Forms\Components\TextInput::make('meta.orcid_id')
-                                            ->label('ORCID iD'),
-                                        Forms\Components\TextInput::make('meta.affiliation'),
-                                    ]),
-                            ]),
+                        // Forms\Components\Section::make('User Details')
+                        //     ->schema([
+                        //         Forms\Components\Grid::make(2)
+                        //             ->schema([
+                        //                 Forms\Components\TextInput::make('meta.phone'),
+                        //                 Forms\Components\TextInput::make('meta.orcid_id')
+                        //                     ->label('ORCID iD'),
+                        //                 Forms\Components\TextInput::make('meta.affiliation'),
+                        //             ]),
+                        //     ]),
+
                     ])
                     ->columnSpan(['lg' => 2]),
 
@@ -105,7 +103,7 @@ class UserResource extends Resource
                             ->schema([
                                 Forms\Components\CheckboxList::make('roles')
                                     ->label('')
-                                    ->disabled(fn () => ! auth()->user()->can('User:assignRoles'))
+                                    ->disabled(fn () => ! auth()->user()->can('assignRoles', static::getModel()))
                                     ->relationship('roles', 'name'),
                             ]),
                     ])
@@ -116,18 +114,29 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->striped()
             ->columns([
-                IndexColumn::make('no'),
-                TextColumn::make('given_name')
-                    ->size('sm')
-                    ->searchable(),
-                TextColumn::make('family_name')
-                    ->size('sm')
-                    ->searchable(),
+                IndexColumn::make('no')
+                    ->toggleable(),
+                SpatieMediaLibraryImageColumn::make('profile')
+                    ->collection('profile')
+                    ->conversion('avatar')
+                    ->width(50)
+                    ->height(50)
+                    ->extraCellAttributes([
+                        'style' => 'width: 1px',
+                    ])
+                    ->circular()
+                    ->toggleable(),
                 TextColumn::make('email')
-                    ->size('sm')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(),
+                TextColumn::make('full_name')
+                    ->searchable(
+                        query: fn ($query, $search) => $query
+                            ->where('given_name', 'LIKE', "%{$search}%")
+                            ->orWhere('family_name', 'LIKE', "%{$search}%")
+                    )
+                    ->toggleable(),
             ])
             ->filters([
                 // ...

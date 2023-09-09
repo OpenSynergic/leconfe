@@ -4,7 +4,6 @@ namespace App\Panel\Livewire\Tables;
 
 use App\Panel\Livewire\Traits\PlaceholderTrait;
 use App\Panel\Resources\Conferences\CommitteePositionResource;
-use App\Panel\Resources\Conferences\SpeakerPositionResource;
 use Filament\Actions\CreateAction;
 use Filament\Facades\Filament;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -17,7 +16,6 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\HtmlString;
 use Livewire\Component;
 
 class CommiteePositionTable extends Component implements HasForms, HasTable

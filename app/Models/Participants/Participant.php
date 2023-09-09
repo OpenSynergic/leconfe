@@ -4,10 +4,12 @@ namespace App\Models\Participants;
 
 use App\Models\Meta\ParticipantMeta;
 use Database\Factories\ParticipantFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Str;
 use Kra8\Snowflake\HasShortflakePrimary;
 use Plank\Metable\Metable;
 use Spatie\EloquentSortable\Sortable;
@@ -41,6 +43,13 @@ class Participant extends Model implements HasMedia, Sortable
         'public_name',
         'country',
     ];
+
+    protected function fullName(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => Str::squish($this->given_name.' '.$this->family_name),
+        );
+    }
 
     protected static function newFactory(): Factory
     {

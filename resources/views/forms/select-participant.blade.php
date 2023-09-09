@@ -6,6 +6,6 @@
     @endif
     <div>
         <p>{{ $participant->given_name }} {{ $participant->family_name }}</p>
-        <p class="text-sm text-gray-500">{{ $participant->email }}</p>
+        <p class="text-sm text-gray-500 dark:text-gray-300">{{ $participant->email }}</p>
     </div>
 </div>

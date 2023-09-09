@@ -3,14 +3,10 @@
 namespace App\Panel\Resources\Conferences;
 
 use App\Actions\Participants\ParticipantCreateAction;
-use App\Actions\Participants\ParticipantUpdateAction;
 use App\Models\Participants\Participant;
 use App\Models\Participants\ParticipantPosition;
-use App\Models\Participants\Speaker;
-use App\Models\Scopes\ConferenceScope;
 use App\Panel\Resources\Conferences\SpeakerResource\Pages;
 use App\Panel\Resources\Conferences\SpeakerResource\Widgets;
-use App\Tables\Columns\IndexColumn;
 use Filament\Forms;
 use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Forms\Components\Select;
@@ -20,10 +16,6 @@ use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -50,7 +42,7 @@ class SpeakerResource extends Resource
                 'positions' => fn ($query) => $query
                     ->ofType(SpeakerPositionResource::$positionType),
                 'media',
-                'meta'
+                'meta',
             ])
             ->whereHas(
                 'positions',
@@ -68,29 +60,10 @@ class SpeakerResource extends Resource
     {
         return $form
             ->schema([
-                // TODO : Add search field to select existing speaker. Search across all conferences
-                Forms\Components\SpatieMediaLibraryFileUpload::make('photo')
-                    ->image()
-                    ->key('photo')
-                    ->collection('photo')
-                    ->conversion('thumb')
-                    ->alignCenter()
-                    ->columnSpan([
-                        'lg' => 2,
-                    ]),
-                Forms\Components\TextInput::make('given_name')
-                    ->required(),
-                Forms\Components\TextInput::make('family_name'),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->unique(ignoreRecord: true)
-                    ->columnSpan([
-                        'lg' => 2,
-                    ]),
+                ...ParticipantResource::generalFormField(),
                 Forms\Components\Select::make('positions')
                     ->required()
                     ->searchable()
-                    ->multiple()
                     ->relationship(
                         name: 'positions',
                         titleAttribute: 'name',
@@ -121,16 +94,10 @@ class SpeakerResource extends Resource
                     ->columnSpan([
                         'lg' => 2,
                     ]),
-                Forms\Components\Toggle::make('meta.confirmed'),
-                Forms\Components\Fieldset::make('Detail')
-                    ->schema([
-                        Forms\Components\Grid::make(2)
-                            ->schema([
-                                Forms\Components\TextInput::make('meta.phone'),
-                                Forms\Components\TextInput::make('meta.orcid_id')
-                                    ->label('ORCID iD'),
-                                Forms\Components\TextInput::make('meta.affiliation'),
-                            ]),
+                ...ParticipantResource::additionalFormField(),
+                Forms\Components\Toggle::make('meta.confirmed')
+                    ->columnSpan([
+                        'lg' => 2,
                     ]),
             ]);
     }
@@ -138,14 +105,7 @@ class SpeakerResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            // ->recordUrl(null)
-            // ->recordAction(null)
             ->reorderable('order_column')
-            // Disable because grouping with reorderable active is acting weird
-            // ->groups([
-            //     Group::make('position.name')
-            //         ->label('Position'),
-            // ])
             ->heading('Speakers Table')
             ->headerActions([
                 ActionGroup::make([
@@ -191,7 +151,6 @@ class SpeakerResource extends Resource
                             Select::make('positions')
                                 ->required()
                                 ->searchable()
-                                ->multiple()
                                 ->options(fn () => ParticipantPosition::query()
                                     ->where('type', SpeakerPositionResource::$positionType)
                                     ->pluck('name', 'id')
@@ -205,55 +164,14 @@ class SpeakerResource extends Resource
                 ])->button(),
             ])
             ->columns([
-                IndexColumn::make('no')
-                    ->toggleable(),
-                TextColumn::make('email')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                SpatieMediaLibraryImageColumn::make('photo')
-                    ->collection('photo')
-                    ->conversion('avatar')
-                    ->width(50)
-                    ->height(50)
-                    ->extraCellAttributes([
-                        'style' => 'width: 1px',
-                    ])
-                    ->circular()
-                    ->toggleable(),
-                TextColumn::make('given_name')
-                    ->searchable()
-                    ->toggleable(),
-                TextColumn::make('family_name'),
-                TextColumn::make('positions.name')
-                    ->badge()
-                    ->limitList(3)
-                    ->listWithLineBreaks(),
+                ...ParticipantResource::generalTableColumns(),
                 ToggleColumn::make('confirmed')
                     ->label('Confirmed')
                     ->updateStateUsing(fn (bool $state, Participant $record) => $record->setMeta('confirmed', $state))
                     ->getStateUsing(fn (Participant $record) => $record->getMeta('confirmed') ?? false),
             ])
             ->actions([
-                ActionGroup::make([
-                    EditAction::make()
-                        ->modalWidth('2xl')
-                        ->mutateRecordDataUsing(function (array $data, Participant $record) {
-                            $data['meta'] = $record->getAllMeta();
-
-                            return $data;
-                        })
-                        ->using(fn (array $data, Model $record) => ParticipantUpdateAction::run($record, $data)),
-                    DeleteAction::make()
-                        ->using(
-                            function (Participant $record) {
-                                $positions =    $record
-                                    ->positions()
-                                    ->where('type', SpeakerPositionResource::$positionType)
-                                    ->get();
-                                return $record->positions()->detach($positions);
-                            }
-                        ),
-                ]),
+                ...ParticipantResource::tableActions(SpeakerPositionResource::$positionType),
             ])
             ->filters([
                 // SelectFilter::make('position')
