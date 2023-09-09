@@ -26,8 +26,6 @@ class Permission extends Model
             if ($permission->roles()->exists()) {
                 throw new \Exception('Permission cannot be deleted because it is currently assigned to a roles');
             }
-
-            // TODO conference tidak bisa dihapus ketika ada data lain yg terkait dengan conference ini
         });
     }
 }

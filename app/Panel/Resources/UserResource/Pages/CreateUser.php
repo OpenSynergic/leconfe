@@ -16,8 +16,6 @@ class CreateUser extends CreateRecord
      */
     protected function handleRecordCreation(array $data): Model
     {
-        dd($data);
-
         return UserCreateAction::run($data);
     }
 }

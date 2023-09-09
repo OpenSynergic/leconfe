@@ -10,7 +10,7 @@ class ConferenceCreateAction
 {
     use AsAction;
 
-    public function handle(array $data)
+    public function handle(array $data): Conference
     {
         try {
             DB::beginTransaction();
