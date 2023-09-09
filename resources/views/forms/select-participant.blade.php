@@ -1,7 +1,7 @@
 <div class="flex items-center gap-4 cursor-pointer">
-    @if($participant->hasMedia('photo'))
+    @if($participant->hasMedia('profile'))
     <div style="height: 50px; width: 50px;">
-        <img src="{{ $participant->getFirstMediaUrl('photo', 'avatar') }}" style="height: 50px; width: 50px;" class="max-w-none object-cover object-center rounded-full ring-white dark:ring-gray-900">
+        <img src="{{ $participant->getFirstMedia('profile')->getAvailableUrl(['avatar']) }}" style="height: 50px; width: 50px;" class="max-w-none object-cover object-center rounded-full ring-white dark:ring-gray-900">
     </div>
     @endif
     <div>
