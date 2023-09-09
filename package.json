@@ -23,6 +23,7 @@
     },
     "dependencies": {
         "motion": "^10.16.2",
+        "photoswipe": "^5.3.9",
         "sortablejs": "^1.15.0",
         "tailwind-merge": "^1.14.0"
     }
