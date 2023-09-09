@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 
-class StaticPageList extends Page
+class AnnouncementPageList extends Page
 {
-    protected static string $view = 'conference.pages.static-page-list';
+    protected static string $view = 'conference.pages.announcement-list';
 
     public function mount()
     {
@@ -21,23 +21,9 @@ class StaticPageList extends Page
     protected function getViewData(): array
     {
         $contentTypeSlug = Route::current()->parameter('content_type');
-        $contentType = ucfirst(str_replace('-', '', ucwords($contentTypeSlug, '-')));
         $contentTitle = ucfirst(str_replace('-', ' ', ucwords($contentTypeSlug, '-')));
 
-        switch ($contentType) {
-            case ContentType::Announcement->value:
-                $userContent = Announcement::class;
-                break;
-            
-            case ContentType::StaticPage->value:
-                $userContent = ModelsStaticPage::class;
-                break;
-            
-            default:
-                break;
-        }
-
-        $staticPageList = $userContent::whereMeta('expires_at', '>', now())->get();
+        $staticPageList = Announcement::whereMeta('expires_at', '>', now())->get();
         
         return [
             'contentTitle' => $contentTitle,
@@ -50,7 +36,7 @@ class StaticPageList extends Page
     {
         $slug = static::getSlug();
 
-        Route::get('{content_type}', static::class)
+        Route::get('announcements', static::class)
             ->middleware(static::getRouteMiddleware($pageGroup))
             ->withoutMiddleware(static::getWithoutRouteMiddleware($pageGroup))
             ->name((string) str($slug)->replace('/', '.'));

@@ -33,7 +33,9 @@ class AnnouncementResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageAnnouncements::route('/'),
+            'index' => Pages\ListAnnouncements::route('/'),
+            'create' => Pages\CreateAnnouncement::route('/create'),
+            'edit' => Pages\EditAnnouncement::route('/{record}/edit'),
         ];
     }
 }

@@ -6,9 +6,10 @@ use App\Actions\Announcements\AnnouncementCreateAction;
 use App\Models\Enums\ContentType;
 use App\Panel\Resources\Conferences\AnnouncementResource;
 use Filament\Actions;
+use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Pages\ManageRecords;
 
-class ManageAnnouncements extends ManageRecords
+class ListAnnouncements extends ListRecords
 {
     protected static string $resource = AnnouncementResource::class;
 

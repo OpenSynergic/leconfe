@@ -7,7 +7,10 @@ use App\Actions\StaticPages\StaticPageUpdateAction;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ContentType;
 use App\Models\StaticPage;
+use Closure;
 use Filament\Facades\Filament;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Tables\Actions\Action;
@@ -17,6 +20,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\HtmlString;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
+use Illuminate\Support\Str;
 
 class StaticPageSchema
 {
@@ -26,46 +30,32 @@ class StaticPageSchema
             ->query(Filament::getTenant()->staticPages()->with(['conference'])->getQuery())
             ->heading('Static page')
             ->defaultPaginationPageOption(5)
-            ->recordUrl(fn ($record) => static::url($record))
+            ->recordUrl(fn ($record) => route('livewirePageGroup.website.pages.static-page', [
+                'path' => $record->getMeta('path')
+            ]))
             ->columns([
                 TextColumn::make('title')
                     ->searchable(),
-                TextColumn::make('short_description')
-                    ->label('Description')
-                    ->getStateUsing(fn (StaticPage $record) => new HtmlString($record->getMeta('short_description') != '' ? $record->getMeta('short_description') : 'No description added')),
+                TextColumn::make('path')
+                    ->label('Page url')
+                    ->getStateUsing(fn (StaticPage $record) => route('livewirePageGroup.website.pages.static-page', [
+                        'path' => $record->getMeta('path')
+                    ])),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-                CreateAction::make()
-                    ->modalWidth('2xl')
-                    ->label('Add static page')
-                    ->outlined()
-                    ->form(fn () => static::formSchemas())
-                    ->mutateFormDataUsing(function ($data) {
-                        $data['content_type'] = ContentType::StaticPage;
-
-                        return $data;
-                    })
-                    ->using(fn (array $data) => StaticPageCreateAction::run($data)),
+                //
             ])
             ->actions([
                 Action::make('view')
                     ->icon('heroicon-o-eye')
-                    ->url(fn ($record) => static::url($record))
+                    ->url(fn ($record) => route('livewirePageGroup.website.pages.static-page', [
+                        'path' => $record->getMeta('path')
+                    ]))
                     ->color('gray'),
-                EditAction::make()
-                    ->using(fn (StaticPage $record, $data) => StaticPageUpdateAction::run($data, $record))
-                    ->form(static::formSchemas())
-                    ->mutateRecordDataUsing(function ($data, $record) {
-                        $userContentMeta = $record->getAllMeta();
-
-                        $data['short_description'] = $userContentMeta['short_description'];
-                        $data['user_content'] = $userContentMeta['user_content'];
-
-                        return $data;
-                    }),
+                EditAction::make(),
             ])
             ->bulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),
@@ -82,37 +72,42 @@ class StaticPageSchema
     public static function formSchemas(): array
     {
         return [
-            TextInput::make('title')
-                ->required(),
-            TinyEditor::make('short_description')
-                ->helperText('A concise overview of your page.'),
+            Grid::make(2)
+                ->schema([
+                    TextInput::make('title')
+                        ->reactive()
+                        ->afterStateUpdated(fn ($set, $state) => $set('path', Str::slug($state)))
+                        ->required(),
+                    TextInput::make('path')
+                        ->reactive()
+                        ->live(debounce: 1000)
+                        ->afterStateUpdated(fn ($set, $state) => $set('path', Str::slug($state)))
+                        ->rules([
+                            function ($record) {
+                                return function (string $attribute, $value, Closure $fail) use ($record) {
+                                    $staticPage = StaticPage::WhereMeta('path', $value)->first('id');
+
+                                    if ($staticPage && $staticPage->id != $record->id) {
+                                        $fail(':attribute is already exist.');
+                                    }
+                                };
+                            },
+                        ])
+                        ->helperText(function ($get) {
+                            $route = route('livewirePageGroup.website.pages.static-page', [
+                                'path' => $get('path') ? ($get('path') != '' ? $get('path') : 'path-name') : 'path-name'
+                            ]);
+        
+                            return new HtmlString("
+                                <p>Your page will be at :</p>
+                                <p>\"{$route}\"</p>
+                            ");
+                        })
+                        ->required(),
+                ]),
             TinyEditor::make('user_content')
                 ->label('Announcement content')
                 ->helperText('The complete page content.'),
         ];
-    }
-
-    public static function url($record) {
-        $conference  = $record->conference;
-        $contentType = ltrim(strtolower(preg_replace('/[A-Z]([A-Z](?![a-z]))*/', '-$0', $record->content_type)), '-');
-
-        switch ($conference->status->value) {
-            case ConferenceStatus::Current->value:
-                return 
-                    route('livewirePageGroup.current-conference.pages.static-page', [
-                        'content_type' => $contentType,
-                        'user_content' => $record->id
-                    ]);
-                break;
-            
-            default:
-                return
-                    route('livewirePageGroup.archive-conference.pages.static-page', [
-                        'conference' => $conference->id,
-                        'content_type' => $contentType,
-                        'user_content' => $record->id
-                    ]);
-                break;
-        }
     }
 }
