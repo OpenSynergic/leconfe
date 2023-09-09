@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Meta\AuthorMeta;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,6 +21,11 @@ class Author extends Model implements Sortable
         'submission_id',
     ];
 
+    protected function getMetaClassName(): string
+    {
+        return AuthorMeta::class;
+    }
+
     public function submission()
     {
         return $this->belongsTo(Submission::class);
@@ -33,7 +39,7 @@ class Author extends Model implements Sortable
                     return $this->getMeta('public_name');
                 }
 
-                return $this->getMeta('given_name').' '.$this->getMeta('family_name');
+                return $this->getMeta('given_name') . ' ' . $this->getMeta('family_name');
             }
         );
     }
