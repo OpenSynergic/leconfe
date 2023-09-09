@@ -11,6 +11,8 @@ use Closure;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Tables\Actions\Action;
@@ -72,42 +74,50 @@ class StaticPageSchema
     public static function formSchemas(): array
     {
         return [
-            Grid::make(2)
+            Grid::make(12)
                 ->schema([
-                    TextInput::make('title')
-                        ->reactive()
-                        ->afterStateUpdated(fn ($set, $state) => $set('path', Str::slug($state)))
-                        ->required(),
-                    TextInput::make('path')
-                        ->reactive()
-                        ->live(debounce: 1000)
-                        ->afterStateUpdated(fn ($set, $state) => $set('path', Str::slug($state)))
-                        ->rules([
-                            function ($record) {
-                                return function (string $attribute, $value, Closure $fail) use ($record) {
-                                    $staticPage = StaticPage::WhereMeta('path', $value)->first('id');
-
-                                    if ($staticPage && $staticPage->id != $record->id) {
-                                        $fail(':attribute is already exist.');
+                    Section::make()
+                        ->schema([
+                            TextInput::make('title')
+                                ->reactive()
+                                // ->afterStateUpdated(fn ($set, $state) => $set('path', Str::slug($state)))
+                                ->helperText(function ($state, $record) {
+                                    $staticPage = StaticPage::WhereMeta('path', Str::slug($state))->first('id');
+                                    
+                                    $isDumplicate = true;
+                                    if ($record) {
+                                        if ($staticPage->id == $record->id) {
+                                            $isDumplicate = false;
+                                        }
                                     }
-                                };
-                            },
-                        ])
-                        ->helperText(function ($get) {
-                            $route = route('livewirePageGroup.website.pages.static-page', [
-                                'path' => $get('path') ? ($get('path') != '' ? $get('path') : 'path-name') : 'path-name'
-                            ]);
-        
-                            return new HtmlString("
-                                <p>Your page will be at :</p>
-                                <p>\"{$route}\"</p>
-                            ");
-                        })
-                        ->required(),
+
+                                    if ($staticPage && $isDumplicate) {
+                                        $state .= '-1';
+                                    }
+                                    $route = route('livewirePageGroup.website.pages.static-page', [
+                                        'path' => Str::slug($state) ? (Str::slug($state) != '' ? Str::slug($state) : 'path-name') : 'path-name'
+                                    ]);
+                
+                                    return new HtmlString("
+                                        <p>Your page will be at :</p>
+                                        <p>\"{$route}\"</p>
+                                    ");
+                                })
+                                ->required(),
+                            TinyEditor::make('user_content')
+                                ->label('Content')
+                                ->minHeight(600)
+                                ->helperText('The complete page content.'),
+                        ])->columnSpan(9),
+                    Section::make()
+                        ->schema([
+                            TextInput::make('author')
+                                ->default(fn () => auth()->user()->email)
+                                ->disabled(),
+                            TagsInput::make('tags')
+                                ->disabled()
+                        ])->columnSpan(3),
                 ]),
-            TinyEditor::make('user_content')
-                ->label('Content')
-                ->helperText('The complete page content.'),
         ];
     }
 }

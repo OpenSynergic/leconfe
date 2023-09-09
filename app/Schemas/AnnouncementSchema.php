@@ -9,6 +9,8 @@ use Carbon\Carbon;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Tables\Actions\Action;
@@ -77,23 +79,24 @@ class AnnouncementSchema
     public static function formSchemas(): array
     {
         return [
-            Grid::make(5)
+            Grid::make(12)
                 ->schema([
-                    Grid::make()
+                    Section::make()
                         ->schema([
                             TextInput::make('title')
-                                ->required()
-                                ->columnSpanFull(),
+                                ->required(),
                             TinyEditor::make('user_content')
                                 ->label('Announcement content')
-                                ->helperText('The complete announcement content.')
-                                ->columnSpanFull(),
-                        ])->columnSpan(4),
-                    Grid::make()
+                                ->minHeight(600)
+                                ->helperText('The complete announcement content.'),
+                        ])->columnSpan(9),
+                    Section::make()
                         ->schema([
-                            TinyEditor::make('short_description')
-                                ->helperText('A concise overview intended to display alongside the announcement heading.')
-                                ->columnSpanFull(),
+                            TextInput::make('author')
+                                ->default(fn () => auth()->user()->email)
+                                ->disabled(),
+                            TagsInput::make('tags')
+                                ->disabled(),
                             Flatpickr::make('expires_at')
                                 // ->dateFormat(setting('format.date'))
                                 ->formatStateUsing(function ($state) {
@@ -105,12 +108,10 @@ class AnnouncementSchema
                                         ->translatedFormat(setting('format.date'));
                                 })
                                 ->minDate(today()->subDay())
-                                ->dehydrateStateUsing(fn ($state) => Carbon::createFromFormat(setting('format.date'), $state))
-                                ->columnSpanFull(),
+                                ->dehydrateStateUsing(fn ($state) => Carbon::createFromFormat(setting('format.date'), $state)),
                             Checkbox::make('send_email')
-                                ->label('Send email about this to registered users')
-                                ->columnSpanFull(),
-                        ])->columnSpan(1),
+                                ->label('Send email about this to registered users'),
+                        ])->columnSpan(3),
                 ]),
         ];
     }
