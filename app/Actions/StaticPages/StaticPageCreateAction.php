@@ -17,17 +17,21 @@ class StaticPageCreateAction
         try {
             DB::beginTransaction();
 
+            unset($data['common_tags']);
+
             $staticPage = StaticPage::create($data);
 
             unset($data['title']);
             unset($data['content_type']);
+
+            $data['author'] = auth()->user()->id;
             
             $staticPage->setManyMeta($data);
 
-            if ($sendEmail) {
-                // TODO Create a job to send email
+            // if ($sendEmail) {
+            //     // TODO Create a job to send email
 
-            }
+            // }
 
             DB::commit();
         } catch (\Throwable $th) {

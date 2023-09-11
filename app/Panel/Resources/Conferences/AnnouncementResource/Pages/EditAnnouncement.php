@@ -3,6 +3,7 @@
 namespace App\Panel\Resources\Conferences\AnnouncementResource\Pages;
 
 use App\Actions\Announcements\AnnouncementUpdateAction;
+use App\Models\User;
 use App\Panel\Resources\Conferences\AnnouncementResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -27,8 +28,10 @@ class EditAnnouncement extends EditRecord
     protected function mutateFormDataBeforeFill(array $data): array
     {
         $userContentMeta = $this->record->getAllMeta();
+        $user = User::where('id', $userContentMeta['author'] ?? 0)->first();
 
-        $data['short_description'] = $userContentMeta['short_description'];
+        $data['author'] = $user ? "{$user->given_name} {$user->family_name}" : null;
+        $data['common_tags'] = $this->record->tags()->pluck('id')->toArray();
         $data['user_content'] = $userContentMeta['user_content'];
         $data['expires_at'] = $userContentMeta['expires_at'];
 

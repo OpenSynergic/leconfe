@@ -15,13 +15,14 @@ class AnnouncementUpdateAction
     {
         try {
             DB::beginTransaction();
+            
+            unset($data['common_tags']);
 
             $announcement->update($data);
             
             unset($data['title']);
-            if (isset($data['send_email'])) {
-                unset($data['send_email']);
-            }
+            unset($data['author']);
+            unset($data['send_email']);
 
             $announcement->syncMeta($data);
 

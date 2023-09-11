@@ -7,17 +7,22 @@ use App\Actions\StaticPages\StaticPageUpdateAction;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ContentType;
 use App\Models\StaticPage;
+use App\Models\StaticPageTag;
+use App\Models\Tag;
 use Closure;
 use Filament\Facades\Filament;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\HtmlString;
@@ -112,10 +117,26 @@ class StaticPageSchema
                     Section::make()
                         ->schema([
                             TextInput::make('author')
-                                ->default(fn () => auth()->user()->email)
+                                ->default(function () {
+                                    $user = auth()->user();
+                                    return "{$user->given_name} {$user->family_name}";
+                                })
                                 ->disabled(),
-                            TagsInput::make('tags')
-                                ->disabled()
+                            SpatieTagsInput::make('tags')
+                                ->type(ContentType::StaticPage->value)
+                                ->afterStateUpdated(fn ($set, $state) => $set('common_tags', StaticPageTag::whereInFromString($state, ContentType::StaticPage->value)->pluck('id')->toArray()))
+                                ->reactive(),
+                            CheckboxList::make('common_tags')->label('Commonly used tags')
+                                ->options(StaticPageTag::withCount('staticPages')->orderBy('static_pages_count', 'desc')->limit(10)->pluck('name', 'id')->toArray())
+                                ->columns('2')
+                                ->afterStateUpdated(function ($set, $state) {
+                                    if (!empty($state)) {
+                                        $state = StaticPageTag::whereIn('id', $state)->get()->map(fn ($tag) => $tag->name)->toArray();
+                                    }
+    
+                                    $set('tags', $state);
+                                })
+                                ->reactive(),
                         ])->columnSpan(3),
                 ]),
         ];

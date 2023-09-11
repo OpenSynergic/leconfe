@@ -16,9 +16,12 @@ class StaticPageUpdateAction
         try {
             DB::beginTransaction();
 
+            unset($data['common_tags']);
+
             $staticPage->update($data);
             
             unset($data['title']);
+            unset($data['path']);
 
             $staticPage->syncMeta($data);
 

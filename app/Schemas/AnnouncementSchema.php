@@ -4,12 +4,19 @@ namespace App\Schemas;
 
 use App\Actions\Announcements\AnnouncementUpdateAction;
 use App\Models\Announcement;
+use App\Models\AnnouncementTag;
 use App\Models\Enums\ConferenceStatus;
+use App\Models\Enums\ContentType;
+use App\Models\Tag;
 use Carbon\Carbon;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -42,7 +49,6 @@ class AnnouncementSchema
                     ->icon('heroicon-o-eye')
                     ->url(function ($record) {
                         $conference  = $record->conference;
-                        // $contentType = ltrim(strtolower(preg_replace('/[A-Z]([A-Z](?![a-z]))*/', '-$0', $record->content_type)), '-');
 
                         switch ($conference->status->value) {
                             case ConferenceStatus::Current->value:
@@ -93,12 +99,31 @@ class AnnouncementSchema
                     Section::make()
                         ->schema([
                             TextInput::make('author')
-                                ->default(fn () => auth()->user()->email)
+                                ->default(function () {
+                                    $user = auth()->user();
+                                    return "{$user->given_name} {$user->family_name}";
+                                })
                                 ->disabled(),
-                            TagsInput::make('tags')
-                                ->disabled(),
+                            SpatieTagsInput::make('tags')
+                                ->type(ContentType::Announcement->value)
+                                ->afterStateUpdated(fn ($set, $state) => $set('common_tags', AnnouncementTag::whereInFromString($state, ContentType::Announcement->value)->pluck('id')->toArray()))
+                                ->reactive(),
+                            CheckboxList::make('common_tags')->label('Commonly used tags')
+                                ->options(AnnouncementTag::withCount('announcements')->orderBy('announcements_count', 'desc')->limit(10)->pluck('name', 'id')->toArray())
+                                ->columns('2')
+                                ->afterStateUpdated(function ($set, $state) {
+                                    if (!empty($state)) {
+                                        $state = AnnouncementTag::whereIn('id', $state)->get()->map(fn ($tag) => $tag->name)->toArray();
+                                    }
+    
+                                    $set('tags', $state);
+                                })
+                                ->reactive(),
+                            SpatieMediaLibraryFileUpload::make('featured_image')
+                                ->image(),
                             Flatpickr::make('expires_at')
-                                // ->dateFormat(setting('format.date'))
+                                ->required()
+                                ->dateFormat(setting('format.date'))
                                 ->formatStateUsing(function ($state) {
                                     if (blank($state)) {
                                         return null;

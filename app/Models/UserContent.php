@@ -9,10 +9,13 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Plank\Metable\Metable;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\Tags\HasTags;
 
-class UserContent extends Model
+class UserContent extends Model implements HasMedia
 {
-    use HasFactory, Cachable, Metable;
+    use HasFactory, HasTags, Cachable, Metable, InteractsWithMedia;
 
     protected $table = 'user_contents';
 
