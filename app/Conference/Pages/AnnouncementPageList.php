@@ -20,15 +20,12 @@ class AnnouncementPageList extends Page
 
     protected function getViewData(): array
     {
-        $contentTypeSlug = Route::current()->parameter('content_type');
-        $contentTitle = ucfirst(str_replace('-', ' ', ucwords($contentTypeSlug, '-')));
-
-        $staticPageList = Announcement::whereMeta('expires_at', '>', now())->get();
+        $announcementList = Announcement::whereMeta('expires_at', '>', now())->orderBy('created_at', 'desc')->get();
+        $curentDate = today();
         
         return [
-            'contentTitle' => $contentTitle,
-            'contentTypeSlug' => $contentTypeSlug,
-            'staticPageList' => $staticPageList,
+            'currentDate' => $curentDate,
+            'announcementList' => $announcementList,
         ];
     }
 

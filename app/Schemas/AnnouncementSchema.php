@@ -54,7 +54,7 @@ class AnnouncementSchema
                             case ConferenceStatus::Current->value:
                                 return 
                                     route('livewirePageGroup.current-conference.pages.announcement-page', [
-                                        'user_content' => $record->id
+                                        'id' => $record->id
                                     ]);
                                 break;
                             
@@ -62,7 +62,7 @@ class AnnouncementSchema
                                 return
                                     route('livewirePageGroup.archive-conference.pages.announcement-page', [
                                         'conference' => $conference->id,
-                                        'user_content' => $record->id
+                                        'id' => $record->id
                                     ]);
                                 break;
                         }

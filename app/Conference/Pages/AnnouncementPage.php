@@ -20,10 +20,10 @@ class AnnouncementPage extends Page
 
     protected function getViewData(): array
     {
-        $currentStaticPage = Announcement::where('id', Route::current()->parameter('user_content'))->first();
+        $announcement = Announcement::where('id', Route::current()->parameter('id'))->first();
 
         return [
-            'currentStaticPage' => $currentStaticPage
+            'announcement' => $announcement
         ];
     }
 
@@ -31,7 +31,7 @@ class AnnouncementPage extends Page
     {
         $slug = static::getSlug();
 
-        Route::get('announcements/{user_content}', static::class)
+        Route::get('announcements/{id}', static::class)
             ->middleware(static::getRouteMiddleware($pageGroup))
             ->withoutMiddleware(static::getWithoutRouteMiddleware($pageGroup))
             ->name((string) str($slug)->replace('/', '.'));
