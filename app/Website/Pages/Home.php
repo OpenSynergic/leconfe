@@ -20,7 +20,7 @@ class Home extends Page
         return [
             'announcements' => Announcement::where('conference_id', Conference::current()->getKey())->get(),
             'topics' => Topic::where('conference_id', Conference::current()->getKey())->get(),
-            'upcomings' => Conference::upcoming(),
+            'upcomings' => Conference::upcoming()->get(),
         ];
     }
     public function mount()
