@@ -28,6 +28,7 @@ use Filament\Tables\Table;
 use Illuminate\Support\HtmlString;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use Illuminate\Support\Str;
+use Spatie\Sluggable\SlugOptions;
 
 class StaticPageSchema
 {
@@ -85,9 +86,10 @@ class StaticPageSchema
                         ->schema([
                             TextInput::make('title')
                                 ->reactive()
-                                // ->afterStateUpdated(fn ($set, $state) => $set('path', Str::slug($state)))
-                                ->helperText(function ($state, $record) {
+                                ->helperText(function ($state, ?StaticPage $record) {
                                     $staticPage = StaticPage::WhereMeta('path', Str::slug($state))->first('id');
+
+                                    // dd(SlugOptions::create(['title' => 'dwadwadwadwa'])->generateSlugsFrom('title')->saveSlugsTo('slug'));
                                     
                                     $isDumplicate = true;
                                     if ($record) {

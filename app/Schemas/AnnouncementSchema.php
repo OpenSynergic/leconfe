@@ -124,7 +124,6 @@ class AnnouncementSchema
                             SpatieMediaLibraryFileUpload::make('featured_image')
                                 ->image(),
                             Flatpickr::make('expires_at')
-                                ->required()
                                 ->dateFormat(setting('format.date'))
                                 ->formatStateUsing(function ($state) {
                                     if (blank($state)) {
@@ -135,7 +134,7 @@ class AnnouncementSchema
                                         ->translatedFormat(setting('format.date'));
                                 })
                                 ->minDate(today()->subDay())
-                                ->dehydrateStateUsing(fn ($state) => Carbon::createFromFormat(setting('format.date'), $state)),
+                                ->dehydrateStateUsing(fn ($state) => $state ? Carbon::createFromFormat(setting('format.date'), $state) : null),
                             Checkbox::make('send_email')
                                 ->label('Send email about this to registered users'),
                         ])->columnSpan(3),

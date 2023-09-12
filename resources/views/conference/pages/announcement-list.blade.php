@@ -1,14 +1,14 @@
 <x-conference::layouts.main>
         <div class="card-body">
-            <h1 class="text-2xl mb-2 ml-2 text-gray-900 font-medium">{{ "Announcement" }}</h1>
+            <h1 class="text-xl mb-2 ml-2 text-gray-900">{{ "Announcement" }}</h1>
             <div class="divide-y divide-dashed">
                 @foreach ($announcementList as $announcement)
-                    <a href="{{ route('livewirePageGroup.current-conference.pages.announcement-page', ['id' => $announcement->id]) }}" class="flex flex-col items-center bg-white md:flex-row hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
+                    <a href="{{ route('livewirePageGroup.current-conference.pages.announcement-page', ['id' => $announcement->id]) }}" class="flex flex-col bg-white md:flex-row hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
                         @if ($announcement->getFirstMediaUrl())
-                            <img class="object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-l-lg" src="{{ $announcement->getFirstMediaUrl() }}" alt="">
+                            <img class="object-cover h-36 aspect-square mt-4" src="{{ $announcement->getFirstMediaUrl() }}" alt="">
                         @endif
                         <div class="flex flex-col justify-between p-4 leading-normal">
-                            <h5 class=" text-xl tracking-tight text-gray-900 dark:text-white">{{ $announcement->title }}</h5>
+                            <h5 class=" text-lg tracking-tight text-gray-900 dark:text-white">{{ $announcement->title }}</h5>
                             @php
                                 $userId = $announcement->getMeta('author') ?? 0;
                                 $user = App\Models\User::where('id', $userId)->first();

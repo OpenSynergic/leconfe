@@ -20,7 +20,7 @@ class AnnouncementPageList extends Page
 
     protected function getViewData(): array
     {
-        $announcementList = Announcement::whereMeta('expires_at', '>', now())->orderBy('created_at', 'desc')->get();
+        $announcementList = Announcement::whereMeta('expires_at', '>', now()->startOfDay())->orderBy('created_at', 'desc')->get();
         $curentDate = today();
         
         return [
