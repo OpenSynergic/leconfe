@@ -28,7 +28,7 @@ class Application extends LaravelApplication
         return static::PHP_MIN_VERSION;
     }
 
-    public function getCurrentConference()
+    public function getCurrentConference(): ?Conference
     {
         return $this->currentConference;
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Actions\Participants\ParticipantPositionPopulateDefaultDataAction;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ConferenceType;
 use App\Models\Meta\ConferenceMeta;
@@ -55,12 +56,16 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
 
     protected static function booted(): void
     {
-        static::deleting(function (Conference $conference) {
-            if ($conference->getKey() == static::current()?->getKey()) {
+        static::deleting(function (Conference $model) {
+            if ($model->getKey() == static::current()?->getKey()) {
                 throw new \Exception('Conference cannot be deleted because it is currently set as current conference');
             }
 
             // TODO conference tidak bisa dihapus ketika ada data lain yg terkait dengan conference ini
+        });
+
+        static::created(function (Conference $model) {
+            ParticipantPositionPopulateDefaultDataAction::run($model);
         });
     }
 
@@ -72,6 +77,11 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
     public function speakers(): HasMany
     {
         return $this->hasMany(Speaker::class);
+    }
+
+    public function speakerPositions(): HasMany
+    {
+        return $this->hasMany(SpeakerPosition::class);
     }
 
     public function venues(): HasMany

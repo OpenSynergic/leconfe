@@ -92,7 +92,7 @@ class UserPolicy
         }
     }
 
-    public function assignRoles(User $user, User $model)
+    public function assignRoles(User $user)
     {
         if ($user->can('User:assignRoles')) {
             return true;
