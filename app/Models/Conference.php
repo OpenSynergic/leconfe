@@ -159,6 +159,17 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
         return static::$current;
     }
 
+    public static function upcoming()
+    {
+        return static::whereHasMeta('date_held')
+            ->orderByMetaNumeric('date_held', 'asc')->where('status', ConferenceStatus::Upcoming);
+    }
+
+    public function isUpcoming()
+    {
+        return $this->status == ConferenceStatus::Upcoming;
+    }
+
     public function isCurrent()
     {
         return $this->status == ConferenceStatus::Current;
