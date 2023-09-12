@@ -22,6 +22,7 @@
         "vite": "^4.4.9"
     },
     "dependencies": {
+        "masonry-layout": "^4.2.2",
         "motion": "^10.16.2",
         "photoswipe": "^5.3.9",
         "sortablejs": "^1.15.0",

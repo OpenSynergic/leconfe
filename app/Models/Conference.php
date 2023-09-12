@@ -146,11 +146,23 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
 
     public static function current(): ?self
     {
-        if (! isset(static::$current)) {
+        if (!isset(static::$current)) {
             static::$current = static::where('status', ConferenceStatus::Current)->first();
         }
 
         return static::$current;
+    }
+
+    public static function upcoming()
+    {
+        return static::whereHasMeta('date_held')
+            ->orderByMetaNumeric('date_held', 'asc')->where('status', ConferenceStatus::Upcoming);
+    }
+
+
+    public function isUpcoming()
+    {
+        return $this->status == ConferenceStatus::Upcoming;
     }
 
     public function isCurrent()
