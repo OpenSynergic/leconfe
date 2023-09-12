@@ -38,7 +38,7 @@ class AnnouncementSchema
                     ->icon('heroicon-o-eye')
                     ->color('gray'),
                 EditAction::make(),
-                DeleteAction::make()
+                DeleteAction::make(),
             ])
             ->bulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),

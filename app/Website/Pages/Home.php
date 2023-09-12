@@ -2,10 +2,9 @@
 
 namespace App\Website\Pages;
 
-use App\Models\Topic;
 use App\Models\Announcement;
 use App\Models\Conference;
-use Filament\Facades\Filament;
+use App\Models\Topic;
 use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
@@ -13,7 +12,6 @@ use Rahmanramsi\LivewirePageGroup\Pages\Page;
 class Home extends Page
 {
     protected static string $view = 'website.pages.home';
-
 
     protected function getViewData(): array
     {
@@ -23,6 +21,7 @@ class Home extends Page
             'upcomings' => Conference::upcoming()->get(),
         ];
     }
+
     public function mount()
     {
     }
