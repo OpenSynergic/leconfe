@@ -1,7 +1,6 @@
 <x-conference::layouts.main>
         <div class="card-body">
             <h1 class="text-2xl mb-2 ml-2 text-gray-900 font-medium">{{ "Announcement" }}</h1>
-            <hr>
             <div class="divide-y divide-dashed">
                 @foreach ($announcementList as $announcement)
                     <a href="{{ route('livewirePageGroup.current-conference.pages.announcement-page', ['id' => $announcement->id]) }}" class="flex flex-col items-center bg-white md:flex-row hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
