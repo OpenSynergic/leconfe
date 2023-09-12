@@ -22,6 +22,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Kra8\Snowflake\HasShortflakePrimary;
 use Laravel\Sanctum\HasApiTokens;
+use Mchev\Banhammer\Traits\Bannable;
 use Plank\Metable\Metable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -33,7 +34,14 @@ use Squire\Models\Country;
 
 class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaultTenant, HasMedia, HasName, HasTenants
 {
-    use HasApiTokens, HasFactory, HasRoles, HasShortflakePrimary, InteractsWithMedia, Metable, Notifiable;
+    use HasApiTokens,
+        HasFactory,
+        HasRoles,
+        HasShortflakePrimary,
+        InteractsWithMedia,
+        Metable,
+        Notifiable,
+        Bannable;
 
     /**
      * The attributes that are mass assignable.
@@ -80,7 +88,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
     protected function fullName(): Attribute
     {
         return Attribute::make(
-            get: fn () => Str::squish($this->given_name.' '.$this->family_name),
+            get: fn () => Str::squish($this->given_name . ' ' . $this->family_name),
         );
     }
 
@@ -172,11 +180,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
         }]);
 
         foreach ($this->roles as $role) {
-            if (! $role->parent_id) {
+            if (!$role->parent_id) {
                 continue;
             }
 
-            if (! $role->ancestors->pluck('id')->intersect($permission->roles->pluck('id')->toArray())->isEmpty()) {
+            if (!$role->ancestors->pluck('id')->intersect($permission->roles->pluck('id')->toArray())->isEmpty()) {
                 return true;
             }
         }

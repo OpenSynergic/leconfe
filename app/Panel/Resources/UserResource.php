@@ -8,10 +8,16 @@ use App\Models\User;
 use App\Panel\Resources\Conferences\ParticipantResource;
 use App\Panel\Resources\UserResource\Pages;
 use App\Tables\Columns\IndexColumn;
+use Carbon\Carbon;
+use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
@@ -58,10 +64,10 @@ class UserResource extends Resource
                                 Forms\Components\TextInput::make('email')
                                     ->columnSpan(['lg' => 2])
                                     ->disabled(fn (?User $record) => $record)
-                                    ->dehydrated(fn (?User $record) => ! $record)
+                                    ->dehydrated(fn (?User $record) => !$record)
                                     ->unique(ignoreRecord: true),
                                 Forms\Components\TextInput::make('password')
-                                    ->required(fn (?User $record) => ! $record)
+                                    ->required(fn (?User $record) => !$record)
                                     ->password()
                                     ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                                     ->dehydrated(fn ($state) => filled($state))
@@ -103,7 +109,7 @@ class UserResource extends Resource
                             ->schema([
                                 Forms\Components\CheckboxList::make('roles')
                                     ->label('')
-                                    ->disabled(fn () => ! auth()->user()->can('assignRoles', static::getModel()))
+                                    ->disabled(fn () => !auth()->user()->can('assignRoles', static::getModel()))
                                     ->relationship('roles', 'name'),
                             ]),
                     ])
@@ -154,6 +160,26 @@ class UserResource extends Resource
                         ->modalWidth('full')
                         ->mutateRecordDataUsing(fn ($data, User $record) => array_merge($data, ['meta' => $record->getAllMeta()->toArray()]))
                         ->using(fn (array $data, User $record) => UserUpdateAction::run($data, $record)),
+                    Action::make('ban')
+                        ->disabled(fn(User $record) => auth()->user()->can('ban', $record))
+                        ->label(fn (User $record) => "Disable")
+                        ->icon('heroicon-o-x-circle')
+                        ->color('danger')
+                        ->modalWidth('xl')
+                        ->modalHeading(fn (User $record) => "Disable User : {$record->full_name}")
+                        ->form([
+                            Textarea::make('comment')
+                                ->label('Reason for Disabling User'),
+                            Flatpickr::make('expired_at')
+                                ->label('Until')
+                                // ->native(false)
+                                ->minDate(now()->addDay())
+                                ->hint('To banned permanently, leave field empty')
+                                ->dehydrateStateUsing(fn ($state) => $state ? Carbon::createFromFormat(setting('format.date'), $state) : null),
+                        ])
+                        ->action(function (array $data, User $record) {
+                            $record->ban($data);
+                        }),
                     DeleteAction::make()
                         ->using(fn (?array $data, User $record) => UserDeleteAction::run($data, $record)),
                 ]),
