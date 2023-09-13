@@ -2,9 +2,6 @@
 
 namespace App\Conference\Pages;
 
-use App\Models\Announcement;
-use App\Models\Enums\ContentType;
-use App\Models\StaticPage as ModelsStaticPage;
 use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
@@ -20,7 +17,7 @@ class AnnouncementPageList extends Page
 
     protected function getViewData(): array
     {
-        $announcementList = Announcement::whereMeta('expires_at', '>', now()->startOfDay())->orderBy('created_at', 'desc')->get();
+        $announcementList = app()->getCurrentConference()->announcements()->whereMeta('expires_at', '>', now()->startOfDay())->orderBy('created_at', 'desc')->get();
         $curentDate = today();
         
         return [

@@ -21,7 +21,7 @@ class StaticPageUpdateAction
             $staticPage->update($data);
             
             unset($data['title']);
-            unset($data['path']);
+            $data['author'] = $staticPage->getMeta('author');
 
             $staticPage->syncMeta($data);
 

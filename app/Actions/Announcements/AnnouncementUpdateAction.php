@@ -21,8 +21,8 @@ class AnnouncementUpdateAction
             $announcement->update($data);
             
             unset($data['title']);
-            unset($data['author']);
             unset($data['send_email']);
+            $data['author'] = $announcement->getMeta('author');
 
             $announcement->syncMeta($data);
 

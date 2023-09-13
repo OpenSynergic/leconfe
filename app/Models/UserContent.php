@@ -11,16 +11,19 @@ use Illuminate\Database\Eloquent\Model;
 use Plank\Metable\Metable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 use Spatie\Tags\HasTags;
 
 class UserContent extends Model implements HasMedia
 {
-    use HasFactory, HasTags, Cachable, Metable, InteractsWithMedia;
+    use HasFactory, HasTags, HasSlug, Cachable, Metable, InteractsWithMedia;
 
     protected $table = 'user_contents';
 
     protected $fillable = [
         'title',
+        'slug',
         'content_type',
     ];
 
@@ -38,6 +41,18 @@ class UserContent extends Model implements HasMedia
         static::creating(function (UserContent $userContent) {
             $userContent->conference_id ??= Filament::getTenant()?->getKey();
         });
+    }
+
+    public function getSlugOptions() : SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('title')
+            ->saveSlugsTo('slug');
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 
     protected function getMetaClassName(): string

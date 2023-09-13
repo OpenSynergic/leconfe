@@ -1,6 +1,5 @@
 <div class="navbar-container sticky top-0 z-[500] bg-sky-400 text-white">
     <div class="navbar mx-auto max-w-7xl">
-        <img src="{{ Vite::asset('resources/assets/images/logo.png') }}" class="max-h-[2rem]" />
         <div class="navbar-start w-auto sm:w-1/2">
             <x-conference::logo/>
         </div>

@@ -39,15 +39,15 @@ class StaticPageSchema
             ->heading('Static page')
             ->defaultPaginationPageOption(5)
             ->recordUrl(fn ($record) => route('livewirePageGroup.website.pages.static-page', [
-                'path' => $record->getMeta('path')
+                'slug' => $record->slug
             ]))
             ->columns([
                 TextColumn::make('title')
                     ->searchable(),
-                TextColumn::make('path')
+                TextColumn::make('slug')
                     ->label('Page url')
                     ->getStateUsing(fn (StaticPage $record) => route('livewirePageGroup.website.pages.static-page', [
-                        'path' => $record->getMeta('path')
+                        'slug' => $record->slug
                     ])),
             ])
             ->filters([
@@ -60,7 +60,7 @@ class StaticPageSchema
                 Action::make('view')
                     ->icon('heroicon-o-eye')
                     ->url(fn ($record) => route('livewirePageGroup.website.pages.static-page', [
-                        'path' => $record->getMeta('path')
+                        'slug' => $record->slug
                     ]))
                     ->color('gray'),
                 EditAction::make(),
@@ -86,23 +86,41 @@ class StaticPageSchema
                         ->schema([
                             TextInput::make('title')
                                 ->reactive()
+                                // ->default('my page')
                                 ->helperText(function ($state, ?StaticPage $record) {
-                                    $staticPage = StaticPage::WhereMeta('path', Str::slug($state))->first('id');
+                                    $slug = Str::slug($state);
+                                    $currentSlug = $slug;
+                                    $count = 1;
 
-                                    // dd(SlugOptions::create(['title' => 'dwadwadwadwa'])->generateSlugsFrom('title')->saveSlugsTo('slug'));
-                                    
-                                    $isDumplicate = true;
-                                    if ($record) {
-                                        if ($staticPage->id == $record->id) {
-                                            $isDumplicate = false;
-                                        }
+                                    switch (true) {
+                                        case $record:
+                                            while (true) {
+                                                $staticPage = StaticPage::where('slug', $currentSlug)->first();
+                                                if ($staticPage->id != $record->id) {
+                                                    $currentSlug = "{$slug}-{$count}";
+                                                    $count++;
+                                                } else {
+                                                    break;
+                                                }
+                                            }
+                                            break;
+                                        
+                                        default:
+                                            while (true) {
+                                                $staticPage = StaticPage::where('slug', $currentSlug)->first();
+                                                // dd($staticPage);
+                                                if ($staticPage) {
+                                                    $currentSlug = "{$slug}-{$count}";
+                                                    $count++;
+                                                } else {
+                                                    break;
+                                                }
+                                            }
+                                            break;
                                     }
 
-                                    if ($staticPage && $isDumplicate) {
-                                        $state .= '-1';
-                                    }
                                     $route = route('livewirePageGroup.website.pages.static-page', [
-                                        'path' => Str::slug($state) ? (Str::slug($state) != '' ? Str::slug($state) : 'path-name') : 'path-name'
+                                        'slug' => $currentSlug ? ($currentSlug != '' ? $currentSlug : 'path-name') : 'path-name'
                                     ]);
                 
                                     return new HtmlString("
@@ -129,6 +147,21 @@ class StaticPageSchema
                                 ->afterStateUpdated(fn ($set, $state) => $set('common_tags', StaticPageTag::whereInFromString($state, ContentType::StaticPage->value)->pluck('id')->toArray()))
                                 ->reactive(),
                             CheckboxList::make('common_tags')->label('Commonly used tags')
+                                ->helperText(fn (CheckboxList $component) => count($component->getOptions()) ? null : 
+                                    new HtmlString('
+                                    <div class="fi-ta-empty-state-content mx-auto grid max-w-lg justify-items-center text-center">
+                                        <div class="fi-ta-empty-state-icon-ctn mb-4 rounded-full bg-gray-100 p-3 dark:bg-gray-500/20">
+                                            <svg class="fi-ta-empty-state-icon h-6 w-6 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
+                                        </div>
+                                    
+                                        <h4 class="fi-ta-empty-state-heading text-base font-semibold leading-6 text-gray-950 dark:text-white">
+                                            No tags
+                                        </h4>
+                                    </div>
+                                    ')
+                                )
                                 ->options(StaticPageTag::withCount('staticPages')->orderBy('static_pages_count', 'desc')->limit(10)->pluck('name', 'id')->toArray())
                                 ->columns('2')
                                 ->afterStateUpdated(function ($set, $state) {

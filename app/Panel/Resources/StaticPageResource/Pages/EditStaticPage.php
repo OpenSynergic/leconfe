@@ -33,7 +33,6 @@ class EditStaticPage extends EditRecord
 
         $data['author'] = $user ? "{$user->given_name} {$user->family_name}" : null;
         $data['common_tags'] = $this->record->tags()->pluck('id')->toArray();
-        $data['path'] = $userContentMeta['path'];
         $data['user_content'] = $userContentMeta['user_content'];
 
         return $data;

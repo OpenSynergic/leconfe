@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Conference::class);
             $table->string('title');
+            $table->string('slug');
             $table->enum('content_type', ContentType::array());
             $table->timestamps();
         });

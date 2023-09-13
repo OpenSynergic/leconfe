@@ -14,17 +14,20 @@ class StaticPage extends Page
 {
     protected static string $view = 'website.pages.static-page';
 
-    public function mount()
+    public function mount($slug)
     {
-        //
+        static::$slug = $slug;
+    }
+
+    public function getRecordProperty()
+    {
+        return ModelsStaticPage::where('slug', static::$slug)->first();
     }
 
     protected function getViewData(): array
     {
-        $currentStaticPage = ModelsStaticPage::whereMeta('path', Route::current()->parameter('path'))->first();
-
         return [
-            'currentStaticPage' => $currentStaticPage
+            //
         ];
     }
 
@@ -32,7 +35,7 @@ class StaticPage extends Page
     {
         $slug = static::getSlug();
 
-        Route::get('page/{path}', static::class)
+        Route::get('page/{slug}', static::class)
             ->middleware(static::getRouteMiddleware($pageGroup))
             ->withoutMiddleware(static::getWithoutRouteMiddleware($pageGroup))
             ->name((string) str($slug)->replace('/', '.'));
