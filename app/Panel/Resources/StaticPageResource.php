@@ -29,7 +29,7 @@ class StaticPageResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return StaticPageSchema::table($table);
+        return StaticPageSchema::table($table)->defaultSort('created_at', 'desc');;
     }
     
     public static function getRelations(): array

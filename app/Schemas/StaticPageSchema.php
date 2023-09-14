@@ -21,6 +21,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -64,6 +65,7 @@ class StaticPageSchema
                     ]))
                     ->color('gray'),
                 EditAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),
@@ -96,9 +98,13 @@ class StaticPageSchema
                                         case $record:
                                             while (true) {
                                                 $staticPage = StaticPage::where('slug', $currentSlug)->first();
-                                                if ($staticPage->id != $record->id) {
-                                                    $currentSlug = "{$slug}-{$count}";
-                                                    $count++;
+                                                if ($staticPage) {
+                                                    if ($staticPage->id != $record->id) {
+                                                        $currentSlug = "{$slug}-{$count}";
+                                                        $count++;
+                                                    } else {
+                                                        break;
+                                                    }
                                                 } else {
                                                     break;
                                                 }

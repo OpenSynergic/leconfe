@@ -6,6 +6,7 @@ use App\Models\Meta\UserContentMeta;
 use DateTimeInterface;
 use Filament\Facades\Filament;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Plank\Metable\Metable;
@@ -71,5 +72,24 @@ class UserContent extends Model implements HasMedia
     public function conference()
     {
         return $this->belongsTo(Conference::class);
+    }
+
+    public function scopeOrWhereMeta(Builder $q, string $key, $operator, $value = null): void
+    {
+        // Shift arguments if no operator is present.
+        if (!isset($value)) {
+            $value = $operator;
+            $operator = '=';
+        }
+
+        // Convert value to its serialized version for comparison.
+        if (!is_string($value)) {
+            $value = $this->makeMeta($key, $value)->getRawValue();
+        }
+
+        $q->orWhereHas('meta', function (Builder $q) use ($key, $operator, $value) {
+            $q->where('key', $key);
+            $q->where('value', $operator, $value);
+        });
     }
 }

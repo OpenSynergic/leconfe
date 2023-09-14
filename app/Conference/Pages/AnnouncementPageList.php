@@ -17,7 +17,7 @@ class AnnouncementPageList extends Page
 
     protected function getViewData(): array
     {
-        $announcementList = app()->getCurrentConference()->announcements()->whereMeta('expires_at', '>', now()->startOfDay())->orderBy('created_at', 'desc')->get();
+        $announcementList = app()->getCurrentConference()->announcements()->whereMeta('expires_at', '>', now()->startOfDay())->orWhereMeta('expires_at', '')->orderBy('created_at', 'desc')->get();
         $curentDate = today();
         
         return [

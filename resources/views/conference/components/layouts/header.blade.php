@@ -8,7 +8,7 @@
             @if (\Filament\Facades\Filament::getDefaultPanel()->auth()->user())
                 <x-conference::link :href="route('filament.panel.tenant')" :spa="false" class="btn btn-sm btn-white rounded px-4 font-normal text-gray-900">Dashboard</x-conference::link>
             @else
-                <x-conference::link :href="route('livewirePageGroup.website.pages.register')" :spa="false" class="btn btn-sm btn-ghost rounded px-4 font-normal text-gray-900">Register</x-conference::link>
+                <x-conference::link :href="route('livewirePageGroup.website.pages.register')" :spa="false" class="btn btn-sm btn-ghost rounded px-4 font-normal text-white">Register</x-conference::link>
                 <x-conference::link :href="route('livewirePageGroup.website.pages.login')" :spa="false" class="btn btn-sm rounded px-4 font-normal text-gray-900">Login</x-conference::link>
             @endif
         </div>
