@@ -3,6 +3,7 @@
 namespace App\Schemas;
 
 use App\Actions\Announcements\AnnouncementUpdateAction;
+use App\Forms\Components\TagSuggestions;
 use App\Models\Announcement;
 use App\Models\AnnouncementTag;
 use App\Models\Enums\ConferenceStatus;
@@ -106,13 +107,15 @@ class AnnouncementSchema
                                     $user = auth()->user();
                                     return "{$user->given_name} {$user->family_name}";
                                 })
+                                ->dehydrated(false)
                                 ->disabled(),
                             SpatieTagsInput::make('tags')
                                 ->type(ContentType::Announcement->value)
                                 ->afterStateUpdated(fn ($set, $state) => $set('common_tags', AnnouncementTag::whereInFromString($state, ContentType::Announcement->value)->pluck('id')->toArray()))
                                 ->reactive(),
-                            CheckboxList::make('common_tags')->label('Commonly used tags')
-                                ->helperText(fn (CheckboxList $component) => count($component->getOptions()) ? null : 
+                            TagSuggestions::make('common_tags')
+                                ->label('Commonly used tags')
+                                ->helperText(fn (TagSuggestions $component) => count($component->getOptions()) ? null : 
                                     new HtmlString('
                                     <div class="fi-ta-empty-state-content mx-auto grid max-w-lg justify-items-center text-center">
                                         <div class="fi-ta-empty-state-icon-ctn mb-4 rounded-full bg-gray-100 p-3 dark:bg-gray-500/20">
@@ -136,8 +139,10 @@ class AnnouncementSchema
     
                                     $set('tags', $state);
                                 })
+                                ->dehydrated(false)
                                 ->reactive(),
                             SpatieMediaLibraryFileUpload::make('featured_image')
+                                ->collection('featured_image')
                                 ->image(),
                             Flatpickr::make('expires_at')
                                 ->dateFormat(setting('format.date'))

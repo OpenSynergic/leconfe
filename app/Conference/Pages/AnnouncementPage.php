@@ -13,18 +13,21 @@ class AnnouncementPage extends Page
 {
     protected static string $view = 'conference.pages.announcement';
 
+    public string $id;
+
     public function mount()
     {
         //
     }
 
+    public function getRecordProperty()
+    {
+        return Announcement::where('id', $this->id)->first();;
+    }
+
     protected function getViewData(): array
     {
-        $announcement = Announcement::where('id', Route::current()->parameter('id'))->first();
-
-        return [
-            'announcement' => $announcement
-        ];
+        return [];
     }
 
     public static function routes(PageGroup $pageGroup): void

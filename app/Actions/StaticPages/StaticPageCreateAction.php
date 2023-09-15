@@ -17,14 +17,13 @@ class StaticPageCreateAction
         try {
             DB::beginTransaction();
 
-            unset($data['common_tags']);
+            $data['created_by'] = auth()->user()->id;
 
             $staticPage = StaticPage::create($data);
-
+            
             unset($data['title']);
+            unset($data['created_by']);
             unset($data['content_type']);
-
-            $data['author'] = auth()->user()->id;
             
             $staticPage->setManyMeta($data);
 

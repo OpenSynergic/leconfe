@@ -2,28 +2,42 @@
 
 namespace App\Conference\Pages;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 
-class AnnouncementPageList extends Page
+class AnnouncementList extends Page
 {
     protected static string $view = 'conference.pages.announcement-list';
 
+    public Carbon $currentDate;
+
     public function mount()
     {
-        //
+        $this->currentDate = today();
+    }
+
+    public function getRecordsProperty()
+    {
+        return 
+            app()->getCurrentConference()->announcements()
+                ->whereMeta('expires_at', '>', now()->startOfDay())
+                ->orWhereMeta('expires_at', '')->orderBy('created_at', 'desc')
+                ->with([
+                    'tags' => function ($query) {
+                        $query->take(3);
+                    },
+                    'user'
+                ])
+                ->withCount('tags')
+                ->get();
     }
 
     protected function getViewData(): array
     {
-        $announcementList = app()->getCurrentConference()->announcements()->whereMeta('expires_at', '>', now()->startOfDay())->orWhereMeta('expires_at', '')->orderBy('created_at', 'desc')->get();
-        $curentDate = today();
-        
-        return [
-            'currentDate' => $curentDate,
-            'announcementList' => $announcementList,
-        ];
+        // dd($this->records);
+        return [];
     }
 
     public static function routes(PageGroup $pageGroup): void

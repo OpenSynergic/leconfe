@@ -16,12 +16,9 @@ class StaticPageUpdateAction
         try {
             DB::beginTransaction();
 
-            unset($data['common_tags']);
-
             $staticPage->update($data);
             
             unset($data['title']);
-            $data['author'] = $staticPage->getMeta('author');
 
             $staticPage->syncMeta($data);
 

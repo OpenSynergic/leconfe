@@ -15,14 +15,11 @@ class AnnouncementUpdateAction
     {
         try {
             DB::beginTransaction();
-            
-            unset($data['common_tags']);
 
             $announcement->update($data);
             
             unset($data['title']);
             unset($data['send_email']);
-            $data['author'] = $announcement->getMeta('author');
 
             $announcement->syncMeta($data);
 

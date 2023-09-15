@@ -15,15 +15,16 @@ class AnnouncementCreateAction
         try {
             DB::beginTransaction();
 
-            unset($data['common_tags']);
-
+            $data['created_by'] = auth()->user()->id;
+            
             $announcement = Announcement::create($data);
-
+            
             unset($data['title']);
+            unset($data['created_by']);
             unset($data['content_type']);
             unset($data['send_email']);
+            unset($data['common_tags']);
 
-            $data['author'] = auth()->user()->id;
             
             $announcement->setManyMeta($data);
 

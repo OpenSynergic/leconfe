@@ -26,11 +26,6 @@ class EditStaticPage extends EditRecord
         return StaticPageUpdateAction::run($data, $record);
     }
 
-    protected function getRedirectUrl(): string
-    {
-        return $this->getResource()::getUrl('edit', ['record' => $this->getRecord()]);
-    }
-
     protected function mutateFormDataBeforeFill(array $data): array
     {
         $userContentMeta = $this->record->getAllMeta();

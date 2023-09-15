@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Plank\Metable\Metable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Spatie\Tags\HasTags;
@@ -25,6 +26,7 @@ class UserContent extends Model implements HasMedia
     protected $fillable = [
         'title',
         'slug',
+        'created_by',
         'content_type',
     ];
 
@@ -51,9 +53,11 @@ class UserContent extends Model implements HasMedia
             ->saveSlugsTo('slug');
     }
 
-    public function getRouteKeyName()
+    public function registerMediaConversions(?Media $media = null): void
     {
-        return 'slug';
+        $this->addMediaConversion('thumb')
+            ->keepOriginalImageFormat()
+            ->width(400);
     }
 
     protected function getMetaClassName(): string
@@ -72,6 +76,11 @@ class UserContent extends Model implements HasMedia
     public function conference()
     {
         return $this->belongsTo(Conference::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function scopeOrWhereMeta(Builder $q, string $key, $operator, $value = null): void

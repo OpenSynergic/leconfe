@@ -4,6 +4,7 @@ namespace App\Schemas;
 
 use App\Actions\StaticPages\StaticPageCreateAction;
 use App\Actions\StaticPages\StaticPageUpdateAction;
+use App\Forms\Components\TagSuggestions;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ContentType;
 use App\Models\StaticPage;
@@ -46,7 +47,7 @@ class StaticPageSchema
                 TextColumn::make('title')
                     ->searchable(),
                 TextColumn::make('slug')
-                    ->label('Page url')
+                    ->label('path')
                     ->getStateUsing(fn (StaticPage $record) => route('livewirePageGroup.website.pages.static-page', [
                         'slug' => $record->slug
                     ])),
@@ -87,8 +88,7 @@ class StaticPageSchema
                     Section::make()
                         ->schema([
                             TextInput::make('title')
-                                ->reactive()
-                                // ->default('my page')
+                                ->lazy()
                                 ->helperText(function ($state, ?StaticPage $record) {
                                     $slug = Str::slug($state);
                                     $currentSlug = $slug;
@@ -147,12 +147,14 @@ class StaticPageSchema
                                     $user = auth()->user();
                                     return "{$user->given_name} {$user->family_name}";
                                 })
+                                ->dehydrated(false)
                                 ->disabled(),
                             SpatieTagsInput::make('tags')
                                 ->type(ContentType::StaticPage->value)
                                 ->afterStateUpdated(fn ($set, $state) => $set('common_tags', StaticPageTag::whereInFromString($state, ContentType::StaticPage->value)->pluck('id')->toArray()))
                                 ->reactive(),
-                            CheckboxList::make('common_tags')->label('Commonly used tags')
+                            TagSuggestions::make('common_tags')
+                                ->label('Commonly used tags')
                                 ->helperText(fn (CheckboxList $component) => count($component->getOptions()) ? null : 
                                     new HtmlString('
                                     <div class="fi-ta-empty-state-content mx-auto grid max-w-lg justify-items-center text-center">
@@ -177,6 +179,7 @@ class StaticPageSchema
     
                                     $set('tags', $state);
                                 })
+                                ->dehydrated(false)
                                 ->reactive(),
                         ])->columnSpan(3),
                 ]),
