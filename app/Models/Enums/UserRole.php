@@ -9,6 +9,7 @@ enum UserRole: string implements HasLabel
 {
     use UsefulEnums;
 
+    case SuperAdmin = 'Super Admin';
     case Admin = 'Admin';
     case ConferenceManager = 'Conference Manager';
     case Director = 'Director';

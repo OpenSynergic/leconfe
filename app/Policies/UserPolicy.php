@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Enums\UserRole;
 use App\Models\User;
 
 class UserPolicy
@@ -83,6 +84,10 @@ class UserPolicy
 
     public function loginAs(User $user, User $model)
     {
+        if ($model->isBanned()) {
+            return false;
+        }
+
         if ($user->getKey() === $model->getKey()) {
             return false;
         }
@@ -95,6 +100,59 @@ class UserPolicy
     public function assignRoles(User $user)
     {
         if ($user->can('User:assignRoles')) {
+            return true;
+        }
+    }
+
+    public function disable(User $user, User $model)
+    {
+        if ($model->isBanned()) {
+            return false;
+        }
+
+        if ($user->getKey() === $model->getKey()) {
+            return false;
+        }
+
+        // Explicitly dont allow disabling admin users
+        if ($model->hasAnyRole([UserRole::Admin->value, UserRole::SuperAdmin->value])) {
+            return false;
+        }
+
+        if ($user->can('User:disable')) {
+            return true;
+        }
+    }
+
+    public function enable(User $user, User $model)
+    {
+        if (! $model->isBanned()) {
+            return false;
+        }
+
+        if ($user->getKey() === $model->getKey()) {
+            return false;
+        }
+
+        if ($user->can('User:enable')) {
+            return true;
+        }
+    }
+
+    public function viewProfile(User $user, User $model)
+    {
+        if ($user->getKey() === $model->getKey()) {
+            return true;
+        }
+
+        if ($user->can('User:viewProfile')) {
+            return true;
+        }
+    }
+
+    public function sendEmail(User $user, User $model)
+    {
+        if ($user->can('User:sendEmail')) {
             return true;
         }
     }

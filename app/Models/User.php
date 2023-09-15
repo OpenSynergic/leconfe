@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Models\Enums\ConferenceStatus;
+use App\Models\Enums\UserRole;
 use App\Models\Meta\UserMeta;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
@@ -34,14 +35,14 @@ use Squire\Models\Country;
 
 class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaultTenant, HasMedia, HasName, HasTenants
 {
-    use HasApiTokens,
+    use Bannable,
+        HasApiTokens,
         HasFactory,
         HasRoles,
         HasShortflakePrimary,
         InteractsWithMedia,
         Metable,
-        Notifiable,
-        Bannable;
+        Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -88,13 +89,13 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
     protected function fullName(): Attribute
     {
         return Attribute::make(
-            get: fn () => Str::squish($this->given_name . ' ' . $this->family_name),
+            get: fn () => Str::squish($this->given_name.' '.$this->family_name),
         );
     }
 
     public function getFilamentName(): string
     {
-        return "{$this->family_name} {$this->given_name}";
+        return $this->full_name;
     }
 
     public function country()
@@ -129,6 +130,24 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
     public function canAccessMultipleTenant(): bool
     {
         // TODO implement logic using spatie permissions
+
+        return true;
+    }
+
+    public function canImpersonate()
+    {
+        return $this->can('loginAs');
+    }
+
+    public function canBeImpersonated()
+    {
+        if ($this->isBanned()) {
+            return false;
+        }
+
+        if ($this->hasAnyRole([UserRole::Admin->value, UserRole::SuperAdmin->value])) {
+            return false;
+        }
 
         return true;
     }
@@ -180,11 +199,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
         }]);
 
         foreach ($this->roles as $role) {
-            if (!$role->parent_id) {
+            if (! $role->parent_id) {
                 continue;
             }
 
-            if (!$role->ancestors->pluck('id')->intersect($permission->roles->pluck('id')->toArray())->isEmpty()) {
+            if (! $role->ancestors->pluck('id')->intersect($permission->roles->pluck('id')->toArray())->isEmpty()) {
                 return true;
             }
         }

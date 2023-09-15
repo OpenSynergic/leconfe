@@ -20,6 +20,7 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider as FilamentPanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Tables\Table;
 use Illuminate\Support\Facades\Blade;
 use Livewire\Livewire;
 use RyanChandler\FilamentNavigation\FilamentNavigation;
@@ -29,7 +30,10 @@ class PanelProvider extends FilamentPanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
+            // ->spa()
             ->default()
+            ->sidebarCollapsibleOnDesktop()
+            // ->sidebarFullyCollapsibleOnDesktop()
             ->id('panel')
             ->path(config('app.filament.panel_path'))
             ->maxContentWidth('full')
@@ -69,8 +73,7 @@ class PanelProvider extends FilamentPanelProvider
             ->databaseNotificationsPolling('120s')
             ->middleware(static::getMiddleware(), true)
             ->authMiddleware(static::getAuthMiddleware(), true)
-            ->plugins(static::getPlugins())
-            ->spa();
+            ->plugins(static::getPlugins());
     }
 
     /**
@@ -138,6 +141,7 @@ class PanelProvider extends FilamentPanelProvider
             'web',
             DisableBladeIconComponents::class,
             DispatchServingFilamentEvent::class,
+            'logout.banned',
         ];
     }
 
@@ -176,6 +180,12 @@ class PanelProvider extends FilamentPanelProvider
             $flatpickr
                 ->dateFormat(setting('format.date'))
                 ->dehydrateStateUsing(fn ($state) => $state ? Carbon::createFromFormat(setting('format.date'), $state) : null);
+        });
+
+        Table::configureUsing(function (Table $table): void {
+            $table
+                ->defaultPaginationPageOption(5)
+                ->paginationPageOptions([5, 10, 25, 50]);
         });
     }
 
