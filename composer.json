@@ -14,7 +14,7 @@
         "binarytorch/larecipe": "^2.6",
         "codeat3/blade-iconpark": "^1.5",
         "coolsam/flatpickr": "^3.0",
-        "filament/filament": "^3.0",
+        "filament/filament": "3.0.41",
         "filament/spatie-laravel-media-library-plugin": "^3.0",
         "filament/spatie-laravel-tags-plugin": "^3.0",
         "gehrisandro/tailwind-merge-laravel": "^0.2.1",
@@ -37,7 +37,8 @@
         "spatie/laravel-tags": "^4.3",
         "squirephp/countries-en": "^3.4",
         "staudenmeir/laravel-adjacency-list": "^1.0",
-        "stechstudio/filament-impersonate": "^3.4"
+        "stechstudio/filament-impersonate": "^3.4",
+        "ysfkaya/filament-phone-input": "^2.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.8",

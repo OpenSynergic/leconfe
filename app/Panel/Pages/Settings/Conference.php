@@ -2,31 +2,35 @@
 
 namespace App\Panel\Pages\Settings;
 
+use Filament\Forms\Form;
+use Filament\Pages\Page;
+use Filament\Facades\Filament;
+use Filament\Infolists\Infolist;
+use App\Forms\Components\BlockList;
+use Filament\Forms\Components\Grid;
+use App\Models\Enums\SidebarPosition;
+use App\Facades\Block as FacadesBlock;
+use App\Forms\Components\VerticalTabs;
+use Filament\Forms\Components\Actions;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Components\Repeater;
+use Filament\Infolists\Components\Tabs;
+use App\Infolists\Components\BladeEntry;
+use Filament\Forms\Components\TextInput;
+use App\Livewire\Block as BlockComponent;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Infolists\Contracts\HasInfolists;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
 use App\Actions\Blocks\UpdateBlockSettingsAction;
 use App\Actions\Conferences\ConferenceUpdateAction;
-use App\Facades\Block as FacadesBlock;
-use App\Forms\Components\BlockList;
-use App\Forms\Components\VerticalTabs;
-use App\Infolists\Components\BladeEntry;
-use App\Livewire\Block as BlockComponent;
-use App\Models\Enums\SidebarPosition;
-use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
-use Filament\Facades\Filament;
-use Filament\Forms\Components\Actions;
-use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\Grid;
+use Ysfkaya\FilamentPhoneInput\PhoneInputNumberType;
 use Filament\Forms\Components\Section as FormSection;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
-use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Infolists\Infolist;
-use Filament\Pages\Page;
+use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class Conference extends Page implements HasForms, HasInfolists
@@ -46,6 +50,8 @@ class Conference extends Page implements HasForms, HasInfolists
     public array $generalFormData = [];
 
     public array $setupFormData = [];
+
+    public array $contactFormData = [];
 
     public array $appereanceFormData = [];
 
@@ -83,6 +89,11 @@ class Conference extends Page implements HasForms, HasInfolists
             'meta' => Filament::getTenant()->getAllMeta()->toArray(),
         ]);
 
+        $this->contactForm->fill([
+            ...Filament::getTenant()->attributesToArray(),
+            'meta' => Filament::getTenant()->getAllMeta()->toArray()
+        ]);
+
         $this->setupForm->fill([
             'meta' => Filament::getTenant()->getAllMeta()->toArray(),
         ]);
@@ -98,6 +109,11 @@ class Conference extends Page implements HasForms, HasInfolists
                             ->schema([
                                 BladeEntry::make('general')
                                     ->blade('{{ $this->generalForm }}'),
+                            ]),
+                        Tabs\Tab::make('Contact')
+                            ->schema([
+                                BladeEntry::make('general')
+                                    ->blade('{{ $this->contactForm }}'),
                             ]),
                         Tabs\Tab::make('Appearance')
                             ->schema([
@@ -120,6 +136,7 @@ class Conference extends Page implements HasForms, HasInfolists
             'generalForm',
             'setupForm',
             'appereanceForm',
+            'contactForm',
         ];
     }
 
@@ -129,7 +146,7 @@ class Conference extends Page implements HasForms, HasInfolists
         foreach ($blockSettings as $sort => $blockSetting) {
             $sort++; // To sort a number, take it from the array index.
             [$uuid, $enabled, $originalState] = explode(':', $blockSetting);
-            $block = data_get($this, $originalState.'.'.$uuid);
+            $block = data_get($this, $originalState . '.' . $uuid);
             // The block is being moved to a new position.
             if ($originalState != $statePath) {
                 $block->position = str($statePath)->contains('blocks.left') ? 'left' : 'right';
@@ -161,8 +178,8 @@ class Conference extends Page implements HasForms, HasInfolists
                                                 SidebarPosition::Right->getValue() => SidebarPosition::Right->getLabel(),
                                             ])
                                             ->descriptions([
-                                                SidebarPosition::Left->getValue() => SidebarPosition::Left->getLabel().' Sidebar',
-                                                SidebarPosition::Right->getValue() => SidebarPosition::Right->getLabel().' Sidebar',
+                                                SidebarPosition::Left->getValue() => SidebarPosition::Left->getLabel() . ' Sidebar',
+                                                SidebarPosition::Right->getValue() => SidebarPosition::Right->getLabel() . ' Sidebar',
                                             ])
                                             ->reactive()
                                             ->helperText(__('If you choose both sidebars, the layout will have three columns.')),
@@ -219,7 +236,6 @@ class Conference extends Page implements HasForms, HasInfolists
                                                 }),
                                         ])->alignLeft(),
                                     ]),
-
                             ]),
                     ]),
             ]);
@@ -285,10 +301,21 @@ class Conference extends Page implements HasForms, HasInfolists
                                                     ]),
                                                 TinyEditor::make('meta.description')
                                                     ->minHeight(300)
-
                                                     ->columnSpan([
                                                         'sm' => 2,
                                                     ]),
+                                                Repeater::make('meta.additional_content')
+                                                    ->columnSpanFull()
+                                                    ->schema([
+                                                        TinyEditor::make('additional')
+                                                            ->label('')
+                                                            ->minHeight(300)
+                                                            ->columnSpan([
+                                                                'sm' => 2
+                                                            ])
+                                                    ])
+                                                    ->label('Additional Content')
+                                                    ->addActionLabel('New Content'),
                                                 TinyEditor::make('meta.about')
                                                     ->label('About Conference')
                                                     ->minHeight(300)
@@ -306,18 +333,82 @@ class Conference extends Page implements HasForms, HasInfolists
                                                 ->successNotificationTitle('Saved!')
                                                 ->failureNotificationTitle('Data could not be saved.')
                                                 ->action(function (Action $action) {
-                                                    try {
-                                                        $formData = $this->generalForm->getState();
-                                                        ConferenceUpdateAction::run(Filament::getTenant(), $formData);
-                                                        $action->sendSuccessNotification();
-                                                    } catch (\Throwable $th) {
-                                                        $action->sendFailureNotification();
-                                                    }
+                                                    $formData = $this->generalForm->getState();
+                                                    ConferenceUpdateAction::run(Filament::getTenant(), $formData);
+                                                    $action->sendSuccessNotification();
                                                 }),
                                         ])->alignLeft(),
                                     ]),
                             ]),
                     ]),
+            ]);
+    }
+
+    public function contactForm(Form $form): Form
+    {
+        return $form
+            ->statePath('contactFormData')
+            ->model(Filament::getTenant())
+            ->schema([
+                VerticalTabs\Tabs::make()
+                    ->sticky()
+                    ->schema([
+                        VerticalTabs\Tab::make('Contact')
+                            ->icon('heroicon-o-phone')
+                            ->schema([
+                                FormSection::make('Contact')
+                                    ->schema([
+                                        Section::make('')
+                                            ->schema([
+                                                TextInput::make('meta.email')
+                                                    ->email()
+                                                    ->required()
+                                                    ->helperText(__('Primary contact email for the contact information')),
+                                                TextInput::make('meta.address')
+                                                    ->helperText(__('The physical location associated with the your company or organization')),
+                                            ])
+                                            ->columns([
+                                                'sm' => 1,
+                                                'xl' => 2
+                                            ]),
+                                        Section::make('')
+                                            ->schema([
+                                                PhoneInput::make('meta.phone')
+                                                    ->helperText(__('Phone will be displayed on the contact information page of the conference website')),
+                                                TextInput::make('meta.bussines_hour')
+                                                    ->label(__('Bussines Hour'))
+                                                    ->placeholder(__('Mon-Fri from 8am to 5pm'))
+                                            ])
+                                            ->columns([
+                                                'sm' => 1,
+                                                'xl' => 2
+                                            ]),
+                                        Section::make('')
+                                            ->schema([
+                                                PhoneInput::make('meta.whatsapp')
+                                                    ->helperText(__('Automaticly generate a clickable link to your whatsapp')),
+                                                TextInput::make('meta.label_chat')
+                                                    ->label(__('Chat label'))
+                                                    ->placeholder('Start new chat')
+                                                    ->helperText(__('This will be the clickable title of the link.'))
+                                            ])
+                                            ->columns([
+                                                'sm' => 1,
+                                                'xl' => 2
+                                            ]),
+                                        Actions::make([
+                                            Action::make('Save')
+                                                ->successNotificationTitle('Saved!')
+                                                ->failureNotificationTitle('Data could not be saved')
+                                                ->action(function (Action $action) {
+                                                    $contactData = $this->contactForm->getState();
+                                                    ConferenceUpdateAction::run(Filament::getTenant(), $contactData);
+                                                    $action->sendSuccessNotification();
+                                                })
+                                        ])
+                                    ])
+                            ])
+                    ])
             ]);
     }
 
@@ -342,13 +433,9 @@ class Conference extends Page implements HasForms, HasInfolists
                                                         ->label('Save')
                                                         ->successNotificationTitle('Saved!')
                                                         ->action(function (Action $action) {
-                                                            try {
-                                                                ConferenceUpdateAction::run(Filament::getTenant(), $this->setupForm->getState());
-
-                                                                $action->sendSuccessNotification();
-                                                            } catch (\Throwable $th) {
-                                                                $action->sendFailureNotification();
-                                                            }
+                                                            $setupFormData = $this->setupForm->getState();
+                                                            ConferenceUpdateAction::run(Filament::getTenant(), $setupFormData);
+                                                            $action->sendSuccessNotification();
                                                         }),
                                                 ])->alignLeft(),
                                             ])
