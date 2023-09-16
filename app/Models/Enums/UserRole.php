@@ -9,7 +9,6 @@ enum UserRole: string implements HasLabel
 {
     use UsefulEnums;
 
-    case SuperAdmin = 'Super Admin';
     case Admin = 'Admin';
     case ConferenceManager = 'Conference Manager';
     case Director = 'Director';
@@ -21,5 +20,24 @@ enum UserRole: string implements HasLabel
     public function getLabel(): ?string
     {
         return $this->name;
+    }
+
+    public static function selfAssignedRoles() : array
+    {
+        return  [
+            UserRole::Reviewer,
+            UserRole::Author,
+            UserRole::Participant,
+        ];
+    }
+   
+    public static function selfAssignedRoleNames() : array
+    {
+        return  array_column(static::selfAssignedRoles(), 'name');
+    }
+
+    public static function selfAssignedRoleValues() : array
+    {
+        return  array_column(static::selfAssignedRoles(), 'value');
     }
 }

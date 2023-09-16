@@ -136,21 +136,21 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
 
     public function canImpersonate()
     {
-        return $this->can('loginAs');
+        return $this->can('User:loginAs');
     }
 
-    public function canBeImpersonated()
-    {
-        if ($this->isBanned()) {
-            return false;
-        }
+    // public function canBeImpersonated()
+    // {
+    //     if ($this->isBanned()) {
+    //         return false;
+    //     }
+        
+    //     if ($this->hasAnyRole([UserRole::Admin->value])) {
+    //         return false;
+    //     }
 
-        if ($this->hasAnyRole([UserRole::Admin->value, UserRole::SuperAdmin->value])) {
-            return false;
-        }
-
-        return true;
-    }
+    //     return true;
+    // }
 
     /**
      * @return array<Model> | Collection

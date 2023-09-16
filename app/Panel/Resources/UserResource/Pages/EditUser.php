@@ -23,4 +23,15 @@ class EditUser extends EditRecord
     {
         return UserUpdateAction::run($record, $data);
     }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        $data['meta'] = $this->getRecord()->getAllMeta()->toArray();
+
+        return $data;
+    }
 }

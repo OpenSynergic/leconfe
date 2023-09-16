@@ -3,6 +3,7 @@
 namespace App\Panel\Resources\PermissionResource\Pages;
 
 use App\Actions\Permissions\PermissionPersistAction;
+use App\Actions\Roles\RolePersistAssignedPermissions;
 use App\Models\Permission;
 use App\Panel\Resources\PermissionResource;
 use Filament\Actions;
@@ -22,7 +23,10 @@ class ManagePermissions extends ManageRecords
                     ->requiresConfirmation()
                     ->modalDescription('This will persist all permissions to storage.')
                     ->label('Persist Permissions')
-                    ->action(fn () => PermissionPersistAction::run()),
+                    ->action(function(){
+                        PermissionPersistAction::run();
+                        RolePersistAssignedPermissions::run();
+                    }),
             ]),
 
         ];
