@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToConference;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Block extends Model
 {
-    use HasFactory;
+    use BelongsToConference, HasFactory;
 
     protected $fillable = [
         'class',
@@ -20,16 +21,4 @@ class Block extends Model
     protected $casts = [
         'active' => 'boolean',
     ];
-
-    protected static function booted()
-    {
-        static::creating(function (Block $block) {
-            $block->conference_id ??= Conference::current()?->getKey();
-        });
-    }
-
-    public function conference()
-    {
-        return $this->belongsTo(Conference::class);
-    }
 }

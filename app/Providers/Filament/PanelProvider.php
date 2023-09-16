@@ -2,7 +2,7 @@
 
 namespace App\Providers\Filament;
 
-use App\Http\Middleware\ApplyTenantScopes;
+use App\Http\Middleware\TenantConference;
 use App\Models\Conference;
 use App\Models\Navigation;
 use App\Panel\Resources\NavigationResource;
@@ -21,6 +21,7 @@ use Filament\Panel;
 use Filament\PanelProvider as FilamentPanelProvider;
 use Filament\Support\Colors\Color;
 use Illuminate\Support\Facades\Blade;
+use Livewire\Livewire;
 use RyanChandler\FilamentNavigation\FilamentNavigation;
 
 class PanelProvider extends FilamentPanelProvider
@@ -77,12 +78,15 @@ class PanelProvider extends FilamentPanelProvider
     public function boot(): void
     {
         Blade::anonymousComponentPath(resource_path('views/panel/components'), 'panel');
+
+        // Persistent middleware option on filament doesnt work, currently we use this workaround
+        Livewire::addPersistentMiddleware(static::getTenantMiddleware());
     }
 
     public static function getTenantMiddleware(): array
     {
         return [
-            ApplyTenantScopes::class,
+            TenantConference::class,
         ];
     }
 
@@ -145,7 +149,8 @@ class PanelProvider extends FilamentPanelProvider
 
     public static function setupFilamentComponent()
     {
-        // TODO Validasi file type menggunakan dengan menggunakan format extension, bukan dengan mime type, hal ini agar mempermudah pengguna dalam melakukan setting file apa saja yang diperbolehkan
+        // TODO Validasi file type menggunakan dengan menggunakan format extension, bukan dengan mime type,
+        // hal ini agar mempermudah pengguna dalam melakukan setting file apa saja yang diperbolehkan
         // Saat ini SpatieMediaLibraryFileUpload hanya support file validation dengan mime type.
         // Solusi mungkin buat custom component upload dengan menggunakan library seperti dropzone, atau yang lainnya.
         SpatieMediaLibraryFileUpload::configureUsing(function (SpatieMediaLibraryFileUpload $fileUpload): void {

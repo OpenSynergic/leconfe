@@ -10,6 +10,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -37,6 +38,7 @@ class AnnouncementSchema
                     ->icon('heroicon-o-eye')
                     ->color('gray'),
                 EditAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),

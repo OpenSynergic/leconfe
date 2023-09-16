@@ -1,3 +1,4 @@
+
 @php
     if(!function_exists('isSidebar')) {
         // If $currentConference is inside a function, it is undefined.
