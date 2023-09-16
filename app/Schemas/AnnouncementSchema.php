@@ -131,7 +131,6 @@ class AnnouncementSchema
                                     ')
                                 )
                                 ->options(AnnouncementTag::withCount('announcements')->orderBy('announcements_count', 'desc')->limit(10)->pluck('name', 'id')->toArray())
-                                ->columns('2')
                                 ->afterStateUpdated(function ($set, $state) {
                                     if (!empty($state)) {
                                         $state = AnnouncementTag::whereIn('id', $state)->get()->map(fn ($tag) => $tag->name)->toArray();

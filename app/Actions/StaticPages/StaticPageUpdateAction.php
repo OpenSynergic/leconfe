@@ -4,6 +4,7 @@ namespace App\Actions\StaticPages;
 
 use App\Models\StaticPage;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -18,9 +19,7 @@ class StaticPageUpdateAction
 
             $staticPage->update($data);
             
-            unset($data['title']);
-
-            $staticPage->syncMeta($data);
+            $staticPage->syncMeta(Arr::only($data, ['user_content']));
 
             // if ($sendEmail) {
             //     // TODO Create a job to send email

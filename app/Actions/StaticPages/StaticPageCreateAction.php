@@ -5,6 +5,7 @@ namespace App\Actions\StaticPages;
 use App\Models\Announcement;
 use App\Models\Enums\ContentType;
 use App\Models\StaticPage;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -21,11 +22,7 @@ class StaticPageCreateAction
 
             $staticPage = StaticPage::create($data);
             
-            unset($data['title']);
-            unset($data['created_by']);
-            unset($data['content_type']);
-            
-            $staticPage->setManyMeta($data);
+            $staticPage->setManyMeta(Arr::only($data, ['user_content']));
 
             // if ($sendEmail) {
             //     // TODO Create a job to send email

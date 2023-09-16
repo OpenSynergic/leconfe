@@ -3,6 +3,7 @@
 namespace App\Actions\Announcements;
 
 use App\Models\Announcement;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -19,14 +20,7 @@ class AnnouncementCreateAction
             
             $announcement = Announcement::create($data);
             
-            unset($data['title']);
-            unset($data['created_by']);
-            unset($data['content_type']);
-            unset($data['send_email']);
-            unset($data['common_tags']);
-
-            
-            $announcement->setManyMeta($data);
+            $announcement->setManyMeta(Arr::only($data, ['user_content', 'expires_at']));
 
             // if ($sendEmail) {
             //     // TODO Create a job to send email

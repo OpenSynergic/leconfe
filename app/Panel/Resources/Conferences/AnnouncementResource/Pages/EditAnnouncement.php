@@ -17,6 +17,7 @@ class EditAnnouncement extends EditRecord
     {
         return [
             Actions\DeleteAction::make(),
+            Actions\ViewAction::make()
         ];
     }
 
@@ -28,9 +29,9 @@ class EditAnnouncement extends EditRecord
     protected function mutateFormDataBeforeFill(array $data): array
     {
         $userContentMeta = $this->record->getAllMeta();
-        $user = User::where('id', $userContentMeta['author'] ?? 0)->first();
+        $user = $this->record->user;
 
-        $data['author'] = $user ? "{$user->given_name} {$user->family_name}" : null;
+        $data['author'] = $user ? "{$user->given_name} {$user->family_name}" : 'Cannot find the author';
         $data['common_tags'] = $this->record->tags()->pluck('id')->toArray();
         $data['user_content'] = $userContentMeta['user_content'];
         $data['expires_at'] = $userContentMeta['expires_at'];
