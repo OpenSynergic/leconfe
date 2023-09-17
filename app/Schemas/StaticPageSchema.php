@@ -91,7 +91,7 @@ class StaticPageSchema
                                 ->lazy()
                                 ->helperText(function ($state, ?StaticPage $record) {
                                     $slug = Str::slug($state);
-                                    $currentSlug = $slug;
+                                    $currentSlug = Str::slug(substr($slug, 0, 50)); // if it has(-) at the end
                                     $count = 1;
 
                                     switch (true) {
@@ -139,7 +139,10 @@ class StaticPageSchema
                                 ->label('Content')
                                 ->minHeight(600)
                                 ->helperText('The complete page content.'),
-                        ])->columnSpan(9),
+                        ])->columnSpan([
+                            'default' => 'full',
+                            'lg' => 9
+                        ]),
                     Section::make()
                         ->schema([
                             TextInput::make('author')
@@ -181,7 +184,10 @@ class StaticPageSchema
                                 })
                                 ->dehydrated(false)
                                 ->reactive(),
-                        ])->columnSpan(3),
+                        ])->columnSpan([
+                            'default' => 'full',
+                            'lg' => 3
+                        ]),
                 ]),
         ];
     }

@@ -3,6 +3,7 @@
 namespace App\Panel\Resources\StaticPageResource\Pages;
 
 use App\Actions\StaticPages\StaticPageUpdateAction;
+use App\Models\Enums\ConferenceStatus;
 use App\Models\User;
 use App\Panel\Resources\StaticPageResource;
 use Filament\Actions;
@@ -18,6 +19,13 @@ class EditStaticPage extends EditRecord
     {
         return [
             Actions\DeleteAction::make(),
+            Actions\Action::make('view')
+                ->icon('heroicon-o-eye')
+                ->label('View as page')
+                ->color('success')
+                ->url(fn ($record) => route('livewirePageGroup.website.pages.static-page', [
+                    'slug' => $record->slug
+                ]))
         ];
     }
     

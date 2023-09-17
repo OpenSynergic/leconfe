@@ -50,7 +50,8 @@ class UserContent extends Model implements HasMedia
     {
         return SlugOptions::create()
             ->generateSlugsFrom('title')
-            ->saveSlugsTo('slug');
+            ->saveSlugsTo('slug')
+            ->slugsShouldBeNoLongerThan(50);
     }
 
     public function registerMediaConversions(?Media $media = null): void

@@ -3,6 +3,7 @@
 namespace App\Panel\Resources\Conferences\AnnouncementResource\Pages;
 
 use App\Actions\Announcements\AnnouncementUpdateAction;
+use App\Models\Enums\ConferenceStatus;
 use App\Models\User;
 use App\Panel\Resources\Conferences\AnnouncementResource;
 use Filament\Actions;
@@ -17,7 +18,30 @@ class EditAnnouncement extends EditRecord
     {
         return [
             Actions\DeleteAction::make(),
-            Actions\ViewAction::make()
+            Actions\Action::make('view')
+                ->icon('heroicon-o-eye')
+                ->label('View as page')
+                ->color('success')
+                ->url(function ($record) {
+                    $conference  = $record->conference;
+
+                    switch ($conference->status->value) {
+                        case ConferenceStatus::Current->value:
+                            return 
+                                route('livewirePageGroup.current-conference.pages.announcement-page', [
+                                    'id' => $record->id
+                                ]);
+                            break;
+                        
+                        default:
+                            return
+                                route('livewirePageGroup.archive-conference.pages.announcement-page', [
+                                    'conference' => $conference->id,
+                                    'id' => $record->id
+                                ]);
+                            break;
+                    }
+                })
         ];
     }
 

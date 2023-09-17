@@ -99,7 +99,10 @@ class AnnouncementSchema
                                 ->label('Announcement content')
                                 ->minHeight(600)
                                 ->helperText('The complete announcement content.'),
-                        ])->columnSpan(9),
+                        ])->columnSpan([
+                            'default' => 'full',
+                            'lg' => 9
+                        ]),
                     Section::make()
                         ->schema([
                             TextInput::make('author')
@@ -157,7 +160,10 @@ class AnnouncementSchema
                                 ->dehydrateStateUsing(fn ($state) => $state ? Carbon::createFromFormat(setting('format.date'), $state) : null),
                             Checkbox::make('send_email')
                                 ->label('Send email about this to registered users'),
-                        ])->columnSpan(3),
+                        ])->columnSpan([
+                            'default' => 'full',
+                            'lg' => 3
+                        ]),
                 ]),
         ];
     }
