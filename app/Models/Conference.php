@@ -99,6 +99,11 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
         return $this->hasMany(Announcement::class);
     }
 
+    public function staticPages(): HasMany
+    {
+        return $this->hasMany(StaticPage::class);
+    }
+
     public function navigations(): HasMany
     {
         return $this->hasMany(Navigation::class);
@@ -151,6 +156,17 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
         }
 
         return static::$current;
+    }
+
+    public static function upcoming()
+    {
+        return static::whereHasMeta('date_held')
+            ->orderByMetaNumeric('date_held', 'asc')->where('status', ConferenceStatus::Upcoming);
+    }
+
+    public function isUpcoming()
+    {
+        return $this->status == ConferenceStatus::Upcoming;
     }
 
     public function isCurrent()

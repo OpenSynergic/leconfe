@@ -5,3 +5,4 @@
     </div>
     <x-conference::layouts.rightbar />
 </div>
+
