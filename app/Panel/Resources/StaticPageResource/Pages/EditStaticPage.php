@@ -3,13 +3,10 @@
 namespace App\Panel\Resources\StaticPageResource\Pages;
 
 use App\Actions\StaticPages\StaticPageUpdateAction;
-use App\Models\Enums\ConferenceStatus;
-use App\Models\User;
 use App\Panel\Resources\StaticPageResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 class EditStaticPage extends EditRecord
 {
@@ -24,11 +21,11 @@ class EditStaticPage extends EditRecord
                 ->label('View as page')
                 ->color('success')
                 ->url(fn ($record) => route('livewirePageGroup.website.pages.static-page', [
-                    'slug' => $record->slug
-                ]))
+                    'slug' => $record->slug,
+                ])),
         ];
     }
-    
+
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
         return StaticPageUpdateAction::run($data, $record);

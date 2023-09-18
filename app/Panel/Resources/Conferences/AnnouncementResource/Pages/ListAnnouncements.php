@@ -7,7 +7,6 @@ use App\Models\Enums\ContentType;
 use App\Panel\Resources\Conferences\AnnouncementResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Resources\Pages\ManageRecords;
 
 class ListAnnouncements extends ListRecords
 {
@@ -20,7 +19,7 @@ class ListAnnouncements extends ListRecords
                 ->using(fn (array $data) => AnnouncementCreateAction::run($data, $data['send_email'] ?? false))
                 ->mutateFormDataUsing(function ($data) {
                     $data['content_type'] = ContentType::Announcement;
-                
+
                     return $data;
                 }),
             // ->using(fn(array $data) => dd($data)),

@@ -4,7 +4,6 @@ namespace App\Panel\Resources\Conferences\AnnouncementResource\Pages;
 
 use App\Actions\Announcements\AnnouncementUpdateAction;
 use App\Models\Enums\ConferenceStatus;
-use App\Models\User;
 use App\Panel\Resources\Conferences\AnnouncementResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -23,25 +22,25 @@ class EditAnnouncement extends EditRecord
                 ->label('View as page')
                 ->color('success')
                 ->url(function ($record) {
-                    $conference  = $record->conference;
+                    $conference = $record->conference;
 
                     switch ($conference->status->value) {
                         case ConferenceStatus::Current->value:
-                            return 
+                            return
                                 route('livewirePageGroup.current-conference.pages.announcement-page', [
-                                    'id' => $record->id
+                                    'id' => $record->id,
                                 ]);
                             break;
-                        
+
                         default:
                             return
                                 route('livewirePageGroup.archive-conference.pages.announcement-page', [
                                     'conference' => $conference->id,
-                                    'id' => $record->id
+                                    'id' => $record->id,
                                 ]);
                             break;
                     }
-                })
+                }),
         ];
     }
 

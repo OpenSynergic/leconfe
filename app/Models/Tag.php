@@ -3,15 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Tag extends \Spatie\Tags\Tag
 {
     use HasFactory;
 
     protected $table = 'tags';
-    
+
     protected $casts = [
         'name' => 'array',
     ];
@@ -20,7 +18,7 @@ class Tag extends \Spatie\Tags\Tag
         'name',
     ];
 
-    static function whereInFromString(array $array, string $type = null)
+    public static function whereInFromString(array $array, string $type = null)
     {
         return collect(array_map(fn ($tag) => static::findFromString($tag, $type), $array));
     }

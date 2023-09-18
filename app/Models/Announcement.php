@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\Scopes\AnnouncementScope;
-use Filament\Facades\Filament;
 
 class Announcement extends UserContent
 {

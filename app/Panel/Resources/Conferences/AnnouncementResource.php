@@ -3,7 +3,6 @@
 namespace App\Panel\Resources\Conferences;
 
 use App\Models\Announcement;
-use App\Models\Enums\ContentType;
 use App\Panel\Resources\Conferences\AnnouncementResource\Pages;
 use App\Schemas\AnnouncementSchema;
 use Filament\Forms\Form;

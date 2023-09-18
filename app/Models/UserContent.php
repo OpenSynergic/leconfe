@@ -19,7 +19,7 @@ use Spatie\Tags\HasTags;
 
 class UserContent extends Model implements HasMedia
 {
-    use HasFactory, HasTags, HasSlug, Cachable, Metable, InteractsWithMedia;
+    use Cachable, HasFactory, HasSlug, HasTags, InteractsWithMedia, Metable;
 
     protected $table = 'user_contents';
 
@@ -46,7 +46,7 @@ class UserContent extends Model implements HasMedia
         });
     }
 
-    public function getSlugOptions() : SlugOptions
+    public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
             ->generateSlugsFrom('title')
@@ -54,7 +54,7 @@ class UserContent extends Model implements HasMedia
             ->slugsShouldBeNoLongerThan(50);
     }
 
-    public function registerMediaConversions(?Media $media = null): void
+    public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('thumb')
             ->keepOriginalImageFormat()
@@ -87,13 +87,13 @@ class UserContent extends Model implements HasMedia
     public function scopeOrWhereMeta(Builder $q, string $key, $operator, $value = null): void
     {
         // Shift arguments if no operator is present.
-        if (!isset($value)) {
+        if (! isset($value)) {
             $value = $operator;
             $operator = '=';
         }
 
         // Convert value to its serialized version for comparison.
-        if (!is_string($value)) {
+        if (! is_string($value)) {
             $value = $this->makeMeta($key, $value)->getRawValue();
         }
 

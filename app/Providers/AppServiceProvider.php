@@ -3,8 +3,6 @@
 namespace App\Providers;
 
 use App\Managers\BlockManager;
-use Filament\Support\Assets\Css;
-use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
@@ -101,7 +99,7 @@ class AppServiceProvider extends ServiceProvider
 
     protected function setupView()
     {
-        if (!$this->app->runningInConsole()) {
+        if (! $this->app->runningInConsole()) {
             // View::share('currentConference', Conference::current());
         }
     }

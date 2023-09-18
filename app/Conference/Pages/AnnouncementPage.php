@@ -3,8 +3,6 @@
 namespace App\Conference\Pages;
 
 use App\Models\Announcement;
-use App\Models\Enums\ContentType;
-use App\Models\StaticPage as ModelsStaticPage;
 use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
@@ -22,7 +20,7 @@ class AnnouncementPage extends Page
 
     public function getRecordProperty()
     {
-        return Announcement::where('id', $this->id)->first();;
+        return Announcement::where('id', $this->id)->first();
     }
 
     protected function getViewData(): array

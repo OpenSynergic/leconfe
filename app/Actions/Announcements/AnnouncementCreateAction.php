@@ -17,9 +17,9 @@ class AnnouncementCreateAction
             DB::beginTransaction();
 
             $data['created_by'] = auth()->user()->id;
-            
+
             $announcement = Announcement::create($data);
-            
+
             $announcement->setManyMeta(Arr::only($data, ['user_content', 'expires_at']));
 
             // if ($sendEmail) {

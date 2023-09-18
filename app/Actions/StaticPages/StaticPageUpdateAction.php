@@ -18,7 +18,7 @@ class StaticPageUpdateAction
             DB::beginTransaction();
 
             $staticPage->update($data);
-            
+
             $staticPage->syncMeta(Arr::only($data, ['user_content']));
 
             // if ($sendEmail) {

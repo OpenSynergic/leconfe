@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Actions\Participants\ParticipantPositionPopulateDefaultDataAction;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ConferenceType;
-use App\Models\Enums\ContentType;
 use App\Models\Meta\ConferenceMeta;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasName;

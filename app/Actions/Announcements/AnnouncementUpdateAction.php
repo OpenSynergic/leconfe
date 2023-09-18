@@ -18,7 +18,7 @@ class AnnouncementUpdateAction
             DB::beginTransaction();
 
             $announcement->update($data);
-            
+
             $announcement->syncMeta(Arr::only($data, ['user_content', 'expires_at']));
 
             // if ($sendEmail) {

@@ -20,7 +20,7 @@ class AnnouncementList extends Page
 
     public function getRecordsProperty()
     {
-        return 
+        return
             app()->getCurrentConference()->announcements()
                 ->whereMeta('expires_at', '>', now()->startOfDay())
                 ->orWhereMeta('expires_at', '')->orderBy('created_at', 'desc')
@@ -28,7 +28,7 @@ class AnnouncementList extends Page
                     'tags' => function ($query) {
                         $query->take(3);
                     },
-                    'user'
+                    'user',
                 ])
                 ->withCount('tags')
                 ->get();

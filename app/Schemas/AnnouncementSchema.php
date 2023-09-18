@@ -2,23 +2,18 @@
 
 namespace App\Schemas;
 
-use App\Actions\Announcements\AnnouncementUpdateAction;
 use App\Forms\Components\TagSuggestions;
 use App\Models\Announcement;
 use App\Models\AnnouncementTag;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ContentType;
-use App\Models\Tag;
 use Carbon\Carbon;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\SpatieTagsInput;
-use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Tables\Actions\Action;
@@ -51,21 +46,21 @@ class AnnouncementSchema
                 Action::make('view')
                     ->icon('heroicon-o-eye')
                     ->url(function ($record) {
-                        $conference  = $record->conference;
+                        $conference = $record->conference;
 
                         switch ($conference->status->value) {
                             case ConferenceStatus::Current->value:
-                                return 
+                                return
                                     route('livewirePageGroup.current-conference.pages.announcement-page', [
-                                        'id' => $record->id
+                                        'id' => $record->id,
                                     ]);
                                 break;
-                            
+
                             default:
                                 return
                                     route('livewirePageGroup.archive-conference.pages.announcement-page', [
                                         'conference' => $conference->id,
-                                        'id' => $record->id
+                                        'id' => $record->id,
                                     ]);
                                 break;
                         }
@@ -101,13 +96,14 @@ class AnnouncementSchema
                                 ->helperText('The complete announcement content.'),
                         ])->columnSpan([
                             'default' => 'full',
-                            'lg' => 9
+                            'lg' => 9,
                         ]),
                     Section::make()
                         ->schema([
                             TextInput::make('author')
                                 ->default(function () {
                                     $user = auth()->user();
+
                                     return "{$user->given_name} {$user->family_name}";
                                 })
                                 ->dehydrated(false)
@@ -118,7 +114,7 @@ class AnnouncementSchema
                                 ->reactive(),
                             TagSuggestions::make('common_tags')
                                 ->label('Commonly used tags')
-                                ->helperText(fn (TagSuggestions $component) => count($component->getOptions()) ? null : 
+                                ->helperText(fn (TagSuggestions $component) => count($component->getOptions()) ? null :
                                     new HtmlString('
                                     <div class="fi-ta-empty-state-content mx-auto grid max-w-lg justify-items-center text-center">
                                         <div class="fi-ta-empty-state-icon-ctn mb-4 rounded-full bg-gray-100 p-3 dark:bg-gray-500/20">
@@ -135,10 +131,10 @@ class AnnouncementSchema
                                 )
                                 ->options(AnnouncementTag::withCount('announcements')->orderBy('announcements_count', 'desc')->limit(10)->pluck('name', 'id')->toArray())
                                 ->afterStateUpdated(function ($set, $state) {
-                                    if (!empty($state)) {
+                                    if (! empty($state)) {
                                         $state = AnnouncementTag::whereIn('id', $state)->get()->map(fn ($tag) => $tag->name)->toArray();
                                     }
-    
+
                                     $set('tags', $state);
                                 })
                                 ->dehydrated(false)
@@ -152,7 +148,7 @@ class AnnouncementSchema
                                     if (blank($state)) {
                                         return null;
                                     }
-                
+
                                     return Carbon::parse($state)
                                         ->translatedFormat(setting('format.date'));
                                 })
@@ -162,7 +158,7 @@ class AnnouncementSchema
                                 ->label('Send email about this to registered users'),
                         ])->columnSpan([
                             'default' => 'full',
-                            'lg' => 3
+                            'lg' => 3,
                         ]),
                 ]),
         ];

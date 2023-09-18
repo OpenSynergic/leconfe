@@ -2,8 +2,6 @@
 
 namespace App\Actions\StaticPages;
 
-use App\Models\Announcement;
-use App\Models\Enums\ContentType;
 use App\Models\StaticPage;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +19,7 @@ class StaticPageCreateAction
             $data['created_by'] = auth()->user()->id;
 
             $staticPage = StaticPage::create($data);
-            
+
             $staticPage->setManyMeta(Arr::only($data, ['user_content']));
 
             // if ($sendEmail) {

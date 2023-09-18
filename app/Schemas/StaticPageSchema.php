@@ -2,35 +2,25 @@
 
 namespace App\Schemas;
 
-use App\Actions\StaticPages\StaticPageCreateAction;
-use App\Actions\StaticPages\StaticPageUpdateAction;
 use App\Forms\Components\TagSuggestions;
-use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ContentType;
 use App\Models\StaticPage;
 use App\Models\StaticPageTag;
-use App\Models\Tag;
-use Closure;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\SpatieTagsInput;
-use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\HtmlString;
-use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use Illuminate\Support\Str;
-use Spatie\Sluggable\SlugOptions;
+use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class StaticPageSchema
 {
@@ -41,7 +31,7 @@ class StaticPageSchema
             ->heading('Static page')
             ->defaultPaginationPageOption(5)
             ->recordUrl(fn ($record) => route('livewirePageGroup.website.pages.static-page', [
-                'slug' => $record->slug
+                'slug' => $record->slug,
             ]))
             ->columns([
                 TextColumn::make('title')
@@ -49,7 +39,7 @@ class StaticPageSchema
                 TextColumn::make('slug')
                     ->label('path')
                     ->getStateUsing(fn (StaticPage $record) => route('livewirePageGroup.website.pages.static-page', [
-                        'slug' => $record->slug
+                        'slug' => $record->slug,
                     ])),
             ])
             ->filters([
@@ -62,7 +52,7 @@ class StaticPageSchema
                 Action::make('view')
                     ->icon('heroicon-o-eye')
                     ->url(fn ($record) => route('livewirePageGroup.website.pages.static-page', [
-                        'slug' => $record->slug
+                        'slug' => $record->slug,
                     ]))
                     ->color('gray'),
                 EditAction::make(),
@@ -110,7 +100,7 @@ class StaticPageSchema
                                                 }
                                             }
                                             break;
-                                        
+
                                         default:
                                             while (true) {
                                                 $staticPage = StaticPage::where('slug', $currentSlug)->first();
@@ -126,9 +116,9 @@ class StaticPageSchema
                                     }
 
                                     $route = route('livewirePageGroup.website.pages.static-page', [
-                                        'slug' => $currentSlug ? ($currentSlug != '' ? $currentSlug : 'path-name') : 'path-name'
+                                        'slug' => $currentSlug ? ($currentSlug != '' ? $currentSlug : 'path-name') : 'path-name',
                                     ]);
-                
+
                                     return new HtmlString("
                                         <p>Your page will be at :</p>
                                         <p>\"{$route}\"</p>
@@ -141,13 +131,14 @@ class StaticPageSchema
                                 ->helperText('The complete page content.'),
                         ])->columnSpan([
                             'default' => 'full',
-                            'lg' => 9
+                            'lg' => 9,
                         ]),
                     Section::make()
                         ->schema([
                             TextInput::make('author')
                                 ->default(function () {
                                     $user = auth()->user();
+
                                     return "{$user->given_name} {$user->family_name}";
                                 })
                                 ->dehydrated(false)
@@ -158,7 +149,7 @@ class StaticPageSchema
                                 ->reactive(),
                             TagSuggestions::make('common_tags')
                                 ->label('Commonly used tags')
-                                ->helperText(fn (CheckboxList $component) => count($component->getOptions()) ? null : 
+                                ->helperText(fn (CheckboxList $component) => count($component->getOptions()) ? null :
                                     new HtmlString('
                                     <div class="fi-ta-empty-state-content mx-auto grid max-w-lg justify-items-center text-center">
                                         <div class="fi-ta-empty-state-icon-ctn mb-4 rounded-full bg-gray-100 p-3 dark:bg-gray-500/20">
@@ -176,17 +167,17 @@ class StaticPageSchema
                                 ->options(StaticPageTag::withCount('staticPages')->orderBy('static_pages_count', 'desc')->limit(10)->pluck('name', 'id')->toArray())
                                 ->columns('2')
                                 ->afterStateUpdated(function ($set, $state) {
-                                    if (!empty($state)) {
+                                    if (! empty($state)) {
                                         $state = StaticPageTag::whereIn('id', $state)->get()->map(fn ($tag) => $tag->name)->toArray();
                                     }
-    
+
                                     $set('tags', $state);
                                 })
                                 ->dehydrated(false)
                                 ->reactive(),
                         ])->columnSpan([
                             'default' => 'full',
-                            'lg' => 3
+                            'lg' => 3,
                         ]),
                 ]),
         ];
