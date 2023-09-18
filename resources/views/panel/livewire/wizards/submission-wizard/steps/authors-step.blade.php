@@ -1,5 +1,5 @@
 <div class="space-y-6">
-    <div class="filament-forms-card-component p-6 bg-white rounded-xl border border-gray-300">
+    <div class="filament-forms-card-component p-6 bg-gray-900 rounded-xl border border-gray-800">
         <div class="grid grid-cols-1 filament-forms-component-container gap-6">
             <div class="col-span-full">
                 <div id="upload-files" class="filament-forms-section-component grid grid-cols-1 md:grid-cols-2">
@@ -34,7 +34,6 @@
                                 </div>
                             </div>
                         @endif
-
                         {{ $this->table }}
                     </div>
                 </div>
@@ -46,14 +45,14 @@
         <div>
             <x-filament::button icon="heroicon-o-chevron-left" x-show="! isFirstStep()" x-cloak x-on:click="previousStep"
                 color="secondary" size="sm">
-                {{ __('forms::components.wizard.buttons.previous_step.label') }}
+               Previous
             </x-filament::button>
         </div>
 
         <div>
             <x-filament::button icon="heroicon-o-chevron-right" icon-position="after" x-show="! isLastStep()" x-cloak
                 wire:click="nextStep" wire:loading.class.delay="opacity-70 cursor-wait" size="sm">
-                {{ __('forms::components.wizard.buttons.next_step.label') }}
+                Next
             </x-filament::button>
         </div>
     </div>

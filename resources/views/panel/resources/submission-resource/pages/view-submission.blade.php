@@ -1,19 +1,19 @@
 <x-filament::page>
-    @if ($this->record->status == App\Models\Submission::STATUS_WIZARD)
-        <livewire:wizards.submission-wizard :record="$record" />
+    @if ($this->record->status == App\Models\Enums\SubmissionStatus::Wizard)
+        @livewire(App\Panel\Livewire\Wizards\SubmissionWizard::class, ['record' => $record])
     @else
-        <x-tabs>
-            <x-slot:buttons>
+        {{-- <x-filament::tabs>
+            <x-filament::tabs.item>
                 <x-tabs.button>Workflow</x-tabs.button>
                 <x-tabs.button>Publication</x-tabs.button>
-            </x-slot:buttons>
+            </x-filament::tabs.item> --}}
 
-            <x-tabs.content>
+            {{-- <x-tabs.content> --}}
                 {{-- <livewire:panel.components.submissions.workflow-submission :record="$record" /> --}}
-            </x-tabs.content>
+            {{-- </x-tabs.content>
             <x-tabs.content>
                 publication
             </x-tabs.content>
-        </x-tabs>
+        </x-filament::tabs> --}}
     @endif
 </x-filament::page>

@@ -7,6 +7,7 @@ use App\Models\Navigation;
 use App\Models\ParticipantPosition;
 use App\Models\Scopes\ConferenceScope;
 use App\Models\Submission;
+use App\Models\SubmissionFileType;
 use App\Models\Topic;
 use App\Models\Venue;
 use Closure;
@@ -32,6 +33,7 @@ class TenantConference
             Navigation::class,
             Block::class,
             ParticipantPosition::class,
+            SubmissionFileType::class,
         ] as $model) {
             $model::addGlobalScope(new ConferenceScope);
         }

@@ -4,10 +4,17 @@ namespace App\Panel\Livewire\Tables\Submissions;
 
 use App\Models\Media;
 use App\Models\Submission;
+use App\Models\SubmissionFileType;
+use Filament\Forms\ComponentContainer;
+use Filament\Forms\Components\Actions\Action as FormAction;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\DeleteAction;
@@ -32,7 +39,7 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
 
     protected function getTableQuery(): Builder
     {
-        return $this->record->media()->where('collection_name', 'files')->getQuery();
+        return $this->record->media()->where('collection_name', 'submission-files')->getQuery();
     }
 
     protected function getTableHeading(): string
@@ -50,7 +57,6 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
                 ->color('gray')
                 ->action(function () {
                     $downloads = $this->record->getMedia('files');
-
                     return MediaStream::create('files.zip')->addMedia($downloads);
                 }),
             Action::make('upload')
@@ -58,21 +64,54 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
                 ->button()
                 ->modalWidth('xl')
                 ->form([
-                    SpatieMediaLibraryFileUpload::make('files')
+                    Select::make('type')
+                        ->required()
+                        ->options(fn () => SubmissionFileType::all()->pluck('name', 'id')->toArray())
+                        ->searchable()
+                        ->createOptionForm([
+                            TextInput::make('name')
+                                ->required(),
+                        ])
+                        ->createOptionAction(function (FormAction $action) {
+                            $action->modalWidth('xl')
+                                ->failureNotificationTitle("There was a problem creating the file type")
+                                ->successNotificationTitle("File type created successfully");
+                        })
+                        ->createOptionUsing(function (array $data) {
+                            SubmissionFileType::create($data);
+                        })
+                        ->reactive(),
+
+                    SpatieMediaLibraryFileUpload::make('submission-files')
                         ->required()
                         ->disk('local')
                         ->previewable(false)
                         ->downloadable()
                         ->reorderable()
+                        ->disk('submission-files')
                         ->preserveFilenames()
-                        ->collection('files')
-                        ->model($this->record)
+                        ->collection('submission-files')
                         ->visibility('private')
+                        ->model($this->record)
+                        ->customProperties(function (Get $get) {
+                            return [
+                                'type' => $get('type'),
+                            ];
+                        })
                         ->saveRelationshipsUsing(static function (SpatieMediaLibraryFileUpload $component) {
                             $component->saveUploadedFiles();
-                        }),
+                        })
                 ])
-                ->action(fn () => null),
+                ->successNotificationTitle('Files added successfully')
+                ->failureNotificationTitle('There was a problem adding the files')
+                ->action(function (array $data, Action $action) {
+                    try {
+                        $this->record->getMediaCollection('submission-files');
+                        $action->sendSuccessNotification();
+                    } catch (\Exception $e) {
+                        $action->sendFailureNotification();
+                    }
+                }),
         ];
     }
 
@@ -82,11 +121,11 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
             Split::make([
                 Tables\Columns\TextColumn::make('file_name')
                     ->size('sm')
-                    ->url(fn (Media $record) => $record->getTemporaryUrl(now()->addMinutes(5))),
-                // Tables\Columns\TextColumn::make('created_at')
-                //     ->date()
-                //     // ->getStateUsing(fn ($record) => dd($record->created_at->toString()))
-                //     ->size('sm'),
+                    ->description(function (Media $record) {
+                        return $record->getCustomProperty('type');
+                    })
+                    ->action(fn (Media $record) => $record),
+                Tables\Columns\TextColumn::make('id')
             ]),
         ];
     }
@@ -94,9 +133,9 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
     protected function getTableActions(): array
     {
         return [
-            // Action::make('download')
-            //     ->icon('heroicon-o-download')
-            //     ->action(fn (Media $record) => $record),
+            Action::make('download')
+                ->icon('iconpark-download')
+                ->action(fn (Media $record) => $record),
             EditAction::make()
                 ->modalWidth('2xl')
                 ->modalHeading('Edit file')

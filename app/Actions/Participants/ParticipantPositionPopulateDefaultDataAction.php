@@ -17,6 +17,17 @@ class ParticipantPositionPopulateDefaultDataAction
             DB::beginTransaction();
 
             foreach ([
+                'Author',
+                'Co Author'
+            ] as $authorPosition) {
+                ParticipantPosition::firstOrCreate([
+                    'name' => $authorPosition,
+                    'type' => 'author',
+                    'conference_id' => $conference->getKey(),
+                ]);
+            }
+
+            foreach ([
                 'Keynote Speaker',
                 'Plenary Speaker',
             ] as $speakerPosition) {

@@ -45,8 +45,6 @@ class CreateSubmission extends Page implements HasForms
         return [
             TextInput::make('meta.title')
                 ->required(),
-            // CheckboxList::make('topics')
-            //     ->required(),
             Section::make('Privacy Consent')
                 ->schema([
                     Checkbox::make('privacy_consent')
@@ -63,11 +61,6 @@ class CreateSubmission extends Page implements HasForms
 
         $submission = SubmissionCreateAction::run($data);
 
-        return redirect()->to(SubmissionResource::getUrl('view', [$submission]));
+        return redirect()->to(SubmissionResource::getUrl('view', [$submission->id]));
     }
-
-    // protected function getBreadcrumbs(): array
-    // {
-    //     return [];
-    // }
 }

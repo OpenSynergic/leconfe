@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Actions\Participants\ParticipantPositionPopulateDefaultDataAction;
+use App\Actions\SubmissionFiles\FilesTypePopulateAction;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ConferenceType;
 use App\Models\Meta\ConferenceMeta;
@@ -66,6 +67,7 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
 
         static::created(function (Conference $model) {
             ParticipantPositionPopulateDefaultDataAction::run($model);
+            FilesTypePopulateAction::run($model);
         });
     }
 
@@ -146,7 +148,7 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
 
     public static function current(): ?self
     {
-        if (! isset(static::$current)) {
+        if (!isset(static::$current)) {
             static::$current = static::where('status', ConferenceStatus::Current)->first();
         }
 

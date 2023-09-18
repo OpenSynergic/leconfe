@@ -20,13 +20,16 @@ class DetailStep extends Component implements HasForms, HasWizardStep
 
     public Submission $record;
 
+    public array $meta;
+
+    public string $nextStep = 'upload-files';
+
     protected $listeners = ['refreshLivewire' => '$refresh'];
 
     public function mount($record)
     {
         $this->form->fill([
-            'meta' => $record->getAllMeta(),
-            'submission_progress' => 'upload-files',
+            'meta' => $record->getAllMeta()->toArray(),
         ]);
     }
 
@@ -53,16 +56,17 @@ class DetailStep extends Component implements HasForms, HasWizardStep
                     ->description('Please provide the following details to help us manage your submission in our system.')
                     ->aside()
                     ->schema([
-                        Hidden::make('submission_progress'),
+                        Hidden::make('nextStep'),
                         TextInput::make('meta.title')
                             ->required(),
-                        SpatieTagsInput::make('keywords')
+                        SpatieTagsInput::make('meta.keywords')
+                            ->splitKeys([',', ' '])
                             ->placeholder('')
                             ->model($this->record)
                             ->type('submissionKeywords'),
-                        // TinyEditor::make('meta.abstract')
-                        //     ->required()
-                        //     ->profile('basic'),
+                        TinyEditor::make('meta.abstract')
+                            ->minHeight(300)
+                            ->profile('basic'),
                     ]),
             ]),
         ];
@@ -74,6 +78,6 @@ class DetailStep extends Component implements HasForms, HasWizardStep
 
         $this->record = SubmissionUpdateAction::run($data, $this->record);
 
-        $this->dispatchBrowserEvent('next-wizard-step');
+        $this->dispatch('next-wizard-step');
     }
 }

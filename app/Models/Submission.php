@@ -54,11 +54,6 @@ class Submission extends Model implements HasMedia
         });
     }
 
-    public function authors()
-    {
-        return $this->hasMany(Author::class);
-    }
-
     public function conference()
     {
         return $this->belongsTo(Conference::class);
@@ -67,5 +62,10 @@ class Submission extends Model implements HasMedia
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function participants()
+    {
+        return $this->hasMany(SubmissionParticipant::class);
     }
 }
