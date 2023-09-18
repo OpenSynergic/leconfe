@@ -13,6 +13,8 @@ class AnnouncementResource extends Resource
 {
     protected static ?string $model = Announcement::class;
 
+    protected static ?string $modelLabel = 'Announcement';
+
     protected static ?string $navigationGroup = 'Conferences';
 
     protected static ?string $navigationIcon = 'heroicon-o-speaker-wave';
@@ -30,7 +32,9 @@ class AnnouncementResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageAnnouncements::route('/'),
+            'index' => Pages\ListAnnouncements::route('/'),
+            'create' => Pages\CreateAnnouncement::route('/create'),
+            'edit' => Pages\EditAnnouncement::route('/{record}/edit'),
         ];
     }
 }
