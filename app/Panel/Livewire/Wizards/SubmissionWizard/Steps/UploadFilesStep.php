@@ -25,7 +25,7 @@ class UploadFilesStep extends Component implements HasWizardStep
 
     public function nextStep()
     {
-        if ($this->record->getMedia('submission_files')->isEmpty()) {
+        if (!$this->record->files()->exists()) {
             return session()->flash('no_files', 'No files were added to the submission');
         }
 
