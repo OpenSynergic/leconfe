@@ -171,7 +171,7 @@ class PanelProvider extends FilamentPanelProvider
             // ->acceptedFileTypes(config('media-library.accepted_file_types'))
         });
         DatePicker::configureUsing(function (DatePicker $datePicker): void {
-            // $datePicker->format(setting('format.date'));
+            $datePicker->format(setting('format.date'));
         });
 
         TimePicker::configureUsing(function (TimePicker $timePicker): void {
