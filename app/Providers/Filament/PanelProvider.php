@@ -2,10 +2,13 @@
 
 namespace App\Providers\Filament;
 
+use App\Http\Middleware\PanelAuthenticate;
 use App\Http\Middleware\TenantConference;
 use App\Models\Conference;
 use App\Models\Navigation;
 use App\Panel\Resources\NavigationResource;
+use App\Panel\Resources\UserResource;
+use App\Website\Pages\Login;
 use Carbon\Carbon;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\DatePicker;
@@ -20,6 +23,7 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider as FilamentPanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Tables\Table;
 use Illuminate\Support\Facades\Blade;
 use Livewire\Livewire;
 use RyanChandler\FilamentNavigation\FilamentNavigation;
@@ -30,6 +34,7 @@ class PanelProvider extends FilamentPanelProvider
     {
         return $panel
             ->default()
+            ->sidebarCollapsibleOnDesktop()
             ->id('panel')
             ->path(config('app.filament.panel_path'))
             ->maxContentWidth('full')
@@ -69,6 +74,7 @@ class PanelProvider extends FilamentPanelProvider
             ->databaseNotificationsPolling('120s')
             ->middleware(static::getMiddleware(), true)
             ->authMiddleware(static::getAuthMiddleware(), true)
+            ->userMenuItems(static::getUserMenuItems())
             ->plugins(static::getPlugins());
     }
 
@@ -137,13 +143,14 @@ class PanelProvider extends FilamentPanelProvider
             'web',
             DisableBladeIconComponents::class,
             DispatchServingFilamentEvent::class,
+            'logout.banned',
         ];
     }
 
     public static function getAuthMiddleware(): array
     {
         return [
-            Authenticate::class,
+            PanelAuthenticate::class,
         ];
     }
 
@@ -176,6 +183,12 @@ class PanelProvider extends FilamentPanelProvider
                 ->dateFormat(setting('format.date'))
                 ->dehydrateStateUsing(fn ($state) => $state ? Carbon::createFromFormat(setting('format.date'), $state) : null);
         });
+
+        Table::configureUsing(function (Table $table): void {
+            $table
+                ->defaultPaginationPageOption(5)
+                ->paginationPageOptions([5, 10, 25, 50]);
+        });
     }
 
     public static function getPlugins()
@@ -184,6 +197,14 @@ class PanelProvider extends FilamentPanelProvider
             FilamentNavigation::make()
                 ->usingModel(Navigation::class)
                 ->usingResource(NavigationResource::class),
+        ];
+    }
+
+    public static function getUserMenuItems()
+    {
+        return [
+            'profile' => MenuItem::make()
+                ->url(fn (): string => UserResource::getUrl('profile')),
         ];
     }
 }

@@ -6,7 +6,7 @@
                 <label class="label-text">
                     Email <span class="text-red-500">*</span>
                 </label>
-                <input type="email" name="email" class="input input-bordered input-sm" wire:model="email" />
+                <input type="email" name="email" class="input input-sm" wire:model="email" />
                 @error('email')
                     <div class="text-red-600 text-sm">
                         {{ $message }}
@@ -17,7 +17,7 @@
                 <label class="label-text">
                     Password <span class="text-red-500">*</span>
                 </label>
-                <input type="password" name="password" class="input input-bordered input-sm" wire:model="password" required />
+                <input type="password" name="password" class="input input-sm" wire:model="password" required />
                 @error('password')
                     <div class="text-red-600 text-sm">
                         {{ $message }}

@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Enums\UserRole;
 use App\Models\User;
 
 class UserPolicy
@@ -41,6 +42,11 @@ class UserPolicy
      */
     public function update(User $user, User $model)
     {
+        // User can delete themselves
+        if ($user->is($model)) {
+            return true;
+        }
+
         if ($user->can('User:update')) {
             return true;
         }
@@ -51,8 +57,8 @@ class UserPolicy
      */
     public function delete(User $user, User $model)
     {
-        // User can delete itselfs
-        if ($user->getKey() === $model->getKey()) {
+        // User can delete themselves
+        if ($user->is($model)) {
             return true;
         }
 
@@ -83,7 +89,11 @@ class UserPolicy
 
     public function loginAs(User $user, User $model)
     {
-        if ($user->getKey() === $model->getKey()) {
+        if (!$model->canBeImpersonated()) {
+            return false;
+        }
+
+        if ($user->is($model)) {
             return false;
         }
 
@@ -95,6 +105,60 @@ class UserPolicy
     public function assignRoles(User $user)
     {
         if ($user->can('User:assignRoles')) {
+            return true;
+        }
+    }
+
+    public function disable(User $user, User $model)
+    {
+        if ($model->isBanned()) {
+            return false;
+        }
+
+
+        if ($user->is($model)) {
+            return false;
+        }
+
+        // Explicitly dont allow disabling admin users
+        if ($model->hasAnyRole([UserRole::Admin->value])) {
+            return false;
+        }
+
+        if ($user->can('User:disable')) {
+            return true;
+        }
+    }
+
+    public function enable(User $user, User $model)
+    {
+        if (!$model->isBanned()) {
+            return false;
+        }
+
+        if ($user->is($model)) {
+            return false;
+        }
+
+        if ($user->can('User:enable')) {
+            return true;
+        }
+    }
+
+    public function viewProfile(User $user, User $model)
+    {
+        if ($user->is($model)) {
+            return true;
+        }
+
+        if ($user->can('User:viewProfile')) {
+            return true;
+        }
+    }
+
+    public function sendEmail(User $user, User $model)
+    {
+        if ($user->can('User:sendEmail')) {
             return true;
         }
     }
