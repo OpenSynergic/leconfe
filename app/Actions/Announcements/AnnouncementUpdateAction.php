@@ -19,9 +19,6 @@ class AnnouncementUpdateAction
 
             $announcement->update($data);
             
-            unset($data['title']);
-            unset($data['send_email']);
-
             $announcement->syncMeta(Arr::only($data, ['user_content', 'expires_at']));
 
             // if ($sendEmail) {
