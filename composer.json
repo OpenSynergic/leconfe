@@ -12,6 +12,7 @@
         "akaunting/laravel-setting": "^1.2",
         "awcodes/filament-tiptap-editor": "^3.0@beta",
         "binarytorch/larecipe": "^2.6",
+        "codeat3/blade-academicons": "^1.6",
         "codeat3/blade-iconpark": "^1.5",
         "coolsam/flatpickr": "^3.0",
         "filament/filament": "3.0.41",

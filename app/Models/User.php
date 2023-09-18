@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Kra8\Snowflake\HasShortflakePrimary;
 use Laravel\Sanctum\HasApiTokens;
 use Plank\Metable\Metable;
@@ -76,10 +77,10 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
         return UserMeta::class;
     }
 
-    protected function name(): Attribute
+    protected function fullName(): Attribute
     {
         return Attribute::make(
-            get: fn () => trim("{$this->family_name} {$this->given_name}"),
+            get: fn () => Str::squish($this->given_name.' '.$this->family_name),
         );
     }
 
@@ -193,5 +194,13 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
         $this->addMediaConversion('avatar')
             ->keepOriginalImageFormat()
             ->width(50);
+
+        $this->addMediaConversion('thumb')
+            ->keepOriginalImageFormat()
+            ->width(400);
+
+        $this->addMediaConversion('thumb-xl')
+            ->keepOriginalImageFormat()
+            ->width(800);
     }
 }
