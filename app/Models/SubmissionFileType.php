@@ -10,24 +10,11 @@ class SubmissionFileType extends Model
     use HasFactory;
 
     protected $fillable = [
-        'conference_id',
         'name',
     ];
-
-    public static function booted()
-    {
-        static::saving(function (Model $record) {
-            $record->conference_id = $record->conference_id ?? Conference::current()->getKey();
-        });
-    }
 
     public static function nameById(int $id): string
     {
         return static::find($id)->name;
-    }
-
-    public function conference()
-    {
-        return $this->belongsTo(Conference::class);
     }
 }

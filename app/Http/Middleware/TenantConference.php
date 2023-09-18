@@ -33,7 +33,6 @@ class TenantConference
             Navigation::class,
             Block::class,
             ParticipantPosition::class,
-            SubmissionFileType::class,
         ] as $model) {
             $model::addGlobalScope(new ConferenceScope);
         }

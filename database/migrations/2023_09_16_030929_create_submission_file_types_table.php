@@ -13,9 +13,6 @@ return new class extends Migration
     {
         Schema::create('submission_file_types', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Conference::class)
-                ->constrained()
-                ->onDelete('cascade');
             $table->string('name');
             $table->timestamps();
         });
