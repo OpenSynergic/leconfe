@@ -23,7 +23,7 @@ class ManagePermissions extends ManageRecords
                     ->requiresConfirmation()
                     ->modalDescription('This will persist all permissions to storage.')
                     ->label('Persist Permissions')
-                    ->action(function(){
+                    ->action(function () {
                         PermissionPersistAction::run();
                         RolePersistAssignedPermissions::run();
                     }),

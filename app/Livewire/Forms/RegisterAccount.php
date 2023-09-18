@@ -12,7 +12,7 @@ class RegisterAccount extends Form
 
     #[Rule('required')]
     public $family_name = null;
-    
+
     public $affiliation = null;
 
     public $country = null;
@@ -26,7 +26,7 @@ class RegisterAccount extends Form
     #[Rule('required')]
     public $password_confirmation = null;
 
-    public function save() 
+    public function save()
     {
         dd($this->validate());
 

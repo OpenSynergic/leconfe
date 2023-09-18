@@ -22,22 +22,22 @@ enum UserRole: string implements HasLabel
         return $this->name;
     }
 
-    public static function selfAssignedRoles() : array
+    public static function selfAssignedRoles(): array
     {
-        return  [
+        return [
             UserRole::Reviewer,
             UserRole::Author,
             UserRole::Participant,
         ];
     }
-   
-    public static function selfAssignedRoleNames() : array
+
+    public static function selfAssignedRoleNames(): array
     {
-        return  array_column(static::selfAssignedRoles(), 'name');
+        return array_column(self::selfAssignedRoles(), 'name');
     }
 
-    public static function selfAssignedRoleValues() : array
+    public static function selfAssignedRoleValues(): array
     {
-        return  array_column(static::selfAssignedRoles(), 'value');
+        return array_column(self::selfAssignedRoles(), 'value');
     }
 }

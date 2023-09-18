@@ -89,7 +89,7 @@ class UserPolicy
 
     public function loginAs(User $user, User $model)
     {
-        if (!$model->canBeImpersonated()) {
+        if (! $model->canBeImpersonated()) {
             return false;
         }
 
@@ -115,7 +115,6 @@ class UserPolicy
             return false;
         }
 
-
         if ($user->is($model)) {
             return false;
         }
@@ -132,7 +131,7 @@ class UserPolicy
 
     public function enable(User $user, User $model)
     {
-        if (!$model->isBanned()) {
+        if (! $model->isBanned()) {
             return false;
         }
 

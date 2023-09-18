@@ -4,19 +4,15 @@ namespace App\Panel\Resources\UserResource\Pages;
 
 use App\Actions\User\UserUpdateAction;
 use App\Infolists\Components\BladeEntry;
-use App\Models\User;
 use App\Panel\Resources\UserResource;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Infolist;
-use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
-use Filament\Resources\Pages\ViewRecord;
 use Filament\Resources\Pages\Page;
 
 class ProfileUser extends Page
@@ -26,6 +22,7 @@ class ProfileUser extends Page
     protected static string $resource = UserResource::class;
 
     public array $informationFormData = [];
+
     public array $notificationFormData = [];
 
     /**
@@ -68,7 +65,7 @@ class ProfileUser extends Page
                             ]),
                     ])
                     ->contained(false)
-                    ->persistTabInQueryString()
+                    ->persistTabInQueryString(),
             ]);
     }
 
@@ -93,7 +90,6 @@ class ProfileUser extends Page
 
                         Checkbox::make('meta.notifications.new_announcement.push_notification')
                             ->label('Enable Push Notification'),
-
 
                     ])
                     ->aside(),

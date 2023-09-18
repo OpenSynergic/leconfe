@@ -39,7 +39,6 @@ class UserFactory extends Factory
         ]);
     }
 
-
     /**
      * Configure the model factory.
      */
@@ -49,7 +48,7 @@ class UserFactory extends Factory
             $user->setManyMeta([
                 'affiliation' => fake()->company(),
                 'country' => 'id',
-                'phone' => fake()->e164PhoneNumber(),                
+                'phone' => fake()->e164PhoneNumber(),
             ]);
         });
     }

@@ -144,7 +144,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
         if ($this->isBanned()) {
             return false;
         }
-        
+
         if ($this->hasAnyRole([UserRole::Admin->value])) {
             return false;
         }

@@ -3,8 +3,6 @@
 namespace App\Website\Pages;
 
 use App\Actions\User\UserCreateAction;
-use App\Livewire\Forms\RegisterAccount;
-use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Filament\Facades\Filament;
 use Filament\Http\Responses\Auth\Contracts\RegistrationResponse;
@@ -25,10 +23,10 @@ class Register extends Page
 
     #[Rule('nullable')]
     public $family_name = null;
-    
+
     #[Rule('nullable')]
     public $affiliation = null;
-    
+
     #[Rule('nullable')]
     public $country = null;
 
@@ -43,7 +41,6 @@ class Register extends Page
 
     #[Rule('required')]
     public $privacy_statement_agree = false;
-
 
     public function mount()
     {
@@ -60,7 +57,7 @@ class Register extends Page
     protected function getViewData(): array
     {
         return [
-            'countries' => Country::all()
+            'countries' => Country::all(),
         ];
     }
 
@@ -68,12 +65,11 @@ class Register extends Page
     {
         $data = $this->validate();
 
-
         $user = UserCreateAction::run([
             ...Arr::only($data, ['given_name', 'family_name', 'email', 'password']),
             'meta' => Arr::only($data, ['affiliation', 'country']),
         ]);
-        
+
         event(new Registered($user));
 
         Filament::auth()->login($user);
