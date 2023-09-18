@@ -89,14 +89,13 @@ class UserPolicy
 
     public function loginAs(User $user, User $model)
     {
-        return true;
         if (!$model->canBeImpersonated()) {
             return false;
         }
 
-        // if ($user->is($model)) {
-        //     return false;
-        // }
+        if ($user->is($model)) {
+            return false;
+        }
 
         if ($user->can('User:loginAs')) {
             return true;
@@ -137,7 +136,7 @@ class UserPolicy
             return false;
         }
 
-        if ($user->getKey() === $model->getKey()) {
+        if ($user->is($model)) {
             return false;
         }
 
@@ -148,7 +147,7 @@ class UserPolicy
 
     public function viewProfile(User $user, User $model)
     {
-        if ($user->getKey() === $model->getKey()) {
+        if ($user->is($model)) {
             return true;
         }
 
