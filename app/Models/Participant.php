@@ -47,7 +47,7 @@ class Participant extends Model implements HasMedia, Sortable
     protected function fullName(): Attribute
     {
         return Attribute::make(
-            get: fn () => Str::squish($this->given_name.' '.$this->family_name),
+            get: fn () => Str::squish($this->given_name . ' ' . $this->family_name),
         );
     }
 
@@ -80,5 +80,10 @@ class Participant extends Model implements HasMedia, Sortable
     {
         return $this
             ->morphedByMany(ParticipantPosition::class, 'model', 'model_has_participants', 'participant_id', 'model_id');
+    }
+
+    public static function byEmail(string $email)
+    {
+        return static::whereEmail($email)->first();
     }
 }

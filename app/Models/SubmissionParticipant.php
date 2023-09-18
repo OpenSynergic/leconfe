@@ -19,6 +19,16 @@ class SubmissionParticipant extends Model
 
     public $timestamps = false;
 
+    public function participant()
+    {
+        return $this->belongsTo(Participant::class);
+    }
+
+    public function position()
+    {
+        return $this->belongsTo(ParticipantPosition::class, 'participant_position_id');
+    }
+
     public function submission()
     {
         return $this->belongsTo(Submission::class);

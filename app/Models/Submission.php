@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Actions\Participants\ParticipantCreateAction;
+use App\Actions\Submissions\SubmissionAddParticipantAction;
 use App\Models\Concerns\HasTopics;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Meta\SubmissionMeta;
@@ -51,6 +53,18 @@ class Submission extends Model implements HasMedia
         static::creating(function (Submission $submission) {
             $submission->user_id ??= Auth::id();
             $submission->conference_id ??= Filament::getTenant()?->getKey();
+        });
+
+        static::created(function (Submission $submission) {
+            if ($user = Auth::user()) {
+                $participant = Participant::byEmail($user->email);
+                $participant = $participant ?: ParticipantCreateAction::run(
+                    $user->only('email', 'given_name', 'family_name', 'public_name', 'country'),
+                );
+                $positionAuthor = ParticipantPosition::where('type', 'author')->first();
+                $participant->positions()->attach($positionAuthor);
+                SubmissionAddParticipantAction::run($submission, $participant, $positionAuthor);
+            }
         });
     }
 

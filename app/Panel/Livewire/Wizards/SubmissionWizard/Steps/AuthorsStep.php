@@ -3,7 +3,8 @@
 namespace App\Panel\Livewire\Wizards\SubmissionWizard\Steps;
 
 use App\Actions\Participants\ParticipantCreateAction;
-use App\Actions\Submissions\SubmissionAddParticipant;
+use App\Actions\Participants\ParticipantUpdateAction;
+use App\Actions\Submissions\SubmissionAddParticipantAction;
 use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Models\Participant;
 use App\Models\ParticipantPosition;
@@ -17,8 +18,11 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -60,11 +64,12 @@ class AuthorsStep extends Component implements HasForms, HasTable, HasWizardStep
                         ->label('Create new')
                         ->modalWidth('2xl')
                         ->modalHeading("Add Author")
+                        ->successNotificationTitle("Author added")
                         ->form($this->getAuthorFormSchema())
                         ->using(function (array $data) {
                             $participant = ParticipantCreateAction::run($data);
                             $positionAuthor = ParticipantPosition::find($data['type']);
-                            SubmissionAddParticipant::run($this->record, $participant, $positionAuthor);
+                            SubmissionAddParticipantAction::run($this->record, $participant, $positionAuthor);
                             return $participant;
                         }),
                     Action::make('add_existing')
@@ -106,33 +111,87 @@ class AuthorsStep extends Component implements HasForms, HasTable, HasWizardStep
             ])
             ->columns([
                 Split::make([
+                    SpatieMediaLibraryImageColumn::make('profile')
+                        ->grow(false)
+                        ->collection('profile')
+                        ->conversion('avatar')
+                        ->width(50)
+                        ->height(50)
+                        ->defaultImageUrl(function (Participant $record): string {
+                            $name = str($record->fullName)
+                                ->trim()
+                                ->explode(' ')
+                                ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
+                                ->join(' ');
+                            return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=111827&font-size=0.33';
+                        })
+                        ->extraCellAttributes([
+                            'style' => 'width: 1px',
+                        ])
+                        ->circular()
+                        ->toggleable(),
+                    TextColumn::make('fullName')
+                        ->description(function (Participant $record): ?string {
+                            $description = $this->record->participants()
+                                ->where('participant_id', $record->id)
+                                ->first()
+                                ?->position
+                                ?->name;
+
+                            if (auth()->user()->email == $record->email) {
+                                return $description . ' (you)';
+                            }
+
+                            return $description;
+                        })
+                        ->size('sm')
+                        ->wrap()
+                        // ->searchable(query: function (Builder $query, string $search): Builder {
+                        //     return $query
+                        //         ->whereMeta('public_name', 'like', "%{$search}%")
+                        //         ->orWhere(fn (Builder $query) => $query->whereMeta('family_name', 'like', "%{$search}%"))
+                        //         ->orWhere(fn (Builder $query) => $query->whereMeta('given_name', 'like', "%{$search}%"));
+                        // })
+                        ->weight('bold'),
                     Stack::make([
-                        TextColumn::make('fullName')
-                            ->size('sm')
-                            ->wrap()
-                            // ->searchable(query: function (Builder $query, string $search): Builder {
-                            //     return $query
-                            //         ->whereMeta('public_name', 'like', "%{$search}%")
-                            //         ->orWhere(fn (Builder $query) => $query->whereMeta('family_name', 'like', "%{$search}%"))
-                            //         ->orWhere(fn (Builder $query) => $query->whereMeta('given_name', 'like', "%{$search}%"));
-                            // })
-                            ->weight('bold'),
                         TextColumn::make('affiliation')
                             ->getStateUsing(fn ($record) => $record->getMeta('affiliation'))
+                            ->icon("heroicon-o-building-library")
                             ->extraAttributes([
                                 'class' => 'text-xs',
                             ])
                             ->color('gray'),
-                    ]),
-                    TextColumn::make('email')
-                        ->extraAttributes([
-                            'class' => 'text-xs',
-                        ])
-                        ->color('gray')
-                        ->icon('heroicon-o-envelope')
-                        ->alignStart(),
-                ])->from('lg'),
-            ]);
+                        TextColumn::make('email')
+                            ->extraAttributes([
+                                'class' => 'text-xs',
+                            ])
+                            ->color('gray')
+                            ->icon('heroicon-o-envelope')
+                            ->alignStart(),
+                    ])
+                        ->space(2),
+                ])
+            ])
+            ->actions([
+                ActionGroup::make([
+                    EditAction::make()
+                        ->modalWidth('2xl')
+                        ->mutateRecordDataUsing(function ($data, Participant $record) {
+                            $data['meta'] = $record->getAllMeta()->toArray();
+
+                            return $data;
+                        })
+                        ->form($this->getAuthorFormSchema())
+                        ->using(function (array $data) {
+                            // Need to check if the posiiton has changed too
+                            // if so then we need tu reassign the author
+                            return ParticipantUpdateAction::run($data);
+                        }),
+                    DeleteAction::make()
+                        ->hidden(fn (Participant $record): bool => $record->email == auth()->user()->email)
+                ])
+            ])
+            ->reorderable('order_column');
     }
 
     public function nextStep()
@@ -194,25 +253,10 @@ class AuthorsStep extends Component implements HasForms, HasTable, HasWizardStep
                         ->columnSpanFull()
                         ->searchable(),
                     ...ParticipantResource::additionalFormField(),
-                ])->columnSpan([
+                ])
+                ->columnSpan([
                     'lg' => 2,
                 ]),
-        ];
-    }
-
-    protected function getTableActions(): array
-    {
-        return [
-            // EditAction::make()
-            //     ->modalWidth('2xl')
-            //     ->mutateRecordDataUsing(function ($data, Author $record) {
-            //         $data['meta'] = $record->getAllMeta()->toArray();
-
-            //         return $data;
-            //     })
-            //     ->form($this->getAuthorFormSchema())
-            //     ->using(fn (array $data, Author $record) => AuthorUpdateAction::run($data, $record)),
-            // DeleteAction::make(),
         ];
     }
 

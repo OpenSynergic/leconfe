@@ -67,7 +67,6 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
 
         static::created(function (Conference $model) {
             ParticipantPositionPopulateDefaultDataAction::run($model);
-            FilesTypePopulateAction::run($model);
         });
     }
 
