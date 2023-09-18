@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Actions\Participants\ParticipantPositionPopulateDefaultDataAction;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ConferenceType;
+use App\Models\Enums\ContentType;
 use App\Models\Meta\ConferenceMeta;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasName;
@@ -97,6 +98,11 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
     public function announcements(): HasMany
     {
         return $this->hasMany(Announcement::class);
+    }
+
+    public function staticPages(): HasMany
+    {
+        return $this->hasMany(StaticPage::class);
     }
 
     public function navigations(): HasMany

@@ -8,6 +8,7 @@ use App\Facades\Block as FacadesBlock;
 use App\Forms\Components\BlockList;
 use App\Forms\Components\VerticalTabs;
 use App\Infolists\Components\BladeEntry;
+use App\Infolists\Components\LivewireEntry;
 use App\Livewire\Block as BlockComponent;
 use App\Models\Enums\SidebarPosition;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;

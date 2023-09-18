@@ -1,13 +1,15 @@
 <?php
 
-namespace App\Actions\Announcements;
+namespace App\Actions\StaticPages;
 
 use App\Models\Announcement;
+use App\Models\Enums\ContentType;
+use App\Models\StaticPage;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class AnnouncementCreateAction
+class StaticPageCreateAction
 {
     use AsAction;
 
@@ -17,10 +19,10 @@ class AnnouncementCreateAction
             DB::beginTransaction();
 
             $data['created_by'] = auth()->user()->id;
+
+            $staticPage = StaticPage::create($data);
             
-            $announcement = Announcement::create($data);
-            
-            $announcement->setManyMeta(Arr::only($data, ['user_content', 'expires_at']));
+            $staticPage->setManyMeta(Arr::only($data, ['user_content']));
 
             // if ($sendEmail) {
             //     // TODO Create a job to send email
@@ -34,6 +36,6 @@ class AnnouncementCreateAction
             throw $th;
         }
 
-        return $announcement;
+        return $staticPage;
     }
 }

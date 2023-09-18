@@ -1,26 +1,25 @@
 <?php
 
-namespace App\Actions\Announcements;
+namespace App\Actions\StaticPages;
 
-use App\Models\Announcement;
+use App\Models\StaticPage;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class AnnouncementCreateAction
+class StaticPageUpdateAction
 {
     use AsAction;
 
-    public function handle($data, $sendEmail = false)
+    public function handle(array $data, StaticPage $staticPage): Model
     {
         try {
             DB::beginTransaction();
 
-            $data['created_by'] = auth()->user()->id;
+            $staticPage->update($data);
             
-            $announcement = Announcement::create($data);
-            
-            $announcement->setManyMeta(Arr::only($data, ['user_content', 'expires_at']));
+            $staticPage->syncMeta(Arr::only($data, ['user_content']));
 
             // if ($sendEmail) {
             //     // TODO Create a job to send email
@@ -34,6 +33,6 @@ class AnnouncementCreateAction
             throw $th;
         }
 
-        return $announcement;
+        return $staticPage;
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Panel\Resources\Conferences;
 
 use App\Models\Announcement;
+use App\Models\Enums\ContentType;
 use App\Panel\Resources\Conferences\AnnouncementResource\Pages;
 use App\Schemas\AnnouncementSchema;
 use Filament\Forms\Form;
@@ -12,6 +13,8 @@ use Filament\Tables\Table;
 class AnnouncementResource extends Resource
 {
     protected static ?string $model = Announcement::class;
+
+    protected static ?string $modelLabel = 'Announcement';
 
     protected static ?string $navigationGroup = 'Conferences';
 
@@ -30,7 +33,9 @@ class AnnouncementResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageAnnouncements::route('/'),
+            'index' => Pages\ListAnnouncements::route('/'),
+            'create' => Pages\CreateAnnouncement::route('/create'),
+            'edit' => Pages\EditAnnouncement::route('/{record}/edit'),
         ];
     }
 }
