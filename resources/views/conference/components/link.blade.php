@@ -7,7 +7,7 @@
     {{ $attributes }}
     href="{{ $href }}"
     @if($spa)
-        wire:navigate
+        wire:navigate.hover
     @endif
 > 
     {{ $slot }}  

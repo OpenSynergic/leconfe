@@ -28,6 +28,7 @@ class ParticipantResource extends Resource
     {
         return [
             Forms\Components\SpatieMediaLibraryFileUpload::make('profile')
+                ->label('Profile Picture')
                 ->image()
                 ->key('profile')
                 ->collection('profile')
@@ -60,7 +61,7 @@ class ParticipantResource extends Resource
             Forms\Components\Select::make('meta.country')
                 ->placeholder('Select a country')
                 ->searchable()
-                ->options(fn () => Country::all()->mapWithKeys(fn ($country) => [$country->name => $country->flag.' '.$country->name]))
+                ->options(fn () => Country::all()->mapWithKeys(fn ($country) => [$country->id => $country->flag.' '.$country->name]))
                 ->optionsLimit(250),
             Forms\Components\TextInput::make('meta.phone')
                 ->prefixIcon('heroicon-s-phone')

@@ -16,10 +16,15 @@
     @if($leftSidebarActive || $bothSidebarActive)
         <x-conference::layouts.leftbar />
     @endif
-    <div class="page-content {{ $sidebarActive ? '!col-span-9' : ($bothSidebarActive ? '' : '!col-span-12') }}">
+    <div @class([
+            'page-content col-span-12',
+            '!col-span-9' => $sidebarActive,
+            '!col-span-12' => !$bothSidebarActive,
+        ])>
         {{ $slot }}
     </div>
     @if($rightSidebarActive || $bothSidebarActive)
         <x-conference::layouts.rightbar />
     @endif
 </div>
+
