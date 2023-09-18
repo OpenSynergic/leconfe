@@ -66,17 +66,6 @@ class Register extends Page
 
     public function register()
     {
-        try {
-            $this->rateLimit(5);
-        } catch (TooManyRequestsException $exception) {
-            $this->addError('email', __('auth.throttle', [
-                'seconds' => $exception->secondsUntilAvailable,
-                'minutes' => ceil($exception->secondsUntilAvailable / 60),
-            ]));
-
-            return null;
-        }
-
         $data = $this->validate();
 
 

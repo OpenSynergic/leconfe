@@ -90,7 +90,7 @@
                 <div class="form-control sm:col-span-6 gap-2">
                     <div class="form-control">
                         <label class="label justify-normal gap-2">
-                        <input type="checkbox" class="checkbox checkbox-primary checkbox-sm" wire:model="privacy_statement_agree" required/>
+                            <input type="checkbox" class="checkbox checkbox-primary checkbox-sm" wire:model="privacy_statement_agree" required/>
                             <p class="label-text">
                                 I accept and approve according to <x-conference::link href="#" class="link link-primary link-hover">Privacy Statement.</x-conference::link>
                             </p>
