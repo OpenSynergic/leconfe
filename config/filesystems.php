@@ -37,10 +37,16 @@ return [
             'visibility' => 'private',
         ],
 
+        'submission-files' => [
+            'driver' => 'local',
+            'root' => storage_path('app/submission_files'),
+            'visibility' => 'private',
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
             'throw' => false,
         ],
@@ -48,7 +54,7 @@ return [
         'media-library' => [
             'driver' => 'local',
             'root' => storage_path('app/public/media'),
-            'url' => env('APP_URL').'/storage/media',
+            'url' => env('APP_URL') . '/storage/media',
             'visibility' => 'public',
             'throw' => false,
         ],
