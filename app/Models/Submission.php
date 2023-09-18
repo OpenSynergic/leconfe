@@ -64,6 +64,11 @@ class Submission extends Model implements HasMedia
         return $this->belongsTo(User::class);
     }
 
+    public function files()
+    {
+        return $this->media()->where('collection_name', 'submission-files');
+    }
+
     public function participants()
     {
         return $this->hasMany(SubmissionParticipant::class);

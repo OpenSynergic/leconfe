@@ -95,11 +95,7 @@ class SubmissionResource extends Resource
     public static function table(Table $table): Table
     {
         $table = SubmissionSchema::table($table);
-
         return $table
-            ->columns([
-                TextColumn::make('user.name'),
-            ])
             ->actions([
                 Tables\Actions\Action::make('view')
                     ->url(fn (Submission $record) => static::getUrl('view', [

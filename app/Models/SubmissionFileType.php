@@ -21,6 +21,11 @@ class SubmissionFileType extends Model
         });
     }
 
+    public static function nameById(int $id): string
+    {
+        return static::find($id)->name;
+    }
+
     public function conference()
     {
         return $this->belongsTo(Conference::class);

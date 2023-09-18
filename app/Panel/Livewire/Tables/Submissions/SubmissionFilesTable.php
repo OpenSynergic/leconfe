@@ -5,18 +5,16 @@ namespace App\Panel\Livewire\Tables\Submissions;
 use App\Models\Media;
 use App\Models\Submission;
 use App\Models\SubmissionFileType;
-use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Forms\Get;
-use Filament\Forms\Set;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\Layout\Split;
@@ -39,7 +37,7 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
 
     protected function getTableQuery(): Builder
     {
-        return $this->record->media()->where('collection_name', 'submission-files')->getQuery();
+        return $this->record->files()->getQuery();
     }
 
     protected function getTableHeading(): string
@@ -53,10 +51,10 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
             Action::make('download_all')
                 ->label('Download All Files')
                 ->button()
-                ->hidden(fn () => $this->record->getMedia('files')->isEmpty())
+                ->hidden(fn () => !$this->record->files()->exists())
                 ->color('gray')
                 ->action(function () {
-                    $downloads = $this->record->getMedia('files');
+                    $downloads = $this->record->files()->get();
                     return MediaStream::create('files.zip')->addMedia($downloads);
                 }),
             Action::make('upload')
@@ -105,12 +103,7 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
                 ->successNotificationTitle('Files added successfully')
                 ->failureNotificationTitle('There was a problem adding the files')
                 ->action(function (array $data, Action $action) {
-                    try {
-                        $this->record->getMediaCollection('submission-files');
-                        $action->sendSuccessNotification();
-                    } catch (\Exception $e) {
-                        $action->sendFailureNotification();
-                    }
+                    $this->record->getMediaCollection('submission-files');
                 }),
         ];
     }
@@ -122,10 +115,10 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
                 Tables\Columns\TextColumn::make('file_name')
                     ->size('sm')
                     ->description(function (Media $record) {
-                        return $record->getCustomProperty('type');
+                        return SubmissionFileType::nameById($record->getCustomProperty('type'));
                     })
-                    ->action(fn (Media $record) => $record),
-                Tables\Columns\TextColumn::make('id')
+                    ->columnSpanFull()
+
             ]),
         ];
     }
@@ -133,16 +126,33 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
     protected function getTableActions(): array
     {
         return [
-            Action::make('download')
-                ->icon('iconpark-download')
-                ->action(fn (Media $record) => $record),
-            EditAction::make()
-                ->modalWidth('2xl')
-                ->modalHeading('Edit file')
-                ->form([
-                    TextInput::make('file_name'),
-                ]),
-            DeleteAction::make(),
+            ActionGroup::make([
+                Action::make('download')
+                    ->icon('iconpark-download')
+                    ->action(function (Media $record) {
+                        return $record;
+                    }),
+                EditAction::make()
+                    ->label("Rename")
+                    ->modalWidth('md')
+                    ->modalHeading('Edit file')
+                    ->modalHeading("Rename")
+                    ->modalSubmitActionLabel("Rename")
+                    ->form([
+                        TextInput::make('file_name')
+                            ->label("New Filename")
+                            ->formatStateUsing(function (Media $record) {
+                                return str($record->file_name)->beforeLast('.' . $record->extension);
+                            })
+                            ->dehydrateStateUsing(function (Media $record, $state) {
+                                return str($state)->append('.' . $record->extension);
+                            })
+                            ->suffix(function (Media $record) {
+                                return '.' . $record->extension;
+                            })
+                    ]),
+                DeleteAction::make(),
+            ])
         ];
     }
 }
