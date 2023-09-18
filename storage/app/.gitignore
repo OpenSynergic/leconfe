@@ -1,3 +1,5 @@
 *
 !public/
 !.gitignore
+!permissions.json
+!roleAssignedPermissions.json
