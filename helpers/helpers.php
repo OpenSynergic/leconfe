@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Arr;
 
-if (! function_exists('data_only')) {
+if (!function_exists('data_only')) {
     /**
      * Get a subset containing the provided keys with values from the target data.
      *
@@ -25,5 +25,19 @@ if (! function_exists('data_only')) {
         }
 
         return $results;
+    }
+}
+
+if (!function_exists('get_navigation_link_by_type')) {
+    function get_navigation_link(?string $type, string $default = '#') : string
+    {
+        return match ($type) {
+            'announcements' => route('livewirePageGroup.current-conference.pages.announcement-list'),
+            'current-conference' => route('livewirePageGroup.current-conference.pages.home'),
+            'register' => route('livewirePageGroup.website.pages.register'),
+            'login' => route('livewirePageGroup.website.pages.login'),
+            'home' => route('livewirePageGroup.website.pages.home'),
+            default=> $default,
+        };
     }
 }

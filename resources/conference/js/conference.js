@@ -1,4 +1,5 @@
 import "./alpine/components/navigation";
+import "./alpine/components/slide-over";
 import Masonry from "masonry-layout";
 
 

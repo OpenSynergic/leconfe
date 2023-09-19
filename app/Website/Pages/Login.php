@@ -28,7 +28,7 @@ class Login extends Page
     public function mount()
     {
         if (Filament::auth()->check()) {
-            redirect()->intended(Filament::getUrl());
+            $this->redirect(Filament::getUrl(), navigate: false);
         }
     }
 
@@ -40,7 +40,7 @@ class Login extends Page
         ];
     }
 
-    public function login(): ?LoginResponse
+    public function login()
     {
         try {
             $this->rateLimit(5);
@@ -66,6 +66,6 @@ class Login extends Page
 
         session()->regenerate();
 
-        return app(LoginResponse::class);
+        $this->redirect(Filament::getUrl(), navigate: false);
     }
 }
