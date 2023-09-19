@@ -374,18 +374,9 @@ class Conference extends Page implements HasForms, HasInfolists
                                             ]),
                                         Section::make('')
                                             ->schema([
-                                                // PhoneInput::make('meta.phone')
-                                                //     ->helperText(__('Phone will be displayed on the contact information page of the conference website'))
-                                                //     ->validateFor(
-                                                //         lenient: true,
-                                                //     )
-                                                //     ->displayNumberFormat(PhoneInputNumberType::E164),
-
                                                 TextInput::make('meta.phone')
-                                                    ->rules([
-                                                        Rule::phone()
-                                                    ])
-                                                    ->placeholder('+62 21 1234 5678')
+                                                    ->rules([Rule::phone()->international()])
+                                                    ->placeholder('+62 821 1234 5678')
                                                     ->helperText(__('Enter an international phone number along with the country code')),
                                                 TextInput::make('meta.bussines_hour')
                                                     ->label(__('Bussines Hour'))
@@ -397,16 +388,10 @@ class Conference extends Page implements HasForms, HasInfolists
                                             ]),
                                         Section::make('')
                                             ->schema([
-                                                // PhoneInput::make('meta.whatsapp')
-                                                //     ->helperText(__('Automaticly generate a clickable link to your whatsapp'))
-                                                //     ->validateFor()
-                                                //     ->displayNumberFormat(PhoneInputNumberType::E164),
                                                 TextInput::make('meta.whatsapp')
-                                                    ->rules([
-                                                        Rule::phone()
-                                                    ])
-                                                    ->placeholder('+62 21 1234 5678')
-                                                    ->helperText(__('Automaticly generate a clickable link to your whatsapp')),
+                                                    ->rules([Rule::phone()->international()])
+                                                    ->placeholder('+62 821 1234 5678')
+                                                    ->helperText(__('Automaticly generate a clickable link to your whatsapp (Require International Number)')),
                                                 TextInput::make('meta.label_chat')
                                                     ->label(__('Chat label'))
                                                     ->placeholder('Start new chat')

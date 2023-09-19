@@ -1,6 +1,6 @@
-<div class="page-main">
+<div class="mx-auto max-w-7xl ">
     <div class="flex md:justify-center items-center">
-        <section class="bg-white dark:bg-gray-900 flex justify-center items-center md:p-16 h-full">
+        <section class="bg-white dark:bg-gray-900 flex justify-center items-center md:p-16">
             <div class="container px-6 py-12 mx-auto">
                 <div>
                     <p class="font-medium text-blue-500 dark:text-blue-400">Contact us</p>
