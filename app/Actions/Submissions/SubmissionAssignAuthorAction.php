@@ -8,7 +8,7 @@ use App\Models\Submission;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class SubmissionAddParticipantAction
+class SubmissionAssignAuthorAction
 {
     use AsAction;
 
@@ -16,9 +16,8 @@ class SubmissionAddParticipantAction
     {
         try {
             DB::beginTransaction();
-            $submissionParticipant = $submission->participants()->firstOrCreate([
+            $submissionParticipant = $submission->participants()->updateOrCreate([
                 'participant_id' => $participant->id,
-                'participant_position_id' => $participantPosition->id,
             ], [
                 'participant_id' => $participant->id,
                 'participant_position_id' => $participantPosition->id,

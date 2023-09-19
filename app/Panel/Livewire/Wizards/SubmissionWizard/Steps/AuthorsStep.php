@@ -4,13 +4,15 @@ namespace App\Panel\Livewire\Wizards\SubmissionWizard\Steps;
 
 use App\Actions\Participants\ParticipantCreateAction;
 use App\Actions\Participants\ParticipantUpdateAction;
-use App\Actions\Submissions\SubmissionAddParticipantAction;
+use App\Actions\Submissions\SubmissionAssignAuthorAction;
 use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Models\Participant;
 use App\Models\ParticipantPosition;
 use App\Models\Submission;
 use App\Panel\Livewire\Wizards\SubmissionWizard\Contracts\HasWizardStep;
+use App\Panel\Resources\AuthorPositionResource;
 use App\Panel\Resources\Conferences\ParticipantResource;
+use App\Panel\Resources\Conferences\SpeakerPositionResource;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -38,11 +40,6 @@ class AuthorsStep extends Component implements HasForms, HasTable, HasWizardStep
 
     public Submission $record;
 
-    protected function getTableHeading(): string | Htmlable | null
-    {
-        return "Authors";
-    }
-
     public static function getWizardLabel(): string
     {
         return 'Authors';
@@ -67,9 +64,10 @@ class AuthorsStep extends Component implements HasForms, HasTable, HasWizardStep
                         ->successNotificationTitle("Author added")
                         ->form($this->getAuthorFormSchema())
                         ->using(function (array $data) {
-                            $participant = ParticipantCreateAction::run($data);
-                            $positionAuthor = ParticipantPosition::find($data['type']);
-                            SubmissionAddParticipantAction::run($this->record, $participant, $positionAuthor);
+                            $participant = Participant::byEmail($data['email']);
+                            $participant = $participant ?: ParticipantCreateAction::run($data);
+                            $positionAuthor = ParticipantPosition::find($data['position']);
+                            SubmissionAssignAuthorAction::run($this->record, $participant, $positionAuthor);
                             return $participant;
                         }),
                     Action::make('add_existing')
@@ -86,7 +84,7 @@ class AuthorsStep extends Component implements HasForms, HasTable, HasWizardStep
                                                 ->pluck('fullName', 'id')
                                                 ->toArray();
                                         })
-                                        ->noSearchResultsMessage('No authors found')
+                                        ->searchable()
                                         ->preload()
                                         ->required()
                                         ->columnSpanFull(),
@@ -97,13 +95,17 @@ class AuthorsStep extends Component implements HasForms, HasTable, HasWizardStep
                                             modifyQueryUsing: fn (Builder $query) => $query->whereIn('type', ['author', 'speaker'])
                                                 ->groupBy('name')
                                         )
+                                        ->searchable()
                                         ->preload()
                                         ->required()
                                         ->columnSpanFull(),
                                 ])
                         ])
                         ->action(function (array $data) {
-                            dd($data);
+                            $participant = Participant::find($data['participant_id']);
+                            $position = ParticipantPosition::find($data['type']);
+                            SubmissionAssignAuthorAction::run($this->record, $participant, $position);
+                            return $participant;
                         })
                 ])
                     ->button()
@@ -137,7 +139,6 @@ class AuthorsStep extends Component implements HasForms, HasTable, HasWizardStep
                                 ->first()
                                 ?->position
                                 ?->name;
-
                             if (auth()->user()->email == $record->email) {
                                 return $description . ' (you)';
                             }
@@ -146,12 +147,6 @@ class AuthorsStep extends Component implements HasForms, HasTable, HasWizardStep
                         })
                         ->size('sm')
                         ->wrap()
-                        // ->searchable(query: function (Builder $query, string $search): Builder {
-                        //     return $query
-                        //         ->whereMeta('public_name', 'like', "%{$search}%")
-                        //         ->orWhere(fn (Builder $query) => $query->whereMeta('family_name', 'like', "%{$search}%"))
-                        //         ->orWhere(fn (Builder $query) => $query->whereMeta('given_name', 'like', "%{$search}%"));
-                        // })
                         ->weight('bold'),
                     Stack::make([
                         TextColumn::make('affiliation')
@@ -168,6 +163,9 @@ class AuthorsStep extends Component implements HasForms, HasTable, HasWizardStep
                             ->color('gray')
                             ->icon('heroicon-o-envelope')
                             ->alignStart(),
+                        TextColumn::make('scopus'),
+                        TextColumn::make('orcid'),
+                        TextColumn::make('google_scholar'),
                     ])
                         ->space(2),
                 ])
@@ -176,19 +174,30 @@ class AuthorsStep extends Component implements HasForms, HasTable, HasWizardStep
                 ActionGroup::make([
                     EditAction::make()
                         ->modalWidth('2xl')
+                        ->hidden(
+                            fn (Participant $record): bool => $record->email == auth()->user()->email
+                        )
                         ->mutateRecordDataUsing(function ($data, Participant $record) {
                             $data['meta'] = $record->getAllMeta()->toArray();
+
+                            $data['position'] = $this->record->participants()
+                                ->where('participant_id', $record->id)
+                                ->first()
+                                ?->position
+                                ?->id;
 
                             return $data;
                         })
                         ->form($this->getAuthorFormSchema())
-                        ->using(function (array $data) {
-                            // Need to check if the posiiton has changed too
-                            // if so then we need tu reassign the author
-                            return ParticipantUpdateAction::run($data);
+                        ->using(function (array $data, Participant $record) {
+                            $participant = ParticipantUpdateAction::run($record, $data);
+                            SubmissionAssignAuthorAction::run($this->record, $participant, ParticipantPosition::find($data['position']));
+                            return $participant;
                         }),
                     DeleteAction::make()
-                        ->hidden(fn (Participant $record): bool => $record->email == auth()->user()->email)
+                        ->hidden(
+                            fn (Participant $record): bool => $record->email == auth()->user()->email
+                        )
                 ])
             ])
             ->reorderable('order_column');
@@ -211,15 +220,17 @@ class AuthorsStep extends Component implements HasForms, HasTable, HasWizardStep
 
     protected function getTableQuery(bool $submissionRelated = true): Builder
     {
-        return Participant::query()->with([
-            'positions' => fn ($query) => $query
-                ->where('type', 'author'),
-            'media',
-            'meta'
-        ])
+        return Participant::query()
+            ->orderBy('order_column')
+            ->with([
+                'positions' => fn ($query) => $query
+                    ->where('type', AuthorPositionResource::$positionType),
+                'media',
+                'meta'
+            ])
             ->whereHas(
                 'positions',
-                fn (Builder $query) => $query->where('type', 'author')
+                fn (Builder $query) => $query->where('type', AuthorPositionResource::$positionType)
             )
             ->when(
                 $submissionRelated,
@@ -237,11 +248,11 @@ class AuthorsStep extends Component implements HasForms, HasTable, HasWizardStep
             Grid::make()
                 ->schema([
                     ...ParticipantResource::generalFormField(),
-                    Select::make('type')
+                    Select::make('position')
                         ->relationship(
                             name: 'positions',
                             titleAttribute: 'name',
-                            modifyQueryUsing: fn (Builder $query) => $query->whereIn('type', ['author', 'speaker'])
+                            modifyQueryUsing: fn (Builder $query) => $query->whereIn('type', [AuthorPositionResource::$positionType, SpeakerPositionResource::$positionType])
                                 ->groupBy('name')
                         )
                         ->preload()
@@ -265,10 +276,6 @@ class AuthorsStep extends Component implements HasForms, HasTable, HasWizardStep
         return 'No authors yet';
     }
 
-    // public function isTableLoadingDeferred(): bool
-    // {
-    //     return true;
-    // }
 
     protected function paginateTableQuery(Builder $query): Paginator
     {
