@@ -10,7 +10,7 @@ class UserUpdateAction
 {
     use AsAction;
 
-    public function handle(User $user, array $data)
+    public function handle(User $user, array $data): User
     {
         try {
             DB::beginTransaction();
