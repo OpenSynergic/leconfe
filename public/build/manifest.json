@@ -4,7 +4,7 @@
     "src": "resources/assets/images/logo.png"
   },
   "resources/conference/css/conference.css": {
-    "file": "assets/conference-40c58dfe.css",
+    "file": "assets/conference-5110516f.css",
     "isEntry": true,
     "src": "resources/conference/css/conference.css"
   },
@@ -14,7 +14,7 @@
     "src": "resources/conference/js/conference.js"
   },
   "resources/panel/css/panel.css": {
-    "file": "assets/panel-4694f2c4.css",
+    "file": "assets/panel-c0db1670.css",
     "isEntry": true,
     "src": "resources/panel/css/panel.css"
   },

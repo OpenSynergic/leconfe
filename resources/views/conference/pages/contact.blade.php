@@ -3,7 +3,7 @@
         <section class="bg-white dark:bg-gray-900 flex justify-center items-center md:p-16">
             <div class="container px-6 py-12 mx-auto">
                 <div>
-                    <p class="font-medium text-blue-500 dark:text-blue-400">Contact us</p>
+                    <p class="font-medium text-primary dark:text-blue-400">Contact us</p>
                     <h1 class="mt-2 text-2xl font-semibold text-gray-800 md:text-3xl dark:text-white">Contact Form
                     </h1>
                 </div>
@@ -57,24 +57,23 @@
                             @if ($currentConference->hasMeta('email'))
                                 <div>
                                     <span
-                                        class="inline-block p-3 text-blue-500 rounded-full bg-blue-100/80 dark:bg-gray-800">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-                                        </svg>
+                                        class="inline-block p-3 text-primary rounded-full bg-secondary dark:bg-gray-800">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                                          </svg>
+
                                     </span>
                                     <h2 class="mt-4 text-base font-medium text-gray-800 dark:text-white">Email</h2>
                                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Our friendly team is here
                                         to
                                         help.</p>
-                                    <p class="mt-2 text-sm text-blue-500 dark:text-blue-400">
+                                    <p class="mt-2 text-sm text-primary dark:text-blue-400">
                                         {{ $currentConference->getMeta('email') }}</p>
                                 </div>
                             @else
-                                <div>
+                                <div class="">
                                     <span
-                                        class="inline-block p-3 text-blue-500 rounded-full bg-blue-100/80 dark:bg-gray-800">
+                                        class="inline-block p-3 text-primary rounded-full bg-secondary dark:bg-gray-800">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -85,14 +84,14 @@
                                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Our friendly team is here
                                         to
                                         help.</p>
-                                    <p class="mt-2 text-sm text-blue-500 dark:text-blue-400">example@gmail.com</p>
+                                    <p class="mt-2 text-sm text-primary dark:text-blue-400">example@gmail.com</p>
                                 </div>
                             @endif
 
                             @if ($currentConference->hasMeta('phone'))
                                 <div>
                                     <span
-                                        class="inline-block p-3 text-blue-500 rounded-full bg-blue-100/80 dark:bg-gray-800">
+                                        class="inline-block p-3 text-primary rounded-full bg-secondary dark:bg-gray-800">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -102,13 +101,13 @@
                                     <h2 class="mt-4 text-base font-medium text-gray-800 dark:text-white">Phone</h2>
                                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
                                         {{ $currentConference->getMeta('bussines_hour') }}</p>
-                                    <p class="mt-2 text-sm text-blue-500 dark:text-blue-400">
+                                    <p class="mt-2 text-sm text-primary dark:text-blue-400">
                                         {{ $currentConference->getMeta('phone') }}</p>
                                 </div>
                             @else
                                 <div>
                                     <span
-                                        class="inline-block p-3 text-blue-500 rounded-full bg-blue-100/80 dark:bg-gray-800">
+                                        class="inline-block p-3 text-primary rounded-full bg-secondary dark:bg-gray-800">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -117,17 +116,17 @@
                                     </span>
                                     <h2 class="mt-4 text-base font-medium text-gray-800 dark:text-white">Phone</h2>
                                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Mon-Fri from 8am to 5pm</p>
-                                    <p class="mt-2 text-sm text-blue-500 dark:text-blue-400"> +3212345678</p>
+                                    <p class="mt-2 text-sm text-primary dark:text-blue-400"> +3212345678</p>
                                 </div>
                             @endif
 
                             @if ($currentConference->hasMeta('whatsapp'))
                                 <div>
                                     <span
-                                        class="inline-block p-3 text-blue-500 rounded-full bg-blue-100/80 dark:bg-gray-800">
+                                        class="inline-block p-3 text-primary rounded-full bg-secondary dark:bg-gray-800">
                                         <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
                                             width="20" height="20" viewBox="0,0,256,256">
-                                            <g fill="#057aff" fill-rule="nonzero" stroke="none" stroke-width="1"
+                                            <g fill="#38BDF8" fill-rule="nonzero" stroke="none" stroke-width="1"
                                                 stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10"
                                                 stroke-dasharray="" stroke-dashoffset="0" font-family="none"
                                                 font-weight="none" font-size="none" text-anchor="none"
@@ -142,17 +141,17 @@
                                     </span>
                                     <h2 class="mt-4 text-base font-medium text-gray-800 dark:text-white">Whatsapp</h2>
                                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">We're here to help</p>
-                                    <a class="mt-2 block text-sm text-blue-500 dark:text-blue-400"
+                                    <a class="mt-2 block text-sm text-primary dark:text-blue-400"
                                         href="https://wa.me/{{ $currentConference->getMeta('whatsapp') }}"
                                         target="_blank">{{ $currentConference->getMeta('label_chat') }}</a>
                                 </div>
                             @else
                                 <div>
                                     <span
-                                        class="inline-block p-3 text-blue-500 rounded-full bg-blue-100/80 dark:bg-gray-800">
+                                        class="inline-block p-3 text-primary rounded-full bg-secondary dark:bg-gray-800">
                                         <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
                                             width="20" height="20" viewBox="0,0,256,256">
-                                            <g fill="#057aff" fill-rule="nonzero" stroke="none" stroke-width="1"
+                                            <g fill="#38BDF8" fill-rule="nonzero" stroke="none" stroke-width="1"
                                                 stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10"
                                                 stroke-dasharray="" stroke-dashoffset="0" font-family="none"
                                                 font-weight="none" font-size="none" text-anchor="none"
@@ -167,7 +166,7 @@
                                     </span>
                                     <h2 class="mt-4 text-base font-medium text-gray-800 dark:text-white">Whatsapp</h2>
                                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">We're here to help</p>
-                                    <a class="mt-2 block text-sm text-blue-500 dark:text-blue-400"
+                                    <a class="mt-2 block text-sm text-primary dark:text-blue-400"
                                         href="https://wa.me/02334343243" target="_blank">Start new chat</a>
                                 </div>
                             @endif
@@ -175,27 +174,25 @@
                             @if ($currentConference->hasMeta('address'))
                                 <div>
                                     <span
-                                        class="inline-block p-3 text-blue-500 rounded-full bg-blue-100/80 dark:bg-gray-800">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                                        </svg>
+                                        class="inline-block p-3 text-primary rounded-full bg-secondary dark:bg-gray-800">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                                          </svg>
+
                                     </span>
                                     <h2 class="mt-4 text-base font-medium text-gray-800 dark:text-white">Address</h2>
                                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Come say hello at our
                                         office
                                     </p>
-                                    <p class="mt-2 text-sm text-blue-500 dark:text-blue-400">
+                                    <p class="mt-2 text-sm text-primary dark:text-blue-400">
                                         {{ $currentConference->getMeta('address') }}
                                     </p>
                                 </div>
                             @else
                                 <div>
                                     <span
-                                        class="inline-block p-3 text-blue-500 rounded-full bg-blue-100/80 dark:bg-gray-800">
+                                        class="inline-block p-3 text-primary rounded-full bg-secondary dark:bg-gray-800">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -208,7 +205,7 @@
                                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Come say hello at our
                                         office
                                     </p>
-                                    <p class="mt-2 text-sm text-blue-500 dark:text-blue-400">
+                                    <p class="mt-2 text-sm text-primary">
                                         1600 Pennsylvania Avenue NW, Washington, DC 20500
                                     </p>
                                 </div>

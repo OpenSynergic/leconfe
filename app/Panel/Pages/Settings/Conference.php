@@ -363,6 +363,7 @@ class Conference extends Page implements HasForms, HasInfolists
                                             ->schema([
                                                 TextInput::make('meta.email')
                                                     ->email()
+                                                    ->placeholder('example@gmail.com')
                                                     ->required()
                                                     ->helperText(__('Primary contact email for the contact information')),
                                                 TextInput::make('meta.address')
@@ -376,8 +377,8 @@ class Conference extends Page implements HasForms, HasInfolists
                                             ->schema([
                                                 TextInput::make('meta.phone')
                                                     ->rules([Rule::phone()->international()])
-                                                    ->placeholder('+62 821 1234 5678')
-                                                    ->helperText(__('Enter an international phone number along with the country code')),
+                                                    ->placeholder('International format, e.g. +6281234567890')
+                                                    ->helperText(__('International phone number along with the country code')),
                                                 TextInput::make('meta.bussines_hour')
                                                     ->label(__('Bussines Hour'))
                                                     ->placeholder(__('Mon-Fri from 8am to 5pm'))
@@ -390,8 +391,8 @@ class Conference extends Page implements HasForms, HasInfolists
                                             ->schema([
                                                 TextInput::make('meta.whatsapp')
                                                     ->rules([Rule::phone()->international()])
-                                                    ->placeholder('+62 821 1234 5678')
-                                                    ->helperText(__('Automaticly generate a clickable link to your whatsapp (Require International Number)')),
+                                                    ->placeholder('International format, e.g. +6281234567890')
+                                                    ->helperText(__('Automaticly generate a clickable link to your whatsapp')),
                                                 TextInput::make('meta.label_chat')
                                                     ->label(__('Chat label'))
                                                     ->placeholder('Start new chat')
