@@ -195,11 +195,11 @@ class PanelProvider extends FilamentPanelProvider
             FilamentNavigation::make()
                 ->usingModel(Navigation::class)
                 ->usingResource(NavigationResource::class)
+                ->itemType('Home', [])
                 ->itemType('Announcements', [])
                 ->itemType('Current Conference', [])
                 ->itemType('Login', [])
                 ->itemType('Register', [])
-                ->itemType('Home', [])
         ];
     }
 
