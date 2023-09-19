@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use App\Models\Enums\ConferenceStatus;
+use App\Models\Enums\UserRole;
 use App\Models\Meta\UserMeta;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
@@ -22,6 +23,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Kra8\Snowflake\HasShortflakePrimary;
 use Laravel\Sanctum\HasApiTokens;
+use Mchev\Banhammer\Traits\Bannable;
 use Plank\Metable\Metable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -33,7 +35,14 @@ use Squire\Models\Country;
 
 class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaultTenant, HasMedia, HasName, HasTenants
 {
-    use HasApiTokens, HasFactory, HasRoles, HasShortflakePrimary, InteractsWithMedia, Metable, Notifiable;
+    use Bannable,
+        HasApiTokens,
+        HasFactory,
+        HasRoles,
+        HasShortflakePrimary,
+        InteractsWithMedia,
+        Metable,
+        Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -86,7 +95,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
 
     public function getFilamentName(): string
     {
-        return "{$this->family_name} {$this->given_name}";
+        return $this->full_name;
     }
 
     public function country()
@@ -121,6 +130,24 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
     public function canAccessMultipleTenant(): bool
     {
         // TODO implement logic using spatie permissions
+
+        return true;
+    }
+
+    public function canImpersonate()
+    {
+        return $this->can('User:loginAs');
+    }
+
+    public function canBeImpersonated()
+    {
+        if ($this->isBanned()) {
+            return false;
+        }
+
+        if ($this->hasAnyRole([UserRole::Admin->value])) {
+            return false;
+        }
 
         return true;
     }

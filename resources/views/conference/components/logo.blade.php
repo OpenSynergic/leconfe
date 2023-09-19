@@ -13,7 +13,7 @@
 @else
     <x-conference::link 
         :href="$href" 
-        {{ $attributes->merge(['class' => 'text-lg sm:text-2xl font-semibold']) }}
+        {{ $attributes->merge(['class' => 'text-lg sm:text-lg']) }}
     >
         {{ $currentConference->name }}
     </x-conference::link>

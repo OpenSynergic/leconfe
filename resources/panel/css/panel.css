@@ -9,9 +9,9 @@
     /* TODO Apply alignment tabs to left, currently break contained tab when this css applied */
     /* @apply ml-0 mr-auto; */
 }
-
+/* 
 .fi-sidebar {
-    @apply lg:!bg-white dark:lg:!bg-gray-900 !rounded-xl my-4 ml-4 !h-auto -left-6 lg:left-0;
+    @apply lg:!bg-white dark:lg:!bg-gray-900 !rounded-xl my-4 ml-4 -left-6 lg:left-0;
     @apply !ring-1 lg:ring-gray-950/5;
 }
 
@@ -20,7 +20,7 @@
 }
 
 .fi-sidebar-header {
-    @apply !bg-transparent !shadow-none;
+    @apply !bg-transparent !shadow-none ring-0;
 }
 
 .fi-topbar nav {
@@ -29,28 +29,11 @@
 
 .fi-sidebar-nav {
     @apply h-full;
-}
+} */
 
 body {
     @apply !bg-gray-100 dark:!bg-gray-950;
 }
-
-/* .fi-sidebar-item.fi-sidebar-item-active {
-    a {
-        @apply bg-primary-500 text-white;
-        svg {
-            @apply text-white;
-        }
-    }
-}
-.fi-sidebar-item {
-    a {
-        @apply hover:bg-primary-500 hover:!text-white;
-        svg {
-            @apply group-hover:!text-white;
-        }
-    }
-} */
 
 .fi-breadcrumbs {
     @apply animate-in slide-in-from-right-5 fade-in duration-500;
@@ -61,7 +44,6 @@ body {
 }
 
 .fi-global-search-field {
-    /* @apply animate-in fade-in zoom-in-90 duration-300; */
     @apply animate-in fade-in duration-500;
 }
 
@@ -71,9 +53,16 @@ body {
 
 .fi-in-tabs-tab > dl {
     @apply animate-in fade-in duration-500;
-    /* @apply animate-out fade-in duration-500; */
 }
 
 .fi-dropdown-panel {
     @apply !max-w-[17rem];
+}
+
+.fi-sidebar{
+    @apply lg:!bg-white lg:ring-1 lg:!shadow-xl dark:lg:!bg-gray-900
+}
+
+.fi-sidebar-header{
+    @apply shadow-sm z-10
 }
