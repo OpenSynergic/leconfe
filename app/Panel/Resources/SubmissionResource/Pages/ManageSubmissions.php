@@ -2,6 +2,7 @@
 
 namespace App\Panel\Resources\SubmissionResource\Pages;
 
+use App\Models\Enums\SubmissionStatus;
 use App\Models\Submission;
 use App\Panel\Resources\SubmissionResource;
 use Filament\Actions\Action;
@@ -26,14 +27,28 @@ class ManageSubmissions extends ManageRecords
 
     public function getTabs(): array
     {
+        // ->modifyQueryUsing(fn (Builder $query) => $query->where('status', Submission::STATUS_ACTIVE))
+
         return [
             'new' => Tab::make('New')
-            // ->modifyQueryUsing(fn (Builder $query) => $query->where('status', Submission::STATUS_ACTIVE))
-            ,
+                ->badge(
+                    fn () => Submission::query()
+                        ->count()
+                ),
             'review' => Tab::make('Review')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', Submission::STATUS_REVIEW)),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', SubmissionStatus::UnderReview))
+                ->badge(
+                    fn () => Submission::query()
+                        ->where('status', SubmissionStatus::UnderReview)
+                        ->count()
+                ),
             'archived' => Tab::make('Published')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', Submission::STATUS_PUBLISHED)),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', SubmissionStatus::Published))
+                ->badge(
+                    fn () => Submission::query()
+                        ->where('status', SubmissionStatus::Published)
+                        ->count()
+                ),
         ];
     }
 }
