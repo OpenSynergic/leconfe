@@ -129,7 +129,7 @@ class Conference extends Page implements HasForms, HasInfolists
         foreach ($blockSettings as $sort => $blockSetting) {
             $sort++; // To sort a number, take it from the array index.
             [$uuid, $enabled, $originalState] = explode(':', $blockSetting);
-            $block = data_get($this, $originalState.'.'.$uuid);
+            $block = data_get($this, $originalState . '.' . $uuid);
             // The block is being moved to a new position.
             if ($originalState != $statePath) {
                 $block->position = str($statePath)->contains('blocks.left') ? 'left' : 'right';
@@ -161,8 +161,8 @@ class Conference extends Page implements HasForms, HasInfolists
                                                 SidebarPosition::Right->getValue() => SidebarPosition::Right->getLabel(),
                                             ])
                                             ->descriptions([
-                                                SidebarPosition::Left->getValue() => SidebarPosition::Left->getLabel().' Sidebar',
-                                                SidebarPosition::Right->getValue() => SidebarPosition::Right->getLabel().' Sidebar',
+                                                SidebarPosition::Left->getValue() => SidebarPosition::Left->getLabel() . ' Sidebar',
+                                                SidebarPosition::Right->getValue() => SidebarPosition::Right->getLabel() . ' Sidebar',
                                             ])
                                             ->reactive()
                                             ->helperText(__('If you choose both sidebars, the layout will have three columns.')),
