@@ -23,7 +23,7 @@
                     </div>
 
                     <div class="filament-forms-section-content-wrapper space-y-6">
-                        @if (session()->has('submission_not_complete'))
+                        @error('errors')
                             <div class="flex p-4 mb-4 text-sm text-danger-800 border border-danger-300 rounded-xl bg-danger-50 dark:bg-gray-800 dark:text-danger-400 dark:border-danger-800"
                                 role="alert">
                                 <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
@@ -34,10 +34,10 @@
                                 </svg>
                                 <span class="sr-only">Info</span>
                                 <div>
-                                    {{ session('submission_not_complete') }}
+                                    {{ $message }}
                                 </div>
                             </div>
-                        @endif
+                        @enderror
                         <div class="space-y-4">
                             <div class="flex ml-auto">
                                 <x-filament::button class="ml-auto" :outlined="true" size="sm" x-on:click="step = 'detail'">
