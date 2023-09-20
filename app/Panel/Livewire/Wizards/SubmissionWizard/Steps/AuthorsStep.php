@@ -29,5 +29,6 @@ class AuthorsStep extends Component implements HasWizardStep
         }
 
         $this->dispatch('next-wizard-step');
+        $this->dispatch("refreshLivewire");
     }
 }

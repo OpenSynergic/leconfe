@@ -13,7 +13,6 @@ use App\Panel\Resources\Conferences\ParticipantResource;
 use App\Panel\Resources\Conferences\SpeakerPositionResource;
 use Filament\Forms\Components\Grid as FormGrid;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Actions\Action;
@@ -21,7 +20,6 @@ use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\Layout\Grid;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
@@ -30,7 +28,6 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Livewire\Component;
 
 class SubmissionAuthorsTable extends Component implements HasTable, HasForms
@@ -40,6 +37,8 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
     public Submission $record;
 
     public bool $viewOnly = false;
+
+    protected $listeners = ['refreshLivewire' => '$refresh'];
 
     public static function getAuthorFormSchema(): array
     {
@@ -70,7 +69,7 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
         ];
     }
 
-    public function getQuery(bool $submissionRelated = false): Builder
+    public function getQuery(bool $submissionRelated = true): Builder
     {
         return Participant::query()
             ->orderBy('order_column')
@@ -119,7 +118,7 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
                         ->label("Add from existing")
                         ->modalWidth("lg")
                         ->form([
-                            Grid::make()
+                            FormGrid::make()
                                 ->schema([
                                     Select::make('participant_id')
                                         ->label("Name")
@@ -218,7 +217,6 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
                         )
                         ->mutateRecordDataUsing(function ($data, Participant $record) {
                             $data['meta'] = $record->getAllMeta()->toArray();
-
                             $data['position'] = $this->record->participants()
                                 ->where('participant_id', $record->id)
                                 ->first()

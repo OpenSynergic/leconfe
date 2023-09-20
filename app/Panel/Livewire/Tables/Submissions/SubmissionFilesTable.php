@@ -31,6 +31,8 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
 
     public bool $viewOnly = false;
 
+    protected $listeners = ['refreshLivewire' => '$refresh'];
+
     public function render()
     {
         return view('panel.livewire.tables.submissions.submission-files');

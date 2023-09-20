@@ -28,11 +28,9 @@ class ReviewStep extends Component implements HasWizardStep
     // TODO Tambahkan nama conference
     public function submit()
     {
-        if ($this->record->getMedia('files')->count() == 0 || $this->record->authors->count() == 0) {
-            session()->flash('submission_not_complete', 'Your submission cannot be completed as there is one or more issues that need to be addressed. Please carefully review the information provided below and make the necessary changes to proceed with your submission.');
-
+        if (!$this->record->files()->exists() || !$this->record->participants()->exists()) {
+            $this->addError("errors", "Your submission cannot be completed as there is one or more issues that need to be addressed. Please carefully review the information provided below and make the necessary changes to proceed with your submission.");
             $this->dispatchBrowserEvent('close-modal', ['id' => 'modalSubmisionWizardConfirmation']);
-
             return;
         }
 
@@ -41,8 +39,17 @@ class ReviewStep extends Component implements HasWizardStep
             'status' => SubmissionStatus::New,
         ], $this->record);
 
-        // TODO kirim email konfirmasi ke pengguna untuk submission yg di input
-
-        return redirect()->to(SubmissionResource::getUrl('complete', $this->record));
+        /**
+         * 
+         * TODO:
+         * - Send Mail
+         *  to:
+         *      - main author
+         *          - Terima kasih telah mengirimkan paper. Anda dapat memantau perkembangannya melalui tautan di bawah ini.
+         *      - conference manager
+         *          - 1 Paper telah diterima dengan judul [title], silakan assign salah satu director conference, 
+         *          - (Improvement) ada auto login di email notifikasi
+         */
+        return redirect()->to(SubmissionResource::getUrl('complete', ['record' => $this->record]));
     }
 }
