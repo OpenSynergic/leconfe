@@ -29,6 +29,8 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
 
     public Submission $record;
 
+    public bool $viewOnly = false;
+
     public function render()
     {
         return view('panel.livewire.tables.submissions.submission-files');
@@ -42,7 +44,6 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
     protected function table(Table $table): Table
     {
         return $table
-            ->description(fn (): ?string => !$this->record->files()->exists() ? null : "To download the file, click on the filename.")
             ->query($this->getTableQuery())
             ->heading("Submission files")
             ->columns([
@@ -59,7 +60,7 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
                 Action::make('download_all')
                     ->label('Download All Files')
                     ->button()
-                    ->hidden(fn () => !$this->record->files()->exists())
+                    ->hidden(fn () => !$this->record->files()->exists() || $this->viewOnly)
                     ->color('gray')
                     ->action(function () {
                         $downloads = $this->record->files()->get();
@@ -67,6 +68,7 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
                     }),
                 Action::make('upload')
                     ->label('Upload Files')
+                    ->hidden($this->viewOnly)
                     ->button()
                     ->modalWidth('xl')
                     ->form([
@@ -116,6 +118,7 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
             ])
             ->actions([
                 EditAction::make()
+                    ->hidden($this->viewOnly)
                     ->label("Rename")
                     ->modalWidth('md')
                     ->modalHeading('Edit file')
@@ -134,7 +137,7 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
                                 return '.' . $record->extension;
                             })
                     ]),
-                DeleteAction::make(),
+                DeleteAction::make()->hidden($this->viewOnly),
             ]);
     }
 }

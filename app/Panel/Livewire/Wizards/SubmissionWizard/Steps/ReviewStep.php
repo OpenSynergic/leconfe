@@ -3,6 +3,7 @@
 namespace App\Panel\Livewire\Wizards\SubmissionWizard\Steps;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
+use App\Models\Enums\SubmissionStatus;
 use App\Models\Submission;
 use App\Panel\Livewire\Wizards\SubmissionWizard\Contracts\HasWizardStep;
 use App\Panel\Resources\SubmissionResource;
@@ -37,7 +38,7 @@ class ReviewStep extends Component implements HasWizardStep
 
         SubmissionUpdateAction::run([
             'submission_progress' => 'review',
-            'status' => Submission::STATUS_ACTIVE,
+            'status' => SubmissionStatus::New,
         ], $this->record);
 
         // TODO kirim email konfirmasi ke pengguna untuk submission yg di input

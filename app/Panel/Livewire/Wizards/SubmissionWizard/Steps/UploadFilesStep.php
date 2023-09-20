@@ -29,10 +29,6 @@ class UploadFilesStep extends Component implements HasWizardStep
             return session()->flash('no_files', 'No files were added to the submission');
         }
 
-        SubmissionUpdateAction::run([
-            'submission_progress' => 'authors',
-        ], $this->record);
-
         $this->dispatch('next-wizard-step');
     }
 }

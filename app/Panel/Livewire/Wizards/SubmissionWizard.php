@@ -25,8 +25,7 @@ class SubmissionWizard extends Component
             'detail' => DetailStep::class,
             'upload-files' => UploadFilesStep::class,
             'authors' => AuthorsStep::class,
-            // 'for-the-editor' => ForTheEditorsStep::class,
-            // 'review' => ReviewStep::class,
+            'review' => ReviewStep::class,
         ];
     }
 
