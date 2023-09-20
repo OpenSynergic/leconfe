@@ -1,5 +1,5 @@
 <div class="space-y-6">
-    <div class="filament-forms-card-component p-6 bg-white dark:bg-gray-900 rounded-xl border ">
+    <div class="filament-forms-card-component p-6 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800">
         <div class="grid grid-cols-1 filament-forms-component-container gap-6">
             <div class="col-span-full">
                 <div id="upload-files" class="filament-forms-section-component grid grid-cols-1 md:grid-cols-2">
@@ -44,7 +44,7 @@
     <div class="flex items-center justify-between">
         <div>
             <x-filament::button icon="heroicon-o-chevron-left" x-show="! isFirstStep()" x-cloak x-on:click="previousStep"
-                color="secondary" size="sm">
+                color="gray" size="sm">
                Previous
             </x-filament::button>
         </div>
