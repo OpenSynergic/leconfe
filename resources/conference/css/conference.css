@@ -21,3 +21,7 @@
 .page-rightbar{
     @apply lg:col-span-3;
 }
+
+.user-content {
+    @apply prose prose-sm prose-a:text-primary prose-a:underline hover:prose-a:text-primary;
+}
