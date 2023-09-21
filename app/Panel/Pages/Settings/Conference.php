@@ -13,7 +13,6 @@ use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section as FormSection;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -178,7 +177,7 @@ class Conference extends Page implements HasForms, HasInfolists
                                                                 ]);
                                                             }
                                                         }
-                                                        
+
                                                         $action->sendSuccessNotification();
                                                     } catch (\Throwable $th) {
                                                         $action->sendFailureNotification();
