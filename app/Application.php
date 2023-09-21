@@ -8,6 +8,7 @@ use App\Models\Conference;
 use App\Models\Navigation;
 use App\Models\ParticipantPosition;
 use App\Models\Scopes\ConferenceScope;
+use App\Models\StaticPage;
 use App\Models\Submission;
 use App\Models\Topic;
 use App\Models\Venue;
@@ -56,6 +57,7 @@ class Application extends LaravelApplication
             Block::class,
             ParticipantPosition::class,
             Announcement::class,
+            StaticPage::class,
         ] as $model) {
             $model::addGlobalScope(new ConferenceScope);
         }
