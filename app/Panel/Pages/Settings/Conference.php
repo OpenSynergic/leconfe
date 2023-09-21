@@ -70,12 +70,12 @@ class Conference extends Page implements HasForms, HasInfolists
             ],
         ]);
         $this->generalForm->fill([
-            ...Filament::getTenant()->attributesToArray(),
-            'meta' => Filament::getTenant()->getAllMeta()->toArray(),
+            ...app()->getCurrentConference()->attributesToArray(),
+            'meta' => app()->getCurrentConference()->getAllMeta()->toArray(),
         ]);
 
         $this->setupForm->fill([
-            'meta' => Filament::getTenant()->getAllMeta()->toArray(),
+            'meta' => app()->getCurrentConference()->getAllMeta()->toArray(),
         ]);
     }
 
@@ -195,7 +195,7 @@ class Conference extends Page implements HasForms, HasInfolists
     {
         return $form
             ->statePath('generalFormData')
-            ->model(Filament::getTenant())
+            ->model(app()->getCurrentConference())
             ->schema([
                 VerticalTabs\Tabs::make()
                     ->sticky()
@@ -274,7 +274,7 @@ class Conference extends Page implements HasForms, HasInfolists
                                                 ->action(function (Action $action) {
                                                     try {
                                                         $formData = $this->generalForm->getState();
-                                                        ConferenceUpdateAction::run(Filament::getTenant(), $formData);
+                                                        ConferenceUpdateAction::run(app()->getCurrentConference(), $formData);
                                                         $action->sendSuccessNotification();
                                                     } catch (\Throwable $th) {
                                                         $action->sendFailureNotification();
@@ -291,7 +291,7 @@ class Conference extends Page implements HasForms, HasInfolists
     {
         return $form
             ->statePath('setupFormData')
-            ->model(Filament::getTenant())
+            ->model(app()->getCurrentConference())
             ->schema([
                 VerticalTabs\Tabs::make()
                     ->tabs(
@@ -309,7 +309,7 @@ class Conference extends Page implements HasForms, HasInfolists
                                                         ->successNotificationTitle('Saved!')
                                                         ->action(function (Action $action) {
                                                             try {
-                                                                ConferenceUpdateAction::run(Filament::getTenant(), $this->setupForm->getState());
+                                                                ConferenceUpdateAction::run(app()->getCurrentConference(), $this->setupForm->getState());
 
                                                                 $action->sendSuccessNotification();
                                                             } catch (\Throwable $th) {

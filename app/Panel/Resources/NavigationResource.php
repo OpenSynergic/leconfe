@@ -60,7 +60,7 @@ class NavigationResource extends Resource
                         TextInput::make('handle')
                             ->label(__('filament-navigation::filament-navigation.attributes.handle'))
                             ->required()
-                            ->unique(column: 'handle', ignoreRecord: true, modifyRuleUsing: fn (Unique $rule) => $rule->where('conference_id', Filament::getTenant()->getKey())),
+                            ->unique(column: 'handle', ignoreRecord: true, modifyRuleUsing: fn (Unique $rule) => $rule->where('conference_id', app()->getCurrentConference()->getKey())),
                         View::make('filament-navigation::card-divider')
                             ->visible(static::$showTimestamps),
                         Placeholder::make('created_at')

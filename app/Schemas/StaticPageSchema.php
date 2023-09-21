@@ -27,7 +27,7 @@ class StaticPageSchema
     public static function table(Table $table): Table
     {
         return $table
-            ->query(Filament::getTenant()->staticPages()->with(['conference'])->getQuery())
+            ->query(app()->getCurrentConference()->staticPages()->with(['conference'])->getQuery())
             ->heading('Static page')
             ->defaultPaginationPageOption(5)
             ->recordUrl(fn ($record) => route('livewirePageGroup.website.pages.static-page', [

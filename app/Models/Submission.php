@@ -50,7 +50,7 @@ class Submission extends Model implements HasMedia
     {
         static::creating(function (Submission $submission) {
             $submission->user_id ??= Auth::id();
-            $submission->conference_id ??= Filament::getTenant()?->getKey();
+            $submission->conference_id ??= app()->getCurrentConference()?->getKey();
         });
     }
 

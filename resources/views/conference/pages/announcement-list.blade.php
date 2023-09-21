@@ -1,11 +1,11 @@
 <x-conference::layouts.main>
         <div class="card-body">
             <h1 class="text-xl mb-2 ml-2 text-gray-900">{{ "Announcements" }}</h1>
-            <div class="divide-y overflow-y-auto h-screen">
+            <div class="divide-y overflow-y-auto">
                 @foreach ($this->records as $announcement)
                     <a href="{{ route('livewirePageGroup.current-conference.pages.announcement-page', ['id' => $announcement->id]) }}" 
                         class="flex flex-col bg-white md:flex-row hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
-                        @if ($featuredImage = $announcement->getFirstMediaUrl('featured_image'))
+                        @if ($featuredImage = $announcement->getFirstMedia('featured_image'))
                             <img class="object-cover h-28 aspect-square mt-4 mb-4" src="{{ $featuredImage->getAvailableUrl(['thumb']) }}" alt="">
                         @endif
                         <div class="flex flex-col justify-between p-4 leading-normal">

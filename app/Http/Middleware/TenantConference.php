@@ -24,18 +24,8 @@ class TenantConference
     public function handle(Request $request, Closure $next): Response
     {
         app()->setCurrentConference(Filament::getTenant());
-
-        foreach ([
-            Submission::class,
-            Topic::class,
-            Venue::class,
-            Navigation::class,
-            Block::class,
-            ParticipantPosition::class,
-        ] as $model) {
-            $model::addGlobalScope(new ConferenceScope);
-        }
-
+        app()->scopeCurrentConference();
+        
         return $next($request);
     }
 }

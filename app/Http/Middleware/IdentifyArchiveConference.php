@@ -36,11 +36,11 @@ class IdentifyArchiveConference
                 break;
             case ConferenceStatus::Upcoming:
                 return abort(404);
-                // return redirect('current');
                 break;
         }
 
         app()->setCurrentConference($conference);
+        app()->scopeCurrentConference();
 
         View::share('currentConference', $conference);
 
