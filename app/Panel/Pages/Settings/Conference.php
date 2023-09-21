@@ -53,13 +53,6 @@ class Conference extends Page implements HasForms, HasInfolists
     {
         $this->appereanceForm->fill([
             'sidebar' => [
-                'position' => match (Filament::getTenant()->getMeta('sidebar')) {
-                    SidebarPosition::Left->getValue() => [SidebarPosition::Left->getValue()],
-                    SidebarPosition::Right->getValue() => [SidebarPosition::Right->getValue()],
-                    SidebarPosition::Both->getValue() => [SidebarPosition::Left->getValue(), SidebarPosition::Right->getValue()],
-                    SidebarPosition::None->getValue() => [],
-                    default => [SidebarPosition::Left->getValue(), SidebarPosition::Right->getValue()],
-                },
                 'blocks' => [
                     'left' => FacadesBlock::getBlocks(position: 'left', includeInactive: true)
                         ->map(
@@ -155,17 +148,6 @@ class Conference extends Page implements HasForms, HasInfolists
                             ->schema([
                                 FormSection::make()
                                     ->schema([
-                                        CheckboxList::make('sidebar.position')
-                                            ->options([
-                                                SidebarPosition::Left->getValue() => SidebarPosition::Left->getLabel(),
-                                                SidebarPosition::Right->getValue() => SidebarPosition::Right->getLabel(),
-                                            ])
-                                            ->descriptions([
-                                                SidebarPosition::Left->getValue() => SidebarPosition::Left->getLabel().' Sidebar',
-                                                SidebarPosition::Right->getValue() => SidebarPosition::Right->getLabel().' Sidebar',
-                                            ])
-                                            ->reactive()
-                                            ->helperText(__('If you choose both sidebars, the layout will have three columns.')),
                                         Grid::make(3)
                                             ->columns([
                                                 'xl' => 3,
