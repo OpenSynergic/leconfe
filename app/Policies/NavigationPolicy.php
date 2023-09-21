@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Navigation;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class NavigationPolicy
 {
@@ -41,10 +40,9 @@ class NavigationPolicy
      */
     public function delete(User $user, Navigation $navigation)
     {
-        if($navigation->handle == 'primary-navigation-menu'){
+        if ($navigation->handle == 'primary-navigation-menu') {
             return false;
         }
-
 
         if ($user->can('Navigation:delete')) {
             return true;

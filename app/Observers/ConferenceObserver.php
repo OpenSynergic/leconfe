@@ -26,22 +26,22 @@ class ConferenceObserver
             'conference_id' => $conference->getKey(),
             'items' => [
                 Str::uuid()->toString() => [
-                    "label" => "Home",
-                    "type" => "home",
-                    "data" => null,
-                    "children" => []
+                    'label' => 'Home',
+                    'type' => 'home',
+                    'data' => null,
+                    'children' => [],
                 ],
                 Str::uuid()->toString() => [
-                    "label" => "Current Conference",
-                    "type" => "current-conference",
-                    "data" => null,
-                    "children" => []
+                    'label' => 'Current Conference',
+                    'type' => 'current-conference',
+                    'data' => null,
+                    'children' => [],
                 ],
                 Str::uuid()->toString() => [
-                    "label" => "Announcements",
-                    "type" => "announcements",
-                    "data" => null,
-                    "children" => []
+                    'label' => 'Announcements',
+                    'type' => 'announcements',
+                    'data' => null,
+                    'children' => [],
                 ],
             ],
         ]);

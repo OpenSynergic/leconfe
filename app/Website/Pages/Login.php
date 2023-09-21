@@ -5,7 +5,6 @@ namespace App\Website\Pages;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Filament\Facades\Filament;
-use Filament\Http\Responses\Auth\Contracts\LoginResponse;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Rule;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
