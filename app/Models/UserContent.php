@@ -42,7 +42,7 @@ class UserContent extends Model implements HasMedia
     protected static function booted(): void
     {
         static::creating(function (UserContent $userContent) {
-            $userContent->conference_id ??= Filament::getTenant()?->getKey();
+            $userContent->conference_id ??= app()->getCurrentConference()?->getKey();
         });
     }
 

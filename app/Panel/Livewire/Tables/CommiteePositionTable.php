@@ -69,7 +69,7 @@ class CommiteePositionTable extends Component implements HasForms, HasTable
             ->modalWidth('xl');
 
         if ($action instanceof CreateAction) {
-            $action->relationship(($tenant = Filament::getTenant()) ? fn (): Relation => static::getResource()::getTenantRelationship($tenant) : null);
+            $action->relationship(($tenant = app()->getCurrentConference()) ? fn (): Relation => static::getResource()::getTenantRelationship($tenant) : null);
         }
 
         if ($resource::hasPage('create')) {
