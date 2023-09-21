@@ -13,12 +13,10 @@ class About extends Page
     {
     }
 
-
     public function getTitle(): string|Htmlable
     {
         return 'About the Conference';
     }
-
 
     public function getBreadcrumbs(): array
     {

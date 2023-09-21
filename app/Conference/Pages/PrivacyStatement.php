@@ -24,7 +24,7 @@ class PrivacyStatement extends Page
     protected function getViewData(): array
     {
         return [
-            
+
         ];
     }
 }
