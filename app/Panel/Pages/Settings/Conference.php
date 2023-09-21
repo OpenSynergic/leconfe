@@ -9,7 +9,6 @@ use App\Forms\Components\BlockList;
 use App\Forms\Components\VerticalTabs;
 use App\Infolists\Components\BladeEntry;
 use App\Livewire\Block as BlockComponent;
-use App\Models\Enums\SidebarPosition;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Actions;
@@ -179,21 +178,7 @@ class Conference extends Page implements HasForms, HasInfolists
                                                                 ]);
                                                             }
                                                         }
-
-                                                        $sidebar = collect($formData['sidebar']['position']);
-                                                        $sidebarPosition = $sidebar->first();
-
-                                                        if ($sidebar->isEmpty()) {
-                                                            $sidebarPosition = SidebarPosition::None->getValue();
-                                                        }
-
-                                                        if ($sidebar->count() >= 2) {
-                                                            $sidebarPosition = SidebarPosition::Both->getValue();
-                                                        }
-
-                                                        FIlament::getTenant()
-                                                            ->setMeta('sidebar', $sidebarPosition);
-
+                                                        
                                                         $action->sendSuccessNotification();
                                                     } catch (\Throwable $th) {
                                                         $action->sendFailureNotification();
