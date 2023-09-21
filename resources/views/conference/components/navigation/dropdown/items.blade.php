@@ -3,8 +3,7 @@
     'level' => 1,
 ])
 
-<div
-    {{ $attributes->twMerge(['flex flex-col divide-y p-1 mt-1 min-w-[12rem] bg-white rounded-md shadow-md']) }}>
+<div {{ $attributes->twMerge(['flex flex-col divide-y p-1 mt-1 min-w-[12rem] bg-white rounded-md shadow-md']) }}>
     @foreach ($items as $key => $item)
         {{-- Limit level dropdown to only 1 level --}}
         @if (!empty($item['children']) && $level == 1)
@@ -27,14 +26,11 @@
             @continue
         @endif
 
-        @switch($item['type'])
-            @case('external-link')
-                <x-conference::navigation.dropdown.item.link class="w-full text-left p-0" :label="$item['label']" :url="$item['data']['url']" />
-            @break
 
-            @default
-                <x-conference::navigation.dropdown.item.link class="w-full text-left p-0" :label="$item['label']" />
-            @break
-        @endswitch
+        <x-conference::link
+            class="relative flex hover:bg-neutral-100 items-center py-1.5 px-4 pr-6 text-sm outline-none transition-colors gap-4 w-full"
+            :href="get_navigation_link($item['type'], $item['data']['url'] ?? '#')">
+            {{ $item['label'] }}
+        </x-conference::link>
     @endforeach
 </div>

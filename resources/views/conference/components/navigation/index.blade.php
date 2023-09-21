@@ -8,10 +8,11 @@
             @foreach ($items as $key => $item)
                 @if (empty($item['children']))
                     <li>
-                        <a href="{{ $item['data']['url'] ?? '#' }}"
-                            class="btn btn-ghost btn-sm rounded-full inline-flex items-center justify-center px-4 transition-colors hover:text-primary-content focus:outline-none disabled:opacity-50 disabled:pointer-events-none group w-max">
-                            <span>{{ $item['label'] }}</span>
-                        </a>
+                        <x-conference::link
+                            class="btn btn-ghost btn-sm rounded-full inline-flex items-center justify-center px-4 transition-colors hover:text-primary-content focus:outline-none disabled:opacity-50 disabled:pointer-events-none group w-max"
+                            :href="get_navigation_link($item['type'], $item['data']['url'] ?? '#')">
+                            {{ $item['label'] }}
+                        </x-conference::link>
                     </li>
                 @else
                     <x-conference::navigation.dropdown.trigger :key="$key" :item="$item" />
