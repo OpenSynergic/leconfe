@@ -7,7 +7,7 @@
         {{ $attributes }}
         :href="$href"
     >
-        <img src="{{ $currentConference->getFirstMediaUrl('logo','tenant') }}" alt="{{ $currentConference->name }}"
+        <img src="{{ $currentConference->getFirstMedia('logo')->getAvailableUrl(['thumb','thumb-xl']) }}" alt="{{ $currentConference->name }}"
         class="max-h-12 w-auto">
     </x-conference::link>
 @else

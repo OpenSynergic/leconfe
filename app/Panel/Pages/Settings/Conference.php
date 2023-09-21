@@ -9,12 +9,10 @@ use App\Forms\Components\BlockList;
 use App\Forms\Components\VerticalTabs;
 use App\Infolists\Components\BladeEntry;
 use App\Livewire\Block as BlockComponent;
-use App\Models\Enums\SidebarPosition;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section as FormSection;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -53,13 +51,6 @@ class Conference extends Page implements HasForms, HasInfolists
     {
         $this->appereanceForm->fill([
             'sidebar' => [
-                'position' => match (Filament::getTenant()->getMeta('sidebar')) {
-                    SidebarPosition::Left->getValue() => [SidebarPosition::Left->getValue()],
-                    SidebarPosition::Right->getValue() => [SidebarPosition::Right->getValue()],
-                    SidebarPosition::Both->getValue() => [SidebarPosition::Left->getValue(), SidebarPosition::Right->getValue()],
-                    SidebarPosition::None->getValue() => [],
-                    default => [SidebarPosition::Left->getValue(), SidebarPosition::Right->getValue()],
-                },
                 'blocks' => [
                     'left' => FacadesBlock::getBlocks(position: 'left', includeInactive: true)
                         ->map(
@@ -155,17 +146,6 @@ class Conference extends Page implements HasForms, HasInfolists
                             ->schema([
                                 FormSection::make()
                                     ->schema([
-                                        CheckboxList::make('sidebar.position')
-                                            ->options([
-                                                SidebarPosition::Left->getValue() => SidebarPosition::Left->getLabel(),
-                                                SidebarPosition::Right->getValue() => SidebarPosition::Right->getLabel(),
-                                            ])
-                                            ->descriptions([
-                                                SidebarPosition::Left->getValue() => SidebarPosition::Left->getLabel().' Sidebar',
-                                                SidebarPosition::Right->getValue() => SidebarPosition::Right->getLabel().' Sidebar',
-                                            ])
-                                            ->reactive()
-                                            ->helperText(__('If you choose both sidebars, the layout will have three columns.')),
                                         Grid::make(3)
                                             ->columns([
                                                 'xl' => 3,
@@ -197,20 +177,6 @@ class Conference extends Page implements HasForms, HasInfolists
                                                                 ]);
                                                             }
                                                         }
-
-                                                        $sidebar = collect($formData['sidebar']['position']);
-                                                        $sidebarPosition = $sidebar->first();
-
-                                                        if ($sidebar->isEmpty()) {
-                                                            $sidebarPosition = SidebarPosition::None->getValue();
-                                                        }
-
-                                                        if ($sidebar->count() >= 2) {
-                                                            $sidebarPosition = SidebarPosition::Both->getValue();
-                                                        }
-
-                                                        FIlament::getTenant()
-                                                            ->setMeta('sidebar', $sidebarPosition);
 
                                                         $action->sendSuccessNotification();
                                                     } catch (\Throwable $th) {

@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Conference;
 use App\Models\Navigation;
+use Illuminate\Support\Str;
 
 class ConferenceObserver
 {
@@ -23,7 +24,26 @@ class ConferenceObserver
             'name' => 'Primary Navigation Menu',
             'handle' => 'primary-navigation-menu',
             'conference_id' => $conference->getKey(),
-            'items' => [],
+            'items' => [
+                Str::uuid()->toString() => [
+                    'label' => 'Home',
+                    'type' => 'home',
+                    'data' => null,
+                    'children' => [],
+                ],
+                Str::uuid()->toString() => [
+                    'label' => 'Current Conference',
+                    'type' => 'current-conference',
+                    'data' => null,
+                    'children' => [],
+                ],
+                Str::uuid()->toString() => [
+                    'label' => 'Announcements',
+                    'type' => 'announcements',
+                    'data' => null,
+                    'children' => [],
+                ],
+            ],
         ]);
     }
 

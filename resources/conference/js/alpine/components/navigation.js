@@ -60,13 +60,11 @@ document.addEventListener("alpine:init", () => {
                     return this.$id("alpine-navigation-trigger");
                 },
                 ["@mouseenter"]() {
-                    console.log("mouseenter", this.$el.id);
                     this.navigationMenuOpen = true;
                     this.navigationMenuReposition(this.$el);
                     this.navigationMenu = key;
                 },
                 ["@mouseleave"]() {
-                    console.log("mouseleave", this.$el.id);
                     this.navigationMenuLeave();
                 },
             };
