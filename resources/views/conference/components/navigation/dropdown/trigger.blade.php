@@ -8,7 +8,7 @@
             ]) 
         }}
         >
-        <span>{{ $item['label'] }}</span>
+        <span>{{ $item->getLabel() }}</span>
         <svg :class="{ '-rotate-180': isNavigationMenuOpen('{{ $key }}') }"
             class="relative top-[1px] ml-1 h-3 w-3 ease-out duration-300" xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"

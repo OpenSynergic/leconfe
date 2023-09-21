@@ -6,12 +6,14 @@
     <div class="relative">
         <ul class="navbar-items flex items-center justify-center flex-1 p-1 space-x-1 list-none group">
             @foreach ($items as $key => $item)
-                @if (empty($item['children']))
+                @php($item = new App\Classes\NavigationItem(...$item))
+
+                @if (!$item->hasChildren())
                     <li>
                         <x-conference::link
                             class="btn btn-ghost btn-sm rounded-full inline-flex items-center justify-center px-4 transition-colors hover:text-primary-content focus:outline-none disabled:opacity-50 disabled:pointer-events-none group w-max"
-                            :href="get_navigation_link($item['type'], $item['data']['url'] ?? '#')">
-                            {{ $item['label'] }}
+                            :href="$item->getUrl()">
+                            {{ $item->getLabel() }}
                         </x-conference::link>
                     </li>
                 @else
@@ -26,11 +28,12 @@
         x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-100"
         x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90" x-cloak>
         @foreach ($items as $key => $item)
-            @if (empty($item['children']))
+            @php($item = new App\Classes\NavigationItem(...$item))
+            @if (!$item->hasChildren())
                 @continue
             @endif
             <div class="navbar-dropdown-content" x-navigation:dropdown-content="{{ $key }}">
-                <x-conference::navigation.dropdown.items :items="$item['children']" />
+                <x-conference::navigation.dropdown.items :items="$item->getChildren()" />
             </div>
         @endforeach
     </div>
