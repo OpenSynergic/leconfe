@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Models\Meta\UserContentMeta;
 use DateTimeInterface;
-use Filament\Facades\Filament;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

@@ -3,7 +3,6 @@
 namespace App\Models\Concerns;
 
 use App\Models\Conference;
-use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 

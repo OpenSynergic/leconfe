@@ -10,7 +10,6 @@ use App\Forms\Components\VerticalTabs;
 use App\Infolists\Components\BladeEntry;
 use App\Livewire\Block as BlockComponent;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
-use Filament\Facades\Filament;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Grid;

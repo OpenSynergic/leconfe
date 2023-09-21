@@ -6,7 +6,6 @@ use App\Forms\Components\TagSuggestions;
 use App\Models\Enums\ContentType;
 use App\Models\StaticPage;
 use App\Models\StaticPageTag;
-use Filament\Facades\Filament;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;

@@ -47,7 +47,7 @@ class Application extends LaravelApplication
         $this->currentConference = $conference;
     }
 
-    public function scopeCurrentConference() : void
+    public function scopeCurrentConference(): void
     {
         foreach ([
             Submission::class,

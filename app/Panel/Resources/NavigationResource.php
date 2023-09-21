@@ -2,7 +2,6 @@
 
 namespace App\Panel\Resources;
 
-use Filament\Facades\Filament;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
