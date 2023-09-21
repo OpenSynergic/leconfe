@@ -37,6 +37,7 @@ if (! function_exists('get_navigation_link_by_type')) {
             'register' => route('livewirePageGroup.website.pages.register'),
             'login' => route('livewirePageGroup.website.pages.login'),
             'home' => route('livewirePageGroup.website.pages.home'),
+            'about' => route('livewirePageGroup.current-conference.pages.about'),
             default => $default,
         };
     }

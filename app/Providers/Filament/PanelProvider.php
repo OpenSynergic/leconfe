@@ -196,6 +196,7 @@ class PanelProvider extends FilamentPanelProvider
                 ->usingModel(Navigation::class)
                 ->usingResource(NavigationResource::class)
                 ->itemType('Home', [])
+                ->itemType('About', [])
                 ->itemType('Announcements', [])
                 ->itemType('Current Conference', [])
                 ->itemType('Login', [])

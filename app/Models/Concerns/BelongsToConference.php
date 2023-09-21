@@ -3,7 +3,6 @@
 namespace App\Models\Concerns;
 
 use App\Models\Conference;
-use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -12,7 +11,7 @@ trait BelongsToConference
     public static function bootBelongsToConference()
     {
         static::creating(function (Model $model) {
-            $model->conference_id ??= app()->getCurrentConference()?->getKey() ?? Filament::getTenant();
+            $model->conference_id ??= app()->getCurrentConference()?->getKey();
         });
     }
 

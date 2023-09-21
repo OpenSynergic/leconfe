@@ -2,6 +2,7 @@
 
 namespace App\Conference\Pages;
 
+use Illuminate\Contracts\Support\Htmlable;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 
 class About extends Page
@@ -10,6 +11,11 @@ class About extends Page
 
     public function mount()
     {
+    }
+
+    public function getTitle(): string|Htmlable
+    {
+        return 'About the Conference';
     }
 
     public function getBreadcrumbs(): array
