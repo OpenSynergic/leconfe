@@ -5,7 +5,6 @@ namespace App\Panel\Livewire\Tables;
 use App\Panel\Livewire\Traits\PlaceholderTrait;
 use App\Panel\Resources\Conferences\SpeakerPositionResource;
 use Filament\Actions\CreateAction;
-use Filament\Facades\Filament;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
@@ -69,7 +68,7 @@ class SpeakerPositionTable extends Component implements HasForms, HasTable
             ->modalWidth('xl');
 
         if ($action instanceof CreateAction) {
-            $action->relationship(($tenant = Filament::getTenant()) ? fn (): Relation => static::getResource()::getTenantRelationship($tenant) : null);
+            $action->relationship(($tenant = app()->getCurrentConference()) ? fn (): Relation => static::getResource()::getTenantRelationship($tenant) : null);
         }
 
         if ($resource::hasPage('create')) {

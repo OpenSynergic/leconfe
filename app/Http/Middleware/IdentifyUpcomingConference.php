@@ -41,6 +41,7 @@ class IdentifyUpcomingConference
         }
 
         app()->setCurrentConference($conference);
+        app()->scopeCurrentConference();
 
         View::share('currentConference', $conference);
 

@@ -74,16 +74,6 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
         return $this->hasMany(Submission::class);
     }
 
-    public function speakers(): HasMany
-    {
-        return $this->hasMany(Speaker::class);
-    }
-
-    public function speakerPositions(): HasMany
-    {
-        return $this->hasMany(SpeakerPosition::class);
-    }
-
     public function venues(): HasMany
     {
         return $this->hasMany(Venue::class);
