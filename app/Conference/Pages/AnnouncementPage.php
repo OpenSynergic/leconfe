@@ -11,16 +11,10 @@ class AnnouncementPage extends Page
 {
     protected static string $view = 'conference.pages.announcement';
 
-    public string $id;
+    public Announcement $announcement;
 
     public function mount()
     {
-        //
-    }
-
-    public function getRecordProperty()
-    {
-        return Announcement::where('id', $this->id)->first();
     }
 
     protected function getViewData(): array
@@ -32,7 +26,7 @@ class AnnouncementPage extends Page
     {
         $slug = static::getSlug();
 
-        Route::get('announcements/{id}', static::class)
+        Route::get('announcements/{announcement}', static::class)
             ->middleware(static::getRouteMiddleware($pageGroup))
             ->withoutMiddleware(static::getWithoutRouteMiddleware($pageGroup))
             ->name((string) str($slug)->replace('/', '.'));

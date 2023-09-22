@@ -5,7 +5,6 @@ namespace App\Website\Pages;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Filament\Facades\Filament;
-use Filament\Http\Responses\Auth\Contracts\LoginResponse;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Rule;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
@@ -28,7 +27,7 @@ class Login extends Page
     public function mount()
     {
         if (Filament::auth()->check()) {
-            redirect()->intended(Filament::getUrl());
+            $this->redirect(Filament::getUrl(), navigate: false);
         }
     }
 
@@ -40,7 +39,7 @@ class Login extends Page
         ];
     }
 
-    public function login(): ?LoginResponse
+    public function login()
     {
         try {
             $this->rateLimit(5);
@@ -66,6 +65,6 @@ class Login extends Page
 
         session()->regenerate();
 
-        return app(LoginResponse::class);
+        $this->redirect(Filament::getUrl(), navigate: false);
     }
 }

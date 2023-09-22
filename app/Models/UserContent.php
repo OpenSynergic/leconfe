@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Models\Meta\UserContentMeta;
 use DateTimeInterface;
-use Filament\Facades\Filament;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -42,7 +41,7 @@ class UserContent extends Model implements HasMedia
     protected static function booted(): void
     {
         static::creating(function (UserContent $userContent) {
-            $userContent->conference_id ??= Filament::getTenant()?->getKey();
+            $userContent->conference_id ??= app()->getCurrentConference()?->getKey();
         });
     }
 

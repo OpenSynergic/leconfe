@@ -21,9 +21,6 @@ class ListConferences extends ListRecords
     public function mount(): void
     {
         parent::mount();
-
-        $this->upcomingConferenceCount = Conference::query()->where('status', ConferenceStatus::Upcoming)->count();
-        $this->archivedConferenceCount = Conference::query()->where('status', ConferenceStatus::Archived)->count();
     }
 
     protected function getHeaderActions(): array
@@ -38,12 +35,12 @@ class ListConferences extends ListRecords
         return [
             'upcoming' => Tab::make()
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', ConferenceStatus::Upcoming))
-                ->badge($this->upcomingConferenceCount),
+                ->badge(Conference::query()->where('status', ConferenceStatus::Upcoming)->count()),
             'current' => Tab::make()
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', ConferenceStatus::Current)),
             'archive' => Tab::make()
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', ConferenceStatus::Archived))
-                ->badge($this->archivedConferenceCount),
+                ->badge(Conference::query()->where('status', ConferenceStatus::Archived)->count()),
         ];
     }
 }
