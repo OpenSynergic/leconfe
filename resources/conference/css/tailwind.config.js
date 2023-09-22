@@ -13,7 +13,8 @@ export default {
         extend: {
             colors: {
                 primary : '#38BDF8',
-                secondary: '#4a4a5b'
+                secondary: '#4a4a5b',
+                heading: '#292828'
             },
             fontFamily: {
                 sans: ['var(--font-family)', ...defaultTheme.fontFamily.sans],

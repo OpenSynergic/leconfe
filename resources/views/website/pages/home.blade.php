@@ -1,12 +1,12 @@
 <x-conference::layouts.main>
     <div class="px-6 py-2 mt-6">
-        <p class="prose prose-lg text-secondary">Highlight Conference</p>
+        <p class="prose prose-lg text-heading">Highlight Conference</p>
     </div>
 
     <div class="card px-5 py-3 -mt-2">
         <div class="card-body space-y-2 border rounded">
             <div class="cf-current p-4 -mt-1">
-                <p class="prose prose-lg text-secondary -mt-2">{{ $currentConference->name }}</p>
+                <p class="prose prose-lg text-heading -mt-2">{{ $currentConference->name }}</p>
                 @if ($currentConference->hasMeta('date_held'))
                     <div class="inline-flex items-center space-x-2">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -45,7 +45,7 @@
     <section class="body-font text-gray-600 ms-3">
                 <div class="max-w-7xl container mx-auto py-4">
                     <div class="mb-4 flex w-full flex-wrap ps-5">
-                        <p class="prose prose-lg text-secondary">Upcoming Conferences</p>
+                        <p class="prose prose-lg text-heading">Upcoming Conferences</p>
                     </div>
 
                     <div class="cf flex flex-wrap mx-auto -mt-5" x-masonry=".cf-upcoming">
@@ -73,7 +73,7 @@
                                         </div>
                                     @endif
 
-                                    <h2 class="title-font mb-3 mt-1 text-lg prose prose:lg text-secondary">{{ $upcoming->name }}
+                                    <h2 class="title-font mb-3 mt-1 text-lg prose prose:lg text-heading">{{ $upcoming->name }}
                                     </h2>
                                     @if ($upcoming->hasMeta('description'))
                                         <p class="prose prose-sm text-secondary">{!! Str::words($upcoming->getMeta('description'), 15) !!}</p>

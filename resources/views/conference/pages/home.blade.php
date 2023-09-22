@@ -1,12 +1,12 @@
 <x-conference::layouts.main>
     <div class="px-6 py-2 mt-6">
-        <p class="prose prose-lg text-secondary">Current Conference</p>
+        <p class="prose prose-lg text-heading">Current Conference</p>
     </div>
 
     <div class="card px-5 py-3 -mt-2">
         <div class="card-body space-y-2 border rounded">
             <div class="cf-current p-4 -mt-1">
-                <p class="prose prose-lg text-secondary -mt-2">{{ $currentConference->name }}</p>
+                <p class="prose prose-lg text-heading -mt-2">{{ $currentConference->name }}</p>
                 @if ($currentConference->hasMeta('date_held'))
                     <div class="inline-flex items-center space-x-2">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -40,7 +40,7 @@
     <div class="card ps-4">
         <div class="card-body space-y-2">
             <div class="cf-information">
-                <p class="pb-3 prose prose-lg text-secondary">Information</p>
+                <p class="pb-3 prose prose-lg text-heading">Information</p>
                 @if ($currentConference->hasMeta('date_held') || $currentConference->hasMeta('location'))
                     <table class="w-full" cellpadding="4">
                         <tr>
@@ -72,7 +72,7 @@
             </div>
 
             <div class="cf-quota">
-                <p class="pb-2 prose prose-lg text-secondary">Quota</p>
+                <p class="pb-2 prose prose-lg text-heading">Quota</p>
                 <table class="w-full" cellpadding="4">
                     <tr>
                         <td width="80">Papers</td>
@@ -106,7 +106,7 @@
             </div>
 
             <div class="cf-contact">
-                <h4 class="prose prose-lg text-secondary pb-2">Contact</h4>
+                <h4 class="prose prose-lg text-heading pb-2">Contact</h4>
                 <table class="w-full" cellpadding="4">
                     <tr>
                         <td width="80">Email</td>
@@ -156,7 +156,7 @@
 
     <div class="card ms-5 lg:w-[90%]">
         <div class="card-body space-y-2">
-            <p class="prose prose-lg text-secondary">Keynote Speakers</p>
+            <p class="prose prose-lg text-heading">Keynote Speakers</p>
 
             <div class="cf-speakers">
                 <div class="flex flex-wrap gap-9">
@@ -293,7 +293,7 @@
 
     <div class="card mt-4 px-5">
         <div class="card-body">
-            <div class="prose prose-lg text-secondary">Registration Fee</div>
+            <div class="prose prose-lg text-heading">Registration Fee</div>
             <div class="grid grid-cols-1 items-center justify-center gap-6 p-4 text-center md:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 border bg-gray-50 rounded">
                 <div class="grid grid-flow-row space-y-2 text-center">
                   <h2 class="font-semibold text-secondary">Author Cluster</h2>
@@ -375,7 +375,7 @@
     <div class="card">
         <div class="card-body">
             <div class="flex flex-col gap-4">
-                <p class="mb-5 text-center prose prose-lg  text-gray-700">Sponsored By</p>
+                <p class="mb-5 text-center prose prose-lg  text-heading">Sponsored By</p>
                 <div class="flex flex-wrap justify-center md:justify-evenly gap-2">
                     <div class="avatar">
                         <div class="h-20 w-20 rounded-full">

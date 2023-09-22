@@ -1,5 +1,5 @@
 <div class="text-secondary">
-<h2 class="ml-1 text-lg">Dummy !</h2>
+<h2 class="ml-1 text-lg text-heading">Dummy !</h2>
      <div class="block space-y-2">
          <div class="card card-compact bg-white border">
              <div class="card-body">
