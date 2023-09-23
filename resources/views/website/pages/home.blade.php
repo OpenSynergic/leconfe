@@ -1,12 +1,11 @@
 <x-conference::layouts.main>
     <div class="px-6 py-2 mt-6">
-        <p class="prose prose-lg text-heading">Highlight Conference</p>
+        <p class="text-lg text-heading">Highlight Conference</p>
     </div>
-
     <div class="card px-5 py-3 -mt-2">
         <div class="card-body space-y-2 border rounded">
             <div class="cf-current p-4 -mt-1">
-                <p class="prose prose-lg text-heading -mt-2">{{ $currentConference->name }}</p>
+                <p class="text-lg text-heading -mt-2">{{ $currentConference->name }}</p>
                 @if ($currentConference->hasMeta('date_held'))
                     <div class="inline-flex items-center space-x-2">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -14,21 +13,21 @@
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
                         </svg>
-                        <time class="prose text-xs text-secondary">{{date('d M Y', strtotime($currentConference->getMeta('date_held')))}}</time>
+                        <time class="text-xs text-secondary">{{date('d M Y', strtotime($currentConference->getMeta('date_held')))}}</time>
                     </div>
                 @endif
 
                 <div class="flex flex-col sm:flex-row space-x-4">
                     @if ($currentConference->hasMedia('thumbnail'))
-                        <div class="cf-thumbnail sm:max-w-[12rem]">
-                            <img class="h-full w-full rounded object-cover sm:object-left-top"
+                        <div class="cf-thumbnail sm:max-w-[10rem]">
+                            <img class="h-full w-full rounded object-cover aspect-[4/3]"
                                 src="{{ $currentConference->getFirstMediaUrl('thumbnail', 'thumb') }}" alt="" />
                         </div>
                     @endif
                     <div class="flex flex-col gap-2 mt-3">
                         @if ($currentConference->hasMeta('description'))
-                            <div class="cf-description prose prose-sm -mt-2 text-secondary">
-                                <p>{!! $currentConference->getMeta('description') !!}</p>
+                            <div class="cf-description text-sm -mt-2 text-secondary prose text-justify">
+                                <p class="leading-6">{{ $currentConference->getMeta('description') }}</p>
                                 <div class="flex flex-wrap w-full gap-2 mt-4 md:max-w-[20rem]">
                                     @foreach ($topics as $topic)
                                         <span class="badge badge-outline badge-md text-xs text-secondary">{{ $topic->name }}</span>
@@ -45,7 +44,7 @@
     <section class="body-font text-gray-600 ms-3">
                 <div class="max-w-7xl container mx-auto py-4">
                     <div class="mb-4 flex w-full flex-wrap ps-5">
-                        <p class="prose prose-lg text-heading">Upcoming Conferences</p>
+                        <p class="text-lg text-heading">Upcoming Conferences</p>
                     </div>
 
                     <div class="cf flex flex-wrap mx-auto -mt-5" x-masonry=".cf-upcoming">
@@ -72,10 +71,10 @@
                                             src="{{ $upcoming->getFirstMediaUrl('thumbnail', 'thumb') }}"
                                             alt="{{ $upcoming->name }}" />
                                     @endif
-                                    <h2 class="title-font mb-3 mt-1 prose prose-base text-heading">{{ $upcoming->name }}
+                                    <h2 class="title-font mb-3 mt-1 text-base text-heading">{{ $upcoming->name }}
                                     </h2>
                                     @if ($upcoming->hasMeta('description'))
-                                        <p class="prose prose-sm text-secondary">{!! Str::words($upcoming->getMeta('description'), 14) !!}</p>
+                                        <p class="text-sm leading-6 text-secondary">{!! Str::words($upcoming->getMeta('description'), 15) !!}</p>
                                     @endif
                                     <div class="flex justify-end mt-2">
                                         <button
