@@ -14,7 +14,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
                         </svg>
-                        <time class="prose text-xs text-secondary">{{ $currentConference->getMeta('date_held') }}</time>
+                        <time class="prose text-xs text-secondary">{{date('d M Y', strtotime($currentConference->getMeta('date_held')))}}</time>
                     </div>
                 @endif
 
@@ -53,30 +53,29 @@
                             <div
                                 class="cf-upcoming w-full sm:max-w-[200px] md:max-w-full lg:max-w-[320px] xl:max-w-[300px] p-4">
                                 <div class="rounded border bg-white p-6">
-
-                                    @if ($upcoming->hasMedia('thumbnail'))
-                                        <img class="xs:h-72 mb-6 h-72 w-full rounded object-cover object-left-top sm:h-72 md:h-64 lg:h-60 xl:h-56"
-                                            src="{{ $upcoming->getFirstMediaUrl('thumbnail', 'thumb') }}"
-                                            alt="{{ $upcoming->name }}" />
-                                    @endif
-
                                     @if ($upcoming->hasMeta('date_held'))
-                                        <div class="inline-flex items-center gap-2">
+                                        <div class="inline-flex items-center gap-2 mb-2">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-500">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                     d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
                                             </svg>
 
-                                            <p class="text-xs text-secondary">Start on
-                                                {{ $upcoming->getMeta('date_held') }}</p>
+                                            <p class="text-xs text-secondary">
+                                                {{ date('d M Y', strtotime($upcoming->getMeta('date_held'))) }}
+                                            </p>
                                         </div>
                                     @endif
 
-                                    <h2 class="title-font mb-3 mt-1 text-lg prose prose:lg text-heading">{{ $upcoming->name }}
+                                    @if ($upcoming->hasMedia('thumbnail'))
+                                        <img class="xs:h-72 mb-6 h-72 w-full rounded object-cover sm:h-72 aspect-[4/3]"
+                                            src="{{ $upcoming->getFirstMediaUrl('thumbnail', 'thumb') }}"
+                                            alt="{{ $upcoming->name }}" />
+                                    @endif
+                                    <h2 class="title-font mb-3 mt-1 prose prose-base text-heading">{{ $upcoming->name }}
                                     </h2>
                                     @if ($upcoming->hasMeta('description'))
-                                        <p class="prose prose-sm text-secondary">{!! Str::words($upcoming->getMeta('description'), 15) !!}</p>
+                                        <p class="prose prose-sm text-secondary">{!! Str::words($upcoming->getMeta('description'), 14) !!}</p>
                                     @endif
                                     <div class="flex justify-end mt-2">
                                         <button
