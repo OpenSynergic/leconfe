@@ -116,7 +116,7 @@
                                     </span>
                                     <h2 class="mt-4 text-base font-medium text-gray-800 dark:text-white">Phone</h2>
                                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Mon-Fri from 8am to 5pm</p>
-                                    <p class="mt-2 text-sm text-primary dark:text-blue-400"> +3212345678</p>
+                                    <p class="mt-2 text-sm text-primary dark:text-blue-400"> +6285751536289</p>
                                 </div>
                             @endif
 
@@ -167,7 +167,7 @@
                                     <h2 class="mt-4 text-base font-medium text-gray-800 dark:text-white">Whatsapp</h2>
                                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">We're here to help</p>
                                     <a class="mt-2 block text-sm text-primary dark:text-blue-400"
-                                        href="https://wa.me/02334343243" target="_blank">Start new chat</a>
+                                        href="https://wa.me/02334030343243" target="_blank">Start new chat</a>
                                 </div>
                             @endif
 
@@ -206,7 +206,7 @@
                                         office
                                     </p>
                                     <p class="mt-2 text-sm text-primary">
-                                        1600 Pennsylvania Avenue NW, Washington, DC 20500
+                                        Jl. Karya Sabumi No.7, Pangeran, Kec. Banjarmasin Utara, Kota Banjarmasin, Kalimantan Selatan 70124
                                     </p>
                                 </div>
                             @endif

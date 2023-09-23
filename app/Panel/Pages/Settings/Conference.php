@@ -167,14 +167,8 @@ class Conference extends Page implements HasForms, HasInfolists
                                 FormSection::make()
                                     ->schema([
                                         CheckboxList::make('sidebar.position')
-                                            ->options([
-                                                SidebarPosition::Left->getValue() => SidebarPosition::Left->getLabel(),
-                                                SidebarPosition::Right->getValue() => SidebarPosition::Right->getLabel(),
-                                            ])
-                                            ->descriptions([
-                                                SidebarPosition::Left->getValue() => SidebarPosition::Left->getLabel() . ' Sidebar',
-                                                SidebarPosition::Right->getValue() => SidebarPosition::Right->getLabel() . ' Sidebar',
-                                            ])
+                                            ->options([])
+                                            ->descriptions([])
                                             ->reactive()
                                             ->helperText(__('If you choose both sidebars, the layout will have three columns.')),
                                         Grid::make(3)
