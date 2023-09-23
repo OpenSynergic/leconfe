@@ -145,17 +145,6 @@ class Conference extends Page implements HasForms, HasInfolists
                             ->schema([
                                 FormSection::make()
                                     ->schema([
-                                        CheckboxList::make('sidebar.position')
-                                            ->options([
-                                                SidebarPosition::Left->getValue() => SidebarPosition::Left->getLabel(),
-                                                SidebarPosition::Right->getValue() => SidebarPosition::Right->getLabel(),
-                                            ])
-                                            ->descriptions([
-                                                SidebarPosition::Left->getValue() => SidebarPosition::Left->getLabel() . ' Sidebar',
-                                                SidebarPosition::Right->getValue() => SidebarPosition::Right->getLabel() . ' Sidebar',
-                                            ])
-                                            ->reactive()
-                                            ->helperText(__('If you choose both sidebars, the layout will have three columns.')),
                                         Grid::make(3)
                                             ->columns([
                                                 'xl' => 3,
@@ -282,8 +271,8 @@ class Conference extends Page implements HasForms, HasInfolists
                                                 ->successNotificationTitle('Saved!')
                                                 ->failureNotificationTitle('Data could not be saved.')
                                                 ->action(function (Action $action) {
+                                                    $formData = $this->generalForm->getState();
                                                     try {
-                                                        $formData = $this->generalForm->getState();
                                                         ConferenceUpdateAction::run(app()->getCurrentConference(), $formData);
                                                         $action->sendSuccessNotification();
                                                     } catch (\Throwable $th) {
@@ -318,9 +307,9 @@ class Conference extends Page implements HasForms, HasInfolists
                                                         ->label('Save')
                                                         ->successNotificationTitle('Saved!')
                                                         ->action(function (Action $action) {
+                                                            $setupFormData = $this->setupForm->getState();
                                                             try {
-                                                                ConferenceUpdateAction::run(app()->getCurrentConference(), $this->setupForm->getState());
-
+                                                                ConferenceUpdateAction::run(app()->getCurrentConference(), $setupFormData);
                                                                 $action->sendSuccessNotification();
                                                             } catch (\Throwable $th) {
                                                                 $action->sendFailureNotification();

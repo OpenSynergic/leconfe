@@ -2,7 +2,6 @@
     <div class="px-6 py-2 mt-6">
         <p class="prose prose-lg text-heading">Current Conference</p>
     </div>
-
     <div class="card px-5 py-3 -mt-2">
         <div class="card-body space-y-2 border rounded">
             <div class="cf-current p-4 -mt-1">
@@ -25,7 +24,7 @@
                                 src="{{ $currentConference->getFirstMediaUrl('thumbnail', 'thumb') }}" alt="" />
                         </div>
                     @endif
-                    <div class="flex flex-col gap-2">
+                    <div class="flex flex-col mt-3 gap-2">
                         @if ($currentConference->hasMeta('description'))
                             <div class="cf-description prose prose-sm text-secondary -mt-2">
                                 <p>{!! $currentConference->getMeta('description') !!}</p>

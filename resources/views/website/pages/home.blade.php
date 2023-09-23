@@ -25,7 +25,7 @@
                                 src="{{ $currentConference->getFirstMediaUrl('thumbnail', 'thumb') }}" alt="" />
                         </div>
                     @endif
-                    <div class="flex flex-col gap-2">
+                    <div class="flex flex-col gap-2 mt-3">
                         @if ($currentConference->hasMeta('description'))
                             <div class="cf-description prose prose-sm -mt-2 text-secondary">
                                 <p>{!! $currentConference->getMeta('description') !!}</p>
