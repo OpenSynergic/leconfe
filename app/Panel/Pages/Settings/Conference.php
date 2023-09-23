@@ -9,25 +9,20 @@ use Illuminate\Validation\Rule;
 use Filament\Infolists\Infolist;
 use App\Forms\Components\BlockList;
 use Filament\Forms\Components\Grid;
-use App\Models\Enums\SidebarPosition;
 use App\Facades\Block as FacadesBlock;
 use App\Forms\Components\VerticalTabs;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Components\Repeater;
 use Filament\Infolists\Components\Tabs;
 use App\Infolists\Components\BladeEntry;
 use Filament\Forms\Components\TextInput;
 use App\Livewire\Block as BlockComponent;
-use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Forms\Concerns\InteractsWithForms;
-use Ysfkaya\FilamentPhoneInput\Forms\PhoneInput;
 use App\Actions\Blocks\UpdateBlockSettingsAction;
 use App\Actions\Conferences\ConferenceUpdateAction;
-use Ysfkaya\FilamentPhoneInput\PhoneInputNumberType;
 use Filament\Forms\Components\Section as FormSection;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
@@ -52,9 +47,46 @@ class Conference extends Page implements HasForms, HasInfolists
 
     public array $setupFormData = [];
 
+    public array $appereanceFormData = [];
+
     public array $contactFormData = [];
 
+    public function mount()
+    {
+        $this->appereanceForm->fill([
+            'sidebar' => [
+                'blocks' => [
+                    'left' => FacadesBlock::getBlocks(position: 'left', includeInactive: true)
+                        ->map(
+                            fn (BlockComponent $block) => (object) $block->getSettings()
+                        )
+                        ->keyBy(
+                            fn () => str()->uuid()->toString()
+                        ),
+                    'right' => FacadesBlock::getBlocks(position: 'right', includeInactive: true)
+                        ->map(
+                            fn (BlockComponent $block) => (object) $block->getSettings()
+                        )
+                        ->keyBy(
+                            fn () => str()->uuid()->toString()
+                        ),
+                ],
+            ],
+        ]);
 
+        $this->generalForm->fill([
+            ...app()->getCurrentConference()->attributesToArray(),
+            'meta' => app()->getCurrentConference()->getAllMeta()->toArray(),
+        ]);
+
+        $this->contactForm->fill([
+            'meta' => app()->getCurrentConference()->getAllMeta()->toArray(),
+        ]);
+
+        $this->setupForm->fill([
+            'meta' => app()->getCurrentConference()->getAllMeta()->toArray(),
+        ]);
+    }
 
     public function infolist(Infolist $infolist): Infolist
     {
@@ -66,6 +98,11 @@ class Conference extends Page implements HasForms, HasInfolists
                             ->schema([
                                 BladeEntry::make('general')
                                     ->blade('{{ $this->generalForm }}'),
+                            ]),
+                        Tabs\Tab::make('Appearance')
+                            ->schema([
+                                BladeEntry::make('general')
+                                    ->blade('{{ $this->appereanceForm }}'),
                             ]),
                         Tabs\Tab::make('Contact')
                             ->schema([
@@ -87,8 +124,85 @@ class Conference extends Page implements HasForms, HasInfolists
         return [
             'generalForm',
             'setupForm',
+            'appereanceForm',
             'contactForm',
         ];
+    }
+
+    public function updateBlocks($statePath, $blockSettings)
+    {
+        $blocks = [];
+        foreach ($blockSettings as $sort => $blockSetting) {
+            $sort++; // To sort a number, take it from the array index.
+            [$uuid, $enabled, $originalState] = explode(':', $blockSetting);
+            $block = data_get($this, $originalState . '.' . $uuid);
+            // The block is being moved to a new position.
+            if ($originalState != $statePath) {
+                $block->position = str($statePath)->contains('blocks.left') ? 'left' : 'right';
+            }
+
+            $block->sort = $sort;
+            $block->active = $enabled == 'enabled';
+            $blocks[$uuid] = $block;
+        }
+
+        data_set($this, $statePath, $blocks);
+    }
+
+    public function appereanceForm(Form $form): Form
+    {
+        return $form
+            ->statePath('appereanceFormData')
+            ->schema([
+                VerticalTabs\Tabs::make('Sidebar')
+                    ->schema([
+                        VerticalTabs\Tab::make('Sidebar')
+                            ->icon('heroicon-o-view-columns')
+                            ->schema([
+                                FormSection::make()
+                                    ->schema([
+                                        Grid::make(3)
+                                            ->columns([
+                                                'xl' => 3,
+                                                'sm' => 3,
+                                            ])
+                                            ->schema([
+                                                BlockList::make('sidebar.blocks.left')
+                                                    ->label(__('Left Sidebar'))
+                                                    ->reactive(),
+                                                BlockList::make('sidebar.blocks.right')
+                                                    ->label(__('Right Sidebar'))
+                                                    ->reactive(),
+                                            ]),
+                                        Actions::make([
+                                            Action::make('save_appreance')
+                                                ->label('Save')
+                                                ->successNotificationTitle('Saved!')
+                                                ->failureNotificationTitle('Data could not be saved.')
+                                                ->action(function (Action $action) {
+                                                    $formData = $this->appereanceForm->getState();
+                                                    try {
+                                                        $sidebarFormData = $formData['sidebar'];
+                                                        foreach ($sidebarFormData['blocks'] as $blocks) {
+                                                            foreach ($blocks as $block) {
+                                                                UpdateBlockSettingsAction::run($block->class, [
+                                                                    'position' => $block->position,
+                                                                    'sort' => $block->sort,
+                                                                    'active' => $block->active,
+                                                                ]);
+                                                            }
+                                                        }
+                                                        $action->sendSuccessNotification();
+                                                    } catch (\Throwable $th) {
+                                                        $action->sendFailureNotification();
+                                                    }
+                                                }),
+                                        ])->alignLeft(),
+                                    ]),
+
+                            ]),
+                    ]),
+            ]);
     }
 
 
@@ -173,8 +287,12 @@ class Conference extends Page implements HasForms, HasInfolists
                                                 ->failureNotificationTitle('Data could not be saved.')
                                                 ->action(function (Action $action) {
                                                     $formData = $this->generalForm->getState();
-                                                    ConferenceUpdateAction::run(app()->getCurrentConference(), $formData);
-                                                    $action->sendSuccessNotification();
+                                                    try {
+                                                        ConferenceUpdateAction::run(app()->getCurrentConference(), $formData);
+                                                        $action->sendSuccessNotification();
+                                                    } catch (\Throwable $th) {
+                                                        $action->sendFailureNotification();
+                                                    }
                                                 }),
                                         ])->alignLeft(),
                                     ]),
@@ -246,8 +364,12 @@ class Conference extends Page implements HasForms, HasInfolists
                                                 ->failureNotificationTitle('Data could not be saved')
                                                 ->action(function (Action $action) {
                                                     $contactData = $this->contactForm->getState();
-                                                    ConferenceUpdateAction::run(app()->getCurrentConference(), $contactData);
-                                                    $action->sendSuccessNotification();
+                                                    try {
+                                                        ConferenceUpdateAction::run(app()->getCurrentConference(), $contactData);
+                                                        $action->sendSuccessNotification();
+                                                    } catch (\Throwable $th) {
+                                                        $action->sendFailureNotification();
+                                                    }
                                                 })
                                         ])
                                     ])
@@ -278,8 +400,12 @@ class Conference extends Page implements HasForms, HasInfolists
                                                         ->successNotificationTitle('Saved!')
                                                         ->action(function (Action $action) {
                                                             $setupFormData = $this->setupForm->getState();
-                                                            ConferenceUpdateAction::run(app()->getCurrentConference(), $setupFormData);
-                                                            $action->sendSuccessNotification();
+                                                            try {
+                                                                ConferenceUpdateAction::run(app()->getCurrentConference(), $setupFormData);
+                                                                $action->sendSuccessNotification();
+                                                            } catch (\Throwable $th) {
+                                                                $action->sendFailureNotification();
+                                                            }
                                                         }),
                                                 ])->alignLeft(),
                                             ])
