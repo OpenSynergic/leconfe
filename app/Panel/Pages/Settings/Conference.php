@@ -54,44 +54,7 @@ class Conference extends Page implements HasForms, HasInfolists
 
     public array $contactFormData = [];
 
-    public array $appereanceFormData = [];
 
-    public function mount()
-    {
-        $this->appereanceForm->fill([
-            'sidebar' => [
-                'blocks' => [
-                    'left' => FacadesBlock::getBlocks(position: 'left', includeInactive: true)
-                        ->map(
-                            fn (BlockComponent $block) => (object) $block->getSettings()
-                        )
-                        ->keyBy(
-                            fn () => str()->uuid()->toString()
-                        ),
-                    'right' => FacadesBlock::getBlocks(position: 'right', includeInactive: true)
-                        ->map(
-                            fn (BlockComponent $block) => (object) $block->getSettings()
-                        )
-                        ->keyBy(
-                            fn () => str()->uuid()->toString()
-                        ),
-                ],
-            ],
-        ]);
-        $this->generalForm->fill([
-            ...app()->getCurrentConference()->attributesToArray(),
-            'meta' => app()->getCurrentConference()->getAllMeta()->toArray(),
-        ]);
-
-        $this->contactForm->fill([
-            ...Filament::getTenant()->attributesToArray(),
-            'meta' => Filament::getTenant()->getAllMeta()->toArray()
-        ]);
-
-        $this->setupForm->fill([
-            'meta' => app()->getCurrentConference()->getAllMeta()->toArray(),
-        ]);
-    }
 
     public function infolist(Infolist $infolist): Infolist
     {
@@ -109,11 +72,6 @@ class Conference extends Page implements HasForms, HasInfolists
                                 BladeEntry::make('general')
                                     ->blade('{{ $this->contactForm }}'),
                             ]),
-                        Tabs\Tab::make('Appearance')
-                            ->schema([
-                                BladeEntry::make('general')
-                                    ->blade('{{ $this->appereanceForm }}'),
-                            ]),
                         Tabs\Tab::make('Setup')
                             ->schema([
                                 BladeEntry::make('general')
@@ -129,91 +87,10 @@ class Conference extends Page implements HasForms, HasInfolists
         return [
             'generalForm',
             'setupForm',
-            'appereanceForm',
             'contactForm',
         ];
     }
 
-    public function updateBlocks($statePath, $blockSettings)
-    {
-        $blocks = [];
-        foreach ($blockSettings as $sort => $blockSetting) {
-            $sort++; // To sort a number, take it from the array index.
-            [$uuid, $enabled, $originalState] = explode(':', $blockSetting);
-            $block = data_get($this, $originalState . '.' . $uuid);
-            // The block is being moved to a new position.
-            if ($originalState != $statePath) {
-                $block->position = str($statePath)->contains('blocks.left') ? 'left' : 'right';
-            }
-
-            $block->sort = $sort;
-            $block->active = $enabled == 'enabled';
-            $blocks[$uuid] = $block;
-        }
-
-        data_set($this, $statePath, $blocks);
-    }
-
-    public function appereanceForm(Form $form): Form
-    {
-        return $form
-            ->statePath('appereanceFormData')
-            ->schema([
-                VerticalTabs\Tabs::make('Sidebar')
-                    ->schema([
-                        VerticalTabs\Tab::make('Sidebar')
-                            ->icon('heroicon-o-view-columns')
-                            ->schema([
-                                FormSection::make()
-                                    ->schema([
-                                        CheckboxList::make('sidebar.position')
-                                            ->options([])
-                                            ->descriptions([])
-                                            ->reactive()
-                                            ->helperText(__('If you choose both sidebars, the layout will have three columns.')),
-                                        Grid::make(3)
-                                            ->columns([
-                                                'xl' => 3,
-                                                'sm' => 3,
-                                            ])
-                                            ->schema([
-                                                BlockList::make('sidebar.blocks.left')
-                                                    ->label(__('Left Sidebar'))
-                                                    ->reactive(),
-                                                BlockList::make('sidebar.blocks.right')
-                                                    ->label(__('Right Sidebar'))
-                                                    ->reactive(),
-                                            ]),
-                                        Actions::make([
-                                            Action::make('save_appreance')
-                                                ->label('Save')
-                                                ->successNotificationTitle('Saved!')
-                                                ->failureNotificationTitle('Data could not be saved.')
-                                                ->action(function (Action $action) {
-                                                    try {
-                                                        $formData = $this->appereanceForm->getState();
-                                                        $sidebarFormData = $formData['sidebar'];
-                                                        foreach ($sidebarFormData['blocks'] as $blocks) {
-                                                            foreach ($blocks as $block) {
-                                                                UpdateBlockSettingsAction::run($block->class, [
-                                                                    'position' => $block->position,
-                                                                    'sort' => $block->sort,
-                                                                    'active' => $block->active,
-                                                                ]);
-                                                            }
-                                                        }
-
-                                                        $action->sendSuccessNotification();
-                                                    } catch (\Throwable $th) {
-                                                        $action->sendFailureNotification();
-                                                    }
-                                                }),
-                                        ])->alignLeft(),
-                                    ]),
-                            ]),
-                    ]),
-            ]);
-    }
 
     public function generalForm(Form $form): Form
     {
@@ -278,18 +155,6 @@ class Conference extends Page implements HasForms, HasInfolists
                                                     ->columnSpan([
                                                         'sm' => 2,
                                                     ]),
-                                                Repeater::make('meta.additional_content')
-                                                    ->columnSpanFull()
-                                                    ->schema([
-                                                        TinyEditor::make('additional')
-                                                            ->label('')
-                                                            ->minHeight(300)
-                                                            ->columnSpan([
-                                                                'sm' => 2
-                                                            ])
-                                                    ])
-                                                    ->label('Additional Content')
-                                                    ->addActionLabel('New Content'),
                                                 TinyEditor::make('meta.about')
                                                     ->label('About Conference')
                                                     ->minHeight(300)
@@ -308,7 +173,7 @@ class Conference extends Page implements HasForms, HasInfolists
                                                 ->failureNotificationTitle('Data could not be saved.')
                                                 ->action(function (Action $action) {
                                                     $formData = $this->generalForm->getState();
-                                                    ConferenceUpdateAction::run(Filament::getTenant(), $formData);
+                                                    ConferenceUpdateAction::run(app()->getCurrentConference(), $formData);
                                                     $action->sendSuccessNotification();
                                                 }),
                                         ])->alignLeft(),
@@ -381,7 +246,7 @@ class Conference extends Page implements HasForms, HasInfolists
                                                 ->failureNotificationTitle('Data could not be saved')
                                                 ->action(function (Action $action) {
                                                     $contactData = $this->contactForm->getState();
-                                                    ConferenceUpdateAction::run(Filament::getTenant(), $contactData);
+                                                    ConferenceUpdateAction::run(app()->getCurrentConference(), $contactData);
                                                     $action->sendSuccessNotification();
                                                 })
                                         ])
@@ -413,7 +278,7 @@ class Conference extends Page implements HasForms, HasInfolists
                                                         ->successNotificationTitle('Saved!')
                                                         ->action(function (Action $action) {
                                                             $setupFormData = $this->setupForm->getState();
-                                                            ConferenceUpdateAction::run(Filament::getTenant(), $setupFormData);
+                                                            ConferenceUpdateAction::run(app()->getCurrentConference(), $setupFormData);
                                                             $action->sendSuccessNotification();
                                                         }),
                                                 ])->alignLeft(),
