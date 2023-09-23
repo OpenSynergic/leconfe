@@ -18,12 +18,10 @@ class Contact extends Page
     #[Rule('required')]
     public ?string $message = null;
 
-
     public function submit()
     {
         $this->validate();
     }
-
 
     public function mount()
     {
