@@ -2,7 +2,7 @@
 
 namespace App\Administration\Resources;
 
-use App\Actions\Conferences\ConferenceSetCurrentAction;
+use App\Actions\Conferences\ConferenceSetActiveAction;
 use App\Administration\Resources\ConferenceResource\Pages;
 use App\Models\Conference;
 use App\Models\Enums\ConferenceType;
@@ -93,19 +93,19 @@ class ConferenceResource extends Resource
                             ->required()
                             ->options(ConferenceType::array()),
                     ]),
-                Section::make('Banner')
-                    ->columnSpan([
-                        'sm' => 2,
-                    ])
-                    ->schema([
-                        SpatieMediaLibraryFileUpload::make('banner')
-                            ->collection('banner')
-                            ->label('')
-                            ->image()
-                            ->reorderable()
-                            ->multiple()
-                            ->conversion('thumb'),
-                    ]),
+                // Section::make('Banner')
+                //     ->columnSpan([
+                //         'sm' => 2,
+                //     ])
+                //     ->schema([
+                //         SpatieMediaLibraryFileUpload::make('banner')
+                //             ->collection('banner')
+                //             ->label('')
+                //             ->image()
+                //             ->reorderable()
+                //             ->multiple()
+                //             ->conversion('thumb'),
+                //     ]),
             ])
             ->columns([
                 'sm' => 3,
@@ -136,16 +136,16 @@ class ConferenceResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
-                    Tables\Actions\Action::make('set_as_current')
+                    Tables\Actions\Action::make('set_as_active')
                         ->color('success')
                         ->icon('heroicon-o-check')
                         ->requiresConfirmation()
-                        ->hidden(fn (Conference $record) => $record->isCurrent())
-                        ->successNotificationTitle(fn () => 'Current conference is changed')
-                        ->visible(fn (Conference $record) => auth()->user()->can('setAsCurrent', $record))
+                        ->hidden(fn (Conference $record) => $record->isActive())
+                        ->successNotificationTitle(fn () => 'Active conference is changed')
+                        ->visible(fn (Conference $record) => auth()->user()->can('setAsActive', $record))
                         ->action(function ($record, Tables\Actions\Action $action) {
                             try {
-                                ConferenceSetCurrentAction::run($record);
+                                ConferenceSetActiveAction::run($record);
                             } catch (\Throwable $th) {
                                 $action->failure();
 

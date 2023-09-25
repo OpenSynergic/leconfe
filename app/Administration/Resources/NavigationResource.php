@@ -2,6 +2,7 @@
 
 namespace App\Administration\Resources;
 
+use App\Application;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
@@ -32,7 +33,7 @@ class NavigationResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $query = static::getModel()::query()
-            ->where('conference_id', 0);
+            ->where('conference_id', Application::CONTEXT_WEBSITE);
 
         return $query;
     }

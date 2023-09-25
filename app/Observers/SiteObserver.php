@@ -3,11 +3,13 @@
 namespace App\Observers;
 
 use App\Actions\Participants\ParticipantPositionPopulateDefaultDataAction;
+use App\Application;
 use App\Models\Conference;
 use App\Models\Navigation;
+use App\Models\Site;
 use Illuminate\Support\Str;
 
-class ConferenceObserver
+class SiteObserver
 {
     /**
      * Handle events after all transactions are committed.
@@ -17,16 +19,14 @@ class ConferenceObserver
     public $afterCommit = true;
 
     /**
-     * Handle the Conference "created" event.
+     * Handle the Site "created" event.
      */
-    public function created(Conference $conference): void
+    public function created(Site $site): void
     {
-        ParticipantPositionPopulateDefaultDataAction::run($conference);
-
         Navigation::create([
             'name' => 'Primary Navigation Menu',
             'handle' => 'primary-navigation-menu',
-            'conference_id' => $conference->getKey(),
+            'conference_id' => Application::CONTEXT_WEBSITE,
             'items' => [
                 Str::uuid()->toString() => [
                     'label' => 'Home',
@@ -35,8 +35,8 @@ class ConferenceObserver
                     'children' => [],
                 ],
                 Str::uuid()->toString() => [
-                    'label' => 'Announcements',
-                    'type' => 'announcements',
+                    'label' => 'Current Conference',
+                    'type' => 'current-conference',
                     'data' => null,
                     'children' => [],
                 ],
@@ -45,43 +45,41 @@ class ConferenceObserver
     }
 
     /**
-     * Handle the Conference "updated" event.
+     * Handle the Site "updated" event.
      */
-    public function updated(Conference $conference): void
+    public function updated(Site $site): void
     {
         //
     }
 
     /**
-     * Handle the Conference "deleted" event.
+     * Handle the Site "deleted" event.
      */
-    public function deleted(Conference $conference): void
+    public function deleted(Site $site): void
     {
         //
     }
 
     /**
-     * Handle the Conference "deleted" event.
+     * Handle the Site "deleted" event.
      */
-    public function deleting(Conference $conference): void
+    public function deleting(Site $site): void
     {
-        if ($conference->getKey() == Conference::active()?->getKey()) {
-            throw new \Exception('Conference cannot be deleted because it is currently active');
-        }
+       
     }
 
     /**
-     * Handle the Conference "restored" event.
+     * Handle the Site "restored" event.
      */
-    public function restored(Conference $conference): void
+    public function restored(Site $site): void
     {
         //
     }
 
     /**
-     * Handle the Conference "force deleted" event.
+     * Handle the Site "force deleted" event.
      */
-    public function forceDeleted(Conference $conference): void
+    public function forceDeleted(Site $site): void
     {
         //
     }

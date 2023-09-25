@@ -17,6 +17,9 @@ use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
 use Illuminate\Support\HtmlString;
+use App\Infolists\Components\VerticalTabs;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\TextInput;
 
 class SiteSettings extends Page implements HasForms, HasInfolists
 {
@@ -28,11 +31,17 @@ class SiteSettings extends Page implements HasForms, HasInfolists
 
     public array $setupFormData = [];
 
+    public array $informationFormData = [];
+
     public function mount()
     {
         $this->setupForm->fill([
             'format' => setting('format'),
             'privacy_statement' => setting('privacy_statement'),
+        ]);
+
+        $this->informationForm->fill([
+            'meta' => app()->getSite()->getAllMeta()->toArray(),
         ]);
     }
 
@@ -42,8 +51,19 @@ class SiteSettings extends Page implements HasForms, HasInfolists
             ->schema([
                 Tabs::make('site_settings')
                     ->tabs([
+                        Tabs\Tab::make('About')
+                            ->schema([
+                                VerticalTabs\Tabs::make()
+                                    ->tabs([
+                                        VerticalTabs\Tab::make("Information")
+                                            ->icon('heroicon-o-information-circle')
+                                            ->schema([
+                                                BladeEntry::make('general')
+                                                    ->blade('{{ $this->informationForm }}'),
+                                            ])
+                                    ]),
+                            ]),
                         Tabs\Tab::make('Setup')
-                            ->icon('heroicon-m-window')
                             ->schema([
                                 BladeEntry::make('general')
                                     ->blade('{{ $this->setupForm }}'),
@@ -56,8 +76,54 @@ class SiteSettings extends Page implements HasForms, HasInfolists
     protected function getForms(): array
     {
         return [
+            'informationForm',
             'setupForm',
         ];
+    }
+
+    public function informationForm(Form $form): Form
+    {
+        return $form
+            ->statePath('informationFormData')
+            ->schema([
+                Section::make()
+                    ->schema([
+                        TextInput::make('meta.name')
+                            ->label('Website Name')
+                            ->required(),
+                        TextInput::make('meta.format.date')
+                            ->required(),
+                        TextInput::make('meta.format.time')
+                            ->required(),
+                        SpatieMediaLibraryFileUpload::make('logo')
+                            ->collection('logo')
+                            ->image()
+                            ->model(app()->getSite())
+                            ->imageResizeUpscale(false)
+                            ->conversion('thumb')
+                            ->columnSpan([
+                                'sm' => 2,
+                            ]),
+                        Actions::make([
+                            Action::make('savesss')
+                                ->successNotificationTitle('Saved!')
+                                ->failureNotificationTitle('Failed!')
+                                ->action(function (Action $action) {
+                                    $data = $this->informationForm->getState();
+                                    try {
+                                        $site = app()->getSite();
+                                        $site->setManyMeta($data['meta']);
+                                        $site->save();
+
+                                        $action->sendSuccessNotification();
+                                    } catch (\Throwable $th) {
+                                        $action->sendFailureNotification();
+                                    }
+                                }),
+                        ]),
+                    ])
+                    ->columns(2)
+            ]);
     }
 
     public function setupForm(Form $form): Form

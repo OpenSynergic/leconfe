@@ -1,20 +1,16 @@
-@props([
-    'href' => url('/'),
-])
-
-@if ($currentConference->hasMedia('logo'))
+@if ($headerLogo)
     <x-conference::link 
         {{ $attributes }}
-        :href="$href"
+        :href="$homeUrl"
     >
-        <img src="{{ $currentConference->getFirstMedia('logo')->getAvailableUrl(['thumb','thumb-xl']) }}" alt="{{ $currentConference->name }}"
+        <img src="{{ $headerLogo }}" alt="{{ $headerLogoAltText }}"
         class="max-h-12 w-auto">
     </x-conference::link>
 @else
     <x-conference::link 
-        :href="$href" 
+        :href="$homeUrl" 
         {{ $attributes->merge(['class' => 'text-lg sm:text-lg']) }}
     >
-        {{ $currentConference->name }}
+        {{ $headerLogoAltText }}
     </x-conference::link>
 @endif

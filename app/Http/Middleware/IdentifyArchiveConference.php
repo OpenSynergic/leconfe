@@ -31,7 +31,7 @@ class IdentifyArchiveConference
         }
 
         switch ($conference->status) {
-            case ConferenceStatus::Current:
+            case ConferenceStatus::Active:
                 return redirect('current');
                 break;
             case ConferenceStatus::Upcoming:
@@ -41,8 +41,6 @@ class IdentifyArchiveConference
 
         app()->setCurrentConference($conference);
         app()->scopeCurrentConference();
-
-        View::share('currentConference', $conference);
 
         return $next($request);
     }

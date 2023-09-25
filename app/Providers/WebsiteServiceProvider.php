@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Facades\Block;
+use App\Http\Middleware\DefaultViewData;
 use App\Http\Middleware\IdentifyCurrentConference;
 use App\Managers\BlockManager;
 use App\Website\Blocks\ExampleBlock;
@@ -37,7 +38,7 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
             })
             ->middleware([
                 'web',
-                IdentifyCurrentConference::class,
+                DefaultViewData::class,
             ], true)
             ->discoverPages(in: app_path('Website/Pages'), for: 'App\\Website\\Pages');
     }

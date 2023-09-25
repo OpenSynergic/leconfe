@@ -202,7 +202,7 @@ class Conference extends Page implements HasForms, HasInfolists
                         VerticalTabs\Tab::make('Information')
                             ->icon('heroicon-o-information-circle')
                             ->schema([
-                                FormSection::make('Information')
+                                FormSection::make()
                                     ->schema([
                                         Grid::make(2)
                                             ->schema([

@@ -22,7 +22,7 @@ class ConferenceUpdateAction
             }
 
             if (data_get($data, 'is_current')) {
-                ConferenceSetCurrentAction::run($conference);
+                ConferenceSetActiveAction::run($conference);
             }
 
             DB::commit();

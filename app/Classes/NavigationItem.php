@@ -66,7 +66,7 @@ class NavigationItem
             'register' => fn() => route('livewirePageGroup.website.pages.register'),
             'login' => fn() => route('livewirePageGroup.website.pages.login'),
             'home' => fn(?Conference $conference = null) => match($conference?->status){
-                ConferenceStatus::Current => route('livewirePageGroup.current-conference.pages.home'),
+                ConferenceStatus::Active => route('livewirePageGroup.current-conference.pages.home'),
                 ConferenceStatus::Archived => route('livewirePageGroup.archive-conference.pages.home', ['conference' => $conference->path]),
                 default => route('livewirePageGroup.website.pages.home'),
             },

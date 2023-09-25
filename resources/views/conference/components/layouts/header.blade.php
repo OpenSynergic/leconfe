@@ -1,4 +1,4 @@
-@php($primaryNavigationItems = $currentConference->getNavigationItems('primary-navigation-menu'))
+@php($primaryNavigationItems = app()->getNavigationItems('primary-navigation-menu'))
 
 
 <div class="navbar-container sticky top-0 z-[60] bg-sky-400 text-white">

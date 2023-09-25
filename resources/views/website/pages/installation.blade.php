@@ -85,8 +85,8 @@
                                         Given Name <span class="text-red-500">*</span>
                                     </label>
                                     <input type="text" class="input input-bordered input-sm"
-                                    wire:model="account.given_name" required/>
-                                    @error('account.given_name')
+                                    wire:model="form.given_name" required/>
+                                    @error('form.given_name')
                                         <div class="text-red-600 text-sm">
                                             {{ $message }}
                                         </div>
@@ -97,8 +97,8 @@
                                         Family Name <span class="text-red-500">*</span>
                                     </label>
                                     <input type="text" class="input input-bordered input-sm"
-                                    wire:model="account.family_name" required/>
-                                    @error('account.family_name')
+                                    wire:model="form.family_name" required/>
+                                    @error('form.family_name')
                                         <div class="text-red-600 text-sm">
                                             {{ $message }}
                                         </div>
@@ -109,8 +109,8 @@
                                         Email <span class="text-red-500">*</span>
                                     </label>
                                     <input type="email" class="input input-bordered input-sm"
-                                    wire:model="account.email" />
-                                    @error('account.email')
+                                    wire:model="form.email" />
+                                    @error('form.email')
                                         <div class="text-red-600 text-sm">
                                             {{ $message }}
                                         </div>
@@ -121,8 +121,8 @@
                                         Password <span class="text-red-500">*</span>
                                     </label>
                                     <input type="password" class="input input-bordered input-sm"
-                                    wire:model="account.password" required/>
-                                    @error('account.password')
+                                    wire:model="form.password" required/>
+                                    @error('form.password')
                                         <div class="text-red-600 text-sm">
                                             {{ $message }}
                                         </div>
@@ -133,13 +133,39 @@
                                         Password Confirmation <span class="text-red-500">*</span>
                                     </label>
                                     <input type="password" class="input input-bordered input-sm"
-                                    wire:model="account.password_confirmation" required />
-                                    @error('account.password_confirmation')
+                                    wire:model="form.password_confirmation" required />
+                                    @error('form.password_confirmation')
                                         <div class="text-red-600 text-sm">
                                             {{ $message }}
                                         </div>
                                     @enderror
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timezone space-y-4">
+                        <div class="mt-2.5 mb-6 space-y-2">
+                            <h2 class="text-lg not-italic font-semibold leading-7 text-black">Timezone</h2>
+                            <p class="w-full text-sm not-italic leading-snug ">
+                                The timezone that application gonna use.
+                            </p>
+                        </div>
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div class="form-control gap-2">
+                                <select class="select select-sm select-bordered" wire:model="form.timezone" required>
+                                    @foreach ($groupedTimezone as $group => $timezones)
+                                        <optgroup label="{{ $group }}">
+                                            @foreach ($timezones as $key => $timezone)
+                                                <option value="{{ $key }}">{{ $timezone }}</option>
+                                            @endforeach
+                                        </optgroup>
+                                    @endforeach
+                                </select>
+                                @error('database.connection')
+                                    <div class="text-red-600 text-sm">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -150,7 +176,7 @@
                                 Leconfe needs to access a SQL database to save its information. You can find the list of supported databases in the system requirements mentioned above. In the spaces provided below, please input the necessary settings for establishing a connection to the database.
                             </p>
                         </div>
-                        @error('database.checkConnection')
+                        @error('form.checkConnection')
                             <div class="alert alert-error">
                                 <x-heroicon-o-exclamation-circle class="stroke-current shrink-0 h-6 w-6" />
                                 <span>{{ $message }}</span>
@@ -161,10 +187,10 @@
                                 <label class="label-text">
                                     Database Connection <span class="text-red-500">*</span>
                                 </label>
-                                <select class="select select-sm select-bordered" wire:model="database.connection" required>
+                                <select class="select select-sm select-bordered" wire:model="form.db_connection" required>
                                     <option value="mysql">MySQL</option>
                                 </select>
-                                @error('database.connection')
+                                @error('form.db_connection')
                                     <div class="text-red-600 text-sm">
                                         {{ $message }}
                                     </div>
@@ -174,8 +200,8 @@
                                 <label class="label-text">
                                     Database Name <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text" class="input input-bordered input-sm" wire:model="database.name" required/>
-                                @error('database.name')
+                                <input type="text" class="input input-bordered input-sm" wire:model="form.db_name" required/>
+                                @error('form.db_name')
                                     <div class="text-red-600 text-sm">
                                         {{ $message }}
                                     </div>
@@ -186,8 +212,8 @@
                                     Database Username <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text" class="input input-bordered input-sm"
-                                    wire:model="database.username" required/>
-                                @error('database.username')
+                                    wire:model="form.db_username" required/>
+                                @error('form.db_username')
                                     <div class="text-red-600 text-sm">
                                         {{ $message }}
                                     </div>
@@ -198,8 +224,8 @@
                                     Database Password <span class="text-red-500">*</span>
                                 </label>
                                 <input type="password" class="input input-bordered input-sm"
-                                    wire:model="database.password" required/>
-                                @error('database.password')
+                                    wire:model="form.db_password" required/>
+                                @error('form.db_password')
                                     <div class="text-red-600 text-sm">
                                         {{ $message }}
                                     </div>
@@ -209,8 +235,8 @@
                                 <label class="label-text">
                                     Database Host <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text" class="input input-bordered input-sm" wire:model="database.host" required/>
-                                @error('database.host')
+                                <input type="text" class="input input-bordered input-sm" wire:model="form.db_host" required/>
+                                @error('form.db_host')
                                     <div class="text-red-600 text-sm">
                                         {{ $message }}
                                     </div>
@@ -220,8 +246,8 @@
                                 <label class="label-text">
                                     Database Port <span class="text-red-500">*</span>
                                 </label>
-                                <input type="number" class="input input-bordered input-sm" wire:model="database.port" required/>
-                                @error('database.port')
+                                <input type="number" class="input input-bordered input-sm" wire:model="form.db_port" required/>
+                                @error('form.db_port')
                                     <div class="text-red-600 text-sm">
                                         {{ $message }}
                                     </div>
@@ -241,8 +267,8 @@
                                 <label class="label-text">
                                     Conference Name <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text" class="input input-bordered input-sm" wire:model="conference.name" required/>
-                                @error('conference.name')
+                                <input type="text" class="input input-bordered input-sm" wire:model="form.conference_name" required/>
+                                @error('form.conference_name')
                                     <div class="text-red-600 text-sm">
                                         {{ $message }}
                                     </div>
@@ -252,12 +278,12 @@
                                 <label class="label-text">
                                     Conference Type <span class="text-red-500">*</span>
                                 </label>
-                                <select class="select select-sm select-bordered" wire:model="conference.type">
+                                <select class="select select-sm select-bordered" wire:model="form.conference_type">
                                     @foreach (\App\Models\Enums\ConferenceType::array() as $key => $type)
                                         <option value="{{ $key }}">{{ $type }}</option>
                                     @endforeach
                                 </select>
-                                @error('conference.type')
+                                @error('form.conference_type')
                                     <div class="text-red-600 text-sm">
                                         {{ $message }}
                                     </div>

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Conference\Pages\Home;
+use App\Http\Middleware\DefaultViewData;
 use App\Http\Middleware\IdentifyArchiveConference;
 use App\Http\Middleware\IdentifyCurrentConference;
 use Illuminate\Support\Facades\Blade;
@@ -44,6 +45,7 @@ class ConferenceServiceProvider extends ServiceProvider
             ->middleware([
                 'web',
                 IdentifyCurrentConference::class,
+                DefaultViewData::class,
             ], true)
             ->discoverPages(in: app_path('Conference/Pages'), for: 'App\\Conference\\Pages');
     }

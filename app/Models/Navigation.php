@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Application;
 use App\Models\Concerns\BelongsToConference;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use RyanChandler\FilamentNavigation\Models\Navigation as Model;
@@ -16,7 +17,7 @@ class Navigation extends Model
     protected static function booted(): void
     {
         static::creating(function (Navigation $navigation) {
-            $navigation->conference_id ??= 0;
+            $navigation->conference_id ??= Application::CONTEXT_WEBSITE;
         });
     }
 }

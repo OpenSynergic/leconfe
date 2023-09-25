@@ -2,7 +2,7 @@
 
 namespace Database\Seeders\Developments;
 
-use App\Actions\Conferences\ConferenceSetCurrentAction;
+use App\Actions\Conferences\ConferenceSetActiveAction;
 use App\Models\Conference;
 use Illuminate\Database\Seeder;
 
@@ -15,6 +15,6 @@ class ConferenceSeeder extends Seeder
     {
         $conferences = Conference::factory()->count(5)->create();
 
-        ConferenceSetCurrentAction::run($conferences->first());
+        ConferenceSetActiveAction::run($conferences->first());
     }
 }

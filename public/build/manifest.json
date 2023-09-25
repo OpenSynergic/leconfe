@@ -4,17 +4,17 @@
     "src": "resources/assets/images/logo.png"
   },
   "resources/conference/css/conference.css": {
-    "file": "assets/conference-7cc1cc0c.css",
+    "file": "assets/conference-ddc9a1df.css",
     "isEntry": true,
     "src": "resources/conference/css/conference.css"
   },
   "resources/conference/js/conference.js": {
-    "file": "assets/conference-05c27011.js",
+    "file": "assets/conference-b4ec506a.js",
     "isEntry": true,
     "src": "resources/conference/js/conference.js"
   },
   "resources/panel/css/panel.css": {
-    "file": "assets/panel-a4bab21e.css",
+    "file": "assets/panel-b715b443.css",
     "isEntry": true,
     "src": "resources/panel/css/panel.css"
   },

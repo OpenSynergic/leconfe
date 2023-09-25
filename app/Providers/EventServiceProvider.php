@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Conference;
+use App\Models\Site;
 use App\Observers\ConferenceObserver;
+use App\Observers\SiteObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -24,6 +26,7 @@ class EventServiceProvider extends ServiceProvider
 
     protected $observers = [
         Conference::class => [ConferenceObserver::class],
+        Site::class => [SiteObserver::class],
     ];
 
     /**

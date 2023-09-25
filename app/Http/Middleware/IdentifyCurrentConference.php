@@ -19,7 +19,7 @@ class IdentifyCurrentConference
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $conference = Conference::current();
+        $conference = Conference::active();
 
         if (! $conference) {
             return abort(404);
@@ -27,8 +27,6 @@ class IdentifyCurrentConference
 
         app()->setCurrentConference($conference);
         app()->scopeCurrentConference();
-
-        View::share('currentConference', $conference);
 
         return $next($request);
     }

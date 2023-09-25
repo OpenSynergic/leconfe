@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace App\Http\Middleware\Panel;
 
 use Filament\Http\Middleware\Authenticate;
 

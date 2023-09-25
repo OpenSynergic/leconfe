@@ -21,8 +21,8 @@ class ConferenceCreateAction
                 $conference->setManyMeta($data['meta']);
             }
 
-            if (data_get($data, 'is_current')) {
-                ConferenceSetCurrentAction::run($conference);
+            if (data_get($data, 'current')) {
+                ConferenceSetActiveAction::run($conference);
             }
 
             DB::commit();

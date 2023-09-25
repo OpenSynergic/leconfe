@@ -16,9 +16,9 @@ class Home extends Page
     protected function getViewData(): array
     {
         return [
-            'announcements' => Announcement::where('conference_id', Conference::current()->getKey())->get(),
-            'topics' => Topic::where('conference_id', Conference::current()->getKey())->get(),
+            'topics' => Topic::where('conference_id', Conference::active()->getKey())->get(),
             'upcomings' => Conference::upcoming()->get(),
+            'activeConference' => Conference::active(),
         ];
     }
 

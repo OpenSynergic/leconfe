@@ -8,6 +8,7 @@ use App\Models\Conference;
 use App\Models\Navigation;
 use App\Models\ParticipantPosition;
 use App\Models\Scopes\ConferenceScope;
+use App\Models\Site;
 use App\Models\StaticPage;
 use App\Models\Submission;
 use App\Models\Topic;
@@ -19,6 +20,10 @@ class Application extends LaravelApplication
     public const APP_VERSION = '1.0.0';
 
     public const PHP_MIN_VERSION = '8.1';
+
+    public const CONTEXT_WEBSITE = 0;
+
+    protected ?Site $site;
 
     protected ?Conference $currentConference = null;
 
@@ -61,5 +66,22 @@ class Application extends LaravelApplication
         ] as $model) {
             $model::addGlobalScope(new ConferenceScope);
         }
+    }
+
+    public function getNavigationItems(string $handle): array
+    {
+        return Navigation::query()
+            ->where('conference_id', $this->getCurrentConference()?->getKey() ?? static::CONTEXT_WEBSITE)
+            ->where('handle', $handle)
+            ->first()?->items ?? [];
+    }
+
+    public function getSite() : Site
+    {
+        if (!isset($this->site)) {
+            $this->site = Site::getSite();
+        }
+
+        return $this->site;
     }
 }

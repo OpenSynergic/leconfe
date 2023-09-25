@@ -1,5 +1,5 @@
-@if ($currentConference?->hasMeta('page_footer'))
+@if ($footer)
     <div class="page-footer mt-auto w-full">
-        {!! $currentConference?->getMeta('page_footer') !!}
+        {{ new Illuminate\Support\HtmlString($footer) }}
     </div>
 @endif
