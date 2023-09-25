@@ -61,7 +61,7 @@ class ParticipantResource extends Resource
             Forms\Components\Select::make('meta.country')
                 ->placeholder('Select a country')
                 ->searchable()
-                ->options(fn () => Country::all()->mapWithKeys(fn ($country) => [$country->id => $country->flag.' '.$country->name]))
+                ->options(fn () => Country::all()->mapWithKeys(fn ($country) => [$country->id => $country->flag . ' ' . $country->name]))
                 ->optionsLimit(250),
             Forms\Components\TextInput::make('meta.phone')
                 ->prefixIcon('heroicon-s-phone')
@@ -103,6 +103,14 @@ class ParticipantResource extends Resource
                     'style' => 'width: 1px',
                 ])
                 ->circular()
+                ->defaultImageUrl(function (Participant $record): string {
+                    $name = str($record->fullName)
+                        ->trim()
+                        ->explode(' ')
+                        ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
+                        ->join(' ');
+                    return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=111827&font-size=0.33';
+                })
                 ->toggleable(),
             TextColumn::make('email')
                 ->searchable()

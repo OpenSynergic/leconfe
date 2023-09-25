@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Actions\User\UserCreateAction;
+use App\Models\Enums\UserRole;
 use App\Models\Meta\ParticipantMeta;
 use Database\Factories\ParticipantFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -9,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Kra8\Snowflake\HasShortflakePrimary;
 use Plank\Metable\Metable;
@@ -85,5 +88,17 @@ class Participant extends Model implements HasMedia, Sortable
     public static function byEmail(string $email)
     {
         return static::whereEmail($email)->first();
+    }
+
+    public function createUserAccount(UserRole $role, ?string $password = null, bool $withMetas = true): void
+    {
+        $user = UserCreateAction::run([...$this->toArray(), 'password' => Hash::make($password)]);
+        if ($withMetas) {
+            $participantMetas = $this->meta()->get()->toArray();
+            foreach ($participantMetas as $meta) {
+                $user->meta()->create($meta);
+            }
+        }
+        $user->assignRole($role->value);
     }
 }
