@@ -17,6 +17,7 @@ use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -105,7 +106,7 @@ class Conference extends Page implements HasForms, HasInfolists
                                                     ->blade('{{ $this->generalForm }}'),
                                             ]),
                                         InfolistsVerticalTabs\Tab::make('Privacy Statement')
-                                        ->icon('heroicon-m-window')
+                                            ->icon('heroicon-m-window')
                                             ->schema([
                                                 BladeEntry::make('general')
                                                     ->blade('{{ $this->privacyStatementForm }}'),
@@ -265,11 +266,10 @@ class Conference extends Page implements HasForms, HasInfolists
                                         'xl' => 1,
                                         'sm' => 2,
                                     ]),
-                                TinyEditor::make('meta.description')
-                                    ->minHeight(300)
-                                    ->columnSpan([
-                                        'sm' => 2,
-                                    ]),
+                                Textarea::make('meta.description')
+                                    ->rows(5)
+                                    ->autosize()
+                                    ->columnSpanFull(),
                                 TinyEditor::make('meta.about')
                                     ->label('About Conference')
                                     ->minHeight(300)
@@ -387,7 +387,7 @@ class Conference extends Page implements HasForms, HasInfolists
                 Section::make()
                     ->schema([
                         TinyEditor::make('meta.privacy_statement')
-                        ->label(' '),
+                            ->label(' '),
                         Actions::make([
                             Action::make('save_privacy_statement')
                                 ->label('Save')

@@ -4,12 +4,12 @@
     "src": "resources/assets/images/logo.png"
   },
   "resources/conference/css/conference.css": {
-    "file": "assets/conference-5110516f.css",
+    "file": "assets/conference-292a21b5.css",
     "isEntry": true,
     "src": "resources/conference/css/conference.css"
   },
   "resources/conference/js/conference.js": {
-    "file": "assets/conference-1d95df41.js",
+    "file": "assets/conference-9d80e2d9.js",
     "isEntry": true,
     "src": "resources/conference/js/conference.js"
   },

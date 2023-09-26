@@ -13,10 +13,13 @@ export default {
         extend: {
             colors: {
                 primary : '#38BDF8',
-                secondary: '#F9FAFB'
+                secondary: '#4a4a5b',
             },
             fontFamily: {
                 sans: ['var(--font-family)', ...defaultTheme.fontFamily.sans],
+            },
+            fontSize : {
+                'mini' : '.65rem',
             },
             typography: (theme) => ({
                 DEFAULT: {
@@ -44,8 +47,8 @@ export default {
                     ...require('daisyui/src/theming/themes')[
                         '[data-theme=winter]'
                     ],
-                    // primary: colors.sky[600],
-                    primary : '#38BDF8',
+                    primary: '#38BDF8',
+                    secondary: '#4a4a5b',
                     'base-100': '#F1F6FA',
                     '--rounded-box': '0.5rem',
                     '--btn-text-case': 'none',
