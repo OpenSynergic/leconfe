@@ -1,11 +1,5 @@
 import "./alpine/components/navigation";
-import "./alpine/components/slide-over";
-import Masonry from "masonry-layout";
+import "./alpine/components/mansory";
 
 
-// Inisialisasi Masonry
-var upCominng = document.querySelector('.cf');
-var masonry = new Masonry(upCominng, {
-  itemSelector: '.cf-upcoming',
-});
 
