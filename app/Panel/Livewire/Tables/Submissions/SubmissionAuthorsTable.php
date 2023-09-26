@@ -178,7 +178,13 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
                         ->circular()
                         ->toggleable(!$this->viewOnly),
                     Stack::make([
-                        TextColumn::make('fullName'),
+                        TextColumn::make('fullName')
+                            ->formatStateUsing(function (Participant $record) {
+                                if ($record->email == auth()->user()->email) {
+                                    return $record->fullName . " (You)";
+                                }
+                                return $record->fullName;
+                            }),
                         TextColumn::make('affiliation')
                             ->size("xs")
                             ->getStateUsing(fn ($record) => $record->getMeta('affiliation'))
