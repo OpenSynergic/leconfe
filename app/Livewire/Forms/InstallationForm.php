@@ -33,7 +33,7 @@ class InstallationForm extends Form
 
     #[Rule('required')]
     public $password_confirmation = null;
-    
+
     /**
      * Field for Database
      */
@@ -70,8 +70,7 @@ class InstallationForm extends Form
     #[Rule('required')]
     public $timezone = 'Asia/Makassar';
 
-
-    public function createConference() : Conference
+    public function createConference(): Conference
     {
         return ConferenceCreateAction::run([
             'name' => $this->conference_name,
@@ -80,7 +79,7 @@ class InstallationForm extends Form
         ]);
     }
 
-    public function createAccount() : User
+    public function createAccount(): User
     {
         try {
             DB::beginTransaction();
@@ -106,7 +105,7 @@ class InstallationForm extends Form
         return $user;
     }
 
-    public function checkDatabaseConnection() : bool
+    public function checkDatabaseConnection(): bool
     {
         $connection = $this->db_connection;
 

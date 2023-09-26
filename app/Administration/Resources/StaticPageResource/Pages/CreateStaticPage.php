@@ -3,8 +3,8 @@
 namespace App\Administration\Resources\StaticPageResource\Pages;
 
 use App\Actions\StaticPages\StaticPageCreateAction;
-use App\Models\Enums\ContentType;
 use App\Administration\Resources\StaticPageResource;
+use App\Models\Enums\ContentType;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
 

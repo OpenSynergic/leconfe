@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\Enums\ContentType;
-use App\Models\Scopes\AnnouncementScope;
 use Illuminate\Database\Eloquent\Builder;
 
 class Announcement extends UserContent

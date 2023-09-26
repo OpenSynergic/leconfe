@@ -8,7 +8,6 @@ use App\Models\Conference;
 use App\Models\Enums\ConferenceType;
 use App\Tables\Columns\IndexColumn;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
-use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Section;

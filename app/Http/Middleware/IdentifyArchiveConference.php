@@ -6,7 +6,6 @@ use App\Models\Conference;
 use App\Models\Enums\ConferenceStatus;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\View;
 use Symfony\Component\HttpFoundation\Response;
 
 class IdentifyArchiveConference

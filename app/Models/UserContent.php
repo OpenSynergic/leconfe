@@ -19,7 +19,7 @@ use Spatie\Tags\HasTags;
 
 class UserContent extends Model implements HasMedia
 {
-    use Cachable, HasFactory, HasSlug, HasTags, InteractsWithMedia, Metable, BelongsToConference;
+    use BelongsToConference, Cachable, HasFactory, HasSlug, HasTags, InteractsWithMedia, Metable;
 
     protected $table = 'user_contents';
 

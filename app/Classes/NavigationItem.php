@@ -4,7 +4,6 @@ namespace App\Classes;
 
 use App\Models\Conference;
 use App\Models\Enums\ConferenceStatus;
-use App\Models\Enums\ConferenceType;
 use Closure;
 
 class NavigationItem
@@ -57,20 +56,20 @@ class NavigationItem
     protected function getUrlParserByType($type): Closure
     {
         return match ($type) {
-            'external-link' => fn($navItem) => $navItem->data['url'] ?? '#',
-            'announcements' => fn (?Conference $conference = null) => match ($conference?->status) {
+            'external-link' => fn ($navItem) => $navItem->data['url'] ?? '#',
+            'announcements' => fn (Conference $conference = null) => match ($conference?->status) {
                 ConferenceStatus::Archived => route('livewirePageGroup.archive-conference.pages.announcement-list', ['conference' => $conference->path]),
                 default => route('livewirePageGroup.current-conference.pages.announcement-list')
             },
             'current-conference' => fn () => route('livewirePageGroup.current-conference.pages.home'),
-            'register' => fn() => route('livewirePageGroup.website.pages.register'),
-            'login' => fn() => route('livewirePageGroup.website.pages.login'),
-            'home' => fn(?Conference $conference = null) => match($conference?->status){
+            'register' => fn () => route('livewirePageGroup.website.pages.register'),
+            'login' => fn () => route('livewirePageGroup.website.pages.login'),
+            'home' => fn (Conference $conference = null) => match ($conference?->status) {
                 ConferenceStatus::Active => route('livewirePageGroup.current-conference.pages.home'),
                 ConferenceStatus::Archived => route('livewirePageGroup.archive-conference.pages.home', ['conference' => $conference->path]),
                 default => route('livewirePageGroup.website.pages.home'),
             },
-            'about' => fn() => route('livewirePageGroup.current-conference.pages.about'),
+            'about' => fn () => route('livewirePageGroup.current-conference.pages.about'),
             default => fn () => '#',
         };
     }

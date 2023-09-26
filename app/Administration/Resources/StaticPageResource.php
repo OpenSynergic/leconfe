@@ -2,26 +2,26 @@
 
 namespace App\Administration\Resources;
 
+use App\Administration\Resources\StaticPageResource\Pages;
 use App\Forms\Components\TagSuggestions;
 use App\Models\Enums\ContentType;
-use Filament\Forms\Form;
 use App\Models\StaticPage;
 use App\Models\StaticPageTag;
-use Filament\Tables\Table;
-use Illuminate\Support\Str;
-use Filament\Resources\Resource;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Grid;
-use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\SpatieTagsInput;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables\Actions\DeleteAction;
-use App\Administration\Resources\StaticPageResource\Pages;
-use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\SpatieTagsInput;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Str;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class StaticPageResource extends Resource
@@ -47,7 +47,9 @@ class StaticPageResource extends Resource
                                     ->lazy()
                                     ->helperText(function ($state, ?StaticPage $record) {
 
-                                        if(!$record) return;
+                                        if (! $record) {
+                                            return;
+                                        }
 
                                         $slug = Str::slug($state);
                                         $currentSlug = Str::slug(substr($slug, 0, 50)); // if it has(-) at the end
@@ -135,7 +137,7 @@ class StaticPageResource extends Resource
                                     ->options(StaticPageTag::withCount('staticPages')->orderBy('static_pages_count', 'desc')->limit(10)->pluck('name', 'id')->toArray())
                                     ->columns('2')
                                     ->afterStateUpdated(function ($set, $state) {
-                                        if (!empty($state)) {
+                                        if (! empty($state)) {
                                             $state = StaticPageTag::whereIn('id', $state)->get()->map(fn ($tag) => $tag->name)->toArray();
                                         }
 

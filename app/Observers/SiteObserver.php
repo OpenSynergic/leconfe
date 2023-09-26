@@ -2,9 +2,7 @@
 
 namespace App\Observers;
 
-use App\Actions\Participants\ParticipantPositionPopulateDefaultDataAction;
 use App\Application;
-use App\Models\Conference;
 use App\Models\Navigation;
 use App\Models\Site;
 use Illuminate\Support\Str;
@@ -65,7 +63,7 @@ class SiteObserver
      */
     public function deleting(Site $site): void
     {
-       
+
     }
 
     /**

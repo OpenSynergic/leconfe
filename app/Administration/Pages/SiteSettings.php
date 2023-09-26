@@ -5,10 +5,13 @@ namespace App\Administration\Pages;
 use App\Actions\Settings\SettingUpdateAction;
 use App\Actions\Site\SiteUpdateAction;
 use App\Infolists\Components\BladeEntry;
+use App\Infolists\Components\VerticalTabs;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
@@ -18,9 +21,6 @@ use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
 use Illuminate\Support\HtmlString;
-use App\Infolists\Components\VerticalTabs;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\TextInput;
 
 class SiteSettings extends Page implements HasForms, HasInfolists
 {
@@ -48,7 +48,7 @@ class SiteSettings extends Page implements HasForms, HasInfolists
         ]);
 
         $this->appearanceForm->fill([
-            // 
+            //
         ]);
     }
 
@@ -62,12 +62,12 @@ class SiteSettings extends Page implements HasForms, HasInfolists
                             ->schema([
                                 VerticalTabs\Tabs::make()
                                     ->tabs([
-                                        VerticalTabs\Tab::make("Information")
+                                        VerticalTabs\Tab::make('Information')
                                             ->icon('heroicon-o-information-circle')
                                             ->schema([
                                                 BladeEntry::make('general')
                                                     ->blade('{{ $this->informationForm }}'),
-                                            ])
+                                            ]),
                                     ]),
                             ]),
                         Tabs\Tab::make('System')
@@ -88,6 +88,7 @@ class SiteSettings extends Page implements HasForms, HasInfolists
             'appearanceForm',
         ];
     }
+
     public function appearanceForm(Form $form): Form
     {
         return $form
@@ -130,7 +131,7 @@ class SiteSettings extends Page implements HasForms, HasInfolists
                                 }),
                         ]),
                     ])
-                    ->columns(2)
+                    ->columns(2),
             ]);
     }
 

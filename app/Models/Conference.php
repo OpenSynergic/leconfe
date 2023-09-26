@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Actions\Participants\ParticipantPositionPopulateDefaultDataAction;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ConferenceType;
 use App\Models\Meta\ConferenceMeta;
@@ -135,12 +134,12 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
             ->where('status', ConferenceStatus::Upcoming);
     }
 
-    public function isUpcoming() : bool
+    public function isUpcoming(): bool
     {
         return $this->status == ConferenceStatus::Upcoming;
     }
 
-    public function isActive() : bool
+    public function isActive(): bool
     {
         return $this->status == ConferenceStatus::Active;
     }

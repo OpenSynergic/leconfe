@@ -19,18 +19,18 @@ class DefaultViewData
     {
         if ($currentConference = app()->getCurrentConference()) {
             View::share('currentConference', $currentConference);
-            View::share('headerLogo', $currentConference->getFirstMedia('logo')?->getAvailableUrl(['thumb','thumb-xl']));
+            View::share('headerLogo', $currentConference->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl']));
             View::share('headerLogoAltText', $currentConference->name);
             View::share('contextName', $currentConference->name);
             View::share('footer', $currentConference->getMeta('footer'));
         } else {
             $site = app()->getSite();
-            View::share('headerLogo', $site->getFirstMedia('logo')?->getAvailableUrl(['thumb','thumb-xl']));
+            View::share('headerLogo', $site->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl']));
             View::share('headerLogoAltText', $site->getMeta('name'));
             View::share('contextName', $site->getMeta('name'));
             View::share('footer', $site->getMeta('footer'));
         }
-        View::share('homeUrl', match($currentConference?->status){
+        View::share('homeUrl', match ($currentConference?->status) {
             ConferenceStatus::Active => route('livewirePageGroup.current-conference.pages.home'),
             ConferenceStatus::Archived => route('livewirePageGroup.archive-conference.pages.home', ['conference' => $currentConference->path]),
             default => route('livewirePageGroup.website.pages.home'),

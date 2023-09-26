@@ -2,7 +2,6 @@
 
 namespace App\Website\Pages;
 
-use App\Models\Announcement;
 use App\Models\Conference;
 use App\Models\Topic;
 use Illuminate\Support\Facades\Route;

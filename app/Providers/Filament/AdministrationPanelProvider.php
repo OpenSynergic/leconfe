@@ -20,7 +20,7 @@ class AdministrationPanelProvider extends FilamentPanelProvider
             ->path(config('app.filament.administration_path'))
             ->homeUrl(fn () => route('livewirePageGroup.website.pages.home'))
             ->colors(PanelProvider::getColors())
-            ->bootUsing(fn() => $this->bootUsing())
+            ->bootUsing(fn () => $this->bootUsing())
             ->renderHook(
                 'panels::sidebar.nav.start',
                 fn () => view('administration.components.sidebar.nav-start')

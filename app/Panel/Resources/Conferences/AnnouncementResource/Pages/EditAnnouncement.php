@@ -24,7 +24,7 @@ class EditAnnouncement extends EditRecord
                 ->url(function ($record) {
                     $conference = $record->conference;
 
-                    return match($conference->status){
+                    return match ($conference->status) {
                         ConferenceStatus::Active => route('livewirePageGroup.current-conference.pages.announcement-page', [
                             'announcement' => $record->id,
                         ]),

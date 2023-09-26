@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\Enums\ContentType;
-use App\Models\Scopes\StaticPageTagScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 

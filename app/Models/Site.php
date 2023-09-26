@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Models\Meta\SiteMeta;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Plank\Metable\Metable;
 use Spatie\MediaLibrary\HasMedia;

@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ContentType;
-use App\Models\Scopes\StaticPageScope;
 use Illuminate\Database\Eloquent\Builder;
 
 class StaticPage extends UserContent
@@ -17,7 +16,6 @@ class StaticPage extends UserContent
             $builder->where('content_type', ContentType::StaticPage->value);
         });
     }
-
 
     public function getUrl(): string
     {

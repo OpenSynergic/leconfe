@@ -76,9 +76,9 @@ class Application extends LaravelApplication
             ->first()?->items ?? [];
     }
 
-    public function getSite() : Site
+    public function getSite(): Site
     {
-        if (!isset($this->site)) {
+        if (! isset($this->site)) {
             $this->site = Site::getSite();
         }
 

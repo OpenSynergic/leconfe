@@ -14,7 +14,7 @@ class SiteSeeder extends Seeder
     {
         $site = Site::create();
         $site->setManyMeta([
-            'name' => 'Leconfe'
+            'name' => 'Leconfe',
         ]);
     }
 }
