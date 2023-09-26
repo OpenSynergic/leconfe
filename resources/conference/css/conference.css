@@ -36,7 +36,7 @@
 }
 
 .text-subheading {
-    @apply text-sm tracking-normal font-medium text-gray-900;
+    @apply text-sm tracking-normal text-gray-900;
 }
 
 .text-content {
