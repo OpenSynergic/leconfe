@@ -17,8 +17,8 @@ class ConferenceSetActiveAction
             DB::beginTransaction();
 
             Conference::query()
-                ->where('status', ConferenceStatus::Active->value)
-                ->update(['status' => ConferenceStatus::Archived->value]);
+                ->where('status', ConferenceStatus::Active)
+                ->update(['status' => ConferenceStatus::Archived]);
 
             $conference->status = ConferenceStatus::Active;
             $conference->save();
