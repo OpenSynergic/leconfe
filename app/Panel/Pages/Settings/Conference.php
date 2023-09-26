@@ -17,6 +17,7 @@ use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Section as FormSection;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -263,11 +264,9 @@ class Conference extends Page implements HasForms, HasInfolists
                                                         'xl' => 1,
                                                         'sm' => 2,
                                                     ]),
-                                                TinyEditor::make('meta.description')
-                                                    ->minHeight(300)
-                                                    ->columnSpan([
-                                                        'sm' => 2,
-                                                    ]),
+                                                Textarea::make('meta.description')
+                                                    ->rows(5)
+                                                    ->columnSpanFull(),
                                                 TinyEditor::make('meta.about')
                                                     ->label('About Conference')
                                                     ->minHeight(300)

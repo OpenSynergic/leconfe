@@ -7,7 +7,12 @@
 
 :root {
     --font-family: 'Inter';
+
 }
+
+::placeholder {
+    font-size: 12px; /* Adjust the font size as needed */
+  }
 
 .debug {
     @apply border-red-500 border-2;
@@ -24,4 +29,20 @@
 
 .user-content {
     @apply prose prose-sm prose-a:text-primary prose-a:underline hover:prose-a:text-primary;
+}
+
+.text-heading {
+    @apply text-lg text-gray-800 tracking-normal;
+}
+
+.text-subheading {
+    @apply text-sm tracking-normal text-gray-900;
+}
+
+.text-content {
+    @apply  text-sm leading-6 text-secondary;
+}
+
+.small-text {
+    @apply text-xs text-secondary;
 }
