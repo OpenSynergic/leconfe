@@ -107,14 +107,12 @@
             </x-filament::button>
         </div>
         <div>
-            <x-filament::button x-cloak x-on:click="$dispatch('open-modal', {id: 'modalSubmisionWizardConfirmation'})"
-                wire:loading.class.delay="opacity-70 cursor-wait" size="sm" icon="heroicon-m-check">
-                Submit
-            </x-filament::button>
+            {{ $this->submitAction }}
+            <x-filament-actions::modals />
         </div>
     </div>
 
-    <x-filament::modal id="modalSubmisionWizardConfirmation">
+    {{-- <x-filament::modal id="modalSubmisionWizardConfirmation">
         <x-slot name="header">
             <x-filament::modal.heading>
                 Submit
@@ -131,6 +129,7 @@
                     wire:click="submit">
                     Yes, Submit
                 </x-filament::button>
+                {{ $this->submitAction }}
                 <x-filament::button x-cloak color="secondary" :outlined="true"
                     x-on:click="$dispatch('close-modal', { id: 'modalSubmisionWizardConfirmation' })"
                     wire:loading.class.delay="opacity-70 cursor-wait" size="sm">
@@ -138,5 +137,5 @@
                 </x-filament::button>
             </div>
         </x-slot>
-    </x-filament::modal>
+    </x-filament::modal> --}}
 </div>
