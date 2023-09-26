@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Panel\Resources\StaticPageResource\Pages;
+namespace App\Administration\Resources\StaticPageResource\Pages;
 
-use App\Panel\Resources\StaticPageResource;
+use App\Administration\Resources\StaticPageResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 

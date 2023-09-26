@@ -24,11 +24,11 @@ use RyanChandler\FilamentNavigation\Models\Navigation;
 
 class NavigationResource extends Resource
 {
-    protected static ?int $navigationSort = 99;
+    // protected static ?int $navigationSort = 99;
 
     protected static bool $shouldRegisterNavigation = true;
 
-    protected static ?string $navigationGroup = 'Settings';
+    // protected static ?string $navigationGroup = 'Settings';
 
     public static function getEloquentQuery(): Builder
     {

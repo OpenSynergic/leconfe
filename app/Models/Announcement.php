@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Enums\ContentType;
 use App\Models\Scopes\AnnouncementScope;
+use Illuminate\Database\Eloquent\Builder;
 
 class Announcement extends UserContent
 {
@@ -10,6 +12,8 @@ class Announcement extends UserContent
     {
         parent::booted();
 
-        static::addGlobalScope(new AnnouncementScope);
+        static::addGlobalScope('announcement', function (Builder $builder) {
+            $builder->where('content_type', ContentType::Announcement->value);
+        });
     }
 }

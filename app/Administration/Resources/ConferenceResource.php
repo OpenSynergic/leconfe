@@ -68,12 +68,6 @@ class ConferenceResource extends Resource
                                     ->options(Country::pluck('name', 'id'))
                                     ->optionsLimit(250),
                             ]),
-                        Section::make()
-                            ->columns(1)
-                            ->schema([
-                                Checkbox::make('current')
-                                    ->label('Set this conference as the currently active one'),
-                            ]),
                     ]),
                 Section::make()
                     ->columnSpan([

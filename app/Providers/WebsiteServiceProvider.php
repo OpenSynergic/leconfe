@@ -16,12 +16,6 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
     public function register()
     {
         parent::register();
-
-        // Register blocks
-        Block::registerBlocks([
-            ExampleBlock::class,
-            LeftBlock::class,
-        ]);
     }
 
     public function pageGroup(PageGroup $pageGroup): PageGroup
@@ -32,6 +26,13 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
             ->layout('conference.components.layouts.app')
             ->homePage(Home::class)
             ->bootUsing(function () {
+                app()->scopeCurrentConference();
+
+                // Register blocks
+                Block::registerBlocks([
+                    ExampleBlock::class,
+                    LeftBlock::class,
+                ]);
                 Block::boot();
             })
             ->middleware([

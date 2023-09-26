@@ -3,6 +3,7 @@
 namespace App\Administration\Pages;
 
 use App\Actions\Settings\SettingUpdateAction;
+use App\Actions\Site\SiteUpdateAction;
 use App\Infolists\Components\BladeEntry;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
@@ -29,19 +30,25 @@ class SiteSettings extends Page implements HasForms, HasInfolists
 
     protected static string $view = 'administration.pages.site-settings';
 
-    public array $setupFormData = [];
+    public array $systemFormData = [];
 
     public array $informationFormData = [];
 
+    public array $appearanceFormData = [];
+
     public function mount()
     {
-        $this->setupForm->fill([
+        $this->systemForm->fill([
             'format' => setting('format'),
             'privacy_statement' => setting('privacy_statement'),
         ]);
 
         $this->informationForm->fill([
             'meta' => app()->getSite()->getAllMeta()->toArray(),
+        ]);
+
+        $this->appearanceForm->fill([
+            // 
         ]);
     }
 
@@ -63,10 +70,10 @@ class SiteSettings extends Page implements HasForms, HasInfolists
                                             ])
                                     ]),
                             ]),
-                        Tabs\Tab::make('Setup')
+                        Tabs\Tab::make('System')
                             ->schema([
                                 BladeEntry::make('general')
-                                    ->blade('{{ $this->setupForm }}'),
+                                    ->blade('{{ $this->systemForm }}'),
                             ]),
                     ])
                     ->contained(false),
@@ -77,8 +84,15 @@ class SiteSettings extends Page implements HasForms, HasInfolists
     {
         return [
             'informationForm',
-            'setupForm',
+            'systemForm',
+            'appearanceForm',
         ];
+    }
+    public function appearanceForm(Form $form): Form
+    {
+        return $form
+            ->statePath('appearanceFormData')
+            ->schema([]);
     }
 
     public function informationForm(Form $form): Form
@@ -91,10 +105,6 @@ class SiteSettings extends Page implements HasForms, HasInfolists
                         TextInput::make('meta.name')
                             ->label('Website Name')
                             ->required(),
-                        TextInput::make('meta.format.date')
-                            ->required(),
-                        TextInput::make('meta.format.time')
-                            ->required(),
                         SpatieMediaLibraryFileUpload::make('logo')
                             ->collection('logo')
                             ->image()
@@ -105,15 +115,13 @@ class SiteSettings extends Page implements HasForms, HasInfolists
                                 'sm' => 2,
                             ]),
                         Actions::make([
-                            Action::make('savesss')
+                            Action::make('save')
                                 ->successNotificationTitle('Saved!')
                                 ->failureNotificationTitle('Failed!')
                                 ->action(function (Action $action) {
                                     $data = $this->informationForm->getState();
                                     try {
-                                        $site = app()->getSite();
-                                        $site->setManyMeta($data['meta']);
-                                        $site->save();
+                                        SiteUpdateAction::run($data);
 
                                         $action->sendSuccessNotification();
                                     } catch (\Throwable $th) {
@@ -126,12 +134,12 @@ class SiteSettings extends Page implements HasForms, HasInfolists
             ]);
     }
 
-    public function setupForm(Form $form): Form
+    public function systemForm(Form $form): Form
     {
         $now = now()->hours(16);
 
         return $form
-            ->statePath('setupFormData')
+            ->statePath('systemFormData')
             ->schema([
                 Section::make('Date and Time Formats')
                     ->description(new HtmlString(<<<'HTML'
@@ -160,7 +168,7 @@ class SiteSettings extends Page implements HasForms, HasInfolists
                         ->successNotificationTitle('Saved!')
                         ->action(function (Action $action) {
                             try {
-                                SettingUpdateAction::run($this->setupForm->getState());
+                                SettingUpdateAction::run($this->systemForm->getState());
 
                                 $action->sendSuccessNotification();
                             } catch (\Throwable $th) {

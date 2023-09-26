@@ -20,7 +20,7 @@ class AdministrationPanelProvider extends FilamentPanelProvider
             ->path(config('app.filament.administration_path'))
             ->homeUrl(fn () => route('livewirePageGroup.website.pages.home'))
             ->colors(PanelProvider::getColors())
-            ->bootUsing(fn () => PanelProvider::setupFilamentComponent())
+            ->bootUsing(fn() => $this->bootUsing())
             ->renderHook(
                 'panels::sidebar.nav.start',
                 fn () => view('administration.components.sidebar.nav-start')
@@ -45,7 +45,7 @@ class AdministrationPanelProvider extends FilamentPanelProvider
         Blade::anonymousComponentPath(resource_path('views/administration/components'), 'administration');
     }
 
-    public function getPlugins() : array 
+    public function getPlugins(): array
     {
         return [
             FilamentNavigation::make()
@@ -56,5 +56,12 @@ class AdministrationPanelProvider extends FilamentPanelProvider
                 ->itemType('Login', [])
                 ->itemType('Register', []),
         ];
+    }
+
+    public function bootUsing()
+    {
+        app()->scopeCurrentConference();
+
+        PanelProvider::setupFilamentComponent();
     }
 }

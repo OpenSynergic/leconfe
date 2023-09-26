@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Panel\Resources\StaticPageResource\Pages;
+namespace App\Administration\Resources\StaticPageResource\Pages;
 
 use App\Actions\StaticPages\StaticPageUpdateAction;
-use App\Panel\Resources\StaticPageResource;
+use App\Administration\Resources\StaticPageResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
@@ -18,11 +18,9 @@ class EditStaticPage extends EditRecord
             Actions\DeleteAction::make(),
             Actions\Action::make('view')
                 ->icon('heroicon-o-eye')
-                ->label('View as page')
+                ->label('Preview')
                 ->color('success')
-                ->url(fn ($record) => route('livewirePageGroup.website.pages.static-page', [
-                    'slug' => $record->slug,
-                ])),
+                ->url(fn ($record) => $record->getUrl()),
         ];
     }
 
@@ -36,7 +34,7 @@ class EditStaticPage extends EditRecord
         $userContentMeta = $this->record->getAllMeta();
         $user = $this->record->user;
 
-        $data['author'] = $user ? "{$user->given_name} {$user->family_name}" : 'Cannot find the author';
+        $data['author'] = $user ? $user->full_name : 'Cannot find the author';
         $data['common_tags'] = $this->record->tags()->pluck('id')->toArray();
         $data['user_content'] = $userContentMeta['user_content'];
 

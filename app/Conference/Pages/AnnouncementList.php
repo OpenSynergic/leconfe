@@ -36,7 +36,6 @@ class AnnouncementList extends Page
 
     protected function getViewData(): array
     {
-        // dd($this->records);
         return [];
     }
 

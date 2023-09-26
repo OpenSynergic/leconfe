@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Enums\ContentType;
 use App\Models\Scopes\StaticPageTagScope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class StaticPageTag extends Tag
@@ -11,7 +13,9 @@ class StaticPageTag extends Tag
     {
         parent::booted();
 
-        static::addGlobalScope(new StaticPageTagScope);
+        static::addGlobalScope('announcement', function (Builder $builder) {
+            $builder->where('type', ContentType::StaticPage->value);
+        });
     }
 
     public function staticPages(): BelongsToMany
