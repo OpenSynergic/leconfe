@@ -75,7 +75,7 @@ class InstallationForm extends Form
         return ConferenceCreateAction::run([
             'name' => $this->conference_name,
             'type' => $this->conference_type,
-            'current' => true,
+            'active' => true,
         ]);
     }
 

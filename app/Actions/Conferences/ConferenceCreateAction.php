@@ -21,7 +21,7 @@ class ConferenceCreateAction
                 $conference->setManyMeta($data['meta']);
             }
 
-            if (data_get($data, 'current')) {
+            if (data_get($data, 'active')) {
                 ConferenceSetActiveAction::run($conference);
             }
 
