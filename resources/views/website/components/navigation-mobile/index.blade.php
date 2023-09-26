@@ -18,16 +18,16 @@
                             class="w-screen max-w-xs">
                             <div
                                 class="flex flex-col h-full pt-[5rem] pb-5 px-4 sm:px-6 overflow-y-scroll bg-white border-r shadow-lg border-neutral-100/70 justify-between">
-                                <x-conference::navigation-mobile.items :items="$items" />
+                                <x-website::navigation-mobile.items :items="$items" />
                                 <div class="flex flex-col gap-2">
                                     @if (\Filament\Facades\Filament::getDefaultPanel()->auth()->user())
-                                        <x-conference::link :href="route('filament.panel.tenant')" :spa="false"
-                                            class="btn btn-sm btn-primary rounded px-4 font-normal">Dashboard</x-conference::link>
+                                        <x-website::link :href="route('filament.panel.tenant')" :spa="false"
+                                            class="btn btn-sm btn-primary rounded px-4 font-normal">Dashboard</x-website::link>
                                     @else
-                                        <x-conference::link :href="route('livewirePageGroup.website.pages.register')" :spa="false"
-                                            class="btn btn-sm btn-primary rounded px-4 font-normal">Register</x-conference::link>
-                                        <x-conference::link :href="route('livewirePageGroup.website.pages.login')" :spa="false"
-                                            class="btn btn-sm rounded px-4 font-normal text-gray-900">Login</x-conference::link>
+                                        <x-website::link :href="route('livewirePageGroup.website.pages.register')" :spa="false"
+                                            class="btn btn-sm btn-primary rounded px-4 font-normal">Register</x-website::link>
+                                        <x-website::link :href="route('livewirePageGroup.website.pages.login')" :spa="false"
+                                            class="btn btn-sm rounded px-4 font-normal text-gray-900">Login</x-website::link>
                                     @endif
                                 </div>
                             </div>

@@ -40,7 +40,7 @@ class ConferenceServiceProvider extends ServiceProvider
         return $pageGroup
             ->id('current-conference')
             ->path('current')
-            ->layout('conference.components.layouts.app')
+            ->layout('website.components.layouts.app')
             ->homePage(Home::class)
             ->middleware([
                 'web',

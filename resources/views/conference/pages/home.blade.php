@@ -1,4 +1,4 @@
-<x-conference::layouts.main>
+<x-website::layouts.main>
 
     <div class="card px-5 py-4">
         <div class="card-body space-y-2 bg-gray-50 border">

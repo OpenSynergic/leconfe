@@ -23,7 +23,7 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
         return $pageGroup
             ->id('website')
             ->path('')
-            ->layout('conference.components.layouts.app')
+            ->layout('website.components.layouts.app')
             ->homePage(Home::class)
             ->bootUsing(function () {
                 app()->scopeCurrentConference();

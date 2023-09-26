@@ -1,5 +1,5 @@
 @if ($headerLogo)
-    <x-conference::link 
+    <x-website::link 
         {{ $attributes }}
         :href="$homeUrl"
     >
@@ -7,7 +7,7 @@
         class="max-h-12 w-auto">
     </x-conference::link>
 @else
-    <x-conference::link 
+    <x-website::link 
         :href="$homeUrl" 
         {{ $attributes->merge(['class' => 'text-lg sm:text-lg']) }}
     >

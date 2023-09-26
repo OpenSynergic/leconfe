@@ -20,7 +20,7 @@
                 </div>
                 <div data-submenu
                     class="absolute top-0 right-0 invisible mr-1 duration-200 ease-out translate-x-full opacity-0 group-hover:mr-0 group-hover:visible group-hover:opacity-100">
-                    <x-conference::navigation.dropdown.items :items="$item->getChildren()" :level="$level + 1"
+                    <x-website::navigation.dropdown.items :items="$item->getChildren()" :level="$level + 1"
                         class="z-50 min-w-[8rem] overflow-hidden" />
                 </div>
             </div>
@@ -28,7 +28,7 @@
         @endif
 
 
-        <x-conference::link
+        <x-website::link
             class="relative flex hover:bg-neutral-100 items-center py-1.5 px-4 pr-6 text-sm outline-none transition-colors gap-4 w-full"
             :href="$item->getUrl()">
             {{ $item->getLabel() }}

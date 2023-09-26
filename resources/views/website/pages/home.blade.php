@@ -1,4 +1,4 @@
-<x-conference::layouts.main>
+<x-website::layouts.main>
     <div class="px-6 py-4">
         <h1 class="card-title mt-4">Highlight Conference</h1>
         <div class="h-1 w-20 rounded bg-primary"></div>
@@ -98,4 +98,4 @@
         </div>
     </div>
 
-</x-conference::layouts.main>
+</x-website::layouts.main>

@@ -21,13 +21,13 @@ class DefaultViewData
             View::share('currentConference', $currentConference);
             View::share('headerLogo', $currentConference->getFirstMedia('logo')?->getAvailableUrl(['thumb','thumb-xl']));
             View::share('headerLogoAltText', $currentConference->name);
-            View::share('logoText', $currentConference->name);
+            View::share('contextName', $currentConference->name);
             View::share('footer', $currentConference->getMeta('footer'));
         } else {
             $site = app()->getSite();
             View::share('headerLogo', $site->getFirstMedia('logo')?->getAvailableUrl(['thumb','thumb-xl']));
             View::share('headerLogoAltText', $site->getMeta('name'));
-            View::share('logoText', $site->getMeta('name'));
+            View::share('contextName', $site->getMeta('name'));
             View::share('footer', $site->getMeta('footer'));
         }
         View::share('homeUrl', match($currentConference?->status){

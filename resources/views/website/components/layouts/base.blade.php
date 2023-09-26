@@ -11,7 +11,7 @@
 
     <title>
         {{ filled($title = strip_tags($livewire->getTitle())) ? "{$title} - " : null }}
-        {{ isset($currentConference) ? $currentConference->name : config('app.name') }}
+        {{ $contextName ?? config('app.name') }}
     </title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,7 +23,7 @@
             display: none !important;
         }
     </style>
-    @vite(['resources/conference/css/conference.css', 'resources/conference/js/conference.js'])
+    @vite(['resources/website/css/website.css', 'resources/website/js/website.js'])
 </head>
 
 <body class="page page-{{ strtolower($livewire->getTitle()) }} antialiased" x-data>

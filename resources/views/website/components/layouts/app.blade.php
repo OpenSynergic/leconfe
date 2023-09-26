@@ -1,13 +1,13 @@
-<x-conference::layouts.base :livewire="$livewire">
+<x-website::layouts.base :livewire="$livewire">
     <div class="flex flex-col h-full gap-3 min-h-screen">
         
         {{-- Load Header Layout --}}
-        <x-conference::layouts.header />
+        <x-website::layouts.header />
 
         {{-- Load Main Layout --}}
         {{ $slot }}
         
         {{-- Load Footer Layout --}}
-        <x-conference::layouts.footer />
+        <x-website::layouts.footer />
     </div>    
 </x-conference::layouts.base>

@@ -10,14 +10,14 @@
 
                 @if (!$item->hasChildren())
                     <li>
-                        <x-conference::link
+                        <x-website::link
                             class="btn btn-ghost btn-sm rounded-full inline-flex items-center justify-center px-4 transition-colors hover:text-primary-content focus:outline-none disabled:opacity-50 disabled:pointer-events-none group w-max"
                             :href="$item->getUrl()">
                             {{ $item->getLabel() }}
                         </x-conference::link>
                     </li>
                 @else
-                    <x-conference::navigation.dropdown.trigger :key="$key" :item="$item" />
+                    <x-website::navigation.dropdown.trigger :key="$key" :item="$item" />
                 @endif
             @endforeach
         </ul>
@@ -33,7 +33,7 @@
                 @continue
             @endif
             <div class="navbar-dropdown-content" x-navigation:dropdown-content="{{ $key }}">
-                <x-conference::navigation.dropdown.items :items="$item->getChildren()" />
+                <x-website::navigation.dropdown.items :items="$item->getChildren()" />
             </div>
         @endforeach
     </div>

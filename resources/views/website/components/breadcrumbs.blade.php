@@ -8,7 +8,7 @@
         @foreach ($breadcrumbs as $url => $label)
         <li>
             @if(!is_int($url))
-            <x-conference::link 
+            <x-website::link 
                 :href="$url" 
                 class="link link-hover link-primary"
                 {{-- wire:navigate --}}

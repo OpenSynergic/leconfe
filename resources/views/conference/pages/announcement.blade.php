@@ -1,4 +1,4 @@
-<x-conference::layouts.main>
+<x-website::layouts.main>
     <div class="card-body text-gray-800">
         <p class="text-xs text-gray-500 font-medium">{{ $this->announcement->created_at->format('l, j F Y') }}</p>
         <h1 class="card-title">{{ $this->announcement->title }}</h1>
