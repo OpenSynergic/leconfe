@@ -9,17 +9,15 @@ use Livewire\Mechanisms\ComponentRegistry;
 
 class BlockManager
 {
-    protected static array $blocks = [];
+    protected array $blocks = [];
 
-    protected static $blockSettings;
-
-    public static function boot(): void
+    public function boot(): void
     {
-        if (! static::$blocks) {
+        if (! $this->blocks) {
             return;
         }
 
-        foreach (static::$blocks as $blockClass) {
+        foreach ($this->blocks as $blockClass) {
             if (is_subclass_of($blockClass, Block::class)) {
                 $componentName = app(ComponentRegistry::class)->getName($blockClass);
                 Livewire::component($componentName, $blockClass);
@@ -31,12 +29,12 @@ class BlockManager
 
     public function registerBlocks(array $blocks): void
     {
-        static::$blocks = array_merge(static::$blocks, $blocks);
+        $this->blocks = array_merge($this->blocks, $blocks);
     }
 
     public function getBlocks(string $position, bool $includeInactive = false): Collection
     {
-        return collect(static::$blocks)
+        return collect($this->blocks)
             ->map(fn ($block) => app($block))
             ->reject(function (Block $block) use ($position, $includeInactive) {
                 if ($includeInactive) {
@@ -46,10 +44,5 @@ class BlockManager
                 return ! $block->isActive() || $block->getPosition() != $position;
             })
             ->sortBy(fn (Block $block) => $block->getSort());
-    }
-
-    public function getBlockSettings(): array
-    {
-        return static::$blockSettings;
     }
 }

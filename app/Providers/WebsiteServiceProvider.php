@@ -4,8 +4,6 @@ namespace App\Providers;
 
 use App\Facades\Block;
 use App\Http\Middleware\DefaultViewData;
-use App\Http\Middleware\IdentifyCurrentConference;
-use App\Managers\BlockManager;
 use App\Website\Blocks\ExampleBlock;
 use App\Website\Blocks\LeftBlock;
 use App\Website\Pages\Home;
@@ -34,7 +32,7 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
             ->layout('conference.components.layouts.app')
             ->homePage(Home::class)
             ->bootUsing(function () {
-                BlockManager::boot();
+                Block::boot();
             })
             ->middleware([
                 'web',
