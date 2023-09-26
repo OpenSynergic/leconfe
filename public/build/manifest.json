@@ -3,8 +3,18 @@
     "file": "assets/logo-913f6b43.png",
     "src": "resources/assets/images/logo.png"
   },
+  "resources/conference/css/conference.css": {
+    "file": "assets/conference-5110516f.css",
+    "isEntry": true,
+    "src": "resources/conference/css/conference.css"
+  },
+  "resources/conference/js/conference.js": {
+    "file": "assets/conference-1d95df41.js",
+    "isEntry": true,
+    "src": "resources/conference/js/conference.js"
+  },
   "resources/panel/css/panel.css": {
-    "file": "assets/panel-b715b443.css",
+    "file": "assets/panel-c0db1670.css",
     "isEntry": true,
     "src": "resources/panel/css/panel.css"
   },
