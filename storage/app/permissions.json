@@ -32,5 +32,6 @@
     "Venue:delete",
     "Venue:update",
     "Venue:view",
-    "Venue:viewAny"
+    "Venue:viewAny",
+    "WorkflowSetting:update"
 ]

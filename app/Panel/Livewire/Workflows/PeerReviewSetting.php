@@ -5,6 +5,7 @@ namespace App\Panel\Livewire\Workflows;
 use App\Panel\Livewire\Workflows\Base\WorkflowStage;
 use Awcodes\Shout\Components\Shout;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -39,10 +40,12 @@ class PeerReviewSetting extends WorkflowStage implements HasForms
                     TagsInput::make("settings.allowed_file_types")
                         ->label("Allowed File Types")
                         ->helperText("Allowed file types")
-                        ->splitKeys([',', 'enter', ' '])
+                        ->splitKeys([',', 'enter', ' ']),
+                    SpatieMediaLibraryFileUpload::make('settings.paper_templates')
+                        ->helperText("Upload paper templates")
+                        ->label("Paper templates")
                 ])
                 ->columns(1)
-                ->hidden(fn (): bool => !$this->isStageOpen()),
         ]);
     }
 

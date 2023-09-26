@@ -51,7 +51,6 @@ class AbstractSetting extends WorkflowStage implements HasForms
                     ->splitKeys([',', 'enter', ' '])
             ])
                 ->columns(1)
-                ->hidden(fn (): bool => !$this->isStageOpen()),
         ]);
     }
 

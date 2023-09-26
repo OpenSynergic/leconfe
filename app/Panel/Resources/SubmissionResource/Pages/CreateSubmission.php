@@ -4,6 +4,7 @@ namespace App\Panel\Resources\SubmissionResource\Pages;
 
 use App\Actions\Submissions\SubmissionCreateAction;
 use App\Panel\Resources\SubmissionResource;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
@@ -36,7 +37,7 @@ class CreateSubmission extends Page implements HasForms
     protected function getViewData(): array
     {
         return [
-            'disable_submission' => setting('disable_submission'),
+            'isOpen' => Filament::getTenant()->getMeta('workflow.call-for-abstract.open'),
         ];
     }
 
