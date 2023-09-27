@@ -13,6 +13,7 @@ use Filament\Models\Contracts\HasDefaultTenant;
 use Filament\Models\Contracts\HasName;
 use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -33,7 +34,7 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Traits\HasRoles;
 use Squire\Models\Country;
 
-class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaultTenant, HasMedia, HasName, HasTenants
+class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaultTenant, HasMedia, HasName, HasTenants, MustVerifyEmail
 {
     use Bannable,
         HasApiTokens,
@@ -230,4 +231,19 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
             ->keepOriginalImageFormat()
             ->width(800);
     }
+
+    public function hasVerifiedEmail()
+    {
+        return false;
+        return ! is_null($this->email_verified_at);
+    }
+
+        /**
+     * Send the email verification notification.
+     *
+     * @return void
+     */
+    // public function sendEmailVerificationNotification()
+    // {
+    // }
 }

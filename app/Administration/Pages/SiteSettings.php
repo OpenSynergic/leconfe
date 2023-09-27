@@ -4,7 +4,9 @@ namespace App\Administration\Pages;
 
 use App\Actions\Settings\SettingUpdateAction;
 use App\Actions\Site\SiteUpdateAction;
+use App\Administration\Livewire\EmailSetting;
 use App\Infolists\Components\BladeEntry;
+use App\Infolists\Components\LivewireEntry;
 use App\Infolists\Components\VerticalTabs;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
@@ -74,6 +76,12 @@ class SiteSettings extends Page implements HasForms, HasInfolists
                             ->schema([
                                 BladeEntry::make('general')
                                     ->blade('{{ $this->systemForm }}'),
+                            ]),
+                        Tabs\Tab::make('E-Mail')
+                            ->schema([
+                                LivewireEntry::make('mail_setting')
+                                    ->livewire(EmailSetting::class)
+                                    ->lazy(),
                             ]),
                     ])
                     ->contained(false),
