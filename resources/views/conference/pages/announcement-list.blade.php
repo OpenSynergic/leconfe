@@ -1,4 +1,4 @@
-<x-conference::layouts.main>
+<x-website::layouts.main>
     <div class="card-body">
         <h1 class="text-xl mb-2 ml-2 text-gray-900">{{ 'Announcements' }}</h1>
         <div class="divide-y overflow-y-auto">

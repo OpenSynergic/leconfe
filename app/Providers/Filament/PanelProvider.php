@@ -2,8 +2,8 @@
 
 namespace App\Providers\Filament;
 
-use App\Http\Middleware\PanelAuthenticate;
-use App\Http\Middleware\TenantConference;
+use App\Http\Middleware\Panel\PanelAuthenticate;
+use App\Http\Middleware\Panel\TenantConference;
 use App\Models\Conference;
 use App\Models\Navigation;
 use App\Panel\Resources\NavigationResource;
@@ -131,13 +131,6 @@ class PanelProvider extends FilamentPanelProvider
     public static function getMiddleware(): array
     {
         return [
-            // EncryptCookies::class,
-            // AddQueuedCookiesToResponse::class,
-            // StartSession::class,
-            // AuthenticateSession::class,
-            // ShareErrorsFromSession::class,
-            // VerifyCsrfToken::class,
-            // SubstituteBindings::class,
             'web',
             DisableBladeIconComponents::class,
             DispatchServingFilamentEvent::class,

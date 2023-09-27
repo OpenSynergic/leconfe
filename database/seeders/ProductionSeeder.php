@@ -13,6 +13,7 @@ class ProductionSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(SiteSeeder::class);
         $this->call(PermissionSeeder::class);
         $this->call(RoleSeeder::class);
     }

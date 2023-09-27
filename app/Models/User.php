@@ -116,7 +116,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
 
     public function canAccessTenant(Model $tenant): bool
     {
-        if ($tenant->getKey() == Conference::current()?->getKey()) {
+        if ($tenant->getKey() == Conference::active()?->getKey()) {
             return true;
         }
 
@@ -165,7 +165,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
 
     public function getDefaultTenant(Panel $panel): ?Model
     {
-        return Conference::current();
+        return Conference::active();
     }
 
     public function submissions()

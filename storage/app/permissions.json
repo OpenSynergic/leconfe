@@ -1,7 +1,7 @@
 [
     "Conference:create",
     "Conference:delete",
-    "Conference:setAsCurrent",
+    "Conference:setAsActive",
     "Conference:update",
     "Navigation:create",
     "Navigation:delete",

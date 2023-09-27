@@ -15,7 +15,10 @@ return new class extends Migration
     public function up()
     {
         Schema::table('navigations', function (Blueprint $table) {
-            $table->foreignIdFor(Conference::class);
+            $table
+                ->foreignIdFor(Conference::class)
+                ->default(0)
+                ->after('id');
             $table->dropUnique('navigations_handle_unique');
 
             $table->unique(['conference_id', 'handle']);

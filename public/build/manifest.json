@@ -22,5 +22,15 @@
     "file": "assets/panel-540e3665.js",
     "isEntry": true,
     "src": "resources/panel/js/panel.js"
+  },
+  "resources/website/css/website.css": {
+    "file": "assets/website-fbf287d6.css",
+    "isEntry": true,
+    "src": "resources/website/css/website.css"
+  },
+  "resources/website/js/website.js": {
+    "file": "assets/website-b4ec506a.js",
+    "isEntry": true,
+    "src": "resources/website/js/website.js"
   }
 }

@@ -7,6 +7,7 @@ use App\Actions\Conferences\ConferenceUpdateAction;
 use App\Facades\Block as FacadesBlock;
 use App\Forms\Components\BlockList;
 use App\Forms\Components\VerticalTabs;
+use App\Infolists\Components\VerticalTabs as InfolistsVerticalTabs;
 use App\Infolists\Components\BladeEntry;
 use App\Livewire\Block as BlockComponent;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
@@ -15,7 +16,6 @@ use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Section as FormSection;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -46,7 +46,7 @@ class Conference extends Page implements HasForms, HasInfolists
 
     public array $generalFormData = [];
 
-    public array $setupFormData = [];
+    public array $privacyStatementFormData = [];
 
     public array $appereanceFormData = [];
 
@@ -84,7 +84,7 @@ class Conference extends Page implements HasForms, HasInfolists
             'meta' => app()->getCurrentConference()->getAllMeta()->toArray(),
         ]);
 
-        $this->setupForm->fill([
+        $this->privacyStatementForm->fill([
             'meta' => app()->getCurrentConference()->getAllMeta()->toArray(),
         ]);
     }
@@ -97,8 +97,21 @@ class Conference extends Page implements HasForms, HasInfolists
                     ->tabs([
                         Tabs\Tab::make('About')
                             ->schema([
-                                BladeEntry::make('general')
-                                    ->blade('{{ $this->generalForm }}'),
+                                InfolistsVerticalTabs\Tabs::make()
+                                    ->schema([
+                                        InfolistsVerticalTabs\Tab::make('Information')
+                                            ->icon('heroicon-o-information-circle')
+                                            ->schema([
+                                                BladeEntry::make('general')
+                                                    ->blade('{{ $this->generalForm }}'),
+                                            ]),
+                                        InfolistsVerticalTabs\Tab::make('Privacy Statement')
+                                            ->icon('heroicon-m-window')
+                                            ->schema([
+                                                BladeEntry::make('general')
+                                                    ->blade('{{ $this->privacyStatementForm }}'),
+                                            ]),
+                                    ])
                             ]),
                         Tabs\Tab::make('Appearance')
                             ->schema([
@@ -110,11 +123,6 @@ class Conference extends Page implements HasForms, HasInfolists
                                 BladeEntry::make('general')
                                     ->blade('{{ $this->contactForm }}'),
                             ]),
-                        Tabs\Tab::make('Setup')
-                            ->schema([
-                                BladeEntry::make('general')
-                                    ->blade('{{ $this->setupForm }}'),
-                            ]),
                     ])
                     ->contained(false),
             ]);
@@ -124,7 +132,7 @@ class Conference extends Page implements HasForms, HasInfolists
     {
         return [
             'generalForm',
-            'setupForm',
+            'privacyStatementForm',
             'appereanceForm',
             'contactForm',
         ];
@@ -136,7 +144,7 @@ class Conference extends Page implements HasForms, HasInfolists
         foreach ($blockSettings as $sort => $blockSetting) {
             $sort++; // To sort a number, take it from the array index.
             [$uuid, $enabled, $originalState] = explode(':', $blockSetting);
-            $block = data_get($this, $originalState.'.'.$uuid);
+            $block = data_get($this, $originalState . '.' . $uuid);
             // The block is being moved to a new position.
             if ($originalState != $statePath) {
                 $block->position = str($statePath)->contains('blocks.left') ? 'left' : 'right';
@@ -160,7 +168,7 @@ class Conference extends Page implements HasForms, HasInfolists
                         VerticalTabs\Tab::make('Sidebar')
                             ->icon('heroicon-o-view-columns')
                             ->schema([
-                                FormSection::make()
+                                Section::make()
                                     ->schema([
                                         Grid::make(3)
                                             ->columns([
@@ -212,89 +220,83 @@ class Conference extends Page implements HasForms, HasInfolists
             ->statePath('generalFormData')
             ->model(app()->getCurrentConference())
             ->schema([
-                VerticalTabs\Tabs::make()
-                    ->sticky()
+                Section::make()
                     ->schema([
-                        VerticalTabs\Tab::make('Information')
-                            ->icon('heroicon-o-information-circle')
+                        Grid::make(2)
                             ->schema([
-                                FormSection::make('Information')
-                                    ->schema([
-                                        Grid::make(2)
-                                            ->schema([
-                                                TextInput::make('name')
-                                                    ->required()
-                                                    ->columnSpan([
-                                                        'xl' => 1,
-                                                        'sm' => 2,
-                                                    ]),
-                                                TextInput::make('path')
-                                                    ->rule('alpha_dash')
-                                                    ->required()
-                                                    ->columnSpan([
-                                                        'xl' => 1,
-                                                        'sm' => 2,
-                                                    ]),
-                                                TextInput::make('meta.location')
-                                                    ->columnSpan([
-                                                        'xl' => 1,
-                                                        'sm' => 2,
-                                                    ]),
-                                                Flatpickr::make('meta.date_held')
-                                                    ->rule('date')
-                                                    ->columnSpan([
-                                                        'xl' => 1,
-                                                        'sm' => 2,
-                                                    ]),
-                                                SpatieMediaLibraryFileUpload::make('logo')
-                                                    ->collection('logo')
-                                                    ->image()
-                                                    ->imageResizeUpscale(false)
-                                                    ->conversion('thumb')
-                                                    ->columnSpan([
-                                                        'xl' => 1,
-                                                        'sm' => 2,
-                                                    ]),
-                                                SpatieMediaLibraryFileUpload::make('thumbnail')
-                                                    ->collection('thumbnail')
-                                                    ->helperText('A image representation of the conference that can be used in lists of conferences.')
-                                                    ->image()
-                                                    ->conversion('thumb')
-                                                    ->columnSpan([
-                                                        'xl' => 1,
-                                                        'sm' => 2,
-                                                    ]),
-                                                Textarea::make('meta.description')
-                                                    ->rows(5)
-                                                    ->columnSpanFull(),
-                                                TinyEditor::make('meta.about')
-                                                    ->label('About Conference')
-                                                    ->minHeight(300)
-                                                    ->columnSpan([
-                                                        'sm' => 2,
-                                                    ]),
-                                                TinyEditor::make('meta.page_footer')
-                                                    ->minHeight(300)
-                                                    ->columnSpan([
-                                                        'sm' => 2,
-                                                    ]),
-                                            ]),
-                                        Actions::make([
-                                            Action::make('save')
-                                                ->successNotificationTitle('Saved!')
-                                                ->failureNotificationTitle('Data could not be saved.')
-                                                ->action(function (Action $action) {
-                                                    $formData = $this->generalForm->getState();
-                                                    try {
-                                                        ConferenceUpdateAction::run(app()->getCurrentConference(), $formData);
-                                                        $action->sendSuccessNotification();
-                                                    } catch (\Throwable $th) {
-                                                        $action->sendFailureNotification();
-                                                    }
-                                                }),
-                                        ])->alignLeft(),
+                                TextInput::make('name')
+                                    ->required()
+                                    ->columnSpan([
+                                        'xl' => 1,
+                                        'sm' => 2,
+                                    ]),
+                                TextInput::make('path')
+                                    ->rule('alpha_dash')
+                                    ->required()
+                                    ->columnSpan([
+                                        'xl' => 1,
+                                        'sm' => 2,
+                                    ]),
+                                TextInput::make('meta.location')
+                                    ->columnSpan([
+                                        'xl' => 1,
+                                        'sm' => 2,
+                                    ]),
+                                Flatpickr::make('meta.date_held')
+                                    ->rule('date')
+                                    ->columnSpan([
+                                        'xl' => 1,
+                                        'sm' => 2,
+                                    ]),
+                                SpatieMediaLibraryFileUpload::make('logo')
+                                    ->collection('logo')
+                                    ->image()
+                                    ->imageResizeUpscale(false)
+                                    ->conversion('thumb')
+                                    ->columnSpan([
+                                        'xl' => 1,
+                                        'sm' => 2,
+                                    ]),
+                                SpatieMediaLibraryFileUpload::make('thumbnail')
+                                    ->collection('thumbnail')
+                                    ->helperText('A image representation of the conference that can be used in lists of conferences.')
+                                    ->image()
+                                    ->conversion('thumb')
+                                    ->columnSpan([
+                                        'xl' => 1,
+                                        'sm' => 2,
+                                    ]),
+                                Textarea::make('meta.description')
+                                    ->rows(5)
+                                    ->autosize()
+                                    ->columnSpanFull(),
+                                TinyEditor::make('meta.about')
+                                    ->label('About Conference')
+                                    ->minHeight(300)
+                                    ->columnSpan([
+                                        'sm' => 2,
+                                    ]),
+                                TinyEditor::make('meta.page_footer')
+                                    ->minHeight(300)
+                                    ->columnSpan([
+                                        'sm' => 2,
                                     ]),
                             ]),
+                        Actions::make([
+                            Action::make('save_general_form')
+                                ->label('Save')
+                                ->successNotificationTitle('Saved!')
+                                ->failureNotificationTitle('Data could not be saved.')
+                                ->action(function (Action $action) {
+                                    $formData = $this->generalForm->getState();
+                                    try {
+                                        ConferenceUpdateAction::run(app()->getCurrentConference(), $formData);
+                                        $action->sendSuccessNotification();
+                                    } catch (\Throwable $th) {
+                                        $action->sendFailureNotification();
+                                    }
+                                }),
+                        ])->alignLeft(),
                     ]),
             ]);
     }
@@ -303,7 +305,7 @@ class Conference extends Page implements HasForms, HasInfolists
     {
         return $form
             ->statePath('contactFormData')
-            ->model(Filament::getTenant())
+            ->model(app()->getCurrentConference())
             ->schema([
                 VerticalTabs\Tabs::make()
                     ->sticky()
@@ -311,7 +313,7 @@ class Conference extends Page implements HasForms, HasInfolists
                         VerticalTabs\Tab::make('Contact')
                             ->icon('heroicon-o-phone')
                             ->schema([
-                                FormSection::make('Contact')
+                                Section::make('Contact')
                                     ->schema([
                                         Section::make('')
                                             ->schema([
@@ -376,44 +378,35 @@ class Conference extends Page implements HasForms, HasInfolists
             ]);
     }
 
-    public function setupForm(Form $form): Form
+    public function privacyStatementForm(Form $form): Form
     {
         return $form
-            ->statePath('setupFormData')
+            ->statePath('privacyStatementFormData')
             ->model(app()->getCurrentConference())
             ->schema([
-                VerticalTabs\Tabs::make()
-                    ->tabs(
-                        [
-                            VerticalTabs\Tab::make('Privacy Statement')
-                                ->icon('heroicon-m-window')
-                                ->schema(
-                                    [
-                                        FormSection::make('Privacy Statement')
-                                            ->schema([
-                                                TinyEditor::make('meta.privacy_statement')->label('Privacy Statement'),
-                                                Actions::make([
-                                                    Action::make('setup_save')
-                                                        ->label('Save')
-                                                        ->successNotificationTitle('Saved!')
-                                                        ->action(function (Action $action) {
-                                                            $setupFormData = $this->setupForm->getState();
-                                                            try {
-                                                                ConferenceUpdateAction::run(app()->getCurrentConference(), $setupFormData);
-                                                                $action->sendSuccessNotification();
-                                                            } catch (\Throwable $th) {
-                                                                $action->sendFailureNotification();
-                                                            }
-                                                        }),
-                                                ])->alignLeft(),
-                                            ])
-                                            ->extraAttributes([
-                                                'class' => '!p-0',
-                                            ]),
-                                    ]
-                                ),
-                        ]
-                    ),
+                Section::make()
+                    ->schema([
+                        TinyEditor::make('meta.privacy_statement')
+                            ->label(' '),
+                        Actions::make([
+                            Action::make('save_privacy_statement')
+                                ->label('Save')
+                                ->successNotificationTitle('Saved!')
+                                ->failureNotificationTitle('Failed to save data.')
+                                ->action(function (Action $action) {
+                                    $privacyStatementFormData = $this->privacyStatementForm->getState();
+                                    try {
+                                        ConferenceUpdateAction::run(app()->getCurrentConference(), $privacyStatementFormData);
+                                        $action->sendSuccessNotification();
+                                    } catch (\Throwable $th) {
+                                        $action->sendFailureNotification();
+                                    }
+                                }),
+                        ])->alignLeft(),
+                    ])
+                    ->extraAttributes([
+                        'class' => '!p-0',
+                    ]),
             ]);
     }
 }
