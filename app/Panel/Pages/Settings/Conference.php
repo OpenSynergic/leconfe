@@ -7,11 +7,10 @@ use App\Actions\Conferences\ConferenceUpdateAction;
 use App\Facades\Block as FacadesBlock;
 use App\Forms\Components\BlockList;
 use App\Forms\Components\VerticalTabs;
-use App\Infolists\Components\VerticalTabs as InfolistsVerticalTabs;
 use App\Infolists\Components\BladeEntry;
+use App\Infolists\Components\VerticalTabs as InfolistsVerticalTabs;
 use App\Livewire\Block as BlockComponent;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
-use Filament\Facades\Filament;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Grid;
@@ -111,7 +110,7 @@ class Conference extends Page implements HasForms, HasInfolists
                                                 BladeEntry::make('general')
                                                     ->blade('{{ $this->privacyStatementForm }}'),
                                             ]),
-                                    ])
+                                    ]),
                             ]),
                         Tabs\Tab::make('Appearance')
                             ->schema([
@@ -144,7 +143,7 @@ class Conference extends Page implements HasForms, HasInfolists
         foreach ($blockSettings as $sort => $blockSetting) {
             $sort++; // To sort a number, take it from the array index.
             [$uuid, $enabled, $originalState] = explode(':', $blockSetting);
-            $block = data_get($this, $originalState . '.' . $uuid);
+            $block = data_get($this, $originalState.'.'.$uuid);
             // The block is being moved to a new position.
             if ($originalState != $statePath) {
                 $block->position = str($statePath)->contains('blocks.left') ? 'left' : 'right';

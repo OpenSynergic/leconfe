@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Block extends Model
 {
-    use BelongsToConference, HasFactory, Cachable;
+    use BelongsToConference, Cachable, HasFactory;
 
     protected $fillable = [
         'class',
