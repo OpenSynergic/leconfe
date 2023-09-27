@@ -3,13 +3,21 @@
 namespace App\Providers;
 
 use App\Facades\Block;
-use App\Http\Middleware\IdentifyCurrentConference;
-use App\Managers\BlockManager;
-use App\Website\Blocks\ExampleBlock;
-use App\Website\Blocks\LeftBlock;
 use App\Website\Pages\Home;
+use App\Managers\BlockManager;
+use App\Website\Blocks\LeftBlock;
+use App\Website\Blocks\ExampleBlock;
+use App\Website\Blocks\CalendarBlock;
 use Illuminate\Support\Facades\Blade;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
+use App\Http\Middleware\IdentifyCurrentConference;
+use App\Website\Blocks\EditorialBlock;
+use App\Website\Blocks\InformationBlock;
+use App\Website\Blocks\LoginBlock;
+use App\Website\Blocks\ScheduleBlock;
+use App\Website\Blocks\SearchBlock;
+use App\Website\Blocks\SubmitBlock;
+use App\Website\Blocks\TopicBlock;
 use Rahmanramsi\LivewirePageGroup\PageGroupServiceProvider;
 
 class WebsiteServiceProvider extends PageGroupServiceProvider
@@ -20,8 +28,16 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
 
         // Register blocks
         Block::registerBlocks([
-            ExampleBlock::class,
-            LeftBlock::class,
+            // ExampleBlock::class,
+            // LeftBlock::class,
+            CalendarBlock::class,
+            ScheduleBlock::class,
+            SearchBlock::class,
+            LoginBlock::class,
+            TopicBlock::class,
+            InformationBlock::class,
+            SubmitBlock::class,
+            EditorialBlock::class
         ]);
     }
 

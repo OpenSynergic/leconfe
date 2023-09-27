@@ -34,7 +34,7 @@
                                         <div class="flex flex-wrap w-full gap-2 mt-4 md:max-w-[20rem]">
                                             @foreach ($topics as $topic)
                                                 <span
-                                                    class="badge badge-outline badge-md small-text">{{ $topic->name }}</span>
+                                                    class="badge badge-outline text-xs border border-gray-300 h-6 small-text">{{ $topic->name }}</span>
                                             @endforeach
                                         </div>
                                     </div>
