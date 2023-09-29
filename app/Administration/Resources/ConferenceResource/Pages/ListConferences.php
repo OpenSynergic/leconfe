@@ -36,8 +36,8 @@ class ListConferences extends ListRecords
             'upcoming' => Tab::make()
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', ConferenceStatus::Upcoming))
                 ->badge(Conference::query()->where('status', ConferenceStatus::Upcoming)->count()),
-            'current' => Tab::make()
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', ConferenceStatus::Current)),
+            'active' => Tab::make()
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', ConferenceStatus::Active)),
             'archive' => Tab::make()
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', ConferenceStatus::Archived))
                 ->badge(Conference::query()->where('status', ConferenceStatus::Archived)->count()),

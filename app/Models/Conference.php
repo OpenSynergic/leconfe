@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
-use App\Actions\Participants\ParticipantPositionPopulateDefaultDataAction;
-use App\Actions\SubmissionFiles\FilesTypePopulateAction;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ConferenceType;
 use App\Models\Meta\ConferenceMeta;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasName;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -25,8 +24,6 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
 {
     use Cachable, HasFactory, HasShortflakePrimary, HasSlug, InteractsWithMedia, Metable;
 
-    protected static ?Conference $current;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -34,7 +31,6 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
      */
     protected $fillable = [
         'name',
-        'is_current',
         'type',
         'status',
         'path',
@@ -53,21 +49,6 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
     protected function getMetaClassName(): string
     {
         return ConferenceMeta::class;
-    }
-
-    protected static function booted(): void
-    {
-        static::deleting(function (Conference $model) {
-            if ($model->getKey() == static::current()?->getKey()) {
-                throw new \Exception('Conference cannot be deleted because it is currently set as current conference');
-            }
-
-            // TODO conference tidak bisa dihapus ketika ada data lain yg terkait dengan conference ini
-        });
-
-        static::created(function (Conference $model) {
-            ParticipantPositionPopulateDefaultDataAction::run($model);
-        });
     }
 
     public function submission(): HasMany
@@ -140,28 +121,26 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
             ->saveSlugsTo('path');
     }
 
-    public static function current(): ?self
+    public static function active(): ?self
     {
-        if (!isset(static::$current)) {
-            static::$current = static::where('status', ConferenceStatus::Current)->first();
-        }
-
-        return static::$current;
+        return static::where('status', ConferenceStatus::Active)->first();
     }
 
-    public static function upcoming()
+    public function scopeUpcoming(Builder $query)
     {
-        return static::whereHasMeta('date_held')
-            ->orderByMetaNumeric('date_held', 'asc')->where('status', ConferenceStatus::Upcoming);
+        return $query
+            ->whereHasMeta('date_held')
+            ->orderByMetaNumeric('date_held', 'asc')
+            ->where('status', ConferenceStatus::Upcoming);
     }
 
-    public function isUpcoming()
+    public function isUpcoming(): bool
     {
         return $this->status == ConferenceStatus::Upcoming;
     }
 
-    public function isCurrent()
+    public function isActive(): bool
     {
-        return $this->status == ConferenceStatus::Current;
+        return $this->status == ConferenceStatus::Active;
     }
 }

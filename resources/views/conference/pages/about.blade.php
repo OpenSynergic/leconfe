@@ -1,6 +1,6 @@
-<x-conference::layouts.main>
+<x-website::layouts.main>
     <div class="card-body flex gap-3">
-        <x-conference::breadcrumbs :breadcrumbs="$this->getBreadcrumbs()" />
+        <x-website::breadcrumbs :breadcrumbs="$this->getBreadcrumbs()" />
         <h2 class="card-title">{{ $this->getTitle() }} </h2>
 
         <div class="user-content">

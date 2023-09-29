@@ -1,6 +1,6 @@
-<x-conference::layouts.main>
+<x-website::layouts.main>
     <div class="card-body space-y-2">
-        <x-conference::breadcrumbs :breadcrumbs="$this->getBreadcrumbs()" />
+        <x-website::breadcrumbs :breadcrumbs="$this->getBreadcrumbs()" />
         <h2 class="card-title">{{ $this->getTitle() }}</h2>
 
         <form wire:submit='register' class="space-y-4">
@@ -92,7 +92,7 @@
                         <label class="label justify-normal gap-2">
                             <input type="checkbox" class="checkbox checkbox-primary checkbox-sm" wire:model="privacy_statement_agree" required/>
                             <p class="label-text">
-                                I accept and approve according to <x-conference::link href="#" class="link link-primary link-hover">Privacy Statement.</x-conference::link>
+                                I accept and approve according to <x-website::link href="#" class="link link-primary link-hover">Privacy Statement.</x-conference::link>
                             </p>
                         </label>
                     </div>
@@ -108,7 +108,7 @@
                     <span class="loading loading-spinner loading-xs" wire:loading></span>
                     Register
                 </button>
-                <x-conference::link class="btn btn-outline btn-sm" :href="url('login')">
+                <x-website::link class="btn btn-outline btn-sm" :href="url('login')">
                     Login
                 </x-conference::link>
             </div>

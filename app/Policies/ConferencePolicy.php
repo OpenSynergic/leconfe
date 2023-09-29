@@ -37,7 +37,7 @@ class ConferencePolicy
      */
     public function update(User $user, Conference $conference): bool
     {
-        if (! in_array($conference->status, [ConferenceStatus::Current, ConferenceStatus::Upcoming])) {
+        if (! in_array($conference->status, [ConferenceStatus::Active, ConferenceStatus::Upcoming])) {
             return false;
         }
 
@@ -49,19 +49,19 @@ class ConferencePolicy
      */
     public function delete(User $user, Conference $conference): bool
     {
-        if (in_array($conference->status, [ConferenceStatus::Current, ConferenceStatus::Archived])) {
+        if (in_array($conference->status, [ConferenceStatus::Active, ConferenceStatus::Archived])) {
             return false;
         }
 
         return $user->can('Conference:delete');
     }
 
-    public function setAsCurrent(User $user, Conference $conference): bool
+    public function setAsActive(User $user, Conference $conference): bool
     {
         if ($conference->status != ConferenceStatus::Upcoming) {
             return false;
         }
 
-        return $user->can('Conference:setAsCurrent');
+        return $user->can('Conference:setAsActive');
     }
 }

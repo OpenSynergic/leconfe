@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Actions\Participants\ParticipantPositionPopulateDefaultDataAction;
 use App\Models\Conference;
 use App\Models\Navigation;
 use Illuminate\Support\Str;
@@ -20,6 +21,8 @@ class ConferenceObserver
      */
     public function created(Conference $conference): void
     {
+        ParticipantPositionPopulateDefaultDataAction::run($conference);
+
         Navigation::create([
             'name' => 'Primary Navigation Menu',
             'handle' => 'primary-navigation-menu',
@@ -28,12 +31,6 @@ class ConferenceObserver
                 Str::uuid()->toString() => [
                     'label' => 'Home',
                     'type' => 'home',
-                    'data' => null,
-                    'children' => [],
-                ],
-                Str::uuid()->toString() => [
-                    'label' => 'Current Conference',
-                    'type' => 'current-conference',
                     'data' => null,
                     'children' => [],
                 ],
@@ -61,6 +58,16 @@ class ConferenceObserver
     public function deleted(Conference $conference): void
     {
         //
+    }
+
+    /**
+     * Handle the Conference "deleted" event.
+     */
+    public function deleting(Conference $conference): void
+    {
+        if ($conference->getKey() == Conference::active()?->getKey()) {
+            throw new \Exception('Conference cannot be deleted because it is currently active');
+        }
     }
 
     /**

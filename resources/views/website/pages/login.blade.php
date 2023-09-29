@@ -1,6 +1,6 @@
-<x-conference::layouts.main>
+<x-website::layouts.main>
     <div class="card-body space-y-2">
-        <x-conference::breadcrumbs :breadcrumbs="$this->getBreadcrumbs()" />
+        <x-website::breadcrumbs :breadcrumbs="$this->getBreadcrumbs()" />
         <form wire:submit='login' class="space-y-4">
             <div class="form-control sm:col-span-6 gap-2">
                 <label class="label-text">
@@ -35,7 +35,7 @@
                     <span class="loading loading-spinner loading-xs" wire:loading></span>
                     Login
                 </button>
-                <x-conference::link class="btn btn-outline btn-sm" :href="url('register')">
+                <x-website::link class="btn btn-outline btn-sm" :href="url('register')">
                     Register
                 </x-conference::link>
             </div>
