@@ -17,6 +17,7 @@ use App\Website\Blocks\LoginBlock;
 use App\Website\Blocks\ScheduleBlock;
 use App\Website\Blocks\SearchBlock;
 use App\Website\Blocks\SubmitBlock;
+use App\Website\Blocks\TimelineBlock;
 use App\Website\Blocks\TopicBlock;
 use Rahmanramsi\LivewirePageGroup\PageGroupServiceProvider;
 
@@ -31,7 +32,7 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
             // ExampleBlock::class,
             // LeftBlock::class,
             CalendarBlock::class,
-            ScheduleBlock::class,
+            TimelineBlock::class,
             SearchBlock::class,
             LoginBlock::class,
             TopicBlock::class,

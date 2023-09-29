@@ -4,21 +4,22 @@ namespace App\Website\Blocks;
 
 use App\Livewire\Block;
 use App\Models\Conference;
+use App\Models\Timeline;
 
-class ScheduleBlock extends Block
+class TimelineBlock extends Block
 {
-    protected ?string $view = 'website.blocks.schedule-block';
+    protected ?string $view = 'website.blocks.timeline-block';
 
     protected ?int $sort = 2;
 
-    protected string $name = 'Schedule Block';
+    protected string $name = 'Timeline Block';
 
     protected ?string $position = 'left';
 
     public function getViewData(): array
     {
         return [
-            'schedules' => Conference::upcoming()->get(),
+            'timelines' => Timeline::getTimelinesForCurrentConference()->get()
         ];
     }
 }
