@@ -1,4 +1,7 @@
 [
+    "Announcement:create",
+    "Announcement:delete",
+    "Announcement:update",
     "Conference:create",
     "Conference:delete",
     "Conference:setAsActive",
@@ -23,6 +26,7 @@
     "User:create",
     "User:delete",
     "User:disable",
+    "User:enable",
     "User:loginAs",
     "User:sendEmail",
     "User:update",
