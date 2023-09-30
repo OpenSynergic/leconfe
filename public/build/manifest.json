@@ -3,16 +3,6 @@
     "file": "assets/logo-913f6b43.png",
     "src": "resources/assets/images/logo.png"
   },
-  "resources/conference/css/conference.css": {
-    "file": "assets/conference-292a21b5.css",
-    "isEntry": true,
-    "src": "resources/conference/css/conference.css"
-  },
-  "resources/conference/js/conference.js": {
-    "file": "assets/conference-9d80e2d9.js",
-    "isEntry": true,
-    "src": "resources/conference/js/conference.js"
-  },
   "resources/panel/css/panel.css": {
     "file": "assets/panel-c0db1670.css",
     "isEntry": true,
@@ -24,12 +14,12 @@
     "src": "resources/panel/js/panel.js"
   },
   "resources/website/css/website.css": {
-    "file": "assets/website-fbf287d6.css",
+    "file": "assets/website-245dc049.css",
     "isEntry": true,
     "src": "resources/website/css/website.css"
   },
   "resources/website/js/website.js": {
-    "file": "assets/website-b4ec506a.js",
+    "file": "assets/website-d409e8a4.js",
     "isEntry": true,
     "src": "resources/website/js/website.js"
   }

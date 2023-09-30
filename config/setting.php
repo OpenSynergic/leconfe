@@ -79,7 +79,15 @@ return [
     |   "app.locale" => "settings.locale",
     |
     */
-    'override' => [],
+    'override' => [
+        'mail.from.address' => 'mail.from.address',
+        'mail.from.name' => 'mail.from.name',
+        'mail.mailers.smtp.host' => 'mail.auth.host',
+        'mail.mailers.smtp.port' => 'mail.auth.port',
+        'mail.mailers.smtp.username' => 'mail.auth.username',
+        'mail.mailers.smtp.password' => 'mail.auth.password',
+        'mail.mailers.smtp.encryption' => 'mail.auth.encryption',
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -124,6 +132,8 @@ return [
     |   "payment.key"
     |
     */
-    'encrypted_keys' => [],
+    'encrypted_keys' => [
+        'mail.auth.password',
+    ],
 
 ];

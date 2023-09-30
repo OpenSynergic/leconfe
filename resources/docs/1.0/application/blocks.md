@@ -2,7 +2,7 @@
 
 A block is a section of the page displayed on the front page. It can be found on the sidebar, either on the left, right, or both sides.
 
-# How to create
+## Creating A Block
 
 To create a block, you need to create a class that extends the `\App\Livewire\Block` class. The class must be located in the `app/Website/Blocks` directory.
 

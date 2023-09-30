@@ -3,7 +3,6 @@
 namespace App\Actions\StaticPages;
 
 use App\Models\StaticPage;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -20,12 +19,9 @@ class StaticPageCreateAction
 
             $staticPage = StaticPage::create($data);
 
-            $staticPage->setManyMeta(Arr::only($data, ['user_content']));
-
-            // if ($sendEmail) {
-            //     // TODO Create a job to send email
-
-            // }
+            if (data_get($data, 'meta')) {
+                $staticPage->setManyMeta(data_get($data, 'meta'));
+            }
 
             DB::commit();
         } catch (\Throwable $th) {

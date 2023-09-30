@@ -25,6 +25,7 @@ class AdministrationPanelProvider extends FilamentPanelProvider
                 'panels::sidebar.nav.start',
                 fn () => view('administration.components.sidebar.nav-start')
             )
+            ->discoverLivewireComponents(in: app_path('Administration/Livewire'), for: 'App\\Administration\\Livewire')
             ->discoverResources(in: app_path('Administration/Resources'), for: 'App\\Administration\\Resources')
             ->discoverPages(in: app_path('Administration/Pages'), for: 'App\\Administration\\Pages')
             ->discoverWidgets(in: app_path('Administration/Widgets'), for: 'App\\Administration\\Widgets')

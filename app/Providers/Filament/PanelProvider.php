@@ -24,6 +24,7 @@ use Filament\Support\Colors\Color;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Blade;
 use Livewire\Livewire;
+use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use RyanChandler\FilamentNavigation\FilamentNavigation;
 
 class PanelProvider extends FilamentPanelProvider
@@ -179,6 +180,13 @@ class PanelProvider extends FilamentPanelProvider
             $table
                 ->defaultPaginationPageOption(5)
                 ->paginationPageOptions([5, 10, 25, 50]);
+        });
+
+        TinyEditor::configureUsing(function (TinyEditor $tinyEditor): void {
+            $tinyEditor
+                ->setRelativeUrls(false)
+                ->setRemoveScriptHost(false)
+                ->toolbarSticky(true);
         });
     }
 
