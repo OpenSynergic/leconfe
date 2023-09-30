@@ -32,11 +32,4 @@ class AnnouncementBroadcastMail
     {
         $this->handle($announcement);
     }
-
-    public function configureJob(JobDecorator $job): void
-    {
-        $job
-            ->setTries(10)
-            ->backoff(5);
-    }
 }
