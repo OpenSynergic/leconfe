@@ -7,13 +7,11 @@ use App\Actions\MailTemplates\MailTemplateRestoreDefaultData;
 use App\Actions\Settings\SettingUpdateAction;
 use App\Infolists\Components\BladeEntry;
 use App\Infolists\Components\VerticalTabs;
-use App\Mail\MailUser;
 use App\Mail\Templates\TestMail;
 use App\Mail\Templates\VerifyUserEmail;
 use App\Models\MailTemplate;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -47,6 +45,7 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
     use InteractsWithTable;
 
     public ?array $mailSetupFormData = [];
+
     public ?array $layoutTemplateFormData = [];
 
     public function mount()
@@ -113,7 +112,7 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
                         ->requiresConfirmation()
                         ->failureNotificationTitle('Are you sure you want to restore default data?')
                         ->action(function (MailTemplate $record, TableAction $action) {
-                            
+
                             try {
                                 MailTemplateRestoreDefaultData::run($record);
                                 $action->sendSuccessNotification();
@@ -195,7 +194,7 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
                         Select::make('mail.auth.encryption')
                             ->default(config('mail.mailers.smtp.encryption'))
                             ->options([
-                                NULL => 'None',
+                                null => 'None',
                                 'tls' => 'TLS',
                                 'ssl' => 'SSL',
                             ])
@@ -283,7 +282,6 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
             ])
             ->statePath('layoutTemplateFormData');
     }
-
 
     public function render()
     {

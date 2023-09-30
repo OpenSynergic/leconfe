@@ -12,8 +12,8 @@ class MailTemplate extends BaseMailTemplate
     {
         return view('mail.template', [
             'body' => '{{{ body }}}',
-            'header'=> setting('mail.header'),
-            'footer'=> setting('mail.footer'),
+            'header' => setting('mail.header'),
+            'footer' => setting('mail.footer'),
         ])->render();
     }
 

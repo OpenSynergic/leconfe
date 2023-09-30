@@ -4,8 +4,6 @@ namespace App\Mail\Templates;
 
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\URL;
 

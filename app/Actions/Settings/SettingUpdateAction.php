@@ -2,9 +2,8 @@
 
 namespace App\Actions\Settings;
 
-use Lorisleiva\Actions\Concerns\AsAction;
-use Akaunting\Setting\Facade as Setting;
 use Illuminate\Support\Arr;
+use Lorisleiva\Actions\Concerns\AsAction;
 
 class SettingUpdateAction
 {

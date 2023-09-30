@@ -7,7 +7,6 @@ use App\Models\Announcement;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use Lorisleiva\Actions\Concerns\AsAction;
-use Lorisleiva\Actions\Decorators\JobDecorator;
 
 class AnnouncementBroadcastMail
 {

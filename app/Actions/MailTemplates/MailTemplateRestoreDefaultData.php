@@ -9,7 +9,7 @@ class MailTemplateRestoreDefaultData
 {
     use AsAction;
 
-    public function handle(MailTemplate $mailTemplate) : void
+    public function handle(MailTemplate $mailTemplate): void
     {
         $class = $mailTemplate->mailable;
 
