@@ -2,11 +2,8 @@
 
 namespace App\Website\Pages;
 
-use App\Mail\Templates\VerifyUserEmail;
 use App\Models\Conference;
-use App\Models\MailTemplate;
 use App\Models\Topic;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;

@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Mail\Templates\VerifyUserEmail;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\UserRole;
 use App\Models\Meta\UserMeta;
@@ -21,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Kra8\Snowflake\HasShortflakePrimary;
 use Laravel\Sanctum\HasApiTokens;
@@ -234,16 +236,16 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
 
     public function hasVerifiedEmail()
     {
-        return false;
         return ! is_null($this->email_verified_at);
     }
 
-        /**
+    /**
      * Send the email verification notification.
      *
      * @return void
      */
-    // public function sendEmailVerificationNotification()
-    // {
-    // }
+    public function sendEmailVerificationNotification()
+    {
+        Mail::to($this->getEmailForVerification())->send(new VerifyUserEmail($this));
+    }
 }

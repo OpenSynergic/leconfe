@@ -1,9 +1,8 @@
 <?php
 
-use App\Models\Conference;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateMailTemplatesTable extends Migration
 {
@@ -18,7 +17,7 @@ class CreateMailTemplatesTable extends Migration
             $table->longtext('text_template')->nullable();
             $table->timestamps();
 
-            // $table->unique(['conference_id', 'mailable']);
+            $table->unique(['mailable']);
         });
     }
 }

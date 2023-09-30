@@ -35,6 +35,7 @@ class ProfileUser extends Page
         $this->record = $user_id ? $this->resolveRecord($user_id) : auth()->user();
 
         abort_unless(static::getResource()::canEdit($this->getRecord()), 403);
+
         $this->informationForm->fill([
             ...$this->getRecord()->attributesToArray(),
             'meta' => $this->getRecord()->getAllMeta()->toArray(),
@@ -85,12 +86,8 @@ class ProfileUser extends Page
                 Section::make('New Announcement')
                     ->description("These are notifications when there's a new announcement send.")
                     ->schema([
-                        Checkbox::make('meta.notifications.new_announcement.email')
+                        Checkbox::make('meta.receive_email_new_announcement')
                             ->label('Enable Email Notification'),
-
-                        Checkbox::make('meta.notifications.new_announcement.push_notification')
-                            ->label('Enable Push Notification'),
-
                     ])
                     ->aside(),
                 Actions::make([

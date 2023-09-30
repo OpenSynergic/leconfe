@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\InstallationController;
-use App\Livewire\InstallationWizard;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,11 +21,11 @@ use Illuminate\Support\Facades\Storage;
 // });
 
 Route::get('local/temp/{path}', function (string $path, Request $request) {
-    abort_if(!$request->hasValidSignature(), 401);
+    abort_if(! $request->hasValidSignature(), 401);
 
     $storage = Storage::disk('local');
 
-    abort_if(!$storage->exists($path), 404);
+    abort_if(! $storage->exists($path), 404);
 
     return $storage->download($path);
 })->where('path', '.*')->name('local.temp');
@@ -44,6 +42,6 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 
 Route::post('/email/verification-notification', function (Request $request) {
     $request->user()->sendEmailVerificationNotification();
- 
+
     return back()->with('message', 'Verification link sent!');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');

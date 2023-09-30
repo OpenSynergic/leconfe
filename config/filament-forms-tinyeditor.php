@@ -21,13 +21,13 @@ return [
         'simple' => [
             'plugins' => 'autoresize directionality emoticons link wordcount',
             'toolbar' => 'removeformat | bold italic | rtl ltr | link emoticons',
-            'upload_directory' => null,
+            'upload_directory' => 'tinyeditor',
         ],
 
         'template' => [
             'plugins' => 'autoresize template',
             'toolbar' => 'template',
-            'upload_directory' => null,
+            'upload_directory' => 'tinyeditor',
         ],
         /*
         |--------------------------------------------------------------------------
@@ -61,6 +61,12 @@ return [
             ]
         ],
         */
+
+        'email' => [
+            'plugins' => 'autoresize directionality emoticons link wordcount code',
+            'toolbar' => 'removeformat | bold italic | rtl ltr | alignjustify alignright aligncenter alignleft | link | code',
+            'upload_directory' => 'tinyeditor',
+        ],
 
     ],
 

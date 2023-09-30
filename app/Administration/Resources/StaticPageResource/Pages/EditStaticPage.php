@@ -26,17 +26,16 @@ class EditStaticPage extends EditRecord
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        return StaticPageUpdateAction::run($data, $record);
+        return StaticPageUpdateAction::run($record, $data);
     }
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        $userContentMeta = $this->record->getAllMeta();
         $user = $this->record->user;
 
         $data['author'] = $user ? $user->full_name : 'Cannot find the author';
         $data['common_tags'] = $this->record->tags()->pluck('id')->toArray();
-        $data['user_content'] = $userContentMeta['user_content'];
+        $data['meta'] = $this->record->getAllMeta();
 
         return $data;
     }

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Database\Seeders\Productions\MailTemplateSeeder;
 use Database\Seeders\Productions\PermissionSeeder;
 use Database\Seeders\Productions\RoleSeeder;
 use Illuminate\Database\Seeder;
@@ -16,5 +17,6 @@ class ProductionSeeder extends Seeder
         $this->call(SiteSeeder::class);
         $this->call(PermissionSeeder::class);
         $this->call(RoleSeeder::class);
+        $this->call(MailTemplateSeeder::class);
     }
 }

@@ -45,13 +45,11 @@ class EditAnnouncement extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        $userContentMeta = $this->record->getAllMeta();
         $user = $this->record->user;
 
-        $data['author'] = $user ? "{$user->given_name} {$user->family_name}" : 'Cannot find the author';
+        $data['author'] = $user ? $user->full_name : 'Cannot find the author';
         $data['common_tags'] = $this->record->tags()->pluck('id')->toArray();
-        $data['user_content'] = $userContentMeta['user_content'];
-        $data['expires_at'] = $userContentMeta['expires_at'];
+        $data['meta'] = $this->record->getAllMeta();
 
         return $data;
     }

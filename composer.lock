@@ -75,16 +75,16 @@
         },
         {
             "name": "awcodes/filament-tiptap-editor",
-            "version": "v3.0.0-beta.5",
+            "version": "v3.0.0-beta.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/awcodes/filament-tiptap-editor.git",
-                "reference": "5d30d6584212346a30c4baeabb103443a6d672b2"
+                "reference": "9d5166bea8be798e340868d1213b9ff672ffc4f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/awcodes/filament-tiptap-editor/zipball/5d30d6584212346a30c4baeabb103443a6d672b2",
-                "reference": "5d30d6584212346a30c4baeabb103443a6d672b2",
+                "url": "https://api.github.com/repos/awcodes/filament-tiptap-editor/zipball/9d5166bea8be798e340868d1213b9ff672ffc4f8",
+                "reference": "9d5166bea8be798e340868d1213b9ff672ffc4f8",
                 "shasum": ""
             },
             "require": {
@@ -141,7 +141,7 @@
             ],
             "support": {
                 "issues": "https://github.com/awcodes/filament-tiptap-editor/issues",
-                "source": "https://github.com/awcodes/filament-tiptap-editor/tree/v3.0.0-beta.5"
+                "source": "https://github.com/awcodes/filament-tiptap-editor/tree/v3.0.0-beta.7"
             },
             "funding": [
                 {
@@ -149,7 +149,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-09-20T16:11:59+00:00"
+            "time": "2023-09-27T19:29:45+00:00"
         },
         {
             "name": "binarytorch/larecipe",
@@ -1034,16 +1034,16 @@
         },
         {
             "name": "doctrine/deprecations",
-            "version": "v1.1.1",
+            "version": "1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/deprecations.git",
-                "reference": "612a3ee5ab0d5dd97b7cf3874a6efe24325efac3"
+                "reference": "4f2d4f2836e7ec4e7a8625e75c6aa916004db931"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/deprecations/zipball/612a3ee5ab0d5dd97b7cf3874a6efe24325efac3",
-                "reference": "612a3ee5ab0d5dd97b7cf3874a6efe24325efac3",
+                "url": "https://api.github.com/repos/doctrine/deprecations/zipball/4f2d4f2836e7ec4e7a8625e75c6aa916004db931",
+                "reference": "4f2d4f2836e7ec4e7a8625e75c6aa916004db931",
                 "shasum": ""
             },
             "require": {
@@ -1075,9 +1075,9 @@
             "homepage": "https://www.doctrine-project.org/",
             "support": {
                 "issues": "https://github.com/doctrine/deprecations/issues",
-                "source": "https://github.com/doctrine/deprecations/tree/v1.1.1"
+                "source": "https://github.com/doctrine/deprecations/tree/1.1.2"
             },
-            "time": "2023-06-03T09:27:29+00:00"
+            "time": "2023-09-27T20:04:15+00:00"
         },
         {
             "name": "doctrine/event-manager",
@@ -3342,16 +3342,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v10.25.0",
+            "version": "v10.25.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "5132dafecbea5825af7cb4d093d4d7df57aecb61"
+                "reference": "6014dd456b414b305fb0b408404efdcec18e64bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/5132dafecbea5825af7cb4d093d4d7df57aecb61",
-                "reference": "5132dafecbea5825af7cb4d093d4d7df57aecb61",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/6014dd456b414b305fb0b408404efdcec18e64bc",
+                "reference": "6014dd456b414b305fb0b408404efdcec18e64bc",
                 "shasum": ""
             },
             "require": {
@@ -3451,7 +3451,7 @@
                 "league/flysystem-read-only": "^3.3",
                 "league/flysystem-sftp-v3": "^3.0",
                 "mockery/mockery": "^1.5.1",
-                "orchestra/testbench-core": "^8.10",
+                "orchestra/testbench-core": "^8.12",
                 "pda/pheanstalk": "^4.0",
                 "phpstan/phpstan": "^1.4.7",
                 "phpunit/phpunit": "^10.0.7",
@@ -3538,7 +3538,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2023-09-26T15:22:05+00:00"
+            "time": "2023-09-28T14:08:59+00:00"
         },
         {
             "name": "laravel/prompts",
@@ -4863,16 +4863,16 @@
         },
         {
             "name": "mohamedsabil83/filament-forms-tinyeditor",
-            "version": "v2.0.4",
+            "version": "v2.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mohamedsabil83/filament-forms-tinyeditor.git",
-                "reference": "dd6b40367d3bef489a453031274e712e7fc7fa00"
+                "reference": "5261e3add8e5769df8d8a487788594ab626ec3b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mohamedsabil83/filament-forms-tinyeditor/zipball/dd6b40367d3bef489a453031274e712e7fc7fa00",
-                "reference": "dd6b40367d3bef489a453031274e712e7fc7fa00",
+                "url": "https://api.github.com/repos/mohamedsabil83/filament-forms-tinyeditor/zipball/5261e3add8e5769df8d8a487788594ab626ec3b5",
+                "reference": "5261e3add8e5769df8d8a487788594ab626ec3b5",
                 "shasum": ""
             },
             "require": {
@@ -4929,7 +4929,7 @@
             ],
             "support": {
                 "issues": "https://github.com/mohamedsabil83/filament-forms-tinyeditor/issues",
-                "source": "https://github.com/mohamedsabil83/filament-forms-tinyeditor/tree/v2.0.4"
+                "source": "https://github.com/mohamedsabil83/filament-forms-tinyeditor/tree/v2.0.5"
             },
             "funding": [
                 {
@@ -4941,7 +4941,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-09-20T22:16:23+00:00"
+            "time": "2023-09-27T09:38:32+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -12551,16 +12551,16 @@
         },
         {
             "name": "sebastian/complexity",
-            "version": "3.0.1",
+            "version": "3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/complexity.git",
-                "reference": "c70b73893e10757af9c6a48929fa6a333b56a97a"
+                "reference": "68cfb347a44871f01e33ab0ef8215966432f6957"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/complexity/zipball/c70b73893e10757af9c6a48929fa6a333b56a97a",
-                "reference": "c70b73893e10757af9c6a48929fa6a333b56a97a",
+                "url": "https://api.github.com/repos/sebastianbergmann/complexity/zipball/68cfb347a44871f01e33ab0ef8215966432f6957",
+                "reference": "68cfb347a44871f01e33ab0ef8215966432f6957",
                 "shasum": ""
             },
             "require": {
@@ -12573,7 +12573,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "3.0-dev"
+                    "dev-main": "3.1-dev"
                 }
             },
             "autoload": {
@@ -12597,7 +12597,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/complexity/issues",
                 "security": "https://github.com/sebastianbergmann/complexity/security/policy",
-                "source": "https://github.com/sebastianbergmann/complexity/tree/3.0.1"
+                "source": "https://github.com/sebastianbergmann/complexity/tree/3.1.0"
             },
             "funding": [
                 {
@@ -12605,7 +12605,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-08-31T09:55:53+00:00"
+            "time": "2023-09-28T11:50:59+00:00"
         },
         {
             "name": "sebastian/diff",
