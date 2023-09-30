@@ -18,7 +18,8 @@ class Timeline extends Model
     ];
 
     protected $casts = [
-        'roles' => 'array'
+        'roles' => 'array',
+        'date' => 'datetime'
     ];
 
     protected static function booted(): void

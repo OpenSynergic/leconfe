@@ -79,6 +79,7 @@ class SiteSettings extends Page implements HasForms, HasInfolists
                                 'F j, Y',
                                 'F j Y',
                                 'j F Y',
+                                'd M Y',
                                 'Y F j',
                             ])->mapWithKeys(fn ($format) => [$format => $now->format($format)])),
                         Radio::make('format.time')

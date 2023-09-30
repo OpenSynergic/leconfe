@@ -242,8 +242,6 @@ class Conference extends Page implements HasForms, HasInfolists
                                                     ]),
                                                 Flatpickr::make('meta.date_held')
                                                     ->rule('date')
-                                                    ->enableTime()
-                                                    ->dateFormat('d M Y h:i K')
                                                     ->columnSpan([
                                                         'xl' => 1,
                                                         'sm' => 2,

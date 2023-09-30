@@ -61,5 +61,28 @@
 
 .participant-badge{
     @apply badge badge-outline text-mini badge-xs w-16 h-5 text-blue-400;
+}
 
+.past-timeline-marker {
+    @apply w-2 h-2 rounded-full bg-gray-300;
+}
+
+.current-timeline-marker {
+    @apply w-2 h-2 rounded-full bg-green-600;
+}
+
+.upcoming-timeline-marker{
+    @apply w-2 h-2 rounded-full bg-yellow-400;
+}
+
+.past-timeline{
+    @apply card card-compact bg-white/50 border w-full text-gray-400 p-3 flex-col rounded;
+}
+
+.current-timeline{
+    @apply card card-compact bg-white border border-primary w-full p-3 flex-col rounded;
+}
+
+.upcoming-timeline{
+    @apply card card-compact bg-white border w-full p-3 flex-col rounded text-gray-600;
 }

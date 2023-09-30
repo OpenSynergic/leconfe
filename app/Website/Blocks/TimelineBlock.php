@@ -19,7 +19,7 @@ class TimelineBlock extends Block
     public function getViewData(): array
     {
         return [
-            'timelines' => Timeline::getTimelinesForCurrentConference()->get()
+            'timelines' => Timeline::getTimelinesForCurrentConference()->get(),
         ];
     }
 }
