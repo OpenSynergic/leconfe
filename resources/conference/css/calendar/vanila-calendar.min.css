@@ -341,10 +341,12 @@
 }
 
 .vanilla-calendar-year {
-    font-size: 18px;
+    margin-left: 5px;
+    margin-top: -30px;
+    font-size: 10px;
     line-height: 20px;
     font-weight: 400;
-    color: #000;
+    color: #3a3636;
     cursor: pointer;
     border-radius: 4px;
     padding: 2px;
@@ -465,7 +467,6 @@
     font-size: 12px;
     line-height: 17px;
     font-weight: 400;
-    color: #000;
     width: 28px;
     height: 28px;
     display: flex;
@@ -483,7 +484,7 @@
 
 .vanilla-calendar-day__btn_today {
     background-color: #f0f8ff;
-    color: #20b2aa;
+    color: #fefefe;
     font-weight: 600
 }
 
@@ -503,12 +504,18 @@
     color: #fff
 }
 
-.current_conference {
-    background-color: #38BDF8!important;
+.past_timeline{
+    background-color: #f1f4f7!important;
+    color:#fff;
+}
+
+
+.current_timeline {
+    background-color: #38bdf8!important;
     color: #fff
 }
 
-.upcoming_conference {
+.upcoming_timeline {
     background-color: #FFE600!important;
     color: #fff
 }

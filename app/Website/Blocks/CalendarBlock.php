@@ -3,6 +3,7 @@
 namespace App\Website\Blocks;
 
 use App\Livewire\Block;
+use App\Models\Timeline;
 
 class CalendarBlock extends Block
 {
@@ -13,4 +14,37 @@ class CalendarBlock extends Block
     protected string $name = 'Calendar Block';
 
     protected ?string $position = 'left';
+
+    public function getViewData(): array
+    {
+        // Retrieve timeline data and format it for the calendar
+        $timelines = Timeline::getTimelinesForCurrentConference()->get();
+
+        $formattedTimelines = [];
+
+        foreach ($timelines as $timeline) {
+            // Determine the modifier based on the event's date
+            $timelineDate = $timeline->date->format('Y-m-d');
+
+            // past timeline as default value
+            $modifier = 'past_timeline';
+
+            $today = now()->format('Y-m-d');
+            $tommorow = now()->addDay()->format('Y-m-d');
+
+            if ($timelineDate === $today) {
+                $modifier = 'current_timeline';
+            } elseif ($timelineDate >= $tommorow) {
+                $modifier = 'upcoming_timeline';
+            }
+            // Store the formatted timeline data
+            $formattedTimelines[$timeline->date->format('Y-m-d')] = [
+                'modifier' => $modifier,
+                'html' => $timeline->title
+            ];
+        }
+        return [
+            'timelines' => $formattedTimelines
+        ];
+    }
 }

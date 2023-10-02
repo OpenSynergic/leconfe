@@ -14,6 +14,7 @@ use App\Http\Middleware\IdentifyCurrentConference;
 use App\Website\Blocks\EditorialBlock;
 use App\Website\Blocks\InformationBlock;
 use App\Website\Blocks\LoginBlock;
+use App\Website\Blocks\MenuBlock;
 use App\Website\Blocks\ScheduleBlock;
 use App\Website\Blocks\SearchBlock;
 use App\Website\Blocks\SubmitBlock;
@@ -31,14 +32,15 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
         Block::registerBlocks([
             // ExampleBlock::class,
             // LeftBlock::class,
+            // SearchBlock::class,
+            // LoginBlock::class,
+            // InformationBlock::class,
             CalendarBlock::class,
             TimelineBlock::class,
-            SearchBlock::class,
-            LoginBlock::class,
-            TopicBlock::class,
-            InformationBlock::class,
             SubmitBlock::class,
-            EditorialBlock::class
+            MenuBlock::class,
+            TopicBlock::class,
+            EditorialBlock::class,
         ]);
     }
 
