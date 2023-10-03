@@ -5,6 +5,9 @@ namespace App\Panel\Livewire\Wizards\SubmissionWizard\Steps;
 use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Models\Submission;
 use App\Panel\Livewire\Wizards\SubmissionWizard\Contracts\HasWizardStep;
+use Filament\Actions\Action;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\SpatieTagsInput;
@@ -14,9 +17,10 @@ use Filament\Forms\Contracts\HasForms;
 use Livewire\Component;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
-class DetailStep extends Component implements HasForms, HasWizardStep
+class DetailStep extends Component implements HasForms, HasWizardStep, HasActions
 {
     use InteractsWithForms;
+    use InteractsWithActions;
 
     public Submission $record;
 
@@ -70,6 +74,18 @@ class DetailStep extends Component implements HasForms, HasWizardStep
                     ]),
             ]),
         ];
+    }
+
+    public function nextStep()
+    {
+        return Action::make('nextStep')
+            ->label("Next")
+            ->successNotificationTitle("Saved")
+            ->action(function (Action $action) {
+                $this->record = SubmissionUpdateAction::run($this->form->getState(), $this->record);
+                $this->dispatch('next-wizard-step');
+                $action->success();
+            });
     }
 
     public function submit()

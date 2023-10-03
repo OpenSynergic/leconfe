@@ -33,8 +33,7 @@
         "Venue:delete",
         "Venue:update",
         "Venue:view",
-        "Venue:viewAny",
-        "WorkflowSetting:perbarui"
+        "Venue:viewAny"
     ],
     "Conference Manager": [
         "Role:assignPermissions",

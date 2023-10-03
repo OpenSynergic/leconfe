@@ -1,3 +1,8 @@
 <div class="space-y-6">
-    {{ $this->table }}
+    <div>
+        {{ $this->infolist }}
+    </div>
+    <div >
+        {{ $this->table }}
+    </div>
 </div>

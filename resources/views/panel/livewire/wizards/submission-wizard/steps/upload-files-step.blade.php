@@ -34,7 +34,7 @@
                                 </div>
                             </div>
                         @endif
-                        @livewire(\App\Panel\Livewire\Tables\Submissions\SubmissionFilesTable::class, ['record' => $this->record])
+                        {{ $this->table }}
                     </div>
                 </div>
             </div>
@@ -50,10 +50,11 @@
         </div>
 
         <div>
-            <x-filament::button icon="heroicon-o-chevron-right" icon-position="after" x-show="! isLastStep()" x-cloak
+            {{ $this->nextStep() }}
+            {{-- <x-filament::button icon="heroicon-o-chevron-right" icon-position="after" x-show="! isLastStep()" x-cloak
                 wire:click="nextStep" wire:loading.class.delay="opacity-70 cursor-wait" size="sm">
                 Next
-            </x-filament::button>
+            </x-filament::button> --}}
         </div>
     </div>
 </div>

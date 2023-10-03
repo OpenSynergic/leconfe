@@ -10,10 +10,11 @@
             </div>
     
             <div>
-                <x-filament::button type="submit" icon="heroicon-o-chevron-right" icon-position="after" x-show="! isLastStep()" x-cloak
+                {{ $this->nextStep() }}
+                {{-- <x-filament::button type="submit" icon="heroicon-o-chevron-right" icon-position="after" x-show="! isLastStep()" x-cloak
                     wire:loading.class.delay="opacity-70 cursor-wait" size="sm">
                     Next
-                </x-filament::button>
+                </x-filament::button> --}}
             </div>
         </div>
     </div>

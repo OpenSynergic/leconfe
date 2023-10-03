@@ -2,8 +2,10 @@
 
 namespace App\Panel\Resources\SubmissionResource\Pages;
 
+use App\Models\Conference;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Submission;
+use App\Panel\Pages\Settings\Workflow;
 use App\Panel\Resources\SubmissionResource;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\ListRecords\Tab;
@@ -17,11 +19,25 @@ class ManageSubmissions extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('Settings')
+                ->button()
+                ->outlined()
+                ->icon("heroicon-o-cog")
+                ->url(Workflow::getUrl()),
             Action::make('create')
                 ->button()
-                ->hidden(fn () => setting('disable_submission'))
+                ->disabled(function (): bool {
+                    $conference = Conference::active();
+                    return !$conference->getMeta('workflow.call-for-abstract.open', false);
+                })
                 ->url(static::$resource::getUrl('create'))
-                ->label('New Submission'),
+                ->icon('heroicon-o-plus')
+                ->label(function (Action $action) {
+                    if ($action->isDisabled()) {
+                        return 'Submission is not open';
+                    }
+                    return 'Submission';
+                }),
         ];
     }
 

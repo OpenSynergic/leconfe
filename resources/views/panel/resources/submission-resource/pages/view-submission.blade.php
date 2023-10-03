@@ -2,18 +2,16 @@
     @if ($this->record->status == App\Models\Enums\SubmissionStatus::Wizard)
         @livewire(App\Panel\Livewire\Wizards\SubmissionWizard::class, ['record' => $record])
     @else
-        {{-- <x-filament::tabs>
-            <x-filament::tabs.item>
-                <x-tabs.button>Workflow</x-tabs.button>
-                <x-tabs.button>Publication</x-tabs.button>
-            </x-filament::tabs.item> --}}
-
-            {{-- <x-tabs.content> --}}
-                {{-- <livewire:panel.components.submissions.workflow-submission :record="$record" /> --}}
-            {{-- </x-tabs.content>
-            <x-tabs.content>
-                publication
-            </x-tabs.content>
-        </x-filament::tabs> --}}
+    <div class="flex">
+        <div class="flex-1">
+            {{ $this->infolist }}
+        </div>
+        {{-- <div class="max-w-xs self-start sticky top-24"> --}}
+            {{-- @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\Decision::class, ['submission' => $record]) --}}
+            {{-- @if($record->accepted() && $this->stageOpen('peer-review')) --}}
+                {{-- Assign reviewer --}}
+            {{-- @endifx --}}
+        {{-- </div> --}}
+    </div>
     @endif
 </x-filament::page>

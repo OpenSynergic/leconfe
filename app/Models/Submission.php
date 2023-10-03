@@ -83,8 +83,18 @@ class Submission extends Model implements HasMedia
         return $this->media()->where('collection_name', 'submission-files');
     }
 
+    public function papers()
+    {
+        return $this->media()->where('collection_name', 'submission-papers');
+    }
+
     public function participants()
     {
         return $this->hasMany(SubmissionParticipant::class);
+    }
+
+    public function accepted(): bool
+    {
+        return $this->status == SubmissionStatus::Accepted;
     }
 }

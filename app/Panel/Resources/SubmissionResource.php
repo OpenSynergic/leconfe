@@ -8,7 +8,6 @@ use App\Schemas\SubmissionSchema;
 use Filament\GlobalSearch\GlobalSearchResult;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,8 +16,6 @@ use Illuminate\Support\Collection;
 
 class SubmissionResource extends Resource
 {
-    protected static bool $shouldRegisterNavigation = false;
-
     protected static ?string $model = Submission::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';

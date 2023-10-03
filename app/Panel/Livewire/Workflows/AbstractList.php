@@ -10,6 +10,12 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Infolists\Components\Grid;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Concerns\InteractsWithInfolists;
+use Filament\Infolists\Contracts\HasInfolists;
+use Filament\Infolists\Infolist;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\BulkAction;
@@ -21,10 +27,11 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 
-class AbstractList extends WorkflowStage implements HasTable, HasForms
+class AbstractList extends WorkflowStage implements HasTable, HasForms, HasInfolists
 {
     use InteractsWithTable;
     use InteractsWithForms;
+    use InteractsWithInfolists;
 
     protected ?string $stage = 'call-for-abstract';
 
@@ -33,6 +40,33 @@ class AbstractList extends WorkflowStage implements HasTable, HasForms
     public function getQuery(): Builder
     {
         return Submission::with(['meta'])->whereStatus(SubmissionStatus::New);
+    }
+
+    public function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist->schema([
+            Section::make("Important Dates")
+                ->icon("heroicon-o-calendar")
+                ->maxWidth("lg")
+                ->columns()
+                ->schema([
+                    TextEntry::make('stage_open_at')
+                        ->label("Stage Open at")
+                        ->badge()
+                        ->getStateUsing(fn (): string => $this->conference->getMeta('workflow.call-for-abstract.start_date')),
+                    TextEntry::make('date_close')
+                        ->label("Stage Close at")
+                        ->badge()
+                        ->color(function () {
+                            if ($this->conference->getMeta('workflow.call-for-abstract.end_date') == null) {
+                                return 'gray';
+                            }
+                            return "warning";
+                        })
+                        ->getStateUsing(fn (): string => $this->conference->getMeta('workflow.call-for-abstract.end_date') ?? "Not set"),
+                ])
+
+        ]);
     }
 
     public function table(Table $table): Table

@@ -4,7 +4,12 @@ namespace App\Panel\Livewire\Workflows;
 
 use App\Panel\Livewire\Workflows\Base\WorkflowStage;
 use Awcodes\Shout\Components\Shout;
+use Coolsam\FilamentFlatpickr\Enums\FlatpickrTheme;
+use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -43,7 +48,16 @@ class PeerReviewSetting extends WorkflowStage implements HasForms
                         ->splitKeys([',', 'enter', ' ']),
                     SpatieMediaLibraryFileUpload::make('settings.paper_templates')
                         ->helperText("Upload paper templates")
-                        ->label("Paper templates")
+                        ->label("Paper templates"),
+                    Fieldset::make("Review Deadline")
+                        ->schema([
+                            Flatpickr::make('start_at')
+                                ->label("Date start")
+                                ->theme(FlatpickrTheme::DARK),
+                            Flatpickr::make('end_at')
+                                ->label("Date end")
+                                ->theme(FlatpickrTheme::DARK),
+                        ])
                 ])
                 ->columns(1)
         ]);

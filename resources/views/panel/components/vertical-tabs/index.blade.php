@@ -1,9 +1,8 @@
 @props([
     'contained' => false,
     'label' => null,
-    'isSticky' => false
+    'isSticky' => true
 ])
-
 <div
     {{
         $attributes

@@ -23,6 +23,7 @@ trait CanOpenStage
     {
         $this->updateSetting("open", true);
         $this->updateSetting("start_date", now());
+        $this->updateSetting("end_date", null);
         $this->dispatch('stage-status-changed'); // ->dispatch() from livewire
     }
 
