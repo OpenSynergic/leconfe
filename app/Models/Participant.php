@@ -90,6 +90,21 @@ class Participant extends Model implements HasMedia, Sortable
         return static::whereEmail($email)->first();
     }
 
+    public function getProfilePicture()
+    {
+        if ($this->hasMedia('profile')) {
+            return $this->getFirstMedia('profile')->getAvailableUrl(['avatar']);
+        }
+
+        $name = str($this->fullName)
+            ->trim()
+            ->explode(' ')
+            ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
+            ->join(' ');
+
+        return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=111827&font-size=0.33';
+    }
+
     public function createUserAccount(UserRole $role, ?string $password = null, bool $withMetas = true): void
     {
         $user = UserCreateAction::run([...$this->toArray(), 'password' => Hash::make($password)]);
