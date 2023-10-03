@@ -2,17 +2,17 @@
 
 namespace App\Policies;
 
-use App\Models\Navigation;
+use App\Models\StaticPage;
 use App\Models\User;
 
-class NavigationPolicy
+class StaticPagePolicy
 {
     /**
      * Determine whether the user can create models.
      */
     public function create(User $user)
     {
-        if ($user->can('Navigation:create')) {
+        if ($user->can('StaticPage:create')) {
             return true;
         }
     }
@@ -20,9 +20,9 @@ class NavigationPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Navigation $navigation)
+    public function update(User $user, StaticPage $staticPage)
     {
-        if ($user->can('Navigation:update')) {
+        if ($user->can('StaticPage:update')) {
             return true;
         }
     }
@@ -30,13 +30,9 @@ class NavigationPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Navigation $navigation)
+    public function delete(User $user, StaticPage $staticPage)
     {
-        if ($navigation->handle == 'primary-navigation-menu') {
-            return false;
-        }
-
-        if ($user->can('Navigation:delete')) {
+        if ($user->can('StaticPage:delete')) {
             return true;
         }
     }

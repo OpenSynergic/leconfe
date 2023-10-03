@@ -94,7 +94,7 @@ class StaticPageResource extends Resource
                                         ");
                                     })
                                     ->required(),
-                                TinyEditor::make('user_content')
+                                TinyEditor::make('meta.content')
                                     ->label('Content')
                                     ->minHeight(600)
                                     ->helperText('The complete page content.'),
@@ -108,7 +108,7 @@ class StaticPageResource extends Resource
                                     ->default(function () {
                                         $user = auth()->user();
 
-                                        return "{$user->given_name} {$user->family_name}";
+                                        return $user->full_name;
                                     })
                                     ->dehydrated(false)
                                     ->disabled(),
