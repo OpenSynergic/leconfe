@@ -2,13 +2,16 @@
 
 namespace App\Panel\LiveWire\Submissions\SubmissionDetail;
 
+use App\Actions\Submissions\SubmissionAssignParticipantAction;
 use App\Models\Conference;
 use App\Models\Enums\UserRole;
 use App\Models\Participant;
 use App\Models\Submission;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Get;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
@@ -26,9 +29,16 @@ class AssignParticipants extends Component implements HasForms, HasTable
 
     public Submission $submission;
 
+    public array $selectedParticipant = [];
+
     public function mount(Submission $submission)
     {
         $this->submission = $submission;
+    }
+
+    public static function renderSelectParticipant(Participant $participant): string
+    {
+        return view('forms.select-participant', ['participant' => $participant])->render();
     }
 
     public function table(Table $table): Table
@@ -45,29 +55,54 @@ class AssignParticipants extends Component implements HasForms, HasTable
             ])
             ->heading('Participants')
             ->headerActions([
-                Action::make("Assign Participant")
+                Action::make("Assign")
                     ->size('xs')
-                    ->modalWidth("lg")
+                    ->modalWidth("xl")
                     ->form([
-                        Select::make('participant_id')
-                            ->label("Name")
-                            ->options(
-                                fn (): array => Participant::with('positions')
-                                    ->whereHas('positions', function ($query) {
-                                        return $query->whereIn('name', [
-                                            UserRole::Reviewer->value,
-                                            UserRole::TrackDirector->value,
-                                        ]);
-                                    })
-                                    ->get()
-                                    ->mapWithKeys(
-                                        fn ($participant) => [$participant->id => $participant->fullName]
+                        Grid::make(3)
+                            ->schema([
+                                Select::make('positions')
+                                    ->label("Position")
+                                    ->options([
+                                        UserRole::Author->value => UserRole::Author->value,
+                                        UserRole::TrackDirector->value => UserRole::TrackDirector->value,
+                                    ])
+                                    ->columnSpan(1)
+                                    ->default([UserRole::TrackDirector->value]),
+                                Select::make('participant_id')
+                                    ->label("Name")
+                                    ->allowHtml()
+                                    ->reactive()
+                                    ->multiple()
+                                    ->preload()
+                                    ->options(
+                                        fn (Get $get): array => Participant::with('positions')
+                                            ->whereHas('positions', function ($query) use ($get) {
+                                                return $query->where('name', $get('positions'))->orWhere('id', 'IN', $this->selectedParticipant);
+                                            })
+                                            ->get()
+                                            ->mapWithKeys(
+                                                fn (Participant $participant) => [$participant->getKey() => static::renderSelectParticipant($participant)]
+                                            )
+                                            ->toArray()
                                     )
-                                    ->toArray()
-                            )
-                            ->searchable()
-                            ->preload()
+                                    ->afterStateUpdated(fn ($state) => $this->selectedParticipant[] = $state['id'])
+                                    ->searchable()
+                                    ->preload()
+                                    ->columnSpan(2)
+                            ])
                     ])
+                    ->successNotificationTitle("Participant Assigned")
+                    ->action(function (Action $action, array $data) {
+                        $participant = Participant::find($data['participant_id']);
+                        $participantPosition = $participant->positions;
+                        SubmissionAssignParticipantAction::run(
+                            $this->submission,
+                            $participant,
+                            $participantPosition
+                        );
+                        $action->success();
+                    })
             ])
             ->actions([
                 ActionGroup::make([

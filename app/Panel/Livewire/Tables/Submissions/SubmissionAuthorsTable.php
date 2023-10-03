@@ -4,7 +4,7 @@ namespace App\Panel\Livewire\Tables\Submissions;
 
 use App\Actions\Participants\ParticipantCreateAction;
 use App\Actions\Participants\ParticipantUpdateAction;
-use App\Actions\Submissions\SubmissionAssignAuthorAction;
+use App\Actions\Submissions\SubmissionAssignParticipantAction;
 use App\Models\Participant;
 use App\Models\ParticipantPosition;
 use App\Models\Submission;
@@ -111,7 +111,7 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
                             $participant = Participant::byEmail($data['email']);
                             $participant = $participant ?: ParticipantCreateAction::run($data);
                             $positionAuthor = ParticipantPosition::find($data['position']);
-                            SubmissionAssignAuthorAction::run($this->record, $participant, $positionAuthor);
+                            SubmissionAssignParticipantAction::run($this->record, $participant, $positionAuthor);
                             return $participant;
                         }),
                     Action::make('add_existing')
@@ -148,7 +148,7 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
                         ->action(function (array $data) {
                             $participant = Participant::find($data['participant_id']);
                             $position = ParticipantPosition::find($data['type']);
-                            SubmissionAssignAuthorAction::run($this->record, $participant, $position);
+                            SubmissionAssignParticipantAction::run($this->record, $participant, $position);
                             return $participant;
                         })
                 ])
@@ -234,7 +234,7 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
                         ->form(static::getAuthorFormSchema())
                         ->using(function (array $data, Participant $record) {
                             $participant = ParticipantUpdateAction::run($record, $data);
-                            SubmissionAssignAuthorAction::run($this->record, $participant, ParticipantPosition::find($data['position']));
+                            SubmissionAssignParticipantAction::run($this->record, $participant, ParticipantPosition::find($data['position']));
                             return $participant;
                         }),
                     DeleteAction::make()

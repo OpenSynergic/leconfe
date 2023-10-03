@@ -8,7 +8,7 @@ use App\Models\Submission;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class SubmissionAssignAuthorAction
+class SubmissionAssignParticipantAction
 {
     use AsAction;
 

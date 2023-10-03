@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Actions\Participants\ParticipantCreateAction;
-use App\Actions\Submissions\SubmissionAssignAuthorAction;
+use App\Actions\Submissions\SubmissionAssignParticipantAction;
 use App\Models\Concerns\HasTopics;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Meta\SubmissionMeta;
@@ -63,7 +63,7 @@ class Submission extends Model implements HasMedia
                 $positionAuthor = ParticipantPosition::where('type', 'author')->first();
                 $participant->positions()->detach($positionAuthor);
                 $participant->positions()->attach($positionAuthor);
-                SubmissionAssignAuthorAction::run($submission, $participant, $positionAuthor);
+                SubmissionAssignParticipantAction::run($submission, $participant, $positionAuthor);
             }
         });
     }
