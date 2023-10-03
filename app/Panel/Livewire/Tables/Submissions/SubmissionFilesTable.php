@@ -24,7 +24,7 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
 
     public Submission $record;
 
-    public bool $viewOnly = false;
+    public string $category; // submissions-files or submission-papers
 
     protected $listeners = ['refreshLivewire' => '$refresh'];
 
@@ -35,6 +35,9 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
 
     protected function getTableQuery(): Builder
     {
+        if ($this->category == 'submission-papers') {
+            return $this->record->papers()->getQuery();
+        }
         return $this->record->files()->getQuery();
     }
 
@@ -46,9 +49,49 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
             ->columns([
                 ...SubmissionFileSchema::defaultTableColumns()
             ])
-            ->headerActions([])
+            ->headerActions([
+                Action::make('download_all')
+                    ->label('Download All Files')
+                    ->button()
+                    ->color('gray')
+                    ->action(function () {
+                        $downloads = $this->record->files()->get();
+                        return MediaStream::create('files.zip')->addMedia($downloads);
+                    }),
+                Action::make('upload')
+                    ->label('Upload Files')
+                    ->button()
+                    ->modalWidth('xl')
+                    ->form([
+                        ...SubmissionFileSchema::defaultUploadForm($this->record)
+                    ])
+                    ->successNotificationTitle('Files added successfully')
+                    ->failureNotificationTitle('There was a problem adding the files')
+                    ->action(function (array $data, Action $action) {
+                        $this->record->getMediaCollection('submission-files');
+                    })
+            ])
             ->actions([
-                DeleteAction::make()->hidden($this->viewOnly),
+                EditAction::make()
+                    ->label("Rename")
+                    ->modalWidth('md')
+                    ->modalHeading('Edit file')
+                    ->modalHeading("Rename")
+                    ->modalSubmitActionLabel("Rename")
+                    ->form([
+                        TextInput::make('file_name')
+                            ->label("New Filename")
+                            ->formatStateUsing(function (Media $record) {
+                                return str($record->file_name)->beforeLast('.' . $record->extension);
+                            })
+                            ->dehydrateStateUsing(function (Media $record, $state) {
+                                return str($state)->append('.' . $record->extension);
+                            })
+                            ->suffix(function (Media $record) {
+                                return '.' . $record->extension;
+                            })
+                    ]),
+                DeleteAction::make(),
             ]);
     }
 }

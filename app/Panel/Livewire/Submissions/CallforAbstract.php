@@ -6,33 +6,25 @@ use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Infolists\Components\LivewireEntry;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Submission;
-use App\Panel\Livewire\Submissions\SubmissionDetail\Decision;
 use App\Panel\Livewire\Submissions\SubmissionDetail\Discussions;
 use App\Panel\Livewire\Tables\Submissions\SubmissionFilesTable;
+use App\Schemas\SubmissionFileSchema;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Forms\ComponentContainer;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Illuminate\Support\HtmlString;
 use Livewire\Component;
 
-class CallforAbstract extends Component implements HasForms, HasActions, HasTable
+class CallforAbstract extends Component implements HasForms, HasActions, HasInfolists
 {
     use InteractsWithForms;
     use InteractsWithActions;
-    use InteractsWithTable;
+    use InteractsWithInfolists;
 
     public Submission $submission;
 
@@ -59,14 +51,11 @@ class CallforAbstract extends Component implements HasForms, HasActions, HasTabl
             ->successNotificationTitle("Accepted")
             ->extraAttributes(['class' => 'w-full'])
             ->icon("lineawesome-check-circle-solid")
-            // ->form([
-            //     TextInput::make("OK")
-            // ])
             ->action(function (Action $action) {
-                // SubmissionUpdateAction::run([
-                //     'status' => SubmissionStatus::Accepted
-                // ], $this->submission);
-                // $action->success();
+                SubmissionUpdateAction::run([
+                    'status' => SubmissionStatus::Accepted
+                ], $this->submission);
+                $action->success();
             })
             ->requiresConfirmation();
     }
@@ -75,14 +64,14 @@ class CallforAbstract extends Component implements HasForms, HasActions, HasTabl
     {
         return $table
             ->heading("Submission files")
-            ->headerActions([
-                ...SubmissionFilesTable::defaultHeaderActions()
-            ])
+            // ->headerActions([
+            //     ...SubmissionFilesTable::defaultHeaderActions()
+            // ])
             ->query(function () {
                 return $this->submission->files()->getQuery();
             })
             ->columns([
-                ...SubmissionFilesTable::defaultColumns()
+                ...SubmissionFileSchema::defaultTableColumns()
             ]);
     }
 
@@ -93,6 +82,7 @@ class CallforAbstract extends Component implements HasForms, HasActions, HasTabl
                 LivewireEntry::make('submission-files-table')
                     ->livewire(SubmissionFilesTable::class, [
                         'record' => $this->submission,
+                        'category' => 'submission-files'
                     ])->columnSpanFull(),
                 LivewireEntry::make('discussions')
                     ->livewire(Discussions::class, [
