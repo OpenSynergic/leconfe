@@ -7,16 +7,20 @@ use App\Models\Enums\SubmissionStatus;
 use App\Models\Submission;
 use App\Panel\Livewire\Wizards\SubmissionWizard\Contracts\HasWizardStep;
 use App\Panel\Resources\SubmissionResource;
+use App\Schemas\SubmissionFileSchema;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Table;
 use Livewire\Component;
 
-class ReviewStep extends Component implements HasWizardStep, HasActions, HasForms
+class ReviewStep extends Component implements HasWizardStep, HasActions, HasForms, HasTable
 {
-    use InteractsWithActions, InteractsWithForms;
+    use InteractsWithActions, InteractsWithForms, InteractsWithTable;
 
     public Submission $record;
 
@@ -25,6 +29,33 @@ class ReviewStep extends Component implements HasWizardStep, HasActions, HasForm
     public static function getWizardLabel(): string
     {
         return 'Review';
+    }
+
+    public function table(Table $table): Table
+    {
+        return $table
+            ->heading("Files")
+            ->query(fn () => $this->record->files()->getQuery())
+            ->columns([
+                ...SubmissionFileSchema::defaultTableColumns()
+            ]);
+    }
+
+    public function submissionFileTable(Table $table): Table
+    {
+        return $table
+            ->heading("Files")
+            ->query(fn () => $this->record->files()->getQuery())
+            ->columns([
+                ...SubmissionFileSchema::defaultTableColumns()
+            ]);
+    }
+
+    public function getTables(): array
+    {
+        return [
+            'submissionFileTable'
+        ];
     }
 
     public function submitAction()

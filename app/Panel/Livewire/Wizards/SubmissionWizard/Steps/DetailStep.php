@@ -87,13 +87,4 @@ class DetailStep extends Component implements HasForms, HasWizardStep, HasAction
                 $action->success();
             });
     }
-
-    public function submit()
-    {
-        $data = $this->form->getState();
-
-        $this->record = SubmissionUpdateAction::run($data, $this->record);
-
-        $this->dispatch('next-wizard-step');
-    }
 }
