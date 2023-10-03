@@ -4,6 +4,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+    .accordion-header {
+        @apply py-1 px-1 cursor-pointer gap-1 flex items-center;
+    }
+    .accordion-body{
+        @apply overflow-hidden transition-all duration-200 ease-out
+    }
+}
 
 :root {
     --font-family: 'Inter';
@@ -60,7 +68,7 @@
 }
 
 .participant-badge{
-    @apply badge badge-outline text-mini badge-xs w-16 h-5 text-blue-400;
+    @apply badge badge-outline text-mini badge-xs w-16 h-5 text-primary;
 }
 
 .past-timeline-marker {

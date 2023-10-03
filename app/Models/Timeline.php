@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToConference;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Timeline extends Model
 {
-    use HasFactory;
+    use HasFactory, BelongsToConference;
 
     protected $fillable = [
         'title',
@@ -21,18 +22,6 @@ class Timeline extends Model
         'roles' => 'array',
         'date' => 'datetime'
     ];
-
-    protected static function booted(): void
-    {
-        static::creating(function (Timeline $timeline) {
-            $timeline->conference_id ??= app()->getCurrentConference()?->getKey();
-        });
-    }
-
-    public function conference()
-    {
-        return $this->belongsTo(Conference::class);
-    }
 
     public function scopeForConference($query)
     {

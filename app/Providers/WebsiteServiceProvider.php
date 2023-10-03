@@ -29,19 +29,7 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
         parent::register();
 
         // Register blocks
-        Block::registerBlocks([
-            // ExampleBlock::class,
-            // LeftBlock::class,
-            // SearchBlock::class,
-            // LoginBlock::class,
-            // InformationBlock::class,
-            CalendarBlock::class,
-            TimelineBlock::class,
-            SubmitBlock::class,
-            MenuBlock::class,
-            TopicBlock::class,
-            EditorialBlock::class,
-        ]);
+
     }
 
     public function pageGroup(PageGroup $pageGroup): PageGroup
@@ -52,6 +40,19 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
             ->layout('conference.components.layouts.app')
             ->homePage(Home::class)
             ->bootUsing(function () {
+                Block::registerBlocks([
+                    // ExampleBlock::class,
+                    // LeftBlock::class,
+                    // SearchBlock::class,
+                    // LoginBlock::class,
+                    // InformationBlock::class,
+                    CalendarBlock::class,
+                    TimelineBlock::class,
+                    SubmitBlock::class,
+                    MenuBlock::class,
+                    TopicBlock::class,
+                    EditorialBlock::class,
+                ]);
                 BlockManager::boot();
             })
             ->middleware([

@@ -4,6 +4,7 @@ namespace App\Website\Blocks;
 
 use App\Livewire\Block;
 use App\Models\Conference;
+use App\Models\Topic;
 
 class TopicBlock extends Block
 {
@@ -17,6 +18,8 @@ class TopicBlock extends Block
 
     public function getViewData(): array
     {
-        return [];
+        return [
+            'topics' => Topic::all()
+        ];
     }
 }
