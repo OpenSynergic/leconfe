@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Mail\Templates\VerifyUserEmail;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\UserRole;
 use App\Models\Meta\UserMeta;
@@ -13,6 +14,7 @@ use Filament\Models\Contracts\HasDefaultTenant;
 use Filament\Models\Contracts\HasName;
 use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Kra8\Snowflake\HasShortflakePrimary;
 use Laravel\Sanctum\HasApiTokens;
@@ -33,7 +36,7 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Traits\HasRoles;
 use Squire\Models\Country;
 
-class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaultTenant, HasMedia, HasName, HasTenants
+class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaultTenant, HasMedia, HasName, HasTenants, MustVerifyEmail
 {
     use Bannable,
         HasApiTokens,
@@ -116,7 +119,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
 
     public function canAccessTenant(Model $tenant): bool
     {
-        if ($tenant->getKey() == Conference::current()?->getKey()) {
+        if ($tenant->getKey() == Conference::active()?->getKey()) {
             return true;
         }
 
@@ -165,7 +168,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
 
     public function getDefaultTenant(Panel $panel): ?Model
     {
-        return Conference::current();
+        return Conference::active();
     }
 
     public function submissions()
@@ -229,5 +232,20 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
         $this->addMediaConversion('thumb-xl')
             ->keepOriginalImageFormat()
             ->width(800);
+    }
+
+    public function hasVerifiedEmail()
+    {
+        return ! is_null($this->email_verified_at);
+    }
+
+    /**
+     * Send the email verification notification.
+     *
+     * @return void
+     */
+    public function sendEmailVerificationNotification()
+    {
+        Mail::to($this->getEmailForVerification())->send(new VerifyUserEmail($this));
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Actions\Settings;
 
+use Illuminate\Support\Arr;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class SettingUpdateAction
@@ -10,6 +11,6 @@ class SettingUpdateAction
 
     public function handle(array $data)
     {
-        return setting($data);
+        return setting(Arr::dot($data));
     }
 }

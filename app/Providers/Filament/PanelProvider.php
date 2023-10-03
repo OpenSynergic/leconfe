@@ -2,8 +2,8 @@
 
 namespace App\Providers\Filament;
 
-use App\Http\Middleware\PanelAuthenticate;
-use App\Http\Middleware\TenantConference;
+use App\Http\Middleware\Panel\PanelAuthenticate;
+use App\Http\Middleware\Panel\TenantConference;
 use App\Models\Conference;
 use App\Models\Navigation;
 use App\Panel\Resources\NavigationResource;
@@ -24,6 +24,7 @@ use Filament\Support\Colors\Color;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Blade;
 use Livewire\Livewire;
+use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use RyanChandler\FilamentNavigation\FilamentNavigation;
 
 class PanelProvider extends FilamentPanelProvider
@@ -131,13 +132,6 @@ class PanelProvider extends FilamentPanelProvider
     public static function getMiddleware(): array
     {
         return [
-            // EncryptCookies::class,
-            // AddQueuedCookiesToResponse::class,
-            // StartSession::class,
-            // AuthenticateSession::class,
-            // ShareErrorsFromSession::class,
-            // VerifyCsrfToken::class,
-            // SubstituteBindings::class,
             'web',
             DisableBladeIconComponents::class,
             DispatchServingFilamentEvent::class,
@@ -186,6 +180,13 @@ class PanelProvider extends FilamentPanelProvider
             $table
                 ->defaultPaginationPageOption(5)
                 ->paginationPageOptions([5, 10, 25, 50]);
+        });
+
+        TinyEditor::configureUsing(function (TinyEditor $tinyEditor): void {
+            $tinyEditor
+                ->setRelativeUrls(false)
+                ->setRemoveScriptHost(false)
+                ->toolbarSticky(true);
         });
     }
 

@@ -4,11 +4,10 @@ namespace App\Website\Pages;
 
 use App\Events\AppInstalled;
 use App\Http\Middleware\IdentifyCurrentConference;
-use App\Livewire\Forms\Installation\AccountForm;
-use App\Livewire\Forms\Installation\ConferenceForm;
-use App\Livewire\Forms\Installation\DatabaseForm;
+use App\Livewire\Forms\InstallationForm;
 use App\Utils\EnvironmentManager;
 use App\Utils\PermissionChecker;
+use Jackiedo\Timezonelist\Facades\Timezonelist;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 
 class Installation extends Page
@@ -21,11 +20,7 @@ class Installation extends Page
 
     public array $folders = [];
 
-    public DatabaseForm $database;
-
-    public AccountForm $account;
-
-    public ConferenceForm $conference;
+    public InstallationForm $form;
 
     public function mount()
     {
@@ -41,6 +36,13 @@ class Installation extends Page
         }
 
         $this->checkPermission();
+    }
+
+    protected function getViewData(): array
+    {
+        return [
+            'groupedTimezone' => Timezonelist::toArray(false),
+        ];
     }
 
     public static function getLayout(): string
@@ -60,30 +62,17 @@ class Installation extends Page
         ]);
     }
 
-    public function stepDatabase()
-    {
-        $this->database->validate();
-        if (! $this->database->checkConnection()) {
-            return false;
-        }
-    }
-
-    public function stepAccount()
-    {
-        $this->account->validate();
-    }
-
     public function install()
     {
         if (! $this->validateInstallation()) {
             return;
         }
 
+        $this->form->updateConfig();
+
         app(EnvironmentManager::class)->installation();
 
-        $this->database->process();
-        $this->account->process();
-        $this->conference->process();
+        $this->form->process();
 
         AppInstalled::dispatch();
 
@@ -95,10 +84,8 @@ class Installation extends Page
 
     public function validateInstallation(): bool
     {
-        $this->account->validate();
-        $this->database->validate();
-        $this->conference->validate();
-        if (! $this->database->checkConnection()) {
+        $this->form->validate();
+        if (! $this->form->checkDatabaseConnection()) {
             return false;
         }
 

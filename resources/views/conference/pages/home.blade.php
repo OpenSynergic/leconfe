@@ -1,4 +1,4 @@
-<x-conference::layouts.main>
+<x-website::layouts.main>
     <div class="flex flex-col gap-2 mt-10">
         <section id="current-conference">
             <h2 class="text-heading mb-2 ms-5">Current Conference</h2>
@@ -411,4 +411,4 @@
             </div>
         </section>
     </div>
-</x-conference::layouts.main>
+</x-website::layouts.main>

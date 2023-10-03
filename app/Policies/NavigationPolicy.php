@@ -8,14 +8,6 @@ use App\Models\User;
 class NavigationPolicy
 {
     /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Navigation $navigation)
-    {
-        //
-    }
-
-    /**
      * Determine whether the user can create models.
      */
     public function create(User $user)

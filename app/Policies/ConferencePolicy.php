@@ -9,59 +9,51 @@ use App\Models\User;
 class ConferencePolicy
 {
     /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
-    {
-        return true;
-    }
-
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Conference $conference): bool
-    {
-        return true;
-    }
-
-    /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user)
     {
-        return $user->can('Conference:create');
+        if ($user->can('Conference:create')) {
+            return true;
+        }
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Conference $conference): bool
+    public function update(User $user, Conference $conference)
     {
-        if (! in_array($conference->status, [ConferenceStatus::Current, ConferenceStatus::Upcoming])) {
+        if (! in_array($conference->status, [ConferenceStatus::Active, ConferenceStatus::Upcoming])) {
             return false;
         }
 
-        return $user->can('Conference:update');
+        if ($user->can('Conference:update')) {
+            return true;
+        }
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Conference $conference): bool
+    public function delete(User $user, Conference $conference)
     {
-        if (in_array($conference->status, [ConferenceStatus::Current, ConferenceStatus::Archived])) {
+        if (in_array($conference->status, [ConferenceStatus::Active, ConferenceStatus::Archived])) {
             return false;
         }
 
-        return $user->can('Conference:delete');
+        if ($user->can('Conference:delete')) {
+            return true;
+        }
     }
 
-    public function setAsCurrent(User $user, Conference $conference): bool
+    public function setAsActive(User $user, Conference $conference)
     {
         if ($conference->status != ConferenceStatus::Upcoming) {
             return false;
         }
 
-        return $user->can('Conference:setAsCurrent');
+        if ($user->can('Conference:setAsActive')) {
+            return true;
+        }
     }
 }

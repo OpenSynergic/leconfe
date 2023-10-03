@@ -3,9 +3,7 @@
 namespace App\Providers;
 
 use App\Facades\Block;
-use App\Website\Pages\Home;
-use App\Managers\BlockManager;
-use App\Website\Blocks\LeftBlock;
+use App\Http\Middleware\DefaultViewData;
 use App\Website\Blocks\ExampleBlock;
 use App\Website\Blocks\CalendarBlock;
 use Illuminate\Support\Facades\Blade;
@@ -27,9 +25,6 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
     public function register()
     {
         parent::register();
-
-        // Register blocks
-
     }
 
     public function pageGroup(PageGroup $pageGroup): PageGroup
@@ -37,27 +32,21 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
         return $pageGroup
             ->id('website')
             ->path('')
-            ->layout('conference.components.layouts.app')
+            ->layout('website.components.layouts.app')
             ->homePage(Home::class)
             ->bootUsing(function () {
+                app()->scopeCurrentConference();
+
+                // Register blocks
                 Block::registerBlocks([
-                    // ExampleBlock::class,
-                    // LeftBlock::class,
-                    // SearchBlock::class,
-                    // LoginBlock::class,
-                    // InformationBlock::class,
-                    CalendarBlock::class,
-                    TimelineBlock::class,
-                    SubmitBlock::class,
-                    MenuBlock::class,
-                    TopicBlock::class,
-                    EditorialBlock::class,
+                    ExampleBlock::class,
+                    LeftBlock::class,
                 ]);
-                BlockManager::boot();
+                Block::boot();
             })
             ->middleware([
                 'web',
-                IdentifyCurrentConference::class,
+                DefaultViewData::class,
             ], true)
             ->discoverPages(in: app_path('Website/Pages'), for: 'App\\Website\\Pages');
     }

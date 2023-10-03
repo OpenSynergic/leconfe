@@ -1,7 +1,6 @@
 <?php
 
-use App\Http\Controllers\InstallationController;
-use App\Livewire\InstallationWizard;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -29,13 +28,20 @@ Route::get('local/temp/{path}', function (string $path, Request $request) {
     abort_if(! $storage->exists($path), 404);
 
     return $storage->download($path);
-})
-    ->where('path', '.*')
-    ->name('local.temp');
+})->where('path', '.*')->name('local.temp');
 
-// Route::get('/installation', InstallationWizard::class)->name('installation');
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
 
-// Route::resource('installation', InstallationController::class)
-//     ->only([
-//         'index'
-//     ]);
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+
+    return redirect()->route('filament.panel.tenant');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+
+    return back()->with('message', 'Verification link sent!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');

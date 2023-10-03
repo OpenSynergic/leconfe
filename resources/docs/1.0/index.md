@@ -4,6 +4,7 @@
     - [Events](/{{route}}/{{version}}/application/events)  
     - [Authorization](/{{route}}/{{version}}/application/Authorization)
     - [Blocks](/{{route}}/{{version}}/application/blocks)
+    - [Mail Template](/{{route}}/{{version}}/application/mail-template)
 -   ## Filament Forms
     -   [Introduction](/{{route}}/{{version}}/forms/introduction)
     -   [Vertical Tabs](/{{route}}/{{version}}/forms/vertical-tabs)

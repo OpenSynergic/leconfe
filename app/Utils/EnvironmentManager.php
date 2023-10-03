@@ -37,6 +37,7 @@ class EnvironmentManager
             'APP_DEBUG' => 'false',
             'APP_URL' => url('/'),
             'APP_KEY' => 'base64:'.base64_encode(Encrypter::generateKey(config('app.cipher'))),
+            'APP_TIMEZONE' => config('app.timezone'),
             'DB_CONNECTION' => config('database.default'),
             'DB_HOST' => config('database.connections.mysql.host'),
             'DB_PORT' => config('database.connections.mysql.port'),
@@ -52,7 +53,7 @@ class EnvironmentManager
             'MAIL_FROM_ADDRESS' => config('mail.mailers.smtp.from.address'),
             'MAIL_FROM_NAME' => config('mail.mailers.smtp.from.name'),
             'MAIL_MAILER' => config('mail.default'),
-            'MAX_FILE_UPLOAD_SIZE' => '10',
+            'MAX_FILE_UPLOAD_SIZE' => '15',
             'ACCEPTED_FILE_TYPES' => 'image/*,.pdf,.doc,.docx,.zip,.xls,xlsx,.odt,.txt,.xml',
         ];
 

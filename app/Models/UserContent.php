@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToConference;
 use App\Models\Meta\UserContentMeta;
 use DateTimeInterface;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
@@ -18,7 +19,7 @@ use Spatie\Tags\HasTags;
 
 class UserContent extends Model implements HasMedia
 {
-    use Cachable, HasFactory, HasSlug, HasTags, InteractsWithMedia, Metable;
+    use BelongsToConference, Cachable, HasFactory, HasSlug, HasTags, InteractsWithMedia, Metable;
 
     protected $table = 'user_contents';
 
@@ -71,11 +72,6 @@ class UserContent extends Model implements HasMedia
     protected function serializeDate(DateTimeInterface $date): string
     {
         return $date->format(setting('format.date'));
-    }
-
-    public function conference()
-    {
-        return $this->belongsTo(Conference::class);
     }
 
     public function user()
