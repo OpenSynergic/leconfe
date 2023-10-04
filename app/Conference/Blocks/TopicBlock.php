@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Website\Blocks;
+namespace App\Conference\Blocks;
 
 use App\Livewire\Block;
 use App\Models\Conference;
@@ -8,7 +8,7 @@ use App\Models\Topic;
 
 class TopicBlock extends Block
 {
-    protected ?string $view = 'website.blocks.topic-block';
+    protected ?string $view = 'conference.blocks.topic-block';
 
     protected ?int $sort = 3;
 
@@ -19,7 +19,7 @@ class TopicBlock extends Block
     public function getViewData(): array
     {
         return [
-            'topics' => Topic::all()
+            'topics' => Topic::where('conference_id', app()->getCurrentConference()?->getKey())->get()
         ];
     }
 }
