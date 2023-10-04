@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Website\Blocks;
+namespace App\Conference\Blocks;
 
 use App\Livewire\Block;
 use App\Models\Conference;
@@ -8,7 +8,7 @@ use App\Models\Timeline;
 
 class TimelineBlock extends Block
 {
-    protected ?string $view = 'website.blocks.timeline-block';
+    protected ?string $view = 'conference.blocks.timeline-block';
 
     protected ?int $sort = 2;
 
@@ -19,7 +19,7 @@ class TimelineBlock extends Block
     public function getViewData(): array
     {
         return [
-            'timelines' => Timeline::getTimelinesForCurrentConference()->get(),
+            'timelines' => Timeline::where('conference_id', app()->getCurrentConference()?->getKey())->get(),
         ];
     }
 }

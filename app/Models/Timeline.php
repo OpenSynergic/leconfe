@@ -22,14 +22,4 @@ class Timeline extends Model
         'roles' => 'array',
         'date' => 'datetime'
     ];
-
-    public function scopeForConference($query)
-    {
-        return $query->where('conference_id', app()->getCurrentConference()?->getKey())->orderBy('date');
-    }
-
-    public static function getTimelinesForCurrentConference()
-    {
-        return self::forConference();
-    }
 }
