@@ -8,7 +8,6 @@ use App\Models\Enums\SubmissionStatus;
 use App\Models\Submission;
 use App\Panel\Livewire\Submissions\SubmissionDetail\Discussions;
 use App\Panel\Livewire\Tables\Submissions\SubmissionFilesTable;
-use App\Schemas\SubmissionFileSchema;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -20,11 +19,10 @@ use Filament\Infolists\Infolist;
 use Filament\Tables\Table;
 use Livewire\Component;
 
-class CallforAbstract extends Component implements HasForms, HasActions, HasInfolists
+class CallforAbstract extends Component implements HasForms, HasActions
 {
     use InteractsWithForms;
     use InteractsWithActions;
-    use InteractsWithInfolists;
 
     public Submission $submission;
 
@@ -60,48 +58,6 @@ class CallforAbstract extends Component implements HasForms, HasActions, HasInfo
             ->requiresConfirmation();
     }
 
-    public function table(Table $table): Table
-    {
-        return $table
-            ->heading("Submission files")
-            // ->headerActions([
-            //     ...SubmissionFilesTable::defaultHeaderActions()
-            // ])
-            ->query(function () {
-                return $this->submission->files()->getQuery();
-            })
-            ->columns([
-                ...SubmissionFileSchema::defaultTableColumns()
-            ]);
-    }
-
-    public function infolist(Infolist $infolist): Infolist
-    {
-        return $infolist
-            ->schema([
-                LivewireEntry::make('submission-files-table')
-                    ->livewire(SubmissionFilesTable::class, [
-                        'record' => $this->submission,
-                        'category' => 'submission-files'
-                    ])->columnSpanFull(),
-                LivewireEntry::make('discussions')
-                    ->livewire(Discussions::class, [
-                        'submission' => $this->submission
-                    ])->columnSpanFull(),
-                // Grid::make(1)
-                //     ->schema([
-                //         LivewireEntry::make('Decision')
-                //             ->livewire(Decision::class, [
-                //                 'submission' => $this->submission
-                //             ]),
-                // LivewireEntry::make('Participant')
-                //     ->livewire(Participants::class, [
-                //         'submission' => $this->submission
-                //     ])
-                // ])
-                // ->columnSpan(1),
-            ]);
-    }
 
     public function render()
     {
