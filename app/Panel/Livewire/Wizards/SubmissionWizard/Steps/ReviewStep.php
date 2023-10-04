@@ -37,7 +37,7 @@ class ReviewStep extends Component implements HasWizardStep, HasActions, HasForm
             ->heading("Files")
             ->query(fn () => $this->record->files()->getQuery())
             ->columns([
-                ...SubmissionFileSchema::defaultTableColumns()
+                // ...SubmissionFileSchema::defaultTableColumns()
             ]);
     }
 
@@ -61,6 +61,7 @@ class ReviewStep extends Component implements HasWizardStep, HasActions, HasForm
     public function submitAction()
     {
         return Action::make('submitAction')
+            ->label('Submit')
             ->modalWidth('xl')
             ->modalAlignment('center')
             ->requiresConfirmation()

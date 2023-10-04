@@ -5,7 +5,6 @@ namespace App\Panel\Livewire\Wizards\SubmissionWizard\Steps;
 use App\Models\Media;
 use App\Models\Submission;
 use App\Panel\Livewire\Wizards\SubmissionWizard\Contracts\HasWizardStep;
-use App\Schemas\SubmissionFileSchema;
 use Filament\Actions\Action as PageAction;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
