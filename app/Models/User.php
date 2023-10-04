@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Actions\Participants\ParticipantCreateAction;
 use App\Mail\Templates\VerifyUserEmail;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\UserRole;
@@ -79,6 +80,34 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
         'password' => 'hashed',
     ];
 
+    public static function createParticipant(User $user)
+    {
+        // Create a participant for certains roles
+        $userData = $user->toArray();
+        $userData['meta'] = $user->meta()->get()
+            ->mapWithKeys(
+                fn ($meta) => [$meta->key => $meta->value]
+            )
+            ->toArray();
+        $participant = Participant::where('email', $user->email)->first();
+        if (!$participant) {
+            $participant = ParticipantCreateAction::run($userData);
+        }
+        foreach ($user->getRoleNames() as $userRole) {
+            // Only for Author, Reviewer and Editor
+            $shouldCreateParticipant = match ($userRole) {
+                UserRole::Author->value, UserRole::Reviewer->value, UserRole::Editor->value => true,
+                default => false,
+            };
+            if (!$shouldCreateParticipant) {
+                continue;
+            }
+            $position = ParticipantPosition::where('name', $userRole)->first();
+            $participant->positions()->detach($position);
+            $participant->positions()->attach($position);
+        }
+    }
+
     public function canAccessPanel(Panel $panel): bool
     {
         return true;
@@ -92,7 +121,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
     protected function fullName(): Attribute
     {
         return Attribute::make(
-            get: fn () => Str::squish($this->given_name.' '.$this->family_name),
+            get: fn () => Str::squish($this->given_name . ' ' . $this->family_name),
         );
     }
 
@@ -202,11 +231,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
         }]);
 
         foreach ($this->roles as $role) {
-            if (! $role->parent_id) {
+            if (!$role->parent_id) {
                 continue;
             }
 
-            if (! $role->ancestors->pluck('id')->intersect($permission->roles->pluck('id')->toArray())->isEmpty()) {
+            if (!$role->ancestors->pluck('id')->intersect($permission->roles->pluck('id')->toArray())->isEmpty()) {
                 return true;
             }
         }
@@ -236,7 +265,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
 
     public function hasVerifiedEmail()
     {
-        return ! is_null($this->email_verified_at);
+        return !is_null($this->email_verified_at);
     }
 
     /**
