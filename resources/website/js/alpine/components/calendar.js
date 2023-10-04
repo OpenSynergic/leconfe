@@ -1,8 +1,9 @@
 import VanillaCalendar from '@uvarov.frontend/vanilla-calendar';
 
 // Reuse Style
-import '../../../css/calendar/vanila-calendar.min.css';
-import '../../../css/calendar/themes/dark.min.css';
+// import '../../../css/calendar/vanila-calendar.min.css';
+// import '../../../css/calendar/themes/light.min.css';
+import '../../../css/calendar/vanila-calendar-min.css';
 import '../../../css/calendar/themes/light.min.css';
 
 

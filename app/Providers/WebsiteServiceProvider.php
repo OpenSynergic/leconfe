@@ -3,21 +3,25 @@
 namespace App\Providers;
 
 use App\Facades\Block;
-use App\Http\Middleware\DefaultViewData;
+use App\Conference\Pages\Home;
+use App\Website\Blocks\LeftBlock;
+use App\Website\Blocks\LoginBlock;
+
+use App\Website\Blocks\SearchBlock;
+use App\Conference\Blocks\MenuBlock;
 use App\Website\Blocks\ExampleBlock;
-use App\Website\Blocks\CalendarBlock;
+use App\Conference\Blocks\TopicBlock;
+use App\Website\Blocks\ScheduleBlock;
 use Illuminate\Support\Facades\Blade;
+use App\Conference\Blocks\SubmitBlock;
+use App\Conference\Blocks\CalendarBlock;
+use App\Conference\Blocks\TimelineBlock;
+use App\Http\Middleware\DefaultViewData;
+use App\Website\Blocks\InformationBlock;
+use App\Conference\Blocks\EditorialBlock;
+use App\Conference\Blocks\PreviousBlock;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use App\Http\Middleware\IdentifyCurrentConference;
-use App\Website\Blocks\EditorialBlock;
-use App\Website\Blocks\InformationBlock;
-use App\Website\Blocks\LoginBlock;
-use App\Website\Blocks\MenuBlock;
-use App\Website\Blocks\ScheduleBlock;
-use App\Website\Blocks\SearchBlock;
-use App\Website\Blocks\SubmitBlock;
-use App\Website\Blocks\TimelineBlock;
-use App\Website\Blocks\TopicBlock;
 use Rahmanramsi\LivewirePageGroup\PageGroupServiceProvider;
 
 class WebsiteServiceProvider extends PageGroupServiceProvider
@@ -25,6 +29,15 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
     public function register()
     {
         parent::register();
+        Block::registerBlocks([
+            CalendarBlock::class,
+            TimelineBlock::class,
+            PreviousBlock::class,
+            SubmitBlock::class,
+            TopicBlock::class,
+            MenuBlock::class,
+            EditorialBlock::class
+        ]);
     }
 
     public function pageGroup(PageGroup $pageGroup): PageGroup
@@ -39,8 +52,8 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
 
                 // Register blocks
                 Block::registerBlocks([
-                    ExampleBlock::class,
-                    LeftBlock::class,
+                    SearchBlock::class,
+                    LoginBlock::class,
                 ]);
                 Block::boot();
             })
