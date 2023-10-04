@@ -3,9 +3,7 @@
         @livewire(App\Panel\Livewire\Wizards\SubmissionWizard::class, ['record' => $record])
     @else
     <div class="flex">
-        <div class="flex-1">
-            {{ $this->infolist }}
-        </div>
+        {{ $this->infolist }}
     </div>
     @endif
 </x-filament::page>
