@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Facades\Block;
-use App\Http\Middleware\DefaultViewData;
+use App\Http\Middleware\SetupDefaultData;
 use App\Website\Blocks\ExampleBlock;
 use App\Website\Blocks\LeftBlock;
 use App\Website\Pages\Home;
@@ -37,7 +37,7 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
             })
             ->middleware([
                 'web',
-                DefaultViewData::class,
+                SetupDefaultData::class,
             ], true)
             ->discoverPages(in: app_path('Website/Pages'), for: 'App\\Website\\Pages');
     }
