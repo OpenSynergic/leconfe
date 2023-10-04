@@ -24,6 +24,17 @@ class ParticipantPositionPopulateDefaultDataAction
             ]);
 
             foreach ([
+                UserRole::Editor->value,
+                UserRole::EditorManager->value,
+            ] as $authorPosition) {
+                ParticipantPosition::firstOrCreate([
+                    'name' => $authorPosition,
+                    'type' => 'editor',
+                    'conference_id' => $conference->getKey(),
+                ]);
+            }
+
+            foreach ([
                 UserRole::Author->value,
                 'Co Author'
             ] as $authorPosition) {
