@@ -15,12 +15,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
-use Filament\Infolists\Components\Tabs;
-use Filament\Infolists\Components\Tabs\Tab;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Concerns\InteractsWithInfolists;
-use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Infolists\Infolist;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -34,15 +28,20 @@ class Discussions extends Component implements HasForms, HasActions, HasTable
     use InteractsWithActions;
     use InteractsWithTable;
 
-    public Submission $submission;
+    public Submission $record;
 
     public array $chats = [];
 
     public array $chat = [];
 
-    public function mount(Submission $submission)
+    public function mount(Submission $record)
     {
-        $this->submission = $submission;
+        $this->record = $record;
+    }
+
+    protected function paginateTableQuery(Builder $query)
+    {
+        return $query->simplePaginate($this->getTableRecordsPerPage() == 'all' ? $query->count() : $this->getTableRecordsPerPage());
     }
 
     public function table(Table $table): Table
