@@ -11,7 +11,6 @@ use App\Website\Blocks\LoginBlock;
 
 use App\Website\Blocks\SearchBlock;
 use App\Conference\Blocks\MenuBlock;
-use App\Website\Blocks\ExampleBlock;
 use App\Conference\Blocks\TopicBlock;
 use App\Website\Blocks\ScheduleBlock;
 use Illuminate\Support\Facades\Blade;
