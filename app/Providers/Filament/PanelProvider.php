@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Http\Middleware\MustVerifyEmail;
 use App\Http\Middleware\Panel\PanelAuthenticate;
 use App\Http\Middleware\Panel\TenantConference;
 use App\Models\Conference;
@@ -143,6 +144,7 @@ class PanelProvider extends FilamentPanelProvider
     {
         return [
             PanelAuthenticate::class,
+            MustVerifyEmail::class,
         ];
     }
 

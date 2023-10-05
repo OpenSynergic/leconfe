@@ -2,7 +2,7 @@
     <div class="card-body space-y-2">
         <x-website::breadcrumbs :breadcrumbs="$this->getBreadcrumbs()" />
         <h2 class="card-title">{{ $this->getTitle() }}</h2>
-
+        @if(setting('allow_registration'))
         <form wire:submit='register' class="space-y-4">
             <div class="grid sm:grid-cols-6 gap-4">
                 <div class="form-control sm:col-span-3 gap-2">
@@ -92,7 +92,7 @@
                         <label class="label justify-normal gap-2">
                             <input type="checkbox" class="checkbox checkbox-primary checkbox-sm" wire:model="privacy_statement_agree" required/>
                             <p class="label-text">
-                                I accept and approve according to <x-website::link href="#" class="link link-primary link-hover">Privacy Statement.</x-conference::link>
+                                I accept and approve according to <x-website::link href="{{ route('livewirePageGroup.current-conference.pages.privacy-statement') }}" class="link link-primary link-hover">Privacy Statement.</x-conference::link>
                             </p>
                         </label>
                     </div>
@@ -113,5 +113,8 @@
                 </x-conference::link>
             </div>
         </form>
+        @else
+            <p>This conference is currently closing user registrations</p>
+        @endif
     </div>
 </x-conference::layouts.main>

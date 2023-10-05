@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 use App\Actions\Participants\ParticipantCreateAction;
 use App\Mail\Templates\VerifyUserEmail;
 use App\Models\Enums\ConferenceStatus;
