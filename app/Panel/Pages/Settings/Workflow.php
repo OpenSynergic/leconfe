@@ -41,19 +41,39 @@ class Workflow extends Page implements HasInfolists, HasForms
                     Tab::make("Call for Abstract")
                         ->icon("iconpark-documentfolder-o")
                         ->schema([
-                            Section::make()
-                                ->schema([
-                                    LivewireEntry::make("abstract-setting")
-                                        ->livewire(AbstractSetting::class)
+                            HorizontalTabs::make()
+                                ->tabs([
+                                    HorizontalTab::make('General')
+                                        ->icon("iconpark-documentfolder-o")
+                                        ->schema([
+                                            LivewireEntry::make("abstract-setting")
+                                                ->livewire(AbstractSetting::class)
+                                        ]),
+                                    HorizontalTab::make('E-Mail Templates')
+                                        ->icon("iconpark-mail-o")
+                                        ->schema([
+                                            LivewireEntry::make("abstract-setting")
+                                                ->livewire(AbstractSetting::class)
+                                        ])
                                 ])
                         ]),
                     Tab::make("Peer Review")
                         ->icon("iconpark-search-o")
                         ->schema([
-                            Section::make()
-                                ->schema([
-                                    LivewireEntry::make("peer-review-setting")
-                                        ->livewire(PeerReviewSetting::class)
+                            HorizontalTabs::make()
+                                ->tabs([
+                                    HorizontalTab::make("General")
+                                        ->icon("iconpark-documentfolder-o")
+                                        ->schema([
+                                            LivewireEntry::make("peer-review-setting")
+                                                ->livewire(PeerReviewSetting::class)
+                                        ]),
+                                    HorizontalTab::make("E-Mail Templates")
+                                        ->icon("iconpark-mail-o")
+                                        ->schema([
+                                            LivewireEntry::make("peer-review-setting")
+                                                ->livewire(PeerReviewSetting::class)
+                                        ])
                                 ])
                         ]),
                     Tab::make("Editing")
