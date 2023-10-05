@@ -44,6 +44,9 @@ class Register extends Page
 
     public function mount()
     {
+        if (Filament::auth()->check()) {
+            $this->redirect(Filament::getUrl(), navigate: false);
+        }
     }
 
     public function getBreadcrumbs(): array
