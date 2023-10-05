@@ -52,11 +52,21 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
         return $this->record->files()->getQuery();
     }
 
+    protected function paginateTableQuery(Builder $query)
+    {
+        return $query->simplePaginate($this->getTableRecordsPerPage() == 'all' ? $query->count() : $this->getTableRecordsPerPage());
+    }
+
     protected function table(Table $table): Table
     {
         return $table
             ->query($this->getTableQuery())
-            ->heading("Files")
+            ->heading(function (): string {
+                return match ($this->category) {
+                    'submission-files' => 'Files',
+                    'submission-papers' => 'Papers',
+                };
+            })
             ->columns([
                 TextColumn::make('file_name')
                     ->color('primary')
