@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Facades\Block;
 use App\Conference\Pages\Home;
+use App\Http\Middleware\SetupDefaultData;
+use App\Website\Blocks\ExampleBlock;
 use App\Website\Blocks\LeftBlock;
 use App\Website\Blocks\LoginBlock;
 
@@ -59,7 +61,7 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
             })
             ->middleware([
                 'web',
-                DefaultViewData::class,
+                SetupDefaultData::class,
             ], true)
             ->discoverPages(in: app_path('Website/Pages'), for: 'App\\Website\\Pages');
     }

@@ -2,11 +2,11 @@
 
 > {warning.fa-close} This guide assumes that you the knowlegde to run a local server.
 
-# System Requirements
+## System Requirements
 WIP
 
-# Installation
+## Installation
 WIP
 
-# Contributions
+## Contributions
 WIP

@@ -3,9 +3,9 @@
 namespace App\Providers;
 
 use App\Conference\Pages\Home;
-use App\Http\Middleware\DefaultViewData;
 use App\Http\Middleware\IdentifyArchiveConference;
 use App\Http\Middleware\IdentifyCurrentConference;
+use App\Http\Middleware\SetupDefaultData;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Rahmanramsi\LivewirePageGroup\Facades\LivewirePageGroup;
@@ -45,7 +45,7 @@ class ConferenceServiceProvider extends ServiceProvider
             ->middleware([
                 'web',
                 IdentifyCurrentConference::class,
-                DefaultViewData::class,
+                SetupDefaultData::class,
             ], true)
             ->discoverPages(in: app_path('Conference/Pages'), for: 'App\\Conference\\Pages');
     }
