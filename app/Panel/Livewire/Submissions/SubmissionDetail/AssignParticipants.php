@@ -7,14 +7,21 @@ use App\Models\Enums\UserRole;
 use App\Models\Participant;
 use App\Models\ParticipantPosition;
 use App\Models\Submission;
+use App\Models\SubmissionParticipant;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Get;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Columns\Layout\Split;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -22,6 +29,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
+use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
+use STS\FilamentImpersonate\Tables\Actions\Impersonate;
 
 class AssignParticipants extends Component implements HasForms, HasTable
 {
@@ -49,12 +58,33 @@ class AssignParticipants extends Component implements HasForms, HasTable
                 fn (): Builder => $this->submission->participants()->getQuery()
             )
             ->columns([
-                TextColumn::make('participant.fullName')
-                    ->description(
-                        function (Model $record) {
-                            return $record->position()->first()->name;
-                        }
-                    )
+                Split::make([
+                    SpatieMediaLibraryImageColumn::make('participant.profile')
+                        ->grow(false)
+                        ->collection('profile')
+                        ->conversion('avatar')
+                        ->width(50)
+                        ->height(50)
+                        ->defaultImageUrl(function (Model $record): string {
+                            $participant = $record->participant;
+                            $name = str($participant->fullName)
+                                ->trim()
+                                ->explode(' ')
+                                ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
+                                ->join(' ');
+                            return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=111827&font-size=0.33';
+                        })
+                        ->extraCellAttributes([
+                            'style' => 'width: 1px',
+                        ])
+                        ->circular(),
+                    TextColumn::make('participant.fullName')
+                        ->description(
+                            function (Model $record) {
+                                return $record->position()->first()->name;
+                            }
+                        )
+                ])
             ])
             ->heading('Participants')
             ->headerActions([
@@ -86,6 +116,7 @@ class AssignParticipants extends Component implements HasForms, HasTable
                                     ->columnSpan(1),
                                 Select::make('participant_id')
                                     ->label("Participant")
+                                    ->required()
                                     ->allowHtml()
                                     ->reactive()
                                     ->preload()
@@ -101,13 +132,26 @@ class AssignParticipants extends Component implements HasForms, HasTable
                                             ->whereNotIn('id', $this->submission->participants->pluck('participant_id'))
                                             ->get()
                                             ->mapWithKeys(
-                                                fn (Participant $participant) => [$participant->getKey() => static::renderSelectParticipant($participant)]
+                                                fn (Participant $participant) => [
+                                                    $participant->getKey() => static::renderSelectParticipant($participant)
+                                                ]
                                             )
                                             ->toArray()
                                     )
                                     ->searchable()
                                     ->preload()
-                                    ->columnSpan(2)
+                                    ->columnSpan(2),
+                                Checkbox::make('send-notification')
+                                    ->label("Send Notification")
+                                    ->reactive()
+                                    ->columnSpanFull(),
+                                Fieldset::make()
+                                    ->visible(fn (Get $get): bool => $get('send-notification'))
+                                    ->label("Notification")
+                                    ->schema([
+                                        RichEditor::make("message")
+                                            ->columnSpanFull()
+                                    ])
                             ])
                     ])
                     ->successNotificationTitle("Participant Assigned")
@@ -119,6 +163,11 @@ class AssignParticipants extends Component implements HasForms, HasTable
                             $participant,
                             $participantPosition
                         );
+
+                        if ($data['send-notification']) {
+                            // Send Notification
+                        }
+
                         $action->success();
                     })
             ])
@@ -126,12 +175,42 @@ class AssignParticipants extends Component implements HasForms, HasTable
                 ActionGroup::make([
                     Action::make('notify-participant')
                         ->color('primary')
+                        ->modalHeading("Notify Participant")
+                        ->icon("iconpark-sendemail")
+                        ->modalSubmitActionLabel("Notify")
+                        ->modalWidth('xl')
+                        ->visible(
+                            fn (Model $record): bool => $record->participant->email !== auth()->user()->email
+                        )
+                        ->form([
+                            Grid::make(1)
+                                ->schema([
+                                    TextInput::make('email')
+                                        ->disabled()
+                                        ->formatStateUsing(function (Model $record) {
+                                            return $record->participant->email;
+                                        })
+                                        ->label("Target"),
+                                    RichEditor::make("message")
+                                        ->label("Message")
+                                        ->columnSpanFull()
+                                ])
+                        ])
                         ->label("Notify"),
-                    Action::make('login-as-participant')
+                    Impersonate::make()
+                        ->grouped()
+                        ->visible(
+                            fn (Model $record): bool => $record->participant->email !== auth()->user()->email
+                        )
+                        ->label("Login as")
+                        ->icon("iconpark-login")
                         ->color('primary')
-                        ->label("Login As"),
+                        ->redirectTo('panel'),
                     Action::make('remove-participant')
                         ->color('danger')
+                        ->visible(
+                            fn (Model $record): bool => $record->participant->email !== auth()->user()->email
+                        )
                         ->label("Remove")
                         ->successNotificationTitle("Participant Removed")
                         ->action(function (Action $action, Model $record) {
