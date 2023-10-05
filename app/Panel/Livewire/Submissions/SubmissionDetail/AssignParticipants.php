@@ -7,7 +7,7 @@ use App\Models\Enums\UserRole;
 use App\Models\Participant;
 use App\Models\ParticipantPosition;
 use App\Models\Submission;
-use App\Models\SubmissionParticipant;
+use App\Models\User;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
@@ -29,7 +29,6 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
-use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use STS\FilamentImpersonate\Tables\Actions\Impersonate;
 
 class AssignParticipants extends Component implements HasForms, HasTable
@@ -205,7 +204,16 @@ class AssignParticipants extends Component implements HasForms, HasTable
                         ->label("Login as")
                         ->icon("iconpark-login")
                         ->color('primary')
-                        ->redirectTo('panel'),
+                        ->redirectTo('panel')
+                        ->action(function (Model $record, Impersonate $action) {
+                            $user = User::where('email', $record->participant->email)->first();
+                            if (!$user) {
+                                $action->failureNotificationTitle("User not Found");
+                                $action->failure();
+                            } else {
+                                $action->impersonate($user);
+                            }
+                        }),
                     Action::make('remove-participant')
                         ->color('danger')
                         ->visible(
