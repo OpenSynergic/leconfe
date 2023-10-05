@@ -144,7 +144,7 @@ class PanelProvider extends FilamentPanelProvider
     {
         return [
             PanelAuthenticate::class,
-            MustVerifyEmail::class
+            MustVerifyEmail::class,
         ];
     }
 

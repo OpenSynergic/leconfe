@@ -15,18 +15,17 @@ class MustVerifyEmail
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(!setting('must_verify_email')){
+        if (! setting('must_verify_email')) {
             return $next($request);
         }
 
-        if(!$request->user()){
+        if (! $request->user()) {
             return redirect()->route('livewirePageGroup.website.pages.login');
         }
 
-        if(!$request->user()->hasVerifiedEmail()){
+        if (! $request->user()->hasVerifiedEmail()) {
             return redirect()->route('livewirePageGroup.website.pages.email-verification');
         }
-
 
         return $next($request);
     }

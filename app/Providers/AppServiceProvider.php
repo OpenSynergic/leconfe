@@ -2,16 +2,16 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Str;
 use App\Managers\BlockManager;
 use App\Managers\MetaTagManager;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\URL;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Str;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -39,17 +39,17 @@ class AppServiceProvider extends ServiceProvider
         $this->extendStr();
     }
 
-
-    protected function extendStr(){
+    protected function extendStr()
+    {
         Str::macro('maskEmail', function ($email) {
-            $mail_parts = explode("@", $email);
+            $mail_parts = explode('@', $email);
             $domain_parts = explode('.', $mail_parts[1]);
-        
+
             $mail_parts[0] = Str::mask($mail_parts[0], '*', 2, strlen($mail_parts[0])); // show first 2 letters and last 1 letter
             $domain_parts[0] = Str::mask($domain_parts[0], '*', 2, strlen($domain_parts[0])); // same here
             $mail_parts[1] = implode('.', $domain_parts);
-        
-            return implode("@", $mail_parts);
+
+            return implode('@', $mail_parts);
         });
     }
 

@@ -14,28 +14,27 @@ class EmailVerification extends Page
 
     public function mount()
     {
-        if(!setting('must_verify_email')){
+        if (! setting('must_verify_email')) {
             return redirect()->route('filament.panel.tenant');
         }
 
-        if(!auth()->check()){
+        if (! auth()->check()) {
             return redirect()->route('livewirePageGroup.website.pages.login');
         }
 
-        if(auth()->user()->hasVerifiedEmail()){
+        if (auth()->user()->hasVerifiedEmail()) {
             return redirect()->route('filament.panel.tenant');
         }
     }
-    
-    public function getBreadcrumbs() : array
+
+    public function getBreadcrumbs(): array
     {
         return [];
     }
 
-
     public function sendEmailVerificationLink()
     {
-        if(auth()->user()->hasVerifiedEmail()){
+        if (auth()->user()->hasVerifiedEmail()) {
             return redirect()->route('filament.panel.tenant');
         }
 

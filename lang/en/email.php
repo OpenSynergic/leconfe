@@ -2,7 +2,7 @@
 
 return [
     'verification' => [
-        'throttle' => 'Please try again in :seconds seconds.'
-    ]
+        'throttle' => 'Please try again in :seconds seconds.',
+    ],
 
 ];
