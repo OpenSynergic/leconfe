@@ -2,6 +2,7 @@
 
 namespace App\Panel\Resources\UserResource\Pages;
 
+use App\Actions\User\CreateParticipantFromUserAction;
 use App\Actions\User\UserCreateAction;
 use App\Panel\Resources\UserResource;
 use Filament\Resources\Pages\CreateRecord;
@@ -13,7 +14,7 @@ class CreateUser extends CreateRecord
 
     public function afterCreate(): void
     {
-        static::getResource()::getModel()::createParticipant($this->getRecord());
+        CreateParticipantFromUserAction::run($this->getRecord());
     }
 
     /**

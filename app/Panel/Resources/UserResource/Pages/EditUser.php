@@ -2,6 +2,7 @@
 
 namespace App\Panel\Resources\UserResource\Pages;
 
+use App\Actions\User\CreateParticipantFromUserAction;
 use App\Actions\User\UserUpdateAction;
 use App\Panel\Resources\UserResource;
 use Filament\Actions;
@@ -14,7 +15,7 @@ class EditUser extends EditRecord
 
     public function afterSave(): void
     {
-        static::getResource()::getModel()::createParticipant($this->getRecord());
+        CreateParticipantFromUserAction::run($this->getRecord());
     }
 
     protected function getHeaderActions(): array

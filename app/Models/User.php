@@ -78,34 +78,6 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
         'password' => 'hashed',
     ];
 
-    public static function createParticipant(User $user)
-    {
-        // Create a participant for certains roles
-        $userData = $user->toArray();
-        $userData['meta'] = $user->meta()->get()
-            ->mapWithKeys(
-                fn ($meta) => [$meta->key => $meta->value]
-            )
-            ->toArray();
-        $participant = Participant::where('email', $user->email)->first();
-        if (!$participant) {
-            $participant = ParticipantCreateAction::run($userData);
-        }
-        foreach ($user->getRoleNames() as $userRole) {
-            // Only for Author, Reviewer and Editor
-            $shouldCreateParticipant = match ($userRole) {
-                UserRole::Author->value, UserRole::Reviewer->value, UserRole::Editor->value => true,
-                default => false,
-            };
-            if (!$shouldCreateParticipant) {
-                continue;
-            }
-            $position = ParticipantPosition::where('name', $userRole)->first();
-            $participant->positions()->detach($position);
-            $participant->positions()->attach($position);
-        }
-    }
-
     public function canAccessPanel(Panel $panel): bool
     {
         return true;
