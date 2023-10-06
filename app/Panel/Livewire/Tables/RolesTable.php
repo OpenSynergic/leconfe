@@ -2,7 +2,6 @@
 
 namespace App\Panel\Livewire\Tables;
 
-use App\Panel\Livewire\Traits\PlaceholderTrait;
 use App\Panel\Resources\RoleResource;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -17,7 +16,7 @@ use Livewire\Component;
 
 class RolesTable extends Component implements HasForms, HasTable
 {
-    use InteractsWithForms, InteractsWithTable, PlaceholderTrait;
+    use InteractsWithForms, InteractsWithTable;
 
     protected static string $resource = RoleResource::class;
 
