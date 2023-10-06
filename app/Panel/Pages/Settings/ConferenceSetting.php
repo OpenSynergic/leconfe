@@ -8,8 +8,12 @@ use App\Facades\Block as FacadesBlock;
 use App\Forms\Components\BlockList;
 use App\Forms\Components\VerticalTabs;
 use App\Infolists\Components\BladeEntry;
+use App\Infolists\Components\LivewireEntry;
 use App\Infolists\Components\VerticalTabs as InfolistsVerticalTabs;
 use App\Livewire\Block as BlockComponent;
+use App\Panel\Livewire\Forms\Conferences\InformationSetting;
+use App\Panel\Livewire\Forms\Conferences\PrivacySetting;
+use App\Panel\Livewire\Forms\Conferences\SidebarSetting;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
@@ -26,10 +30,11 @@ use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\App;
 use Illuminate\Validation\Rule;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
-class Conference extends Page implements HasForms, HasInfolists
+class ConferenceSetting extends Page implements HasForms, HasInfolists
 {
     use InteractsWithForms, InteractsWithInfolists;
 
@@ -43,48 +48,23 @@ class Conference extends Page implements HasForms, HasInfolists
 
     protected ?string $heading = 'Conference Settings';
 
+    protected static ?string $navigationLabel = 'Conference';
+
     public array $generalFormData = [];
-
-    public array $privacyStatementFormData = [];
-
-    public array $appereanceFormData = [];
 
     public array $contactFormData = [];
 
     public function mount()
     {
-        $this->appereanceForm->fill([
-            'sidebar' => [
-                'blocks' => [
-                    'left' => FacadesBlock::getBlocks(position: 'left', includeInactive: true)
-                        ->map(
-                            fn (BlockComponent $block) => (object) $block->getSettings()
-                        )
-                        ->keyBy(
-                            fn () => str()->uuid()->toString()
-                        ),
-                    'right' => FacadesBlock::getBlocks(position: 'right', includeInactive: true)
-                        ->map(
-                            fn (BlockComponent $block) => (object) $block->getSettings()
-                        )
-                        ->keyBy(
-                            fn () => str()->uuid()->toString()
-                        ),
-                ],
-            ],
-        ]);
+        $conference = App::getCurrentConference();
 
         $this->generalForm->fill([
-            ...app()->getCurrentConference()->attributesToArray(),
-            'meta' => app()->getCurrentConference()->getAllMeta()->toArray(),
+            ...$conference->attributesToArray(),
+            'meta' => $conference->getAllMeta()->toArray(),
         ]);
 
         $this->contactForm->fill([
-            'meta' => app()->getCurrentConference()->getAllMeta()->toArray(),
-        ]);
-
-        $this->privacyStatementForm->fill([
-            'meta' => app()->getCurrentConference()->getAllMeta()->toArray(),
+            'meta' => $conference->getAllMeta()->toArray(),
         ]);
     }
 
@@ -101,21 +81,34 @@ class Conference extends Page implements HasForms, HasInfolists
                                         InfolistsVerticalTabs\Tab::make('Information')
                                             ->icon('heroicon-o-information-circle')
                                             ->schema([
-                                                BladeEntry::make('general')
-                                                    ->blade('{{ $this->generalForm }}'),
+                                                LivewireEntry::make('information-setting')
+                                                    ->livewire(InformationSetting::class, [
+                                                        'conference' => App::getCurrentConference(),
+                                                    ]),
                                             ]),
-                                        InfolistsVerticalTabs\Tab::make('Privacy Statement')
-                                            ->icon('heroicon-m-window')
+                                        InfolistsVerticalTabs\Tab::make('Privacy')
+                                            ->icon('heroicon-o-shield-check')
                                             ->schema([
-                                                BladeEntry::make('general')
-                                                    ->blade('{{ $this->privacyStatementForm }}'),
+                                                LivewireEntry::make('information-setting')
+                                                    ->livewire(PrivacySetting::class, [
+                                                        'conference' => App::getCurrentConference(),
+                                                    ]),
                                             ]),
                                     ]),
                             ]),
                         Tabs\Tab::make('Appearance')
                             ->schema([
-                                BladeEntry::make('general')
-                                    ->blade('{{ $this->appereanceForm }}'),
+                                InfolistsVerticalTabs\Tabs::make()
+                                ->schema([
+                                    InfolistsVerticalTabs\Tab::make('Sidebar')
+                                        ->icon('heroicon-o-view-columns')
+                                        ->schema([
+                                            LivewireEntry::make('sidebar-setting')
+                                                ->livewire(SidebarSetting::class, [
+                                                    'conference' => App::getCurrentConference(),
+                                                ]),
+                                        ]),
+                                ]),
                             ]),
                         Tabs\Tab::make('Contact')
                             ->schema([
@@ -131,86 +124,8 @@ class Conference extends Page implements HasForms, HasInfolists
     {
         return [
             'generalForm',
-            'privacyStatementForm',
-            'appereanceForm',
             'contactForm',
         ];
-    }
-
-    public function updateBlocks($statePath, $blockSettings)
-    {
-        $blocks = [];
-        foreach ($blockSettings as $sort => $blockSetting) {
-            $sort++; // To sort a number, take it from the array index.
-            [$uuid, $enabled, $originalState] = explode(':', $blockSetting);
-            $block = data_get($this, $originalState.'.'.$uuid);
-            // The block is being moved to a new position.
-            if ($originalState != $statePath) {
-                $block->position = str($statePath)->contains('blocks.left') ? 'left' : 'right';
-            }
-
-            $block->sort = $sort;
-            $block->active = $enabled == 'enabled';
-            $blocks[$uuid] = $block;
-        }
-
-        data_set($this, $statePath, $blocks);
-    }
-
-    public function appereanceForm(Form $form): Form
-    {
-        return $form
-            ->statePath('appereanceFormData')
-            ->schema([
-                VerticalTabs\Tabs::make('Sidebar')
-                    ->schema([
-                        VerticalTabs\Tab::make('Sidebar')
-                            ->icon('heroicon-o-view-columns')
-                            ->schema([
-                                Section::make()
-                                    ->schema([
-                                        Grid::make(3)
-                                            ->columns([
-                                                'xl' => 3,
-                                                'sm' => 3,
-                                            ])
-                                            ->schema([
-                                                BlockList::make('sidebar.blocks.left')
-                                                    ->label(__('Left Sidebar'))
-                                                    ->reactive(),
-                                                BlockList::make('sidebar.blocks.right')
-                                                    ->label(__('Right Sidebar'))
-                                                    ->reactive(),
-                                            ]),
-                                        Actions::make([
-                                            Action::make('save_appreance')
-                                                ->label('Save')
-                                                ->successNotificationTitle('Saved!')
-                                                ->failureNotificationTitle('Data could not be saved.')
-                                                ->action(function (Action $action) {
-                                                    $formData = $this->appereanceForm->getState();
-                                                    try {
-                                                        $sidebarFormData = $formData['sidebar'];
-                                                        foreach ($sidebarFormData['blocks'] as $blocks) {
-                                                            foreach ($blocks as $block) {
-                                                                UpdateBlockSettingsAction::run($block->class, [
-                                                                    'position' => $block->position,
-                                                                    'sort' => $block->sort,
-                                                                    'active' => $block->active,
-                                                                ]);
-                                                            }
-                                                        }
-                                                        $action->sendSuccessNotification();
-                                                    } catch (\Throwable $th) {
-                                                        $action->sendFailureNotification();
-                                                    }
-                                                }),
-                                        ])->alignLeft(),
-                                    ]),
-
-                            ]),
-                    ]),
-            ]);
     }
 
     public function generalForm(Form $form): Form
@@ -373,38 +288,6 @@ class Conference extends Page implements HasForms, HasInfolists
                                         ]),
                                     ]),
                             ]),
-                    ]),
-            ]);
-    }
-
-    public function privacyStatementForm(Form $form): Form
-    {
-        return $form
-            ->statePath('privacyStatementFormData')
-            ->model(app()->getCurrentConference())
-            ->schema([
-                Section::make()
-                    ->schema([
-                        TinyEditor::make('meta.privacy_statement')
-                            ->label(' '),
-                        Actions::make([
-                            Action::make('save_privacy_statement')
-                                ->label('Save')
-                                ->successNotificationTitle('Saved!')
-                                ->failureNotificationTitle('Failed to save data.')
-                                ->action(function (Action $action) {
-                                    $privacyStatementFormData = $this->privacyStatementForm->getState();
-                                    try {
-                                        ConferenceUpdateAction::run(app()->getCurrentConference(), $privacyStatementFormData);
-                                        $action->sendSuccessNotification();
-                                    } catch (\Throwable $th) {
-                                        $action->sendFailureNotification();
-                                    }
-                                }),
-                        ])->alignLeft(),
-                    ])
-                    ->extraAttributes([
-                        'class' => '!p-0',
                     ]),
             ]);
     }

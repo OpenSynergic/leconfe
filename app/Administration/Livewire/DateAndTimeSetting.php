@@ -24,6 +24,11 @@ class DateAndTimeSetting extends Component implements HasForms
         $this->form->fill(setting()->all());
     }
 
+    public function render()
+    {
+        return view('administration.livewire.form');
+    }
+
     public function form(Form $form): Form
     {
         $now = now()->hours(16);
@@ -67,10 +72,5 @@ class DateAndTimeSetting extends Component implements HasForms
                         }),
                 ])->alignLeft(),
             ]);
-    }
-
-    public function render()
-    {
-        return view('administration.livewire.access-setting');
     }
 }

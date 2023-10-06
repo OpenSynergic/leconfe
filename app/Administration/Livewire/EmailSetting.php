@@ -50,18 +50,13 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
 
     public function mount()
     {
-        // MailTemplate::create([
-        //     'mailable' => VerifyUserEmail::class,
-        //     'subject' => 'Verify Email Address',
-        //     'html_template' => 'Please click the button below to verify your email address. <a href="{{ verificationUrl }}">Verify Email Address</a>. <br> If you did not create an account, no further action is required.',
-        //     'text_template' => null,
-        // ]);
-        // MailTemplatePopulateDefaultData::run();
-        // $user = auth()->user();
-        // event(new \Illuminate\Auth\Events\Registered($user));
-        // Mail::to($user->email)->send(new VerifyUserEmail($user));
         $this->mailSetupForm->fill(setting()->all());
         $this->layoutTemplateForm->fill(setting()->all());
+    }
+
+    public function render()
+    {
+        return view('administration.livewire.infolist');
     }
 
     public function table(Table $table): Table
@@ -281,10 +276,5 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
                 ])->alignLeft(),
             ])
             ->statePath('layoutTemplateFormData');
-    }
-
-    public function render()
-    {
-        return view('administration.livewire.email-setting');
     }
 }

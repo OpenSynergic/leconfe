@@ -23,6 +23,11 @@ class AccessSetting extends Component implements HasForms
         $this->form->fill(setting()->all());
     }
 
+    public function render()
+    {
+        return view('administration.livewire.form');
+    }
+
     public function form(Form $form): Form
     {
         return $form
@@ -57,8 +62,5 @@ class AccessSetting extends Component implements HasForms
             ->statePath('formData');
     }
 
-    public function render()
-    {
-        return view('administration.livewire.access-setting');
-    }
+
 }

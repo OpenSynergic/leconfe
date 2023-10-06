@@ -26,6 +26,11 @@ class InformationSetting extends Component implements HasForms
         ]);
     }
 
+    public function render()
+    {
+        return view('administration.livewire.form');
+    }
+
     public function form(Form $form): Form
     {
         return $form
@@ -66,8 +71,5 @@ class InformationSetting extends Component implements HasForms
             ->statePath('formData');
     }
 
-    public function render()
-    {
-        return view('administration.livewire.information-setting');
-    }
+
 }
