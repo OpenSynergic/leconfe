@@ -3,34 +3,18 @@
 namespace App\Panel\Livewire\Forms\Conferences;
 
 use App\Actions\Blocks\UpdateBlockSettingsAction;
-use App\Actions\Conferences\ConferenceUpdateAction;
-use App\Actions\Submissions\SubmissionUpdateAction;
+use App\Facades\Block as FacadesBlock;
+use App\Forms\Components\BlockList;
+use App\Livewire\Block as BlockComponent;
 use App\Models\Conference;
-use App\Panel\Resources\SubmissionResource;
-use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\SpatieTagsInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\ViewField;
-use Filament\Forms\Components\Wizard;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
-use App\Facades\Block as FacadesBlock;
-use App\Forms\Components\BlockList;
-use Filament\Notifications\Notification;
-use Illuminate\Support\HtmlString;
 use Livewire\Component;
-use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
-use App\Livewire\Block as BlockComponent;
-
 
 class SidebarSetting extends Component implements HasForms
 {
@@ -89,32 +73,32 @@ class SidebarSetting extends Component implements HasForms
                                     ->label(__('Right Sidebar'))
                                     ->reactive(),
                             ]),
-                        
+
                     ]),
-                    Actions::make([
-                        Action::make('save')
-                            ->label('Save')
-                            ->successNotificationTitle('Saved!')
-                            ->failureNotificationTitle('Data could not be saved.')
-                            ->action(function (Action $action) {
-                                $formData = $this->form->getState();
-                                try {
-                                    $sidebarFormData = $formData['sidebar'];
-                                    foreach ($sidebarFormData['blocks'] as $blocks) {
-                                        foreach ($blocks as $block) {
-                                            UpdateBlockSettingsAction::run($block->class, [
-                                                'position' => $block->position,
-                                                'sort' => $block->sort,
-                                                'active' => $block->active,
-                                            ]);
-                                        }
+                Actions::make([
+                    Action::make('save')
+                        ->label('Save')
+                        ->successNotificationTitle('Saved!')
+                        ->failureNotificationTitle('Data could not be saved.')
+                        ->action(function (Action $action) {
+                            $formData = $this->form->getState();
+                            try {
+                                $sidebarFormData = $formData['sidebar'];
+                                foreach ($sidebarFormData['blocks'] as $blocks) {
+                                    foreach ($blocks as $block) {
+                                        UpdateBlockSettingsAction::run($block->class, [
+                                            'position' => $block->position,
+                                            'sort' => $block->sort,
+                                            'active' => $block->active,
+                                        ]);
                                     }
-                                    $action->sendSuccessNotification();
-                                } catch (\Throwable $th) {
-                                    $action->sendFailureNotification();
                                 }
-                            }),
-                    ])->alignLeft(),
+                                $action->sendSuccessNotification();
+                            } catch (\Throwable $th) {
+                                $action->sendFailureNotification();
+                            }
+                        }),
+                ])->alignLeft(),
             ])
             ->statePath('formData');
     }
@@ -125,7 +109,7 @@ class SidebarSetting extends Component implements HasForms
         foreach ($blockSettings as $sort => $blockSetting) {
             $sort++; // To sort a number, take it from the array index.
             [$uuid, $enabled, $originalState] = explode(':', $blockSetting);
-            $block = data_get($this, $originalState . '.' . $uuid);
+            $block = data_get($this, $originalState.'.'.$uuid);
             // The block is being moved to a new position.
             if ($originalState != $statePath) {
                 $block->position = str($statePath)->contains('blocks.left') ? 'left' : 'right';

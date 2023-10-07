@@ -61,6 +61,4 @@ class AccessSetting extends Component implements HasForms
             ])
             ->statePath('formData');
     }
-
-
 }

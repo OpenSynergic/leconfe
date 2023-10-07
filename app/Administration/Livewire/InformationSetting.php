@@ -70,6 +70,4 @@ class InformationSetting extends Component implements HasForms
             ])
             ->statePath('formData');
     }
-
-
 }

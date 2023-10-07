@@ -2,13 +2,11 @@
 
 namespace App\Administration\Livewire;
 
-use App\Actions\MailTemplates\MailTemplatePopulateDefaultData;
 use App\Actions\MailTemplates\MailTemplateRestoreDefaultData;
 use App\Actions\Settings\SettingUpdateAction;
 use App\Infolists\Components\BladeEntry;
 use App\Infolists\Components\VerticalTabs;
 use App\Mail\Templates\TestMail;
-use App\Mail\Templates\VerifyUserEmail;
 use App\Models\MailTemplate;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
