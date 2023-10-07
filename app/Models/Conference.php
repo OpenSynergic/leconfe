@@ -118,7 +118,8 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
     {
         return SlugOptions::create()
             ->generateSlugsFrom('name')
-            ->saveSlugsTo('path');
+            ->saveSlugsTo('path')
+            ->skipGenerateWhen(fn () => $this->path !== null);
     }
 
     public static function active(): ?self
