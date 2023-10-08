@@ -18,6 +18,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class)->constrained();
             $table->foreignIdFor(Conference::class)->constrained();
+            $table->boolean('skipped_review')->default(false);
             $table->enum('status', SubmissionStatus::array())->default(SubmissionStatus::Wizard->value);
             $table->timestamps();
         });

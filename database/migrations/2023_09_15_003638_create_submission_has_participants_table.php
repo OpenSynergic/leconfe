@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignIdFor(Submission::class)->constrained();
             $table->foreignIdFor(Participant::class)->constrained();
             $table->foreignIdFor(ParticipantPosition::class)->constrained();
+            $table->timestamp('date_assigned')->useCurrent();
         });
     }
 
