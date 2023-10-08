@@ -20,12 +20,24 @@ use Illuminate\Support\Facades\Storage;
 //     return view('welcome');
 // });
 
+Route::get('private/files/{uuid}', function ($uuid, Request $request) {
+    $media = \App\Models\Media::findByUuid($uuid);
+
+    abort_if(!$media, 404);
+
+    return response()
+        ->download($media->getPath(), $media->file_name, [
+            'Content-Type' => $media->mime_type,
+            'Content-Length' => $media->size,
+        ]);
+})->name('private.files');
+
 Route::get('local/temp/{path}', function (string $path, Request $request) {
-    abort_if(! $request->hasValidSignature(), 401);
+    abort_if(!$request->hasValidSignature(), 401);
 
     $storage = Storage::disk('local');
 
-    abort_if(! $storage->exists($path), 404);
+    abort_if(!$storage->exists($path), 404);
 
     return $storage->download($path);
 })->where('path', '.*')->name('local.temp');
