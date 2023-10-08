@@ -68,6 +68,11 @@ class Submission extends Model implements HasMedia
         });
     }
 
+    public function reviewAssignments()
+    {
+        return $this->hasMany(ReviewAssignment::class);
+    }
+
     public function conference()
     {
         return $this->belongsTo(Conference::class);

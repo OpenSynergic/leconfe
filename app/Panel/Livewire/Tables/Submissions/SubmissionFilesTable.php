@@ -79,6 +79,7 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
             ])
             ->headerActions([
                 Action::make('download_all')
+                    ->icon("iconpark-download-o")
                     ->label('Download All Files')
                     ->button()
                     ->hidden($this->viewOnly)
@@ -88,6 +89,7 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
                         return MediaStream::create('files.zip')->addMedia($downloads);
                     }),
                 Action::make('upload')
+                    ->icon("iconpark-upload")
                     ->label('Upload Files')
                     ->hidden($this->viewOnly)
                     ->button()
@@ -114,13 +116,12 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
                             ->reactive(),
                         SpatieMediaLibraryFileUpload::make('submission-files')
                             ->required()
-                            ->disk('local')
                             ->previewable(false)
                             ->downloadable()
                             ->reorderable()
-                            ->disk('submission-files')
+                            ->disk('files')
                             ->preserveFilenames()
-                            ->collection('submission-files')
+                            ->collection($this->category)
                             ->visibility('private')
                             ->model(fn () => $this->record)
                             ->customProperties(function (Get $get) {

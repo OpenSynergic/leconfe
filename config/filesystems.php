@@ -37,9 +37,9 @@ return [
             'visibility' => 'private',
         ],
 
-        'submission-files' => [
+        'files' => [
             'driver' => 'local',
-            'root' => storage_path('app/submission_files'),
+            'root' => storage_path('app/private/files'),
             'visibility' => 'private',
         ],
 

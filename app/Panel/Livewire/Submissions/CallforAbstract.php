@@ -7,7 +7,6 @@ use App\Infolists\Components\LivewireEntry;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Submission;
 use App\Panel\Livewire\Submissions\SubmissionDetail\Discussions;
-use App\Panel\Livewire\Tables\Submissions\SubmissionFilesTable;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -25,11 +24,6 @@ class CallforAbstract extends Component implements HasForms, HasActions
     use InteractsWithActions;
 
     public Submission $submission;
-
-    public function mount(Submission $submission)
-    {
-        $this->submission = $submission;
-    }
 
     public function declineAction()
     {
@@ -53,6 +47,7 @@ class CallforAbstract extends Component implements HasForms, HasActions
                 SubmissionUpdateAction::run([
                     'status' => SubmissionStatus::Accepted
                 ], $this->submission);
+                $this->dispatch("refreshPeerReview");
                 $action->success();
             })
             ->requiresConfirmation();

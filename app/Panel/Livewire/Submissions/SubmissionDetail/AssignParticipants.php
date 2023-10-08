@@ -40,11 +40,6 @@ class AssignParticipants extends Component implements HasForms, HasTable
 
     public array $selectedParticipant = [];
 
-    public function mount(Submission $submission)
-    {
-        $this->submission = $submission;
-    }
-
     public static function renderSelectParticipant(Participant $participant): string
     {
         return view('forms.select-participant', ['participant' => $participant])->render();
@@ -199,7 +194,7 @@ class AssignParticipants extends Component implements HasForms, HasTable
                     Impersonate::make()
                         ->grouped()
                         ->visible(
-                            fn (Model $record): bool => $record->participant->email !== auth()->user()->email
+                            fn (Model $record): bool => $record->participant->email !== auth()->user()->email && auth()->user()->canImpersonate()
                         )
                         ->label("Login as")
                         ->icon("iconpark-login")
@@ -210,12 +205,15 @@ class AssignParticipants extends Component implements HasForms, HasTable
                             if (!$user) {
                                 $action->failureNotificationTitle("User not Found");
                                 $action->failure();
-                            } else {
-                                $action->impersonate($user);
+                            }
+                            if (!$action->impersonate($user)) {
+                                $action->failureNotificationTitle("User can't be impersonated");
+                                $action->failure();
                             }
                         }),
                     Action::make('remove-participant')
                         ->color('danger')
+                        ->icon("iconpark-deletethree-o")
                         ->visible(
                             fn (Model $record): bool => $record->participant->email !== auth()->user()->email
                         )

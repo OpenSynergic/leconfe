@@ -5,20 +5,17 @@
             @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\Discussions::class, ['record' => $submission, 'lazy' => true])
         </div>
         <div class="self-start sticky top-24 flex flex-col gap-3 col-span-4">
-            @if ($submission->accepted())
+            @if ($submission->accepted() && !$submission->reviewAssignments()->exists())
                 <div class="bg-primary-700 p-4 rounded-lg text-base">
                     Your submission has been accepted. Now, we are waiting to next stage is open.
                 </div>
-            @endif
-            <div id="callforabstract-action" class="space-y-4">
-                @if (!$submission->accepted())
+            @elseif(!$submission->accepted())
+                <div class="space-y-4">
                     {{ $this->acceptAction() }}
                     {{ $this->declineAction() }}
-                @endif
-            </div>
-            <div id="participants">
-                @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\AssignParticipants::class, ['submission' => $submission])
-            </div>
+                </div>
+            @endif
+            @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\AssignParticipants::class, ['submission' => $submission])
         </div>
     </div>
     <x-filament-actions::modals />
