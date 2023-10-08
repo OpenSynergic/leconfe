@@ -11,9 +11,10 @@ enum SubmissionStatus: string implements HasLabel
 
     case Wizard = 'Wizard';
     case New = 'New';
-    case UnderReview = 'UnderReview';
+    case UnderReview = 'Under Review';
     case Accepted = 'Accepted';
     case Published = 'Published';
+    case RevisionNeeded = 'Revision Needed';
     case Declined = 'Declined';
 
     public function getLabel(): ?string
