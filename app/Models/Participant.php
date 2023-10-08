@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Kra8\Snowflake\HasShortflakePrimary;
@@ -23,7 +24,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Participant extends Model implements HasMedia, Sortable
 {
-    use HasFactory, HasShortflakePrimary, InteractsWithMedia, Metable, SortableTrait;
+    use HasFactory, HasShortflakePrimary, InteractsWithMedia, Metable, SortableTrait, Notifiable;
 
     /**
      * The table associated with the model.
