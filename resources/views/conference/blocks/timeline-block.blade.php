@@ -65,9 +65,9 @@
                 </div>
             </div>
         @endforeach
+        <div class="w-full flex justify-start flex pt-1">
+            <a href="{{ route('livewirePageGroup.current-conference.pages.timeline') }}"
+                class="btn btn-primary text-xs btn-sm text-white rounded-md w-16">More</a>
+        </div>
     @endif
-    <div class="w-full flex justify-start flex pt-1">
-        <a href="{{ route('livewirePageGroup.current-conference.pages.timeline') }}"
-            class="btn btn-primary text-xs btn-sm text-white rounded-md w-16">More</a>
-    </div>
 </div>
