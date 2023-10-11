@@ -3,7 +3,10 @@
 namespace App\Panel\Resources\SubmissionResource\Pages;
 
 use App\Models\Conference;
+use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
+use App\Models\Enums\UserRole;
+use App\Models\Participant;
 use App\Models\Submission;
 use App\Panel\Pages\Settings\Workflow;
 use App\Panel\Resources\SubmissionResource;
@@ -41,30 +44,107 @@ class ManageSubmissions extends ManageRecords
         ];
     }
 
+    private static function reviewerTabs()
+    {
+        $currentUser = auth()->user();
+        $userParticipant = Participant::email($currentUser->email)->first();
+        return [
+            'Proposal' => Tab::make('Proposal')
+                ->modifyQueryUsing(
+                    fn (Builder $query) => $query
+                        ->with('reviewAssignments')
+                        ->whereHas(
+                            'reviewAssignments',
+                            // Submission is not in the Reviewer's queue yet.
+                            fn (Builder $query) => $query->where('participant_id', $userParticipant->id)->where('date_confirmed', '0000-00-00')
+                        )
+                ),
+            'My Queue' => Tab::make('My Queue')
+                ->modifyQueryUsing(
+                    fn (Builder $query) => $query
+                        ->with('reviewAssignments')
+                        ->whereHas(
+                            'reviewAssignments',
+                            // Submission is in the Reviewer's queue yet.
+                            fn (Builder $query) => $query->where('participant_id', $userParticipant->id)->where('date_confirmed', '!=', '0000-00-00')
+                        )
+                )
+        ];
+    }
+
     public function getTabs(): array
     {
-        // ->modifyQueryUsing(fn (Builder $query) => $query->where('status', Submission::STATUS_ACTIVE))
+        $currentUser = auth()->user();
+        $currentUserAsParticipant = $currentUser->asParticipant();
 
-        return [
-            'new' => Tab::make('New')
-                ->badge(
-                    fn () => Submission::query()
-                        ->count()
-                ),
-            'review' => Tab::make('Review')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', SubmissionStatus::UnderReview))
-                ->badge(
-                    fn () => Submission::query()
-                        ->where('status', SubmissionStatus::UnderReview)
-                        ->count()
-                ),
-            'archived' => Tab::make('Published')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', SubmissionStatus::Published))
-                ->badge(
-                    fn () => Submission::query()
-                        ->where('status', SubmissionStatus::Published)
-                        ->count()
-                ),
+        $tabs  = [
+            'My Submission' => Tab::make("My Submission")
+                ->modifyQueryUsing(function (Builder $query) use ($currentUser) {
+                    return $query->where('user_id', $currentUser->id);
+                }),
         ];
+
+        if ($currentUser->hasRole(UserRole::ConferenceManager->value)) {
+            $tabs = [
+                ...$tabs,
+                SubmissionStage::CallforAbstract->value => Tab::make(SubmissionStage::CallforAbstract->value)
+                    ->modifyQueryUsing(
+                        function (Builder $query) use ($currentUser) {
+                            return $query->stage(SubmissionStage::CallforAbstract);
+                        }
+                    ),
+                SubmissionStage::PeerReview->value => Tab::make(SubmissionStage::PeerReview->value)
+                    ->modifyQueryUsing(
+                        function (Builder $query) use ($currentUser, $currentUserAsParticipant) {
+                            $finalQuery = $query->stage(SubmissionStage::PeerReview);
+                            if ($currentUser->hasRole(UserRole::Reviewer->value)) {
+                                $finalQuery = $finalQuery
+                                    ->whereHas(
+                                        'reviewAssignments',
+                                        fn (Builder $query) => $query->where('participant_id', $currentUserAsParticipant->getKey())
+                                    );
+                            }
+                            return $finalQuery;
+                        }
+                    ),
+                SubmissionStage::Editing->value => Tab::make(SubmissionStage::Editing->value)
+                    ->modifyQueryUsing(function (Builder $query) use ($currentUser) {
+                        return $query->stage(SubmissionStage::Editing);
+                    })
+            ];
+        } else if ($currentUser->hasRole(UserRole::Reviewer->value)) {
+            $tabs = [
+                ...$tabs,
+                SubmissionStage::PeerReview->value => Tab::make(SubmissionStage::PeerReview->value)
+                    ->modifyQueryUsing(
+                        function (Builder $query) use ($currentUser, $currentUserAsParticipant) {
+                            $finalQuery = $query->stage(SubmissionStage::PeerReview);
+                            if ($currentUser->hasRole(UserRole::Reviewer->value)) {
+                                $finalQuery = $finalQuery
+                                    ->whereHas(
+                                        'reviewAssignments',
+                                        fn (Builder $query) => $query->where('participant_id', $currentUserAsParticipant->getKey())
+                                    );
+                            }
+                            return $finalQuery;
+                        }
+                    ),
+            ];
+        }
+
+        if (!$currentUser->hasRole(UserRole::Reviewer->value)) {
+            $tabs = [
+                ...$tabs,
+                'Active' => Tab::make('Active')
+                    ->modifyQueryUsing(
+                        fn (Builder $query): Builder => $query
+                    ),
+                'Published' => Tab::make("Published")
+                    ->modifyQueryUsing(
+                        fn (Builder $query): Builder => $query
+                    ),
+            ];
+        }
+        return $tabs;
     }
 }

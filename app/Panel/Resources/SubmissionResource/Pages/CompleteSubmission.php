@@ -19,6 +19,6 @@ class CompleteSubmission extends Page
 
     public function mount(Submission $record)
     {
-        abort_if($record->status == SubmissionStatus::Wizard, 404);
+        abort_if($record->status == SubmissionStatus::Incomplete, 404);
     }
 }

@@ -157,6 +157,7 @@ class ReviewerList extends Component implements HasForms, HasTable
             ->actions([
                 ActionGroup::make([
                     Action::make('edit-reviewer')
+                        ->modalWidth("2xl")
                         ->icon("iconpark-edit")
                         ->label("Edit")
                         ->mountUsing(function (ReviewAssignment $record, Form $form) {
@@ -282,6 +283,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                     ->label("Reviewer")
                     ->modalHeading("Assign Reviewer")
                     ->modalWidth("2xl")
+                    ->authorize('ReviewAssignment:create')
                     ->form([
                         ...static::formReviewerSchema($this),
                         Fieldset::make("Notification")

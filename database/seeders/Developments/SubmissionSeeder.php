@@ -13,7 +13,6 @@ class SubmissionSeeder extends Seeder
      */
     public function run(): void
     {
-        Submission::factory()->count(50)->create();
-        FilesTypePopulateAction::run();
+        // Submission::factory()->count(50)->create();
     }
 }

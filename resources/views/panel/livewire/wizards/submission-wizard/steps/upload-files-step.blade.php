@@ -34,7 +34,7 @@
                                 </div>
                             </div>
                         @endif
-                        @livewire(App\Panel\Livewire\Tables\Submissions\SubmissionFilesTable::class, ['record' => $record, 'category' => 'submission-files'])
+                        @livewire(App\Panel\Livewire\Tables\Submissions\SubmissionFilesTable::class, ['record' => $record, 'category' => \App\Models\Enums\SubmissionFileCategory::Files->value])
                     </div>
                 </div>
             </div>

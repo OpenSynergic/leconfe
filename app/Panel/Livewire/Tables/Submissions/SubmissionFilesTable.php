@@ -2,6 +2,8 @@
 
 namespace App\Panel\Livewire\Tables\Submissions;
 
+use App\Models\Enums\SubmissionFileCategory;
+use App\Models\Enums\UserRole;
 use App\Models\Media;
 use App\Models\Submission;
 use App\Models\SubmissionFileType;
@@ -29,15 +31,12 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
 
     public Submission $record;
 
-    public string $category; // submissions-files or submission-papers
+    public string $category;
 
     public bool $viewOnly = false;
 
     protected $listeners = ['refreshLivewire' => '$refresh'];
 
-    public function mount(Submission $record, bool $viewOnly = false, $category = 'submission-files')
-    {
-    }
 
     public function render()
     {
@@ -46,10 +45,12 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
 
     protected function getTableQuery(): Builder
     {
-        if ($this->category == 'submission-papers') {
-            return $this->record->papers()->getQuery();
-        }
-        return $this->record->files()->getQuery();
+        return match ($this->category) {
+            SubmissionFileCategory::Files->value => $this->record->files()->getQuery(),
+            SubmissionFileCategory::Papers->value => $this->record->papers()->getQuery(),
+            SubmissionFileCategory::ReviewerAssignedPapers->value => auth()->user()->asParticipant()->reviewAssignments()->submission($this->record->id)->first()->files()->getQuery(),
+            'default' => abort(404),
+        };
     }
 
     protected function paginateTableQuery(Builder $query)
@@ -63,8 +64,9 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
             ->query($this->getTableQuery())
             ->heading(function (): string {
                 return match ($this->category) {
-                    'submission-files' => 'Files',
-                    'submission-papers' => 'Papers',
+                    SubmissionFileCategory::Files->value => 'Files',
+                    SubmissionFileCategory::Papers->value, SubmissionFileCategory::ReviewerAssignedPapers->value => 'Papers',
+                    default => ''
                 };
             })
             ->columns([
@@ -136,7 +138,7 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
                     ->successNotificationTitle('Files added successfully')
                     ->failureNotificationTitle('There was a problem adding the files')
                     ->action(function (array $data, Action $action) {
-                        $this->record->getMediaCollection('submission-files');
+                        $this->record->getMediaCollection(SubmissionFileCategory::Files->value);
                     })
             ])
             ->actions([

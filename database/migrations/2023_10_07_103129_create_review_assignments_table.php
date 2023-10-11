@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\Enums\ReviewerConfirmationStatus;
 use App\Models\Enums\SubmissionStatus;
+use App\Models\Enums\SubmissionStatusRecommendation;
 use App\Models\Participant;
 use App\Models\Submission;
 use Illuminate\Database\Migrations\Migration;
@@ -18,7 +20,8 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Submission::class)->constrained();
             $table->foreignIdFor(Participant::class)->constrained();
-            $table->enum('recommendation', SubmissionStatus::array())->nullable();
+            $table->enum('recommendation', SubmissionStatusRecommendation::array())->nullable();
+            $table->enum('confirmation_status', ReviewerConfirmationStatus::array())->default(ReviewerConfirmationStatus::Waiting);
             $table->boolean('canceled')->default(false);
             $table->timestamp('date_assigned')->useCurrent();
             $table->timestamp('date_confirmed');

@@ -238,6 +238,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
         return !is_null($this->email_verified_at);
     }
 
+    public function asParticipant()
+    {
+        return Participant::email($this->email)->first();
+    }
+
     /**
      * Send the email verification notification.
      *

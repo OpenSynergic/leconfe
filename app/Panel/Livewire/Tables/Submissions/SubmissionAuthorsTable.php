@@ -108,7 +108,7 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
                         ->successNotificationTitle("Author added")
                         ->form(static::getAuthorFormSchema())
                         ->using(function (array $data) {
-                            $participant = Participant::byEmail($data['email']);
+                            $participant = Participant::email($data['email'])->first();
                             $participant = $participant ?: ParticipantCreateAction::run($data);
                             $positionAuthor = ParticipantPosition::find($data['position']);
                             SubmissionAssignParticipantAction::run($this->record, $participant, $positionAuthor);

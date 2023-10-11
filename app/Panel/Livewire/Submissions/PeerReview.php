@@ -2,6 +2,7 @@
 
 namespace App\Panel\Livewire\Submissions;
 
+use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Models\Submission;
 use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
 use Filament\Actions\Action;
@@ -15,8 +16,6 @@ class PeerReview extends Component implements HasForms, HasActions
 {
     use InteractsWithForms;
     use InteractsWithActions;
-    use InteractWithTenant;
-
     public Submission $submission;
 
     public bool $stageOpened = false;
@@ -25,6 +24,11 @@ class PeerReview extends Component implements HasForms, HasActions
         'refreshPeerReview' => '$refresh'
     ];
 
+    public function mount(Submission $submission)
+    {
+        $this->stageOpened = app()->getCurrentConference()->getMeta("workflow.peer-review.open", false);
+    }
+
     public function skipReviewAction()
     {
         return Action::make('skipReviewAction')
@@ -32,43 +36,14 @@ class PeerReview extends Component implements HasForms, HasActions
             ->icon("lineawesome-check-circle-solid")
             ->color('gray')
             ->outlined()
+            ->successNotificationTitle("Review Skipped")
+            ->action(function (Action $action) {
+                SubmissionUpdateAction::run([
+                    'skipped_review' => true,
+                ], $this->submission);
+                $action->success();
+            })
             ->requiresConfirmation();
-    }
-
-    public function acceptAction()
-    {
-        return Action::make('acceptAction')
-            ->label("Accept")
-            ->requiresConfirmation()
-            ->outlined()
-            ->action(function (Action $action) {
-            });
-    }
-
-    public function requestRevisionAction()
-    {
-        return Action::make('requestRevisionAction')
-            ->label("Request Revision")
-            ->color("warning")
-            ->outlined()
-            ->requiresConfirmation()
-            ->action(function (Action $action) {
-            });
-    }
-
-    public function suggestAcceptAction()
-    {
-        return Action::make('suggestAcceptAction')
-            ->label("Suggest Accept")
-            ->outlined()
-            ->requiresConfirmation()
-            ->action(function (Action $action) {
-            });
-    }
-
-    public function mount(Submission $submission)
-    {
-        $this->stageOpened = $this->conference->getMeta("workflow.peer-review.open", false);
     }
 
     public function render()

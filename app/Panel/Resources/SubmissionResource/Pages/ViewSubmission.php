@@ -9,6 +9,10 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use App\Infolists\Components\VerticalTabs\Tabs as Tabs;
 use App\Infolists\Components\VerticalTabs\Tab as Tab;
+use App\Livewire\Submissions\Components\ReviewerForm;
+use App\Models\Enums\SubmissionStage;
+use App\Models\Enums\UserRole;
+use App\Models\Participant;
 use App\Panel\Livewire\Submissions\CallforAbstract;
 use App\Panel\Livewire\Submissions\PeerReview;
 use App\Panel\Livewire\Submissions\SubmissionDetail;
@@ -45,12 +49,14 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
 
     public function infolist(Infolist $infolist): Infolist
     {
+        $currentUserIsReviewer = auth()->user()->hasRole(UserRole::Reviewer->value);
         return $infolist
             ->schema([
                 Tabs::make()
                     ->sticky()
                     ->tabs([
                         Tab::make("Call for Abstract")
+                            ->hidden($currentUserIsReviewer)
                             ->icon("heroicon-o-information-circle")
                             ->schema([
                                 LivewireEntry::make('call-for-abstract')
@@ -60,12 +66,25 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                             ]),
                         Tab::make("Peer Review")
                             ->icon("iconpark-checklist-o")
-                            ->schema([
-                                LivewireEntry::make('peer-review')
-                                    ->livewire(PeerReview::class, [
-                                        'submission' => $this->record
-                                    ])
-                            ])
+                            ->schema(function () use ($currentUserIsReviewer): array {
+                                if ($currentUserIsReviewer) {
+                                    return [
+                                        LivewireEntry::make('reviewer-form')
+                                            ->livewire(ReviewerForm::class, [
+                                                'submission' => $this->record
+                                            ])
+                                    ];
+                                }
+                                return [
+                                    LivewireEntry::make('peer-review')
+                                        ->livewire(PeerReview::class, [
+                                            'submission' => $this->record
+                                        ])
+                                ];
+                            }),
+                        Tab::make("Editing")
+                            ->hidden($currentUserIsReviewer)
+                            ->icon("heroicon-o-pencil")
                     ])
                     ->maxWidth('full')
             ]);
@@ -73,6 +92,6 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
 
     public function getTitle(): string
     {
-        return $this->record->status == SubmissionStatus::Wizard ? 'Submission Wizard' : 'Submission';
+        return $this->record->stage == SubmissionStage::Wizard ? 'Submission Wizard' : 'Submission';
     }
 }

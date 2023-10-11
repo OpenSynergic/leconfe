@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Conference;
+use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
@@ -18,8 +19,9 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class)->constrained();
             $table->foreignIdFor(Conference::class)->constrained();
+            $table->enum('stage', SubmissionStage::array())->default(SubmissionStage::CallforAbstract->value);
             $table->boolean('skipped_review')->default(false);
-            $table->enum('status', SubmissionStatus::array())->default(SubmissionStatus::Wizard->value);
+            $table->enum('status', SubmissionStatus::array())->default(SubmissionStatus::Incomplete->value);
             $table->timestamps();
         });
 

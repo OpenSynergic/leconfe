@@ -1,20 +1,22 @@
 <div class="space-y-6">
-  @if($stageOpened && $submission->accepted())
+  @if($stageOpened && $submission->stage == App\Models\Enums\SubmissionStage::PeerReview)
     <div class="grid grid-cols-12 gap-4">
       <div class="space-y-4 col-span-8">
-          @livewire(App\Panel\Livewire\Tables\Submissions\SubmissionFilesTable::class, ['record' => $submission, 'category' => 'submission-papers'])
+          @livewire(App\Panel\Livewire\Tables\Submissions\SubmissionFilesTable::class, ['record' => $submission, 'category' => \App\Models\Enums\SubmissionFileCategory::Papers->value])
           @livewire(App\Panel\Livewire\Submissions\Components\ReviewerList::class, ['record' => $submission])
           @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\Discussions::class, ['record' => $submission])
       </div>
       <div class="self-start sticky top-24 flex flex-col gap-3 col-span-4">
-        {{ $this->skipReviewAction }}
-        {{-- {{ $this->acceptAction() }}
-        {{ $this->requestRevisionAction() }}
-        {{ $this->suggestAcceptAction() }} --}}
+        {{-- TODO: is this a good way --}}
+        @hasanyrole([\App\Models\Enums\UserRole::Admin->value, \App\Models\Enums\UserRole::Editor->value])
+          @if($submission->stage == App\Models\Enums\SubmissionStage::PeerReview)
+            {{ $this->skipReviewAction() }}
+          @endif
+        @endhasanyrole
       </div>
     </div>
   <x-filament-actions::modals />
-  @elseif(!$submission->accepted())
+  @elseif($submission->stage == App\Models\Enums\SubmissionStage::CallforAbstract)
     <div class="bg-warning-700 p-4 rounded-lg text-base">
       Can not enter the stage until the submission is accepted.
     </div>

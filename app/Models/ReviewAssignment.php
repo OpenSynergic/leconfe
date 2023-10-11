@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Kra8\Snowflake\HasShortflakePrimary;
@@ -30,6 +31,16 @@ class ReviewAssignment extends Model implements HasMedia
         'canceled'
     ];
 
+    public function files()
+    {
+        return $this->media()->where('collection_name', 'reviewer-assigned-papers');
+    }
+
+    public function scopeSubmission($query, $submissionId)
+    {
+        return $query->where('submission_id', $submissionId);
+    }
+
     public function submission()
     {
         return $this->belongsTo(Submission::class);
@@ -38,5 +49,10 @@ class ReviewAssignment extends Model implements HasMedia
     public function participant()
     {
         return $this->belongsTo(Participant::class);
+    }
+
+    public function needConfirmation(): bool
+    {
+        return $this->date_confirmed->format('Y') == '-0001';
     }
 }

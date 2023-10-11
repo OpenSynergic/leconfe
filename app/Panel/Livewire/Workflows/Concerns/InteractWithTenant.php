@@ -11,6 +11,6 @@ trait InteractWithTenant
 
     public function __construct()
     {
-        $this->conference = Filament::getTenant();
+        $this->conference = app()->getCurrentConference();
     }
 }

@@ -3,24 +3,21 @@
 namespace App\Panel\Livewire\Wizards\SubmissionWizard\Steps;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
+use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Submission;
 use App\Panel\Livewire\Wizards\SubmissionWizard\Contracts\HasWizardStep;
 use App\Panel\Resources\SubmissionResource;
-use App\Schemas\SubmissionFileSchema;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
 use Livewire\Component;
 
-class ReviewStep extends Component implements HasWizardStep, HasActions, HasForms, HasTable
+class ReviewStep extends Component implements HasWizardStep, HasActions, HasForms
 {
-    use InteractsWithActions, InteractsWithForms, InteractsWithTable;
+    use InteractsWithActions, InteractsWithForms;
 
     public Submission $record;
 
@@ -29,33 +26,6 @@ class ReviewStep extends Component implements HasWizardStep, HasActions, HasForm
     public static function getWizardLabel(): string
     {
         return 'Review';
-    }
-
-    public function table(Table $table): Table
-    {
-        return $table
-            ->heading("Files")
-            ->query(fn () => $this->record->files()->getQuery())
-            ->columns([
-                // ...SubmissionFileSchema::defaultTableColumns()
-            ]);
-    }
-
-    public function submissionFileTable(Table $table): Table
-    {
-        return $table
-            ->heading("Files")
-            ->query(fn () => $this->record->files()->getQuery())
-            ->columns([
-                ...SubmissionFileSchema::defaultTableColumns()
-            ]);
-    }
-
-    public function getTables(): array
-    {
-        return [
-            'submissionFileTable'
-        ];
     }
 
     public function submitAction()
@@ -73,12 +43,9 @@ class ReviewStep extends Component implements HasWizardStep, HasActions, HasForm
             ->successNotificationTitle("Abstract submitted, please wait for the conference manager to review your submission.")
             ->successRedirectUrl(fn (): string => SubmissionResource::getUrl('complete', ['record' => $this->record]))
             ->action(function (Action $action) {
-                /**
-                 * TODO:
-                 * - Add Notification
-                 */
                 SubmissionUpdateAction::run([
-                    'status' => SubmissionStatus::New,
+                    'stage' => SubmissionStage::CallforAbstract,
+                    'status' => SubmissionStatus::Queued,
                 ], $this->record);
                 $action->success();
                 $action->dispatchSuccessRedirect();
