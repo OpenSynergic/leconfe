@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Panel\Resources\AuthorResource\Pages;
+namespace App\Panel\Resources\Conferences\AuthorResource\Pages;
 
-use App\Panel\Resources\AuthorResource;
-use Filament\Actions;
+use App\Panel\Resources\Conferences\AuthorResource;
 use Filament\Resources\Pages\ManageRecords;
 
 class ManageAuthors extends ManageRecords

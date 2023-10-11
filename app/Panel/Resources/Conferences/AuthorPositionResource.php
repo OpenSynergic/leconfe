@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Panel\Resources;
+namespace App\Panel\Resources\Conferences;
 
 use App\Models\ParticipantPosition;
 use App\Tables\Columns\IndexColumn;

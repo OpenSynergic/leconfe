@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Panel\Resources\AuthorPositionResource\Pages;
+namespace App\Panel\Resources\Conferences\AuthorPositionResource\Pages;
 
 use App\Panel\Resources\AuthorPositionResource;
 use Filament\Actions;

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Panel\Resources;
+namespace App\Panel\Resources\Conferences;
 
 use App\Actions\Participants\ParticipantCreateAction;
 use App\Models\Participant;
-use App\Panel\Resources\AuthorResource\Pages;
+use App\Panel\Resources\Conferences\AuthorResource\Pages;
 use App\Panel\Resources\Conferences\ParticipantResource;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
