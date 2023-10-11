@@ -13,14 +13,15 @@
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                                     </svg>
-                                    <a href="{{ route('livewirePageGroup.website.pages.static-page', ['slug' => $content->slug]) }}"
+                                    <a href="{{ route('livewirePageGroup.current-conference.pages.static-page', ['staticPage' => $content->slug]) }}"
                                         class="text-xs text-primary hover:text-blue-500">{{ $content->title }}</a>
                                 </div>
 
-                                {{-- <div class="accordion-body" x-cloak x-show="accordOpen" x-collapse x-collapse.duration.400ms>
-                            <div class="px-2 py-1">
-                            </div>
-                        </div> --}}
+                                <div class="accordion-body" x-cloak x-show="accordOpen" x-collapse
+                                    x-collapse.duration.400ms>
+                                    <div class="px-2 py-1">
+                                    </div>
+                                </div>
                             </div>
                         @endforeach
                     </div>

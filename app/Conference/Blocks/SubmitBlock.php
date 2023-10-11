@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Website\Blocks;
+namespace App\Conference\Blocks;
 
 use App\Livewire\Block;
 
 class SubmitBlock extends Block
 {
-    protected ?string $view = 'website.blocks.submit-block';
+    protected ?string $view = 'conference.blocks.submit-block';
 
     protected ?int $sort = 1;
 

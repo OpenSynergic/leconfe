@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use App\Models\Scopes\ConferenceScope;
+use Illuminate\Database\Eloquent\Model;
 use App\Models\Concerns\BelongsToConference;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
 class Timeline extends Model
 {
@@ -22,4 +24,18 @@ class Timeline extends Model
         'roles' => 'array',
         'date' => 'datetime'
     ];
+
+    public static function getTimelinesInRange()
+    {
+
+        return self::where('conference_id', app()->getCurrentConference()?->getKey())
+            ->get();
+    }
+
+    // protected static function boot()
+    // {
+    //     parent::boot();
+
+    //     static::addGlobalScope(new ConferenceScope);
+    // }
 }

@@ -1,8 +1,14 @@
+@import "./calendar/vanilla-calendar-min.css";
+@import "./calendar/themes/light.css";
+/* @import "../../../vendor/filament/filament/resources/css/theme.css"; */
 @config './tailwind.config.js';
+
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
 
 @layer components {
     .accordion-header {
@@ -56,19 +62,19 @@
 }
 
 .author-badge{
-    @apply badge badge-outline text-mini badge-xs w-16 h-5 text-yellow-400;
+    @apply badge badge-outline text-mini badge-xs  h-5 text-yellow-400;
 }
 
 .editor-badge{
-    @apply badge badge-outline text-mini badge-xs w-16 h-5 text-gray-400;
+    @apply badge badge-outline text-mini badge-xs  h-5 text-gray-400;
 }
 
 .reviewer-badge{
-    @apply badge badge-outline text-mini badge-xs w-16 h-5 text-gray-400;
+    @apply badge badge-outline text-mini badge-xs  h-5 text-gray-400;
 }
 
 .participant-badge{
-    @apply badge badge-outline text-mini badge-xs w-16 h-5 text-primary;
+    @apply badge badge-outline text-mini badge-xs  h-5 text-primary;
 }
 
 .past-timeline-marker {

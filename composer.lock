@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c72462c251de5f9c819f53bc39568c58",
+    "content-hash": "75c1aa71ac6cb643a08e11e29915f71c",
     "packages": [
         {
             "name": "akaunting/laravel-setting",
@@ -510,6 +510,77 @@
             "time": "2023-03-10T13:07:43+00:00"
         },
         {
+            "name": "codeat3/blade-forkawesome",
+            "version": "1.9.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/codeat3/blade-forkawesome.git",
+                "reference": "a5fdf448b2a759770e92b6fe75611025b04074b9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/codeat3/blade-forkawesome/zipball/a5fdf448b2a759770e92b6fe75611025b04074b9",
+                "reference": "a5fdf448b2a759770e92b6fe75611025b04074b9",
+                "shasum": ""
+            },
+            "require": {
+                "blade-ui-kit/blade-icons": "^1.1",
+                "illuminate/support": "^8.0|^9.0|^10.0",
+                "php": "^7.4|^8.0"
+            },
+            "require-dev": {
+                "codeat3/blade-icon-generation-helpers": "^0.3",
+                "codeat3/phpcs-styles": "^1.0",
+                "orchestra/testbench": "^6.0|^7.0|^8.0",
+                "phpunit/phpunit": "^9.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Codeat3\\BladeForkAwesome\\BladeForkAwesomeServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Codeat3\\BladeForkAwesome\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Swapnil Sarwe",
+                    "homepage": "https://swapnilsarwe.com"
+                },
+                {
+                    "name": "Dries Vints",
+                    "homepage": "https://driesvints.com"
+                }
+            ],
+            "description": " A package to easily make use of \"Fork Awesome Icons\" in your Laravel Blade views.",
+            "homepage": "https://github.com/codeat3/blade-forkawesome",
+            "keywords": [
+                "blade",
+                "forkawesome",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/codeat3/blade-forkawesome/issues",
+                "source": "https://github.com/codeat3/blade-forkawesome/tree/1.9.3"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/swapnilsarwe",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-03-10T16:51:59+00:00"
+        },
+        {
             "name": "codeat3/blade-iconpark",
             "version": "1.5.1",
             "source": {
@@ -579,6 +650,77 @@
                 }
             ],
             "time": "2023-02-18T14:07:58+00:00"
+        },
+        {
+            "name": "codeat3/blade-unicons",
+            "version": "1.7.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/codeat3/blade-unicons.git",
+                "reference": "53d58782dd698646362ee19bb4c7a01e54349f60"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/codeat3/blade-unicons/zipball/53d58782dd698646362ee19bb4c7a01e54349f60",
+                "reference": "53d58782dd698646362ee19bb4c7a01e54349f60",
+                "shasum": ""
+            },
+            "require": {
+                "blade-ui-kit/blade-icons": "^1.1",
+                "illuminate/support": "^8.0|^9.0|^10.0",
+                "php": "^7.4|^8.0"
+            },
+            "require-dev": {
+                "codeat3/blade-icon-generation-helpers": "^0.3",
+                "codeat3/phpcs-styles": "^1.0",
+                "orchestra/testbench": "^6.0|^7.0|^8.0",
+                "phpunit/phpunit": "^9.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Codeat3\\BladeUnicons\\BladeUniconsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Codeat3\\BladeUnicons\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Swapnil Sarwe",
+                    "homepage": "https://swapnilsarwe.com"
+                },
+                {
+                    "name": "Dries Vints",
+                    "homepage": "https://driesvints.com"
+                }
+            ],
+            "description": "A package to easily make use of \"Unicons\" in your Laravel Blade views.",
+            "homepage": "https://github.com/codeat3/blade-unicons",
+            "keywords": [
+                "blade",
+                "laravel",
+                "unicons"
+            ],
+            "support": {
+                "issues": "https://github.com/codeat3/blade-unicons/issues",
+                "source": "https://github.com/codeat3/blade-unicons/tree/1.7.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/swapnilsarwe",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-04-10T14:26:34+00:00"
         },
         {
             "name": "coolsam/flatpickr",

@@ -1,7 +1,4 @@
-/*! name: @uvarov.frontend/vanilla-calendar | url: https://github.com/uvarov-frontend/vanilla-calendar */
 .vanilla-calendar {
-    margin-top: -14px;
-    margin-left: -16px;
     width: 310px;
     position: relative;
     min-width: -webkit-min-content;
@@ -507,7 +504,8 @@
 
 .past_timeline{
     background-color: #f1f4f7!important;
-    color:#fff;
+    color:#d1d5db!important;
+    text-decoration: line-through;
 }
 
 

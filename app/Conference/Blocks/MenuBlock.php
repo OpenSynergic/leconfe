@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Website\Blocks;
+namespace App\Conference\Blocks;
 
 use App\Livewire\Block;
 use App\Models\UserContent;
 
 class MenuBlock extends Block
 {
-    protected ?string $view = 'website.blocks.menu-block';
+    protected ?string $view = 'conference.blocks.menu-block';
 
     protected ?int $sort = 2;
 

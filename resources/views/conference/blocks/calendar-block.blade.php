@@ -1,12 +1,6 @@
-<div class="card card-compact">
-   <div class="card-body w-full">
-    <div x-data="calendar" x-init="init" class="mx-auto">
-        <div id="calendar"></div>
+<div class="w-full">
+    <div x-calendar="{{ json_encode($timelines) }}" class="mx-auto">
     </div>
-   </div>
-  @once
-    <script>
-        let timelinesData = {{ Js::from($timelines) }}
-    </script>
- @endonce
 </div>
+
+
