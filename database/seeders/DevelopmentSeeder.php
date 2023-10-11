@@ -8,6 +8,7 @@ use Database\Seeders\Developments\ConferenceSeeder;
 use Database\Seeders\Developments\ParticipantSeeder;
 use Database\Seeders\Developments\SubmissionSeeder;
 use Database\Seeders\Developments\UserSeeder;
+use Database\Seeders\Productions\SubmissionFileTypeSeeder;
 use Illuminate\Database\Seeder;
 
 class DevelopmentSeeder extends Seeder
@@ -22,5 +23,6 @@ class DevelopmentSeeder extends Seeder
         $this->call(ConferenceSeeder::class);
         $this->call(SubmissionSeeder::class);
         $this->call(ParticipantSeeder::class);
+        $this->call(SubmissionFileTypeSeeder::class);
     }
 }
