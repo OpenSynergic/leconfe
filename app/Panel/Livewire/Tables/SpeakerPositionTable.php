@@ -2,7 +2,6 @@
 
 namespace App\Panel\Livewire\Tables;
 
-use App\Panel\Livewire\Traits\PlaceholderTrait;
 use App\Panel\Resources\Conferences\SpeakerPositionResource;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -19,7 +18,7 @@ use Livewire\Component;
 
 class SpeakerPositionTable extends Component implements HasForms, HasTable
 {
-    use InteractsWithForms, InteractsWithTable, PlaceholderTrait;
+    use InteractsWithForms, InteractsWithTable;
 
     protected static string $resource = SpeakerPositionResource::class;
 

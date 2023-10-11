@@ -16,6 +16,10 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
     public function register()
     {
         parent::register();
+        Block::registerBlocks([
+            ExampleBlock::class,
+            LeftBlock::class,
+        ]);
     }
 
     public function pageGroup(PageGroup $pageGroup): PageGroup
