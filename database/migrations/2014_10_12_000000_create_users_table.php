@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('family_name')->nullable();
             $table->string('public_name')->nullable();
             $table->string('email')->unique();
-            $table->string('country')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

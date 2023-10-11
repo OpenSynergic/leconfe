@@ -1,0 +1,3 @@
+<form>
+    {{ $this->form }}
+</form>

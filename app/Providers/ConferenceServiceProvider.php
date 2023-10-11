@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Facades\Block;
+use Livewire\Livewire;
 use App\Conference\Pages\Home;
 use App\Conference\Blocks\MenuBlock;
 use App\Conference\Blocks\TopicBlock;
@@ -10,9 +11,9 @@ use Illuminate\Support\Facades\Blade;
 use App\Conference\Blocks\SubmitBlock;
 use Illuminate\Support\ServiceProvider;
 use App\Conference\Blocks\CalendarBlock;
-use App\Conference\Blocks\CommitteeBlock;
 use App\Conference\Blocks\PreviousBlock;
 use App\Conference\Blocks\TimelineBlock;
+use App\Conference\Blocks\CommitteeBlock;
 use App\Http\Middleware\SetupDefaultData;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use App\Http\Middleware\IdentifyArchiveConference;
@@ -41,6 +42,11 @@ class ConferenceServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Blade::anonymousComponentPath(resource_path('views/conference/components'), 'conference');
+
+        Livewire::addPersistentMiddleware([
+            IdentifyCurrentConference::class,
+            SetupDefaultData::class,
+        ]);
     }
 
     protected function currentConference(PageGroup $pageGroup): PageGroup
