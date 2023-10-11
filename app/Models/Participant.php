@@ -6,6 +6,7 @@ use App\Actions\User\UserCreateAction;
 use App\Models\Enums\UserRole;
 use App\Models\Meta\ParticipantMeta;
 use Database\Factories\ParticipantFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -34,7 +35,7 @@ class Participant extends Model implements HasMedia, Sortable
     public $table = 'participants';
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that a mass assignable.
      *
      * @var array<int, string>
      */
@@ -86,9 +87,9 @@ class Participant extends Model implements HasMedia, Sortable
             ->morphedByMany(ParticipantPosition::class, 'model', 'model_has_participants', 'participant_id', 'model_id');
     }
 
-    public static function byEmail(string $email)
+    public function scopeEmail(Builder $query, string $email)
     {
-        return static::whereEmail($email)->first();
+        return $query->where('email', $email);
     }
 
     public function getProfilePicture()
@@ -116,5 +117,10 @@ class Participant extends Model implements HasMedia, Sortable
             }
         }
         $user->assignRole($role->value);
+    }
+
+    public function reviewAssignments()
+    {
+        return $this->hasMany(ReviewAssignment::class);
     }
 }

@@ -5,9 +5,12 @@ namespace App\Models;
 use App\Actions\Participants\ParticipantCreateAction;
 use App\Actions\Submissions\SubmissionAssignParticipantAction;
 use App\Models\Concerns\HasTopics;
+use App\Models\Enums\SubmissionFileCategory;
+use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Meta\SubmissionMeta;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -27,6 +30,8 @@ class Submission extends Model implements HasMedia
      * @var array<int, string>
      */
     protected $fillable = [
+        'skipped_review',
+        'stage',
         'status',
     ];
 
@@ -36,7 +41,9 @@ class Submission extends Model implements HasMedia
      * @var array
      */
     protected $casts = [
+        'stage' => SubmissionStage::class,
         'status' => SubmissionStatus::class,
+        'skipped_review' => 'boolean'
     ];
 
     protected function getMetaClassName(): string
@@ -56,7 +63,7 @@ class Submission extends Model implements HasMedia
 
         static::created(function (Submission $submission) {
             if ($user = Auth::user()) {
-                $participant = Participant::byEmail($user->email);
+                $participant = Participant::email($user->email)->first();
                 $participant = $participant ?: ParticipantCreateAction::run(
                     $user->only('email', 'given_name', 'family_name', 'public_name', 'country'),
                 );
@@ -85,12 +92,12 @@ class Submission extends Model implements HasMedia
 
     public function files()
     {
-        return $this->media()->where('collection_name', 'submission-files');
+        return $this->media()->where('collection_name', SubmissionFileCategory::Files->value);
     }
 
     public function papers()
     {
-        return $this->media()->where('collection_name', 'submission-papers');
+        return $this->media()->where('collection_name', SubmissionFileCategory::Papers->value);
     }
 
     public function participants()
@@ -98,8 +105,13 @@ class Submission extends Model implements HasMedia
         return $this->hasMany(SubmissionParticipant::class);
     }
 
-    public function accepted(): bool
+    public function scopeStage(Builder $query, SubmissionStage $stage)
     {
-        return $this->status == SubmissionStatus::Accepted;
+        return $query->where('stage', $stage);
+    }
+
+    public function scopeStatus(Builder $query, SubmissionStatus $status)
+    {
+        return $query->where('status', $status);
     }
 }
