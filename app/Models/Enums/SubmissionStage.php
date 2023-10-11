@@ -5,17 +5,15 @@ namespace App\Models\Enums;
 use App\Models\Enums\Concern\UsefulEnums;
 use Filament\Support\Contracts\HasLabel;
 
-enum SubmissionStatus: string implements HasLabel
+enum SubmissionStage: string implements HasLabel
 {
     use UsefulEnums;
 
-    case Incomplete = 'Incomplete';
-    case Queued = 'Queued';
-    case OnReview = "On Review";
+    case Wizard = 'Wizard';
+    case CallforAbstract = 'Call for Abstract';
+    case PeerReview = "Peer Review";
     case Editing = "Editing";
-    case Published = 'Published';
-    case Declined = 'Declined';
-    case Scheduled = 'Scheduled';
+    case Production = "Production";
 
     public function getLabel(): ?string
     {
