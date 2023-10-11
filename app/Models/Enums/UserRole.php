@@ -11,7 +11,6 @@ enum UserRole: string implements HasLabel
 
     case Admin = 'Admin';
     case ConferenceManager = 'Conference Manager';
-    case EditorManager = 'Editor Manager';
     case Editor = 'Editor';
     case Reviewer = 'Reviewer';
     case Author = 'Author';
