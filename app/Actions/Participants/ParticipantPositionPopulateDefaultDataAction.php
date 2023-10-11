@@ -25,7 +25,6 @@ class ParticipantPositionPopulateDefaultDataAction
 
             foreach ([
                 UserRole::Editor->value,
-                UserRole::EditorManager->value,
             ] as $authorPosition) {
                 ParticipantPosition::firstOrCreate([
                     'name' => $authorPosition,
