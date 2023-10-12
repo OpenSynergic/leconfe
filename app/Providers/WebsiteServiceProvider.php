@@ -4,11 +4,14 @@ namespace App\Providers;
 
 use App\Facades\Block;
 use App\Conference\Pages\Home;
-use App\Http\Middleware\SetupDefaultData;
 use App\Website\Blocks\LoginBlock;
+use App\Website\Blocks\TopicBlock;
 
 use App\Website\Blocks\SearchBlock;
+use App\Website\Blocks\CalendarBlock;
+use App\Website\Blocks\ScheduleBlock;
 use Illuminate\Support\Facades\Blade;
+use App\Http\Middleware\SetupDefaultData;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\PageGroupServiceProvider;
 
@@ -33,6 +36,7 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
                 Block::registerBlocks([
                     SearchBlock::class,
                     LoginBlock::class,
+                    CalendarBlock::class,
                 ]);
                 Block::boot();
             })
