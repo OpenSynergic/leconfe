@@ -77,15 +77,15 @@
     @apply badge badge-outline text-mini badge-xs  h-5 text-primary;
 }
 
-.past-timeline-marker {
+.past-marker {
     @apply w-2 h-2 rounded-full bg-gray-300;
 }
 
-.current-timeline-marker {
+.current-marker {
     @apply w-2 h-2 rounded-full bg-green-600;
 }
 
-.upcoming-timeline-marker{
+.upcoming-marker{
     @apply w-2 h-2 rounded-full bg-yellow-400;
 }
 
