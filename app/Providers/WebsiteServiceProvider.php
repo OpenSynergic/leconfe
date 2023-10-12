@@ -37,6 +37,8 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
                     SearchBlock::class,
                     LoginBlock::class,
                     CalendarBlock::class,
+                    ScheduleBlock::class,
+                    TopicBlock::class
                 ]);
                 Block::boot();
             })

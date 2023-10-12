@@ -5,7 +5,7 @@
             <div class="relative flex w-full flex-wrap items-stretch">
                 <input type="search"
                     class="relative m-0 -mr-0.5 block w-[1px] min-w-0 flex-auto bg-white input h-9 rounded input-bordered"
-                    placeholder="Topic" />
+                    placeholder="Topic" readonly />
                 <button
                     class="btn btn-xs btn-primary relative z-[2] flex items-center bg-primary text-xs font-medium uppercase leading-tight text-white h-9 rounded-none"
                     type="submit">
