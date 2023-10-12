@@ -19,7 +19,10 @@ class TopicBlock extends Block
     public function getViewData(): array
     {
         return [
-            'topics' => Topic::withoutGlobalScope(ConferenceScope::class)->get()
+            'topics' => Topic::withoutGlobalScope(ConferenceScope::class)
+                ->latest('created_at')
+                ->limit(10)
+                ->get()
         ];
     }
 }
