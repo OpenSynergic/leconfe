@@ -77,6 +77,10 @@
     @apply badge badge-outline text-mini badge-xs  h-5 text-primary;
 }
 
+.offline-badge{
+    @apply badge badge-outline text-mini badge-xs  h-5 text-gray-400;
+}
+
 .past-marker {
     @apply w-2 h-2 rounded-full bg-gray-300;
 }
