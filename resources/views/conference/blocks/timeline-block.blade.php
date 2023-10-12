@@ -52,7 +52,7 @@
                                         {{ $role }}
                                     </span>
                                     @if (count($timeline->roles) > 1)
-                                        <span class="badge badge-outline text-mini badge-xs w-16 h-5 text-gray-400">+{{ $countRole - 1 }} more...</span>
+                                        <span class="badge badge-outline text-mini badge-xs w-16 h-5 text-gray-400">+{{ $countRole - 1 }} more</span>
                                     @endif
                                 </div>
                             @endif
