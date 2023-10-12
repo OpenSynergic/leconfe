@@ -2,10 +2,8 @@
 
 namespace App\Panel\Resources;
 
-use App\Models\Participant;
 use App\Models\Submission;
 use App\Panel\Resources\SubmissionResource\Pages;
-use App\Schemas\SubmissionSchema;
 use Filament\GlobalSearch\GlobalSearchResult;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -104,16 +102,19 @@ class SubmissionResource extends Resource
                     ]);
                 }
                 $participantReviewer = $record->reviewAssignments()->where('participant_id', $userAsParticipant->getKey())->first();
-                if (!$participantReviewer) {
-                    return static::getUrl('view', [
+
+                if ($participantReviewer) {
+                    return static::getUrl('review', [
                         'record' => $record->id,
                     ]);
                 }
+
                 if ($participantReviewer->needConfirmation()) {
                     return static::getUrl('reviewer-request', [
                         'record' => $record->id,
                     ]);
                 }
+
                 return static::getUrl('view', [
                     'record' => $record->id,
                 ]);
@@ -155,6 +156,7 @@ class SubmissionResource extends Resource
             'create' => Pages\CreateSubmission::route('/create'),
             'complete' => Pages\CompleteSubmission::route('/complete/{record}'),
             'view' => Pages\ViewSubmission::route('/{record}'),
+            'review' => Pages\ReviewSubmissionPage::route('/{record}/review'),
             'reviewer-request' => Pages\ReviewerRequestPage::route('/{record}/reviewer-request'),
         ];
     }

@@ -53,6 +53,6 @@ class ReviewAssignment extends Model implements HasMedia
 
     public function needConfirmation(): bool
     {
-        return $this->date_confirmed->format('Y') == '-0001';
+        return is_null($this->date_confirmed);
     }
 }

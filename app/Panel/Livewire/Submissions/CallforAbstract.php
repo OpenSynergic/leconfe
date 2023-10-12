@@ -8,6 +8,7 @@ use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Submission;
 use App\Panel\Livewire\Submissions\SubmissionDetail\Discussions;
+use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -26,8 +27,7 @@ use Livewire\Component;
 
 class CallforAbstract extends Component implements HasForms, HasActions
 {
-    use InteractsWithForms;
-    use InteractsWithActions;
+    use InteractsWithForms, InteractsWithActions, InteractWithTenant;
 
     public Submission $submission;
 
@@ -118,7 +118,7 @@ class CallforAbstract extends Component implements HasForms, HasActions
     public function render()
     {
         return view('panel.livewire.submissions.call-for-abstract', [
-            'reviewStageOpen' => app()->getCurrentConference()->getMeta("workflow.peer-review.open", false),
+            'reviewStageOpen' => $this->conference->getMeta("workflow.peer-review.open", false),
         ]);
     }
 }
