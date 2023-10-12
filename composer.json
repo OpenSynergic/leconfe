@@ -10,7 +10,6 @@
     "require": {
         "php": "^8.1",
         "akaunting/laravel-setting": "^1.2",
-        "awcodes/filament-tiptap-editor": "^3.0@beta",
         "binarytorch/larecipe": "^2.6",
         "codeat3/blade-academicons": "^1.6",
         "codeat3/blade-forkawesome": "^1.9",
