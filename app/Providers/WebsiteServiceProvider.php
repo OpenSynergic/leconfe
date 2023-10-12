@@ -3,11 +3,15 @@
 namespace App\Providers;
 
 use App\Facades\Block;
-use App\Http\Middleware\SetupDefaultData;
-use App\Website\Blocks\ExampleBlock;
-use App\Website\Blocks\LeftBlock;
-use App\Website\Pages\Home;
+use App\Conference\Pages\Home;
+use App\Website\Blocks\LoginBlock;
+use App\Website\Blocks\TopicBlock;
+
+use App\Website\Blocks\SearchBlock;
+use App\Website\Blocks\CalendarBlock;
+use App\Website\Blocks\ScheduleBlock;
 use Illuminate\Support\Facades\Blade;
+use App\Http\Middleware\SetupDefaultData;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\PageGroupServiceProvider;
 
@@ -16,10 +20,6 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
     public function register()
     {
         parent::register();
-        Block::registerBlocks([
-            ExampleBlock::class,
-            LeftBlock::class,
-        ]);
     }
 
     public function pageGroup(PageGroup $pageGroup): PageGroup
@@ -34,8 +34,11 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
 
                 // Register blocks
                 Block::registerBlocks([
-                    ExampleBlock::class,
-                    LeftBlock::class,
+                    SearchBlock::class,
+                    LoginBlock::class,
+                    CalendarBlock::class,
+                    ScheduleBlock::class,
+                    TopicBlock::class
                 ]);
                 Block::boot();
             })
