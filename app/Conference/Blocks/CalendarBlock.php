@@ -23,22 +23,17 @@ class CalendarBlock extends Block
         $formattedTimelines = [];
 
         foreach ($timelines as $timeline) {
-            // Determine the modifier based on the event's date
             $timelineDate = $timeline->date->format('Y-m-d');
 
-            // past timeline as default value
-            $modifier = 'past_timeline';
-
-            // define each date for validaton
             $today = now()->format('Y-m-d');
             $tommorow = now()->addDay()->format('Y-m-d');
 
-            if ($timelineDate === $today) {
-                $modifier = 'current_timeline';
-            } elseif ($timelineDate >= $tommorow) {
-                $modifier = 'upcoming_timeline';
-            }
-            // Store the formatted timeline data
+            $modifier = match (true) {
+                $timelineDate === $today => 'current_timeline',
+                $timelineDate >= $tommorow => 'upcoming_timeline',
+                default => 'past_timeline'
+            };
+
             $formattedTimelines[$timeline->date->format('Y-m-d')] = [
                 'modifier' => $modifier,
                 'html' => $timeline->title
