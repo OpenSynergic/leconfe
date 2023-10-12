@@ -34,11 +34,6 @@ class Discussions extends Component implements HasForms, HasActions, HasTable
 
     public array $chat = [];
 
-    public function mount(Submission $record)
-    {
-        $this->record = $record;
-    }
-
     protected function paginateTableQuery(Builder $query)
     {
         return $query->simplePaginate($this->getTableRecordsPerPage() == 'all' ? $query->count() : $this->getTableRecordsPerPage());

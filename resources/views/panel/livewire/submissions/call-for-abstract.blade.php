@@ -10,13 +10,15 @@
                     Your submission has been accepted. Now, we are waiting to next stage is open.
                 </div>
             @endif
-            @if($submission->stage == App\Models\Enums\SubmissionStage::CallforAbstract)
-                <div class="space-y-4">
-                    {{ $this->acceptAction() }}
-                    {{ $this->declineAction() }}
-                </div>
-            @endif
-            @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\AssignParticipants::class, ['submission' => $submission])
+            @hasanyrole([\App\Models\Enums\UserRole::ConferenceManager->value, \App\Models\Enums\UserRole::Admin->value])
+                @if($submission->stage == App\Models\Enums\SubmissionStage::CallforAbstract)
+                    <div class="space-y-4">
+                        {{ $this->acceptAction() }}
+                        {{ $this->declineAction() }}
+                    </div>
+                @endif
+                @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\AssignParticipants::class, ['submission' => $submission])
+            @endhasanyrole
         </div>
     </div>
     <x-filament-actions::modals />

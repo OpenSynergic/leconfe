@@ -8,7 +8,7 @@ use App\Actions\Submissions\SubmissionAssignParticipantAction;
 use App\Models\Participant;
 use App\Models\ParticipantPosition;
 use App\Models\Submission;
-use App\Panel\Resources\AuthorPositionResource;
+use App\Panel\Resources\Conferences\AuthorPositionResource;
 use App\Panel\Resources\Conferences\ParticipantResource;
 use App\Panel\Resources\Conferences\SpeakerPositionResource;
 use Filament\Forms\Components\Grid as FormGrid;

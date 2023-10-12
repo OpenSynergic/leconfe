@@ -24,9 +24,9 @@ return new class extends Migration
             $table->enum('confirmation_status', ReviewerConfirmationStatus::array())->default(ReviewerConfirmationStatus::Waiting);
             $table->boolean('canceled')->default(false);
             $table->timestamp('date_assigned')->useCurrent();
-            $table->timestamp('date_confirmed');
-            $table->timestamp('date_completed');
-            $table->integer('quality');
+            $table->timestamp('date_confirmed')->nullable();
+            $table->timestamp('date_completed')->nullable();
+            $table->integer('quality')->nullable();
             $table->timestamps();
         });
     }
