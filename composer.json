@@ -46,7 +46,8 @@
         "spatie/laravel-tags": "^4.3",
         "squirephp/countries-en": "^3.4",
         "staudenmeir/laravel-adjacency-list": "^1.0",
-        "stechstudio/filament-impersonate": "^3.5"
+        "stechstudio/filament-impersonate": "^3.5",
+        "stevebauman/purify": "^6.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.8",

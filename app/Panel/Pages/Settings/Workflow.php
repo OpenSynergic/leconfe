@@ -7,6 +7,7 @@ use App\Infolists\Components\VerticalTabs\Tab;
 use App\Infolists\Components\VerticalTabs\Tabs;
 use App\Panel\Livewire\Workflows\AbstractList;
 use App\Panel\Livewire\Workflows\AbstractSetting;
+use App\Panel\Livewire\Workflows\PeerReview\Forms\Guidelines;
 use App\Panel\Livewire\Workflows\PeerReviewSetting;
 use App\Panel\Resources\SubmissionResource;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -31,7 +32,6 @@ class Workflow extends Page implements HasInfolists, HasForms
     protected static ?string $navigationIcon = 'heroicon-o-window';
 
     protected static ?string $navigationGroup = 'Settings';
-
 
     public function infolist(Infolist $infolist): Infolist
     {
@@ -67,9 +67,23 @@ class Workflow extends Page implements HasInfolists, HasForms
                                         ->schema([
                                             LivewireEntry::make("peer-review-setting")
                                                 ->livewire(PeerReviewSetting::class)
+                                                ->lazy()
                                         ]),
                                     HorizontalTab::make("E-Mail Templates")
                                         ->icon("iconpark-mail-o")
+                                        ->schema([
+                                            // LivewireEntry::make("peer-review-setting")
+                                            //     ->livewire(PeerReviewSetting::class)
+                                        ]),
+                                    HorizontalTab::make("Reviewer Guidelines")
+                                        ->icon("iconpark-docsuccess-o")
+                                        ->schema([
+                                            LivewireEntry::make("peer-review-setting")
+                                                ->livewire(Guidelines::class)
+                                                ->lazy()
+                                        ]),
+                                    HorizontalTab::make("Review Forms")
+                                        ->icon("iconpark-formone-o")
                                         ->schema([
                                             LivewireEntry::make("peer-review-setting")
                                                 ->livewire(PeerReviewSetting::class)
