@@ -3,20 +3,19 @@
 namespace App\Panel\Resources\SubmissionResource\Pages;
 
 use App\Infolists\Components\LivewireEntry;
-use App\Models\Enums\SubmissionStatus;
-use App\Panel\Resources\SubmissionResource;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use App\Infolists\Components\VerticalTabs\Tabs as Tabs;
 use App\Infolists\Components\VerticalTabs\Tab as Tab;
+use App\Infolists\Components\VerticalTabs\Tabs as Tabs;
 use App\Livewire\Submissions\Components\ReviewerForm;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\UserRole;
-use App\Models\Participant;
 use App\Panel\Livewire\Submissions\CallforAbstract;
 use App\Panel\Livewire\Submissions\PeerReview;
-use App\Panel\Livewire\Submissions\SubmissionDetail;
-use Filament\Infolists\Components\Section;
+use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
+use App\Panel\Resources\SubmissionResource;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Infolists\Components\Tabs as HorizontalTabs;
+use Filament\Infolists\Components\Tabs\Tab as HorizontalTab;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
@@ -25,9 +24,7 @@ use Filament\Resources\Pages\Page;
 
 class ViewSubmission extends Page implements HasInfolists, HasForms
 {
-    use InteractsWithInfolists;
-    use InteractsWithForms;
-    use InteractsWithRecord;
+    use InteractsWithInfolists, InteractsWithForms, InteractsWithRecord, InteractWithTenant;
 
     protected static string $resource = SubmissionResource::class;
 
@@ -52,41 +49,66 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
         $currentUserIsReviewer = auth()->user()->hasRole(UserRole::Reviewer->value);
         return $infolist
             ->schema([
-                Tabs::make()
-                    ->sticky()
+                HorizontalTabs::make()
+                    ->contained(false)
                     ->tabs([
-                        Tab::make("Call for Abstract")
-                            ->hidden($currentUserIsReviewer)
-                            ->icon("heroicon-o-information-circle")
+                        HorizontalTab::make('Workflow')
                             ->schema([
-                                LivewireEntry::make('call-for-abstract')
-                                    ->livewire(CallforAbstract::class, [
-                                        'submission' => $this->record
+                                Tabs::make()
+                                    ->sticky()
+                                    ->tabs([
+                                        Tab::make("Call for Abstract")
+                                            ->hidden($currentUserIsReviewer)
+                                            ->icon("heroicon-o-information-circle")
+                                            ->schema([
+                                                LivewireEntry::make('call-for-abstract')
+                                                    ->livewire(CallforAbstract::class, [
+                                                        'submission' => $this->record
+                                                    ])
+                                            ]),
+                                        Tab::make("Peer Review")
+                                            ->visible(
+                                                fn (): bool => $this->conference->getMeta('workflow.peer-review.open', false)
+                                            )
+                                            ->icon("iconpark-checklist-o")
+                                            ->schema(function () use ($currentUserIsReviewer): array {
+                                                if ($currentUserIsReviewer) {
+                                                    return [
+                                                        LivewireEntry::make('reviewer-form')
+                                                            ->livewire(ReviewerForm::class, [
+                                                                'submission' => $this->record
+                                                            ])
+                                                    ];
+                                                }
+                                                return [
+                                                    LivewireEntry::make('peer-review')
+                                                        ->livewire(PeerReview::class, [
+                                                            'submission' => $this->record
+                                                        ])
+                                                ];
+                                            }),
+                                        Tab::make("Editing")
+                                            ->visible(fn (): bool => $this->conference->getMeta('workflow.editing.open', false))
+                                            ->icon("heroicon-o-pencil")
                                     ])
+                                    ->maxWidth('full')
                             ]),
-                        Tab::make("Peer Review")
-                            ->icon("iconpark-checklist-o")
-                            ->schema(function () use ($currentUserIsReviewer): array {
-                                if ($currentUserIsReviewer) {
-                                    return [
-                                        LivewireEntry::make('reviewer-form')
-                                            ->livewire(ReviewerForm::class, [
-                                                'submission' => $this->record
-                                            ])
-                                    ];
-                                }
-                                return [
-                                    LivewireEntry::make('peer-review')
-                                        ->livewire(PeerReview::class, [
-                                            'submission' => $this->record
-                                        ])
-                                ];
-                            }),
-                        Tab::make("Editing")
-                            ->hidden($currentUserIsReviewer)
-                            ->icon("heroicon-o-pencil")
+                        HorizontalTab::make('Publication')
+                            ->schema([
+                                Tabs::make()
+                                    ->tabs([
+                                        Tab::make('Detail')
+                                            ->icon("heroicon-o-information-circle")
+                                            ->schema([]),
+                                        Tab::make('Authors')
+                                            ->icon("heroicon-o-user-group")
+                                            ->schema([]),
+                                        Tab::make('References')
+                                            ->icon("iconpark-list")
+                                            ->schema([]),
+                                    ])
+                            ])
                     ])
-                    ->maxWidth('full')
             ]);
     }
 
