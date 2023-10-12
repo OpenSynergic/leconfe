@@ -11,19 +11,19 @@
             if ($timeline->date <= now()->subDay()) {
                 // Set background and marker for past timeline
                 $timelineBackground = 'past-timeline';
-                $timelineMarker = 'past-timeline-marker';
+                $timelineMarker = 'past-marker';
             }
             // Check if it's today
                 elseif ($timeline->date->isToday()) {
                     // Set background and marker for current timeline
                     $timelineBackground = 'current-timeline';
-                    $timelineMarker = 'current-timeline-marker';
+                    $timelineMarker = 'current-marker';
                 }
                 // It's not yesterday or today, so it's upcoming
                 else {
                     // Set background and marker for upcoming timeline
                     $timelineBackground = 'upcoming-timeline';
-                    $timelineMarker = 'upcoming-timeline-marker';
+                    $timelineMarker = 'upcoming-marker';
                 }
             @endphp
             <div class="{{ $timelineBackground }}">
