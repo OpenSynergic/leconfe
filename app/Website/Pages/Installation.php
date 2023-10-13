@@ -4,6 +4,7 @@ namespace App\Website\Pages;
 
 use App\Events\AppInstalled;
 use App\Http\Middleware\IdentifyCurrentConference;
+use App\Http\Middleware\SetupDefaultData;
 use App\Livewire\Forms\InstallationForm;
 use App\Utils\EnvironmentManager;
 use App\Utils\PermissionChecker;
@@ -15,6 +16,8 @@ class Installation extends Page
     protected static string $view = 'website.pages.installation';
 
     protected static string|array $withoutRouteMiddleware = [
+
+        SetupDefaultData::class,
         IdentifyCurrentConference::class,
     ];
 
@@ -47,7 +50,7 @@ class Installation extends Page
 
     public static function getLayout(): string
     {
-        return 'conference.components.layouts.base';
+        return 'website.components.layouts.base';
     }
 
     public function checkPermission()
