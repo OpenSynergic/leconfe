@@ -26,11 +26,9 @@ class CommitteeBlock extends Block
             ->take(3) // Limit the query to retrieve only 3 participants.
             ->get();
 
-
-
         return [
             // Return the organized data with committee positions as keys and arrays of participants as values.
-            'participants' => $participants
+            'participants' => $participants,
         ];
     }
 }

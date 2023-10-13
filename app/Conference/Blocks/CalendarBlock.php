@@ -36,11 +36,12 @@ class CalendarBlock extends Block
 
             $formattedTimelines[$timeline->date->format('Y-m-d')] = [
                 'modifier' => $modifier,
-                'html' => $timeline->title
+                'html' => $timeline->title,
             ];
         }
+
         return [
-            'timelines' => $formattedTimelines
+            'timelines' => $formattedTimelines,
         ];
     }
 }

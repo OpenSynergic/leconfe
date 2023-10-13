@@ -2,27 +2,26 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
-use App\Models\Scopes\ConferenceScope;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\Concerns\BelongsToConference;
+use App\Models\Scopes\ConferenceScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Timeline extends Model
 {
-    use HasFactory, BelongsToConference;
+    use BelongsToConference, HasFactory;
 
     protected $fillable = [
         'title',
         'subtitle',
         'date',
         'roles',
-        'conference_id'
+        'conference_id',
     ];
 
     protected $casts = [
         'roles' => 'array',
-        'date' => 'datetime'
+        'date' => 'datetime',
     ];
 
     public static function getTimelinesInRange()

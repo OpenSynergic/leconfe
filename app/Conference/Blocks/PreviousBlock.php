@@ -19,7 +19,7 @@ class PreviousBlock extends Block
     public function getViewData(): array
     {
         return [
-            'archives' => Conference::where('status', ConferenceStatus::Archived)->get()
+            'archives' => Conference::where('status', ConferenceStatus::Archived)->get(),
         ];
     }
 }

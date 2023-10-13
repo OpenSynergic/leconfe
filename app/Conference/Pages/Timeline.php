@@ -23,7 +23,7 @@ class Timeline extends Page
     {
         return [
             'events' => ConferenceTimeline::with('conference')
-                ->where('conference_id', app()->getCurrentConference()?->getKey())->get()
+                ->where('conference_id', app()->getCurrentConference()?->getKey())->get(),
         ];
     }
 }

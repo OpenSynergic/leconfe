@@ -2,23 +2,23 @@
 
 namespace App\Providers;
 
-use App\Facades\Block;
-use Livewire\Livewire;
-use App\Conference\Pages\Home;
-use App\Conference\Blocks\MenuBlock;
-use App\Conference\Blocks\TopicBlock;
-use Illuminate\Support\Facades\Blade;
-use App\Conference\Blocks\SubmitBlock;
-use Illuminate\Support\ServiceProvider;
 use App\Conference\Blocks\CalendarBlock;
-use App\Conference\Blocks\PreviousBlock;
-use App\Conference\Blocks\TimelineBlock;
 use App\Conference\Blocks\CommitteeBlock;
-use App\Http\Middleware\SetupDefaultData;
-use Rahmanramsi\LivewirePageGroup\PageGroup;
+use App\Conference\Blocks\MenuBlock;
+use App\Conference\Blocks\PreviousBlock;
+use App\Conference\Blocks\SubmitBlock;
+use App\Conference\Blocks\TimelineBlock;
+use App\Conference\Blocks\TopicBlock;
+use App\Conference\Pages\Home;
+use App\Facades\Block;
 use App\Http\Middleware\IdentifyArchiveConference;
 use App\Http\Middleware\IdentifyCurrentConference;
+use App\Http\Middleware\SetupDefaultData;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 use Rahmanramsi\LivewirePageGroup\Facades\LivewirePageGroup;
+use Rahmanramsi\LivewirePageGroup\PageGroup;
 
 class ConferenceServiceProvider extends ServiceProvider
 {
@@ -64,7 +64,7 @@ class ConferenceServiceProvider extends ServiceProvider
                     SubmitBlock::class,
                     TopicBlock::class,
                     MenuBlock::class,
-                    CommitteeBlock::class
+                    CommitteeBlock::class,
                 ]);
                 Block::boot();
             })

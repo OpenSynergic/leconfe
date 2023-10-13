@@ -2,16 +2,9 @@
 
 namespace App\Panel\Resources\Conferences\TimelineResource\Pages;
 
-use App\Models\Role;
-use Filament\Actions;
-use App\Models\Timeline;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Resources\Pages\ManageRecords;
 use App\Panel\Resources\Conferences\TimelineResource;
-use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
+use Filament\Actions;
+use Filament\Resources\Pages\ManageRecords;
 
 class ManageTimeline extends ManageRecords
 {
@@ -26,8 +19,9 @@ class ManageTimeline extends ManageRecords
                 ->mutateFormDataUsing(function (array $data) {
                     $dateFormat = date('Y-m-d', strtotime($data['date']));
                     $data['date'] = $dateFormat;
+
                     return $data;
-                })
+                }),
         ];
     }
 }

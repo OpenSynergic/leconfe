@@ -3,7 +3,6 @@
 namespace App\Website\Blocks;
 
 use App\Livewire\Block;
-use App\Models\Conference;
 
 class SearchBlock extends Block
 {

@@ -27,11 +27,12 @@ class CalendarBlock extends Block
 
             $formattedUpcomings[$upcomingDate] = [
                 'modifier' => 'upcoming_timeline',
-                'html' => $upcoming->name
+                'html' => $upcoming->name,
             ];
         }
+
         return [
-            'upcomings' => $formattedUpcomings
+            'upcomings' => $formattedUpcomings,
         ];
     }
 }

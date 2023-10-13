@@ -3,7 +3,6 @@
 namespace App\Conference\Blocks;
 
 use App\Livewire\Block;
-use App\Models\Conference;
 
 class InformationBlock extends Block
 {

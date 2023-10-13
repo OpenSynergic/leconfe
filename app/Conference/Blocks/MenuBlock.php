@@ -18,7 +18,7 @@ class MenuBlock extends Block
     public function getViewData(): array
     {
         return [
-            'userContent' => UserContent::where('conference_id', app()->getCurrentConference()?->getKey())->get()
+            'userContent' => UserContent::where('conference_id', app()->getCurrentConference()?->getKey())->get(),
         ];
     }
 }

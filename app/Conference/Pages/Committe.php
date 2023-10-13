@@ -37,7 +37,7 @@ class Committe extends Page
         foreach ($participants as $participant) {
             foreach ($participant->positions as $position) {
                 $positionName = $position->name;
-                if (!isset($groupedData[$positionName])) {
+                if (! isset($groupedData[$positionName])) {
                     // Create an array for the committee position if it doesn't exist in $groupedData.
                     $groupedData[$positionName] = [];
                 }
@@ -48,7 +48,7 @@ class Committe extends Page
 
         return [
             // Return the organized data with committee positions as keys and arrays of participants as values.
-            'groupedCommittes' => $groupedData
+            'groupedCommittes' => $groupedData,
         ];
     }
 }

@@ -82,13 +82,13 @@ class UserContent extends Model implements HasMedia
     public function scopeOrWhereMeta(Builder $q, string $key, $operator, $value = null): void
     {
         // Shift arguments if no operator is present.
-        if (!isset($value)) {
+        if (! isset($value)) {
             $value = $operator;
             $operator = '=';
         }
 
         // Convert value to its serialized version for comparison.
-        if (!is_string($value)) {
+        if (! is_string($value)) {
             $value = $this->makeMeta($key, $value)->getRawValue();
         }
 

@@ -22,7 +22,7 @@ class TopicBlock extends Block
             'topics' => Topic::withoutGlobalScope(ConferenceScope::class)
                 ->latest('created_at')
                 ->limit(10)
-                ->get()
+                ->get(),
         ];
     }
 }

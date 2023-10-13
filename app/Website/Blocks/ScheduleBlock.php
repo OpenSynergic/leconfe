@@ -18,7 +18,7 @@ class ScheduleBlock extends Block
     public function getViewData(): array
     {
         return [
-            'upcomings' => Conference::upcoming()->get()
+            'upcomings' => Conference::upcoming()->get(),
         ];
     }
 }

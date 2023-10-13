@@ -2,28 +2,20 @@
 
 namespace App\Panel\Resources\Conferences;
 
-use Filament\Forms;
 use App\Models\Role;
-use Filament\Tables;
 use App\Models\Timeline;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use App\Schemas\TopicSchema;
-use App\Schemas\TimelineSchema;
-use Filament\Resources\Resource;
-use Filament\Forms\Components\Select;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\DeleteAction;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use App\Panel\Resources\Conferences\TimelineResource\Pages;
-use App\Panel\Resources\Conferences\TimelineResource\RelationManagers;
+use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 
 class TimelineResource extends Resource
 {
@@ -32,7 +24,6 @@ class TimelineResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-clock';
 
     protected static ?string $navigationGroup = 'Conferences';
-
 
     public static function form(Form $form): Form
     {
@@ -55,7 +46,7 @@ class TimelineResource extends Resource
                             CheckboxList::make('roles')
                                 ->options(Role::all()->pluck('name', 'name'))
                                 ->columns(2),
-                        ])
+                        ]),
                 ]),
 
         ];
@@ -63,7 +54,7 @@ class TimelineResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return  $table
+        return $table
             ->query(Timeline::query())
             ->columns([
                 TextColumn::make('title'),
@@ -78,7 +69,7 @@ class TimelineResource extends Resource
                         'Participant' => 'primary',
                         'Editor' => 'gray',
                         default => 'primary'
-                    })
+                    }),
             ])
             ->actions([
                 ActionGroup::make([
@@ -87,12 +78,14 @@ class TimelineResource extends Resource
                         ->mutateRecordDataUsing(function (array $data): array {
                             $dateFormat = date(setting('format.date'), strtotime($data['date']));
                             $data['date'] = $dateFormat;
+
                             return $data;
                         })
                         // costumize date format before saving to database
                         ->mutateFormDataUsing(function (array $data): array {
                             $dateFormat = date('Y-m-d', strtotime($data['date']));
                             $data['date'] = $dateFormat;
+
                             return $data;
                         }),
                     DeleteAction::make(),
@@ -100,7 +93,6 @@ class TimelineResource extends Resource
             ])
             ->filters([]);
     }
-
 
     public static function getRelations(): array
     {

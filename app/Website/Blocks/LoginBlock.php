@@ -3,15 +3,16 @@
 namespace App\Website\Blocks;
 
 use App\Livewire\Block;
-use Livewire\Attributes\Rule;
+use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
+use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Filament\Facades\Filament;
 use Illuminate\Validation\ValidationException;
-use DanHarrin\LivewireRateLimiting\WithRateLimiting;
-use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
+use Livewire\Attributes\Rule;
 
 class LoginBlock extends Block
 {
     use WithRateLimiting;
+
     protected ?string $view = 'website.blocks.login-block';
 
     protected ?int $sort = 2;
@@ -25,7 +26,6 @@ class LoginBlock extends Block
 
     #[Rule('required')]
     public ?string $password = null;
-
 
     public function login()
     {
@@ -41,7 +41,7 @@ class LoginBlock extends Block
         }
         $this->validate();
 
-        if (!Filament::auth()->attempt([
+        if (! Filament::auth()->attempt([
             'email' => $this->email,
             'password' => $this->password,
         ])) {
