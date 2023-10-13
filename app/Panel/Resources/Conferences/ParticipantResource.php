@@ -52,6 +52,11 @@ class ParticipantResource extends Resource
     public static function additionalFormField(): array
     {
         return [
+            Forms\Components\TagsInput::make('meta.expertise')
+                ->placeholder('')
+                ->columnSpan([
+                    'lg' => 2,
+                ]),
             Forms\Components\TextInput::make('meta.affiliation')
                 ->prefixIcon('heroicon-s-building-library')
                 ->placeholder('University of Jakarta')

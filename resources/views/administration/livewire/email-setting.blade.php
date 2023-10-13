@@ -1,3 +1,0 @@
-<div>
-   {{ $this->infolist }}
-</div>

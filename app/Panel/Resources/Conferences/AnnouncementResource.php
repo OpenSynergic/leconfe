@@ -54,7 +54,7 @@ class AnnouncementResource extends Resource
                                     ->required(),
                                 TinyEditor::make('meta.content')
                                     ->toolbarSticky(true)
-                                    ->label('Announcement content')
+                                    ->label('Announcement')
                                     ->minHeight(600)
                                     ->helperText('The complete announcement content.'),
                                 Checkbox::make('send_email')

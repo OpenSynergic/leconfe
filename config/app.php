@@ -193,6 +193,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
+        App\Providers\HorizonServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\Filament\AdministrationPanelProvider::class,
         App\Providers\Filament\PanelProvider::class,
@@ -215,6 +216,7 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
         'Setting' => Akaunting\Setting\Facade::class,
+        'MetaTag' => App\Facades\MetaTag::class,
     ])->toArray(),
 
     'filament' => [
