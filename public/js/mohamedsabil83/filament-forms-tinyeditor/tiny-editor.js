@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 50);
 
     const reinitializeEditors = debounce(() => {
+        window.tinySettingsCopy = window.tinySettingsCopy.filter(obj => document.getElementById(obj.id));
         window.tinySettingsCopy.forEach(settings => tinymce.init(settings))
     });
 
