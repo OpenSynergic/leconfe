@@ -2,7 +2,6 @@
 
 use App\Sitemap\CustomCrawlProfile;
 use GuzzleHttp\RequestOptions;
-use Spatie\Sitemap\Crawler\Profile;
 
 return [
 
