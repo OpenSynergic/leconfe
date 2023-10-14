@@ -6,6 +6,7 @@ use App\Models\StaticPage as StaticPageModel;
 use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
+use Webwizo\Shortcodes\Facades\Shortcode;
 
 class StaticPage extends Page
 {
@@ -15,6 +16,7 @@ class StaticPage extends Page
 
     public function mount()
     {
+        Shortcode::enable();
     }
 
     protected function getViewData(): array

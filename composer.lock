@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2b088b55efa008a661670a6375565ff8",
+    "content-hash": "39aaa500e65145994d59e12867a9c94d",
     "packages": [
         {
             "name": "akaunting/laravel-setting",
@@ -7005,84 +7005,6 @@
             "time": "2023-09-01T23:38:44+00:00"
         },
         {
-            "name": "scrivo/highlight.php",
-            "version": "v9.18.1.9",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/scrivo/highlight.php.git",
-                "reference": "d45585504777e6194a91dffc7270ca39833787f8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/scrivo/highlight.php/zipball/d45585504777e6194a91dffc7270ca39833787f8",
-                "reference": "d45585504777e6194a91dffc7270ca39833787f8",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "php": ">=5.4"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.8|^5.7",
-                "sabberworm/php-css-parser": "^8.3",
-                "symfony/finder": "^2.8|^3.4",
-                "symfony/var-dumper": "^2.8|^3.4"
-            },
-            "suggest": {
-                "ext-mbstring": "Allows highlighting code with unicode characters and supports language with unicode keywords"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "HighlightUtilities/functions.php"
-                ],
-                "psr-0": {
-                    "Highlight\\": "",
-                    "HighlightUtilities\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Geert Bergman",
-                    "homepage": "http://www.scrivo.org/",
-                    "role": "Project Author"
-                },
-                {
-                    "name": "Vladimir Jimenez",
-                    "homepage": "https://allejo.io",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "Martin Folkers",
-                    "homepage": "https://twobrain.io",
-                    "role": "Contributor"
-                }
-            ],
-            "description": "Server side syntax highlighter that supports 185 languages. It's a PHP port of highlight.js",
-            "keywords": [
-                "code",
-                "highlight",
-                "highlight.js",
-                "highlight.php",
-                "syntax"
-            ],
-            "support": {
-                "issues": "https://github.com/scrivo/highlight.php/issues",
-                "source": "https://github.com/scrivo/highlight.php"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/allejo",
-                    "type": "github"
-                }
-            ],
-            "time": "2021-12-03T06:45:28+00:00"
-        },
-        {
             "name": "spatie/browsershot",
             "version": "3.58.2",
             "source": {
@@ -8202,69 +8124,6 @@
                 }
             ],
             "time": "2022-05-18T15:14:21+00:00"
-        },
-        {
-            "name": "spatie/shiki-php",
-            "version": "1.3.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/spatie/shiki-php.git",
-                "reference": "34fe61405b405c735c82a9c56feffd3f7c5544ff"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/spatie/shiki-php/zipball/34fe61405b405c735c82a9c56feffd3f7c5544ff",
-                "reference": "34fe61405b405c735c82a9c56feffd3f7c5544ff",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.4|^8.0"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^v3.0",
-                "pestphp/pest": "^1.8",
-                "phpunit/phpunit": "^9.5",
-                "spatie/pest-plugin-snapshots": "^1.1",
-                "spatie/ray": "^1.10"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Spatie\\ShikiPhp\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Rias Van der Veken",
-                    "email": "rias@spatie.be",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Freek Van der Herten",
-                    "email": "freek@spatie.be",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Highlight code using Shiki in PHP",
-            "homepage": "https://github.com/spatie/shiki-php",
-            "keywords": [
-                "shiki",
-                "spatie"
-            ],
-            "support": {
-                "source": "https://github.com/spatie/shiki-php/tree/1.3.0"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/spatie",
-                    "type": "github"
-                }
-            ],
-            "time": "2022-06-01T11:28:41+00:00"
         },
         {
             "name": "spatie/temporary-directory",
@@ -11449,6 +11308,76 @@
                 "source": "https://github.com/webmozarts/assert/tree/1.11.0"
             },
             "time": "2022-06-03T18:03:27+00:00"
+        },
+        {
+            "name": "webwizo/laravel-shortcodes",
+            "version": "v1.0.24",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webwizo/laravel-shortcodes.git",
+                "reference": "7c12bdb6ab139a0aaa28daf177d504b15cf5a8aa"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webwizo/laravel-shortcodes/zipball/7c12bdb6ab139a0aaa28daf177d504b15cf5a8aa",
+                "reference": "7c12bdb6ab139a0aaa28daf177d504b15cf5a8aa",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "5.6.x|5.7.x|5.8.x|^6.0|^7.0|^8.0|^9.0|^10.0",
+                "illuminate/support": "5.6.x|5.7.x|5.8.x|^6.0|^7.0|^8.0|^9.0|^10.0",
+                "illuminate/view": "5.6.x|5.7.x|5.8.x|^6.0|^7.0|^8.0|^9.0|^10.0",
+                "php": "^7.2|^8.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "~3.9.0|^4.0|^5.0|^6.0|^7.0|^8.0",
+                "phpunit/phpunit": "^8.0|^9.0",
+                "scrutinizer/ocular": "^1.5",
+                "squizlabs/php_codesniffer": "~2.3|^3.7"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Webwizo\\Shortcodes\\ShortcodesServiceProvider"
+                    ],
+                    "aliases": {
+                        "Shortcode": "Webwizo\\Shortcodes\\Facades\\Shortcode"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Webwizo\\Shortcodes\\": "src"
+                },
+                "classmap": [
+                    "tests/TestCase.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Asif Iqbal",
+                    "email": "webwizo@gmail.com",
+                    "homepage": "http://www.webwizo.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Wordpress like shortcodes for Laravel 5, 6, 7, 8, and 9",
+            "homepage": "https://github.com/webwizo/laravel-shortcodes",
+            "keywords": [
+                "laravel",
+                "shortcodes",
+                "wordpress"
+            ],
+            "support": {
+                "issues": "https://github.com/webwizo/laravel-shortcodes/issues",
+                "source": "https://github.com/webwizo/laravel-shortcodes/tree/v1.0.24"
+            },
+            "time": "2023-02-17T16:53:53+00:00"
         }
     ],
     "packages-dev": [

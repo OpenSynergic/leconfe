@@ -7,6 +7,7 @@
     - [Mail Template](/{{route}}/{{version}}/application/mail-template)
     - [Meta Tag](/{{route}}/{{version}}/application/meta-tag)
     - [SEO (Search Engine Optimization)](/{{route}}/{{version}}/application/search-engine-optimization)
+    - [Shortcode](/{{route}}/{{version}}/application/shortcode)
 -   ## Filament Forms
     -   [Introduction](/{{route}}/{{version}}/forms/introduction)
     -   [Vertical Tabs](/{{route}}/{{version}}/forms/vertical-tabs)

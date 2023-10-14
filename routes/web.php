@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Spatie\Crawler\Crawler;
 use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\SitemapGenerator;
+use Webwizo\Shortcodes\Facades\Shortcode;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,11 @@ use Spatie\Sitemap\SitemapGenerator;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
+
+Route::get('/shortcode-test', function () {
+    Shortcode::enable();
+    return view('shortcode-test');
+});
 
 Route::get('/sitemap', function () {
     return Sitemap::create()
