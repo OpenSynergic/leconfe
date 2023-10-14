@@ -1,5 +1,6 @@
 <div class="flex flex-col space-y-1">
  @if (count($archives) > 0)
+ <h2 class="text-heading px-2">Previous Event</h2>
  @forelse ($archives as $archive)
     <div class="card card-compact bg-white w-full p-4 flex-col rounded">
         <div class="w-full flex justify-between text-primary">
