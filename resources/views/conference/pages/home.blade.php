@@ -59,7 +59,7 @@
                             <tr>
                                 <td>Date</td>
                                 <td>:</td>
-                                <td>{{ $currentConference->getMeta('date_held') }}</td>
+                                <td>{{ date(setting('format.date'), strtotime($currentConference->getMeta('date_held'))) }}</td>
                             </tr>
                         </table>
                     @else
