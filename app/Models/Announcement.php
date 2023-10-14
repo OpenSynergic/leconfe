@@ -5,9 +5,7 @@ namespace App\Models;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ContentType;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Carbon;
 use Spatie\Sitemap\Contracts\Sitemapable;
-use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
 
 class Announcement extends UserContent implements Sitemapable
