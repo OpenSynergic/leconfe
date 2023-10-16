@@ -56,6 +56,11 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
         return $this->hasMany(Submission::class);
     }
 
+    public function timelines(): HasMany
+    {
+        return $this->hasMany(Timeline::class);
+    }
+
     public function venues(): HasMany
     {
         return $this->hasMany(Venue::class);

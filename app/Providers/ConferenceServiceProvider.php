@@ -2,7 +2,15 @@
 
 namespace App\Providers;
 
+use App\Conference\Blocks\CalendarBlock;
+use App\Conference\Blocks\CommitteeBlock;
+use App\Conference\Blocks\MenuBlock;
+use App\Conference\Blocks\PreviousBlock;
+use App\Conference\Blocks\SubmitBlock;
+use App\Conference\Blocks\TimelineBlock;
+use App\Conference\Blocks\TopicBlock;
 use App\Conference\Pages\Home;
+use App\Facades\Block;
 use App\Http\Middleware\IdentifyArchiveConference;
 use App\Http\Middleware\IdentifyCurrentConference;
 use App\Http\Middleware\SetupDefaultData;
@@ -48,6 +56,18 @@ class ConferenceServiceProvider extends ServiceProvider
             ->path('current')
             ->layout('website.components.layouts.app')
             ->homePage(Home::class)
+            ->bootUsing(function () {
+                Block::registerBlocks([
+                    CalendarBlock::class,
+                    TimelineBlock::class,
+                    PreviousBlock::class,
+                    SubmitBlock::class,
+                    TopicBlock::class,
+                    MenuBlock::class,
+                    CommitteeBlock::class,
+                ]);
+                Block::boot();
+            })
             ->middleware([
                 'web',
                 IdentifyCurrentConference::class,
