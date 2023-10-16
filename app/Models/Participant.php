@@ -119,8 +119,8 @@ class Participant extends Model implements HasMedia, Sortable
         $user->assignRole($role->value);
     }
 
-    public function reviewAssignments()
+    public function reviews()
     {
-        return $this->hasMany(ReviewAssignment::class);
+        return $this->hasMany(Review::class);
     }
 }

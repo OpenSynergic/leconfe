@@ -95,24 +95,27 @@ class SubmissionResource extends Resource
     {
         return $table
             ->recordUrl(function (Submission $record) {
+                // TODO: Fix this code, to many if else.
                 $userAsParticipant = auth()->user()->asParticipant();
+
                 if (!$userAsParticipant) {
                     return static::getUrl('view', [
                         'record' => $record->id,
                     ]);
                 }
-                $participantReviewer = $record->reviewAssignments()->where('participant_id', $userAsParticipant->getKey())->first();
+
+                $participantReviewer = $record->reviews()->where('participant_id', $userAsParticipant->getKey())->first();
 
                 if ($participantReviewer) {
-                    return static::getUrl('review', [
-                        'record' => $record->id,
-                    ]);
-                }
-
-                if ($participantReviewer->needConfirmation()) {
-                    return static::getUrl('reviewer-request', [
-                        'record' => $record->id,
-                    ]);
+                    if ($participantReviewer->needConfirmation()) {
+                        return static::getUrl('reviewer-request', [
+                            'record' => $record->id,
+                        ]);
+                    } else {
+                        return static::getUrl('review', [
+                            'record' => $record->id,
+                        ]);
+                    }
                 }
 
                 return static::getUrl('view', [

@@ -5,7 +5,6 @@ namespace App\Panel\Resources\SubmissionResource\Pages;
 use App\Infolists\Components\LivewireEntry;
 use App\Infolists\Components\VerticalTabs\Tab as Tab;
 use App\Infolists\Components\VerticalTabs\Tabs as Tabs;
-use App\Livewire\Submissions\Components\ReviewerForm;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\UserRole;
 use App\Panel\Livewire\Submissions\CallforAbstract;
@@ -35,6 +34,9 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
         static::authorizeResourceAccess();
 
         $this->record = $this->resolveRecord($record);
+
+        // The person reviewing this submission cannot open the page with the details of the submission.
+        abort_if(auth()->user()->isReviewerOf($this->record), 403);
 
         abort_unless(static::getResource()::canView($this->getRecord()), 403);
     }
@@ -71,22 +73,12 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                                                 fn (): bool => $this->conference->getMeta('workflow.peer-review.open', false)
                                             )
                                             ->icon("iconpark-checklist-o")
-                                            ->schema(function () use ($currentUserIsReviewer): array {
-                                                if ($currentUserIsReviewer) {
-                                                    return [
-                                                        LivewireEntry::make('reviewer-form')
-                                                            ->livewire(ReviewerForm::class, [
-                                                                'submission' => $this->record
-                                                            ])
-                                                    ];
-                                                }
-                                                return [
-                                                    LivewireEntry::make('peer-review')
-                                                        ->livewire(PeerReview::class, [
-                                                            'submission' => $this->record
-                                                        ])
-                                                ];
-                                            }),
+                                            ->schema([
+                                                LivewireEntry::make('peer-review')
+                                                    ->livewire(PeerReview::class, [
+                                                        'submission' => $this->record
+                                                    ])
+                                            ]),
                                         Tab::make("Editing")
                                             ->visible(fn (): bool => $this->conference->getMeta('workflow.editing.open', false))
                                             ->icon("heroicon-o-pencil")

@@ -5,14 +5,11 @@ namespace App\Panel\Pages\Settings;
 use App\Infolists\Components\LivewireEntry;
 use App\Infolists\Components\VerticalTabs\Tab;
 use App\Infolists\Components\VerticalTabs\Tabs;
-use App\Panel\Livewire\Workflows\AbstractList;
 use App\Panel\Livewire\Workflows\AbstractSetting;
 use App\Panel\Livewire\Workflows\PeerReview\Forms\Guidelines;
 use App\Panel\Livewire\Workflows\PeerReviewSetting;
-use App\Panel\Resources\SubmissionResource;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\Tabs as HorizontalTabs;
 use Filament\Infolists\Components\Tabs\Tab as HorizontalTab;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
@@ -82,12 +79,13 @@ class Workflow extends Page implements HasInfolists, HasForms
                                                 ->livewire(Guidelines::class)
                                                 ->lazy()
                                         ]),
-                                    HorizontalTab::make("Review Forms")
-                                        ->icon("iconpark-formone-o")
-                                        ->schema([
-                                            LivewireEntry::make("peer-review-setting")
-                                                ->livewire(PeerReviewSetting::class)
-                                        ])
+                                    // HorizontalTab::make("Review Forms")
+                                    //     ->icon("iconpark-formone-o")
+                                    //     ->schema([
+                                    //         LivewireEntry::make('peer-review-form-templates')
+                                    //             ->livewire(FormTemplate::class)
+                                    //             ->lazy()
+                                    //     ])
                                 ])
                         ]),
                     Tab::make("Editing")

@@ -4,8 +4,8 @@ namespace App\Models;
 
 use App\Actions\Participants\ParticipantCreateAction;
 use App\Actions\Submissions\SubmissionAssignParticipantAction;
+use App\Constants\SubmissionFileCategory;
 use App\Models\Concerns\HasTopics;
-use App\Models\Enums\SubmissionFileCategory;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Meta\SubmissionMeta;
@@ -46,6 +46,13 @@ class Submission extends Model implements HasMedia
         'skipped_review' => 'boolean'
     ];
 
+    // public function getField()
+    // {
+    //     return match($this->form_type) {
+    //         'radio' => Radio::make(),
+    //     }
+    // }
+
     protected function getMetaClassName(): string
     {
         return SubmissionMeta::class;
@@ -75,9 +82,9 @@ class Submission extends Model implements HasMedia
         });
     }
 
-    public function reviewAssignments()
+    public function reviews()
     {
-        return $this->hasMany(ReviewAssignment::class);
+        return $this->hasMany(Review::class);
     }
 
     public function conference()
@@ -92,12 +99,12 @@ class Submission extends Model implements HasMedia
 
     public function files()
     {
-        return $this->media()->where('collection_name', SubmissionFileCategory::Files->value);
+        return $this->media()->where('collection_name', SubmissionFileCategory::FILES);
     }
 
     public function papers()
     {
-        return $this->media()->where('collection_name', SubmissionFileCategory::Papers->value);
+        return $this->media()->where('collection_name', SubmissionFileCategory::FILES);
     }
 
     public function participants()

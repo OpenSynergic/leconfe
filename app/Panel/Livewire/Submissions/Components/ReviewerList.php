@@ -2,11 +2,12 @@
 
 namespace App\Panel\Livewire\Submissions\Components;
 
+use App\Constants\ReviewerStatus;
 use App\Models\Enums\UserRole;
 use App\Models\Media;
 use App\Models\Participant;
 use App\Models\ParticipantPosition;
-use App\Models\ReviewAssignment;
+use App\Models\Review;
 use App\Models\Submission;
 use App\Models\SubmissionFileType;
 use App\Models\User;
@@ -64,7 +65,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                 ->preload()
                 ->required()
                 ->unique(
-                    table: 'review_assignments',
+                    table: 'reviews',
                     column: 'participant_id',
                     ignoreRecord: $editMode
                 )
@@ -116,7 +117,7 @@ class ReviewerList extends Component implements HasForms, HasTable
     {
         return $table
             ->query(function (): Builder {
-                return $this->record->reviewAssignments()->getQuery();
+                return $this->record->reviews()->getQuery();
             })
             ->columns([
                 Split::make([
@@ -140,16 +141,16 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ])
                         ->circular(),
                     TextColumn::make('participant.fullName')
-                        ->formatStateUsing(function (ReviewAssignment $record) {
-                            if ($record->canceled) {
+                        ->formatStateUsing(function (Review $record) {
+                            if ($record->status == ReviewerStatus::CANCELED) {
                                 return $record->participant->fullName . " (Canceled)";
                             }
                             return $record->participant->fullName;
                         })
                         ->color(
-                            fn (ReviewAssignment $record): string => $record->canceled ? 'danger' : 'primary'
+                            fn (Review $record): string => $record->status == ReviewerStatus::CANCELED ? 'danger' : 'primary'
                         )
-                        ->description(function (ReviewAssignment $record): string {
+                        ->description(function (Review $record): string {
                             return $record->participant->email;
                         })
                 ]),
@@ -160,7 +161,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ->modalWidth("2xl")
                         ->icon("iconpark-edit")
                         ->label("Edit")
-                        ->mountUsing(function (ReviewAssignment $record, Form $form) {
+                        ->mountUsing(function (Review $record, Form $form) {
                             $form->fill([
                                 'participant_id' => $record->participant_id,
                                 'papers' => $record->getMedia('reviewer-assigned-papers')->map(function (Media $media) {
@@ -170,7 +171,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                         })
                         ->form(static::formReviewerSchema($this, true))
                         ->successNotificationTitle("Reviewer updated")
-                        ->action(function (Action $action, ReviewAssignment $record, array $data) {
+                        ->action(function (Action $action, Review $record, array $data) {
                             $record->update([
                                 'participant_id' => $data['participant_id'],
                             ]);
@@ -195,14 +196,14 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ->modalSubmitActionLabel("Send")
                         ->form([
                             TextInput::make('target')
-                                ->formatStateUsing(function (ReviewAssignment $record) {
+                                ->formatStateUsing(function (Review $record) {
                                     return $record->participant->email;
                                 })
                                 ->disabled(),
                             RichEditor::make('message')
                         ])
                         ->successNotificationTitle("E-mail sent")
-                        ->action(function (Action $action, array $data, ReviewAssignment $record) {
+                        ->action(function (Action $action, array $data, Review $record) {
                             // Contoh E-Mail
                             // Mail::raw($data['message'], function ($message) use ($record) {
                             //     $message->to($record->participant->email)
@@ -214,7 +215,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ->color('danger')
                         ->icon("iconpark-deletethree-o")
                         ->label("Cancel Reviewer")
-                        ->hidden(fn (ReviewAssignment $record) => $record->canceled)
+                        ->hidden(fn (Review $record) => $record->status == ReviewerStatus::CANCELED)
                         ->successNotificationTitle("Reviewer canceled")
                         ->modalWidth("2xl")
                         ->form([
@@ -226,9 +227,9 @@ class ReviewerList extends Component implements HasForms, HasTable
                                 ->hidden(fn (Get $get) => $get('do-not-notify-cancelation'))
                                 ->columnSpanFull(),
                         ])
-                        ->action(function (Action $action, ReviewAssignment $record) {
+                        ->action(function (Action $action, Review $record) {
                             $record->update([
-                                'canceled' => true
+                                'status' => ReviewerStatus::CANCELED
                             ]);
                             $action->success();
                         }),
@@ -236,7 +237,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ->color('primary')
                         ->modalWidth("2xl")
                         ->icon("iconpark-deletethree-o")
-                        ->hidden(fn (ReviewAssignment $record) => !$record->canceled)
+                        ->hidden(fn (Review $record) => !$record->status == ReviewerStatus::CANCELED)
                         ->label("Reinstate Reviewer")
                         ->successNotificationTitle("Reviewer Reinstated")
                         ->form([
@@ -248,9 +249,9 @@ class ReviewerList extends Component implements HasForms, HasTable
                                 ->hidden(fn (Get $get) => $get('do-not-notify-reinstatement'))
                                 ->columnSpanFull(),
                         ])
-                        ->action(function (Action $action, ReviewAssignment $record) {
+                        ->action(function (Action $action, Review $record) {
                             $record->update([
-                                'canceled' => false
+                                'status' => ReviewerStatus::PENDING
                             ]);
                             $action->success();
                         }),
@@ -283,7 +284,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                     ->label("Reviewer")
                     ->modalHeading("Assign Reviewer")
                     ->modalWidth("2xl")
-                    ->authorize('ReviewAssignment:create')
+                    ->authorize('Review:create')
                     ->form([
                         ...static::formReviewerSchema($this),
                         Fieldset::make("Notification")
@@ -301,12 +302,12 @@ class ReviewerList extends Component implements HasForms, HasTable
                             ])
                     ])
                     ->action(function (Action $action, array $data) {
-                        if ($this->record->reviewAssignments()->where('participant_id', $data['participant_id'])->exists()) {
+                        if ($this->record->reviews()->where('participant_id', $data['participant_id'])->exists()) {
                             $action->failureNotificationTitle("Reviewer already assigned");
                             $action->failure();
                             return;
                         }
-                        $reviewAssignment = $this->record->reviewAssignments()
+                        $reviewAssignment = $this->record->reviews()
                             ->create([
                                 'participant_id' => $data['participant_id'],
                                 'date_assigned' => now(),
@@ -316,7 +317,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                         Media::whereIn('id', $data['papers'])
                             ->get()
                             ->each(function (Media $paper) use ($reviewAssignment) {
-                                $reviewPaper = $paper->copy($reviewAssignment, 'reviewer-assigned-papers', 'files');
+                                $reviewPaper = $paper->copy($reviewAssignment, 'reviewer-assigned-papers', 'private-files');
                                 $reviewPaper->setCustomProperty('copied_from', $paper->id);
                                 $reviewPaper->save();
                             });

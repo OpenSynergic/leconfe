@@ -2,7 +2,7 @@
   @if($stageOpened && $submission->stage == App\Models\Enums\SubmissionStage::PeerReview)
     <div class="grid grid-cols-12 gap-4">
       <div class="space-y-4 col-span-8">
-          @livewire(App\Panel\Livewire\Tables\Submissions\SubmissionFilesTable::class, ['record' => $submission, 'category' => \App\Models\Enums\SubmissionFileCategory::Papers->value])
+          @livewire(App\Panel\Livewire\Tables\Submissions\SubmissionFilesTable::class, ['record' => $submission, 'category' => \App\Constants\SubmissionFileCategory::PAPERS])
           @livewire(App\Panel\Livewire\Submissions\Components\ReviewerList::class, ['record' => $submission])
           @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\Discussions::class, ['record' => $submission])
       </div>

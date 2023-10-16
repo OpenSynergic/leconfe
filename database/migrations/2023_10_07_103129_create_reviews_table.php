@@ -1,8 +1,6 @@
 <?php
 
-use App\Models\Enums\ReviewerConfirmationStatus;
-use App\Models\Enums\SubmissionStatus;
-use App\Models\Enums\SubmissionStatusRecommendation;
+use App\Constants\ReviewerStatus;
 use App\Models\Participant;
 use App\Models\Submission;
 use Illuminate\Database\Migrations\Migration;
@@ -16,17 +14,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('review_assignments', function (Blueprint $table) {
+        Schema::create('reviews', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Submission::class)->constrained();
-            $table->foreignIdFor(Participant::class)->constrained();
-            $table->enum('recommendation', SubmissionStatusRecommendation::array())->nullable();
-            $table->enum('confirmation_status', ReviewerConfirmationStatus::array())->default(ReviewerConfirmationStatus::Waiting);
-            $table->boolean('canceled')->default(false);
+            $table->foreignIdFor(Participant::class)->comment("Reviewer ID (Participant id)")->constrained();
+            $table->string('recommendation')->nullable();
+            $table->string('status')->default(ReviewerStatus::PENDING);
+            $table->integer('quality')->nullable();
+            $table->longText("review_author_editor")->nullable();
+            $table->longText("review_editor")->nullable();
             $table->timestamp('date_assigned')->useCurrent();
             $table->timestamp('date_confirmed')->nullable();
             $table->timestamp('date_completed')->nullable();
-            $table->integer('quality')->nullable();
             $table->timestamps();
         });
     }
@@ -36,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('review_assignments');
+        Schema::dropIfExists('reviews');
     }
 };

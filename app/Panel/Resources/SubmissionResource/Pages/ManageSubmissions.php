@@ -52,9 +52,9 @@ class ManageSubmissions extends ManageRecords
             'Proposal' => Tab::make('Proposal')
                 ->modifyQueryUsing(
                     fn (Builder $query) => $query
-                        ->with('reviewAssignments')
+                        ->with('reviews')
                         ->whereHas(
-                            'reviewAssignments',
+                            'reviews',
                             // Submission is not in the Reviewer's queue yet.
                             fn (Builder $query) => $query->where('participant_id', $userParticipant->id)->where('date_confirmed', '0000-00-00')
                         )
@@ -62,9 +62,9 @@ class ManageSubmissions extends ManageRecords
             'My Queue' => Tab::make('My Queue')
                 ->modifyQueryUsing(
                     fn (Builder $query) => $query
-                        ->with('reviewAssignments')
+                        ->with('reviews')
                         ->whereHas(
-                            'reviewAssignments',
+                            'reviews',
                             // Submission is in the Reviewer's queue yet.
                             fn (Builder $query) => $query->where('participant_id', $userParticipant->id)->where('date_confirmed', '!=', '0000-00-00')
                         )
@@ -100,7 +100,7 @@ class ManageSubmissions extends ManageRecords
                             if ($currentUser->hasRole(UserRole::Reviewer->value)) {
                                 $finalQuery = $finalQuery
                                     ->whereHas(
-                                        'reviewAssignments',
+                                        'reviews',
                                         fn (Builder $query) => $query->where('participant_id', $currentUserAsParticipant->getKey())
                                     );
                             }
@@ -122,7 +122,7 @@ class ManageSubmissions extends ManageRecords
                             if ($currentUser->hasRole(UserRole::Reviewer->value)) {
                                 $finalQuery = $finalQuery
                                     ->whereHas(
-                                        'reviewAssignments',
+                                        'reviews',
                                         fn (Builder $query) => $query->where('participant_id', $currentUserAsParticipant->getKey())
                                     );
                             }
