@@ -1,9 +1,4 @@
-<x-filament-panels::page>
-    <div class="ml-auto flex">
-        <x-filament::button x-on:click="$dispatch('open-modal', {'id': 'guidelines'})" color="info" icon="iconpark-info-o">
-            View Guidelines
-        </x-filament::button>
-    </div>
+<x-filament-panels::page x-on:show-guidelines="$dispatch('open-modal', {'id': 'guidelines'})">
     <div class="grid grid-cols-12 gap-4">
         <div class="col-span-8 space-y-4">
             @livewire(App\Panel\Livewire\Tables\Submissions\SubmissionFilesTable::class, ['record' => $record, 'category' => 'reviewer-assigned-papers', 'viewOnly' => true])
@@ -11,11 +6,16 @@
             @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\Discussions::class, ['record' => $record, 'lazy' => true])
         </div>
         <div class="col-span-4 space-y-4 self-start sticky top-20">
+            <div class="flex space-x-2 items-center p-4 mb-4 text-sm text-slate-800 rounded-lg bg-white border border-gray-200 dark:border-gray-800 dark:bg-gray-900 dark:text-slate-300"
+                role="alert">
+                {{-- <x-lineawesome-check-circle-solid class="w-5 h-5 text-success-600"/> --}}
+                <span class="text-base text-center">
+                    Thank you, You have successfully submitted your review.
+                </span>
+            </div>
             {{ $this->infolist }}
             {{ $this->recommendationForm }}
-            <x-filament::button type="submit" wire:click='submit' class="w-full mt-4" icon="lineawesome-check-circle-solid" :outlined="true"> 
-                Submit Review
-            </x-filament::button>
+            {{ $this->reviewAction() }}
         </div>
     </div>
     <x-filament::modal id="guidelines" :slide-over="true" width="xl">
