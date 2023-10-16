@@ -2,9 +2,9 @@
 
 namespace App\Panel\Resources\SubmissionResource\Pages;
 
+use App\Constants\ReviewerStatus;
+use App\Constants\SubmissionFileCategory;
 use App\Infolists\Components\LivewireEntry;
-use App\Models\Enums\ReviewerConfirmationStatus;
-use App\Models\Enums\SubmissionFileCategory;
 use App\Models\Submission;
 use App\Panel\Livewire\Tables\Submissions\SubmissionFilesTable;
 use App\Panel\Resources\SubmissionResource;
@@ -46,13 +46,13 @@ class ReviewerRequestPage extends Page implements HasInfolists, HasActions
             ->successNotificationTitle("Request Accepted")
             ->action(function (Action $action) {
                 $this->record
-                    ->reviewAssignments()
+                    ->reviews()
                     ->where('participant_id', auth()->user()->asParticipant()->getKey())->update([
                         'date_confirmed' => now(),
-                        'confirmation_status' => ReviewerConfirmationStatus::Accepted
+                        'status' => ReviewerStatus::ACCEPTED
                     ]);
                 $action->success();
-                $action->redirect(SubmissionResource::getUrl('view', ['record' => $this->record->id]));
+                $action->redirect(SubmissionResource::getUrl('review', ['record' => $this->record->id]));
             });
     }
 
@@ -94,7 +94,7 @@ class ReviewerRequestPage extends Page implements HasInfolists, HasActions
                         LivewireEntry::make("review-files")
                             ->livewire(SubmissionFilesTable::class, [
                                 'record' => $this->record,
-                                'category' => SubmissionFileCategory::Papers->value,
+                                'category' => SubmissionFileCategory::PAPERS,
                                 'viewOnly' => true
                             ]),
                         // Fieldset::make("Review Schedule")
