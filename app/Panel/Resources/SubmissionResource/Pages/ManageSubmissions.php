@@ -24,6 +24,7 @@ class ManageSubmissions extends ManageRecords
         return [
             Action::make('Settings')
                 ->button()
+                ->authorize("WorkflowSetting::update")
                 ->outlined()
                 ->icon("heroicon-o-cog")
                 ->url(Workflow::getUrl()),
