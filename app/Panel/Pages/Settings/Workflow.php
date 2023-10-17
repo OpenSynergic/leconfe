@@ -8,6 +8,7 @@ use App\Infolists\Components\VerticalTabs\Tabs;
 use App\Panel\Livewire\Workflows\AbstractSetting;
 use App\Panel\Livewire\Workflows\PeerReview\Forms\Guidelines;
 use App\Panel\Livewire\Workflows\PeerReviewSetting;
+use Filament\Facades\Filament;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Components\Tabs as HorizontalTabs;
@@ -29,6 +30,21 @@ class Workflow extends Page implements HasInfolists, HasForms
     protected static ?string $navigationIcon = 'heroicon-o-window';
 
     protected static ?string $navigationGroup = 'Settings';
+
+    public function booted(): void
+    {
+        abort_if(!static::canView(), 403);
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return static::canView() && static::$shouldRegisterNavigation;
+    }
+
+    public static function canView(): bool
+    {
+        return Filament::auth()->user()->can('Workflow:update');
+    }
 
     public function infolist(Infolist $infolist): Infolist
     {

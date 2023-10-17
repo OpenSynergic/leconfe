@@ -8,6 +8,7 @@ use App\Panel\Livewire\Forms\Conferences\ContactSetting;
 use App\Panel\Livewire\Forms\Conferences\InformationSetting;
 use App\Panel\Livewire\Forms\Conferences\PrivacySetting;
 use App\Panel\Livewire\Forms\Conferences\SidebarSetting;
+use Filament\Facades\Filament;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Components\Tabs;
@@ -32,6 +33,21 @@ class ConferenceSetting extends Page implements HasForms, HasInfolists
     protected ?string $heading = 'Conference Settings';
 
     protected static ?string $navigationLabel = 'Conference';
+
+    public function booted(): void
+    {
+        abort_if(!static::canView(), 403);
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return static::canView() && static::$shouldRegisterNavigation;
+    }
+
+    public static function canView(): bool
+    {
+        return Filament::auth()->user()->can('ConferenceSetting:update');
+    }
 
     public function infolist(Infolist $infolist): Infolist
     {
