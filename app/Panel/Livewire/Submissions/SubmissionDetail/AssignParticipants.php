@@ -11,7 +11,6 @@ use App\Models\User;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -29,6 +28,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
+use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use STS\FilamentImpersonate\Tables\Actions\Impersonate;
 
 class AssignParticipants extends Component implements HasForms, HasTable
@@ -143,7 +143,8 @@ class AssignParticipants extends Component implements HasForms, HasTable
                                     ->visible(fn (Get $get): bool => $get('send-notification'))
                                     ->label("Notification")
                                     ->schema([
-                                        RichEditor::make("message")
+                                        TinyEditor::make('message')
+                                            ->minHeight(300)
                                             ->columnSpanFull()
                                     ])
                             ])
@@ -185,7 +186,8 @@ class AssignParticipants extends Component implements HasForms, HasTable
                                             return $record->participant->email;
                                         })
                                         ->label("Target"),
-                                    RichEditor::make("message")
+                                    TinyEditor::make('message')
+                                        ->minHeight(300)
                                         ->label("Message")
                                         ->columnSpanFull()
                                 ])

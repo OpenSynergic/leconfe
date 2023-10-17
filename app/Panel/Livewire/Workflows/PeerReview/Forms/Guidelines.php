@@ -3,12 +3,11 @@
 namespace App\Panel\Livewire\Workflows\PeerReview\Forms;
 
 use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
-use Illuminate\Support\HtmlString;
+use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use Stevebauman\Purify\Facades\Purify;
 
 class Guidelines extends \Livewire\Component implements HasForms
@@ -31,8 +30,10 @@ class Guidelines extends \Livewire\Component implements HasForms
     {
         return $form
             ->schema([
-                RichEditor::make('reviewGuidelines'),
-                RichEditor::make('competingInterests')
+                TinyEditor::make('reviewGuidelines')
+                    ->minHeight(300),
+                TinyEditor::make('competingInterests')
+                    ->minHeight(300)
             ]);
     }
 
