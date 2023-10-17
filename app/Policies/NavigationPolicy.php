@@ -7,6 +7,12 @@ use App\Models\User;
 
 class NavigationPolicy
 {
+    public function viewAny(User $user)
+    {
+        if ($user->can('Navigation:viewAny')) {
+            return true;
+        }
+    }
     /**
      * Determine whether the user can create models.
      */

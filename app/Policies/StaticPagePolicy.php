@@ -7,6 +7,10 @@ use App\Models\User;
 
 class StaticPagePolicy
 {
+    public function viewAny(User $user)
+    {
+        return $user->can('StaticPage:viewAny');
+    }
     /**
      * Determine whether the user can create models.
      */

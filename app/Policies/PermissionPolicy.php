@@ -2,25 +2,29 @@
 
 namespace App\Policies;
 
-use App\Models\Participant;
+use App\Models\Permission;
 use App\Models\User;
 
-class ParticipantPolicy
+class PermissionPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user)
     {
-        return $user->can('Participant:viewAny');
+        if ($user->can('Permission:update')) {
+            return true;
+        }
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Participant $participant)
+    public function view(User $user, Permission $topic)
     {
-        return true;
+        if ($user->can('Permission:view')) {
+            return true;
+        }
     }
 
     /**
@@ -28,7 +32,7 @@ class ParticipantPolicy
      */
     public function create(User $user)
     {
-        if ($user->can('Participant:create')) {
+        if ($user->can('Permission:create')) {
             return true;
         }
     }
@@ -36,9 +40,9 @@ class ParticipantPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Participant $participant)
+    public function update(User $user, Permission $topic)
     {
-        if ($user->can('Participant:update')) {
+        if ($user->can('Permission:update')) {
             return true;
         }
     }
@@ -46,16 +50,9 @@ class ParticipantPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Participant $participant)
+    public function delete(User $user, Permission $topic)
     {
-        if ($user->can('Participant:delete')) {
-            return true;
-        }
-    }
-
-    public function assignPosition(User $user, Participant $participant)
-    {
-        if ($user->can('Participant:assignPosition')) {
+        if ($user->can('Permission:delete')) {
             return true;
         }
     }
