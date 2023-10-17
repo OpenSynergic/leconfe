@@ -3,6 +3,7 @@
 namespace App\Panel\Livewire\Tables\Submissions;
 
 use App\Constants\SubmissionFileCategory;
+use App\Models\Enums\SubmissionStage;
 use App\Models\Media;
 use App\Models\Submission;
 use App\Models\SubmissionFileType;
@@ -47,8 +48,21 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
         return match ($this->category) {
             SubmissionFileCategory::FILES => $this->record->files()->getQuery(),
             SubmissionFileCategory::PAPERS => $this->record->papers()->getQuery(),
-            SubmissionFileCategory::REVIEWER_ASSIGNED_PAPERS => auth()->user()->asParticipant()->reviews()->submission($this->record->id)->first()->files()->getQuery(),
-            'default' => abort(404),
+            SubmissionFileCategory::REVIEWER_ASSIGNED_PAPERS => auth()->user()
+                ->asParticipant()
+                ->reviews()
+                ->submission($this->record->id)
+                ->first()
+                ->files()
+                ->getQuery(),
+            SubmissionFileCategory::REVIEWER_FILES => auth()->user()
+                ->asParticipant()
+                ->reviews()
+                ->submission($this->record->id)
+                ->first()
+                ->files()
+                ->getQuery(),
+            default => abort(404),
         };
     }
 
@@ -92,7 +106,13 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
                 Action::make('upload')
                     ->icon("iconpark-upload")
                     ->label('Upload Files')
-                    ->hidden($this->viewOnly)
+                    ->hidden(function (): bool {
+                        if ($this->viewOnly) {
+                            return true;
+                        }
+                        // If the submission has already been submitted, cannot upload the file.
+                        return $this->record->user->id == auth()->id() && $this->record->stage != SubmissionStage::Wizard;
+                    })
                     ->button()
                     ->modalWidth('xl')
                     ->form([
@@ -162,7 +182,12 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
                             })
                     ]),
                 DeleteAction::make()
-                    ->hidden($this->viewOnly),
+                    ->hidden(function (): bool {
+                        if ($this->viewOnly) {
+                            return true;
+                        }
+                        return $this->record->user->id == auth()->id() && $this->record->stage != SubmissionStage::Wizard;
+                    }),
             ]);
     }
 }

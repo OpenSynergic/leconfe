@@ -107,20 +107,20 @@ class Participant extends Model implements HasMedia, Sortable
         return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=111827&font-size=0.33';
     }
 
-    public function createUserAccount(UserRole $role, ?string $password = null, bool $withMetas = true): void
-    {
-        $user = UserCreateAction::run([...$this->toArray(), 'password' => Hash::make($password)]);
-        if ($withMetas) {
-            $participantMetas = $this->meta()->get()->toArray();
-            foreach ($participantMetas as $meta) {
-                $user->meta()->create($meta);
-            }
-        }
-        $user->assignRole($role->value);
-    }
+    // public function createUserAccount(UserRole $role, ?string $password = null, bool $withMetas = true): void
+    // {
+    //     $user = UserCreateAction::run([...$this->toArray(), 'password' => Hash::make($password)]);
+    //     if ($withMetas) {
+    //         $participantMetas = $this->meta()->get()->toArray();
+    //         foreach ($participantMetas as $meta) {
+    //             $user->meta()->create($meta);
+    //         }
+    //     }
+    //     $user->assignRole($role->value);
+    // }
 
-    public function reviews()
-    {
-        return $this->hasMany(Review::class);
-    }
+    // public function reviews()
+    // {
+    //     return $this->hasMany(Review::class);
+    // }
 }

@@ -164,14 +164,9 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
                         ->conversion('avatar')
                         ->width(50)
                         ->height(50)
-                        ->defaultImageUrl(function (Participant $record): string {
-                            $name = str($record->fullName)
-                                ->trim()
-                                ->explode(' ')
-                                ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
-                                ->join(' ');
-                            return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=111827&font-size=0.33';
-                        })
+                        ->defaultImageUrl(
+                            fn (Participant $record): string => $record->getProfilePicture()
+                        )
                         ->extraCellAttributes([
                             'style' => 'width: 1px',
                         ])

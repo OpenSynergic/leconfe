@@ -39,7 +39,7 @@ class SubmissionResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->with(['meta']);
+        return parent::getEloquentQuery()->with(['meta', 'user'])->orderBy('updated_at', 'desc');
     }
 
     public static function getGlobalSearchResults(string $search): Collection

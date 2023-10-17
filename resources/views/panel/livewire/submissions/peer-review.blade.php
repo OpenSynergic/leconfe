@@ -4,14 +4,18 @@
       <div class="space-y-4 col-span-8">
           @livewire(App\Panel\Livewire\Tables\Submissions\SubmissionFilesTable::class, ['record' => $submission, 'category' => \App\Constants\SubmissionFileCategory::PAPERS])
           @livewire(App\Panel\Livewire\Submissions\Components\ReviewerList::class, ['record' => $submission])
+          {{-- @livewire(App\Panel\Livewire\Tables\Submissions\SubmissionFilesTable::class, ['record' => $submission]) --}}
           @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\Discussions::class, ['record' => $submission])
       </div>
       <div class="self-start sticky top-24 flex flex-col gap-3 col-span-4">
         {{-- TODO: is this a good way --}}
         @hasanyrole([\App\Models\Enums\UserRole::Admin->value, \App\Models\Enums\UserRole::Editor->value])
-          @if($submission->stage == App\Models\Enums\SubmissionStage::PeerReview)
-            {{ $this->skipReviewAction() }}
-          @endif
+        @if(!$submission->reviews()->exists())
+          {{ $this->skipReviewAction() }}
+        @endif
+          {{ $this->requestRevisionAction() }}
+          {{ $this->acceptSubmissionAction() }}
+          {{ $this->declineSubmissionAction() }}
         @endhasanyrole
       </div>
     </div>

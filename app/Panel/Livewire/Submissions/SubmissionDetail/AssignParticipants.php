@@ -7,6 +7,7 @@ use App\Models\Enums\UserRole;
 use App\Models\Participant;
 use App\Models\ParticipantPosition;
 use App\Models\Submission;
+use App\Models\SubmissionParticipant;
 use App\Models\User;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Fieldset;
@@ -59,15 +60,9 @@ class AssignParticipants extends Component implements HasForms, HasTable
                         ->conversion('avatar')
                         ->width(50)
                         ->height(50)
-                        ->defaultImageUrl(function (Model $record): string {
-                            $participant = $record->participant;
-                            $name = str($participant->fullName)
-                                ->trim()
-                                ->explode(' ')
-                                ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
-                                ->join(' ');
-                            return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=111827&font-size=0.33';
-                        })
+                        ->defaultImageUrl(
+                            fn (SubmissionParticipant $record): string => $record->participant->getProfilePicture()
+                        )
                         ->extraCellAttributes([
                             'style' => 'width: 1px',
                         ])

@@ -14,16 +14,12 @@ use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Get;
-use Filament\Infolists\Concerns\InteractsWithInfolists;
-use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Infolists\Infolist;
-use Filament\Tables\Table;
 use Livewire\Component;
+use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class CallforAbstract extends Component implements HasForms, HasActions
 {
@@ -53,11 +49,9 @@ class CallforAbstract extends Component implements HasForms, HasActions
                             ->hidden(fn (Get $get): bool => $get('no-notification'))
                             ->disabled()
                             ->formatStateUsing(fn (Submission $record): string => $record->user->email),
-                        RichEditor::make('message')
+                        TinyEditor::make('message')
                             ->hidden(fn (Get $get): bool => $get('no-notification'))
-                            ->disableToolbarButtons([
-                                'assignFiles'
-                            ])
+                            ->minHeight(300)
                     ])
             ])
             ->icon("lineawesome-times-circle-solid");
@@ -69,7 +63,6 @@ class CallforAbstract extends Component implements HasForms, HasActions
             ->modalHeading("Confirmation")
             ->modalSubmitActionLabel("Accept")
             ->modalWidth("2xl")
-            ->outlined()
             ->record($this->submission)
             ->successNotificationTitle("Accepted")
             ->extraAttributes(['class' => 'w-full'])
@@ -93,11 +86,9 @@ class CallforAbstract extends Component implements HasForms, HasActions
                             ->hidden(fn (Get $get): bool => $get('no-notification'))
                             ->disabled()
                             ->formatStateUsing(fn (Submission $record): string => $record->user->email),
-                        RichEditor::make('message')
+                        TinyEditor::make('message')
+                            ->minHeight(300)
                             ->hidden(fn (Get $get): bool => $get('no-notification'))
-                            ->disableToolbarButtons([
-                                'assignFiles'
-                            ])
                     ])
             ])
             ->action(function (Action $action) {

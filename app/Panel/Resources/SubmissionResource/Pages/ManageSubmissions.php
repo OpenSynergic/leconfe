@@ -6,8 +6,6 @@ use App\Models\Conference;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
-use App\Models\Participant;
-use App\Models\Submission;
 use App\Panel\Pages\Settings\Workflow;
 use App\Panel\Resources\SubmissionResource;
 use Filament\Actions\Action;
@@ -24,12 +22,13 @@ class ManageSubmissions extends ManageRecords
         return [
             Action::make('Settings')
                 ->button()
-                ->authorize("WorkflowSetting::update")
+                ->authorize("WorkflowSetting:update")
                 ->outlined()
                 ->icon("heroicon-o-cog")
                 ->url(Workflow::getUrl()),
             Action::make('create')
                 ->button()
+                ->authorize("Submission:create")
                 ->disabled(function (): bool {
                     $conference = Conference::active();
                     return !$conference->getMeta('workflow.call-for-abstract.open', false);
@@ -42,34 +41,6 @@ class ManageSubmissions extends ManageRecords
                     }
                     return 'Submission';
                 }),
-        ];
-    }
-
-    private static function reviewerTabs()
-    {
-        $currentUser = auth()->user();
-        $userParticipant = Participant::email($currentUser->email)->first();
-        return [
-            'Proposal' => Tab::make('Proposal')
-                ->modifyQueryUsing(
-                    fn (Builder $query) => $query
-                        ->with('reviews')
-                        ->whereHas(
-                            'reviews',
-                            // Submission is not in the Reviewer's queue yet.
-                            fn (Builder $query) => $query->where('participant_id', $userParticipant->id)->where('date_confirmed', '0000-00-00')
-                        )
-                ),
-            'My Queue' => Tab::make('My Queue')
-                ->modifyQueryUsing(
-                    fn (Builder $query) => $query
-                        ->with('reviews')
-                        ->whereHas(
-                            'reviews',
-                            // Submission is in the Reviewer's queue yet.
-                            fn (Builder $query) => $query->where('participant_id', $userParticipant->id)->where('date_confirmed', '!=', '0000-00-00')
-                        )
-                )
         ];
     }
 
@@ -142,7 +113,7 @@ class ManageSubmissions extends ManageRecords
                     ),
                 'Published' => Tab::make("Published")
                     ->modifyQueryUsing(
-                        fn (Builder $query): Builder => $query
+                        fn (Builder $query): Builder => $query->where('status', SubmissionStatus::Published)
                     ),
             ];
         }

@@ -3,6 +3,8 @@
 namespace App\Panel\Livewire\Submissions\Components;
 
 use App\Constants\ReviewerStatus;
+use App\Constants\SubmissionFileCategory;
+use App\Infolists\Components\LivewireEntry;
 use App\Models\Enums\UserRole;
 use App\Models\Media;
 use App\Models\Participant;
@@ -11,19 +13,17 @@ use App\Models\Review;
 use App\Models\Submission;
 use App\Models\SubmissionFileType;
 use App\Models\User;
+use App\Panel\Livewire\Tables\Submissions\SubmissionFilesTable;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\View;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\Layout\Split;
@@ -34,11 +34,8 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\HtmlString;
 use Livewire\Component;
-use Spatie\MediaLibrary\Support\UrlGenerator\UrlGeneratorFactory;
+use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use STS\FilamentImpersonate\Tables\Actions\Impersonate;
 
 class ReviewerList extends Component implements HasForms, HasTable
@@ -64,16 +61,20 @@ class ReviewerList extends Component implements HasForms, HasTable
                 ->allowHtml()
                 ->preload()
                 ->required()
-                ->unique(
-                    table: 'reviews',
-                    column: 'participant_id',
-                    ignoreRecord: $editMode
-                )
                 ->searchable()
-                ->options(function () use ($component): array {
+                ->options(function () use ($component, $editMode): array {
                     return Participant::with('positions')
                         ->whereHas('positions', function ($query) use ($component) {
                             $query->where('name', $component->reviewerPosition->name);
+                        })
+                        ->when(!$editMode, function ($query) use ($component) {
+                            $query->whereNotIn(
+                                'id',
+                                Review::where('submission_id', $component->record->getKey())
+                                    ->get()
+                                    ->pluck('participant_id')
+                                    ->toArray()
+                            );
                         })
                         ->get()
                         ->mapWithKeys(function (Participant $participant) {
@@ -84,7 +85,7 @@ class ReviewerList extends Component implements HasForms, HasTable
             CheckboxList::make('papers')
                 ->label("Files to be reviewed")
                 ->hidden(
-                    fn (): bool => !$component->record->papers()->exists()
+                    !$component->record->papers()->exists()
                 )
                 ->options(function () use ($component) {
                     return $component->record
@@ -93,6 +94,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ->mapWithKeys(function (Media $paper) {
                             return [
                                 $paper->getKey() => Action::make($paper->file_name)
+                                    ->label($paper->file_name)
                                     ->url(function () use ($paper) {
                                         return route('private.files', ['uuid' => $paper->uuid]);
                                     })
@@ -116,9 +118,9 @@ class ReviewerList extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(function (): Builder {
-                return $this->record->reviews()->getQuery();
-            })
+            ->query(
+                fn (): Builder => $this->record->reviews()->getQuery()
+            )
             ->columns([
                 Split::make([
                     SpatieMediaLibraryImageColumn::make('participant.profile')
@@ -127,15 +129,9 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ->conversion('avatar')
                         ->width(50)
                         ->height(50)
-                        ->defaultImageUrl(function (Model $record): string {
-                            $participant = $record->participant;
-                            $name = str($participant->fullName)
-                                ->trim()
-                                ->explode(' ')
-                                ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
-                                ->join(' ');
-                            return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=111827&font-size=0.33';
-                        })
+                        ->defaultImageUrl(
+                            fn (Review $record): string => $record->participant->getProfilePicture()
+                        )
                         ->extraCellAttributes([
                             'style' => 'width: 1px',
                         ])
@@ -156,6 +152,29 @@ class ReviewerList extends Component implements HasForms, HasTable
                 ]),
             ])
             ->actions([
+                Action::make('see-reviews')
+                    ->hidden(
+                        //No review is need to be seen.
+                        fn (Review $record): bool => is_null($record->date_completed)
+                    )
+                    ->modalCancelActionLabel("Close")
+                    ->modalSubmitAction(false)
+                    ->icon("lineawesome-eye")
+                    ->infolist(function (Review $record): array {
+                        return [
+                            TextEntry::make('Review for Author and Editor')
+                                ->html()
+                                ->getStateUsing(fn (): string => $record->review_author_editor),
+                            TextEntry::make('Review for Editor')
+                                ->html()
+                                ->getStateUsing(fn (): string => $record->review_editor),
+                            LivewireEntry::make('reviewer-files')
+                                ->livewire(ReviewerFiles::class, [
+                                    'record' => $record,
+                                ])
+                                ->lazy()
+                        ];
+                    }),
                 ActionGroup::make([
                     Action::make('edit-reviewer')
                         ->modalWidth("2xl")
@@ -200,7 +219,8 @@ class ReviewerList extends Component implements HasForms, HasTable
                                     return $record->participant->email;
                                 })
                                 ->disabled(),
-                            RichEditor::make('message')
+                            TinyEditor::make('message')
+                                ->minHeight(300)
                         ])
                         ->successNotificationTitle("E-mail sent")
                         ->action(function (Action $action, array $data, Review $record) {
@@ -223,7 +243,8 @@ class ReviewerList extends Component implements HasForms, HasTable
                                 ->reactive()
                                 ->label("Don't Send Notification")
                                 ->columnSpanFull(),
-                            RichEditor::make('message')
+                            TinyEditor::make('message')
+                                ->minHeight(300)
                                 ->hidden(fn (Get $get) => $get('do-not-notify-cancelation'))
                                 ->columnSpanFull(),
                         ])
@@ -237,7 +258,9 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ->color('primary')
                         ->modalWidth("2xl")
                         ->icon("iconpark-deletethree-o")
-                        ->hidden(fn (Review $record) => !$record->status == ReviewerStatus::CANCELED)
+                        ->hidden(
+                            fn (Review $record) => $record->status != ReviewerStatus::CANCELED
+                        )
                         ->label("Reinstate Reviewer")
                         ->successNotificationTitle("Reviewer Reinstated")
                         ->form([
@@ -245,7 +268,8 @@ class ReviewerList extends Component implements HasForms, HasTable
                                 ->reactive()
                                 ->label("Don't Send Notification")
                                 ->columnSpanFull(),
-                            RichEditor::make('message')
+                            TinyEditor::make('message')
+                                ->minHeight(300)
                                 ->hidden(fn (Get $get) => $get('do-not-notify-reinstatement'))
                                 ->columnSpanFull(),
                         ])
@@ -289,13 +313,14 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ...static::formReviewerSchema($this),
                         Fieldset::make("Notification")
                             ->schema([
-                                Checkbox::make('send-invitation-notification')
+                                Checkbox::make('no-invitation-notification')
                                     ->reactive()
-                                    ->label("Send Notification")
+                                    ->label("Don't send Notification")
                                     ->columnSpanFull(),
-                                RichEditor::make("reviewer-invitation-message")
-                                    ->visible(
-                                        fn (Get $get): bool => $get('send-invitation-notification') ?? false
+                                TinyEditor::make('reviewer-invitation-message')
+                                    ->minHeight(300)
+                                    ->hidden(
+                                        fn (Get $get): bool => $get('no-invitation-notification') ?? false
                                     )
                                     ->label("Reviewer invitation message")
                                     ->columnSpanFull(),
@@ -314,13 +339,12 @@ class ReviewerList extends Component implements HasForms, HasTable
                             ])
                             ->first();
 
-                        Media::whereIn('id', $data['papers'])
-                            ->get()
-                            ->each(function (Media $paper) use ($reviewAssignment) {
-                                $reviewPaper = $paper->copy($reviewAssignment, 'reviewer-assigned-papers', 'private-files');
-                                $reviewPaper->setCustomProperty('copied_from', $paper->id);
-                                $reviewPaper->save();
-                            });
+                        foreach ($data['papers'] as $mediaId) {
+                            $reviewAssignment->assignedFiles()
+                                ->create([
+                                    'media_id' => $mediaId,
+                                ]);
+                        }
                     })
             ]);
     }

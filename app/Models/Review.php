@@ -31,20 +31,34 @@ class Review extends Model implements HasMedia
         'review_editor'
     ];
 
+    protected static function booted(): void
+    {
+        static::saving(function (Model $record) {
+            if ($record->recommendation) {
+                $record->date_completed = now();
+            }
+        });
+    }
+
+    public function reviewSubmitted(): bool
+    {
+        return !is_null($this->recommendation) && !is_null($this->date_completed);
+    }
+
+    public function assignedFiles()
+    {
+        return $this->hasMany(ReviewerAssignedFile::class);
+    }
+
     public function review()
     {
         return $this->hasOne(Review::class);
     }
 
-    public function files()
-    {
-        return $this->media()->where('collection_name', 'reviewer-assigned-papers');
-    }
-
-    public function scopeSubmission($query, int $submissionId)
-    {
-        return $query->where('submission_id', $submissionId);
-    }
+    // public function scopeBySubmission($query, int $submissionId)
+    // {
+    //     return $query->where('submission_id', $submissionId);
+    // }
 
     public function scopeParticipant($query, int $participantId)
     {

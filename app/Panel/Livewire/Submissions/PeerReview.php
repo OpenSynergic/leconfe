@@ -29,6 +29,44 @@ class PeerReview extends Component implements HasForms, HasActions
         $this->stageOpened = app()->getCurrentConference()->getMeta("workflow.peer-review.open", false);
     }
 
+    public function declineSubmissionAction()
+    {
+        return Action::make('declineSubmissionAction')
+            ->label("Decline Submission")
+            ->color('danger')
+            ->outlined()
+            ->form([])
+            ->action(function (Action $action) {
+                $action->success();
+            });
+    }
+
+
+    public function acceptSubmissionAction()
+    {
+        return Action::make('acceptSubmissionAction')
+            // ->outlined()
+            ->color("primary")
+            ->label("Accept Submission")
+            ->form([])
+            ->action(function (Action $action) {
+                $action->success();
+            });
+    }
+
+    public function requestRevisionAction()
+    {
+        return Action::make('requestRevisionAction')
+            ->outlined()
+            ->color('gray')
+            ->label("Request Revision")
+            ->form([])
+            ->successNotificationTitle("Revision Requested")
+            ->action(function (Action $action) {
+                $action->success();
+            });
+    }
+
     public function skipReviewAction()
     {
         return Action::make('skipReviewAction')

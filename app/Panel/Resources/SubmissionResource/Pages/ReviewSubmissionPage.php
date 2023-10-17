@@ -11,7 +11,6 @@ use App\Panel\Resources\SubmissionResource;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -22,9 +21,11 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
-use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Page;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
 use Illuminate\Contracts\Support\Htmlable;
+use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class ReviewSubmissionPage extends Page implements HasInfolists, HasActions
 {
@@ -51,6 +52,7 @@ class ReviewSubmissionPage extends Page implements HasInfolists, HasActions
             ->first();
 
         $this->recommendation = $this->review->recommendation;
+
         $this->reviewData = [
             'review_author_editor' => $this->review->review_author_editor,
             'review_editor' => $this->review->review_editor,
@@ -85,6 +87,7 @@ class ReviewSubmissionPage extends Page implements HasInfolists, HasActions
                                 TextEntry::make('Abstract')
                                     ->color('gray')
                                     ->html()
+                                    ->columnSpanFull()
                                     ->getStateUsing(
                                         fn (Submission $record): string => $record->getMeta('abstract')
                                     ),
@@ -116,6 +119,7 @@ class ReviewSubmissionPage extends Page implements HasInfolists, HasActions
     public function recommendationForm(Form $form): Form
     {
         return $form
+            // ->disabled(fn (): bool => $this->review->reviewSubmitted())
             ->schema([
                 Section::make()
                     ->heading("Recommendation")
@@ -132,33 +136,20 @@ class ReviewSubmissionPage extends Page implements HasInfolists, HasActions
     public function reviewForm(Form $form): Form
     {
         return $form
+            ->disabled(
+                fn (): bool => $this->review->reviewSubmitted()
+            )
             ->schema([
                 Section::make()
                     ->heading("Review Form")
                     ->schema([
-                        RichEditor::make('reviewData.review_author_editor')
-                            ->label("Review for Author and Editor")
-                            ->disableToolbarButtons([
-                                'attachFiles'
-                            ]),
-                        RichEditor::make('reviewData.review_editor')
-                            ->label("Review for Editor")
-                            ->disableToolbarButtons([
-                                'attachFiles'
-                            ]),
-                        SpatieMediaLibraryFileUpload::make('reviewData.reviewer_files')
-                            ->label("Reviewer Files")
-                            ->model(Review::class)
-                            ->collection(SubmissionFileCategory::REVIEWER_FILES)
-                            ->multiple()
-                            ->previewable(false)
-                            ->downloadable()
-                            ->disk('private-files')
-                            ->preserveFilenames()
-                            ->visibility('private')
-                            ->saveRelationshipsUsing(
-                                static fn (SpatieMediaLibraryFileUpload $component) => $component->saveUploadedFiles()
-                            )
+                        TinyEditor::make('reviewData.review_author_editor')
+                            ->minHeight(300)
+                            ->label("Review for Author and Editor"),
+                        TinyEditor::make('reviewData.review_editor')
+                            ->minHeight(300)
+                            ->label("Review for Editor"),
+
                     ])
             ]);
     }
@@ -200,9 +191,5 @@ class ReviewSubmissionPage extends Page implements HasInfolists, HasActions
 
                 $action->success();
             });
-    }
-
-    public function submit(): void
-    {
     }
 }
