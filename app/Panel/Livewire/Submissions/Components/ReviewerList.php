@@ -148,8 +148,21 @@ class ReviewerList extends Component implements HasForms, HasTable
                         )
                         ->description(function (Review $record): string {
                             return $record->participant->email;
+                        }),
+                    TextColumn::make('recommendation')
+                        ->badge()
+                        ->formatStateUsing(function ($state) {
+                            return "Recommend " . $state;
                         })
+                        ->color(
+                            fn (Review $record): string => match ($record->recommendation) {
+                                SubmissionStatusRecommendation::ACCEPT => 'primary',
+                                SubmissionStatusRecommendation::DECLINE => 'danger',
+                                default => 'warning'
+                            }
+                        )
                 ]),
+
             ])
             ->actions([
                 Action::make('see-reviews')
