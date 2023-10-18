@@ -161,7 +161,7 @@
         <section id="conference-speakers">
             <h2 class="text-heading mb-2 ms-5">Keynote Speakers</h2>
             <div class="card-body space-y-2 ms-5">
-                <div class="flex flex-wrap gap-9">
+                <div class="grid-area: main; gap-9">
                     @foreach ($participantPosition as $position)
                     <div class="flex flex-col space-y-4">
                         <p class="text-content">{{ $position->name }}</p>
@@ -179,10 +179,24 @@
                             <div class="flex flex-col">
                                 <p class="small-text">{{ $participant->given_name }} {{ $participant->family_name }}</p>
 
+
+
                                 <div class="col-md-4">
+
                                     @foreach ($participant->getMeta('expertise') as $expertise)
+                                    @if ($loop->first)
+                                    <small class="text-mini text-primary">{{ $expertise }} </small>.
+                                    @endif
+
+                                    @if ($loop->last)
                                     <small class="text-mini text-primary">{{ $expertise }} </small>
-                                    @endforeach
+                                    @endif
+                                @endforeach
+
+
+                                    {{-- @foreach ($participant->getMeta('expertise') as $expertise)
+                                    <small class="text-mini text-primary">{{ $expertise }} </small>
+                                    @endforeach --}}
                                 </div>
 
 
