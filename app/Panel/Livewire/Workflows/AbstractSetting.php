@@ -7,6 +7,9 @@ use App\Panel\Livewire\Workflows\Base\WorkflowStage;
 use App\Panel\Livewire\Workflows\Traits\CanOpenStage;
 use App\Panel\Pages\Settings\Workflow;
 use Awcodes\Shout\Components\Shout;
+use Filament\Actions\Action;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
@@ -20,9 +23,9 @@ use Livewire\Component;
 /**
  * Create a job to change status
  */
-class AbstractSetting extends WorkflowStage implements HasForms
+class AbstractSetting extends WorkflowStage implements HasForms, HasActions
 {
-    use InteractsWithForms;
+    use InteractsWithForms, InteractsWithActions;
 
     protected ?string $stage = 'call-for-abstract';
 
@@ -35,6 +38,21 @@ class AbstractSetting extends WorkflowStage implements HasForms
                 'allowed_file_types' => $this->getSetting('allowed_file_types', ['pdf', 'docx', 'doc'])
             ],
         ]);
+    }
+
+    public function submitAction()
+    {
+        return Action::make('submitAction')
+            ->label('Save')
+            ->icon("lineawesome-save-solid")
+            ->successNotificationTitle("Saved")
+            ->action(function (Action $action) {
+                $this->form->validate();
+                foreach ($this->form->getState()['settings'] as $key => $value) {
+                    $this->updateSetting($key, $value);
+                }
+                $action->success();
+            });
     }
 
     public function form(Form $form): Form

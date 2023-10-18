@@ -7,7 +7,8 @@
         </div>
         @livewire(App\Panel\Livewire\Workflows\Components\StageSchedule::class, ['stage' => $this->getStage()])
     </div>
-    <div>
+    <div class="space-y-4">
         {{ $this->form }}
+        {{ $this->submitAction() }}
     </div>
 </div>
