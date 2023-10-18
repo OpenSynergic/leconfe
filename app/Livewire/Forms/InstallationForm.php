@@ -2,17 +2,18 @@
 
 namespace App\Livewire\Forms;
 
-use App\Actions\Conferences\ConferenceCreateAction;
-use App\Actions\User\UserCreateAction;
-use App\Models\Conference;
-use App\Models\Enums\UserRole;
-use App\Models\User;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\DB;
-use Livewire\Attributes\Rule;
+use Carbon\Carbon;
 use Livewire\Form;
+use App\Models\User;
+use App\Models\Conference;
+use Livewire\Attributes\Rule;
+use App\Models\Enums\UserRole;
+use Illuminate\Support\Facades\DB;
+use App\Actions\User\UserCreateAction;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Artisan;
+use App\Actions\Conferences\ConferenceCreateAction;
 
 class InstallationForm extends Form
 {
@@ -64,11 +65,15 @@ class InstallationForm extends Form
     #[Rule('required')]
     public $conference_type = 'Offline';
 
+    public $conference_description = null;
+
+
     /**
      * Field for Timezone
      */
     #[Rule('required')]
     public $timezone = 'Asia/Makassar';
+
 
     public function createConference(): Conference
     {
@@ -76,6 +81,9 @@ class InstallationForm extends Form
             'name' => $this->conference_name,
             'type' => $this->conference_type,
             'active' => true,
+            'meta' => [
+                'description' => $this->conference_description,
+            ]
         ]);
     }
 
@@ -116,7 +124,7 @@ class InstallationForm extends Form
             'database' => $this->db_name,
         ]);
 
-        if (! empty($this->db_username) && ! empty($this->db_password)) {
+        if (!empty($this->db_username) && !empty($this->db_password)) {
             $connectionArray = array_merge($connectionArray, [
                 'username' => $this->db_username,
                 'password' => $this->db_password,
