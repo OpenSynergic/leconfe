@@ -8,6 +8,7 @@ use App\Constants\SubmissionFileCategory;
 use App\Models\Concerns\HasTopics;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
+use App\Models\Enums\UserRole;
 use App\Models\Meta\SubmissionMeta;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Builder;
@@ -43,7 +44,8 @@ class Submission extends Model implements HasMedia
     protected $casts = [
         'stage' => SubmissionStage::class,
         'status' => SubmissionStatus::class,
-        'skipped_review' => 'boolean'
+        'skipped_review' => 'boolean',
+        'revision_required' => 'boolean',
     ];
 
     // public function getField()
@@ -63,6 +65,13 @@ class Submission extends Model implements HasMedia
      */
     protected static function booted(): void
     {
+
+        static::addGlobalScope('user', function (Builder $builder) {
+            if (!auth()->user()->hasRole(UserRole::Admin->value) && !auth()->user()->hasRole(UserRole::Editor->value) && !auth()->user()->hasRole(UserRole::Reviewer->value)) {
+                $builder->where('user_id', auth()->id());
+            }
+        });
+
         static::creating(function (Submission $submission) {
             $submission->user_id ??= Auth::id();
             $submission->conference_id ??= app()->getCurrentConference()?->getKey();
@@ -81,6 +90,7 @@ class Submission extends Model implements HasMedia
             }
         });
     }
+
 
     public function reviews()
     {
