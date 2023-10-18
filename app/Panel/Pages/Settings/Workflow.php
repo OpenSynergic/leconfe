@@ -6,6 +6,7 @@ use App\Infolists\Components\LivewireEntry;
 use App\Infolists\Components\VerticalTabs\Tab;
 use App\Infolists\Components\VerticalTabs\Tabs;
 use App\Panel\Livewire\Workflows\AbstractSetting;
+use App\Panel\Livewire\Workflows\EditingSetting;
 use App\Panel\Livewire\Workflows\PeerReview\Forms\Guidelines;
 use App\Panel\Livewire\Workflows\PeerReviewSetting;
 use Filament\Facades\Filament;
@@ -62,12 +63,6 @@ class Workflow extends Page implements HasInfolists, HasForms
                                             LivewireEntry::make("abstract-setting")
                                                 ->livewire(AbstractSetting::class)
                                         ]),
-                                    HorizontalTab::make('E-Mail Templates')
-                                        ->icon("iconpark-mail-o")
-                                        ->schema([
-                                            LivewireEntry::make("abstract-setting")
-                                                ->livewire(AbstractSetting::class)
-                                        ])
                                 ])
                         ]),
                     Tab::make("Peer Review")
@@ -81,12 +76,6 @@ class Workflow extends Page implements HasInfolists, HasForms
                                             LivewireEntry::make("peer-review-setting")
                                                 ->livewire(PeerReviewSetting::class)
                                                 ->lazy()
-                                        ]),
-                                    HorizontalTab::make("E-Mail Templates")
-                                        ->icon("iconpark-mail-o")
-                                        ->schema([
-                                            // LivewireEntry::make("peer-review-setting")
-                                            //     ->livewire(PeerReviewSetting::class)
                                         ]),
                                     HorizontalTab::make("Reviewer Guidelines")
                                         ->icon("iconpark-docsuccess-o")
@@ -106,7 +95,18 @@ class Workflow extends Page implements HasInfolists, HasForms
                         ]),
                     Tab::make("Editing")
                         ->icon("iconpark-paperclip")
-                        ->schema([]),
+                        ->schema([
+                            HorizontalTabs::make()
+                                ->tabs([
+                                    HorizontalTab::make("General")
+                                        ->icon("iconpark-documentfolder-o")
+                                        ->schema([
+                                            LivewireEntry::make("editing-setting")
+                                                ->livewire(EditingSetting::class)
+                                                ->lazy()
+                                        ]),
+                                ])
+                        ]),
                 ])
                 ->maxWidth('full'),
         ]);
