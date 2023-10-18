@@ -13,7 +13,6 @@ use App\Models\Review;
 use App\Models\Submission;
 use App\Models\SubmissionFileType;
 use App\Models\User;
-use App\Panel\Livewire\Tables\Submissions\SubmissionFilesTable;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Fieldset;
@@ -335,6 +334,9 @@ class ReviewerList extends Component implements HasForms, HasTable
             ->heading("Reviewers")
             ->headerActions([
                 Action::make('add-reviewer')
+                    ->hidden(
+                        fn (): bool => $this->record->isDeclined()
+                    )
                     ->icon("iconpark-adduser-o")
                     ->label("Reviewer")
                     ->modalHeading("Assign Reviewer")

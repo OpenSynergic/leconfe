@@ -107,7 +107,7 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
                     ->icon("iconpark-upload")
                     ->label('Upload Files')
                     ->hidden(function (): bool {
-                        if ($this->viewOnly) {
+                        if ($this->viewOnly || $this->record->isDeclined()) {
                             return true;
                         }
                         // If the submission has already been submitted, cannot upload the file.
@@ -150,9 +150,9 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
                                     'type' => $get('type'),
                                 ];
                             })
-                            ->saveRelationshipsUsing(static function (SpatieMediaLibraryFileUpload $component) {
-                                $component->saveUploadedFiles();
-                            })
+                            ->saveRelationshipsUsing(
+                                static fn (SpatieMediaLibraryFileUpload $component) => $component->saveUploadedFiles()
+                            )
                     ])
                     ->successNotificationTitle('Files added successfully')
                     ->failureNotificationTitle('There was a problem adding the files')
@@ -166,7 +166,9 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
                     ->modalWidth('md')
                     ->modalHeading('Edit file')
                     ->modalHeading("Rename")
-                    ->hidden($this->viewOnly)
+                    ->hidden(
+                        fn (): bool => $this->viewOnly || $this->record->isDeclined()
+                    )
                     ->modalSubmitActionLabel("Rename")
                     ->form([
                         TextInput::make('file_name')
@@ -183,7 +185,7 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
                     ]),
                 DeleteAction::make()
                     ->hidden(function (): bool {
-                        if ($this->viewOnly) {
+                        if ($this->viewOnly || $this->record->isDeclined()) {
                             return true;
                         }
                         return $this->record->user->id == auth()->id() && $this->record->stage != SubmissionStage::Wizard;

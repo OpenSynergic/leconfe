@@ -109,7 +109,7 @@ class ManageSubmissions extends ManageRecords
                 ...$tabs,
                 'Active' => Tab::make('Active')
                     ->modifyQueryUsing(
-                        fn (Builder $query): Builder => $query
+                        fn (Builder $query): Builder => $query->where('status', '!=', SubmissionStatus::Declined)
                     ),
                 'Published' => Tab::make("Published")
                     ->modifyQueryUsing(
@@ -117,6 +117,11 @@ class ManageSubmissions extends ManageRecords
                     ),
             ];
         }
-        return $tabs;
+        return array_merge($tabs, [
+            'Declined' => Tab::make("Declined")
+                ->modifyQueryUsing(
+                    fn (Builder $query): Builder => $query->where('status', SubmissionStatus::Declined)
+                ),
+        ]);
     }
 }
