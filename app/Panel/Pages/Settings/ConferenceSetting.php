@@ -8,6 +8,7 @@ use App\Panel\Livewire\Forms\Conferences\ContactSetting;
 use App\Panel\Livewire\Forms\Conferences\InformationSetting;
 use App\Panel\Livewire\Forms\Conferences\PrivacySetting;
 use App\Panel\Livewire\Forms\Conferences\SidebarSetting;
+use App\Panel\Livewire\Forms\Conferences\SetupSetting;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Components\Tabs;
@@ -16,6 +17,7 @@ use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\App;
+use Filament\Panel;
 
 class ConferenceSetting extends Page implements HasForms, HasInfolists
 {
@@ -32,6 +34,13 @@ class ConferenceSetting extends Page implements HasForms, HasInfolists
     protected ?string $heading = 'Conference Settings';
 
     protected static ?string $navigationLabel = 'Conference';
+
+    public function panel(Panel $panel): Panel
+    {
+        return $panel
+            // ...
+            ->favicon(asset('asset/images/logo.png'));
+    }
 
     public function infolist(Infolist $infolist): Infolist
     {
@@ -73,6 +82,14 @@ class ConferenceSetting extends Page implements HasForms, HasInfolists
                             ->schema([
                                 InfolistsVerticalTabs\Tabs::make()
                                     ->schema([
+                                        InfolistsVerticalTabs\Tab::make('Setup')
+                                            ->icon('heroicon-o-adjustments-horizontal')
+                                            ->schema([
+                                                LivewireEntry::make('setup-setting')
+                                                    ->livewire(SetupSetting::class, [
+                                                        'conference' => App::getCurrentConference(),
+                                                    ]),
+                                            ]),
                                         InfolistsVerticalTabs\Tab::make('Sidebar')
                                             ->icon('heroicon-o-view-columns')
                                             ->schema([
