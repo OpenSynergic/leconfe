@@ -3,7 +3,7 @@
 namespace App\Panel\Livewire\Submissions\Components;
 
 use App\Constants\ReviewerStatus;
-use App\Constants\SubmissionFileCategory;
+use App\Constants\SubmissionStatusRecommendation;
 use App\Infolists\Components\LivewireEntry;
 use App\Models\Enums\UserRole;
 use App\Models\Media;
@@ -157,22 +157,40 @@ class ReviewerList extends Component implements HasForms, HasTable
                         //No review is need to be seen.
                         fn (Review $record): bool => is_null($record->date_completed)
                     )
+                    ->modalWidth("2xl")
                     ->modalCancelActionLabel("Close")
                     ->modalSubmitAction(false)
                     ->icon("lineawesome-eye")
                     ->infolist(function (Review $record): array {
                         return [
+                            TextEntry::make("Recommendation")
+                                ->size('base')
+                                ->badge()
+                                ->color(
+                                    fn (): string => match ($record->recommendation) {
+                                        SubmissionStatusRecommendation::ACCEPT => 'primary',
+                                        SubmissionStatusRecommendation::DECLINE => 'danger',
+                                        default => 'warning'
+                                    }
+                                )
+                                ->getStateUsing(fn (): string => $record->recommendation),
                             TextEntry::make('Review for Author and Editor')
+                                ->size('base')
+                                ->color("gray")
                                 ->html()
                                 ->getStateUsing(fn (): string => $record->review_author_editor),
                             TextEntry::make('Review for Editor')
+                                ->size('base')
+                                ->color("gray")
                                 ->html()
                                 ->getStateUsing(fn (): string => $record->review_editor),
                             LivewireEntry::make('reviewer-files')
                                 ->livewire(ReviewerFiles::class, [
                                     'record' => $record,
                                 ])
-                                ->lazy()
+                                ->lazy(),
+                            // BladeEntry::make('Recommendation')
+                            //     ->blade()
                         ];
                     }),
                 ActionGroup::make([
