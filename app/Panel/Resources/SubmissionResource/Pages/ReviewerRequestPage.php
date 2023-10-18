@@ -97,16 +97,18 @@ class ReviewerRequestPage extends Page implements HasInfolists, HasActions
                                 'category' => SubmissionFileCategory::PAPERS,
                                 'viewOnly' => true
                             ]),
-                        // Fieldset::make("Review Schedule")
-                        //     ->columns(3)
-                        //     ->schema([
-                        //         TextEntry::make('Editor Due Date')
-                        //             ->getStateUsing("20 March 2023"),
-                        //         TextEntry::make('Response Due Date')
-                        //             ->getStateUsing("20 March 2023"),
-                        //         TextEntry::make('Review Due Date')
-                        //             ->getStateUsing("20 March 2023"),
-                        //     ])
+                        Fieldset::make("Review Schedule")
+                            ->columns(2)
+                            ->schema([
+                                TextEntry::make('Review Start at')
+                                    ->getStateUsing(
+                                        fn (): string => app()->getCurrentConference()->getMeta('workflow.peer-review.start_at')
+                                    ),
+                                TextEntry::make('Review End at')
+                                    ->getStateUsing(
+                                        fn (): string => app()->getCurrentConference()->getMeta('workflow.peer-review.end_at')
+                                    ),
+                            ])
                     ])
             ]);
     }
