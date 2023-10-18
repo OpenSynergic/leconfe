@@ -3,6 +3,8 @@
 namespace App\Conference\Pages;
 
 use App\Models\Announcement;
+use App\Models\Conference;
+use App\Models\ParticipantPosition;
 use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
@@ -13,8 +15,11 @@ class Home extends Page
 
     protected function getViewData(): array
     {
+        $partisipan_position = ParticipantPosition::with('participants')->get();
+        //dd($partisipan_position);
         return [
             'announcements' => Announcement::query()->get(),
+            'participantPosition' => $partisipan_position
         ];
     }
 
