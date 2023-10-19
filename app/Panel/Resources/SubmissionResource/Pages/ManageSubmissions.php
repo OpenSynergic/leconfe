@@ -89,13 +89,13 @@ class ManageSubmissions extends ManageRecords
                 ...$tabs,
                 SubmissionStage::PeerReview->value => Tab::make(SubmissionStage::PeerReview->value)
                     ->modifyQueryUsing(
-                        function (Builder $query) use ($currentUser, $currentUserAsParticipant) {
+                        function (Builder $query) use ($currentUser) {
                             $finalQuery = $query->stage(SubmissionStage::PeerReview);
                             if ($currentUser->hasRole(UserRole::Reviewer->value)) {
                                 $finalQuery = $finalQuery
                                     ->whereHas(
                                         'reviews',
-                                        fn (Builder $query) => $query->where('participant_id', $currentUserAsParticipant->getKey())
+                                        fn (Builder $query) => $query->where('user_id', $currentUser->getKey())
                                     );
                             }
                             return $finalQuery;

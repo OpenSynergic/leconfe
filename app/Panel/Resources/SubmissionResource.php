@@ -2,6 +2,7 @@
 
 namespace App\Panel\Resources;
 
+use App\Models\Enums\SubmissionStatus;
 use App\Models\Submission;
 use App\Panel\Resources\SubmissionResource\Pages;
 use Filament\GlobalSearch\GlobalSearchResult;
@@ -104,7 +105,7 @@ class SubmissionResource extends Resource
                     ]);
                 }
 
-                $participantReviewer = $record->reviews()->where('participant_id', $userAsParticipant->getKey())->first();
+                $participantReviewer = $record->reviews()->where('user_id', auth()->id())->first();
 
                 if ($participantReviewer) {
                     if ($participantReviewer->needConfirmation()) {
@@ -135,7 +136,13 @@ class SubmissionResource extends Resource
                         }),
                     Tables\Columns\TextColumn::make('status')
                         ->badge()
-                        ->color('warning')
+                        ->color(fn (Submission $record): string => match ($record->status) {
+                            SubmissionStatus::Declined => 'danger',
+                            SubmissionStatus::OnReview => 'warning',
+                            SubmissionStatus::Queued => 'primary',
+                            SubmissionStatus::Published => 'success',
+                            default => 'gray'
+                        })
                         ->formatStateUsing(
                             fn (Submission $record) => $record->status
                         )

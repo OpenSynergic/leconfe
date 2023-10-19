@@ -51,7 +51,6 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
                             name: 'positions',
                             titleAttribute: 'name',
                             modifyQueryUsing: fn (Builder $query) => $query->whereIn('type', [AuthorPositionResource::$positionType, SpeakerPositionResource::$positionType])
-                                ->groupBy('name')
                         )
                         ->preload()
                         ->saveRelationshipsUsing(function (Select $component, Participant $participant, $state) {
@@ -137,7 +136,6 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
                                             name: 'positions',
                                             titleAttribute: 'name',
                                             modifyQueryUsing: fn (Builder $query) => $query->whereIn('type', ['author', 'speaker'])
-                                                ->groupBy('name')
                                         )
                                         ->searchable()
                                         ->preload()
@@ -165,7 +163,7 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
                         ->width(50)
                         ->height(50)
                         ->defaultImageUrl(
-                            fn (Participant $record): string => $record->getProfilePicture()
+                            fn (Participant $record): string => $record->getFilamentAvatarUrl()
                         )
                         ->extraCellAttributes([
                             'style' => 'width: 1px',

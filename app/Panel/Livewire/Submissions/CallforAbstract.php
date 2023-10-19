@@ -41,17 +41,17 @@ class CallforAbstract extends Component implements HasForms, HasActions
                 Fieldset::make("Notification")
                     ->columns(1)
                     ->schema([
-                        Checkbox::make('no-notification')
-                            ->label("Don't send notification to author")
-                            ->reactive()
-                            ->default(false),
                         TextInput::make('email')
                             ->hidden(fn (Get $get): bool => $get('no-notification'))
                             ->disabled()
                             ->formatStateUsing(fn (Submission $record): string => $record->user->email),
                         TinyEditor::make('message')
                             ->hidden(fn (Get $get): bool => $get('no-notification'))
-                            ->minHeight(300)
+                            ->minHeight(300),
+                        Checkbox::make('no-notification')
+                            ->label("Don't send notification to author")
+                            ->reactive()
+                            ->default(false),
                     ])
             ])
             ->icon("lineawesome-times-circle-solid");
@@ -78,17 +78,17 @@ class CallforAbstract extends Component implements HasForms, HasActions
                          * Something like:
                          *   UserNotificaiton::formSchema()
                          */
-                        Checkbox::make('no-notification')
-                            ->label("Don't send notification to author")
-                            ->reactive()
-                            ->default(false),
                         TextInput::make('email')
                             ->hidden(fn (Get $get): bool => $get('no-notification'))
                             ->disabled()
                             ->formatStateUsing(fn (Submission $record): string => $record->user->email),
                         TinyEditor::make('message')
                             ->minHeight(300)
-                            ->hidden(fn (Get $get): bool => $get('no-notification'))
+                            ->hidden(fn (Get $get): bool => $get('no-notification')),
+                        Checkbox::make('no-notification')
+                            ->label("Don't send notification to author")
+                            ->reactive()
+                            ->default(false),
                     ])
             ])
             ->action(function (Action $action) {

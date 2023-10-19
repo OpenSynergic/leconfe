@@ -22,6 +22,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
 use Spatie\MediaLibrary\Support\MediaStream;
 
@@ -45,25 +46,7 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
 
     protected function getTableQuery(): Builder
     {
-        return match ($this->category) {
-            SubmissionFileCategory::FILES => $this->record->files()->getQuery(),
-            SubmissionFileCategory::PAPERS => $this->record->papers()->getQuery(),
-            SubmissionFileCategory::REVIEWER_ASSIGNED_PAPERS => auth()->user()
-                ->asParticipant()
-                ->reviews()
-                ->submission($this->record->id)
-                ->first()
-                ->files()
-                ->getQuery(),
-            SubmissionFileCategory::REVIEWER_FILES => auth()->user()
-                ->asParticipant()
-                ->reviews()
-                ->submission($this->record->id)
-                ->first()
-                ->files()
-                ->getQuery(),
-            default => abort(404),
-        };
+        return $this->record->submissionFiles()->getQuery();
     }
 
     protected function paginateTableQuery(Builder $query)
@@ -77,20 +60,16 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
             ->query($this->getTableQuery())
             ->heading(function (): string {
                 return match ($this->category) {
-                    SubmissionFileCategory::FILES => 'Files',
+                    SubmissionFileCategory::SUPPLEMENTARY_FILES => 'Files',
                     SubmissionFileCategory::PAPERS, SubmissionFileCategory::REVIEWER_ASSIGNED_PAPERS => 'Papers',
                     default => ''
                 };
             })
             ->columns([
-                TextColumn::make('file_name')
+                TextColumn::make('media.file_name')
                     ->color('primary')
-                    ->action(function (Media $record) {
-                        return $record;
-                    })
-                    ->description(function (Media $record) {
-                        return SubmissionFileType::nameById($record->getCustomProperty('type'));
-                    })
+                    ->action(fn (Model $record) => $record->media)
+                    ->description(fn (Model $record) => $record->type->name)
             ])
             ->headerActions([
                 Action::make('download_all')
@@ -99,9 +78,13 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
                     ->button()
                     ->hidden($this->viewOnly)
                     ->color('gray')
-                    ->action(function () {
-                        $downloads = $this->record->files()->get();
-                        return MediaStream::create('files.zip')->addMedia($downloads);
+                    ->action(function (Action $action) {
+                        $files = $this->record->media()->where('collection_name', SubmissionFileCategory::SUPPLEMENTARY_FILES)->get();
+                        if ($files) {
+                            return MediaStream::create('files.zip')->addMedia($files);
+                        }
+                        $action->getFailureNotificationTitle("There's nothing to download");
+                        $action->failure();
                     }),
                 Action::make('upload')
                     ->icon("iconpark-upload")
@@ -145,11 +128,6 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
                             ->collection($this->category)
                             ->visibility('private')
                             ->model(fn () => $this->record)
-                            ->customProperties(function (Get $get) {
-                                return [
-                                    'type' => $get('type'),
-                                ];
-                            })
                             ->saveRelationshipsUsing(
                                 static fn (SpatieMediaLibraryFileUpload $component) => $component->saveUploadedFiles()
                             )
@@ -157,7 +135,16 @@ class SubmissionFilesTable extends Component implements HasForms, HasTable
                     ->successNotificationTitle('Files added successfully')
                     ->failureNotificationTitle('There was a problem adding the files')
                     ->action(function (array $data, Action $action) {
-                        $this->record->getMediaCollection(SubmissionFileCategory::FILES);
+                        foreach ($this->record->getMedia(SubmissionFileCategory::SUPPLEMENTARY_FILES)
+                            as
+                            $file) {
+                            $this->record
+                                ->submissionFiles()
+                                ->create([
+                                    'submission_file_type_id' => $data['type'],
+                                    'media_id' => $file->getKey(),
+                                ]);
+                        }
                     })
             ])
             ->actions([

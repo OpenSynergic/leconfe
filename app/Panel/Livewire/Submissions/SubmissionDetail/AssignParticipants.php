@@ -151,7 +151,9 @@ class AssignParticipants extends Component implements HasForms, HasTable
                         ]);
 
                         if (!$data['no-notification']) {
-                            // Send Notification
+                            /**
+                             * TODO: Send notification
+                             */
                         }
 
                         $action->success();

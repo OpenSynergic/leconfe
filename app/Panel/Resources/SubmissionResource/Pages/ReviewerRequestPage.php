@@ -3,10 +3,10 @@
 namespace App\Panel\Resources\SubmissionResource\Pages;
 
 use App\Constants\ReviewerStatus;
-use App\Constants\SubmissionFileCategory;
 use App\Infolists\Components\LivewireEntry;
+use App\Models\Review;
 use App\Models\Submission;
-use App\Panel\Livewire\Tables\Submissions\SubmissionFilesTable;
+use App\Panel\Livewire\Submissions\Components\Files\PaperFiles;
 use App\Panel\Resources\SubmissionResource;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -30,6 +30,13 @@ class ReviewerRequestPage extends Page implements HasInfolists, HasActions
 
     public Submission $record;
 
+    public Review $review;
+
+    public function mount(Submission $record)
+    {
+        $this->review = $this->record->reviews()->where('user_id', auth()->id())->first();
+    }
+
     public function getHeading(): string|Htmlable
     {
         return 'Reviewer Request: ' . $this->record->getMeta('title');
@@ -45,12 +52,10 @@ class ReviewerRequestPage extends Page implements HasInfolists, HasActions
             ->requiresConfirmation()
             ->successNotificationTitle("Request Accepted")
             ->action(function (Action $action) {
-                $this->record
-                    ->reviews()
-                    ->where('participant_id', auth()->user()->asParticipant()->getKey())->update([
-                        'date_confirmed' => now(),
-                        'status' => ReviewerStatus::ACCEPTED
-                    ]);
+                $this->review->update([
+                    'date_confirmed' => now(),
+                    'status' => ReviewerStatus::ACCEPTED
+                ]);
                 $action->success();
                 $action->redirect(SubmissionResource::getUrl('review', ['record' => $this->record->id]));
             });
@@ -92,9 +97,8 @@ class ReviewerRequestPage extends Page implements HasInfolists, HasActions
                                     ->getStateUsing(fn (Submission $submission) => $submission->getMeta('abstract'))
                             ]),
                         LivewireEntry::make("review-files")
-                            ->livewire(SubmissionFilesTable::class, [
-                                'record' => $this->record,
-                                'category' => SubmissionFileCategory::PAPERS,
+                            ->livewire(PaperFiles::class, [
+                                'submission' => $this->record,
                                 'viewOnly' => true
                             ]),
                         Fieldset::make("Review Schedule")
@@ -102,11 +106,21 @@ class ReviewerRequestPage extends Page implements HasInfolists, HasActions
                             ->schema([
                                 TextEntry::make('Review Start at')
                                     ->getStateUsing(
-                                        fn (): string => app()->getCurrentConference()->getMeta('workflow.peer-review.start_at')
+                                        fn (): string => app()
+                                            ->getCurrentConference()
+                                            ->getMeta(
+                                                'workflow.peer-review.start_at',
+                                                $this->review->date_assigned->addDays(1)->format('d F Y')
+                                            )
                                     ),
                                 TextEntry::make('Review End at')
                                     ->getStateUsing(
-                                        fn (): string => app()->getCurrentConference()->getMeta('workflow.peer-review.end_at')
+                                        fn (): string => app()
+                                            ->getCurrentConference()
+                                            ->getMeta(
+                                                'workflow.peer-review.end_at',
+                                                $this->review->date_assigned->addDays(14)->format('d F Y')
+                                            )
                                     ),
                             ])
                     ])

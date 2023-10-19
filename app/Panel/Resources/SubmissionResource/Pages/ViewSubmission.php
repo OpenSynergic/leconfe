@@ -36,7 +36,10 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
         $this->record = $this->resolveRecord($record);
 
         // The person reviewing this submission cannot open the page with the details of the submission.
-        abort_if(auth()->user()->isReviewerOf($this->record), 403);
+        abort_if(
+            $this->record->reviews()->where('user_id', auth()->id())->exists(),
+            403
+        );
 
         abort_unless(static::getResource()::canView($this->getRecord()), 403);
     }
@@ -45,6 +48,15 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
     {
         return $this->record->getMeta('title');
     }
+
+    /**
+     * Question:
+     * Do we really need this (?)
+     */
+    // public function getSubheading(): string|Htmlable|null
+    // {
+    //     return new HtmlString("<span class='text-danger-600 text-base'>Declined</span>");
+    // }
 
     public function infolist(Infolist $infolist): Infolist
     {

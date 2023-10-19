@@ -46,9 +46,7 @@ class ReviewSubmissionPage extends Page implements HasInfolists, HasActions
     public function mount()
     {
         $this->review = $this->record->reviews()
-            ->participant(
-                auth()->user()->asParticipant()->getKey()
-            )
+            ->user(auth()->user())
             ->first();
 
         $this->recommendation = $this->review->recommendation;

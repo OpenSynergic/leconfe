@@ -4,11 +4,13 @@ namespace App\Constants;
 
 final class SubmissionFileCategory
 {
-    public const FILES = 'submission-files';
+    public const SUPPLEMENTARY_FILES = 'supplementary-files';
 
-    public const PAPERS = 'submission-papers';
+    public const PAPER_FILES = 'paper-files';
 
     public const REVIEWER_FILES = 'reviewer-files';
 
-    public const REVIEWER_ASSIGNED_PAPERS = 'reviewer-assigned-papers';
+    public const REVISION_FILES = 'revision-files';
+
+    public const REVIEWER_ASSIGNED_FILES = 'reviewer-assigned-files';
 }
