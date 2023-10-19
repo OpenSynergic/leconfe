@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Conference;
 use Livewire\Attributes\Rule;
 use App\Models\Enums\UserRole;
+use App\Utils\EnvironmentManager;
 use Illuminate\Support\Facades\DB;
 use App\Actions\User\UserCreateAction;
 use Illuminate\Auth\Events\Registered;
@@ -67,6 +68,8 @@ class InstallationForm extends Form
 
     public $conference_description = null;
 
+    public $testConnectionMessage = null;
+
 
     /**
      * Field for Timezone
@@ -101,7 +104,7 @@ class InstallationForm extends Form
 
             $user->assignRole(UserRole::Admin->value);
 
-            event(new Registered($user));
+            // event(new Registered($user));
 
             DB::commit();
         } catch (\Throwable $th) {
@@ -119,9 +122,10 @@ class InstallationForm extends Form
 
         $settings = config("database.connections.$connection");
 
+
         $connectionArray = array_merge($settings, [
             'driver' => $connection,
-            'database' => $this->db_name,
+            'database' => '',
         ]);
 
         if (!empty($this->db_username) && !empty($this->db_password)) {
@@ -138,16 +142,29 @@ class InstallationForm extends Form
         try {
             // reconnect to database with new settings
             DB::reconnect();
-
             DB::connection()->getPdo();
+
+            // buat file env dengan konfigurasi diatas
+            app(EnvironmentManager::class)->installation();
+
+            // buat database menggunakan command
+            Artisan::call('db:create', ['name' => $this->db_name]);
+
+            // isi file env DATABASE_NAME dengan $db_name
+            app(EnvironmentManager::class)->installation([
+                'DB_DATABASE' => $this->db_name,
+            ]);
+
+            // status pembuatan berhasil
+            session()->flash('status', 'Successfully Connected');
         } catch (\Throwable $th) {
             $this->addError('checkConnection', $th->getMessage());
-
             return false;
         }
 
         return true;
     }
+
 
     public function migrate()
     {

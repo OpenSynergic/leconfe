@@ -6,7 +6,7 @@
             </div>
         </div>
         <p class="font-semibold ">Version {{ app()->getAppVersion() }}</p>
-        <form wire:submit.prevent='install'>
+         <form wire:submit.prevent='install'>
             <div class="card bg-white text-sm">
                 <div class="card-body space-y-6">
                     @error('install')
@@ -15,6 +15,7 @@
                             <span>{{ $message }}</span>
                         </div>
                     @enderror
+
                     <div class="introduction">
                         Thank you for downloading the Leconfe, a project by <a class="link link-primary link-hover"
                             href="https://openjournaltheme.com">Open Journal Theme</a>
@@ -159,7 +160,7 @@
                         </div>
                         <div class="grid sm:grid-cols-2 gap-4">
                             <div class="form-control gap-2">
-                                <select class="select select-sm select-bordered w-full" wire:model="form.timezone" required>
+                                <select class="select select-sm select-bordered" wire:model="form.timezone" required>
                                     @foreach ($groupedTimezone as $group => $timezones)
                                         <optgroup label="{{ $group }}">
                                             @foreach ($timezones as $key => $timezone)
@@ -191,7 +192,18 @@
                                 <x-heroicon-o-exclamation-circle class="stroke-current shrink-0 h-6 w-6" />
                                 <span>{{ $message }}</span>
                             </div>
-                        @enderror
+                            @enderror
+
+                            @if (session('status'))
+                            <div class="flex inline-flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="text-green-500 w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                  </svg>
+
+                                <span>{{ session('status') }}</span>
+                              </div>
+                            @endif
+
                         <div class="grid sm:grid-cols-2 gap-4">
                             <div class="form-control gap-2">
                                 <label class="label-text">
@@ -243,88 +255,103 @@
                                     </div>
                                 @enderror
                             </div>
-
-                            <div class="form-control gap-2">
-                                <label class="label-text">
-                                    Database Host <span class="text-red-500">*</span>
-                                </label>
-                                <input type="text" class="input input-bordered input-sm" wire:model="form.db_host"
-                                    required />
-                                @error('form.db_host')
-                                    <div class="text-red-600 text-sm">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                            </div>
-                            <div class="form-control gap-2">
-                                <label class="label-text">
-                                    Database Port <span class="text-red-500">*</span>
-                                </label>
-                                <input type="number" class="input input-bordered input-sm" wire:model="form.db_port"
-                                    required />
-                                @error('form.db_port')
-                                    <div class="text-red-600 text-sm">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                            </div>
                         </div>
-                    </div>
 
-                    <div class="conference space-y-4">
-                        <div class="mt-2.5 mb-6 space-y-2">
-                            <h2 class="text-lg not-italic font-semibold leading-7 text-black">Conference</h2>
-                            <p class="w-full text-sm not-italic leading-snug">
-                                Create your first conference.
-                            </p>
+                        <div class="bg-white" x-data="{ accordOpen: false }">
+                            <div class="accordion-header justify-end" @click="accordOpen = !accordOpen">
+                                <a class="text-primary text-sm">More Settings</a>
+                            </div>
+
+                            <div class="accordion-body grid gap-4" x-cloak x-show="accordOpen" x-collapse
+                                x-collapse.duration.400ms>
+                                <div class="grid sm:grid-cols-2 gap-4">
+                                    <div class="form-control gap-2">
+                                        <label class="label-text">
+                                            Database Host <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" class="input input-bordered input-sm"
+                                            wire:model="form.db_host" required />
+                                        @error('form.db_host')
+                                            <div class="text-red-600 text-sm">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                    </div>
+                                    <div class="form-control gap-2">
+                                        <label class="label-text">
+                                            Database Port <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="number" class="input input-bordered input-sm"
+                                            wire:model="form.db_port" required />
+                                        @error('form.db_port')
+                                            <div class="text-red-600 text-sm">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="flex w-full gap-4 justify-end">
+                                        <a href="#" class="text-primary text-sm" wire:click.prevent='testConnection'>Test
+                                            Connection</a>
+                                </div>
+                            </div>
+
                         </div>
-                        <div class="grid gap-4">
-                            <div class="form-control gap-2">
-                                <label class="label-text">
-                                    Conference Name <span class="text-red-500">*</span>
-                                </label>
-                                <input type="text" class="input input-bordered input-sm"
-                                    wire:model="form.conference_name" required />
-                                @error('form.conference_name')
-                                    <div class="text-red-600 text-sm">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
+                        <div class="conference space-y-4">
+                            <div class="mt-2.5 mb-6 space-y-2">
+                                <h2 class="text-lg not-italic font-semibold leading-7 text-black">Conference</h2>
+                                <p class="w-full text-sm not-italic leading-snug">
+                                    Create your first conference.
+                                </p>
                             </div>
-                            <div class="form-control gap-2">
-                                <label class="label-text">
-                                    Conference Type <span class="text-red-500">*</span>
-                                </label>
-                                <select class="select select-sm select-bordered" wire:model="form.conference_type">
-                                    @foreach (\App\Models\Enums\ConferenceType::array() as $key => $type)
-                                        <option value="{{ $key }}">{{ $type }}</option>
-                                    @endforeach
-                                </select>
-                                @error('form.conference_type')
-                                    <div class="text-red-600 text-sm">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                            </div>
+                            <div class="grid gap-4">
+                                <div class="form-control gap-2">
+                                    <label class="label-text">
+                                        Conference Name <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="text" class="input input-bordered input-sm"
+                                        wire:model="form.conference_name" required />
+                                    @error('form.conference_name')
+                                        <div class="text-red-600 text-sm">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                                <div class="form-control gap-2">
+                                    <label class="label-text">
+                                        Conference Type <span class="text-red-500">*</span>
+                                    </label>
+                                    <select class="select select-sm select-bordered"
+                                        wire:model="form.conference_type">
+                                        @foreach (\App\Models\Enums\ConferenceType::array() as $key => $type)
+                                            <option value="{{ $key }}">{{ $type }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('form.conference_type')
+                                        <div class="text-red-600 text-sm">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
 
-                            <div class="form-control gap-2">
-                                <label class="label-text">
-                                    Conference Description
-                                </label>
-                                <textarea class="textarea textarea-bordered h-26" wire:model="form.conference_description">
+                                <div class="form-control gap-2">
+                                    <label class="label-text">
+                                        Conference Description
+                                    </label>
+                                    <textarea class="textarea textarea-bordered h-26" wire:model="form.conference_description">
                                 </textarea>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="flex justify-between mt-16">
-                        <button type="submit" class="btn btn-primary btn-outline btn-sm ml-auto"
-                            wire:loading.attr="disabled">
-                            <span class="loading loading-spinner loading-xs" wire:loading></span>
-                            Install Leconfe
-                        </button>
+                        <div class="flex justify-between mt-16">
+                            <button type="submit" class="btn btn-primary btn-outline btn-sm ml-auto"
+                                wire:loading.attr="disabled">
+                                <span class="loading loading-spinner loading-xs" wire:loading></span>
+                                Install Leconfe
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
         </form>
     </div>
 </div>

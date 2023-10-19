@@ -3,13 +3,14 @@
 namespace App\Website\Pages;
 
 use App\Events\AppInstalled;
-use App\Http\Middleware\IdentifyCurrentConference;
-use App\Http\Middleware\SetupDefaultData;
-use App\Livewire\Forms\InstallationForm;
-use App\Utils\EnvironmentManager;
 use App\Utils\PermissionChecker;
-use Jackiedo\Timezonelist\Facades\Timezonelist;
+use App\Utils\EnvironmentManager;
+use Illuminate\Support\Facades\Artisan;
+use App\Livewire\Forms\InstallationForm;
+use App\Http\Middleware\SetupDefaultData;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
+use Jackiedo\Timezonelist\Facades\Timezonelist;
+use App\Http\Middleware\IdentifyCurrentConference;
 
 class Installation extends Page
 {
@@ -27,6 +28,8 @@ class Installation extends Page
 
     public function mount()
     {
+        $this->form->db_name = 'conference_db_' . substr(uniqid(), 0, 3);
+
         if (app()->isInstalled()) {
             return redirect('/');
         }
@@ -67,13 +70,13 @@ class Installation extends Page
 
     public function install()
     {
-        if (! $this->validateInstallation()) {
+        if (!$this->validateInstallation()) {
             return;
         }
 
         $this->form->updateConfig();
 
-        app(EnvironmentManager::class)->installation();
+        // app(EnvironmentManager::class)->installation();
 
         $this->form->process();
 
@@ -85,10 +88,15 @@ class Installation extends Page
         return redirect('/');
     }
 
+    public function testConnection()
+    {
+        $this->form->checkDatabaseConnection();
+    }
+
     public function validateInstallation(): bool
     {
         $this->form->validate();
-        if (! $this->form->checkDatabaseConnection()) {
+        if (!$this->form->checkDatabaseConnection()) {
             return false;
         }
 
