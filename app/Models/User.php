@@ -262,12 +262,4 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
     {
         Mail::to($this->getEmailForVerification())->send(new VerifyUserEmail($this));
     }
-
-    public function isReviewerOf(Submission $submission): bool
-    {
-        return $submission
-            ->reviews()
-            ->where('participant_id', $this->asParticipant()?->getKey())
-            ->exists();
-    }
 }

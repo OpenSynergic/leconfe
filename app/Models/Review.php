@@ -20,7 +20,7 @@ class Review extends Model implements HasMedia
 
     protected $fillable = [
         'submission_id',
-        'participant_id',
+        'user_id',
         'status',
         'recommendation',
         'date_assigned',
@@ -60,9 +60,9 @@ class Review extends Model implements HasMedia
     //     return $query->where('submission_id', $submissionId);
     // }
 
-    public function scopeParticipant($query, int $participantId)
+    public function scopeUser($query, User $user)
     {
-        return $query->where('participant_id', $participantId);
+        return $query->where('user_id', $user->getKey());
     }
 
     public function submission()
@@ -70,9 +70,9 @@ class Review extends Model implements HasMedia
         return $this->belongsTo(Submission::class);
     }
 
-    public function participant()
+    public function user()
     {
-        return $this->belongsTo(Participant::class);
+        return $this->belongsTo(User::class);
     }
 
     public function needConfirmation(): bool
