@@ -3,6 +3,7 @@
 namespace App\Panel\Livewire\Submissions\Components;
 
 use App\Constants\ReviewerStatus;
+use App\Constants\SubmissionFileCategory;
 use App\Constants\SubmissionStatusRecommendation;
 use App\Infolists\Components\LivewireEntry;
 use App\Models\Enums\UserRole;
@@ -84,7 +85,7 @@ class ReviewerList extends Component implements HasForms, HasTable
             CheckboxList::make('papers')
                 ->label("Files to be reviewed")
                 ->hidden(
-                    !$component->record->papers()->exists()
+                    !$component->record->getMedia(SubmissionFileCategory::PAPER_FILES)->count()
                 )
                 ->options(function () use ($component) {
                     return $component->record

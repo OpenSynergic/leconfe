@@ -34,6 +34,7 @@ class Submission extends Model implements HasMedia
         'skipped_review',
         'stage',
         'status',
+        'revision_required'
     ];
 
     /**
@@ -107,14 +108,9 @@ class Submission extends Model implements HasMedia
         return $this->belongsTo(User::class);
     }
 
-    public function files()
+    public function submissionFiles()
     {
-        return $this->media()->where('collection_name', SubmissionFileCategory::FILES);
-    }
-
-    public function papers()
-    {
-        return $this->media()->where('collection_name', SubmissionFileCategory::FILES);
+        return $this->hasMany(SubmissionFile::class);
     }
 
     public function participants()
@@ -130,5 +126,10 @@ class Submission extends Model implements HasMedia
     public function scopeStatus(Builder $query, SubmissionStatus $status)
     {
         return $query->where('status', $status);
+    }
+
+    public function isDeclined(): bool
+    {
+        return $this->status == SubmissionStatus::Declined;
     }
 }

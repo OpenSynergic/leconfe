@@ -12,9 +12,4 @@ class SubmissionFileType extends Model
     protected $fillable = [
         'name',
     ];
-
-    public static function nameById(int $id): string
-    {
-        return static::find($id)->name;
-    }
 }

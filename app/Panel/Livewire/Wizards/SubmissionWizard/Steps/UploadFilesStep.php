@@ -2,29 +2,18 @@
 
 namespace App\Panel\Livewire\Wizards\SubmissionWizard\Steps;
 
-use App\Models\Media;
 use App\Models\Submission;
 use App\Panel\Livewire\Wizards\SubmissionWizard\Contracts\HasWizardStep;
 use Filament\Actions\Action as PageAction;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
-use Spatie\MediaLibrary\Support\MediaStream;
 
 class UploadFilesStep extends Component implements HasWizardStep, HasForms, HasActions
 {
-    use InteractsWithForms;
-    use InteractsWithActions;
+    use InteractsWithForms, InteractsWithActions;
 
     public Submission $record;
 
@@ -47,7 +36,7 @@ class UploadFilesStep extends Component implements HasWizardStep, HasForms, HasA
             ->failureNotificationTitle("No files were added to the submission")
             ->successNotificationTitle("Saved")
             ->action(function (PageAction $action) {
-                if (!$this->record->files()->exists()) {
+                if (!$this->record->submissionFiles()->exists()) {
                     return $action->failure();
                 }
                 $action->success();
