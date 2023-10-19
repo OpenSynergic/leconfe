@@ -75,6 +75,11 @@ class Review extends Model implements HasMedia
         return $this->belongsTo(User::class);
     }
 
+    public function confirmed(): bool
+    {
+        return !$this->needConfirmation();
+    }
+
     public function needConfirmation(): bool
     {
         return is_null($this->date_confirmed);

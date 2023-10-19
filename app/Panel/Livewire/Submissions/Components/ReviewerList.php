@@ -6,6 +6,7 @@ use App\Constants\ReviewerStatus;
 use App\Constants\SubmissionFileCategory;
 use App\Constants\SubmissionStatusRecommendation;
 use App\Infolists\Components\LivewireEntry;
+use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\UserRole;
 use App\Models\Media;
 use App\Models\Review;
@@ -213,6 +214,9 @@ class ReviewerList extends Component implements HasForms, HasTable
                     }),
                 ActionGroup::make([
                     Action::make('edit-reviewer')
+                        ->hidden(
+                            fn (): bool => $this->record->isDeclined() || $this->record->stage == SubmissionStage::Editing
+                        )
                         ->modalWidth("2xl")
                         ->icon("iconpark-edit")
                         ->label("Edit")
@@ -267,7 +271,9 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ->color('danger')
                         ->icon("iconpark-deletethree-o")
                         ->label("Cancel Reviewer")
-                        ->hidden(fn (Review $record) => $record->status == ReviewerStatus::CANCELED)
+                        ->hidden(
+                            fn (Review $record) => $record->status == ReviewerStatus::CANCELED || $record->confirmed()
+                        )
                         ->successNotificationTitle("Reviewer canceled")
                         ->modalWidth("2xl")
                         ->form([
@@ -337,7 +343,7 @@ class ReviewerList extends Component implements HasForms, HasTable
             ->headerActions([
                 Action::make('add-reviewer')
                     ->hidden(
-                        fn (): bool => $this->record->isDeclined()
+                        fn (): bool => $this->record->isDeclined() || $this->record->stage == SubmissionStage::Editing
                     )
                     ->icon("iconpark-adduser-o")
                     ->label("Reviewer")

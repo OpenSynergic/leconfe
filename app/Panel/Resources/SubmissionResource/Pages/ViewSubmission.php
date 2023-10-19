@@ -8,6 +8,7 @@ use App\Infolists\Components\VerticalTabs\Tabs as Tabs;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\UserRole;
 use App\Panel\Livewire\Submissions\CallforAbstract;
+use App\Panel\Livewire\Submissions\Editing;
 use App\Panel\Livewire\Submissions\PeerReview;
 use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
 use App\Panel\Resources\SubmissionResource;
@@ -94,6 +95,12 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                                         Tab::make("Editing")
                                             ->visible(fn (): bool => $this->conference->getMeta('workflow.editing.open', false))
                                             ->icon("heroicon-o-pencil")
+                                            ->schema([
+                                                LivewireEntry::make('editing')
+                                                    ->livewire(Editing::class, [
+                                                        'submission' => $this->record
+                                                    ])
+                                            ])
                                     ])
                                     ->maxWidth('full')
                             ]),

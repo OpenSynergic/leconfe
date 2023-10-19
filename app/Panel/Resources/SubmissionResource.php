@@ -139,7 +139,7 @@ class SubmissionResource extends Resource
                         ->color(fn (Submission $record): string => match ($record->status) {
                             SubmissionStatus::Declined => 'danger',
                             SubmissionStatus::OnReview => 'warning',
-                            SubmissionStatus::Queued => 'primary',
+                            SubmissionStatus::Queued, SubmissionStatus::Editing => 'primary',
                             SubmissionStatus::Published => 'success',
                             default => 'gray'
                         })
