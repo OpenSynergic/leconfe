@@ -50,7 +50,7 @@ class AssignParticipants extends Component implements HasForms, HasTable
     {
         return $table
             ->query(
-                fn (): Builder => $this->submission->participants()->getQuery()
+                fn (): Builder => $this->submission->participants()->with(['role'])->getQuery()
             )
             ->columns([
                 Split::make([
@@ -92,8 +92,8 @@ class AssignParticipants extends Component implements HasForms, HasTable
                     ->form([
                         Grid::make(3)
                             ->schema([
-                                Select::make('position')
-                                    ->label("Position")
+                                Select::make('role_id')
+                                    ->label("Role")
                                     ->options(function () {
                                         return Role::whereIn('name', [
                                             UserRole::Editor->value,
@@ -104,7 +104,7 @@ class AssignParticipants extends Component implements HasForms, HasTable
                                     })
                                     ->selectablePlaceholder("Select Position")
                                     ->columnSpan(1),
-                                Select::make('participant_id')
+                                Select::make('user_id')
                                     ->label("Name")
                                     ->required()
                                     ->allowHtml()
@@ -115,7 +115,7 @@ class AssignParticipants extends Component implements HasForms, HasTable
                                         fn (Get $get): array => User::with('roles')
                                             ->whereHas(
                                                 'roles',
-                                                fn (Builder $query) => $query->whereId($get('position'))
+                                                fn (Builder $query) => $query->whereId($get('role_id'))
                                             )
                                             ->whereNotIn('id', $this->submission->participants->pluck('user_id'))
                                             ->get()
@@ -129,12 +129,12 @@ class AssignParticipants extends Component implements HasForms, HasTable
                                     ->searchable()
                                     ->preload()
                                     ->columnSpan(2),
-                                Checkbox::make('send-notification')
-                                    ->label("Send Notification")
+                                Checkbox::make('no-notification')
+                                    ->label("Don't Send Notification")
                                     ->reactive()
                                     ->columnSpanFull(),
                                 Fieldset::make()
-                                    ->visible(fn (Get $get): bool => $get('send-notification'))
+                                    ->hidden(fn (Get $get): bool => $get('no-notification'))
                                     ->label("Notification")
                                     ->schema([
                                         TinyEditor::make('message')
@@ -145,15 +145,12 @@ class AssignParticipants extends Component implements HasForms, HasTable
                     ])
                     ->successNotificationTitle("Participant Assigned")
                     ->action(function (Action $action, array $data) {
-                        $participant = Participant::find($data['participant_id']);
-                        $participantPosition = ParticipantPosition::find($data['position']);
-                        SubmissionAssignParticipantAction::run(
-                            $this->submission,
-                            $participant,
-                            $participantPosition
-                        );
+                        $this->submission->participants()->create([
+                            'user_id' => $data['user_id'],
+                            'role_id' => $data['role_id'],
+                        ]);
 
-                        if ($data['send-notification']) {
+                        if (!$data['no-notification']) {
                             // Send Notification
                         }
 
