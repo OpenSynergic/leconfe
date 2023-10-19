@@ -160,34 +160,30 @@
 
         <section id="conference-speakers">
             <h2 class="text-heading mb-2 ms-5">Speakers</h2>
-            <div class="card-body ms-5">
+            <div class="card px-5">
+                @foreach ($participantPosition as $position)
+                    <div class=" space-y-4 mb-6">
+                        <h3 class="text-content">{{ $position->name }}</h3>
+                        <div class="flex flex-wrap gap-3">
+                            @foreach ($position->participants as $participant)
+                                <div class="flex items-center space-x-2">
+                                    <div class="avatar">
 
-                <div>
-                    @foreach ($participantPosition as $position)
-                        <div class=" space-y-4 mb-6">
-
-                            <p class="text-content">{{ $position->name }}</p>
-                            <div class="flex flex-wrap gap-3">
-                                @foreach ($position->participants as $participant)
-                                    <div class="flex items-center space-x-2">
-                                        <div class="avatar">
-
-                                            <div
-                                                class="h-14 w-14 rounded-full ring ring-2 ring-primary ring-offset-2 sm:w-16 sm:h-16">
-                                                <img src=" {{ $participant->getFirstMediaUrl('profile') }} "
-                                                    alt="" />
-                                            </div>
-
+                                        <div
+                                            class="h-14 w-14 rounded-full ring ring-2 ring-primary ring-offset-2 sm:w-16 sm:h-16">
+                                            <img src=" {{ $participant->getFirstMediaUrl('profile') }} "
+                                                alt="" />
                                         </div>
-                                        <div class="flex flex-col">
-                                            <p class="small-text">{{ $participant->given_name }}
-                                                {{ $participant->family_name }}</p>
 
-                                            <div class="col-md-4">
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <p class="small-text">{{ $participant->given_name }}
+                                            {{ $participant->family_name }}</p>
 
-                                                @foreach ($participant->getMeta('expertise') as $expertise)
-                                                    <small class="text-mini text-primary">{{ $expertise }}</small>
-                                                    @if ($loop->iteration >= 2)
+                                        <div>
+                                            @foreach ($participant->getMeta('expertise') as $expertise)
+                                                <small class="text-mini text-primary">{{ $expertise }}</small>
+                                                @if ($loop->iteration >= 2)
                                                     @break
                                                 @endif
                                                 @if (!$loop->last)
@@ -204,140 +200,120 @@
                     </div>
                 @endforeach
             </div>
-        </div>
+        </section>
 
-
-        {{-- <div class="flex flex-col space-y-4">
-                        <p class="text-content">Plenary Speakers</p>
-                        <div class="me-10 flex items-center space-x-2">
-                            <div class="avatar">
-                                <div
-                                    class="h-14 w-14 rounded-full ring ring-2 ring-primary ring-offset-2 sm:w-16 sm:h-16">
-                                    <img src="https://www.mnp.ca/-/media/foundation/integrations/personnel/2020/12/16/13/57/personnel-image-4483.jpg?h=800&w=600&hash=9D5E5FCBEE00EB562DCD8AC8FDA8433D"
-                                        alt="" />
-                                </div>
-                            </div>
-                            <div class="flex flex-col">
-                                <p class="small-text">Prof. Ashton Ganjar Ph.D</p>
-                                <small class="text-mini text-primary">"Technology Quantum"</small>
-                                <small class="text-mini text-secondary">University, Japan</small>
-                            </div>
-                        </div>
-                    </div> --}}
-
-    </section>
-
-    <section id="registration-information">
-        <h2 class="text-heading ms-5">Registration Fee</h2>
-        <div class="card-body">
-            <div
-                class="grid grid-cols-1 items-center justify-center gap-6 p-4 text-center md:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 border bg-gray-50 rounded">
-                <div class="grid grid-flow-row space-y-2 text-center text-content">
-                    <h2 class="font-semibold text-secondary">Author Cluster</h2>
-                    <p>International Author</p>
-                    <p>Domestic Author</p>
-                </div>
-
-                <div class="grid grid-flow-row space-y-2 text-content">
-                    <h2 class="font-semibold text-secondary">Fee</h2>
-                    <p>USD 125</p>
-                    <p>IDR 1.750.000</p>
-                </div>
-
-                <div class="grid grid-flow-row space-y-2 text-content">
-                    <h2 class="font-semibold text-secondary">Early Bid Registration</h2>
-                    <p>USD 75</p>
-                    <p>IDR.1000.000</p>
-                </div>
-
-                <div class="grid grid-flow-row space-y-2 text-content">
-                    <h2 class="font-semibold text-secondary">Participan Cluster</h2>
-                    <p>Internation Cluster</p>
-                    <p>Domestic Participant</p>
-                </div>
-
-                <div class="grid grid-flow-row space-y-2 text-content">
-                    <h2 class="font-semibold text-secondary">Fee</h2>
-                    <p class="text-secondary">USD 30</p>
-                    <p>IDR.300.000</p>
-                </div>
-
-                <div class="grid grid-flow-row space-y-2 text-content">
-                    <h2 class="font-semibold text-secondary">Early Bid Registration</h2>
-                    <p>USD 25</p>
-                    <p>IDR.250.000</p>
-                </div>
-            </div>
-
-
-            <div class="mt-4 flex justify-end text-content">
-                <small class="text-sm text-secondary">Register first to make any payment</small>
-            </div>
-
-            <div class="w-full text-content">
+        <section id="registration-information">
+            <h2 class="text-heading ms-5">Registration Fee</h2>
+            <div class="card-body">
                 <div
-                    class="mt-7 flex flex-wrap border border-gray-300 gap-3  bg-gray-50 justify-center md:justify-center rounded">
-                    <div class="flex h-32 w-32 items-center justify-center">
-                        <div class="flex flex-col text-center">
-                            <span class="text-2xl text-secondary">50</span>
-                            <span class=" text-secondary text-lg">Topics</span>
-                        </div>
+                    class="grid grid-cols-1 items-center justify-center gap-6 p-4 text-center md:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 border bg-gray-50 rounded">
+                    <div class="grid grid-flow-row space-y-2 text-center text-content">
+                        <h2 class="font-semibold text-secondary">Author Cluster</h2>
+                        <p>International Author</p>
+                        <p>Domestic Author</p>
                     </div>
 
-                    <div class="flex h-32 w-32 items-center justify-center">
-                        <div class="flex flex-col text-center">
-                            <span class="text-2xl text-secondary">30</span>
-                            <span class=" text-secondary text-lg">Papers</span>
-                        </div>
+                    <div class="grid grid-flow-row space-y-2 text-content">
+                        <h2 class="font-semibold text-secondary">Fee</h2>
+                        <p>USD 125</p>
+                        <p>IDR 1.750.000</p>
                     </div>
 
-                    <div class="flex h-32 w-32 items-center justify-center">
-                        <div class="flex flex-col text-center">
-                            <span class="text-2xl text-secondary">250</span>
-                            <span class=" text-secondary text-lg">Verificators</span>
-                        </div>
+                    <div class="grid grid-flow-row space-y-2 text-content">
+                        <h2 class="font-semibold text-secondary">Early Bid Registration</h2>
+                        <p>USD 75</p>
+                        <p>IDR.1000.000</p>
                     </div>
 
-                    <div class="flex h-32 w-32 items-center justify-center">
-                        <div class="flex flex-col text-center">
-                            <span class="text-secondary text-2xl">30</span>
-                            <span class=" text-secondary text-lg">Country</span>
+                    <div class="grid grid-flow-row space-y-2 text-content">
+                        <h2 class="font-semibold text-secondary">Participan Cluster</h2>
+                        <p>Internation Cluster</p>
+                        <p>Domestic Participant</p>
+                    </div>
+
+                    <div class="grid grid-flow-row space-y-2 text-content">
+                        <h2 class="font-semibold text-secondary">Fee</h2>
+                        <p class="text-secondary">USD 30</p>
+                        <p>IDR.300.000</p>
+                    </div>
+
+                    <div class="grid grid-flow-row space-y-2 text-content">
+                        <h2 class="font-semibold text-secondary">Early Bid Registration</h2>
+                        <p>USD 25</p>
+                        <p>IDR.250.000</p>
+                    </div>
+                </div>
+
+
+                <div class="mt-4 flex justify-end text-content">
+                    <small class="text-sm text-secondary">Register first to make any payment</small>
+                </div>
+
+                <div class="w-full text-content">
+                    <div
+                        class="mt-7 flex flex-wrap border border-gray-300 gap-3  bg-gray-50 justify-center md:justify-center rounded">
+                        <div class="flex h-32 w-32 items-center justify-center">
+                            <div class="flex flex-col text-center">
+                                <span class="text-2xl text-secondary">50</span>
+                                <span class=" text-secondary text-lg">Topics</span>
+                            </div>
+                        </div>
+
+                        <div class="flex h-32 w-32 items-center justify-center">
+                            <div class="flex flex-col text-center">
+                                <span class="text-2xl text-secondary">30</span>
+                                <span class=" text-secondary text-lg">Papers</span>
+                            </div>
+                        </div>
+
+                        <div class="flex h-32 w-32 items-center justify-center">
+                            <div class="flex flex-col text-center">
+                                <span class="text-2xl text-secondary">250</span>
+                                <span class=" text-secondary text-lg">Verificators</span>
+                            </div>
+                        </div>
+
+                        <div class="flex h-32 w-32 items-center justify-center">
+                            <div class="flex flex-col text-center">
+                                <span class="text-secondary text-2xl">30</span>
+                                <span class=" text-secondary text-lg">Country</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="sponsored">
-        <h2 class="text-heading ms-5 text-center">Sponsored By</h2>
-        <div class="flex flex-wrap justify-evenly gap-2 mt-4 mb-4">
-            <div class="avatar">
-                <div class="h-20 w-20 rounded-full">
-                    <img src="https://tp.ugm.ac.id/wp-content/uploads/sites/1404/2019/04/logo-white.png"
-                        alt="" />
+        <section id="sponsored">
+            <h2 class="text-heading ms-5 text-center">Sponsored By</h2>
+            <div class="flex flex-wrap justify-evenly gap-2 mt-4 mb-4">
+                <div class="avatar">
+                    <div class="h-20 w-20 rounded-full">
+                        <img src="https://tp.ugm.ac.id/wp-content/uploads/sites/1404/2019/04/logo-white.png"
+                            alt="" />
+                    </div>
                 </div>
-            </div>
 
-            <div class="avatar">
-                <div class="h-20 w-20 rounded-full">
-                    <img src="https://ncsc.publiccharters.org/sites/default/files/2022-01/napcs-con-logo.png"
-                        alt="" />
+                <div class="avatar">
+                    <div class="h-20 w-20 rounded-full">
+                        <img src="https://ncsc.publiccharters.org/sites/default/files/2022-01/napcs-con-logo.png"
+                            alt="" />
+                    </div>
                 </div>
-            </div>
 
-            <div class="avatar">
-                <div class="h-20 w-20">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXfxLAZBlbVRN8VKAmCc3ZytBeK5rJwAk-qw&usqp=CAU"
-                        alt="" />
+                <div class="avatar">
+                    <div class="h-20 w-20">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXfxLAZBlbVRN8VKAmCc3ZytBeK5rJwAk-qw&usqp=CAU"
+                            alt="" />
+                    </div>
+                </div>
+                <div class="avatar">
+                    <div class="h-20 w-20 rounded-full">
+                        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e4/University_of_Arizona_seal.svg/1200px-University_of_Arizona_seal.svg.png"
+                            alt="" />
+                    </div>
                 </div>
             </div>
-            <div class="avatar">
-                <div class="h-20 w-20 rounded-full">
-                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e4/University_of_Arizona_seal.svg/1200px-University_of_Arizona_seal.svg.png"
-                        alt="" />
-                </div>
-            </div>
-        </div>
-    </section>
+        </section>
+    </div>
 </x-website::layouts.main>
