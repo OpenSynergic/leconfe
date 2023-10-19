@@ -77,11 +77,9 @@ class SetupSetting extends Component implements HasForms
                                         'sm' => 2,
                                     ]),
                         SpatieMediaLibraryFileUpload::make('styleSheet')
-                                    ->collection('style sheet')
-                                    ->image()
-                                    ->imageResizeUpscale(false)
-                                    ->conversion('thumb')
-                                    ->acceptedFileTypes(['text/css'])
+                                    ->collection('styleSheet')
+                                    ->preserveFilenames()
+                                    // ->acceptedFileTypes(['text/css'])
                                     ->columnSpan([
                                         'xl' => 1,
                                         'sm' => 2,
