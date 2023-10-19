@@ -13,7 +13,7 @@ class AuthorsStep extends Component implements HasWizardStep
 
     public static function getWizardLabel(): string
     {
-        return 'Authors';
+        return 'Contributors';
     }
 
     public function render()

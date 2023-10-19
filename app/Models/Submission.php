@@ -79,16 +79,17 @@ class Submission extends Model implements HasMedia
         });
 
         static::created(function (Submission $submission) {
-            if ($user = Auth::user()) {
-                $participant = Participant::email($user->email)->first();
-                $participant = $participant ?: ParticipantCreateAction::run(
-                    $user->only('email', 'given_name', 'family_name', 'public_name', 'country'),
-                );
-                $positionAuthor = ParticipantPosition::where('type', 'author')->first();
-                $participant->positions()->detach($positionAuthor);
-                $participant->positions()->attach($positionAuthor);
-                SubmissionAssignParticipantAction::run($submission, $participant, $positionAuthor);
-            }
+            // Current user as a participant
+            $submission->participants()->create([
+                'user_id' => auth()->id(),
+                'role_id' => Role::where('name', UserRole::Author->value)->first()->getKey(),
+            ]);
+
+            // Current user as a contributors
+            $submission->contributors()->create([
+                'participant_id' => auth()->user()->asParticipant()->getKey(),
+                'participant_position_id' => ParticipantPosition::where('name', UserRole::Author->value)->first()->getKey()
+            ]);
         });
     }
 
@@ -116,6 +117,11 @@ class Submission extends Model implements HasMedia
     public function participants()
     {
         return $this->hasMany(SubmissionParticipant::class);
+    }
+
+    public function contributors()
+    {
+        return $this->hasMany(SubmissionContributor::class);
     }
 
     public function scopeStage(Builder $query, SubmissionStage $stage)

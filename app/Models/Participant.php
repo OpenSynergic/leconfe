@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use App\Actions\User\UserCreateAction;
-use App\Models\Enums\UserRole;
 use App\Models\Meta\ParticipantMeta;
 use Database\Factories\ParticipantFactory;
+use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -23,7 +22,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Participant extends Model implements HasMedia, Sortable
+class Participant extends Model implements HasMedia, Sortable, HasAvatar
 {
     use HasFactory, HasShortflakePrimary, InteractsWithMedia, Metable, SortableTrait, Notifiable;
 
@@ -92,7 +91,7 @@ class Participant extends Model implements HasMedia, Sortable
         return $query->where('email', $email);
     }
 
-    public function getProfilePicture()
+    public function getFilamentAvatarUrl(): ?string
     {
         if ($this->hasMedia('profile')) {
             return $this->getFirstMedia('profile')->getAvailableUrl(['avatar']);
@@ -106,6 +105,7 @@ class Participant extends Model implements HasMedia, Sortable
 
         return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=111827&font-size=0.33';
     }
+
 
     // public function createUserAccount(UserRole $role, ?string $password = null, bool $withMetas = true): void
     // {

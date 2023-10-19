@@ -1,6 +1,6 @@
 <div class="flex items-center gap-4 cursor-pointer">
     <div style="height: 50px; width: 50px;">
-        <img src="{{ $participant->getProfilePicture() }}" style="height: 50px; width: 50px;" class="max-w-none object-cover object-center rounded-full ring-white dark:ring-gray-900">
+        <img src="{{ $participant->getFilamentAvatarUrl() }}" style="height: 50px; width: 50px;" class="max-w-none object-cover object-center rounded-full ring-white dark:ring-gray-900">
     </div>
     <div>
         <p>{{ $participant->given_name }} {{ $participant->family_name }}</p>

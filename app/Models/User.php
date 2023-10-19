@@ -215,7 +215,17 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
 
     public function getFilamentAvatarUrl(): ?string
     {
-        return $this->getFirstMediaUrl('profile', 'avatar');
+        if ($this->hasMedia('profile')) {
+            return $this->getFirstMediaUrl('profile', 'avatar');
+        }
+
+        $name = str($this->fullName)
+            ->trim()
+            ->explode(' ')
+            ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
+            ->join(' ');
+
+        return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=111827&font-size=0.33';
     }
 
     public function registerMediaConversions(Media $media = null): void

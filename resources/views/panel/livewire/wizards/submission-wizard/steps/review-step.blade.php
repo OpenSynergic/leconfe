@@ -91,7 +91,7 @@
                                     Edit Author
                                 </x-filament::button>
                             </div>
-                            @livewire(\App\Panel\Livewire\Tables\Submissions\SubmissionAuthorsTable::class, ['record' => $this->record, 'viewOnly' => true])
+                            @livewire(App\Panel\Livewire\Submissions\Components\ContributorList::class, ['submission' => $record, 'lazy' => true])
                         </div>
                     </div>
                 </div>

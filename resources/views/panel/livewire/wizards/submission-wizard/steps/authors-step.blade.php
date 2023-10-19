@@ -33,7 +33,8 @@
                                 </div>
                             </div>
                         @enderror
-                        @livewire(\App\Panel\Livewire\Tables\Submissions\SubmissionAuthorsTable::class, ['record' => $this->record])
+                        @livewire(App\Panel\Livewire\Submissions\Components\ContributorList::class, ['submission' => $this->record, 'lazy' => true])
+                        {{-- @livewire(\App\Panel\Livewire\Tables\Submissions\SubmissionAuthorsTable::class, ['record' => $this->record]) --}}
                     </div>
                 </div>
             </div>

@@ -6,6 +6,7 @@ use App\Actions\Submissions\SubmissionAssignParticipantAction;
 use App\Models\Enums\UserRole;
 use App\Models\Participant;
 use App\Models\ParticipantPosition;
+use App\Models\Role;
 use App\Models\Submission;
 use App\Models\SubmissionParticipant;
 use App\Models\User;
@@ -34,14 +35,13 @@ use STS\FilamentImpersonate\Tables\Actions\Impersonate;
 
 class AssignParticipants extends Component implements HasForms, HasTable
 {
-    use InteractsWithForms;
-    use InteractsWithTable;
+    use InteractsWithForms, InteractsWithTable;
 
     public Submission $submission;
 
     public array $selectedParticipant = [];
 
-    public static function renderSelectParticipant(Participant $participant): string
+    public static function renderSelectParticipant(User $participant): string
     {
         return view('forms.select-participant', ['participant' => $participant])->render();
     }
@@ -54,23 +54,23 @@ class AssignParticipants extends Component implements HasForms, HasTable
             )
             ->columns([
                 Split::make([
-                    SpatieMediaLibraryImageColumn::make('participant.profile')
+                    SpatieMediaLibraryImageColumn::make('user.profile')
                         ->grow(false)
                         ->collection('profile')
                         ->conversion('avatar')
                         ->width(50)
                         ->height(50)
                         ->defaultImageUrl(
-                            fn (SubmissionParticipant $record): string => $record->participant->getProfilePicture()
+                            fn (SubmissionParticipant $record): string => $record->user->getFilamentAvatarUrl()
                         )
                         ->extraCellAttributes([
                             'style' => 'width: 1px',
                         ])
                         ->circular(),
-                    TextColumn::make('participant.fullName')
+                    TextColumn::make('user.fullName')
                         ->description(
                             function (Model $record) {
-                                return $record->position()->first()->name;
+                                return $record->role->name;
                             }
                         )
                 ])
@@ -79,6 +79,7 @@ class AssignParticipants extends Component implements HasForms, HasTable
             ->headerActions([
                 CreateAction::make()
                     ->modalHeading("Assign Participant")
+                    ->hidden($this->submission->isDeclined())
                     ->icon("lineawesome-user-plus-solid")
                     ->label("Assign")
                     ->size('xs')
@@ -94,7 +95,7 @@ class AssignParticipants extends Component implements HasForms, HasTable
                                 Select::make('position')
                                     ->label("Position")
                                     ->options(function () {
-                                        return ParticipantPosition::whereIn('name', [
+                                        return Role::whereIn('name', [
                                             UserRole::Editor->value,
                                             UserRole::Author->value
                                         ])
@@ -104,25 +105,23 @@ class AssignParticipants extends Component implements HasForms, HasTable
                                     ->selectablePlaceholder("Select Position")
                                     ->columnSpan(1),
                                 Select::make('participant_id')
-                                    ->label("Participant")
+                                    ->label("Name")
                                     ->required()
                                     ->allowHtml()
                                     ->reactive()
                                     ->preload()
                                     ->reactive()
                                     ->options(
-                                        fn (Get $get): array => Participant::with('positions')
+                                        fn (Get $get): array => User::with('roles')
                                             ->whereHas(
-                                                'positions',
-                                                function ($query) use ($get) {
-                                                    return $query->whereId($get('position'));
-                                                }
+                                                'roles',
+                                                fn (Builder $query) => $query->whereId($get('position'))
                                             )
-                                            ->whereNotIn('id', $this->submission->participants->pluck('participant_id'))
+                                            ->whereNotIn('id', $this->submission->participants->pluck('user_id'))
                                             ->get()
                                             ->mapWithKeys(
-                                                fn (Participant $participant) => [
-                                                    $participant->getKey() => static::renderSelectParticipant($participant)
+                                                fn (User $user) => [
+                                                    $user->getKey() => static::renderSelectParticipant($user)
                                                 ]
                                             )
                                             ->toArray()
@@ -170,16 +169,16 @@ class AssignParticipants extends Component implements HasForms, HasTable
                         ->modalSubmitActionLabel("Notify")
                         ->modalWidth('xl')
                         ->visible(
-                            fn (Model $record): bool => $record->participant->email !== auth()->user()->email
+                            fn (Model $record): bool => $record->user->email !== auth()->user()->email
                         )
                         ->form([
                             Grid::make(1)
                                 ->schema([
                                     TextInput::make('email')
                                         ->disabled()
-                                        ->formatStateUsing(function (Model $record) {
-                                            return $record->participant->email;
-                                        })
+                                        ->formatStateUsing(
+                                            fn (SubmissionParticipant $record) => $record->participant->email
+                                        )
                                         ->label("Target"),
                                     TinyEditor::make('message')
                                         ->minHeight(300)
@@ -191,19 +190,14 @@ class AssignParticipants extends Component implements HasForms, HasTable
                     Impersonate::make()
                         ->grouped()
                         ->visible(
-                            fn (Model $record): bool => $record->participant->email !== auth()->user()->email && auth()->user()->canImpersonate()
+                            fn (Model $record): bool => $record->user->email !== auth()->user()->email && auth()->user()->canImpersonate()
                         )
                         ->label("Login as")
                         ->icon("iconpark-login")
                         ->color('primary')
                         ->redirectTo('panel')
-                        ->action(function (Model $record, Impersonate $action) {
-                            $user = User::where('email', $record->participant->email)->first();
-                            if (!$user) {
-                                $action->failureNotificationTitle("User not Found");
-                                $action->failure();
-                            }
-                            if (!$action->impersonate($user)) {
+                        ->action(function (SubmissionParticipant $record, Impersonate $action) {
+                            if (!$action->impersonate($record->user)) {
                                 $action->failureNotificationTitle("User can't be impersonated");
                                 $action->failure();
                             }
@@ -212,7 +206,7 @@ class AssignParticipants extends Component implements HasForms, HasTable
                         ->color('danger')
                         ->icon("iconpark-deletethree-o")
                         ->visible(
-                            fn (Model $record): bool => $record->participant->email !== auth()->user()->email
+                            fn (SubmissionParticipant $record): bool => $record->user->email !== $this->submission->user->email
                         )
                         ->label("Remove")
                         ->successNotificationTitle("Participant Removed")

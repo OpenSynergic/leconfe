@@ -13,20 +13,18 @@ class SubmissionParticipant extends Model
 
     protected $fillable = [
         'submission_id',
-        'participant_id',
-        'participant_position_id',
+        'user_id',
+        'role_id',
     ];
 
-    public $timestamps = false;
-
-    public function participant()
+    public function user()
     {
-        return $this->belongsTo(Participant::class);
+        return $this->belongsTo(User::class);
     }
 
-    public function position()
+    public function role()
     {
-        return $this->belongsTo(ParticipantPosition::class, 'participant_position_id');
+        return $this->belongsTo(Role::class);
     }
 
     public function submission()

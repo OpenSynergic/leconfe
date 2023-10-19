@@ -130,7 +130,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ->width(50)
                         ->height(50)
                         ->defaultImageUrl(
-                            fn (Review $record): string => $record->participant->getProfilePicture()
+                            fn (Review $record): string => $record->participant->getFilamentAvatarUrl()
                         )
                         ->extraCellAttributes([
                             'style' => 'width: 1px',

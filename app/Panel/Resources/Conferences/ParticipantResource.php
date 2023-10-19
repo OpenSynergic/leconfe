@@ -108,7 +108,7 @@ class ParticipantResource extends Resource
                     'style' => 'width: 1px',
                 ])
                 ->circular()
-                ->defaultImageUrl(fn (Participant $record): string => $record->getProfilePicture())
+                ->defaultImageUrl(fn (Participant $record): string => $record->getFilamentAvatarUrl())
                 ->toggleable(),
             TextColumn::make('email')
                 ->searchable()
