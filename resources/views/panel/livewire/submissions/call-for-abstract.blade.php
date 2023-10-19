@@ -18,6 +18,7 @@
                         {{ $this->declineAction() }}
                     </div>
                 @endif
+                {{-- Participants --}}
                 @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\AssignParticipants::class, ['submission' => $submission])
             @endhasanyrole
         </div>

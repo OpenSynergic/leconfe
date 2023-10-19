@@ -34,6 +34,11 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
 
     public string $category;
 
+    public function isViewOnly(): bool
+    {
+        return $this->viewOnly;
+    }
+
     public function tableColumns(): array
     {
         return [
@@ -51,7 +56,7 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
                 ->icon("iconpark-download-o")
                 ->label('Download All Files')
                 ->button()
-                ->hidden($this->viewOnly)
+                ->hidden($this->isViewOnly())
                 ->color('gray')
                 ->action(function (TableAction $action) {
                     $files = $this->submission->media()->where('collection_name', $this->category)->get();
@@ -65,11 +70,10 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
                 ->icon("iconpark-upload")
                 ->label('Upload Files')
                 ->hidden(function (): bool {
-                    if ($this->viewOnly || $this->submission->isDeclined()) {
+                    if ($this->submission->isDeclined()) {
                         return true;
                     }
-                    // If the submission has already been submitted, cannot upload the file.
-                    return $this->submission->user_id == auth()->id() && $this->submission->stage != SubmissionStage::Wizard;
+                    return $this->isViewOnly();
                 })
                 ->button()
                 ->modalWidth('xl')
@@ -138,7 +142,7 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
                 ->modalHeading('Edit file')
                 ->modalHeading("Rename")
                 ->hidden(
-                    fn (): bool => $this->viewOnly || $this->submission->isDeclined()
+                    fn (): bool => $this->isViewOnly() || $this->submission->isDeclined()
                 )
                 ->modalSubmitActionLabel("Rename")
                 ->form([
@@ -156,10 +160,10 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
                 ]),
             DeleteAction::make()
                 ->hidden(function (): bool {
-                    if ($this->viewOnly || $this->submission->isDeclined()) {
+                    if ($this->submission->isDeclined()) {
                         return true;
                     }
-                    return $this->submission->user->id == auth()->id() && $this->submission->stage != SubmissionStage::Wizard;
+                    return $this->isViewOnly();
                 }),
         ];
     }

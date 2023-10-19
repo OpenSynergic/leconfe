@@ -2,7 +2,10 @@
 
 use App\Constants\ReviewerStatus;
 use App\Models\Participant;
+use App\Models\Review;
 use App\Models\Submission;
+use App\Models\SubmissionFile;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,7 +20,7 @@ return new class extends Migration
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Submission::class)->constrained();
-            $table->foreignIdFor(Participant::class)->comment("Reviewer ID (Participant id)")->constrained();
+            $table->foreignIdFor(User::class)->constrained();
             $table->string('recommendation')->nullable();
             $table->string('status')->default(ReviewerStatus::PENDING);
             $table->integer('quality')->nullable();
@@ -26,6 +29,13 @@ return new class extends Migration
             $table->timestamp('date_assigned')->useCurrent();
             $table->timestamp('date_confirmed')->nullable();
             $table->timestamp('date_completed')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('reviewer_assigned_files', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(Review::class)->constrained();
+            $table->foreignIdFor(SubmissionFile::class)->constrained();
             $table->timestamps();
         });
     }
