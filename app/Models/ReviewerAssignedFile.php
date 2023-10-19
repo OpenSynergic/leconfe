@@ -11,7 +11,7 @@ class ReviewerAssignedFile extends Model
 
     protected $fillable = [
         'review_id',
-        'media_id'
+        'submission_file_id'
     ];
 
     public function reviews()
@@ -19,8 +19,8 @@ class ReviewerAssignedFile extends Model
         return $this->belongsTo(Review::class);
     }
 
-    public function media()
+    public function submissionFile()
     {
-        return $this->belongsTo(Media::class);
+        return $this->belongsTo(SubmissionFile::class);
     }
 }

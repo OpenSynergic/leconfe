@@ -36,13 +36,13 @@ class ReviewerAssignedFiles extends \Livewire\Component implements HasTable, Has
                 fn (): Builder => $this->record->assignedFiles()->getQuery()
             )
             ->columns([
-                TextColumn::make('media.file_name')
+                TextColumn::make('submissionFile.media.file_name')
                     ->color('primary')
                     ->action(function (ReviewerAssignedFile $record) {
-                        return $record->media;
+                        return $record->submissionFile->media;
                     })
                     ->description(function (ReviewerAssignedFile $record) {
-                        return SubmissionFileType::nameById($record->media->getCustomProperty('type'));
+                        return $record->submissionFile->type->name;
                     })
             ]);
     }

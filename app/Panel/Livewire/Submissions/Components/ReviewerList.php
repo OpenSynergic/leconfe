@@ -8,10 +8,11 @@ use App\Constants\SubmissionStatusRecommendation;
 use App\Infolists\Components\LivewireEntry;
 use App\Models\Enums\UserRole;
 use App\Models\Media;
-use App\Models\Participant;
-use App\Models\ParticipantPosition;
 use App\Models\Review;
+use App\Models\ReviewerAssignedFile;
+use App\Models\Role;
 use App\Models\Submission;
+use App\Models\SubmissionFile;
 use App\Models\SubmissionFileType;
 use App\Models\User;
 use Filament\Forms\Components\Checkbox;
@@ -45,17 +46,17 @@ class ReviewerList extends Component implements HasForms, HasTable
 
     public Submission $record;
 
-    public ParticipantPosition $reviewerPosition;
+    public Role $reviewerRole;
 
     public function mount(Submission $record)
     {
-        $this->reviewerPosition = ParticipantPosition::where('name', UserRole::Reviewer->value)->first();
+        $this->reviewerRole = Role::where('name', UserRole::Reviewer->value)->first();
     }
 
     private static function formReviewerSchema(ReviewerList $component, bool $editMode = false): array
     {
         return [
-            Select::make('participant_id')
+            Select::make('user_id')
                 ->label("Reviewer")
                 ->placeholder("Select a reviewer")
                 ->allowHtml()
@@ -63,22 +64,22 @@ class ReviewerList extends Component implements HasForms, HasTable
                 ->required()
                 ->searchable()
                 ->options(function () use ($component, $editMode): array {
-                    return Participant::with('positions')
-                        ->whereHas('positions', function ($query) use ($component) {
-                            $query->where('name', $component->reviewerPosition->name);
+                    return User::with('roles')
+                        ->whereHas('roles', function (Builder $query) use ($component) {
+                            $query->where('name', $component->reviewerRole->name);
                         })
                         ->when(!$editMode, function ($query) use ($component) {
                             $query->whereNotIn(
                                 'id',
-                                Review::where('submission_id', $component->record->getKey())
+                                $component->record->reviews()
                                     ->get()
-                                    ->pluck('participant_id')
+                                    ->pluck('user_id')
                                     ->toArray()
                             );
                         })
                         ->get()
-                        ->mapWithKeys(function (Participant $participant) {
-                            return [$participant->getKey() => static::renderSelectParticipant($participant)];
+                        ->mapWithKeys(function (User $user) {
+                            return [$user->getKey() => static::renderSelectParticipant($user)];
                         })
                         ->toArray();
                 }),
@@ -89,30 +90,35 @@ class ReviewerList extends Component implements HasForms, HasTable
                 )
                 ->options(function () use ($component) {
                     return $component->record
-                        ->papers()
+                        ->submissionFiles()
+                        ->where('category', SubmissionFileCategory::PAPER_FILES)
                         ->get()
-                        ->mapWithKeys(function (Media $paper) {
+                        ->mapWithKeys(function (SubmissionFile $paper) {
                             return [
-                                $paper->getKey() => Action::make($paper->file_name)
-                                    ->label($paper->file_name)
+                                $paper->getKey() => Action::make($paper->media->file_name)
+                                    ->label($paper->media->file_name)
                                     ->url(function () use ($paper) {
-                                        return route('private.files', ['uuid' => $paper->uuid]);
+                                        return route('private.files', ['uuid' => $paper->media->uuid]);
                                     })
                                     ->link()
                             ];
                         });
                 })
                 ->descriptions(function () use ($component) {
-                    return $component->record->papers()->get()->mapWithKeys(function ($paper) {
-                        return [$paper->getKey() => SubmissionFileType::namebyId($paper->getCustomProperty('type'))];
-                    });
+                    return $component->record
+                        ->submissionFiles()
+                        ->where('category', SubmissionFileCategory::PAPER_FILES)
+                        ->get()
+                        ->mapWithKeys(function (SubmissionFile $paper) {
+                            return [$paper->getKey() => $paper->type->name];
+                        });
                 }),
         ];
     }
 
-    public static function renderSelectParticipant(Participant $participant): string
+    public static function renderSelectParticipant(User $user): string
     {
-        return view('forms.select-participant', ['participant' => $participant])->render();
+        return view('forms.select-participant', ['participant' => $user])->render();
     }
 
     public function table(Table $table): Table
@@ -123,31 +129,31 @@ class ReviewerList extends Component implements HasForms, HasTable
             )
             ->columns([
                 Split::make([
-                    SpatieMediaLibraryImageColumn::make('participant.profile')
+                    SpatieMediaLibraryImageColumn::make('user.profile')
                         ->grow(false)
                         ->collection('profile')
                         ->conversion('avatar')
                         ->width(50)
                         ->height(50)
                         ->defaultImageUrl(
-                            fn (Review $record): string => $record->participant->getFilamentAvatarUrl()
+                            fn (Review $record): string => $record->user->getFilamentAvatarUrl()
                         )
                         ->extraCellAttributes([
                             'style' => 'width: 1px',
                         ])
                         ->circular(),
-                    TextColumn::make('participant.fullName')
+                    TextColumn::make('user.fullName')
                         ->formatStateUsing(function (Review $record) {
                             if ($record->status == ReviewerStatus::CANCELED) {
-                                return $record->participant->fullName . " (Canceled)";
+                                return $record->user->fullName . " (Canceled)";
                             }
-                            return $record->participant->fullName;
+                            return $record->user->fullName;
                         })
                         ->color(
                             fn (Review $record): string => $record->status == ReviewerStatus::CANCELED ? 'danger' : 'primary'
                         )
                         ->description(function (Review $record): string {
-                            return $record->participant->email;
+                            return $record->user->email;
                         }),
                     TextColumn::make('recommendation')
                         ->badge()
@@ -198,12 +204,11 @@ class ReviewerList extends Component implements HasForms, HasTable
                                 ->html()
                                 ->getStateUsing(fn (): string => $record->review_editor),
                             LivewireEntry::make('reviewer-files')
-                                ->livewire(ReviewerFiles::class, [
-                                    'record' => $record,
+                                ->livewire(Files\ReviewerFiles::class, [
+                                    'submission' => $record->submission,
+                                    'viewOnly' => true
                                 ])
                                 ->lazy(),
-                            // BladeEntry::make('Recommendation')
-                            //     ->blade()
                         ];
                     }),
                 ActionGroup::make([
@@ -213,30 +218,30 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ->label("Edit")
                         ->mountUsing(function (Review $record, Form $form) {
                             $form->fill([
-                                'participant_id' => $record->participant_id,
-                                'papers' => $record->getMedia('reviewer-assigned-papers')->map(function (Media $media) {
-                                    return $media->getCustomProperty('copied_from');
-                                })->toArray()
+                                'user_id' => $record->user_id,
+                                'papers' => $record->assignedFiles()->with('submissionFile')
+                                    ->get()
+                                    ->pluck('submission_file_id')
+                                    ->toArray()
                             ]);
                         })
                         ->form(static::formReviewerSchema($this, true))
                         ->successNotificationTitle("Reviewer updated")
                         ->action(function (Action $action, Review $record, array $data) {
                             $record->update([
-                                'participant_id' => $data['participant_id'],
+                                'user_id' => $data['user_id'],
                             ]);
-                            $record->getMedia('reviewer-assigned-papers')
-                                ->each(
-                                    fn (Media $media) => $media->delete()
-                                );
-                            if ($data['papers']) {
-                                Media::whereIn('id', $data['papers'])
-                                    ->get()
-                                    ->each(function (Media $paper) use ($record) {
-                                        $reviewPaper = $paper->copy($record, 'reviewer-assigned-papers');
-                                        $reviewPaper->setCustomProperty('copied_from', $paper->id);
-                                        $reviewPaper->save();
-                                    });
+
+                            $record->assignedFiles()->get()->each(
+                                fn (ReviewerAssignedFile $file) => $file->delete()
+                            );
+
+                            if (isset($data['papers'])) {
+                                collect($data['papers'])->each(function (int $submisionFileId) use ($record) {
+                                    $record->assignedFiles()->create([
+                                        'submission_file_id' => $submisionFileId
+                                    ]);
+                                });
                             }
                             $action->success();
                         }),
@@ -247,7 +252,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ->form([
                             TextInput::make('target')
                                 ->formatStateUsing(function (Review $record) {
-                                    return $record->participant->email;
+                                    return $record->user->email;
                                 })
                                 ->disabled(),
                             TinyEditor::make('message')
@@ -256,10 +261,6 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ->successNotificationTitle("E-mail sent")
                         ->action(function (Action $action, array $data, Review $record) {
                             // Contoh E-Mail
-                            // Mail::raw($data['message'], function ($message) use ($record) {
-                            //     $message->to($record->participant->email)
-                            //         ->subject("Subject");
-                            // });
                             $action->success();
                         }),
                     Action::make("cancel-reviewer")
@@ -313,14 +314,14 @@ class ReviewerList extends Component implements HasForms, HasTable
                     Impersonate::make()
                         ->grouped()
                         ->visible(
-                            fn (Model $record): bool => $record->participant->email !== auth()->user()->email && auth()->user()->canImpersonate()
+                            fn (Model $record): bool => $record->user->email !== auth()->user()->email && auth()->user()->canImpersonate()
                         )
                         ->label("Login as")
                         ->icon("iconpark-login")
                         ->color('primary')
                         ->redirectTo('panel')
                         ->action(function (Model $record, Impersonate $action) {
-                            $user = User::where('email', $record->participant->email)->first();
+                            $user = User::where('email', $record->user->email)->first();
                             if (!$user) {
                                 $action->failureNotificationTitle("User not Found");
                                 $action->failure();
@@ -361,17 +362,18 @@ class ReviewerList extends Component implements HasForms, HasTable
                             ])
                     ])
                     ->action(function (Action $action, array $data) {
-                        if ($this->record->reviews()->where('participant_id', $data['participant_id'])->exists()) {
+                        if ($this->record->reviews()->where('user_id', $data['user_id'])->exists()) {
                             $action->failureNotificationTitle("Reviewer already assigned");
                             $action->failure();
                             return;
                         }
                         $reviewAssignment = $this->record->reviews()
                             ->create([
-                                'participant_id' => $data['participant_id'],
+                                'user_id' => $data['user_id'],
                                 'date_assigned' => now(),
                             ])
                             ->first();
+
 
                         foreach ($data['papers'] as $mediaId) {
                             $reviewAssignment->assignedFiles()
