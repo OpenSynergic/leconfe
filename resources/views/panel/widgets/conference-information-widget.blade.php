@@ -3,16 +3,15 @@
         <x-slot name='heading'>Announcement</x-slot>
         <x-header.conference>
             <x-slot:conference_date>
-                14th & 15th November 2023
+                {{ $announcement ? $announcement->created_at : '  ' }}
             </x-slot:conference_date>
 
             <x-slot:conference_title>
-                Noteworthy technology showcase
+                {{ $announcement ? $announcement->title : '  ' }}   
             </x-slot:conference_title>
 
             <x-slot:conference_description>
-                Here are the biggest enterprise technology
-                acquisitions so far, in reverse chronological order.
+               {!! $announcement ? $announcement->getMeta('content') : '' !!}
             </x-slot:conference_description>
 
             <x-slot:conference_type>
@@ -20,7 +19,13 @@
             </x-slot:conference_type>
 
             <x-slot:conference_browsur>
-                <img src="/place.jpg" alt="" width="300px" class="rounded">
+                {{-- <img src="{{ $announcement ->getFirstMedia('featured_image') ? $announcement ->getFirstMedia('featured_image')->getAvailableUrl(['small', 'thumb', 'thumb-xl']) : '' }}" alt="" width="300px" class="rounded"> --}}
+                @if ($announcement)
+                    <img src="{{ $announcement->getFirstMedia('featured_image')->getAvailableUrl(['small', 'thumb', 'thumb-xl']) }}" alt="" width="300px" class="rounded">
+                @else
+                    <p>  </p>
+                @endif
+
             </x-slot:conference_browsur>
 
 

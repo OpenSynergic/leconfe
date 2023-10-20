@@ -1,21 +1,24 @@
 <x-filament-widgets::widget>
     <x-filament::section icon="heroicon-m-clock" icon-color="info">
         <x-slot name="heading">Timeline</x-slot>
+                @foreach ( $timeline as $timelines )
+                    
                 <x-content.timeline>
                     <x-slot:timeline_time>
-                        12 Nov 2023
+                       {{ $timelines->date->format('d-m-Y') }}
                     </x-slot:timeline_time>
 
                     <x-slot:timeline_title>
-                        Timeline One
+                        {{ $timelines->title  }}
                     </x-slot:timeline_title>
 
                     <x-slot:timeline_description>
-                     Timeline one description
+                    {{ $timelines->subtitle }}
                     </x-slot:timeline_description>
 
                 </x-content.timeline>
-
+                @endforeach
+{{-- 
                 <x-content.timeline>
                     <x-slot:timeline_time>
                         15 Nov 2024
@@ -29,6 +32,6 @@
                      Timeline two description
                     </x-slot:timeline_description>
 
-                </x-content.timeline>
+                </x-content.timeline> --}}
     </x-filament::section>
 </x-filament-widgets::widget>
