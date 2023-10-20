@@ -4,7 +4,6 @@ namespace App\Panel\Livewire\Forms\Conferences;
 
 use App\Actions\Conferences\ConferenceUpdateAction;
 use App\Models\Conference;
-use App\Models\Information;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
@@ -17,7 +16,6 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Livewire\Component;
-use Filament\Panel;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class InformationSetting extends Component implements HasForms
@@ -27,7 +25,7 @@ class InformationSetting extends Component implements HasForms
     public Conference $conference;
 
     public ?array $formData = [];
-    
+
     public function mount(Conference $conference): void
     {
         $this->form->fill([

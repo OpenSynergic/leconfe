@@ -8,12 +8,10 @@ use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Livewire\Component;
-use Filament\Panel;
 
 class SetupSetting extends Component implements HasForms
 {
@@ -44,57 +42,57 @@ class SetupSetting extends Component implements HasForms
                 Section::make()
                     ->schema([
                         SpatieMediaLibraryFileUpload::make('logo')
-                                    ->collection('logo')
-                                    ->image()
-                                    ->imageResizeUpscale(false)
-                                    ->conversion('thumb')
-                                    ->columnSpan([
-                                        'xl' => 1,
-                                        'sm' => 2,
-                                    ]),
+                            ->collection('logo')
+                            ->image()
+                            ->imageResizeUpscale(false)
+                            ->conversion('thumb')
+                            ->columnSpan([
+                                'xl' => 1,
+                                'sm' => 2,
+                            ]),
                         SpatieMediaLibraryFileUpload::make('thumbnail')
-                                    ->collection('thumbnail')
-                                    ->image()
-                                    ->conversion('thumb')
-                                    ->columnSpan([
-                                        'xl' => 1,
-                                        'sm' => 2,
-                                    ]),
+                            ->collection('thumbnail')
+                            ->image()
+                            ->conversion('thumb')
+                            ->columnSpan([
+                                'xl' => 1,
+                                'sm' => 2,
+                            ]),
                         SpatieMediaLibraryFileUpload::make('favicon')
-                                    ->collection('favicon')
-                                    ->image()
-                                    ->imageResizeUpscale(false)
-                                    ->conversion('thumb')
-                                    ->columnSpan([
-                                        'xl' => 1,
-                                        'sm' => 2,
-                                    ]),
+                            ->collection('favicon')
+                            ->image()
+                            ->imageResizeUpscale(false)
+                            ->conversion('thumb')
+                            ->columnSpan([
+                                'xl' => 1,
+                                'sm' => 2,
+                            ]),
                         SpatieMediaLibraryFileUpload::make('styleSheet')
-                                    ->collection('styleSheet')
-                                    ->preserveFilenames()
+                            ->collection('styleSheet')
+                            ->preserveFilenames()
                                     // ->acceptedFileTypes(['text/css'])
-                                    ->columnSpan([
-                                        'xl' => 1,
-                                        'sm' => 2,
-                                    ]),
+                            ->columnSpan([
+                                'xl' => 1,
+                                'sm' => 2,
+                            ]),
 
                     ]),
 
-                    Actions::make([
-                        Action::make('save')
-                            ->label('Save')
-                            ->successNotificationTitle('Saved!')
-                            ->failureNotificationTitle('Data could not be saved.')
-                            ->action(function (Action $action) {
-                                $formData = $this->form->getState();
-                                try {
-                                    ConferenceUpdateAction::run($this->conference, $formData);
-                                    $action->sendSuccessNotification();
-                                } catch (\Throwable $th) {
-                                    $action->sendFailureNotification();
-                                }
-                            }),
-                    ])->alignLeft(),
+                Actions::make([
+                    Action::make('save')
+                        ->label('Save')
+                        ->successNotificationTitle('Saved!')
+                        ->failureNotificationTitle('Data could not be saved.')
+                        ->action(function (Action $action) {
+                            $formData = $this->form->getState();
+                            try {
+                                ConferenceUpdateAction::run($this->conference, $formData);
+                                $action->sendSuccessNotification();
+                            } catch (\Throwable $th) {
+                                $action->sendFailureNotification();
+                            }
+                        }),
+                ])->alignLeft(),
 
             ])
             ->statePath('formData');
