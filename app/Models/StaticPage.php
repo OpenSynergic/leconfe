@@ -5,8 +5,10 @@ namespace App\Models;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ContentType;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\Sitemap\Contracts\Sitemapable;
+use Spatie\Sitemap\Tags\Url;
 
-class StaticPage extends UserContent
+class StaticPage extends UserContent implements Sitemapable
 {
     protected static function booted(): void
     {
@@ -15,6 +17,11 @@ class StaticPage extends UserContent
         static::addGlobalScope('static_page', function (Builder $builder) {
             $builder->where('content_type', ContentType::StaticPage->value);
         });
+    }
+
+    public function toSitemapTag(): Url|string|array
+    {
+        return $this->getUrl();
     }
 
     public function getUrl(): string

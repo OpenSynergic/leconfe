@@ -159,141 +159,46 @@
         </section>
 
         <section id="conference-speakers">
-            <h2 class="text-heading mb-2 ms-5">Keynote Speakers</h2>
-            <div class="card-body space-y-2 ms-5">
-                <div class="flex flex-wrap gap-9">
-                    <div class="flex flex-col space-y-4">
-                        <p class="text-content">Opening Speakers</p>
-                        <div class="flex items-center space-x-2">
-                            <div class="avatar">
-                                <div
-                                    class="h-14 w-14 rounded-full ring ring-2 ring-primary ring-offset-2 sm:w-16 sm:h-16">
-                                    <img src="https://www.mnp.ca/-/media/foundation/integrations/personnel/2020/12/16/13/57/personnel-image-4483.jpg?h=800&w=600&hash=9D5E5FCBEE00EB562DCD8AC8FDA8433D"
-                                        alt="" />
+            <h2 class="text-heading mb-2 ms-5">Speakers</h2>
+            <div class="card px-5">
+                @foreach ($participantPosition as $position)
+                    <div class=" space-y-4 mb-6">
+                        <h3 class="text-content">{{ $position->name }}</h3>
+                        <div class="flex flex-wrap gap-3">
+                            @foreach ($position->participants as $participant)
+                                <div class="flex items-center space-x-2">
+                                    <div class="avatar">
+
+                                        <div
+                                            class="h-14 w-14 rounded-full ring ring-2 ring-primary ring-offset-2 sm:w-16 sm:h-16">
+                                            <img src=" {{ $participant->getFirstMediaUrl('profile') }} "
+                                                alt="" />
+                                        </div>
+
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <p class="small-text">{{ $participant->given_name }}
+                                            {{ $participant->family_name }}</p>
+
+                                        <div>
+                                            @foreach ($participant->getMeta('expertise') as $expertise)
+                                                <small class="text-mini text-primary">{{ $expertise }}</small>
+                                                @if ($loop->iteration >= 2)
+                                                    @break
+                                                @endif
+                                                @if (!$loop->last)
+                                                    ,
+                                                @endif
+                                            @endforeach
+                                        </div>
+                                        <small
+                                            class="text-mini text-secondary">{{ $participant->getMeta('affiliation') }}</small>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="flex flex-col">
-                                <p class="small-text">Prof. Ashton Faisal, Ph.D</p>
-                                <small class="text-mini text-primary">"Technology Quantum"</small>
-                                <small class="text-mini text-secondary">University, Japan</small>
-                            </div>
+                            @endforeach
                         </div>
                     </div>
-
-                    <div class="flex flex-col space-y-4">
-                        <p class="text-content">Closing Speakers</p>
-                        <div class="me-10 flex items-center space-x-2">
-                            <div class="avatar">
-                                <div
-                                    class="h-14 w-14 rounded-full ring ring-2 ring-primary ring-offset-2 sm:w-16 sm:h-16">
-                                    <img src="https://www.mnp.ca/-/media/foundation/integrations/personnel/2020/12/16/13/57/personnel-image-4483.jpg?h=800&w=600&hash=9D5E5FCBEE00EB562DCD8AC8FDA8433D"
-                                        alt="" />
-                                </div>
-                            </div>
-                            <div class="flex flex-col">
-                                <p class="small-text">Prof. Ashton Ganjar Ph.D</p>
-                                <small class="text-mini text-primary">"Technology Quantum"</small>
-                                <small class="text-mini text-secondary">University, Japan</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex flex-col space-y-2">
-                    <div class="max-w-[200px]">
-                        <p class="text-content">On Stage Speakers</p>
-                    </div>
-                    <div class="flex flex-wrap space-y-4 gap-4 md:justify-start">
-
-                        <div class="me-10 flex items-center space-x-2">
-                            <div class="avatar">
-                                <div
-                                    class="h-14 w-14 rounded-full ring ring-2 ring-primary ring-offset-2 sm:w-16 sm:h-16">
-                                    <img src="https://www.mnp.ca/-/media/foundation/integrations/personnel/2020/12/16/13/57/personnel-image-4483.jpg?h=800&w=600&hash=9D5E5FCBEE00EB562DCD8AC8FDA8433D"
-                                        alt="" />
-                                </div>
-                            </div>
-                            <div class="flex flex-col">
-                                <p class="small-text">Prof. Ashton, Ph.D</p>
-                                <small class="text-mini text-primary">"Technology Quantum"</small>
-                                <small class="text-mini text-secondary">University, Japan</small>
-                            </div>
-                        </div>
-
-                        <div class="me-10 flex items-center space-x-2">
-                            <div class="avatar">
-                                <div
-                                    class="h-14 w-14 rounded-full ring ring-2 ring-primary ring-offset-2 sm:w-16 sm:h-16">
-                                    <img src="https://www.mnp.ca/-/media/foundation/integrations/personnel/2020/12/16/13/57/personnel-image-4483.jpg?h=800&w=600&hash=9D5E5FCBEE00EB562DCD8AC8FDA8433D"
-                                        alt="" />
-                                </div>
-                            </div>
-                            <div class="flex flex-col">
-                                <p class="small-text">Prof. Ashton, Ph.D</p>
-                                <small class="text-mini text-primary">"Technology Quantum"</small>
-                                <small class="text-mini text-secondary">University, Japan</small>
-                            </div>
-                        </div>
-
-                        <div class="me-10 flex items-center space-x-2">
-                            <div class="avatar">
-                                <div
-                                    class="h-14 w-14 rounded-full ring ring-2 ring-primary ring-offset-2 sm:w-16 sm:h-16">
-                                    <img src="https://www.mnp.ca/-/media/foundation/integrations/personnel/2020/12/16/13/57/personnel-image-4483.jpg?h=800&w=600&hash=9D5E5FCBEE00EB562DCD8AC8FDA8433D"
-                                        alt="" />
-                                </div>
-                            </div>
-                            <div class="flex flex-col">
-                                <p class="small-text">Prof. Ashton, Ph.D</p>
-                                <small class="text-mini text-primary">"Technology Quantum"</small>
-                                <small class="text-mini text-secondary">University, Japan</small>
-                            </div>
-                        </div>
-                        <div class="me-10 flex items-center space-x-2">
-                            <div class="avatar">
-                                <div
-                                    class="h-14 w-14 rounded-full ring ring-2 ring-primary ring-offset-2 sm:w-16 sm:h-16">
-                                    <img src="https://www.mnp.ca/-/media/foundation/integrations/personnel/2020/12/16/13/57/personnel-image-4483.jpg?h=800&w=600&hash=9D5E5FCBEE00EB562DCD8AC8FDA8433D"
-                                        alt="" />
-                                </div>
-                            </div>
-                            <div class="flex flex-col">
-                                <p class="small-text">Prof. Ashton, Ph.D</p>
-                                <small class="text-mini text-primary">"Technology Quantum"</small>
-                                <small class="text-mini text-secondary">University, Japan</small>
-                            </div>
-                        </div>
-                        <div class="me-10 flex items-center space-x-2">
-                            <div class="avatar">
-                                <div
-                                    class="h-14 w-14 rounded-full ring ring-2 ring-primary ring-offset-2 sm:w-16 sm:h-16">
-                                    <img src="https://www.mnp.ca/-/media/foundation/integrations/personnel/2020/12/16/13/57/personnel-image-4483.jpg?h=800&w=600&hash=9D5E5FCBEE00EB562DCD8AC8FDA8433D"
-                                        alt="" />
-                                </div>
-                            </div>
-                            <div class="flex flex-col">
-                                <p class="small-text">Prof. Ashton, Ph.D</p>
-                                <small class="text-mini text-primary">"Technology Quantum"</small>
-                                <small class="text-mini text-secondary">University, Japan</small>
-                            </div>
-                        </div>
-
-                        <div class="me-10 flex items-center space-x-2">
-                            <div class="avatar">
-                                <div
-                                    class="h-14 w-14 rounded-full ring ring-2 ring-primary ring-offset-2 sm:w-16 sm:h-16">
-                                    <img src="https://www.mnp.ca/-/media/foundation/integrations/personnel/2020/12/16/13/57/personnel-image-4483.jpg?h=800&w=600&hash=9D5E5FCBEE00EB562DCD8AC8FDA8433D"
-                                        alt="" />
-                                </div>
-                            </div>
-                            <div class="flex flex-col">
-                                <p class="small-text">Prof. Ashton, Ph.D</p>
-                                <small class="text-mini text-primary">"Technology Quantum"</small>
-                                <small class="text-mini text-secondary">University, Japan</small>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
+                @endforeach
             </div>
         </section>
 

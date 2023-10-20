@@ -6,8 +6,10 @@ use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ContentType;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\Sitemap\Contracts\Sitemapable;
+use Spatie\Sitemap\Tags\Url;
 
-class Announcement extends UserContent
+class Announcement extends UserContent implements Sitemapable
 {
     protected static function booted(): void
     {
@@ -23,6 +25,11 @@ class Announcement extends UserContent
         });
     }
 
+    public function toSitemapTag(): Url|string|array
+    {
+        return $this->getUrl();
+    }
+
     public function getUrl()
     {
         return match ($this->conference->status) {
@@ -33,6 +40,7 @@ class Announcement extends UserContent
                 'conference' => $this->conference->id,
                 'announcement' => $this->id,
             ]),
+            ConferenceStatus::Upcoming => '#', // Currently, upcoming conferences are not accessible
             default => '#',
         };
     }
