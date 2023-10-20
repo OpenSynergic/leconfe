@@ -84,6 +84,7 @@ class SpeakerResource extends Resource
                             ->modalHeading('Create Speaker Position')
                             ->mutateFormDataUsing(function (array $data): array {
                                 $data['type'] = SpeakerPositionResource::$positionType;
+
                                 return $data;
                             })
                             ->form(function (Select $component, Form $form): array|Form|null {

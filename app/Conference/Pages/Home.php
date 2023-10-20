@@ -3,7 +3,6 @@
 namespace App\Conference\Pages;
 
 use App\Models\Announcement;
-use App\Models\Conference;
 use App\Models\ParticipantPosition;
 use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
