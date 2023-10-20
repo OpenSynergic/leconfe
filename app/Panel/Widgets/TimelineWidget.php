@@ -16,8 +16,5 @@ class TimelineWidget extends Widget
         $timeline = Timeline::all();
     
         return ['timeline' => $timeline];
-
-  
-
     }
 }

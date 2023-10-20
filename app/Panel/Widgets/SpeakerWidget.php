@@ -3,6 +3,7 @@
 namespace App\Panel\Widgets;
 
 use App\Models\Participant;
+use App\Models\ParticipantPosition;
 use Filament\Widgets\Widget;
 
 class SpeakerWidget extends Widget
@@ -13,14 +14,15 @@ class SpeakerWidget extends Widget
 
     protected function getViewData(): array
     {
-        $participants = Participant::whereHas('meta', function ($query) {
+        $participants_position = ParticipantPosition::where('type', 'speaker')->pluck('id');
+
+        $participants = Participant::whereHas('positions', function ($query) use ($participants_position) {
+            $query->whereIn('id', $participants_position);
+        })->whereHas('meta', function ($query) {
             $query->where('key', 'confirmed')->where('value', true);
         })->get();
 
-        return ['participants' => $participants->isEmpty() ? [] : $participants];
-        
-    } 
-    
-  
+        return ['participants' => $participants];
+    }
+
 }
- 
