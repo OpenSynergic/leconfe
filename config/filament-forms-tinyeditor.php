@@ -92,6 +92,4 @@ return [
         ],
 
     ],
-
-    'favicon' => '/logo.png',
 ];

@@ -23,13 +23,6 @@ class SetupSetting extends Component implements HasForms
 
     public ?array $formData = [];
 
-    // public function panel(Panel $panel): Panel
-    // {
-    //     return $panel
-    //         // ...
-    //         ->favicon(asset('logo.png'));
-    // }
-
     public function mount(Conference $conference): void
     {
         $this->form->fill([

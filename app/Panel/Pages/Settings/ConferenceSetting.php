@@ -35,13 +35,6 @@ class ConferenceSetting extends Page implements HasForms, HasInfolists
 
     protected static ?string $navigationLabel = 'Conference';
 
-    public function panel(Panel $panel): Panel
-    {
-        return $panel
-            // ...
-            ->favicon(asset('asset/images/logo.png'));
-    }
-
     public function infolist(Infolist $infolist): Infolist
     {
         return $infolist
