@@ -7,15 +7,12 @@ use App\Models\Enums\SubmissionStage;
 
 class RevisionFiles extends SubmissionFilesTable
 {
-    public string $category = SubmissionFileCategory::REVISION_FILES;
+    protected ?string $category = SubmissionFileCategory::REVISION_FILES;
+
+    protected string $tableHeading = "Revisions";
 
     public function isViewOnly(): bool
     {
         return $this->submission->stage != SubmissionStage::PeerReview || !$this->submission->revision_required;
-    }
-
-    public function tableHeading(): string
-    {
-        return "Revisions";
     }
 }

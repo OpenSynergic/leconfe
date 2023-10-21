@@ -6,10 +6,7 @@ use App\Constants\SubmissionFileCategory;
 
 class ReviewerFiles extends SubmissionFilesTable
 {
-    public string $category = SubmissionFileCategory::REVIEWER_FILES;
+    protected ?string $category = SubmissionFileCategory::REVIEWER_FILES;
 
-    public function tableHeading(): string
-    {
-        return "Reviewer Files";
-    }
+    protected string $tableHeading = "Reviewer Files";
 }

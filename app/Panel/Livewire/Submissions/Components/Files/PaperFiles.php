@@ -7,7 +7,9 @@ use App\Models\Enums\SubmissionStage;
 
 class PaperFiles extends SubmissionFilesTable
 {
-    public string $category = SubmissionFileCategory::PAPER_FILES;
+    protected ?string $category = SubmissionFileCategory::PAPER_FILES;
+
+    protected string $tableHeading = "Papers";
 
     public function isViewOnly(): bool
     {
@@ -16,10 +18,5 @@ class PaperFiles extends SubmissionFilesTable
         }
 
         return $this->submission->stage != SubmissionStage::PeerReview;
-    }
-
-    public function tableHeading(): string
-    {
-        return "Papers";
     }
 }

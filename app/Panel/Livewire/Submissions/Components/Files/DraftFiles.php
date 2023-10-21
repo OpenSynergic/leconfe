@@ -6,10 +6,23 @@ use App\Constants\SubmissionFileCategory;
 
 class DraftFiles extends SubmissionFilesTable
 {
-    public string $category = SubmissionFileCategory::EDITING_DRAFT_FILES;
+    use Traits\CanSelectFiles;
 
-    public function tableHeading(): string
+    protected ?string $category = SubmissionFileCategory::EDITING_DRAFT_FILES;
+
+    protected string $tableHeading = "Draft Files";
+
+    public function getTargetCategory(): string
     {
-        return "Draft Files";
+        return $this->getCategory();
+    }
+
+    public function getSelectableCategories(): array
+    {
+        return [
+            SubmissionFileCategory::PAPER_FILES,
+            SubmissionFileCategory::REVIEWER_FILES,
+            SubmissionFileCategory::REVISION_FILES
+        ];
     }
 }

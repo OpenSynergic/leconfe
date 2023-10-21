@@ -25,8 +25,10 @@ class SubmissionFile extends Model
             $record->user_id = auth()->id();
         });
 
-        static::deleted(function (SubmissionFile $record) {
-            $record->media()->delete();
+        static::deleting(function (SubmissionFile $record) {
+            if (!SubmissionFile::where('media_id', $record->media_id)->exists()) {
+                $record->media()->delete();
+            }
         });
     }
 
