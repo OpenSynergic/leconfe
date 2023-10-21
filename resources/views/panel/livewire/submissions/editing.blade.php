@@ -8,8 +8,11 @@
             @livewire(App\Panel\Livewire\Submissions\Components\Files\EditedFiles::class, ['submission' => $submission, 'lazy' => true])
         </div>
         <div class="space-y-4 col-span-4">
+
             {{-- Participants --}}
-            @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\AssignParticipants::class, ['submission' => $submission])
+            @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\AssignParticipants::class, ['submission' => $submission, 'lazy' => true])
+
+            {{ $this->publishAction() }}
         </div>
     </div>
 </div>

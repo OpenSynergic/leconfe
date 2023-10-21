@@ -19,7 +19,7 @@
                     </div>
                 @endif
                 {{-- Participants --}}
-                @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\AssignParticipants::class, ['submission' => $submission])
+                @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\AssignParticipants::class, ['submission' => $submission, 'lazy' => true])
             @endhasanyrole
         </div>
     </div>

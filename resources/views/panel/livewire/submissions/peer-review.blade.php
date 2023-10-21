@@ -26,12 +26,12 @@
                 @endif
 
                 {{-- Participants --}}
-                @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\AssignParticipants::class, ['submission' => $submission])
+                @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\AssignParticipants::class, ['submission' => $submission, 'lazy' => true])
 
                 {{-- TODO: is this a good way using hasanyrole --}}
-                {{-- <x-filament::section heading="Decision" class="!flex flex-col"> --}}
+         
                     @hasanyrole([\App\Models\Enums\UserRole::Admin->value, \App\Models\Enums\UserRole::Editor->value])
-                        @if (!$submission->reviews()->exists())
+                        @if (!$submission->reviews()->exists() && $submission->stage == \App\Models\Enums\SubmissionStage::PeerReview)
                             {{ $this->skipReviewAction() }}
                         @endif
                         @if (
@@ -42,7 +42,6 @@
                             {{ $this->declineSubmissionAction() }}
                         @endif
                     @endhasanyrole
-                {{-- </x-filament::section> --}}
             </div>
         </div>
         <x-filament-actions::modals />
