@@ -2,9 +2,9 @@
 
 namespace App\Actions\Submissions;
 
-use App\Models\Participant;
-use App\Models\ParticipantPosition;
+use App\Models\Role;
 use App\Models\Submission;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -12,15 +12,15 @@ class SubmissionAssignParticipantAction
 {
     use AsAction;
 
-    public function handle(Submission $submission, Participant $participant, ParticipantPosition $participantPosition)
+    public function handle(Submission $submission, User $user, Role $role)
     {
         try {
             DB::beginTransaction();
             $submissionParticipant = $submission->participants()->updateOrCreate([
-                'participant_id' => $participant->id,
+                'user_id' => $user->getKey(),
             ], [
-                'participant_id' => $participant->id,
-                'participant_position_id' => $participantPosition->id,
+                'user_id' => $user->getKey(),
+                'role_id' => $role->getKey(),
             ]);
             DB::commit();
             return $submissionParticipant;

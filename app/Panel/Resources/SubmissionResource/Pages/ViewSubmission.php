@@ -8,7 +8,9 @@ use App\Infolists\Components\VerticalTabs\Tabs as Tabs;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\UserRole;
 use App\Panel\Livewire\Submissions\CallforAbstract;
+use App\Panel\Livewire\Submissions\Components\ContributorList;
 use App\Panel\Livewire\Submissions\Editing;
+use App\Panel\Livewire\Submissions\Forms\Detail;
 use App\Panel\Livewire\Submissions\PeerReview;
 use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
 use App\Panel\Resources\SubmissionResource;
@@ -21,6 +23,7 @@ use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
+use Illuminate\Support\HtmlString;
 
 class ViewSubmission extends Page implements HasInfolists, HasForms
 {
@@ -49,15 +52,6 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
     {
         return $this->record->getMeta('title');
     }
-
-    /**
-     * Question:
-     * Do we really need this (?)
-     */
-    // public function getSubheading(): string|Htmlable|null
-    // {
-    //     return new HtmlString("<span class='text-danger-600 text-base'>Declined</span>");
-    // }
 
     public function infolist(Infolist $infolist): Infolist
     {
@@ -105,15 +99,28 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                                     ->maxWidth('full')
                             ]),
                         HorizontalTab::make('Publication')
+                            ->extraAttributes([
+                                'x-on:open-publication-tab.window' => new HtmlString('tab = \'-publication-tab\'')
+                            ])
                             ->schema([
                                 Tabs::make()
                                     ->tabs([
                                         Tab::make('Detail')
                                             ->icon("heroicon-o-information-circle")
-                                            ->schema([]),
-                                        Tab::make('Authors')
+                                            ->schema([
+                                                LivewireEntry::make('detail-form')
+                                                    ->livewire(Detail::class, [
+                                                        'submission' => $this->record
+                                                    ])
+                                            ]),
+                                        Tab::make('Contributors')
                                             ->icon("heroicon-o-user-group")
-                                            ->schema([]),
+                                            ->schema([
+                                                LivewireEntry::make('contributors')
+                                                    ->livewire(ContributorList::class, [
+                                                        'submission' => $this->record
+                                                    ])
+                                            ]),
                                         Tab::make('References')
                                             ->icon("iconpark-list")
                                             ->schema([]),
