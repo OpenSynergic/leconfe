@@ -181,7 +181,7 @@
                                             {{ $participant->family_name }}</p>
 
                                         <div>
-                                            @foreach ($participant->getMeta('expertise') as $expertise)
+                                            @foreach ($participant->getMeta('expertise') ?? [] as $expertise)
                                                 <small class="text-mini text-primary">{{ $expertise }}</small>
                                                 @if ($loop->iteration >= 2)
                                                     @break
@@ -201,6 +201,12 @@
                 @endforeach
             </div>
         </section>
+
+            {{-- additional content start --}}
+        <section class="user-content px-5">
+            {!! $currentConference->getMeta('additional_content') !!}
+        </section>
+            {{-- addtional content end --}}
 
         <section id="registration-information">
             <h2 class="text-heading ms-5">Registration Fee</h2>
@@ -314,6 +320,6 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> 
     </div>
 </x-website::layouts.main>
