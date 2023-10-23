@@ -24,5 +24,4 @@ class SpeakerWidget extends Widget
 
         return ['participants' => $participants];
     }
-
 }

@@ -6,7 +6,6 @@ use App\Models\Announcement;
 use App\Models\Block;
 use App\Models\Conference;
 use App\Models\Navigation;
-use App\Models\Participant;
 use App\Models\ParticipantPosition;
 use App\Models\Scopes\ConferenceScope;
 use App\Models\Site;

@@ -14,7 +14,7 @@ class VenueWidget extends Widget
     protected function getViewData(): array
     {
         $venue = Venue::limit(3)->get();
-    
+
         return ['venue' => $venue];
     }
 }

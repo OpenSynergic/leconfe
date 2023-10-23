@@ -15,8 +15,6 @@ class ConferenceInformationWidget extends Widget
     {
         $announcement = Announcement::latest()->first();
 
-        return  ['announcement' => $announcement];
+        return ['announcement' => $announcement];
     }
-    
 }
-

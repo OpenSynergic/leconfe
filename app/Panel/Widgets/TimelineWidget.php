@@ -14,7 +14,7 @@ class TimelineWidget extends Widget
     protected function getViewData(): array
     {
         $timeline = Timeline::all();
-    
+
         return ['timeline' => $timeline];
     }
 }

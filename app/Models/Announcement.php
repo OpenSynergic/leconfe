@@ -44,6 +44,7 @@ class Announcement extends UserContent implements Sitemapable
             default => '#',
         };
     }
+
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('small')
