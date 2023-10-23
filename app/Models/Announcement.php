@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ContentType;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Sitemap\Contracts\Sitemapable;
 use Spatie\Sitemap\Tags\Url;
 
@@ -42,5 +43,19 @@ class Announcement extends UserContent implements Sitemapable
             ConferenceStatus::Upcoming => '#', // Currently, upcoming conferences are not accessible
             default => '#',
         };
+    }
+    public function registerMediaConversions(Media $media = null): void
+    {
+        $this->addMediaConversion('small')
+            ->keepOriginalImageFormat()
+            ->width(200);
+
+        $this->addMediaConversion('thumb')
+            ->keepOriginalImageFormat()
+            ->width(400);
+
+        $this->addMediaConversion('thumb-xl')
+            ->keepOriginalImageFormat()
+            ->width(600);
     }
 }

@@ -81,4 +81,5 @@ class Participant extends Model implements HasMedia, Sortable
         return $this
             ->morphedByMany(ParticipantPosition::class, 'model', 'model_has_participants', 'participant_id', 'model_id');
     }
+    
 }
