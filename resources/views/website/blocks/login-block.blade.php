@@ -6,10 +6,10 @@
          <form wire:submit='login'>
            <div class="flex flex-col gap-2">
                <div class="space-y-2 form-control">
-                   <label class="small-text">Email
+                   <label class="text-xs text-secondary">Email
                        <span class="text-red-500">*</span>
                    </label>
-                   <input type="text" class="input input-bordered w-full bg-white h-8 rounded small-text"
+                   <input type="text" class="input input-bordered w-full bg-white h-8 rounded text-xs text-secondary"
                        placeholder="Username" wire:model='email'>
                   @error('email')
                   <span class="text-red-500 text-xs">{{ $message }}</span>
@@ -17,17 +17,17 @@
                </div>
 
                <div class="space-y-2 form-control">
-                   <label class="small-text">Password
+                   <label class="text-xs text-secondary">Password
                        <span class="text-red-500">*</span>
                    </label>
-                   <input type="password" class="input input-bordered w-full bg-white h-8 rounded small-text"
+                   <input type="password" class="input input-bordered w-full bg-white h-8 rounded text-xs text-secondary"
                        placeholder="Password" wire:model='password'>
                   @error('password')
                   <span class="text-red-500 text-xs">{{ $message }}</span>
                   @enderror
                </div>
 
-               <a href="#" class="small-text hover:text-primary">Forgot Password?</a>
+               <a href="#" class="text-xs text-secondary hover:text-primary">Forgot Password?</a>
 
                <div class="flex justify-end space-x-1">
                    <a

@@ -57,9 +57,6 @@
     @apply  text-sm leading-6 text-secondary;
 }
 
-.small-text {
-    @apply text-xs text-secondary;
-}
 
 .author-badge{
     @apply badge badge-outline text-mini badge-xs  h-5 text-yellow-400;
