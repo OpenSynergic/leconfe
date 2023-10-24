@@ -2,6 +2,7 @@
 
 namespace App\Website\Pages;
 
+use Illuminate\Support\Str;
 use App\Events\AppInstalled;
 use App\Utils\PermissionChecker;
 use App\Utils\EnvironmentManager;
@@ -28,7 +29,7 @@ class Installation extends Page
 
     public function mount()
     {
-        $this->form->db_name = 'conference_db_' . substr(uniqid(), 0, 3);
+        $this->form->db_name = 'conference_db_' . Str::random(3);
 
         if (app()->isInstalled()) {
             return redirect('/');
@@ -68,8 +69,20 @@ class Installation extends Page
         ]);
     }
 
+    public function testConnection()
+    {
+
+        if (!$this->validateInstallation()) {
+            return;
+        }
+
+    }
+
     public function install()
     {
+
+        dd('install dimulai');
+
         if (!$this->validateInstallation()) {
             return;
         }
@@ -80,6 +93,7 @@ class Installation extends Page
 
         $this->form->process();
 
+
         AppInstalled::dispatch();
 
         // create empty file on storage path
@@ -88,17 +102,20 @@ class Installation extends Page
         return redirect('/');
     }
 
-    public function testConnection()
-    {
-        $this->form->checkDatabaseConnection();
-    }
+
 
     public function validateInstallation(): bool
     {
-        $this->form->validate();
+        // $this->form->validate();
+
         if (!$this->form->checkDatabaseConnection()) {
             return false;
         }
+
+        if (!$this->form->createDatabase()) {
+            return false;
+        }
+
 
         return true;
     }

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use App\Actions\User\UserCreateAction;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Artisan;
 use App\Actions\Conferences\ConferenceCreateAction;
 
@@ -68,8 +69,6 @@ class InstallationForm extends Form
 
     public $conference_description = null;
 
-    public $testConnectionMessage = null;
-
 
     /**
      * Field for Timezone
@@ -118,10 +117,10 @@ class InstallationForm extends Form
 
     public function checkDatabaseConnection(): bool
     {
+
         $connection = $this->db_connection;
 
         $settings = config("database.connections.$connection");
-
 
         $connectionArray = array_merge($settings, [
             'driver' => $connection,
@@ -138,31 +137,68 @@ class InstallationForm extends Form
         }
 
         Config::set("database.connections.$connection", $connectionArray);
-
         try {
-            // reconnect to database with new settings
+
+            // reconnect to the database with new settings
             DB::reconnect();
+
             DB::connection()->getPdo();
 
-            // buat file env dengan konfigurasi diatas
             app(EnvironmentManager::class)->installation();
 
-            // buat database menggunakan command
-            Artisan::call('db:create', ['name' => $this->db_name]);
-
-            // isi file env DATABASE_NAME dengan $db_name
-            app(EnvironmentManager::class)->installation([
-                'DB_DATABASE' => $this->db_name,
-            ]);
-
-            // status pembuatan berhasil
-            session()->flash('status', 'Successfully Connected');
+            session()->flash('success', 'Successfully Connected');
         } catch (\Throwable $th) {
-            $this->addError('checkConnection', $th->getMessage());
+            $this->addError('databaseOperationError', 'Connection failed: ' . $th->getMessage());
             return false;
         }
 
         return true;
+    }
+
+    public function createDatabase(): bool
+    {
+        $dbName = $this->db_name;
+
+        try {
+            // Check if the database already exists
+            $databaseExists = $this->checkDatabaseExists($dbName);
+
+            if (!$databaseExists) {
+                // Database doesn't exist, create a new database
+                $this->createNewDatabase($dbName);
+                session()->flash('success', 'Connection success and database successfully created');
+            }
+
+            // Set the database connection to the new or existing database
+            $this->updateDatabaseConfig($dbName);
+
+            // Reconnect to the database with the new settings
+            DB::reconnect();
+
+            DB::connection()->getPdo();
+
+            app(EnvironmentManager::class)->installation();
+        } catch (\Throwable $th) {
+            $this->addError('databaseOperationError', 'Create database failed: ' . $th->getMessage());
+            return false;
+        }
+
+        return true;
+    }
+
+    private function checkDatabaseExists($dbName): bool
+    {
+        return !empty(DB::select("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '$dbName'"));
+    }
+
+    private function createNewDatabase($dbName): void
+    {
+        Schema::createDatabase($dbName);
+    }
+
+    private function updateDatabaseConfig($dbName): void
+    {
+        Config::set('database.connections.mysql.database', $dbName);
     }
 
 
