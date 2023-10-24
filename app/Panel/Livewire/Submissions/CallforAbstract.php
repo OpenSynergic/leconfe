@@ -62,6 +62,7 @@ class CallforAbstract extends Component implements HasForms, HasActions
         return Action::make('accept')
             ->modalHeading("Confirmation")
             ->modalSubmitActionLabel("Accept")
+            ->authorize('Submission:accept')
             ->modalWidth("2xl")
             ->record($this->submission)
             ->successNotificationTitle("Accepted")

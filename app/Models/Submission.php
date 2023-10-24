@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use App\Actions\Participants\ParticipantCreateAction;
-use App\Actions\Submissions\SubmissionAssignParticipantAction;
-use App\Constants\SubmissionFileCategory;
+use App\Actions\User\CreateParticipantFromUserAction;
 use App\Models\Concerns\HasTopics;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
@@ -66,7 +64,6 @@ class Submission extends Model implements HasMedia
      */
     protected static function booted(): void
     {
-
         static::addGlobalScope('user', function (Builder $builder) {
             if (!auth()->user()->hasRole(UserRole::Admin->value) && !auth()->user()->hasRole(UserRole::Editor->value) && !auth()->user()->hasRole(UserRole::Reviewer->value)) {
                 $builder->where('user_id', auth()->id());
@@ -78,12 +75,22 @@ class Submission extends Model implements HasMedia
             $submission->conference_id ??= app()->getCurrentConference()?->getKey();
         });
 
+        static::deleting(function (Submission $submission) {
+            $submission->participants()->delete();
+            $submission->contributors()->delete();
+            $submission->media()->delete();
+        });
+
         static::created(function (Submission $submission) {
-            // Current user as a participant
             $submission->participants()->create([
                 'user_id' => auth()->id(),
                 'role_id' => Role::where('name', UserRole::Author->value)->first()->getKey(),
             ]);
+
+            //If current user does not exists in participant
+            if (!auth()->user()->asParticipant()) {
+                CreateParticipantFromUserAction::run(auth()->user());
+            }
 
             // Current user as a contributors
             $submission->contributors()->create([

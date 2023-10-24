@@ -108,9 +108,12 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
                         ->form(static::getAuthorFormSchema())
                         ->using(function (array $data) {
                             $participant = Participant::email($data['email'])->first();
-                            $participant = $participant ?: ParticipantCreateAction::run($data);
-                            $positionAuthor = ParticipantPosition::find($data['position']);
-                            SubmissionAssignParticipantAction::run($this->record, $participant, $positionAuthor);
+                            $this->record->contributors()->updateOrCreate([
+                                'participant_id' => $participant->getKey(),
+                            ], [
+                                'participant_id' => $participant->getKey(),
+                                'participant_position_id' => $data['position']
+                            ]);
                             return $participant;
                         }),
                     Action::make('add_existing')
@@ -145,8 +148,12 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
                         ])
                         ->action(function (array $data) {
                             $participant = Participant::find($data['participant_id']);
-                            $position = ParticipantPosition::find($data['type']);
-                            SubmissionAssignParticipantAction::run($this->record, $participant, $position);
+                            $this->record->contributors()->updateOrCreate([
+                                'participant_id' => $participant->getKey()
+                            ], [
+                                'participant_id' => $participant->getKey(),
+                                'participant_position_id' => $data['type']
+                            ]);
                             return $participant;
                         })
                 ])
@@ -227,7 +234,14 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
                         ->form(static::getAuthorFormSchema())
                         ->using(function (array $data, Participant $record) {
                             $participant = ParticipantUpdateAction::run($record, $data);
-                            SubmissionAssignParticipantAction::run($this->record, $participant, ParticipantPosition::find($data['position']));
+                            $this->record
+                                ->contributors()
+                                ->updateOrCreate([
+                                    'participant_id' => $participant->getKey()
+                                ], [
+                                    'participant_id' => $participant->getKey(),
+                                    'participant_position_id' => $data['position']
+                                ]);
                             return $participant;
                         }),
                     DeleteAction::make()

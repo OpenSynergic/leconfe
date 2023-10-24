@@ -121,7 +121,8 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                                             ->schema([
                                                 LivewireEntry::make('contributors')
                                                     ->livewire(ContributorList::class, [
-                                                        'submission' => $this->record
+                                                        'submission' => $this->record,
+                                                        'viewOnly' => !auth()->user()->can('Publication:update')
                                                     ])
                                             ]),
                                         Tab::make('References')

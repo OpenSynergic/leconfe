@@ -21,7 +21,7 @@ class UploadFilesStep extends Component implements HasWizardStep, HasForms, HasA
 
     public static function getWizardLabel(): string
     {
-        return 'Upload Files';
+        return 'Upload Abstract';
     }
 
     public function render()

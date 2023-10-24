@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Actions\Participants\ParticipantCreateAction;
 use App\Mail\Templates\VerifyUserEmail;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\UserRole;

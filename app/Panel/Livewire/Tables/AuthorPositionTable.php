@@ -2,7 +2,7 @@
 
 namespace App\Panel\Livewire\Tables;
 
-use App\Panel\Livewire\Traits\PlaceholderTrait;
+// use App\Panel\Livewire\Traits\PlaceholderTrait;
 use App\Panel\Resources\AuthorPositionResource;
 use Filament\Actions\CreateAction;
 use Filament\Facades\Filament;
@@ -20,7 +20,7 @@ use Livewire\Component;
 
 class AuthorPositionTable extends Component implements HasForms, HasTable
 {
-    use InteractsWithForms, InteractsWithTable, PlaceholderTrait;
+    use InteractsWithForms, InteractsWithTable;
 
     protected static string $resource = AuthorPositionResource::class;
 

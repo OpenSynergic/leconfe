@@ -200,6 +200,9 @@ class ReviewerList extends Component implements HasForms, HasTable
                                 ->html()
                                 ->getStateUsing(fn (): string => $record->review_author_editor),
                             TextEntry::make('Review for Editor')
+                                ->hidden(
+                                    fn (): bool => $this->record->user->getKey() == auth()->id()
+                                )
                                 ->size('base')
                                 ->color("gray")
                                 ->html()
@@ -214,6 +217,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                     }),
                 ActionGroup::make([
                     Action::make('edit-reviewer')
+                        ->authorize('Submission:editReviewer')
                         ->hidden(
                             fn (): bool => $this->record->isDeclined() || $this->record->stage == SubmissionStage::Editing
                         )
@@ -250,6 +254,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                             $action->success();
                         }),
                     Action::make("email-reviewer")
+                        ->authorize('Submission:emailReviewer')
                         ->label("E-Mail Reviewer")
                         ->icon("iconpark-sendemail")
                         ->modalSubmitActionLabel("Send")
@@ -349,7 +354,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                     ->label("Reviewer")
                     ->modalHeading("Assign Reviewer")
                     ->modalWidth("2xl")
-                    ->authorize('Review:create')
+                    ->authorize('Submission:assignReviewer')
                     ->form([
                         ...static::formReviewerSchema($this),
                         Fieldset::make("Notification")
@@ -381,10 +386,12 @@ class ReviewerList extends Component implements HasForms, HasTable
                             ->first();
 
 
-                        foreach ($data['papers'] as $mediaId) {
+                        foreach ($data['papers'] as $submissionFileId) {
+                            $submissionFile = SubmissionFile::find($submissionFileId);
                             $reviewAssignment->assignedFiles()
                                 ->create([
-                                    'media_id' => $mediaId,
+                                    'submission_files_id' => $submissionFile->getKey(),
+                                    'media_id' => $submissionFile->media->getKey(),
                                 ]);
                         }
                     })
