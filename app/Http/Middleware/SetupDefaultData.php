@@ -51,7 +51,8 @@ class SetupDefaultData
         View::share('headerLogoAltText', $currentConference->name);
         View::share('contextName', $currentConference->name);
         View::share('footer', $currentConference->getMeta('page_footer'));
-
+        View::share('favicon', $currentConference->getFirstMediaUrl('favicon'));
+        View::share('styleSheet', $currentConference->getFirstMediaUrl('styleSheet'));
         MetaTag::add('description', preg_replace("/\r|\n/", '', $currentConference->getMeta('description')));
     }
 }
