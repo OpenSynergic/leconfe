@@ -30,6 +30,7 @@
         "Role:viewAny",
         "StaticPage:viewAny",
         "Submission:create",
+        "Submission:publish",
         "Submission:update",
         "Topic:create",
         "Topic:delete",
@@ -59,6 +60,7 @@
         "Role:update",
         "Role:view",
         "Role:viewAny",
+        "Submission:publish",
         "Submission:update",
         "User:assignRoles",
         "User:create",
@@ -69,6 +71,7 @@
         "User:viewAny"
     ],
     "Editor": [
+        "Submission:publish",
         "Submission:update"
     ],
     "Reviewer": [],

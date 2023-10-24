@@ -11,9 +11,12 @@ use App\Panel\Livewire\Submissions\CallforAbstract;
 use App\Panel\Livewire\Submissions\Components\ContributorList;
 use App\Panel\Livewire\Submissions\Editing;
 use App\Panel\Livewire\Submissions\Forms\Detail;
+use App\Panel\Livewire\Submissions\Forms\Publish;
+use App\Panel\Livewire\Submissions\Forms\References;
 use App\Panel\Livewire\Submissions\PeerReview;
 use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
 use App\Panel\Resources\SubmissionResource;
+use Filament\Actions\Action;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Components\Tabs as HorizontalTabs;
@@ -123,7 +126,23 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                                             ]),
                                         Tab::make('References')
                                             ->icon("iconpark-list")
-                                            ->schema([]),
+                                            ->schema([
+                                                LivewireEntry::make('references')
+                                                    ->livewire(References::class, [
+                                                        'submission' => $this->record
+                                                    ])
+                                            ]),
+                                        Tab::make('Proceeding')
+                                            ->icon("iconpark-check-o")
+                                            ->hidden(function () {
+                                                return !auth()->user()->can('Submission:publish');
+                                            })
+                                            ->schema([
+                                                LivewireEntry::make('publishing')
+                                                    ->livewire(Publish::class, [
+                                                        'submission' => $this->record
+                                                    ])
+                                            ]),
                                     ])
                             ])
                     ])

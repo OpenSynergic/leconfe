@@ -29,6 +29,7 @@
     "Role:viewAny",
     "StaticPage:viewAny",
     "Submission:create",
+    "Submission:publish",
     "Submission:update",
     "Topic:create",
     "Topic:delete",
