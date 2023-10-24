@@ -2,14 +2,11 @@
 
 namespace App\Panel\Livewire\Submissions\Components;
 
-use App\Models\Enums\UserRole;
+use App\Actions\Participants\ParticipantUpdateAction;
 use App\Models\Participant;
 use App\Models\ParticipantPosition;
 use App\Models\Submission;
-use App\Models\SubmissionContributor;
-use App\Panel\Resources\Conferences\AuthorPositionResource;
 use App\Panel\Resources\Conferences\ParticipantResource;
-use App\Panel\Resources\Conferences\SpeakerPositionResource;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -17,6 +14,8 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
@@ -55,7 +54,7 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
             )
             ->when(
                 $submissionRelated,
-                fn (Builder $query) => $query->whereIn('id', $this->submission->participants()->pluck('participant_id'))
+                fn (Builder $query) => $query->whereIn('id', $this->submission->contributors()->pluck('participant_id'))
             )
             ->when(
                 !$submissionRelated,
@@ -89,8 +88,41 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
         return $table
             ->heading("Contributors")
             ->query(
-                fn (): Builder => $this->submission->contributors()->with('position')->getQuery()
+                fn (): Builder => $this->getQuery()
             )
+            ->actions([
+                ActionGroup::make([
+                    EditAction::make()
+                        ->modalWidth('2xl')
+                        ->hidden(
+                            fn (Participant $record): bool => $record->email == auth()->user()->email
+                        )
+                        ->mutateRecordDataUsing(function ($data, Participant $record) {
+                            $data['meta'] = $record->getAllMeta()->toArray();
+                            $contributor = $this->submission->contributors()->where('participant_id', $record->getKey())->first();
+                            $data['position'] = $contributor->position->getKey();
+                            return $data;
+                        })
+                        ->form(static::getAuthorFormSchema())
+                        ->using(function (array $data, Participant $record) {
+                            $participant = ParticipantUpdateAction::run($record, $data);
+                            $this->submission
+                                ->contributors()
+                                ->updateOrCreate([
+                                    'participant_id' => $participant->getKey()
+                                ], [
+                                    'participant_id' => $participant->getKey(),
+                                    'participant_position_id' => $data['position']
+                                ]);
+                            return $participant;
+                        }),
+                    DeleteAction::make()
+                        ->hidden(
+                            fn (Participant $record): bool => $record->email == auth()->user()->email
+                        )
+                ])
+                    ->hidden($this->viewOnly)
+            ])
             ->headerActions([
                 ActionGroup::make([
                     CreateAction::make()
@@ -155,14 +187,14 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
             ])
             ->columns([
                 Split::make([
-                    SpatieMediaLibraryImageColumn::make('participant.profile')
+                    SpatieMediaLibraryImageColumn::make('profile')
                         ->grow(false)
                         ->collection('profile')
                         ->conversion('avatar')
                         ->width(50)
                         ->height(50)
                         ->defaultImageUrl(
-                            fn (SubmissionContributor $record): string => $record->participant->getFilamentAvatarUrl()
+                            fn (Participant $record): string => $record->getFilamentAvatarUrl()
                         )
                         ->extraCellAttributes([
                             'style' => 'width: 1px',
@@ -170,24 +202,24 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
                         ->circular()
                         ->toggleable(!$this->viewOnly),
                     Stack::make([
-                        TextColumn::make('participant.fullName')
-                            ->formatStateUsing(function (SubmissionContributor $record) {
-                                if ($record->participant->email == auth()->user()->email) {
-                                    return $record->participant->fullName . " (You)";
+                        TextColumn::make('fullName')
+                            ->formatStateUsing(function (Participant $record) {
+                                if ($record->email == auth()->user()->email) {
+                                    return $record->fullName . " (You)";
                                 }
-                                return $record->participant->fullName;
+                                return $record->fullName;
                             }),
                         TextColumn::make('affiliation')
                             ->size("xs")
                             ->getStateUsing(
-                                fn (SubmissionContributor $record) => $record->participant->getMeta('affiliation')
+                                fn (Participant $record) => $record->getMeta('affiliation')
                             )
                             ->icon("heroicon-o-building-library")
                             ->extraAttributes([
                                 'class' => 'text-xs',
                             ])
                             ->color('gray'),
-                        TextColumn::make('participant.email')
+                        TextColumn::make('email')
                             ->size("xs")
                             ->extraAttributes([
                                 'class' => 'text-xs',
