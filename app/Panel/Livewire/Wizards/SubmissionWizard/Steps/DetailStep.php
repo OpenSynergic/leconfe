@@ -10,6 +10,7 @@ use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -19,20 +20,22 @@ use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class DetailStep extends Component implements HasForms, HasWizardStep, HasActions
 {
-    use InteractsWithForms;
-    use InteractsWithActions;
+    use InteractsWithForms, InteractsWithActions;
 
     public Submission $record;
 
     public array $meta;
 
+    public array $topic;
+
     public string $nextStep = 'upload-files';
 
     protected $listeners = ['refreshLivewire' => '$refresh'];
 
-    public function mount($record)
+    public function mount(Submission $record)
     {
         $this->form->fill([
+            'topic' => $record->topics()->pluck('id')->toArray(),
             'meta' => $record->getAllMeta()->toArray(),
         ]);
     }
@@ -42,7 +45,7 @@ class DetailStep extends Component implements HasForms, HasWizardStep, HasAction
         return 'Details';
     }
 
-    protected function getFormModel(): string
+    protected function getFormModel()
     {
         return $this->record;
     }
@@ -61,6 +64,12 @@ class DetailStep extends Component implements HasForms, HasWizardStep, HasAction
                     ->aside()
                     ->schema([
                         Hidden::make('nextStep'),
+                        Select::make('topic')
+                            ->preload()
+                            ->multiple()
+                            ->label("Topic")
+                            ->searchable()
+                            ->relationship('topics', 'name'),
                         TextInput::make('meta.title')
                             ->required(),
                         SpatieTagsInput::make('meta.keywords')
