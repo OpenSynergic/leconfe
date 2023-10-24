@@ -87,20 +87,27 @@ class InstallationForm extends Form
 
     public function createAccount(): User
     {
-        DB::beginTransaction();
+        try {
+            DB::beginTransaction();
 
-        $user = UserCreateAction::run($this->only([
-            'given_name',
-            'family_name',
-            'email',
-            'password',
-        ]));
+            $user = UserCreateAction::run($this->only([
+                'given_name',
+                'family_name',
+                'email',
+                'password',
+            ]));
 
-        $user->assignRole(UserRole::Admin->value);
+            $user->assignRole(UserRole::Admin->value);
 
-        // event(new Registered($user));
+            event(new Registered($user));
 
-        DB::commit();
+            DB::commit();
+        } catch (\Throwable $th) {
+
+            DB::rollBack();
+
+            throw $th;
+        }
 
         return $user;
     }
