@@ -4,6 +4,8 @@ namespace App\Constants;
 
 final class SubmissionFileCategory
 {
+    public const ABSTRACT_FILES = 'abstract-files';
+
     public const SUPPLEMENTARY_FILES = 'supplementary-files';
 
     public const PAPER_FILES = 'paper-files';
