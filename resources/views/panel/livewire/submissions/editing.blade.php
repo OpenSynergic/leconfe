@@ -10,7 +10,7 @@
         <div class="space-y-4 col-span-4">
 
             {{-- Participants --}}
-            @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\AssignParticipants::class, ['submission' => $submission, 'lazy' => true])
+            @livewire(App\Panel\Livewire\Submissions\Components\ParticipantList::class, ['submission' => $submission, 'lazy' => true])
 
             {{ $this->publishAction() }}
         </div>

@@ -1,11 +1,8 @@
 <?php
 
-namespace App\Panel\LiveWire\Submissions\SubmissionDetail;
+namespace App\Panel\LiveWire\Submissions\Components;
 
-use App\Actions\Submissions\SubmissionAssignParticipantAction;
 use App\Models\Enums\UserRole;
-use App\Models\Participant;
-use App\Models\ParticipantPosition;
 use App\Models\Role;
 use App\Models\Submission;
 use App\Models\SubmissionParticipant;
@@ -33,7 +30,7 @@ use Livewire\Component;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use STS\FilamentImpersonate\Tables\Actions\Impersonate;
 
-class AssignParticipants extends Component implements HasForms, HasTable
+class ParticipantList extends Component implements HasForms, HasTable
 {
     use InteractsWithForms, InteractsWithTable;
 
@@ -79,6 +76,7 @@ class AssignParticipants extends Component implements HasForms, HasTable
             ->headerActions([
                 CreateAction::make()
                     ->modalHeading("Assign Participant")
+                    ->authorize('Submission:assignParticipant')
                     ->hidden($this->submission->isDeclined())
                     ->icon("lineawesome-user-plus-solid")
                     ->label("Assign")

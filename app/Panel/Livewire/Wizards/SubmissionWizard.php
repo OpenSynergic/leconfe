@@ -3,9 +3,8 @@
 namespace App\Panel\Livewire\Wizards;
 
 use App\Models\Submission;
-use App\Panel\Livewire\Wizards\SubmissionWizard\Steps\AuthorsStep;
+use App\Panel\Livewire\Wizards\SubmissionWizard\Steps\ContributorsStep;
 use App\Panel\Livewire\Wizards\SubmissionWizard\Steps\DetailStep;
-use App\Panel\Livewire\Wizards\SubmissionWizard\Steps\ForTheEditorsStep;
 use App\Panel\Livewire\Wizards\SubmissionWizard\Steps\ReviewStep;
 use App\Panel\Livewire\Wizards\SubmissionWizard\Steps\UploadFilesStep;
 use Livewire\Component;
@@ -24,7 +23,7 @@ class SubmissionWizard extends Component
         return [
             'detail' => DetailStep::class,
             'upload-files' => UploadFilesStep::class,
-            'authors' => AuthorsStep::class,
+            'authors' => ContributorsStep::class,
             'review' => ReviewStep::class,
         ];
     }

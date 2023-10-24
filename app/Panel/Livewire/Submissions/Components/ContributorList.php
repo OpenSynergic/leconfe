@@ -62,7 +62,7 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
             );
     }
 
-    public static function getAuthorFormSchema(): array
+    public static function getContributorFormSchema(): array
     {
         return [
             Grid::make()
@@ -103,7 +103,7 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
                             $data['position'] = $contributor->position->getKey();
                             return $data;
                         })
-                        ->form(static::getAuthorFormSchema())
+                        ->form(static::getContributorFormSchema())
                         ->using(function (array $data, Participant $record) {
                             $participant = ParticipantUpdateAction::run($record, $data);
                             $this->submission
@@ -128,10 +128,10 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
                     CreateAction::make()
                         ->label('Create new')
                         ->modalWidth('2xl')
-                        ->modalHeading("Add Author")
-                        ->successNotificationTitle("Author added")
+                        ->modalHeading("Add Contributor")
+                        ->successNotificationTitle("Contributor added")
                         ->record($this->submission)
-                        ->form(static::getAuthorFormSchema())
+                        ->form(static::getContributorFormSchema())
                         ->using(function (array $data) {
                             $participant = Participant::email($data['email'])->first();
                             $this->submission->contributors()->updateOrCreate([
@@ -182,7 +182,7 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
                         })
                 ])
                     ->button()
-                    ->label("Add author")
+                    ->label("Add Contributor")
                     ->hidden($this->viewOnly)
             ])
             ->columns([

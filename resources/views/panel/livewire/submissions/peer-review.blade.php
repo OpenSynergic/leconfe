@@ -26,7 +26,7 @@
                 @endif
 
                 {{-- Participants --}}
-                @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\AssignParticipants::class, ['submission' => $submission, 'lazy' => true])
+                @livewire(App\Panel\Livewire\Submissions\Components\ParticipantList::class, ['submission' => $submission, 'lazy' => true])
 
                 {{-- TODO: is this a good way using hasanyrole --}}
          

@@ -7,7 +7,7 @@
                         class="filament-forms-section-header-wrapper flex rtl:space-x-reverse overflow-hidden rounded-t-xl min-h-[56px] pr-6 pb-4">
                         <div class="filament-forms-section-header flex-1 space-y-1">
                             <h3 class="font-bold tracking-tight pointer-events-none flex flex-row items-center text-xl">
-                                Authors
+                                Contributors
                             </h3>
 
                             <p class="text-gray-500 text-base">

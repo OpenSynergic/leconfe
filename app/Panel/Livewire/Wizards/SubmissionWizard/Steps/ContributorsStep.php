@@ -6,7 +6,7 @@ use App\Models\Submission;
 use App\Panel\Livewire\Wizards\SubmissionWizard\Contracts\HasWizardStep;
 use Livewire\Component;
 
-class AuthorsStep extends Component implements HasWizardStep
+class ContributorsStep extends Component implements HasWizardStep
 {
 
     public Submission $record;
@@ -29,7 +29,7 @@ class AuthorsStep extends Component implements HasWizardStep
         }
 
         $this->dispatch("refreshLivewire");
-        $this->dispatch('refreshSupplementaryFiles');
+        $this->dispatch('refreshAbstractFiles');
         $this->dispatch('next-wizard-step');
     }
 }
