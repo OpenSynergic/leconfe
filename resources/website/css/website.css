@@ -56,23 +56,23 @@
 
 
 .author-badge{
-    @apply badge badge-outline text-mini badge-xs  h-5 text-yellow-400;
+    @apply badge badge-outline text-2xs badge-xs  h-5 text-yellow-400;
 }
 
 .editor-badge{
-    @apply badge badge-outline text-mini badge-xs  h-5 text-gray-400;
+    @apply badge badge-outline text-2xs badge-xs  h-5 text-gray-400;
 }
 
 .reviewer-badge{
-    @apply badge badge-outline text-mini badge-xs  h-5 text-gray-400;
+    @apply badge badge-outline text-2xs badge-xs  h-5 text-gray-400;
 }
 
 .participant-badge{
-    @apply badge badge-outline text-mini badge-xs  h-5 text-primary;
+    @apply badge badge-outline text-2xs badge-xs  h-5 text-primary;
 }
 
 .offline-badge{
-    @apply badge badge-outline text-mini badge-xs  h-5 text-gray-400;
+    @apply badge badge-outline text-2xs badge-xs  h-5 text-gray-400;
 }
 
 .past-marker {

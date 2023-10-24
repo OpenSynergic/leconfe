@@ -21,7 +21,7 @@ export default {
                 sans: ['var(--font-family)', ...defaultTheme.fontFamily.sans],
             },
             fontSize : {
-                'mini' : '.65rem',
+                '2xs' : '.65rem',
             },
             typography: (theme) => ({
                 DEFAULT: {

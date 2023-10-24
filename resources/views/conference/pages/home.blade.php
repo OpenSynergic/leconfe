@@ -85,10 +85,10 @@
                                 <span>400 Papers</span>
                             </td>
                             <td width="10">
-                                <span class="w-30 badge h-5 w-24 px-2 py-2 text-mini">400 Accepted</span>
+                                <span class="w-30 badge h-5 w-24 px-2 py-2 text-2xs">400 Accepted</span>
                             </td>
                             <td>
-                                <span class="badge badge-primary badge-outline h-5 w-24 px-2 py-2 text-mini">40
+                                <span class="badge badge-primary badge-outline h-5 w-24 px-2 py-2 text-2xs">40
                                     Accepted</span>
                             </td>
                         </tr>
@@ -99,10 +99,10 @@
                                 <span>60 Seats</span>
                             </td>
                             <td>
-                                <span class="badge h-5 w-24 px-2 py-2 text-mini">300 Accepted</span>
+                                <span class="badge h-5 w-24 px-2 py-2 text-2xs">300 Accepted</span>
                             </td>
                             <td>
-                                <span class="badge badge-primary badge-outline h-5 w-24 px-2 py-2 text-mini">30
+                                <span class="badge badge-primary badge-outline h-5 w-24 px-2 py-2 text-2xs">30
                                     Available</span>
                             </td>
                         </tr>
@@ -182,7 +182,7 @@
 
                                         <div>
                                             @foreach ($participant->getMeta('expertise') ?? [] as $expertise)
-                                                <small class="text-mini text-primary">{{ $expertise }}</small>
+                                                <small class="text-2xs text-primary">{{ $expertise }}</small>
                                                 @if ($loop->iteration >= 2)
                                                     @break
                                                 @endif
@@ -192,7 +192,7 @@
                                             @endforeach
                                         </div>
                                         <small
-                                            class="text-mini text-secondary">{{ $participant->getMeta('affiliation') }}</small>
+                                            class="text-2xs text-secondary">{{ $participant->getMeta('affiliation') }}</small>
                                     </div>
                                 </div>
                             @endforeach
