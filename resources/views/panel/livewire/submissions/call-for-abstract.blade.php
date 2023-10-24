@@ -1,7 +1,7 @@
 <div class="space-y-6">
     <div class="grid grid-cols-12 gap-4">
         <div class="space-y-4 col-span-8">
-            @livewire(App\Panel\Livewire\Submissions\Components\Files\SupplementaryFiles::class, ['submission' => $submission, 'category' => \App\Constants\SubmissionFileCategory::SUPPLEMENTARY_FILES, 'lazy' => true])
+            @livewire(App\Panel\Livewire\Submissions\Components\Files\AbstractFiles::class, ['submission' => $submission, 'category' => \App\Constants\SubmissionFileCategory::SUPPLEMENTARY_FILES, 'lazy' => true])
 
             @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\Discussions::class, ['record' => $submission, 'lazy' => true])
         </div>
@@ -11,7 +11,7 @@
                     Your submission has been accepted. Now, we are waiting to next stage is open.
                 </div>
             @endif
-            @hasanyrole([\App\Models\Enums\UserRole::ConferenceManager->value, \App\Models\Enums\UserRole::Admin->value])
+            {{-- @hasanyrole([\App\Models\Enums\UserRole::ConferenceManager->value, \App\Models\Enums\UserRole::Admin->value]) --}}
                 @if($submission->stage == App\Models\Enums\SubmissionStage::CallforAbstract)
                     <div class="space-y-4">
                         {{ $this->acceptAction() }}
@@ -19,8 +19,8 @@
                     </div>
                 @endif
                 {{-- Participants --}}
-                @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\AssignParticipants::class, ['submission' => $submission, 'lazy' => true])
-            @endhasanyrole
+                @livewire(App\Panel\Livewire\Submissions\Components\ParticipantList::class, ['submission' => $submission, 'lazy' => true])
+            {{-- @endhasanyrole --}}
         </div>
     </div>
     <x-filament-actions::modals />

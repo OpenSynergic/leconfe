@@ -15,7 +15,7 @@
                             </p>
                         </div>
                     </div>
-                        @livewire(App\Panel\Livewire\Submissions\Components\Files\SupplementaryFiles::class, ['submission' => $record])
+                        @livewire(App\Panel\Livewire\Submissions\Components\Files\AbstractFiles::class, ['submission' => $record])
                 </div>
             </div>
         </div>
