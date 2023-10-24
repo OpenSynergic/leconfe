@@ -71,7 +71,7 @@
                                     src="{{ $upcoming->getFirstMedia('thumbnail')->getAvailableUrl(['thumb']) }}"
                                     alt="{{ $upcoming->name }}" />
                             @endif
-                            <h5 class="text-subheading mb-3 mt-1">{{ $upcoming->name }}
+                            <h5 class="text-sm tracking-normal text-gray-900 mb-3 mt-1">{{ $upcoming->name }}
                             </h5>
                             @if ($upcoming->hasMeta('description'))
                                 <p class="text-content">{{ Str::words($upcoming->getMeta('description'), 15) }}</p>

@@ -49,9 +49,6 @@
     @apply text-lg text-gray-800 tracking-normal;
 }
 
-.text-subheading {
-    @apply text-sm tracking-normal text-gray-900;
-}
 
 .text-content {
     @apply  text-sm leading-6 text-secondary;
