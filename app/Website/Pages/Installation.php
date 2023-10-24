@@ -71,17 +71,12 @@ class Installation extends Page
 
     public function testConnection()
     {
-
-        if (!$this->validateInstallation()) {
-            return;
-        }
-
+        $this->form->checkDatabaseConnection();
     }
+
 
     public function install()
     {
-
-        dd('install dimulai');
 
         if (!$this->validateInstallation()) {
             return;
@@ -89,7 +84,7 @@ class Installation extends Page
 
         $this->form->updateConfig();
 
-        // app(EnvironmentManager::class)->installation();
+        app(EnvironmentManager::class)->installation();
 
         $this->form->process();
 
@@ -106,7 +101,7 @@ class Installation extends Page
 
     public function validateInstallation(): bool
     {
-        // $this->form->validate();
+        $this->form->validate();
 
         if (!$this->form->checkDatabaseConnection()) {
             return false;
@@ -115,7 +110,6 @@ class Installation extends Page
         if (!$this->form->createDatabase()) {
             return false;
         }
-
 
         return true;
     }

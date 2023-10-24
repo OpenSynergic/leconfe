@@ -274,7 +274,6 @@
                                         @enderror
                                     </div>
                                 </div>
-
                                 @unless (session('success'))
                                     <div class="flex w-full gap-4 justify-end">
                                         <button type="submit" class="text-primary text-sm"
@@ -290,14 +289,16 @@
                                 @endif
                             </div>
                         </div>
-                        @error('form.databaseOperationError')
-                            <div class="flex inline-flex items-center gap-2">
-                                <x-heroicon-o-x-mark class="stroke-current shrink-0 h-6 w-6 text-red-500" />
-                                <span class="text-red-500">{{ $message }}</span>
-                            </div>
-                        @enderror
-                    </div>
+                        @unless (session('success'))
+                            @error('form.databaseOperationError')
+                                <div class="flex inline-flex items-center gap-2">
+                                    <x-heroicon-o-x-mark class="stroke-current shrink-0 h-6 w-6 text-red-500" />
+                                    <span class="text-red-500">{{ $message }}</span>
+                                </div>
+                            @enderror
+                        @endunless
 
+                    </div>
                     <div class="conference space-y-4">
                         <div class="mt-2.5 mb-6 space-y-2">
                             <h2 class="text-lg not-italic font-semibold leading-7 text-black">Conference</h2>
@@ -344,13 +345,14 @@
                         </div>
                     </div>
                     <div class="flex justify-between mt-16">
-                        <button class="btn btn-primary btn-outline btn-sm ml-auto"
-                            wire:loading.attr="disabled" type="submit">
+                        <button class="btn btn-primary btn-outline btn-sm ml-auto" wire:loading.attr="disabled"
+                            type="submit">
                             <span class="loading loading-spinner loading-xs" wire:loading></span>
                             Install Leconfe
                         </button>
                     </div>
                 </div>
+            </div>
         </form>
     </div>
 </div>
