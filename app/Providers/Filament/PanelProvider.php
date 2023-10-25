@@ -2,39 +2,39 @@
 
 namespace App\Providers\Filament;
 
-use Carbon\Carbon;
-use Filament\Pages;
-use Filament\Panel;
+use App\Conference\Blocks\CalendarBlock;
+use App\Conference\Blocks\CommitteeBlock;
+use App\Conference\Blocks\MenuBlock;
+use App\Conference\Blocks\PreviousBlock;
+use App\Conference\Blocks\SubmitBlock;
+use App\Conference\Blocks\TimelineBlock;
+use App\Conference\Blocks\TopicBlock;
 use App\Facades\Block;
-use Livewire\Livewire;
+use App\Http\Middleware\MustVerifyEmail;
+use App\Http\Middleware\Panel\PanelAuthenticate;
+use App\Http\Middleware\Panel\TenantConference;
 use App\Models\Conference;
 use App\Models\Navigation;
-use Filament\Tables\Table;
-use Filament\Navigation\MenuItem;
-use Filament\Support\Colors\Color;
-use App\Conference\Blocks\MenuBlock;
-use App\Conference\Blocks\TopicBlock;
-use App\Panel\Resources\UserResource;
-use Illuminate\Support\Facades\Blade;
-use App\Conference\Blocks\SubmitBlock;
-use App\Conference\Blocks\CalendarBlock;
-use App\Conference\Blocks\PreviousBlock;
-use App\Conference\Blocks\TimelineBlock;
-use App\Http\Middleware\MustVerifyEmail;
-use Filament\Navigation\NavigationGroup;
-use App\Conference\Blocks\CommitteeBlock;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\TimePicker;
 use App\Panel\Resources\NavigationResource;
-use App\Http\Middleware\Panel\TenantConference;
-use App\Http\Middleware\Panel\PanelAuthenticate;
-use Filament\PanelProvider as FilamentPanelProvider;
-use RyanChandler\FilamentNavigation\FilamentNavigation;
-use Filament\Http\Middleware\DisableBladeIconComponents;
+use App\Panel\Resources\UserResource;
+use Carbon\Carbon;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\TimePicker;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\MenuItem;
+use Filament\Navigation\NavigationGroup;
+use Filament\Pages;
+use Filament\Panel;
+use Filament\PanelProvider as FilamentPanelProvider;
+use Filament\Support\Colors\Color;
+use Filament\Tables\Table;
+use Illuminate\Support\Facades\Blade;
+use Livewire\Livewire;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
+use RyanChandler\FilamentNavigation\FilamentNavigation;
 
 class PanelProvider extends FilamentPanelProvider
 {

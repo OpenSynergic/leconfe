@@ -36,7 +36,7 @@ class EnvironmentManager
             'APP_ENV' => 'production',
             'APP_DEBUG' => 'false',
             'APP_URL' => url('/'),
-            'APP_KEY' => 'base64:' . base64_encode(Encrypter::generateKey(config('app.cipher'))),
+            'APP_KEY' => 'base64:'.base64_encode(Encrypter::generateKey(config('app.cipher'))),
             'APP_TIMEZONE' => config('app.timezone'),
             'DB_CONNECTION' => config('database.default'),
             'DB_HOST' => config('database.connections.mysql.host'),
@@ -61,7 +61,7 @@ class EnvironmentManager
 
         // Delete existing .env file
         if (file_exists($this->envPath())) {
-            copy($this->envPath(), $this->envPath() . '.bak');
+            copy($this->envPath(), $this->envPath().'.bak');
             unlink($this->envPath());
         }
 

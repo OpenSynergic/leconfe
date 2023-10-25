@@ -2,18 +2,18 @@
 
 namespace App\Administration\Pages;
 
-use Filament\Pages\Page;
-use Filament\Infolists\Infolist;
-use Filament\Infolists\Components\Tabs;
-use App\Infolists\Components\VerticalTabs;
-use App\Infolists\Components\LivewireEntry;
-use App\Administration\Livewire\EmailSetting;
 use App\Administration\Livewire\AccessSetting;
-use Filament\Infolists\Contracts\HasInfolists;
-use App\Administration\Livewire\SidebarSetting;
 use App\Administration\Livewire\DateAndTimeSetting;
+use App\Administration\Livewire\EmailSetting;
 use App\Administration\Livewire\InformationSetting;
+use App\Administration\Livewire\SidebarSetting;
+use App\Infolists\Components\LivewireEntry;
+use App\Infolists\Components\VerticalTabs;
+use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
+use Filament\Infolists\Contracts\HasInfolists;
+use Filament\Infolists\Infolist;
+use Filament\Pages\Page;
 
 class SiteSettings extends Page implements HasInfolists
 {
@@ -48,7 +48,6 @@ class SiteSettings extends Page implements HasInfolists
                                             ]),
                                     ]),
                             ]),
-
 
                         Tabs\Tab::make('Appearance')
                             ->schema([

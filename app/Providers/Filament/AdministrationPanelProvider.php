@@ -2,18 +2,17 @@
 
 namespace App\Providers\Filament;
 
-use Filament\Panel;
-use Filament\Widgets;
+use App\Administration\Resources\NavigationResource;
 use App\Facades\Block;
 use App\Models\Navigation;
-use App\Website\Blocks\LoginBlock;
-use App\Website\Blocks\TopicBlock;
-use App\Website\Blocks\SearchBlock;
 use App\Website\Blocks\CalendarBlock;
+use App\Website\Blocks\LoginBlock;
 use App\Website\Blocks\ScheduleBlock;
-use Illuminate\Support\Facades\Blade;
-use App\Administration\Resources\NavigationResource;
+use App\Website\Blocks\TopicBlock;
+use Filament\Panel;
 use Filament\PanelProvider as FilamentPanelProvider;
+use Filament\Widgets;
+use Illuminate\Support\Facades\Blade;
 use RyanChandler\FilamentNavigation\FilamentNavigation;
 
 class AdministrationPanelProvider extends FilamentPanelProvider
@@ -62,7 +61,7 @@ class AdministrationPanelProvider extends FilamentPanelProvider
                 ->itemType('Current Conference', [])
                 ->itemType('Login', [])
                 ->itemType('Register', [])
-                ->itemType('Archieve', [])
+                ->itemType('Archieve', []),
         ];
     }
 

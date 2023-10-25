@@ -2,27 +2,25 @@
 
 namespace App\Administration\Livewire;
 
-use App\Models\Site;
-use Livewire\Component;
-use Filament\Forms\Form;
-use App\Forms\Components\BlockList;
-use Filament\Forms\Components\Grid;
-use App\Facades\Block as FacadesBlock;
-use Filament\Forms\Components\Actions;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Contracts\HasForms;
-use App\Livewire\Block as BlockComponent;
-use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Concerns\InteractsWithForms;
 use App\Actions\Blocks\UpdateBlockSettingsAction;
-
+use App\Facades\Block as FacadesBlock;
+use App\Forms\Components\BlockList;
+use App\Livewire\Block as BlockComponent;
+use App\Models\Site;
+use Filament\Forms\Components\Actions;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Form;
+use Livewire\Component;
 
 class SidebarSetting extends Component implements HasForms
 {
     use InteractsWithForms;
 
     public ?array $formData = [];
-
 
     public function mount(Site $site): void
     {
@@ -47,8 +45,6 @@ class SidebarSetting extends Component implements HasForms
             ],
         ]);
     }
-
-
 
     public function render()
     {
@@ -111,7 +107,7 @@ class SidebarSetting extends Component implements HasForms
         foreach ($blockSettings as $sort => $blockSetting) {
             $sort++; // To sort a number, take it from the array index.
             [$uuid, $enabled, $originalState] = explode(':', $blockSetting);
-            $block = data_get($this, $originalState . '.' . $uuid);
+            $block = data_get($this, $originalState.'.'.$uuid);
             // The block is being moved to a new position.
             if ($originalState != $statePath) {
                 $block->position = str($statePath)->contains('blocks.left') ? 'left' : 'right';

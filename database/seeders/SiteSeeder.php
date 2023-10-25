@@ -17,7 +17,7 @@ class SiteSeeder extends Seeder
 
         $site->setManyMeta([
             'name' => 'Leconfe',
-            'page_footer' => view('examples.footer')->render()
+            'page_footer' => view('examples.footer')->render(),
         ]);
     }
 }

@@ -2,16 +2,15 @@
 
 namespace App\Website\Pages;
 
-use Illuminate\Support\Str;
 use App\Events\AppInstalled;
-use App\Utils\PermissionChecker;
-use App\Utils\EnvironmentManager;
-use Illuminate\Support\Facades\Artisan;
-use App\Livewire\Forms\InstallationForm;
-use App\Http\Middleware\SetupDefaultData;
-use Rahmanramsi\LivewirePageGroup\Pages\Page;
-use Jackiedo\Timezonelist\Facades\Timezonelist;
 use App\Http\Middleware\IdentifyCurrentConference;
+use App\Http\Middleware\SetupDefaultData;
+use App\Livewire\Forms\InstallationForm;
+use App\Utils\EnvironmentManager;
+use App\Utils\PermissionChecker;
+use Illuminate\Support\Str;
+use Jackiedo\Timezonelist\Facades\Timezonelist;
+use Rahmanramsi\LivewirePageGroup\Pages\Page;
 
 class Installation extends Page
 {
@@ -29,7 +28,7 @@ class Installation extends Page
 
     public function mount()
     {
-        $this->form->db_name = 'conference_db_' . Str::random(3);
+        $this->form->db_name = 'conference_db_'.Str::random(3);
 
         if (app()->isInstalled()) {
             return redirect('/');
@@ -74,11 +73,10 @@ class Installation extends Page
         $this->form->checkDatabaseConnection();
     }
 
-
     public function install()
     {
 
-        if (!$this->validateInstallation()) {
+        if (! $this->validateInstallation()) {
             return;
         }
 
@@ -88,7 +86,6 @@ class Installation extends Page
 
         $this->form->process();
 
-
         AppInstalled::dispatch();
 
         // create empty file on storage path
@@ -97,17 +94,15 @@ class Installation extends Page
         return redirect('/');
     }
 
-
-
     public function validateInstallation(): bool
     {
         $this->form->validate();
 
-        if (!$this->form->checkDatabaseConnection()) {
+        if (! $this->form->checkDatabaseConnection()) {
             return false;
         }
 
-        if (!$this->form->createDatabase()) {
+        if (! $this->form->createDatabase()) {
             return false;
         }
 
