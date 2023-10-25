@@ -40,8 +40,23 @@ class ConferenceObserver
                     'data' => null,
                     'children' => [],
                 ],
+                Str::uuid()->toString() => [
+                    'label' => 'About',
+                    'type' => 'about',
+                    'data' => null,
+                    'children' => [],
+                ],
+                Str::uuid()->toString() => [
+                    'label' => 'Contact',
+                    'type' => 'contact',
+                    'data' => null,
+                    'children' => [],
+                ],
             ],
         ]);
+
+        $conference->setMeta('page_footer', view('examples.footer')->render());
+        $conference->save();
     }
 
     /**

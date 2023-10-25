@@ -12,6 +12,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Livewire\Component;
+use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class InformationSetting extends Component implements HasForms
 {
@@ -42,14 +43,18 @@ class InformationSetting extends Component implements HasForms
                             ->required(),
                         SpatieMediaLibraryFileUpload::make('logo')
                             ->collection('logo')
-                            ->image()
                             ->model(app()->getSite())
+                            ->image()
                             ->imageResizeUpscale(false)
                             ->conversion('thumb')
                             ->columnSpan([
                                 'sm' => 2,
                             ]),
-
+                        TinyEditor::make('meta.page_footer')
+                            ->minHeight(300)
+                            ->columnSpan([
+                                'sm' => 2,
+                            ]),
                     ])
                     ->columns(2),
                 Actions::make([
@@ -60,7 +65,6 @@ class InformationSetting extends Component implements HasForms
                             $data = $this->form->getState();
                             try {
                                 SiteUpdateAction::run($data);
-
                                 $action->sendSuccessNotification();
                             } catch (\Throwable $th) {
                                 $action->sendFailureNotification();

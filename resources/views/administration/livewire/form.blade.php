@@ -1,3 +1,5 @@
-<form>
-    {{ $this->form }}
-</form>
+    <div>
+        <form>
+            {{ $this->form }}
+        </form>
+    </div>
