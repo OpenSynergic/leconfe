@@ -43,34 +43,30 @@
         <section id="conference-information">
             <div class="card-body space-y-2 -mt-2">
                 <div class="cf-information">
-                    <h2 class="text-heading ms-1 pb-1">Information</h2>
                     @if ($currentConference->hasMeta('date_held') || $currentConference->hasMeta('location'))
+                    <h2 class="text-heading ms-1 pb-1">Information</h2>
                         <table class="w-full" cellpadding="4">
                             <tr>
                                 <td width="80">Type</td>
                                 <td width="20">:</td>
                                 <td>{{ $currentConference->type }}</td>
                             </tr>
-                            <tr>
-                                <td>Place</td>
-                                <td>:</td>
-                                <td>{{ $currentConference->getMeta('location') }}</td>
-                            </tr>
-                            <tr>
-                                <td>Date</td>
-                                <td>:</td>
-                                <td>{{ date(setting('format.date'), strtotime($currentConference->getMeta('date_held'))) }}</td>
-                            </tr>
+                          @if ($currentConference->hasMeta('location'))
+                          <tr>
+                            <td>Place</td>
+                            <td>:</td>
+                            <td>{{ $currentConference->getMeta('location') }}</td>
+                        </tr>
+                          @endif
+
+                          @if ($currentConference->hasMeta('date_held'))
+                          <tr>
+                            <td>Date</td>
+                            <td>:</td>
+                            <td>{{ date(setting('format.date'), strtotime($currentConference->getMeta('date_held'))) }}</td>
+                        </tr>
+                          @endif
                         </table>
-                    @else
-                        <div class="alert">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                class="h-6 w-6 shrink-0 stroke-info">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <span>Data Not Available.</span>
-                        </div>
                     @endif
 
                 </div>
