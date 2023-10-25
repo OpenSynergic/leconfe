@@ -2,12 +2,18 @@
 
 namespace App\Providers\Filament;
 
-use App\Administration\Resources\NavigationResource;
-use App\Models\Navigation;
 use Filament\Panel;
-use Filament\PanelProvider as FilamentPanelProvider;
 use Filament\Widgets;
+use App\Facades\Block;
+use App\Models\Navigation;
+use App\Website\Blocks\LoginBlock;
+use App\Website\Blocks\TopicBlock;
+use App\Website\Blocks\SearchBlock;
+use App\Website\Blocks\CalendarBlock;
+use App\Website\Blocks\ScheduleBlock;
 use Illuminate\Support\Facades\Blade;
+use App\Administration\Resources\NavigationResource;
+use Filament\PanelProvider as FilamentPanelProvider;
 use RyanChandler\FilamentNavigation\FilamentNavigation;
 
 class AdministrationPanelProvider extends FilamentPanelProvider
@@ -55,7 +61,8 @@ class AdministrationPanelProvider extends FilamentPanelProvider
                 ->itemType('Home', [])
                 ->itemType('Current Conference', [])
                 ->itemType('Login', [])
-                ->itemType('Register', []),
+                ->itemType('Register', [])
+                ->itemType('Archieve', [])
         ];
     }
 
@@ -64,5 +71,13 @@ class AdministrationPanelProvider extends FilamentPanelProvider
         app()->scopeCurrentConference();
 
         PanelProvider::setupFilamentComponent();
+
+        Block::registerBlocks([
+            LoginBlock::class,
+            CalendarBlock::class,
+            ScheduleBlock::class,
+            TopicBlock::class,
+        ]);
+        Block::boot();
     }
 }

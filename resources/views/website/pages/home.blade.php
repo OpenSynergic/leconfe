@@ -3,6 +3,7 @@
         <section id="highlight-conference">
             <h2 class="text-heading mb-2 ms-5">Highlight Conference</h2>
             <div class="card px-5 py-3 -mt-2">
+
                 <div class="card-body space-y-2 border rounded">
                     <div class="py-4 px-2 -mt-1">
                         <h2 class="text-heading -mt-2">{{ $activeConference->name }}</h2>
@@ -46,6 +47,7 @@
         </section>
 
         <section id="upcoming-conference">
+            @if (count($upcomings) > 0)
             <h2 class="text-heading mb-2 ms-5">Upcoming Conferences</h2>
             <div class="flex flex-wrap mx-auto -mt-2" x-masonry=".cf-upcoming">
                 @foreach ($upcomings as $upcoming)
@@ -84,6 +86,8 @@
                     </div>
                 @endforeach
             </div>
+            @endif
+
         </section>
     </div>
 </x-conference::layouts.main>

@@ -12,9 +12,12 @@ class SiteSeeder extends Seeder
      */
     public function run(): void
     {
+
         $site = Site::create();
+
         $site->setManyMeta([
             'name' => 'Leconfe',
+            'page_footer' => view('examples.footer')->render()
         ]);
     }
 }

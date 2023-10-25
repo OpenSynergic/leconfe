@@ -2,67 +2,70 @@
 
 namespace App\Livewire\Forms;
 
-use App\Actions\Conferences\ConferenceCreateAction;
-use App\Actions\User\UserCreateAction;
-use App\Models\Conference;
-use App\Models\Enums\UserRole;
-use App\Models\User;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\DB;
-use Livewire\Attributes\Rule;
 use Livewire\Form;
+use App\Models\User;
+use App\Models\Conference;
+use Livewire\Attributes\Rule;
+use App\Models\Enums\UserRole;
+use Illuminate\Support\Facades\DB;
+use App\Actions\User\UserCreateAction;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Artisan;
+use App\Actions\Conferences\ConferenceCreateAction;
 
 class InstallationForm extends Form
 {
     /**
      * Field for Account
      */
-    #[Rule('required')]
+    #[Rule('required', onUpdate: false)]
     public $given_name = null;
 
-    #[Rule('required')]
+    #[Rule('required', onUpdate: false)]
     public $family_name = null;
 
-    #[Rule('required|email')]
+    #[Rule('required|email', onUpdate: false)]
     public $email = null;
 
-    #[Rule('required|confirmed')]
+    #[Rule('required|confirmed', onUpdate: false)]
     public $password = null;
 
-    #[Rule('required')]
+    #[Rule('required', onUpdate: false)]
     public $password_confirmation = null;
 
     /**
      * Field for Database
      */
-    #[Rule('required')]
+    #[Rule('required', onUpdate: false)]
     public $db_connection = 'mysql';
 
-    #[Rule('required')]
+    #[Rule('required', onUpdate: false)]
     public $db_username = null;
 
-    #[Rule('required')]
+    #[Rule('required', onUpdate: false)]
     public $db_password = null;
 
-    #[Rule('required')]
+    #[Rule('required', onUpdate: false)]
     public $db_name = null;
 
-    #[Rule('required')]
+    #[Rule('required', onUpdate: false)]
     public $db_host = '127.0.0.1';
 
-    #[Rule('required')]
+    #[Rule('required', onUpdate: false)]
     public $db_port = '3306';
 
     /**
      * Field for Conference
      */
-    #[Rule('required')]
+    #[Rule('required', onUpdate: false)]
     public $conference_name = null;
 
-    #[Rule('required')]
+    #[Rule('required', onUpdate: false)]
     public $conference_type = 'Offline';
+
+    public $conference_description = null;
 
     /**
      * Field for Timezone
@@ -76,6 +79,9 @@ class InstallationForm extends Form
             'name' => $this->conference_name,
             'type' => $this->conference_type,
             'active' => true,
+            'meta' => [
+                'description' => $this->conference_description,
+            ]
         ]);
     }
 
@@ -97,6 +103,7 @@ class InstallationForm extends Form
 
             DB::commit();
         } catch (\Throwable $th) {
+
             DB::rollBack();
 
             throw $th;
@@ -107,16 +114,62 @@ class InstallationForm extends Form
 
     public function checkDatabaseConnection(): bool
     {
-        $connection = $this->db_connection;
+        $connectionArray = $this->prepareDatabaseConnection();
 
-        $settings = config("database.connections.$connection");
+        Config::set("database.connections.{$this->db_connection}", $connectionArray);
 
-        $connectionArray = array_merge($settings, [
-            'driver' => $connection,
-            'database' => $this->db_name,
+        try {
+            // reconnect to database with new settings
+            DB::reconnect();
+
+            DB::connection()->getPdo();
+
+            session()->flash('success', 'Successfully Connected');
+        } catch (\Throwable $th) {
+            $this->addError('databaseOperationError', 'Connection failed: ' . $th->getMessage());
+            return false;
+        }
+
+        return true;
+    }
+
+    public function createDatabase(): bool
+    {
+        $dbName = $this->db_name;
+
+        try {
+
+            $databaseExists = $this->checkDatabaseExists($dbName);
+
+            if (!$databaseExists) {
+                $this->createNewDatabase($dbName);
+            }
+
+            $this->updateDatabaseConfig($dbName);
+
+            DB::reconnect();
+
+            DB::connection()->getPdo();
+
+            session()->flash('success', 'Connection success and database successfully created');
+        } catch (\Throwable $th) {
+            $this->addError('databaseOperationError', 'Create database failed: Please manually create your database ' . $th->getMessage());
+            return false;
+        }
+
+        return true;
+    }
+
+    private function prepareDatabaseConnection(): array
+    {
+        $connectionArray = config("database.connections.{$this->db_connection}", []);
+
+        $connectionArray = array_merge($connectionArray, [
+            'driver' => $this->db_connection,
+            'database' => '',
         ]);
 
-        if (! empty($this->db_username) && ! empty($this->db_password)) {
+        if (!empty($this->db_username) && !empty($this->db_password)) {
             $connectionArray = array_merge($connectionArray, [
                 'username' => $this->db_username,
                 'password' => $this->db_password,
@@ -125,20 +178,22 @@ class InstallationForm extends Form
             ]);
         }
 
-        Config::set("database.connections.$connection", $connectionArray);
+        return $connectionArray;
+    }
 
-        try {
-            // reconnect to database with new settings
-            DB::reconnect();
+    private function checkDatabaseExists($dbName): bool
+    {
+        return !empty(DB::select("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '$dbName'"));
+    }
 
-            DB::connection()->getPdo();
-        } catch (\Throwable $th) {
-            $this->addError('checkConnection', $th->getMessage());
+    private function createNewDatabase($dbName): void
+    {
+        Schema::createDatabase($dbName);
+    }
 
-            return false;
-        }
-
-        return true;
+    private function updateDatabaseConfig($dbName): void
+    {
+        Config::set("database.connections.mysql.database", $dbName);
     }
 
     public function migrate()

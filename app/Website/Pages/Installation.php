@@ -2,19 +2,24 @@
 
 namespace App\Website\Pages;
 
+use Illuminate\Support\Str;
 use App\Events\AppInstalled;
-use App\Http\Middleware\IdentifyCurrentConference;
-use App\Livewire\Forms\InstallationForm;
-use App\Utils\EnvironmentManager;
 use App\Utils\PermissionChecker;
-use Jackiedo\Timezonelist\Facades\Timezonelist;
+use App\Utils\EnvironmentManager;
+use Illuminate\Support\Facades\Artisan;
+use App\Livewire\Forms\InstallationForm;
+use App\Http\Middleware\SetupDefaultData;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
+use Jackiedo\Timezonelist\Facades\Timezonelist;
+use App\Http\Middleware\IdentifyCurrentConference;
 
 class Installation extends Page
 {
     protected static string $view = 'website.pages.installation';
 
     protected static string|array $withoutRouteMiddleware = [
+
+        SetupDefaultData::class,
         IdentifyCurrentConference::class,
     ];
 
@@ -24,6 +29,8 @@ class Installation extends Page
 
     public function mount()
     {
+        $this->form->db_name = 'conference_db_' . Str::random(3);
+
         if (app()->isInstalled()) {
             return redirect('/');
         }
@@ -47,7 +54,7 @@ class Installation extends Page
 
     public static function getLayout(): string
     {
-        return 'conference.components.layouts.base';
+        return 'website.components.layouts.base';
     }
 
     public function checkPermission()
@@ -62,9 +69,16 @@ class Installation extends Page
         ]);
     }
 
+    public function testConnection()
+    {
+        $this->form->checkDatabaseConnection();
+    }
+
+
     public function install()
     {
-        if (! $this->validateInstallation()) {
+
+        if (!$this->validateInstallation()) {
             return;
         }
 
@@ -74,6 +88,7 @@ class Installation extends Page
 
         $this->form->process();
 
+
         AppInstalled::dispatch();
 
         // create empty file on storage path
@@ -82,10 +97,17 @@ class Installation extends Page
         return redirect('/');
     }
 
+
+
     public function validateInstallation(): bool
     {
         $this->form->validate();
-        if (! $this->form->checkDatabaseConnection()) {
+
+        if (!$this->form->checkDatabaseConnection()) {
+            return false;
+        }
+
+        if (!$this->form->createDatabase()) {
             return false;
         }
 
