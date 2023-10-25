@@ -289,37 +289,5 @@
                 </div>
             </div>
         </section>
-
-        <section id="sponsored">
-            <h2 class="text-heading ms-5 text-center">Sponsored By</h2>
-            <div class="flex flex-wrap justify-evenly gap-2 mt-4 mb-4">
-                <div class="avatar">
-                    <div class="h-20 w-20 rounded-full">
-                        <img src="https://tp.ugm.ac.id/wp-content/uploads/sites/1404/2019/04/logo-white.png"
-                            alt="" />
-                    </div>
-                </div>
-
-                <div class="avatar">
-                    <div class="h-20 w-20 rounded-full">
-                        <img src="https://ncsc.publiccharters.org/sites/default/files/2022-01/napcs-con-logo.png"
-                            alt="" />
-                    </div>
-                </div>
-
-                <div class="avatar">
-                    <div class="h-20 w-20">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXfxLAZBlbVRN8VKAmCc3ZytBeK5rJwAk-qw&usqp=CAU"
-                            alt="" />
-                    </div>
-                </div>
-                <div class="avatar">
-                    <div class="h-20 w-20 rounded-full">
-                        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e4/University_of_Arizona_seal.svg/1200px-University_of_Arizona_seal.svg.png"
-                            alt="" />
-                    </div>
-                </div>
-            </div>
-        </section>
     </div>
 </x-website::layouts.main>
