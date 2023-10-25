@@ -14,14 +14,12 @@ export default {
             colors: {
                 primary : '#38BDF8',
                 secondary: '#4a4a5b',
-                icon : '#F9FAFB',
-
             },
             fontFamily: {
                 sans: ['var(--font-family)', ...defaultTheme.fontFamily.sans],
             },
             fontSize : {
-                'mini' : '.65rem',
+                '2xs' : '.65rem',
             },
             typography: (theme) => ({
                 DEFAULT: {

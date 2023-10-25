@@ -24,7 +24,7 @@
                                         <!-- Display member's full name -->
                                         @if ($participant->hasMeta('affiliation'))
                                             <!-- Check if the member has an affiliation -->
-                                            <span class="small-text">{{ $participant->getMeta('affiliation') }}</span>
+                                            <span class="text-xs text-secondary">{{ $participant->getMeta('affiliation') }}</span>
                                             <!-- Display member's affiliation -->
                                         @endif
                                     </div>
@@ -34,7 +34,7 @@
                                     <div class="inline-flex flex-wrap gap-2">
                                         @foreach ($participant->getMeta('expertise') as $expertise)
                                             <!-- Loop through and display member's expertise badges -->
-                                            <div class="badge badge-outline text-xs border border-gray-300 h-6 small-text">
+                                            <div class="badge badge-outline text-xs border border-gray-300 h-6 text-xs text-secondary">
                                                 {{ $expertise }}</div>
                                         @endforeach
                                     </div>
