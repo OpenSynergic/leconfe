@@ -14,12 +14,11 @@
     "src": "resources/panel/js/panel.js"
   },
   "resources/website/css/website.css": {
-    "file": "assets/website-574f2fb2.css",
+    "file": "assets/website-7d9bb890.css",
     "isEntry": true,
     "src": "resources/website/css/website.css"
   },
   "resources/website/js/website.js": {
-    "file": "assets/website-02a4b6a2.js",
     "file": "assets/website-02a4b6a2.js",
     "isEntry": true,
     "src": "resources/website/js/website.js"
