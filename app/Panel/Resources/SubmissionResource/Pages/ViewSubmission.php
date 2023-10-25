@@ -109,6 +109,9 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                             ->schema([
                                 ShoutEntry::make('can-not-edit')
                                     ->color('warning')
+                                    ->visible(
+                                        fn (): bool => $this->record->isPublished()
+                                    )
                                     ->content("You can not edit this submission because it is already published."),
                                 Tabs::make()
                                     ->tabs([
