@@ -44,28 +44,29 @@
             <div class="card-body space-y-2 -mt-2">
                 <div class="cf-information">
                     @if ($currentConference->hasMeta('date_held') || $currentConference->hasMeta('location'))
-                    <h2 class="text-heading ms-1 pb-1">Information</h2>
+                        <h2 class="text-heading ms-1 pb-1">Information</h2>
                         <table class="w-full" cellpadding="4">
                             <tr>
                                 <td width="80">Type</td>
                                 <td width="20">:</td>
                                 <td>{{ $currentConference->type }}</td>
                             </tr>
-                          @if ($currentConference->hasMeta('location'))
-                          <tr>
-                            <td>Place</td>
-                            <td>:</td>
-                            <td>{{ $currentConference->getMeta('location') }}</td>
-                        </tr>
-                          @endif
+                            @if ($currentConference->hasMeta('location'))
+                                <tr>
+                                    <td>Place</td>
+                                    <td>:</td>
+                                    <td>{{ $currentConference->getMeta('location') }}</td>
+                                </tr>
+                            @endif
 
-                          @if ($currentConference->hasMeta('date_held'))
-                          <tr>
-                            <td>Date</td>
-                            <td>:</td>
-                            <td>{{ date(setting('format.date'), strtotime($currentConference->getMeta('date_held'))) }}</td>
-                        </tr>
-                          @endif
+                            @if ($currentConference->hasMeta('date_held'))
+                                <tr>
+                                    <td>Date</td>
+                                    <td>:</td>
+                                    <td>{{ date(setting('format.date'), strtotime($currentConference->getMeta('date_held'))) }}
+                                    </td>
+                                </tr>
+                            @endif
                         </table>
                     @endif
 
@@ -74,31 +75,31 @@
         </section>
 
         <section id="conference-speakers">
-            <h2 class="text-heading mb-2 ms-5">Speakers</h2>
-            <div class="card px-5">
-                @foreach ($participantPosition as $position)
-                    <div class=" space-y-4 mb-6">
-                        <h3 class="text-content">{{ $position->name }}</h3>
-                        <div class="flex flex-wrap gap-3">
-                            @foreach ($position->participants as $participant)
-                                <div class="flex items-center space-x-2">
-                                    <div class="avatar">
-
-                                        <div
-                                            class="h-14 w-14 rounded-full ring ring-2 ring-primary ring-offset-2 sm:w-16 sm:h-16">
-                                            <img src=" {{ $participant->getFirstMediaUrl('profile') }} "
-                                                alt="" />
-                                        </div>
-
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <p class="text-xs text-secondary">{{ $participant->given_name }}
-                                            {{ $participant->family_name }}</p>
-
-                                        <div>
-                                            @foreach ($participant->getMeta('expertise') ?? [] as $expertise)
-                                                <small class="text-2xs text-primary">{{ $expertise }}</small>
-                                                @if ($loop->iteration >= 2)
+            @if ($participantPosition->isNotEmpty())
+                <h2 class="text-heading mb-2 ms-5">Speakers</h2>
+                <div class="card px-5">
+                    @foreach ($participantPosition as $position)
+                        <div class=" space-y-4 mb-6">
+                            <h3 class="text-content">{{ $position->name }}</h3>
+                            <div class="flex flex-wrap gap-3">
+                                @foreach ($position->participants as $participant)
+                                    <div class="flex items-center space-x-2">
+                                        @if ($participant->hasMedia('profile'))
+                                            <div class="avatar">
+                                                <div
+                                                    class="h-14 w-14 rounded-full ring ring-2 ring-primary ring-offset-2 sm:w-16 sm:h-16">
+                                                    <img src=" {{ $participant->getFirstMediaUrl('profile') }} "
+                                                        alt="" />
+                                                </div>
+                                            </div>
+                                        @endif
+                                        <div class="flex flex-col">
+                                            <p class="text-xs text-secondary">
+                                                {{ $participant->given_name . ' ' . $participant->family_name }}</p>
+                                            <div>
+                                                @foreach ($participant->getMeta('expertise') ?? [] as $expertise)
+                                                    <small class="text-2xs text-primary">{{ $expertise }}</small>
+                                                    @if ($loop->iteration >= 2)
                                                     @break
                                                 @endif
                                                 @if (!$loop->last)
@@ -106,8 +107,11 @@
                                                 @endif
                                             @endforeach
                                         </div>
-                                        <small
-                                            class="text-2xs text-secondary">{{ $participant->getMeta('affiliation') }}</small>
+                                        @if ($participant->hasMeta('affiliation'))
+                                            <small
+                                                class="text-2xs text-secondary">{{ $participant->getMeta('affiliation') }}</small>
+                                        @endif
+
                                     </div>
                                 </div>
                             @endforeach
@@ -115,12 +119,13 @@
                     </div>
                 @endforeach
             </div>
-        </section>
+        @endif
+    </section>
 
-            {{-- additional content start --}}
-        <section class="user-content px-5">
-            {!! $currentConference->getMeta('additional_content') !!}
-        </section>
-            {{-- addtional content end --}}
-    </div>
+    {{-- additional content start --}}
+    <section class="user-content px-5">
+        {!! $currentConference->getMeta('additional_content') !!}
+    </section>
+    {{-- addtional content end --}}
+</div>
 </x-website::layouts.main>
