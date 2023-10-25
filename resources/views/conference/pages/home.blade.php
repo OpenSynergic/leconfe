@@ -74,40 +74,6 @@
                     @endif
 
                 </div>
-
-                <div class="cf-quota">
-                    <h2 class="text-heading ms-1 pb-1">Quota</h2>
-                    <table class="w-full" cellpadding="4">
-                        <tr>
-                            <td width="80">Papers</td>
-                            <td width="20">:</td>
-                            <td width="90">
-                                <span>400 Papers</span>
-                            </td>
-                            <td width="10">
-                                <span class="w-30 badge h-5 w-24 px-2 py-2 text-2xs">400 Accepted</span>
-                            </td>
-                            <td>
-                                <span class="badge badge-primary badge-outline h-5 w-24 px-2 py-2 text-2xs">40
-                                    Accepted</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Participan</td>
-                            <td>:</td>
-                            <td>
-                                <span>60 Seats</span>
-                            </td>
-                            <td>
-                                <span class="badge h-5 w-24 px-2 py-2 text-2xs">300 Accepted</span>
-                            </td>
-                            <td>
-                                <span class="badge badge-primary badge-outline h-5 w-24 px-2 py-2 text-2xs">30
-                                    Available</span>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
             </div>
         </section>
 
