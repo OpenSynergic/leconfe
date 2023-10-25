@@ -1,8 +1,12 @@
 <div class="h-screen w-full max-w-4xl mx-auto flex flex-col" x-cloak>
     <div class="space-y-4 pt-16 pb-20 px-1 sm:px-4">
-        <h1 class="text-center text-4xl font-medium mb-10">Logo Leconfe</h1>
+        <div class="avatar w-full">
+            <div class="w-24 rounded-full mx-auto">
+                <img src="{{ asset('logo.png') }}" />
+            </div>
+        </div>
         <p class="font-semibold ">Version {{ app()->getAppVersion() }}</p>
-        <form wire:submit.prevent='install'>
+        <form wire:submit='install'>
             <div class="card bg-white text-sm">
                 <div class="card-body space-y-6">
                     @error('install')
@@ -11,6 +15,7 @@
                             <span>{{ $message }}</span>
                         </div>
                     @enderror
+
                     <div class="introduction">
                         Thank you for downloading the Leconfe, a project by <a class="link link-primary link-hover"
                             href="https://openjournaltheme.com">Open Journal Theme</a>
@@ -24,7 +29,8 @@
                             <li
                                 class="w-full px-4 py-2 border-b border-gray-200 rounded-t-lg flex justify-between flex-wrap">
                                 <div>
-                                    <a class="link link-primary link-hover" target="_blank" href="https://php.net">PHP</a>
+                                    <a class="link link-primary link-hover" target="_blank"
+                                        href="https://php.net">PHP</a>
                                     >= {{ app()->getPhpMinVersion() }}
                                 </div>
                                 <div class="flex gap-2">
@@ -43,7 +49,8 @@
                         <div class="mt-2.5 mb-6 space-y-2">
                             <h2 class="text-lg not-italic font-semibold leading-7 text-black">Permissions</h2>
                             <p class="w-full text-sm not-italic leading-snug ">
-                                Below is the list of folder permissions which are required in order for the app to work. If
+                                Below is the list of folder permissions which are required in order for the app to work.
+                                If
                                 the permission check fails, make sure to update your folder permissions.
                             </p>
                         </div>
@@ -75,7 +82,8 @@
                         <div class="mt-2.5 mb-6 space-y-2">
                             <h2 class="text-lg not-italic font-semibold leading-7 text-black">Account Information</h2>
                             <p class="w-full text-sm not-italic leading-snug">
-                                This user account will become your admin account and have complete access to the system. Also you can change the details anytime after logging in.
+                                This user account will become your admin account and have complete access to the system.
+                                Also you can change the details anytime after logging in.
                             </p>
                         </div>
                         <div class="space-y-4">
@@ -85,7 +93,7 @@
                                         Given Name <span class="text-red-500">*</span>
                                     </label>
                                     <input type="text" class="input input-bordered input-sm"
-                                    wire:model="form.given_name" required/>
+                                        wire:model="form.given_name" required />
                                     @error('form.given_name')
                                         <div class="text-red-600 text-sm">
                                             {{ $message }}
@@ -97,7 +105,7 @@
                                         Family Name <span class="text-red-500">*</span>
                                     </label>
                                     <input type="text" class="input input-bordered input-sm"
-                                    wire:model="form.family_name" required/>
+                                        wire:model="form.family_name" required />
                                     @error('form.family_name')
                                         <div class="text-red-600 text-sm">
                                             {{ $message }}
@@ -109,7 +117,7 @@
                                         Email <span class="text-red-500">*</span>
                                     </label>
                                     <input type="email" class="input input-bordered input-sm"
-                                    wire:model="form.email" />
+                                        wire:model="form.email" />
                                     @error('form.email')
                                         <div class="text-red-600 text-sm">
                                             {{ $message }}
@@ -121,7 +129,7 @@
                                         Password <span class="text-red-500">*</span>
                                     </label>
                                     <input type="password" class="input input-bordered input-sm"
-                                    wire:model="form.password" required/>
+                                        wire:model="form.password" required />
                                     @error('form.password')
                                         <div class="text-red-600 text-sm">
                                             {{ $message }}
@@ -133,7 +141,7 @@
                                         Password Confirmation <span class="text-red-500">*</span>
                                     </label>
                                     <input type="password" class="input input-bordered input-sm"
-                                    wire:model="form.password_confirmation" required />
+                                        wire:model="form.password_confirmation" required />
                                     @error('form.password_confirmation')
                                         <div class="text-red-600 text-sm">
                                             {{ $message }}
@@ -173,21 +181,20 @@
                         <div class="mt-2.5 mb-6 space-y-2">
                             <h2 class="text-lg not-italic font-semibold leading-7 text-black">Database</h2>
                             <p class="w-full text-sm not-italic leading-snug ">
-                                Leconfe needs to access a SQL database to save its information. You can find the list of supported databases in the system requirements mentioned above. In the spaces provided below, please input the necessary settings for establishing a connection to the database.
+                                Leconfe needs to access a SQL database to save its information. You can find the list of
+                                supported databases in the system requirements mentioned above. In the spaces provided
+                                below, please input the necessary settings for establishing a connection to the
+                                database.
                             </p>
                         </div>
-                        @error('form.checkConnection')
-                            <div class="alert alert-error">
-                                <x-heroicon-o-exclamation-circle class="stroke-current shrink-0 h-6 w-6" />
-                                <span>{{ $message }}</span>
-                            </div>
-                        @enderror
+
                         <div class="grid sm:grid-cols-2 gap-4">
                             <div class="form-control gap-2">
                                 <label class="label-text">
                                     Database Connection <span class="text-red-500">*</span>
                                 </label>
-                                <select class="select select-sm select-bordered" wire:model="form.db_connection" required>
+                                <select class="select select-sm select-bordered" wire:model="form.db_connection"
+                                    required>
                                     <option value="mysql">MySQL</option>
                                 </select>
                                 @error('form.db_connection')
@@ -200,7 +207,8 @@
                                 <label class="label-text">
                                     Database Name <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text" class="input input-bordered input-sm" wire:model="form.db_name" required/>
+                                <input type="text" class="input input-bordered input-sm" wire:model="form.db_name"
+                                    required />
                                 @error('form.db_name')
                                     <div class="text-red-600 text-sm">
                                         {{ $message }}
@@ -212,7 +220,7 @@
                                     Database Username <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text" class="input input-bordered input-sm"
-                                    wire:model="form.db_username" required/>
+                                    wire:model="form.db_username" required />
                                 @error('form.db_username')
                                     <div class="text-red-600 text-sm">
                                         {{ $message }}
@@ -224,36 +232,72 @@
                                     Database Password <span class="text-red-500">*</span>
                                 </label>
                                 <input type="password" class="input input-bordered input-sm"
-                                    wire:model="form.db_password" required/>
+                                    wire:model="form.db_password" required />
                                 @error('form.db_password')
                                     <div class="text-red-600 text-sm">
                                         {{ $message }}
                                     </div>
                                 @enderror
                             </div>
-                            <div class="form-control gap-2">
-                                <label class="label-text">
-                                    Database Host <span class="text-red-500">*</span>
-                                </label>
-                                <input type="text" class="input input-bordered input-sm" wire:model="form.db_host" required/>
-                                @error('form.db_host')
-                                    <div class="text-red-600 text-sm">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
+                        </div>
+
+                        <div class="bg-white" x-data="{ accordOpen: false }">
+                            <div class="accordion-header justify-end" @click="accordOpen = !accordOpen">
+                                <a class="text-primary text-sm">More Settings</a>
                             </div>
-                            <div class="form-control gap-2">
-                                <label class="label-text">
-                                    Database Port <span class="text-red-500">*</span>
-                                </label>
-                                <input type="number" class="input input-bordered input-sm" wire:model="form.db_port" required/>
-                                @error('form.db_port')
-                                    <div class="text-red-600 text-sm">
-                                        {{ $message }}
+
+                            <div class="accordion-body grid gap-4" x-cloak x-show="accordOpen" x-collapse
+                                x-collapse.duration.400ms>
+                                <div class="grid sm:grid-cols-2 gap-4">
+                                    <div class="form-control gap-2">
+                                        <label class="label-text">
+                                            Database Host <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" class="input input-bordered input-sm"
+                                            wire:model="form.db_host" required />
+                                        @error('form.db_host')
+                                            <div class="text-red-600 text-sm">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
                                     </div>
-                                @enderror
+                                    <div class="form-control gap-2">
+                                        <label class="label-text">
+                                            Database Port <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="number" class="input input-bordered input-sm"
+                                            wire:model="form.db_port" required />
+                                        @error('form.db_port')
+                                            <div class="text-red-600 text-sm">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                @unless (session('success'))
+                                    <div class="flex w-full gap-4 justify-end">
+                                        <button type="submit" class="text-primary text-sm"
+                                            wire:click.prevent="testConnection">Test
+                                            Connection</button>
+                                    </div>
+                                @endunless
+                                @if (session('success'))
+                                    <div class="flex inline-flex items-center gap-2 w-full justify-end">
+                                        <x-heroicon-o-check class="stroke-current shrink-0 h-6 w-6 text-green-500" />
+                                        <span class="text-green-500">{{ session('success') }}</span>
+                                    </div>
+                                @endif
                             </div>
                         </div>
+                        @unless (session('success'))
+                            @error('form.databaseOperationError')
+                                <div class="flex inline-flex items-center gap-2">
+                                    <x-heroicon-o-x-mark class="stroke-current shrink-0 h-6 w-6 text-red-500" />
+                                    <span class="text-red-500">{{ $message }}</span>
+                                </div>
+                            @enderror
+                        @endunless
+
                     </div>
                     <div class="conference space-y-4">
                         <div class="mt-2.5 mb-6 space-y-2">
@@ -267,7 +311,8 @@
                                 <label class="label-text">
                                     Conference Name <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text" class="input input-bordered input-sm" wire:model="form.conference_name" required/>
+                                <input type="text" class="input input-bordered input-sm"
+                                    wire:model="form.conference_name" required />
                                 @error('form.conference_name')
                                     <div class="text-red-600 text-sm">
                                         {{ $message }}
@@ -289,10 +334,19 @@
                                     </div>
                                 @enderror
                             </div>
+
+                            <div class="form-control gap-2">
+                                <label class="label-text">
+                                    Conference Description
+                                </label>
+                                <textarea class="textarea textarea-bordered h-26" wire:model="form.conference_description">
+                                </textarea>
+                            </div>
                         </div>
                     </div>
                     <div class="flex justify-between mt-16">
-                        <button type="submit" class="btn btn-primary btn-outline btn-sm ml-auto" wire:loading.attr="disabled">
+                        <button class="btn btn-primary btn-outline btn-sm ml-auto" wire:loading.attr="disabled"
+                            type="submit">
                             <span class="loading loading-spinner loading-xs" wire:loading></span>
                             Install Leconfe
                         </button>

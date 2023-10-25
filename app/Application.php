@@ -11,6 +11,7 @@ use App\Models\Scopes\ConferenceScope;
 use App\Models\Site;
 use App\Models\StaticPage;
 use App\Models\Submission;
+use App\Models\Timeline;
 use App\Models\Topic;
 use App\Models\Venue;
 use Illuminate\Foundation\Application as LaravelApplication;
@@ -63,6 +64,7 @@ class Application extends LaravelApplication
             ParticipantPosition::class,
             Announcement::class,
             StaticPage::class,
+            Timeline::class,
         ] as $model) {
             $model::addGlobalScope(new ConferenceScope);
         }

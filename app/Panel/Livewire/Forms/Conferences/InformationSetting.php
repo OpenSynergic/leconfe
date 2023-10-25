@@ -100,6 +100,11 @@ class InformationSetting extends Component implements HasForms
                                     ->columnSpan([
                                         'sm' => 2,
                                     ]),
+                                TinyEditor::make('meta.additional_content')
+                                    ->minHeight(300)
+                                    ->columnSpan([
+                                        'sm' => 2,
+                                    ]),
                                 TinyEditor::make('meta.page_footer')
                                     ->minHeight(300)
                                     ->columnSpan([

@@ -70,6 +70,7 @@ class NavigationItem
                 default => route('livewirePageGroup.website.pages.home'),
             },
             'about' => fn () => route('livewirePageGroup.current-conference.pages.about'),
+            'contact' => fn () => route('livewirePageGroup.current-conference.pages.contact'),
             default => fn () => '#',
         };
     }

@@ -2178,7 +2178,7 @@
         },
         {
             "name": "filament/spatie-laravel-media-library-plugin",
-            "version": "v3.0.77",
+            "version": "v3.0.74",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/spatie-laravel-media-library-plugin.git",
@@ -2215,7 +2215,7 @@
         },
         {
             "name": "filament/spatie-laravel-tags-plugin",
-            "version": "v3.0.77",
+            "version": "v3.0.74",
             "source": {
                 "type": "git",
                 "url": "https://github.com/filamentphp/spatie-laravel-tags-plugin.git",
@@ -5276,16 +5276,16 @@
         },
         {
             "name": "mohamedsabil83/filament-forms-tinyeditor",
-            "version": "v2.0.9",
+            "version": "v2.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mohamedsabil83/filament-forms-tinyeditor.git",
-                "reference": "6c630cb615256b70ef2630124372e0fd99ee8378"
+                "reference": "6e573ca2aaa1ef201a07431b26af38be16c90cd3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mohamedsabil83/filament-forms-tinyeditor/zipball/6c630cb615256b70ef2630124372e0fd99ee8378",
-                "reference": "6c630cb615256b70ef2630124372e0fd99ee8378",
+                "url": "https://api.github.com/repos/mohamedsabil83/filament-forms-tinyeditor/zipball/6e573ca2aaa1ef201a07431b26af38be16c90cd3",
+                "reference": "6e573ca2aaa1ef201a07431b26af38be16c90cd3",
                 "shasum": ""
             },
             "require": {
@@ -5342,7 +5342,7 @@
             ],
             "support": {
                 "issues": "https://github.com/mohamedsabil83/filament-forms-tinyeditor/issues",
-                "source": "https://github.com/mohamedsabil83/filament-forms-tinyeditor/tree/v2.0.9"
+                "source": "https://github.com/mohamedsabil83/filament-forms-tinyeditor/tree/v2.0.8"
             },
             "funding": [
                 {
@@ -5354,7 +5354,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-10-15T11:00:05+00:00"
+            "time": "2023-10-13T11:03:50+00:00"
         },
         {
             "name": "monolog/monolog",

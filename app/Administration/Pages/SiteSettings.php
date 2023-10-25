@@ -6,6 +6,7 @@ use App\Administration\Livewire\AccessSetting;
 use App\Administration\Livewire\DateAndTimeSetting;
 use App\Administration\Livewire\EmailSetting;
 use App\Administration\Livewire\InformationSetting;
+use App\Administration\Livewire\SidebarSetting;
 use App\Infolists\Components\LivewireEntry;
 use App\Infolists\Components\VerticalTabs;
 use Filament\Infolists\Components\Tabs;
@@ -47,6 +48,21 @@ class SiteSettings extends Page implements HasInfolists
                                             ]),
                                     ]),
                             ]),
+
+                        Tabs\Tab::make('Appearance')
+                            ->schema([
+                                VerticalTabs\Tabs::make()
+                                    ->tabs([
+                                        VerticalTabs\Tab::make('Sidebar')
+                                            ->icon('heroicon-o-view-columns')
+                                            ->schema([
+                                                LivewireEntry::make('sidebar_setting')
+                                                    ->livewire(SidebarSetting::class)
+                                                    ->lazy(),
+                                            ]),
+                                    ]),
+                            ]),
+
                         Tabs\Tab::make('System')
                             ->schema([
                                 VerticalTabs\Tabs::make()

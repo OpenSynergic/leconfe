@@ -11,7 +11,7 @@ class ScheduleBlock extends Block
 
     protected ?int $sort = 3;
 
-    protected string $name = 'Informations Block';
+    protected string $name = 'Schedule Block';
 
     protected ?string $position = 'left';
 
