@@ -12,6 +12,15 @@ class EditedFiles extends SubmissionFilesTable
 
     protected string $tableHeading = "Edited Files";
 
+    public function isViewOnly(): bool
+    {
+        if ($this->viewOnly) {
+            return $this->viewOnly;
+        }
+
+        return $this->submission->isPublished();
+    }
+
     public function getTargetCategory(): string
     {
         return $this->getCategory();

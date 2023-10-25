@@ -27,9 +27,15 @@ class References extends \Livewire\Component implements HasForms
 
     public function submit()
     {
-        $datas = $this->form->getState();
-        SubmissionUpdateAction::run($datas, $this->submission);
-        Notification::make()->body("Saved successfully")->success()->send();
+        SubmissionUpdateAction::run(
+            $this->form->getState(),
+            $this->submission
+        );
+
+        Notification::make()
+            ->body("Saved successfully")
+            ->success()
+            ->send();
     }
 
     public function form(Form $form): Form

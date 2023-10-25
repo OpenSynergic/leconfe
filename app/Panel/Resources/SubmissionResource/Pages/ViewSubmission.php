@@ -16,6 +16,7 @@ use App\Panel\Livewire\Submissions\Forms\References;
 use App\Panel\Livewire\Submissions\PeerReview;
 use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
 use App\Panel\Resources\SubmissionResource;
+use Awcodes\Shout\Components\ShoutEntry;
 use Filament\Actions\Action;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -106,6 +107,9 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                                 'x-on:open-publication-tab.window' => new HtmlString('tab = \'-publication-tab\'')
                             ])
                             ->schema([
+                                ShoutEntry::make('can-not-edit')
+                                    ->color('warning')
+                                    ->content("You can not edit this submission because it is already published."),
                                 Tabs::make()
                                     ->tabs([
                                         Tab::make('Detail')
@@ -122,7 +126,7 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                                                 LivewireEntry::make('contributors')
                                                     ->livewire(ContributorList::class, [
                                                         'submission' => $this->record,
-                                                        'viewOnly' => !auth()->user()->can('Publication:update')
+                                                        'viewOnly' => !auth()->user()->can('Publication:update') || $this->record->isPublished()
                                                     ])
                                             ]),
                                         Tab::make('References')
@@ -136,7 +140,7 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                                         Tab::make('Proceeding')
                                             ->icon("iconpark-check-o")
                                             ->hidden(function () {
-                                                return !auth()->user()->can('Submission:publish');
+                                                return $this->record->stage != SubmissionStage::Editing;
                                             })
                                             ->schema([
                                                 LivewireEntry::make('publishing')

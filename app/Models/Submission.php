@@ -141,6 +141,11 @@ class Submission extends Model implements HasMedia
         return $query->where('status', $status);
     }
 
+    public function isPublished(): bool
+    {
+        return $this->status == SubmissionStatus::Published;
+    }
+
     public function isDeclined(): bool
     {
         return $this->status == SubmissionStatus::Declined;

@@ -20,6 +20,7 @@ trait CanSelectFiles
     {
         return ActionGroup::make([
             Action::make('select-files')
+                ->hidden($this->isViewOnly())
                 ->modalSubmitAction(false)
                 ->modalCancelActionLabel("Close")
                 ->icon("iconpark-check")

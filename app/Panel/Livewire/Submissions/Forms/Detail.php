@@ -4,19 +4,17 @@ namespace App\Panel\Livewire\Submissions\Forms;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Models\Submission;
-use Filament\Actions\Action;
-use Filament\Actions\Concerns\InteractsWithActions;
-use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
-class Detail extends \Livewire\Component implements HasForms, HasActions
+class Detail extends \Livewire\Component implements HasForms
 {
-    use InteractsWithForms, InteractsWithActions;
+    use InteractsWithForms;
 
     public Submission $submission;
 
@@ -45,24 +43,18 @@ class Detail extends \Livewire\Component implements HasForms, HasActions
             ]);
     }
 
-    public function handleSubmitAction(Action $action): void
+    public function submit(): void
     {
-        $this->form->validate();
+
         SubmissionUpdateAction::run(
             $this->form->getState(),
             $this->submission
         );
-        $action->success();
-    }
 
-    public function submitAction()
-    {
-        return Action::make('submitAction')
-            ->icon("iconpark-check")
-            ->label("Save")
-            ->authorize('Submission:update')
-            ->successNotificationTitle("Saved successfully")
-            ->action(fn (Action $action) => $this->handleSubmitAction($action));
+        Notification::make()
+            ->body("Saved successfully")
+            ->success()
+            ->send();
     }
 
     public function render()

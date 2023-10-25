@@ -12,6 +12,15 @@ class DraftFiles extends SubmissionFilesTable
 
     protected string $tableHeading = "Draft Files";
 
+    public function isViewOnly(): bool
+    {
+        if ($this->viewOnly) {
+            return $this->viewOnly;
+        }
+
+        return $this->submission->isPublished();
+    }
+
     public function getTargetCategory(): string
     {
         return $this->getCategory();
