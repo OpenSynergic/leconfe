@@ -15,4 +15,13 @@ class Dashboard extends Page
     protected static ?string $navigationLabel = 'Dashboard';
 
     protected static string $view = 'administration.pages.dashboard';
+
+    public function clearDataCache()
+    {
+        try {
+            Artisan::call('cache:clear');
+            session()->flash('success', 'Cache cleared successfully!');
+        } catch (\Throwable $th) {
+        }
+    }
 }
