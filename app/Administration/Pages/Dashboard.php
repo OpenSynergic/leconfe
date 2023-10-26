@@ -24,4 +24,14 @@ class Dashboard extends Page
         } catch (\Throwable $th) {
         }
     }
+
+    public function clearTemplateCaches()
+    {
+        try {
+            Artisan::call('view:clear');
+            session()->flash('success', 'Compiled views cleared successfully');
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
 }
