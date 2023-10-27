@@ -6,6 +6,8 @@ use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Session;
+use Filament\Notifications\Notification;
+use Filament\Notifications\Actions\Action;
 
 class Dashboard extends Page
 {
@@ -21,8 +23,7 @@ class Dashboard extends Page
     public function clearDataCache()
     {
         try {
-            Artisan::call('cache:clear');
-            session()->flash('success', 'Cache cleared successfully!');
+            // Artisan::call('cache:clear');
         } catch (\Throwable $th) {
         }
     }
@@ -30,8 +31,15 @@ class Dashboard extends Page
     public function clearTemplateCaches()
     {
         try {
+            Action::make('delete')
+                ->action(fn () => dd('hehehe'))
+                ->requiresConfirmation();
             Artisan::call('view:clear');
-            session()->flash('success', 'Compiled views cleared successfully');
+            Notification::make()
+                ->title('Clear successfully')
+                ->success()
+                ->body('Compiled views cleared successfully')
+                ->send();
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -42,7 +50,6 @@ class Dashboard extends Page
         try {
             Auth::logout();
             Session::flush();
-            session()->flash('success', 'User session cleared succesfully');
         } catch (\Throwable $th) {
             //throw $th;
         }
