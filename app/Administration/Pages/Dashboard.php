@@ -3,7 +3,9 @@
 namespace App\Administration\Pages;
 
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Session;
 
 class Dashboard extends Page
 {
@@ -30,6 +32,17 @@ class Dashboard extends Page
         try {
             Artisan::call('view:clear');
             session()->flash('success', 'Compiled views cleared successfully');
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    public function expireUserSession()
+    {
+        try {
+            Auth::logout();
+            Session::flush();
+            session()->flash('success', 'User session cleared succesfully');
         } catch (\Throwable $th) {
             //throw $th;
         }

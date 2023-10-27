@@ -32,7 +32,7 @@
                     </div>
 
                     <div>
-                        <x-filament::link class="text-blue-400 font-thin underline cursor-pointer">
+                        <x-filament::link class="text-blue-400 font-thin underline cursor-pointer" wire:click='expireUserSession'>
                             Expire User Session
                         </x-filament::link>
                     </div>
