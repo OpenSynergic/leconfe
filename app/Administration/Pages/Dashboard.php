@@ -54,4 +54,9 @@ class Dashboard extends Page
             //throw $th;
         }
     }
+
+    public function closeModal()
+    {
+        $this->dispatch('close-modal', id: 'close');
+    }
 }
