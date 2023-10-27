@@ -52,7 +52,7 @@
 
                     <div>
                         <x-filament::link class="text-blue-400 font-thin underline cursor-pointer">
-                            Clear Scheduled Task Executin Logs
+                            Clear Scheduled Task Execution Logs
                         </x-filament::link>
                     </div>
                 </div>
