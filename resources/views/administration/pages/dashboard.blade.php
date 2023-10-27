@@ -12,17 +12,6 @@
                 </div>
             @endif
             <div class="flex flex-col gap-y-2">
-                <h2 class="text-sm font-medium">Site Management</h2>
-                <div class="flex flex-col gap-y-2">
-                    <div>
-                        <x-filament::link class="text-blue-400 font-thin underline cursor-pointer">
-                            Hosted Journals
-                        </x-filament::link>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex flex-col gap-y-2">
                 <h2 class="text-sm font-medium">Administrative Functions</h2>
                 <div class="flex flex-col gap-y-2">
                     <div>
