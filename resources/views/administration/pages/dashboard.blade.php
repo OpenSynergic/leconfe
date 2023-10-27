@@ -6,7 +6,7 @@
                     x-effect="setTimeout(()=> {
                 show = false;
                 @this.$refresh();
-                }, 3000)">
+                }, 1000)">
                     <x-heroicon-o-trash class="stroke-current shrink-0 h-6 w-6 text-gray-600" />
                     <span class="text-sm text-gray-600">{{ session('success') }}</span>
                 </div>
