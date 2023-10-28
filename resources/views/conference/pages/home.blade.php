@@ -75,52 +75,52 @@
         </section>
 
         <section id="conference-speakers">
-            @if ($participantPosition->isNotEmpty())
+            @if ($participantPosition[0]->participants->isNotEmpty())
                 <h2 class="text-heading mb-2 ms-5">Speakers</h2>
                 <div class="card px-5">
                     @foreach ($participantPosition as $position)
-                        <div class=" space-y-4 mb-6">
-                            <h3 class="text-content">{{ $position->name }}</h3>
-                            <div class="flex flex-wrap gap-3">
-                                @foreach ($position->participants as $participant)
-                                    <div class="flex items-center space-x-2">
-                                        @if ($participant->hasMedia('profile'))
-                                            <div class="avatar">
-                                                <div
-                                                    class="h-14 w-14 rounded-full ring ring-2 ring-primary ring-offset-2 sm:w-16 sm:h-16">
-                                                    <img src=" {{ $participant->getFirstMediaUrl('profile') }} "
-                                                        alt="" />
+                        @if ($position->participants->isNotEmpty())
+                            <div class=" space-y-4 mb-6">
+                                <h3 class="text-content">{{ $position->name }}</h3>
+                                <div class="flex flex-wrap gap-3">
+                                    @foreach ($position->participants as $participant)
+                                        <div class="flex items-center space-x-2">
+                                            @if ($participant->hasMedia('profile'))
+                                                <div class="avatar">
+                                                    <div
+                                                        class="h-14 w-14 rounded-full ring ring-2 ring-primary ring-offset-2 sm:w-16 sm:h-16">
+                                                        <img src="{{ $participant->getFirstMediaUrl('profile') }}" alt="" />
+                                                    </div>
                                                 </div>
+                                            @endif
+                                            <div class="flex flex-col">
+                                                <p class="text-xs text-secondary">
+                                                    {{ $participant->given_name . ' ' . $participant->family_name }}</p>
+                                                <div>
+                                                    @foreach ($participant->getMeta('expertise') ?? [] as $expertise)
+                                                        <small class="text-2xs text-primary">{{ $expertise }}</small>
+                                                        @if ($loop->iteration >= 2)
+                                                            @break
+                                                        @endif
+                                                        @if (!$loop->last)
+                                                            ,
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                                @if ($participant->hasMeta('affiliation'))
+                                                    <small class="text-2xs text-secondary">{{ $participant->getMeta('affiliation') }}</small>
+                                                @endif
                                             </div>
-                                        @endif
-                                        <div class="flex flex-col">
-                                            <p class="text-xs text-secondary">
-                                                {{ $participant->given_name . ' ' . $participant->family_name }}</p>
-                                            <div>
-                                                @foreach ($participant->getMeta('expertise') ?? [] as $expertise)
-                                                    <small class="text-2xs text-primary">{{ $expertise }}</small>
-                                                    @if ($loop->iteration >= 2)
-                                                    @break
-                                                @endif
-                                                @if (!$loop->last)
-                                                    ,
-                                                @endif
-                                            @endforeach
                                         </div>
-                                        @if ($participant->hasMeta('affiliation'))
-                                            <small
-                                                class="text-2xs text-secondary">{{ $participant->getMeta('affiliation') }}</small>
-                                        @endif
-
-                                    </div>
+                                    @endforeach
                                 </div>
-                            @endforeach
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        @endif
-    </section>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+            @endif
+        </section>
+
 
     {{-- additional content start --}}
     <section class="user-content px-5">

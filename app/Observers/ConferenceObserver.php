@@ -21,7 +21,7 @@ class ConferenceObserver
      */
     public function created(Conference $conference): void
     {
-        // ParticipantPositionPopulateDefaultDataAction::run($conference);
+        ParticipantPositionPopulateDefaultDataAction::run($conference);
 
         Navigation::create([
             'name' => 'Primary Navigation Menu',
