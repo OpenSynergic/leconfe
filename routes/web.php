@@ -37,11 +37,11 @@ Route::get('/sitemap', function () {
 })->name('generate-sitemap');
 
 Route::get('local/temp/{path}', function (string $path, Request $request) {
-    abort_if(! $request->hasValidSignature(), 401);
+    abort_if(!$request->hasValidSignature(), 401);
 
     $storage = Storage::disk('local');
 
-    abort_if(! $storage->exists($path), 404);
+    abort_if(!$storage->exists($path), 404);
 
     return $storage->download($path);
 })->where('path', '.*')->name('local.temp');
@@ -51,3 +51,7 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 
     return redirect()->route('filament.panel.tenant');
 })->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::get('phpmyinfo', function () {
+    phpinfo();
+})->name('phpmyinfo');

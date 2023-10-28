@@ -3,14 +3,23 @@
 namespace App\Administration\Pages;
 
 use Filament\Pages\Page;
+use Filament\Facades\Filament;
+use Filament\Infolists\Infolist;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Session;
 use Filament\Notifications\Notification;
-use Filament\Notifications\Actions\Action;
+use Filament\Infolists\Components\Actions;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Contracts\HasInfolists;
+use Filament\Infolists\Components\Actions\Action;
+use Filament\Infolists\Concerns\InteractsWithInfolists;
 
-class Dashboard extends Page
+
+class Dashboard extends Page implements HasInfolists
 {
+
+    use InteractsWithInfolists;
 
     protected static ?string $navigationIcon = 'heroicon-m-home';
 
@@ -20,43 +29,103 @@ class Dashboard extends Page
 
     protected static string $view = 'administration.pages.dashboard';
 
-    public function clearDataCache()
+    public function infolist(Infolist $infolist): Infolist
     {
-        try {
-            // Artisan::call('cache:clear');
-        } catch (\Throwable $th) {
-        }
+        return $infolist
+            ->schema([
+                Section::make('')
+                    ->schema([
+                        Actions::make([
+                            Action::make('System Information')
+                                ->icon('heroicon-m-cog-8-tooth')
+                                ->color('primary')
+                                ->requiresConfirmation()
+                                ->outlined()
+                                ->extraAttributes(['class' => 'w-48'])
+                                ->url(route('phpmyinfo')),
+
+                        ]),
+                        Actions::make([
+                            Action::make('Expire User Session')
+                                ->icon('heroicon-m-user')
+                                ->color('primary')
+                                ->requiresConfirmation()
+                                ->outlined()
+                                ->successNotification(
+                                    Notification::make()
+                                        ->success()
+                                        ->title('Session cleared')
+                                        ->body('User session cleared succesfully'),
+                                )
+                                ->extraAttributes(['class' => 'w-48'])
+                                ->action(fn (Action $action) => $this->expireUserSession($action))
+
+                        ]),
+                        Actions::make([
+                            Action::make('Clear Data Caches')
+                                ->icon('heroicon-m-circle-stack')
+                                ->color('primary')
+                                ->requiresConfirmation()
+                                ->outlined()
+                                ->successNotification(
+                                    Notification::make()
+                                        ->success()
+                                        ->title('Clear succesfully')
+                                        ->body('Data caches cleared succesfully'),
+                                )
+                                ->extraAttributes(['class' => 'w-48'])
+                                ->action(function (Action $action) {
+                                    $this->runArtisanCommand('cache:clear', $action);
+                                }),
+                        ]),
+                        Actions::make([
+                            Action::make('Clear View Caches')
+                                ->icon('heroicon-m-trash')
+                                ->color('primary')
+                                ->requiresConfirmation()
+                                ->outlined()
+                                ->successNotification(
+                                    Notification::make()
+                                        ->success()
+                                        ->title('Clear succesfully')
+                                        ->body('View caches cleared succesfully'),
+                                )
+                                ->extraAttributes(['class' => 'w-48'])
+                                ->action(function (Action $action) {
+                                    $this->runArtisanCommand('view:clear', $action);
+                                }),
+                        ]),
+                    ])
+            ]);
     }
 
-    public function clearTemplateCaches()
+    protected function expireUserSession(Action $action)
     {
         try {
-            Action::make('delete')
-                ->action(fn () => dd('hehehe'))
-                ->requiresConfirmation();
-            Artisan::call('view:clear');
-            Notification::make()
-                ->title('Clear successfully')
-                ->success()
-                ->body('Compiled views cleared successfully')
-                ->send();
-        } catch (\Throwable $th) {
-            //throw $th;
-        }
-    }
+            $userAuth = Filament::auth()->user();
 
-    public function expireUserSession()
-    {
-        try {
-            Auth::logout();
             Session::flush();
+
+            Auth::login($userAuth);
+
+            session()->regenerate();
+
+            $action->sendSuccessNotification();
+
+            $this->redirect(Filament::getUrl());
         } catch (\Throwable $th) {
-            //throw $th;
+            $action->sendFailureNotification();
         }
     }
 
-    public function closeModal()
+    protected function runArtisanCommand($command, Action $action)
     {
-        $this->dispatch('close-modal', id: 'close');
+        try {
+            Artisan::call($command);
+
+            $action->sendSuccessNotification();
+        } catch (\Throwable $th) {
+            $action->sendFailureNotification();
+        }
     }
 }
