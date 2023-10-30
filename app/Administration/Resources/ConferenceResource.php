@@ -3,10 +3,12 @@
 namespace App\Administration\Resources;
 
 use Filament\Tables;
+use Filament\Forms\Set;
 use Filament\Forms\Form;
 use App\Models\Conference;
 use Filament\Tables\Table;
 use Squire\Models\Country;
+use Illuminate\Support\Str;
 use Filament\Resources\Resource;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\Grid;
@@ -46,7 +48,9 @@ class ConferenceResource extends Resource
                             ])
                             ->schema([
                                 TextInput::make('name')
-                                    ->required(),
+                                    ->required()
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('path', Str::slug($state))),
                                 TextInput::make('path')
                                     ->rule('alpha_dash')
                                     ->required(),
@@ -75,8 +79,23 @@ class ConferenceResource extends Resource
                     ])
                     ->schema([
                         Select::make('conference_id')
-                        ->label('Previous Conference')
-                        ->options(Conference::where('status', ConferenceStatus::Archived)->pluck('name', 'id')->toArray()),
+                            ->label('Previous Conference')
+                            ->options(function () {
+                                return Conference::query()
+                                    ->where('status', ConferenceStatus::Archived)
+                                    ->pluck('name', 'id')
+                                    ->toArray();
+                            })
+                            ->native(false)
+                            ->live()
+                            ->afterStateUpdated(function (Set $set, ?string $state) {
+                                $getDataConference = Conference::with(['media', 'meta'])
+                                    ->where('id', $state)
+                                    ->first();
+
+                                $set('name', $getDataConference->name);
+                                $set('path', $getDataConference->path);
+                            }),
 
                         SpatieMediaLibraryFileUpload::make('logo')
                             ->collection('logo')
@@ -176,7 +195,4 @@ class ConferenceResource extends Resource
             'edit' => Pages\EditConference::route('/{record}/edit'),
         ];
     }
-
-
-
 }
