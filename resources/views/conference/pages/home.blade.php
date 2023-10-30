@@ -75,7 +75,7 @@
         </section>
 
         <section id="conference-speakers">
-            @if ($participantPosition[0]->participants->isNotEmpty())
+            @if ($participantPosition->isNotEmpty())
                 <h2 class="text-heading mb-2 ms-5">Speakers</h2>
                 <div class="card px-5">
                     @foreach ($participantPosition as $position)

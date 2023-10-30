@@ -14,9 +14,13 @@ class Home extends Page
 
     protected function getViewData(): array
     {
+        $participantPositions = ParticipantPosition::with('participants')->get();
+        $filteredPositions = $participantPositions->filter(function ($position) {
+            return $position->participants->isNotEmpty();
+        });
         return [
             'announcements' => Announcement::query()->get(),
-            'participantPosition' => ParticipantPosition::with('participants')->get(),
+            'participantPosition' => $filteredPositions,
         ];
     }
 
