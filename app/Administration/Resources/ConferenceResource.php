@@ -3,6 +3,7 @@
 namespace App\Administration\Resources;
 
 use Filament\Tables;
+use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Forms\Form;
 use App\Models\Conference;
@@ -19,12 +20,14 @@ use App\Models\Enums\ConferenceStatus;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use App\Actions\Conferences\ConferenceSetActiveAction;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use App\Administration\Resources\ConferenceResource\Pages;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\Component;
 
 class ConferenceResource extends Resource
 {
@@ -83,18 +86,40 @@ class ConferenceResource extends Resource
                             ->options(function () {
                                 return Conference::query()
                                     ->where('status', ConferenceStatus::Archived)
+                                    ->latest('created_at')
+                                    ->take(5)
                                     ->pluck('name', 'id')
                                     ->toArray();
                             })
                             ->native(false)
+                            ->helperText('Fill the data from previous conference')
+                            ->searchable()
+                            ->preload()
                             ->live()
-                            ->afterStateUpdated(function (Set $set, ?string $state) {
-                                $getDataConference = Conference::with(['media', 'meta'])
-                                    ->where('id', $state)
+                            ->afterStateUpdated(function (Set $set, ?string $state, Get $get) {
+                                $getDataConference = Conference::where('id', $state)
                                     ->first();
 
-                                $set('name', $getDataConference->name);
-                                $set('path', $getDataConference->path);
+
+                                $defaults = [
+                                    'name' => $getDataConference?->name,
+                                    'path' => $getDataConference?->path,
+                                    'type' => $getDataConference?->type,
+                                    'meta.location' => $getDataConference?->getMeta('location'),
+                                    'meta.date_held' => $getDataConference?->getMeta('date_held'),
+                                    'meta.description' => $getDataConference?->getMeta('description'),
+                                    'meta.publisher_name' => $getDataConference?->getMeta('publisher_name'),
+                                    'meta.affiliation' => $getDataConference?->getMeta('affiliation'),
+                                    'meta.abbreviation' => $getDataConference?->getMeta('abbreviation'),
+                                    'meta.country' => $getDataConference?->getMeta('country'),
+                                ];
+
+                                foreach ($defaults as $key => $value) {
+                                    $currentValue = $get($key);
+                                    if (empty($currentValue)) {
+                                        $set($key, $value);
+                                    }
+                                }
                             }),
 
                         SpatieMediaLibraryFileUpload::make('logo')
