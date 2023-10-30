@@ -2,6 +2,7 @@
 
 namespace App\Conference\Pages;
 
+use App\Models\Conference;
 use App\Models\Announcement;
 use App\Models\ParticipantPosition;
 use Illuminate\Support\Facades\Route;
@@ -14,15 +15,28 @@ class Home extends Page
 
     protected function getViewData(): array
     {
-        $participantPositions = ParticipantPosition::with('participants')->get();
-        $filteredPositions = $participantPositions->filter(function ($position) {
-            return $position->participants->isNotEmpty();
-        });
+        $filteredPositions = $this->getFilteredParticipantPositions();
+        $announcements = $this->getAnnouncements();
+
         return [
-            'announcements' => Announcement::query()->get(),
+            'announcements' => $announcements,
             'participantPosition' => $filteredPositions,
         ];
     }
+
+    protected function getFilteredParticipantPositions()
+    {
+        return ParticipantPosition::query()
+            ->whereHas('participants')
+            ->with(['participants' => ['media', 'meta']])
+            ->get();
+    }
+
+    protected function getAnnouncements()
+    {
+        return Announcement::query()->get();
+    }
+
 
     public function mount()
     {
