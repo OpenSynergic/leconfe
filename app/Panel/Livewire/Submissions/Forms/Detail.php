@@ -4,6 +4,7 @@ namespace App\Panel\Livewire\Submissions\Forms;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Models\Submission;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -20,9 +21,12 @@ class Detail extends \Livewire\Component implements HasForms
 
     public array $meta = [];
 
+    public array $topics = [];
+
     public function mount(Submission $submission)
     {
         $this->form->fill([
+            'topics' => $this->submission->topics()->pluck('id')->toArray(),
             'meta' => $this->submission->getAllMeta()->toArray()
         ]);
     }
@@ -30,12 +34,18 @@ class Detail extends \Livewire\Component implements HasForms
     public function form(Form $form): Form
     {
         return $form
+            ->model($this->submission)
             ->schema([
                 TextInput::make('meta.title'),
+                Select::make('topics')
+                    ->preload()
+                    ->multiple()
+                    ->relationship('topics', 'name')
+                    ->label("Topic")
+                    ->searchable(),
                 SpatieTagsInput::make('meta.keywords')
                     ->splitKeys([','])
                     ->placeholder('')
-                    ->model($this->submission)
                     ->type('submissionKeywords'),
                 TinyEditor::make('meta.abstract')
                     ->minHeight(300)
