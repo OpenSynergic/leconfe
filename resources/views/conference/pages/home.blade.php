@@ -43,283 +43,89 @@
         <section id="conference-information">
             <div class="card-body space-y-2 -mt-2">
                 <div class="cf-information">
-                    <h2 class="text-heading ms-1 pb-1">Information</h2>
                     @if ($currentConference->hasMeta('date_held') || $currentConference->hasMeta('location'))
+                        <h2 class="text-heading ms-1 pb-1">Information</h2>
                         <table class="w-full" cellpadding="4">
                             <tr>
                                 <td width="80">Type</td>
                                 <td width="20">:</td>
                                 <td>{{ $currentConference->type }}</td>
                             </tr>
-                            <tr>
-                                <td>Place</td>
-                                <td>:</td>
-                                <td>{{ $currentConference->getMeta('location') }}</td>
-                            </tr>
-                            <tr>
-                                <td>Date</td>
-                                <td>:</td>
-                                <td>{{ date(setting('format.date'), strtotime($currentConference->getMeta('date_held'))) }}</td>
-                            </tr>
+                            @if ($currentConference->hasMeta('location'))
+                                <tr>
+                                    <td>Place</td>
+                                    <td>:</td>
+                                    <td>{{ $currentConference->getMeta('location') }}</td>
+                                </tr>
+                            @endif
+
+                            @if ($currentConference->hasMeta('date_held'))
+                                <tr>
+                                    <td>Date</td>
+                                    <td>:</td>
+                                    <td>{{ date(setting('format.date'), strtotime($currentConference->getMeta('date_held'))) }}
+                                    </td>
+                                </tr>
+                            @endif
                         </table>
-                    @else
-                        <div class="alert">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                class="h-6 w-6 shrink-0 stroke-info">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <span>Data Not Available.</span>
-                        </div>
                     @endif
 
-                </div>
-
-                <div class="cf-quota">
-                    <h2 class="text-heading ms-1 pb-1">Quota</h2>
-                    <table class="w-full" cellpadding="4">
-                        <tr>
-                            <td width="80">Papers</td>
-                            <td width="20">:</td>
-                            <td width="90">
-                                <span>400 Papers</span>
-                            </td>
-                            <td width="10">
-                                <span class="w-30 badge h-5 w-24 px-2 py-2 text-2xs">400 Accepted</span>
-                            </td>
-                            <td>
-                                <span class="badge badge-primary badge-outline h-5 w-24 px-2 py-2 text-2xs">40
-                                    Accepted</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Participan</td>
-                            <td>:</td>
-                            <td>
-                                <span>60 Seats</span>
-                            </td>
-                            <td>
-                                <span class="badge h-5 w-24 px-2 py-2 text-2xs">300 Accepted</span>
-                            </td>
-                            <td>
-                                <span class="badge badge-primary badge-outline h-5 w-24 px-2 py-2 text-2xs">30
-                                    Available</span>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div class="cf-contact">
-                    <h2 class="text-heading ms-1 pb-1">Contact</h2>
-                    <table class="w-full" cellpadding="4">
-                        <tr>
-                            <td width="80">Email</td>
-                            <td>:</td>
-                            <td>SMKN 4 Banjarmasin, Indonesia</td>
-                        </tr>
-                        <tr>
-                            <td>Website</td>
-                            <td>:</td>
-                            <td><a href="#" class="hover:text-primary">https:/www.wildcat.arizona.com</a></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="flex items-center space-x-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                        class="h-4 w-4">
-                                        <path fill-rule="evenodd"
-                                            d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                    <span>Kahfi</span>
-                                </div>
-                            </td>
-                            <td>:</td>
-                            <td><a href="#" class="hover:text-primary">kahfi@gmail.com</a></td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <div class="flex items-center space-x-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                        class="h-4 w-4">
-                                        <path fill-rule="evenodd"
-                                            d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                    <span>Dicky</span>
-                                </div>
-                            </td>
-                            <td width="20">:</td>
-                            <td><a href="#" class="hover:text-primary">dicky@gmail.com</a></td>
-                        </tr>
-                    </table>
                 </div>
             </div>
         </section>
 
         <section id="conference-speakers">
-            <h2 class="text-heading mb-2 ms-5">Speakers</h2>
-            <div class="card px-5">
-                @foreach ($participantPosition as $position)
-                    <div class=" space-y-4 mb-6">
-                        <h3 class="text-content">{{ $position->name }}</h3>
-                        <div class="flex flex-wrap gap-3">
-                            @foreach ($position->participants as $participant)
-                                <div class="flex items-center space-x-2">
-                                    <div class="avatar">
-
-                                        <div
-                                            class="h-14 w-14 rounded-full ring ring-2 ring-primary ring-offset-2 sm:w-16 sm:h-16">
-                                            <img src=" {{ $participant->getFirstMediaUrl('profile') }} "
-                                                alt="" />
-                                        </div>
-
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <p class="text-xs text-secondary">{{ $participant->given_name }}
-                                            {{ $participant->family_name }}</p>
-
-                                        <div>
-                                            @foreach ($participant->getMeta('expertise') ?? [] as $expertise)
-                                                <small class="text-2xs text-primary">{{ $expertise }}</small>
-                                                @if ($loop->iteration >= 2)
-                                                    @break
+            @if ($participantPosition->isNotEmpty())
+                <h2 class="text-heading mb-2 ms-5">Speakers</h2>
+                <div class="card px-5">
+                    @foreach ($participantPosition as $position)
+                        @if ($position->participants->isNotEmpty())
+                            <div class=" space-y-4 mb-6">
+                                <h3 class="text-content">{{ $position->name }}</h3>
+                                <div class="flex flex-wrap gap-3">
+                                    @foreach ($position->participants as $participant)
+                                        <div class="flex items-center space-x-2">
+                                            @if ($participant->hasMedia('profile'))
+                                                <div class="avatar">
+                                                    <div
+                                                        class="h-14 w-14 rounded-full ring ring-2 ring-primary ring-offset-2 sm:w-16 sm:h-16">
+                                                        <img src="{{ $participant->getFirstMediaUrl('profile') }}" alt="" />
+                                                    </div>
+                                                </div>
+                                            @endif
+                                            <div class="flex flex-col">
+                                                <p class="text-xs text-secondary">
+                                                    {{ $participant->given_name . ' ' . $participant->family_name }}</p>
+                                                <div>
+                                                    @foreach ($participant->getMeta('expertise') ?? [] as $expertise)
+                                                        <small class="text-2xs text-primary">{{ $expertise }}</small>
+                                                        @if ($loop->iteration >= 2)
+                                                            @break
+                                                        @endif
+                                                        @if (!$loop->last)
+                                                            ,
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                                @if ($participant->hasMeta('affiliation'))
+                                                    <small class="text-2xs text-secondary">{{ $participant->getMeta('affiliation') }}</small>
                                                 @endif
-                                                @if (!$loop->last)
-                                                    ,
-                                                @endif
-                                            @endforeach
+                                            </div>
                                         </div>
-                                        <small
-                                            class="text-2xs text-secondary">{{ $participant->getMeta('affiliation') }}</small>
-                                    </div>
+                                    @endforeach
                                 </div>
-                            @endforeach
-                        </div>
-                    </div>
-                @endforeach
-            </div>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+            @endif
         </section>
 
-            {{-- additional content start --}}
-        <section class="user-content px-5">
-            {!! $currentConference->getMeta('additional_content') !!}
-        </section>
-            {{-- addtional content end --}}
 
-        <section id="registration-information">
-            <h2 class="text-heading ms-5">Registration Fee</h2>
-            <div class="card-body">
-                <div
-                    class="grid grid-cols-1 items-center justify-center gap-6 p-4 text-center md:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 border bg-gray-50 rounded">
-                    <div class="grid grid-flow-row space-y-2 text-center text-content">
-                        <h2 class="font-semibold text-secondary">Author Cluster</h2>
-                        <p>International Author</p>
-                        <p>Domestic Author</p>
-                    </div>
-
-                    <div class="grid grid-flow-row space-y-2 text-content">
-                        <h2 class="font-semibold text-secondary">Fee</h2>
-                        <p>USD 125</p>
-                        <p>IDR 1.750.000</p>
-                    </div>
-
-                    <div class="grid grid-flow-row space-y-2 text-content">
-                        <h2 class="font-semibold text-secondary">Early Bid Registration</h2>
-                        <p>USD 75</p>
-                        <p>IDR.1000.000</p>
-                    </div>
-
-                    <div class="grid grid-flow-row space-y-2 text-content">
-                        <h2 class="font-semibold text-secondary">Participan Cluster</h2>
-                        <p>Internation Cluster</p>
-                        <p>Domestic Participant</p>
-                    </div>
-
-                    <div class="grid grid-flow-row space-y-2 text-content">
-                        <h2 class="font-semibold text-secondary">Fee</h2>
-                        <p class="text-secondary">USD 30</p>
-                        <p>IDR.300.000</p>
-                    </div>
-
-                    <div class="grid grid-flow-row space-y-2 text-content">
-                        <h2 class="font-semibold text-secondary">Early Bid Registration</h2>
-                        <p>USD 25</p>
-                        <p>IDR.250.000</p>
-                    </div>
-                </div>
-
-
-                <div class="mt-4 flex justify-end text-content">
-                    <small class="text-sm text-secondary">Register first to make any payment</small>
-                </div>
-
-                <div class="w-full text-content">
-                    <div
-                        class="mt-7 flex flex-wrap border border-gray-300 gap-3  bg-gray-50 justify-center md:justify-center rounded">
-                        <div class="flex h-32 w-32 items-center justify-center">
-                            <div class="flex flex-col text-center">
-                                <span class="text-2xl text-secondary">50</span>
-                                <span class=" text-secondary text-lg">Topics</span>
-                            </div>
-                        </div>
-
-                        <div class="flex h-32 w-32 items-center justify-center">
-                            <div class="flex flex-col text-center">
-                                <span class="text-2xl text-secondary">30</span>
-                                <span class=" text-secondary text-lg">Papers</span>
-                            </div>
-                        </div>
-
-                        <div class="flex h-32 w-32 items-center justify-center">
-                            <div class="flex flex-col text-center">
-                                <span class="text-2xl text-secondary">250</span>
-                                <span class=" text-secondary text-lg">Verificators</span>
-                            </div>
-                        </div>
-
-                        <div class="flex h-32 w-32 items-center justify-center">
-                            <div class="flex flex-col text-center">
-                                <span class="text-secondary text-2xl">30</span>
-                                <span class=" text-secondary text-lg">Country</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="sponsored">
-            <h2 class="text-heading ms-5 text-center">Sponsored By</h2>
-            <div class="flex flex-wrap justify-evenly gap-2 mt-4 mb-4">
-                <div class="avatar">
-                    <div class="h-20 w-20 rounded-full">
-                        <img src="https://tp.ugm.ac.id/wp-content/uploads/sites/1404/2019/04/logo-white.png"
-                            alt="" />
-                    </div>
-                </div>
-
-                <div class="avatar">
-                    <div class="h-20 w-20 rounded-full">
-                        <img src="https://ncsc.publiccharters.org/sites/default/files/2022-01/napcs-con-logo.png"
-                            alt="" />
-                    </div>
-                </div>
-
-                <div class="avatar">
-                    <div class="h-20 w-20">
-                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXfxLAZBlbVRN8VKAmCc3ZytBeK5rJwAk-qw&usqp=CAU"
-                            alt="" />
-                    </div>
-                </div>
-                <div class="avatar">
-                    <div class="h-20 w-20 rounded-full">
-                        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e4/University_of_Arizona_seal.svg/1200px-University_of_Arizona_seal.svg.png"
-                            alt="" />
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
+    {{-- additional content start --}}
+    <section class="user-content px-5">
+        {!! $currentConference->getMeta('additional_content') !!}
+    </section>
+    {{-- addtional content end --}}
+</div>
 </x-website::layouts.main>
