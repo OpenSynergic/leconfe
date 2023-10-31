@@ -6,6 +6,7 @@ use App\Models\Conference;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
+use App\Panel\Livewire\Workflows\Classes\StageManager;
 use App\Panel\Pages\Settings\Workflow;
 use App\Panel\Resources\SubmissionResource;
 use Filament\Actions\Action;
@@ -29,10 +30,9 @@ class ManageSubmissions extends ManageRecords
             Action::make('create')
                 ->button()
                 ->authorize("Submission:create")
-                ->disabled(function (): bool {
-                    $conference = Conference::active();
-                    return !$conference->getMeta('workflow.call-for-abstract.open', false);
-                })
+                ->visible(
+                    fn (): bool => StageManager::stage('call-for-abstract')->isStageOpen()
+                )
                 ->url(static::$resource::getUrl('create'))
                 ->icon('heroicon-o-plus')
                 ->label(function (Action $action) {

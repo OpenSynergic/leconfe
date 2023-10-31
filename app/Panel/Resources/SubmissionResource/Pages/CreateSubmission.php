@@ -3,6 +3,7 @@
 namespace App\Panel\Resources\SubmissionResource\Pages;
 
 use App\Actions\Submissions\SubmissionCreateAction;
+use App\Panel\Livewire\Workflows\Classes\StageManager;
 use App\Panel\Resources\SubmissionResource;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Checkbox;
@@ -37,7 +38,7 @@ class CreateSubmission extends Page implements HasForms
     protected function getViewData(): array
     {
         return [
-            'isOpen' => Filament::getTenant()->getMeta('workflow.call-for-abstract.open'),
+            'isOpen' => StageManager::stage('call-for-abstract')->isStageOpen(),
         ];
     }
 

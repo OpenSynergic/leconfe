@@ -10,8 +10,7 @@ use Livewire\Component;
 
 abstract class WorkflowStage extends Component
 {
-    use InteractWithTenant;
-    use CanOpenStage;
+    use InteractWithTenant, CanOpenStage;
 
     protected ?string $stage = null;
 
