@@ -8,6 +8,7 @@ use Livewire\Attributes\On;
 trait CanOpenStage
 {
     use CanModifySetting;
+
     public Conference $conference;
 
     protected bool $stageOpen = false;
@@ -15,13 +16,19 @@ trait CanOpenStage
     #[On('stage-status-changed')]
     public function isStageOpen(): bool
     {
-        $this->stageOpen = $this->getSetting("open", false);
+        if ($this->getSetting('start_date') >= now() && !$this->getSetting('end_date')) {
+            $this->stageOpen = true;
+        }
+
+        if ($this->getSetting('end_date') >= now()) {
+            $this->stageOpen = false;
+        }
+
         return $this->stageOpen;
     }
 
     public function openStage(): void
     {
-        $this->updateSetting("open", true);
         $this->updateSetting("start_date", now());
         $this->updateSetting("end_date", null);
         $this->dispatch('stage-status-changed'); // ->dispatch() from livewire
@@ -29,7 +36,6 @@ trait CanOpenStage
 
     public function closeStage(): void
     {
-        $this->updateSetting("open", false);
         $this->updateSetting("end_date", now());
         $this->dispatch('stage-status-changed'); // ->dispatch() from livewire
     }
