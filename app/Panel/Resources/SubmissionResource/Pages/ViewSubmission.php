@@ -14,6 +14,7 @@ use App\Panel\Livewire\Submissions\Forms\Detail;
 use App\Panel\Livewire\Submissions\Forms\Publish;
 use App\Panel\Livewire\Submissions\Forms\References;
 use App\Panel\Livewire\Submissions\PeerReview;
+use App\Panel\Livewire\Workflows\Classes\StageManager;
 use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
 use App\Panel\Resources\SubmissionResource;
 use Awcodes\Shout\Components\ShoutEntry;
@@ -81,7 +82,7 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                                             ]),
                                         Tab::make("Peer Review")
                                             ->visible(
-                                                fn (): bool => $this->conference->getMeta('workflow.peer-review.open', false)
+                                                fn (): bool => StageManager::stage('peer-review')->isStageOpen()
                                             )
                                             ->icon("iconpark-checklist-o")
                                             ->schema([
@@ -91,7 +92,7 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                                                     ])
                                             ]),
                                         Tab::make("Editing")
-                                            ->visible(fn (): bool => $this->conference->getMeta('workflow.editing.open', false))
+                                            ->visible(fn (): bool => StageManager::stage('editing')->isStageOpen())
                                             ->icon("heroicon-o-pencil")
                                             ->schema([
                                                 LivewireEntry::make('editing')

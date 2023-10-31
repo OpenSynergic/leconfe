@@ -55,6 +55,15 @@ class CallforAbstract extends Component implements HasForms, HasActions
                             ->default(false),
                     ])
             ])
+            ->successNotificationTitle("Submission declined")
+            ->action(function (Action $action) {
+                SubmissionUpdateAction::run([
+                    'stage' => SubmissionStage::CallforAbstract,
+                    'status' => SubmissionStatus::Declined
+                ], $this->submission);
+                // Send mail
+                $action->success();
+            })
             ->icon("lineawesome-times-circle-solid");
     }
 

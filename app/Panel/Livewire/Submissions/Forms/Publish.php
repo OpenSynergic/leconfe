@@ -6,6 +6,7 @@ use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Submission;
+use App\Panel\Livewire\Workflows\Classes\StageManager;
 use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
 use Awcodes\Shout\Components\ShoutEntry;
 use Filament\Actions\Action;
@@ -41,7 +42,7 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
     {
         return Action::make('publishAction')
             ->disabled(
-                fn (): bool => !$this->conference->getMeta('workflow.editing.open', false)
+                fn (): bool => !StageManager::stage('editing')->isStageOpen()
             )
             ->authorize("Submission:publish")
             ->icon("iconpark-check")
