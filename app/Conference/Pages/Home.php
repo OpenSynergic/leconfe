@@ -2,7 +2,6 @@
 
 namespace App\Conference\Pages;
 
-use App\Models\Conference;
 use App\Models\Announcement;
 use App\Models\ParticipantPosition;
 use Illuminate\Support\Facades\Route;
@@ -36,7 +35,6 @@ class Home extends Page
     {
         return Announcement::query()->get();
     }
-
 
     public function mount()
     {
