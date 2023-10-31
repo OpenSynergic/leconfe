@@ -1,15 +1,21 @@
+@php
+    use App\Models\Enums\SubmissionStage; 
+    use App\Models\Enums\SubmissionStatus;
+    use App\Panel\Livewire\Submissions\Components;
+    use App\Models\Enums\UserRole;
+@endphp
 <div class="space-y-6">
-    @if ($stageOpened && $submission->stage != App\Models\Enums\SubmissionStage::CallforAbstract)
+    @if ($stageOpened && $submission->stage != SubmissionStage::CallforAbstract)
         <div class="grid grid-cols-12 gap-4">
             <div class="space-y-4 col-span-8">
                 {{-- Papers --}}
-                @livewire(App\Panel\Livewire\Submissions\Components\Files\PaperFiles::class, ['submission' => $submission])
+                @livewire(Components\Files\PaperFiles::class, ['submission' => $submission])
 
                 {{-- Reviewer List --}}
-                @livewire(App\Panel\Livewire\Submissions\Components\ReviewerList::class, ['record' => $submission])
+                @livewire(Components\ReviewerList::class, ['record' => $submission])
 
                 {{-- Revision Files --}}
-                @livewire(App\Panel\Livewire\Submissions\Components\Files\RevisionFiles::class, ['submission' => $submission])
+                @livewire(Components\Files\RevisionFiles::class, ['submission' => $submission])
 
                 {{-- Discussions --}}
                 @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\Discussions::class, ['record' => $submission])
@@ -25,17 +31,15 @@
                 @endif
 
                 {{-- Participants --}}
-                @livewire(App\Panel\Livewire\Submissions\Components\ParticipantList::class, ['submission' => $submission, 'lazy' => true])
+                @livewire(Components\ParticipantList::class, ['submission' => $submission, 'lazy' => true])
 
                 {{-- TODO: is this a good way using hasanyrole --}}
          
-                    @hasanyrole([\App\Models\Enums\UserRole::Admin->value, \App\Models\Enums\UserRole::Editor->value])
-                        @if (!$submission->reviews()->exists() && $submission->stage == \App\Models\Enums\SubmissionStage::PeerReview)
+                    @hasanyrole([UserRole::Admin->value, UserRole::Editor->value])
+                        @if ($submission->stage == SubmissionStage::PeerReview && $submission->status == SubmissionStatus::OnReview)
                             {{ $this->skipReviewAction() }}
                         @endif
-                        @if (
-                            $submission->stage != App\Models\Enums\SubmissionStage::Editing &&
-                                $submission->status != App\Models\Enums\SubmissionStatus::Declined)
+                        @if ($submission->stage != SubmissionStage::Editing && $submission->status != SubmissionStatus::Declined)
                             {{ $this->requestRevisionAction() }}
                             {{ $this->acceptSubmissionAction() }}
                             {{ $this->declineSubmissionAction() }}
