@@ -3,9 +3,12 @@
 namespace App\Panel\Livewire\Wizards\SubmissionWizard\Steps;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
+use App\Mail\Templates\NewSubmissionMail;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
+use App\Models\Enums\UserRole;
 use App\Models\Submission;
+use App\Models\User;
 use App\Panel\Livewire\Wizards\SubmissionWizard\Contracts\HasWizardStep;
 use App\Panel\Resources\SubmissionResource;
 use Filament\Actions\Action;
@@ -13,6 +16,7 @@ use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 class ReviewStep extends Component implements HasWizardStep, HasActions, HasForms
@@ -47,6 +51,18 @@ class ReviewStep extends Component implements HasWizardStep, HasActions, HasForm
                     'stage' => SubmissionStage::CallforAbstract,
                     'status' => SubmissionStatus::Queued,
                 ], $this->record);
+
+                Mail::to(
+                    User::role([
+                        UserRole::Admin->value,
+                        UserRole::ConferenceManager->value
+                    ])
+                        ->get()
+                )
+                    ->send(
+                        new NewSubmissionMail($this->record)
+                    );
+
                 $action->success();
                 $action->dispatchSuccessRedirect();
             });
