@@ -6,6 +6,7 @@ use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Submission;
+use App\Panel\Livewire\Workflows\Classes\StageManager;
 use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -31,7 +32,7 @@ class PeerReview extends Component implements HasForms, HasActions
 
     public function mount(Submission $submission)
     {
-        $this->stageOpened = app()->getCurrentConference()->getMeta("workflow.peer-review.open", false);
+        $this->stageOpened = StageManager::stage('peer-review')->isStageOpen();
     }
 
     public function declineSubmissionAction()

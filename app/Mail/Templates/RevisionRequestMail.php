@@ -4,9 +4,8 @@ namespace App\Mail\Templates;
 
 use App\Models\Submission;
 
-class RevisionRequestedMail extends TemplateMailable
+class RevisionRequestMail extends TemplateMailable
 {
-
     public string $title;
 
     public string $loginLink;

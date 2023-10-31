@@ -34,6 +34,7 @@
         "Submission:assignParticipant",
         "Submission:assignReviewer",
         "Submission:create",
+        "Submission:decline",
         "Submission:editReviewer",
         "Submission:emailReviewer",
         "Submission:publish",

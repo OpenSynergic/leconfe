@@ -1,0 +1,54 @@
+<?php
+
+namespace App\Mail\Templates;
+
+use App\Models\Submission;
+
+class AcceptAbstractMail extends TemplateMailable
+{
+    public string $title;
+
+    public string $author;
+
+    public string $loginLink;
+
+    public function __construct(Submission $submission)
+    {
+        $this->title = $submission->getMeta('title');
+        $this->author = $submission->user->fullName;
+        $this->loginLink = route('livewirePageGroup.website.pages.login');
+    }
+
+    public static function getDefaultSubject(): string
+    {
+        return 'New Submission: {{ title }}';
+    }
+
+    public static function getDefaultDescription(): string
+    {
+        return 'This email template is sent when a new submission is created.';
+    }
+
+    public static function getDefaultHtmlTemplate(): string
+    {
+        return <<<'HTML'
+            <p> This is an automated notification from the Leconfe System to inform you about a new submission.</p>
+            <p>
+                Submission Details:
+            </p>
+            <table>
+                <tr>
+                    <td style="width:100px;">Title</td>
+                    <td>:</td>
+                    <td>{{ title }}</td>
+                </tr>
+                <tr>
+                    <td style="width:100px;">Author</td>
+                    <td>:</td>
+                    <td>{{ author }}</td>
+                </tr>
+            </table>
+            <p>The submission is now available for your review and can be accessed through the System using your login credentials. Please <a href="{{ loginLink }}">log in</a> to the system to proceed with the evaluation process.</p>
+        HTML;
+    }
+}
