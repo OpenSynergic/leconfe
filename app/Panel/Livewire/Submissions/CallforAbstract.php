@@ -32,6 +32,7 @@ class CallforAbstract extends Component implements HasForms, HasActions
         return Action::make('decline')
             ->outlined()
             ->color("danger")
+            ->authorize('Submission:decline')
             ->modalWidth("2xl")
             ->record($this->submission)
             ->modalHeading("Confirmation")
