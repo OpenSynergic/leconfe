@@ -12,11 +12,13 @@
                 </div>
             @endif
             {{-- @hasanyrole([\App\Models\Enums\UserRole::ConferenceManager->value, \App\Models\Enums\UserRole::Admin->value]) --}}
-                @if($submission->stage == App\Models\Enums\SubmissionStage::CallforAbstract)
-                    <div class="space-y-4">
-                        {{ $this->acceptAction() }}
-                        {{ $this->declineAction() }}
-                    </div>
+                @if(auth()->user()->can('Submission:accept') && auth()->user()->can('Submission:decline'))
+                    @if($submission->stage == App\Models\Enums\SubmissionStage::CallforAbstract)
+                        <div class="space-y-4">
+                            {{ $this->acceptAction() }}
+                            {{ $this->declineAction() }}
+                        </div>
+                    @endif
                 @endif
                 {{-- Participants --}}
                 @livewire(App\Panel\Livewire\Submissions\Components\ParticipantList::class, ['submission' => $submission, 'lazy' => true])
