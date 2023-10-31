@@ -6,8 +6,11 @@ use App\Constants\ReviewerStatus;
 use App\Constants\SubmissionFileCategory;
 use App\Constants\SubmissionStatusRecommendation;
 use App\Infolists\Components\LivewireEntry;
+use App\Mail\Templates\ReviewerCancelationMail;
+use App\Mail\Templates\ReviewerInvitationMail;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\UserRole;
+use App\Models\MailTemplate;
 use App\Models\Media;
 use App\Models\Review;
 use App\Models\ReviewerAssignedFile;
@@ -36,6 +39,7 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use STS\FilamentImpersonate\Tables\Actions\Impersonate;
@@ -153,9 +157,9 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ->color(
                             fn (Review $record): string => $record->status == ReviewerStatus::CANCELED ? 'danger' : 'primary'
                         )
-                        ->description(function (Review $record): string {
-                            return $record->user->email;
-                        }),
+                        ->description(
+                            fn (Review $record): string => $record->user->email
+                        ),
                     TextColumn::make('recommendation')
                         ->badge()
                         ->formatStateUsing(function ($state) {
@@ -281,6 +285,11 @@ class ReviewerList extends Component implements HasForms, HasTable
                         )
                         ->successNotificationTitle("Reviewer canceled")
                         ->modalWidth("2xl")
+                        ->mountUsing(function (Form $form) {
+                            $form->fill([
+                                'message' => MailTemplate::where('mailable', ReviewerCancelationMail::class)->first()->html_template,
+                            ]);
+                        })
                         ->form([
                             Checkbox::make('do-not-notify-cancelation')
                                 ->reactive()
@@ -347,6 +356,11 @@ class ReviewerList extends Component implements HasForms, HasTable
             ->heading("Reviewers")
             ->headerActions([
                 Action::make('add-reviewer')
+                    ->mountUsing(function (Form $form): void {
+                        $form->fill([
+                            'reviewer-invitation-message' => MailTemplate::where('mailable', ReviewerInvitationMail::class)->first()->html_template,
+                        ]);
+                    })
                     ->hidden(
                         fn (): bool => $this->record->isDeclined() || $this->record->stage == SubmissionStage::Editing
                     )
@@ -385,15 +399,21 @@ class ReviewerList extends Component implements HasForms, HasTable
                             ])
                             ->first();
 
-
-                        foreach ($data['papers'] as $submissionFileId) {
-                            $submissionFile = SubmissionFile::find($submissionFileId);
-                            $reviewAssignment->assignedFiles()
-                                ->create([
-                                    'submission_files_id' => $submissionFile->getKey(),
-                                    'media_id' => $submissionFile->media->getKey(),
-                                ]);
+                        if (isset($data['papers'])) {
+                            foreach ($data['papers'] as $submissionFileId) {
+                                $submissionFile = SubmissionFile::find($submissionFileId);
+                                $reviewAssignment->assignedFiles()
+                                    ->create([
+                                        'submission_files_id' => $submissionFile->getKey(),
+                                        'media_id' => $submissionFile->media->getKey(),
+                                    ]);
+                            }
                         }
+
+                        Mail::to($reviewAssignment->user->email)
+                            ->send(
+                                new ReviewerInvitationMail($reviewAssignment)
+                            );
                     })
             ]);
     }
