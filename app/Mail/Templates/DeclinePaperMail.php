@@ -4,33 +4,36 @@ namespace App\Mail\Templates;
 
 use App\Models\Submission;
 
-class RevisionRequestMail extends TemplateMailable
+class DeclinePaperMail extends TemplateMailable
 {
     public string $title;
+
+    public string $authorName;
 
     public string $loginLink;
 
     public function __construct(protected Submission $submission)
     {
         $this->title = $submission->getMeta('title');
+        $this->authorName = $submission->user->fullName;
         $this->loginLink = route('livewirePageGroup.website.pages.login');
     }
 
     public static function getDefaultSubject(): string
     {
-        return 'Revision Requested for {{ title }}';
+        return 'Paper Declined: {{ title }}';
     }
 
     public static function getDefaultDescription(): string
     {
-        return 'This email is sent to authors when their submission is requested for revision';
+        return 'This email is sent to authors when their submission is declined';
     }
 
     public static function getDefaultHtmlTemplate(): string
     {
         return <<<'HTML'
-            <p>Dear {{ name }},</p>
-            <p>This is an automated notification from the Leconfe System to inform you that your submission has been requested for revision.</p>
+            <p>Dear {{ authorName }},</p>
+            <p>This is an automated notification from the Leconfe System to inform you that your submission paper has been declined.</p>
             <table>
                 <tr>
                     <td style="width:100px;">Title</td>

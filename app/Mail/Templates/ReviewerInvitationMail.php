@@ -4,6 +4,7 @@ namespace App\Mail\Templates;
 
 use App\Models\Review;
 use App\Panel\Livewire\Workflows\Classes\StageManager;
+use Carbon\Carbon;
 
 class ReviewerInvitationMail extends TemplateMailable
 {
@@ -25,18 +26,24 @@ class ReviewerInvitationMail extends TemplateMailable
         $this->name = $review->user->fullName;
         $this->submissionTitle = $review->submission->getMeta('title');
 
-        $this->dateStart = $stageManager->getSetting(
-            'start_at',
-            now()->addDays(1)->format('d F Y')
+        $this->dateStart = Carbon::parse(
+            $stageManager->getSetting(
+                'start_at',
+                now()->addDays(1)->format('d F Y')
+            )
         )->format('d F Y');
 
-        $this->dateEnd = $stageManager->getSetting(
-            'end_at',
-            now()->addDays(14)->format('d F Y')
+        $this->dateEnd = Carbon::parse(
+            $stageManager->getSetting(
+                'end_at',
+                now()->addDays(14)->format('d F Y')
+            )
         )->format('d F Y');
 
-        $this->responseDeadline = $review->create_at->addDays(
-            $stageManager->getSetting('invitation_response_days', 14)
+        $this->responseDeadline = Carbon::parse(
+            $review->created_at->addDays(
+                $stageManager->getSetting('invitation_response_days', 14)
+            )
         )->format('d F Y');
 
         $this->loginLink = route('livewirePageGroup.website.pages.login');

@@ -3,8 +3,13 @@
 namespace App\Panel\Livewire\Submissions;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
+use App\Mail\Templates\AcceptPaperMail;
+use App\Mail\Templates\DeclinePaperMail;
+use App\Mail\Templates\RevisionRequestMail;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
+use App\Models\MailTemplate;
+use App\Models\Review;
 use App\Models\Submission;
 use App\Panel\Livewire\Workflows\Classes\StageManager;
 use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
@@ -12,9 +17,14 @@ use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Livewire\Component;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
@@ -42,21 +52,43 @@ class PeerReview extends Component implements HasForms, HasActions
             ->label("Decline Submission")
             ->color('danger')
             ->outlined()
+            ->mountUsing(function (Form $form) {
+                $mailTemplate = MailTemplate::where('mailable', DeclinePaperMail::class)->first();
+                $form->fill([
+                    'email' => $this->submission->user->email,
+                    'subject' => $mailTemplate ? $mailTemplate->subject : '',
+                    'message' => $mailTemplate ? $mailTemplate->html_template : ''
+                ]);
+            })
             ->form([
-                TinyEditor::make('message')
-                    ->minHeight(300)
-                    ->hidden(fn (Get $get) => $get('do-not-notify-author'))
-                    ->columnSpanFull(),
-                Checkbox::make('do-not-notify-author')
-                    ->reactive()
-                    ->label("Don't Send Notification to Author")
-                    ->columnSpanFull(),
+                Fieldset::make("Notification")
+                    ->columns(1)
+                    ->schema([
+                        TextInput::make('email')
+                            ->dehydrated(),
+                        TextInput::make('subject')
+                            ->required(),
+                        TinyEditor::make('message')
+                            ->minHeight(300)
+                            ->hidden(fn (Get $get) => $get('do-not-notify-author'))
+                            ->columnSpanFull(),
+                        Checkbox::make('do-not-notify-author')
+                            ->reactive()
+                            ->label("Don't Send Notification to Author")
+                            ->columnSpanFull(),
+                    ])
             ])
             ->action(function (Action $action) {
                 SubmissionUpdateAction::run([
                     'revision_required' => false,
                     'status' => SubmissionStatus::Declined,
                 ], $this->submission);
+
+                Mail::to($this->submission->user)
+                    ->send(
+                        new DeclinePaperMail($this->submission)
+                    );
+
                 $action->success();
             });
     }
@@ -69,15 +101,32 @@ class PeerReview extends Component implements HasForms, HasActions
             ->color("primary")
             ->label("Accept Submission")
             ->modalSubmitActionLabel("Accept")
+            ->mountUsing(function (Form $form) {
+                $mailTemplate = MailTemplate::where('mailable', AcceptPaperMail::class)->first();
+                $form->fill([
+                    'email' => $this->submission->user->email,
+                    'subject' => $mailTemplate ? $mailTemplate->subject : '',
+                    'message' => $mailTemplate ? $mailTemplate->html_template : ''
+                ]);
+            })
             ->form([
-                TinyEditor::make('message')
-                    ->minHeight(300)
-                    ->hidden(fn (Get $get) => $get('do-not-notify-author'))
-                    ->columnSpanFull(),
-                Checkbox::make('do-not-notify-author')
-                    ->reactive()
-                    ->label("Don't Send Notification to Author")
-                    ->columnSpanFull(),
+                Fieldset::make('Notification')
+                    ->columns(1)
+                    ->schema([
+                        TextInput::make('email')
+                            ->disabled()
+                            ->dehydrated(),
+                        TextInput::make('subject')
+                            ->required(),
+                        TinyEditor::make('message')
+                            ->minHeight(300)
+                            ->hidden(fn (Get $get) => $get('do-not-notify-author'))
+                            ->columnSpanFull(),
+                        Checkbox::make('do-not-notify-author')
+                            ->reactive()
+                            ->label("Don't Send Notification to Author")
+                            ->columnSpanFull(),
+                    ])
             ])
             ->action(function (Action $action) {
                 SubmissionUpdateAction::run([
@@ -97,21 +146,44 @@ class PeerReview extends Component implements HasForms, HasActions
             ->outlined()
             ->color('gray')
             ->label("Request Revision")
+            ->mountUsing(function (Form $form): void {
+                $mailTemplate = MailTemplate::where('mailable', RevisionRequestMail::class)->first();
+                $form->fill([
+                    'email' => $this->submission->user->email,
+                    'subject' => $mailTemplate ? $mailTemplate->subject : '',
+                    'message' => $mailTemplate ? $mailTemplate->html_template : ''
+                ]);
+            })
             ->form([
-                TinyEditor::make('message')
-                    ->minHeight(300)
-                    ->hidden(fn (Get $get) => $get('do-not-notify-author'))
-                    ->columnSpanFull(),
-                Checkbox::make('do-not-notify-author')
-                    ->reactive()
-                    ->label("Don't Send Notification to Author")
-                    ->columnSpanFull(),
+                Fieldset::make("Notification")
+                    ->columns(1)
+                    ->schema([
+                        TextInput::make('email')
+                            ->disabled()
+                            ->dehydrated(),
+                        TextInput::make('subject')
+                            ->required(),
+                        TinyEditor::make('message')
+                            ->minHeight(300)
+                            ->hidden(fn (Get $get) => $get('do-not-notify-author'))
+                            ->columnSpanFull(),
+                        Checkbox::make('do-not-notify-author')
+                            ->reactive()
+                            ->label("Don't Send Notification to Author")
+                            ->columnSpanFull(),
+                    ])
             ])
             ->successNotificationTitle("Revision Requested")
             ->action(function (Action $action) {
                 SubmissionUpdateAction::run([
                     'revision_required' => true
                 ], $this->submission);
+
+                Mail::to($this->submission->user)
+                    ->send(
+                        new RevisionRequestMail($this->submission)
+                    );
+
                 $action->success();
             });
     }

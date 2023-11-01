@@ -38,7 +38,9 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Contracts\Mail\Mailable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
@@ -262,18 +264,30 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ->label("E-Mail Reviewer")
                         ->icon("iconpark-sendemail")
                         ->modalSubmitActionLabel("Send")
+                        ->mountUsing(function (Form $form, Review $record) {
+                            $form->fill([
+                                'email' => $record->user->email,
+                                'subject' => 'Notification for you'
+                            ]);
+                        })
                         ->form([
-                            TextInput::make('target')
-                                ->formatStateUsing(function (Review $record) {
-                                    return $record->user->email;
-                                })
+                            TextInput::make('email')
+                                ->dehydrated()
                                 ->disabled(),
+                            TextInput::make('subject')
+                                ->required(),
                             TinyEditor::make('message')
                                 ->minHeight(300)
                         ])
                         ->successNotificationTitle("E-mail sent")
-                        ->action(function (Action $action, array $data, Review $record) {
-                            // Contoh E-Mail
+                        ->action(function (Action $action, Review $record, array $data) {
+                            Mail::send([], [], function (Message $message) use ($data, $record) {
+                                $message
+                                    ->to($record->user->email)
+                                    ->subject($data['subject'])
+                                    ->html($data['message']);
+                            });
+
                             $action->success();
                         }),
                     Action::make("cancel-reviewer")
@@ -285,25 +299,43 @@ class ReviewerList extends Component implements HasForms, HasTable
                         )
                         ->successNotificationTitle("Reviewer canceled")
                         ->modalWidth("2xl")
-                        ->mountUsing(function (Form $form) {
+                        ->mountUsing(function (Form $form, Review $record) {
+                            $mailTemplate = MailTemplate::where('mailable', ReviewerCancelationMail::class)->first();
                             $form->fill([
-                                'message' => MailTemplate::where('mailable', ReviewerCancelationMail::class)->first()->html_template,
+                                'email' => $record->user->email,
+                                'subject' => $mailTemplate ? $mailTemplate->subject : '',
+                                'message' => $mailTemplate ? $mailTemplate->html_template : '',
                             ]);
                         })
                         ->form([
-                            Checkbox::make('do-not-notify-cancelation')
-                                ->reactive()
-                                ->label("Don't Send Notification")
-                                ->columnSpanFull(),
-                            TinyEditor::make('message')
-                                ->minHeight(300)
-                                ->hidden(fn (Get $get) => $get('do-not-notify-cancelation'))
-                                ->columnSpanFull(),
+                            Fieldset::make('Notification')
+                                ->columns(1)
+                                ->schema([
+                                    TextInput::make('email')
+                                        ->disabled()
+                                        ->dehydrated(),
+                                    TextInput::make('subject')
+                                        ->required(),
+                                    TinyEditor::make('message')
+                                        ->minHeight(300)
+                                        ->hidden(fn (Get $get) => $get('do-not-notify-cancelation'))
+                                        ->columnSpanFull(),
+                                    Checkbox::make('do-not-notify-cancelation')
+                                        ->reactive()
+                                        ->label("Don't Send Notification")
+                                        ->columnSpanFull(),
+                                ])
                         ])
                         ->action(function (Action $action, Review $record) {
                             $record->update([
                                 'status' => ReviewerStatus::CANCELED
                             ]);
+
+                            Mail::to($record->user->email)
+                                ->send(
+                                    new ReviewerCancelationMail($record)
+                                );
+
                             $action->success();
                         }),
                     Action::make("reinstate-reviewer")
@@ -404,7 +436,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                                 $submissionFile = SubmissionFile::find($submissionFileId);
                                 $reviewAssignment->assignedFiles()
                                     ->create([
-                                        'submission_files_id' => $submissionFile->getKey(),
+                                        'submission_file_id' => $submissionFile->getKey(),
                                         'media_id' => $submissionFile->media->getKey(),
                                     ]);
                             }
