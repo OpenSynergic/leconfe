@@ -2,6 +2,7 @@
 
 namespace App\Panel\Livewire\Submissions\Components;
 
+use App\Actions\Participants\ParticipantCreateAction;
 use App\Actions\Participants\ParticipantUpdateAction;
 use App\Models\Participant;
 use App\Models\ParticipantPosition;
@@ -47,11 +48,6 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
                 'media',
                 'meta'
             ])
-
-            ->whereHas(
-                'positions',
-                fn (Builder $query) => $query->whereIn('type', ['author', 'speaker']),
-            )
             ->when(
                 $submissionRelated,
                 fn (Builder $query) => $query->whereIn('id', $this->submission->contributors()->pluck('participant_id'))
@@ -134,12 +130,17 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
                         ->form(static::getContributorFormSchema())
                         ->using(function (array $data) {
                             $participant = Participant::email($data['email'])->first();
-                            $this->submission->contributors()->updateOrCreate([
-                                'participant_id' => $participant->getKey(),
-                            ], [
-                                'participant_id' => $participant->getKey(),
-                                'participant_position_id' => $data['position']
-                            ]);
+                            if (!$participant) {
+                                $participant = ParticipantCreateAction::run($data);
+                            }
+                            $this->submission
+                                ->contributors()
+                                ->updateOrCreate([
+                                    'participant_id' => $participant->getKey(),
+                                ], [
+                                    'participant_id' => $participant->getKey(),
+                                    'participant_position_id' => $data['position']
+                                ]);
                             return $participant;
                         }),
                     Action::make('add_existing')
