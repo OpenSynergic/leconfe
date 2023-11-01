@@ -11,10 +11,13 @@ class ParticipantAssignedMail extends TemplateMailable
 
     public string $name;
 
+    public string $position;
+
     public function __construct(SubmissionParticipant $participant)
     {
         $this->submissionTitle = $participant->submission->getMeta('title');
         $this->name = $participant->user->fullName;
+        $this->position = $participant->role->name;
     }
 
     public static function getDefaultSubject(): string
@@ -37,6 +40,11 @@ class ParticipantAssignedMail extends TemplateMailable
                     <td style="width:100px;">Title</td>
                     <td>:</td>
                     <td>{{ submissionTitle }}</td>
+                </tr>
+                <tr>
+                    <td style="width:100px;">Position</td>
+                    <td>:</td>
+                    <td>{{ position }}</td>
                 </tr>
             </table>
             <p>

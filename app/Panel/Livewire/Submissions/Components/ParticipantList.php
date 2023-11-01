@@ -2,7 +2,9 @@
 
 namespace App\Panel\LiveWire\Submissions\Components;
 
+use App\Mail\Templates\ParticipantAssignedMail;
 use App\Models\Enums\UserRole;
+use App\Models\MailTemplate;
 use App\Models\Role;
 use App\Models\Submission;
 use App\Models\SubmissionParticipant;
@@ -14,6 +16,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
@@ -26,9 +29,12 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Mail\Message;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use STS\FilamentImpersonate\Tables\Actions\Impersonate;
+use Symfony\Component\Mime\Part\AbstractPart;
 
 class ParticipantList extends Component implements HasForms, HasTable
 {
@@ -87,6 +93,12 @@ class ParticipantList extends Component implements HasForms, HasTable
                     })
                     ->modalSubmitActionLabel("Assign")
                     ->modalWidth("2xl")
+                    ->mountUsing(function (Form $form): void {
+                        $mailTemplate = MailTemplate::where('mailable', ParticipantAssignedMail::class)->first();
+                        $form->fill([
+                            'message' => $mailTemplate ? $mailTemplate->html_template : ''
+                        ]);
+                    })
                     ->form([
                         Grid::make(3)
                             ->schema([
@@ -168,22 +180,47 @@ class ParticipantList extends Component implements HasForms, HasTable
                         ->visible(
                             fn (Model $record): bool => $record->user->email !== auth()->user()->email
                         )
+                        ->mountUsing(function (Form $form) {
+                            $form->fill([
+                                'subject' => 'Notification from Leconfe',
+                            ]);
+                        })
                         ->form([
                             Grid::make(1)
                                 ->schema([
                                     TextInput::make('email')
                                         ->disabled()
+                                        ->dehydrated()
                                         ->formatStateUsing(
-                                            fn (SubmissionParticipant $record) => $record->participant->email
+                                            fn (SubmissionParticipant $record) => $record->user->email
                                         )
+                                        ->required()
                                         ->label("Target"),
+                                    TextInput::make('subject')
+                                        ->required(),
                                     TinyEditor::make('message')
                                         ->minHeight(300)
                                         ->label("Message")
+                                        ->required()
                                         ->columnSpanFull()
                                 ])
                         ])
-                        ->label("Notify"),
+                        ->label("Notify")
+                        ->successNotificationTitle("Notification Sent")
+                        ->action(function (Action $action, array $data) {
+                            /**
+                             * TODO:
+                             * In the future it should able to use existing variable like
+                             * submission title or etc
+                             */
+                            Mail::send([], [], function (Message $message) use ($data) {
+                                $message
+                                    ->to($data['email'])
+                                    ->subject($data['subject'])
+                                    ->html($data['message']);
+                            });
+                            $action->success();
+                        }),
                     Impersonate::make()
                         ->grouped()
                         ->visible(

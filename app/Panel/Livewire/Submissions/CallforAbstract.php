@@ -3,11 +3,13 @@
 namespace App\Panel\Livewire\Submissions;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
-use App\Infolists\Components\LivewireEntry;
+use App\Mail\Templates\AcceptAbstractMail;
+use App\Mail\Templates\DeclineAbstractMail;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
+use App\Models\MailTemplate;
 use App\Models\Submission;
-use App\Panel\Livewire\Submissions\SubmissionDetail\Discussions;
+use App\Panel\Livewire\Workflows\Classes\StageManager;
 use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -17,7 +19,9 @@ use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
@@ -38,6 +42,13 @@ class CallforAbstract extends Component implements HasForms, HasActions
             ->modalHeading("Confirmation")
             ->modalSubmitActionLabel("Decline")
             ->extraAttributes(['class' => 'w-full'], true)
+            ->mountUsing(function (Form $form): void {
+                $mailTempalte = MailTemplate::where('mailable', DeclineAbstractMail::class)->first();
+                $form->fill([
+                    'subject' => $mailTempalte ? $mailTempalte->subject : '',
+                    'message' => $mailTempalte ? $mailTempalte->html_template : '',
+                ]);
+            })
             ->form([
                 Fieldset::make("Notification")
                     ->columns(1)
@@ -46,6 +57,7 @@ class CallforAbstract extends Component implements HasForms, HasActions
                             ->hidden(fn (Get $get): bool => $get('no-notification'))
                             ->disabled()
                             ->formatStateUsing(fn (Submission $record): string => $record->user->email),
+                        TextInput::make('subject'),
                         TinyEditor::make('message')
                             ->hidden(fn (Get $get): bool => $get('no-notification'))
                             ->minHeight(300),
@@ -56,7 +68,7 @@ class CallforAbstract extends Component implements HasForms, HasActions
                     ])
             ])
             ->successNotificationTitle("Submission declined")
-            ->action(function (Action $action) {
+            ->action(function (Action $action, array $data) {
                 SubmissionUpdateAction::run([
                     'stage' => SubmissionStage::CallforAbstract,
                     'status' => SubmissionStatus::Declined
@@ -78,6 +90,12 @@ class CallforAbstract extends Component implements HasForms, HasActions
             ->successNotificationTitle("Accepted")
             ->extraAttributes(['class' => 'w-full'])
             ->icon("lineawesome-check-circle-solid")
+            ->mountUsing(function (Form $form): void {
+                $mailTemplate = MailTemplate::where('mailable', AcceptAbstractMail::class)->first();
+                $form->fill([
+                    'message' => $mailTemplate ? $mailTemplate->html_template : ''
+                ]);
+            })
             ->form([
                 Fieldset::make("Notification")
                     ->columns(1)
@@ -107,10 +125,10 @@ class CallforAbstract extends Component implements HasForms, HasActions
                     'stage' => SubmissionStage::PeerReview,
                     'status' => SubmissionStatus::OnReview
                 ], $this->submission);
-                /**
-                 * TODO: 
-                 * -  Send notificaion
-                 */
+
+                Mail::to($this->submission->user)
+                    ->send(new AcceptAbstractMail($this->submission));
+
                 $this->dispatch("refreshPeerReview");
                 $action->success();
             });
@@ -120,7 +138,7 @@ class CallforAbstract extends Component implements HasForms, HasActions
     public function render()
     {
         return view('panel.livewire.submissions.call-for-abstract', [
-            'reviewStageOpen' => $this->conference->getMeta("workflow.peer-review.open", false),
+            'reviewStageOpen' => StageManager::stage('peer-review')->isStageOpen(),
         ]);
     }
 }
