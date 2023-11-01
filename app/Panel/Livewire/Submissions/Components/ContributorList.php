@@ -34,10 +34,6 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
 
     public bool $viewOnly = false;
 
-    public function mount(Submission $submission)
-    {
-    }
-
     public function getQuery(bool $submissionRelated = true): Builder
     {
         return Participant::query()
@@ -113,6 +109,9 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
                             return $participant;
                         }),
                     DeleteAction::make()
+                        ->using(function (Participant $record) {
+                            $this->submission->contributors()->where('participant_id', $record->getKey())->delete();
+                        })
                         ->hidden(
                             fn (Participant $record): bool => $record->email == auth()->user()->email
                         )
@@ -229,7 +228,17 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
                             ->icon('heroicon-o-envelope')
                             ->alignStart(),
                     ])->space(1),
-                    TextColumn::make("positions.name")
+                    TextColumn::make("position")
+                        ->getStateUsing(function (Participant $record) {
+                            /**
+                             * Questions:
+                             * 1. Is this good way ?
+                             */
+                            $contributor = $this->submission->contributors()
+                                ->where('participant_id', $record->getKey())
+                                ->first();
+                            return $contributor->position->name;
+                        })
                         ->badge()
                         ->alignEnd()
                 ])
