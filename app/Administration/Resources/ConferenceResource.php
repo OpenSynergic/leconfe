@@ -21,17 +21,17 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 use App\Actions\Conferences\ConferenceSetActiveAction;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use App\Administration\Resources\ConferenceResource\Pages;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\Component;
 
 class ConferenceResource extends Resource
 {
     protected static ?string $model = Conference::class;
+
 
     protected static ?string $navigationIcon = 'heroicon-o-window';
 
@@ -99,7 +99,6 @@ class ConferenceResource extends Resource
                             ->afterStateUpdated(function (Set $set, ?string $state, Get $get) {
                                 $getDataConference = Conference::where('id', $state)
                                     ->first();
-
 
                                 $defaults = [
                                     'name' => $getDataConference?->name,
