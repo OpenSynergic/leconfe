@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Classes\RegisterPluginToPanel;
 use App\Http\Middleware\MustVerifyEmail;
 use App\Http\Middleware\Panel\PanelAuthenticate;
 use App\Http\Middleware\Panel\TenantConference;
@@ -75,6 +76,7 @@ class PanelProvider extends FilamentPanelProvider
             ->middleware(static::getMiddleware(), true)
             ->authMiddleware(static::getAuthMiddleware(), true)
             ->userMenuItems(static::getUserMenuItems())
+            ->plugin(new RegisterPluginToPanel())
             ->plugins(static::getPlugins());
     }
 

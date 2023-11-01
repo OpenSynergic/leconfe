@@ -17,3 +17,6 @@
     -   [Introduction](/{{route}}/{{version}}/panel/introduction)
 -   ## Website
     -   [Introduction](/{{route}}/{{version}}/website/introduction)
+-   ## Plugin
+    -   [Introduction](/{{route}}/{{version}}/plugin/introduction)
+    -   [Getting Started](/{{route}}/{{version}}/plugin/getting-started)

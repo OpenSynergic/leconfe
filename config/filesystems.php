@@ -37,6 +37,20 @@ return [
             'visibility' => 'private',
         ],
 
+        'plugin-upload' => [
+            'driver' => 'local',
+            'root' => storage_path('app/plugins'),
+            'throw' => false,
+            'visibility' => 'private',
+        ],
+
+        'plugin-directory' => [
+            'driver' => 'local',
+            'root' => base_path('plugins'),
+            'throw' => false,
+            'visibility' => 'private',
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

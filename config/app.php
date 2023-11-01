@@ -195,6 +195,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\HorizonServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\PluginServiceProvider::class,
         App\Providers\Filament\AdministrationPanelProvider::class,
         App\Providers\Filament\PanelProvider::class,
         App\Providers\WebsiteServiceProvider::class,
