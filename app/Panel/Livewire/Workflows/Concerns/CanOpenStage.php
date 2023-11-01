@@ -3,6 +3,7 @@
 namespace App\Panel\Livewire\Workflows\Concerns;
 
 use App\Models\Conference;
+use Carbon\Carbon;
 use Livewire\Attributes\On;
 
 trait CanOpenStage
@@ -16,11 +17,11 @@ trait CanOpenStage
     #[On('stage-status-changed')]
     public function isStageOpen(): bool
     {
-        if ($this->getSetting('start_date') >= now() && !$this->getSetting('end_date')) {
+        if (Carbon::now() >= Carbon::parse($this->getSetting('start_date')) && !$this->getSetting('end_date')) {
             $this->stageOpen = true;
         }
 
-        if ($this->getSetting('end_date') >= now()) {
+        if (Carbon::now() >= Carbon::parse($this->getSetting('end_date'))) {
             $this->stageOpen = false;
         }
 
