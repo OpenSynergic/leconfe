@@ -76,6 +76,7 @@ class Dashboard extends Page implements HasInfolists
                                 ->extraAttributes(['class' => 'w-48'])
                                 ->action(function (Action $action) {
                                     $this->runArtisanCommand('cache:clear', $action);
+                                    $this->runArtisanCommand('optimize:clear', $action);
                                 }),
                         ]),
                         Actions::make([
@@ -93,6 +94,8 @@ class Dashboard extends Page implements HasInfolists
                                 ->extraAttributes(['class' => 'w-48'])
                                 ->action(function (Action $action) {
                                     $this->runArtisanCommand('view:clear', $action);
+                                    $this->runArtisanCommand('icons:clear', $action);
+                                    $this->runArtisanCommand('icons:cache', $action);
                                 }),
                         ]),
                     ])

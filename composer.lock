@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "81b6371e7207e514c72bd5272d3d9d9e",
+    "content-hash": "df9944a46e44b395e5b319f165fa5cb5",
     "packages": [
         {
             "name": "akaunting/laravel-setting",
@@ -352,67 +352,6 @@
                 }
             ],
             "time": "2023-01-15T23:15:59+00:00"
-        },
-        {
-            "name": "brunocfalcao/blade-feather-icons",
-            "version": "v3.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/brunocfalcao/blade-feather-icons.git",
-                "reference": "0813eff9d1bc8cbde9642bf6fdc1933a8a95e059"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/brunocfalcao/blade-feather-icons/zipball/0813eff9d1bc8cbde9642bf6fdc1933a8a95e059",
-                "reference": "0813eff9d1bc8cbde9642bf6fdc1933a8a95e059",
-                "shasum": ""
-            },
-            "require": {
-                "blade-ui-kit/blade-icons": "^1.0",
-                "illuminate/support": "^7.14|^8.0|^9.0|^10.0",
-                "php": "^7.4|^8.0"
-            },
-            "require-dev": {
-                "orchestra/testbench": "^5.0|^6.0|^8.0",
-                "phpunit/phpunit": "^8.0|^9.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Brunocfalcao\\BladeFeatherIcons\\BladeFeatherIconsServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Brunocfalcao\\BladeFeatherIcons\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Bruno Falcao",
-                    "email": "bruno.c.falcao@brunofalcao.me",
-                    "homepage": "https://www.laraning.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A package to easily make use of Feather Icons in your Laravel Blade views.",
-            "homepage": "https://github.com/brunocfalcao/blade-feather-icons",
-            "keywords": [
-                "Feather Icons",
-                "blade",
-                "laravel"
-            ],
-            "support": {
-                "issues": "https://github.com/brunocfalcao/blade-feather-icons/issues",
-                "source": "https://github.com/brunocfalcao/blade-feather-icons/tree/v3.0.0"
-            },
-            "time": "2023-02-14T19:29:09+00:00"
         },
         {
             "name": "codeat3/blade-academicons",
