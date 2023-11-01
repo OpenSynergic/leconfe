@@ -229,7 +229,7 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
                             ->icon('heroicon-o-envelope')
                             ->alignStart(),
                     ])->space(1),
-                    TextColumn::make("position.name")
+                    TextColumn::make("positions.name")
                         ->badge()
                         ->alignEnd()
                 ])
