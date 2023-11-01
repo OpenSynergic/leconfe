@@ -42,5 +42,6 @@ class CreateParticipantFromUserAction
             $participant->positions()->detach($position);
             $participant->positions()->attach($position);
         }
+        return $participant;
     }
 }
