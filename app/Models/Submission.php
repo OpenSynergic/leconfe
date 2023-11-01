@@ -12,6 +12,7 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Auth;
 use Kra8\Snowflake\HasShortflakePrimary;
 use Plank\Metable\Metable;
@@ -78,6 +79,7 @@ class Submission extends Model implements HasMedia
         static::deleting(function (Submission $submission) {
             $submission->participants()->delete();
             $submission->contributors()->delete();
+            $submission->reviews()->delete();
             $submission->media()->delete();
         });
 
@@ -88,18 +90,22 @@ class Submission extends Model implements HasMedia
             ]);
 
             //If current user does not exists in participant
-            if (!auth()->user()->asParticipant()) {
-                CreateParticipantFromUserAction::run(auth()->user());
+            if (!$userAsParticipant = auth()->user()->asParticipant()) {
+                $userAsParticipant = CreateParticipantFromUserAction::run(auth()->user());
             }
 
             // Current user as a contributors
             $submission->contributors()->create([
-                'participant_id' => auth()->user()->asParticipant()->getKey(),
+                'participant_id' => $userAsParticipant->getKey(),
                 'participant_position_id' => ParticipantPosition::where('name', UserRole::Author->value)->first()->getKey()
             ]);
         });
     }
 
+    public function reviewerAssignedFiles(): HasMany
+    {
+        return $this->hasMany(SubmissionFile::class);
+    }
 
     public function reviews()
     {
@@ -149,5 +155,10 @@ class Submission extends Model implements HasMedia
     public function isDeclined(): bool
     {
         return $this->status == SubmissionStatus::Declined;
+    }
+
+    public function isIncomplete(): bool
+    {
+        return $this->status == SubmissionStatus::Incomplete;
     }
 }

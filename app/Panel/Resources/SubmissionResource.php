@@ -150,9 +150,15 @@ class SubmissionResource extends Resource
             ])
             ->actions([
                 Tables\Actions\Action::make('view')
+                    ->icon("lineawesome-eye-solid")
                     ->url(fn (Submission $record) => static::getUrl('view', [
                         'record' => $record->id,
                     ])),
+                Tables\Actions\DeleteAction::make()
+                    ->authorize('Submission:delete')
+                    ->visible(
+                        fn (Submission $record): bool => $record->isDeclined() || $record->isIncomplete()
+                    ),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

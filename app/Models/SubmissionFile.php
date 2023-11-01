@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SubmissionFile extends Model
 {
@@ -25,9 +26,9 @@ class SubmissionFile extends Model
             $record->user_id = auth()->id();
         });
 
-        static::deleting(function (SubmissionFile $record) {
-            if (!SubmissionFile::where('media_id', $record->media_id)->exists()) {
-                $record->media()->delete();
+        static::deleted(function (SubmissionFile $deletedModel) {
+            if ($deletedModel->media()->exists()) {
+                $deletedModel->media()->delete();
             }
         });
     }
@@ -50,5 +51,10 @@ class SubmissionFile extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function reviewerAssginedFiles(): HasMany
+    {
+        return $this->hasMany(ReviewerAssignedFile::class);
     }
 }
