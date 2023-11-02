@@ -4,9 +4,11 @@ namespace App\Website\Pages;
 
 use App\Events\AppInstalled;
 use App\Http\Middleware\IdentifyCurrentConference;
+use App\Http\Middleware\SetupDefaultData;
 use App\Livewire\Forms\InstallationForm;
 use App\Utils\EnvironmentManager;
 use App\Utils\PermissionChecker;
+use Illuminate\Support\Str;
 use Jackiedo\Timezonelist\Facades\Timezonelist;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 
@@ -15,6 +17,8 @@ class Installation extends Page
     protected static string $view = 'website.pages.installation';
 
     protected static string|array $withoutRouteMiddleware = [
+
+        SetupDefaultData::class,
         IdentifyCurrentConference::class,
     ];
 
@@ -24,6 +28,8 @@ class Installation extends Page
 
     public function mount()
     {
+        $this->form->db_name = 'conference_db_'.Str::random(3);
+
         if (app()->isInstalled()) {
             return redirect('/');
         }
@@ -47,7 +53,7 @@ class Installation extends Page
 
     public static function getLayout(): string
     {
-        return 'conference.components.layouts.base';
+        return 'website.components.layouts.base';
     }
 
     public function checkPermission()
@@ -62,8 +68,14 @@ class Installation extends Page
         ]);
     }
 
+    public function testConnection()
+    {
+        $this->form->checkDatabaseConnection();
+    }
+
     public function install()
     {
+
         if (! $this->validateInstallation()) {
             return;
         }
@@ -85,7 +97,12 @@ class Installation extends Page
     public function validateInstallation(): bool
     {
         $this->form->validate();
+
         if (! $this->form->checkDatabaseConnection()) {
+            return false;
+        }
+
+        if (! $this->form->createDatabase()) {
             return false;
         }
 

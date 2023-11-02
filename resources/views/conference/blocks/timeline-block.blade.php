@@ -15,7 +15,7 @@
                                     {{ $badgeRole['role'] }}
                                 </span>
                                 @if ($badgeRole['moreCount'] > 0)
-                                    <span class="badge badge-outline text-mini badge-xs w-16 h-5 text-gray-400">+{{ $badgeRole['moreCount'] }} more</span>
+                                    <span class="badge badge-outline text-2xs badge-xs w-16 h-5 text-gray-400">+{{ $badgeRole['moreCount'] }} more</span>
                                 @endif
                             </div>
                         @endforeach

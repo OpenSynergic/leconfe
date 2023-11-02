@@ -3,6 +3,14 @@
 namespace App\Providers\Filament;
 
 use App\Classes\RegisterPluginToPanel;
+use App\Conference\Blocks\CalendarBlock;
+use App\Conference\Blocks\CommitteeBlock;
+use App\Conference\Blocks\MenuBlock;
+use App\Conference\Blocks\PreviousBlock;
+use App\Conference\Blocks\SubmitBlock;
+use App\Conference\Blocks\TimelineBlock;
+use App\Conference\Blocks\TopicBlock;
+use App\Facades\Block;
 use App\Http\Middleware\MustVerifyEmail;
 use App\Http\Middleware\Panel\PanelAuthenticate;
 use App\Http\Middleware\Panel\TenantConference;
@@ -40,7 +48,19 @@ class PanelProvider extends FilamentPanelProvider
             ->path(config('app.filament.panel_path'))
             ->maxContentWidth('full')
             ->homeUrl(fn () => route('livewirePageGroup.website.pages.home'))
-            ->bootUsing(fn () => static::setupFilamentComponent())
+            ->bootUsing(function () {
+                static::setupFilamentComponent();
+                Block::registerBlocks([
+                    CalendarBlock::class,
+                    TimelineBlock::class,
+                    PreviousBlock::class,
+                    SubmitBlock::class,
+                    TopicBlock::class,
+                    MenuBlock::class,
+                    CommitteeBlock::class,
+                ]);
+                Block::boot();
+            })
             // ->renderHook(
             //     'panels::sidebar.footer',
             //     fn () => view('panel.components.sidebar.footer')

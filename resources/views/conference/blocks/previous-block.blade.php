@@ -1,6 +1,7 @@
 <div class="flex flex-col space-y-1">
-    @forelse ($archives as $archive)
-    <h2 class="text-heading px-2 mb-1">Previous Event</h2>
+ @if (count($archives) > 0)
+ <h2 class="text-heading px-2">Previous Event</h2>
+ @forelse ($archives as $archive)
     <div class="card card-compact bg-white w-full p-4 flex-col rounded">
         <div class="w-full flex justify-between text-primary">
             <a href="{{ route('livewirePageGroup.archive-conference.pages.home', ['conference' => $archive->path]) }}" class="text-sm block hover:text-blue-500">{{ $archive->name }}</a>
@@ -19,4 +20,5 @@
     @empty
 
     @endforelse
+ @endif
 </div>

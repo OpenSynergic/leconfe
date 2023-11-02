@@ -39,7 +39,7 @@ class SetupDefaultData
         View::share('headerLogo', $site->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl']));
         View::share('headerLogoAltText', $site->getMeta('name'));
         View::share('contextName', $site->getMeta('name'));
-        View::share('footer', $site->getMeta('footer'));
+        View::share('footer', $site->getMeta('page_footer'));
 
         MetaTag::add('description', $site->getMeta('description') ?? 'dsadsa');
     }
@@ -50,8 +50,9 @@ class SetupDefaultData
         View::share('headerLogo', $currentConference->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl']));
         View::share('headerLogoAltText', $currentConference->name);
         View::share('contextName', $currentConference->name);
-        View::share('footer', $currentConference->getMeta('footer'));
-
+        View::share('footer', $currentConference->getMeta('page_footer'));
+        View::share('favicon', $currentConference->getFirstMediaUrl('favicon'));
+        View::share('styleSheet', $currentConference->getFirstMediaUrl('styleSheet'));
         MetaTag::add('description', preg_replace("/\r|\n/", '', $currentConference->getMeta('description')));
     }
 }

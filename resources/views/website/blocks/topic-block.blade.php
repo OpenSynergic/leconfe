@@ -5,7 +5,7 @@
         <div class="card-body">
           <div class="inline-flex w-full flex-wrap gap-2">
             @foreach ($topics as $topic)
-            <div class="badge badge-outline text-xs border border-gray-300 h-6 small-text">{{ $topic->name }}</div>
+            <div class="badge badge-outline text-xs border border-gray-300 h-6 text-xs text-secondary">{{ $topic->name }}</div>
             @endforeach
         </div>
     </div>
