@@ -24,15 +24,19 @@ class PluginManager
         return $this->activePlugins;
     }
 
-    public function getPlugin(string $pluginName): ?object
+    public function getPlugin(string $pluginName)
     {
         if ($plugin = $this->activePlugins[$pluginName] ?? false) {
             return $plugin;
         } else if ($plugin = DB::table('plugins')->where('name', $pluginName)->first()) {
-            return $this->readPlugin($plugin->path);
-        }
+            $pluginInstance = $this->readPlugin($plugin->path);
 
-        return null;
+            if (!in_array($pluginInstance, ['invalid', 'PluginName_not_found', 'not_found'])) {
+                return $pluginInstance;
+            } else {
+                return false; // False means invalid
+            }
+        }
     }
 
     public function getPlugins(): array
@@ -46,7 +50,7 @@ class PluginManager
                 array_pop($pluginDir);
                 $pluginInfo = $this->aboutPlugin(implode('/', $pluginDir) . '/about.json');
                 
-                if ($pluginInstance instanceof ClassesPlugin && !in_array($pluginInfo, ['invalid', 'not_found'])) {
+                if (!in_array($pluginInstance, ['invalid', 'PluginName_not_found', 'not_found'])) {
                     $pluginsList[$pluginInfo['plugin_name']] = $pluginInstance;
                 } else {
                     $pluginsList[$pluginInfo['plugin_name']] = false; // False means invalid
@@ -164,7 +168,7 @@ class PluginManager
 
     public function runPlugins(): void
     {
-        $plugins = DB::table('plugins')->where('is_active', true)->get(); // connection() is yet running on register(), so yeah.
+        $plugins = DB::table('plugins')->where('is_active', true)->get(); // connection() is yet running on register(), cannot querying using Model::class
 
         foreach ($plugins as $plugin) {
             if ($pluginInstance = $this->readPlugin($plugin->path)) {
