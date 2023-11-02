@@ -2,7 +2,6 @@
 
 namespace App\Providers\Filament;
 
-use App\Classes\RegisterPluginToPanel;
 use App\Conference\Blocks\CalendarBlock;
 use App\Conference\Blocks\CommitteeBlock;
 use App\Conference\Blocks\MenuBlock;
@@ -96,7 +95,6 @@ class PanelProvider extends FilamentPanelProvider
             ->middleware(static::getMiddleware(), true)
             ->authMiddleware(static::getAuthMiddleware(), true)
             ->userMenuItems(static::getUserMenuItems())
-            ->plugin(new RegisterPluginToPanel())
             ->plugins(static::getPlugins());
     }
 
