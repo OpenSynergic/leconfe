@@ -1,35 +1,64 @@
 # Plugin API
 Plugin API are used to set your plugin at runtime.
 
-## Core
-These are Core actions to the plugin that are located at `pluginName.php`.
-
+## Core functions
+These are essential plugin functions that runs at specified runtimes and act as the designated space for integrating code to extend leconfe. Located at `PluginName.php`.
+### `boot()`
+Executes when the plugin is activated.
 ```php
 ...
 
 public function boot()
 {
-    // Runs when plugin has been activated
+    //
 }
+
+...
+```
+### `onActivation()`
+Executes on plugin activation.
+```php
+...
 
 public function onActivation()
 {
-    // Runs on plugin activation
+    // 
 }
+
+...
+```
+### `onDeactivation()`
+Executes on plugin deactivation.
+```php
+...
 
 public function onDeactivation()
 {
-    // Runs on plugin deactivation
+    // 
 }
+
+...
+```
+### `onInstall()`
+Executes on plugin install.
+```php
+...
 
 public function onInstall()
 {
-    // Runs on plugin installation
+    // 
 }
+
+...
+```
+### `onUninstall()`
+Executes on plugin Uninstall.
+```php
+...
 
 public function onUninstall()
 {
-    // Runs on plugin uninstallation
+    // 
 }
 
 ...
