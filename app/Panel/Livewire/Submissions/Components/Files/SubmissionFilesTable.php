@@ -6,7 +6,6 @@ use App\Actions\SubmissionFiles\UploadSubmissionFileAction;
 use App\Models\Submission;
 use App\Models\SubmissionFile;
 use App\Models\SubmissionFileType;
-use App\Panel\Livewire\Workflows\Classes\StageManager;
 use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -44,6 +43,12 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
     public function getCategory(): string
     {
         return $this->category;
+    }
+
+    public function getAcceptedFiles(): array
+    {
+
+        return config('media-library.accepted_file_types');
     }
 
     public function tableColumns(): array
@@ -109,8 +114,7 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
                      * TODO:
                      * Should change this to be more dynamically
                      */
-                    fn (): array => StageManager::stage('call-for-abstract')
-                        ->getSetting('allowed_file_types', config('media-library.accepted_file_types'))
+                    fn (): array => $this->getAcceptedFiles()
                 )
                 ->collection($this->category)
                 ->visibility('private')
