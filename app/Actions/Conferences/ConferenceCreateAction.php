@@ -16,13 +16,10 @@ class ConferenceCreateAction
         try {
             DB::beginTransaction();
 
-            $conferenceData = null;
+            $conferenceData = data_get($data, 'conference_id')
+                ? ConferenceCloneAction::run($data)
+                : Conference::create($data);
 
-            if (data_get($data, 'conference_id')) {
-                $conferenceData = ConferenceCloneAction::run($data);
-            } else {
-                $conferenceData = Conference::create($data);
-            }
 
             if (data_get($data, 'meta')) {
                 $conferenceData->setManyMeta($data['meta']);
@@ -35,7 +32,6 @@ class ConferenceCreateAction
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-
             throw $th;
         }
 

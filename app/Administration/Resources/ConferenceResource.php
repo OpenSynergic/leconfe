@@ -20,8 +20,6 @@ use App\Models\Enums\ConferenceStatus;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Model;
-use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 use App\Actions\Conferences\ConferenceSetActiveAction;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
@@ -91,14 +89,12 @@ class ConferenceResource extends Resource
                                     ->pluck('name', 'id')
                                     ->toArray();
                             })
-                            ->native(false)
                             ->helperText('Fill the data from previous conference')
                             ->searchable()
                             ->preload()
                             ->live()
                             ->afterStateUpdated(function (Set $set, ?string $state, Get $get) {
-                                $getDataConference = Conference::where('id', $state)
-                                    ->first();
+                                $getDataConference = Conference::find($state);
 
                                 $defaults = [
                                     'name' => $getDataConference?->name,
@@ -113,13 +109,12 @@ class ConferenceResource extends Resource
                                     'meta.country' => $getDataConference?->getMeta('country'),
                                 ];
 
-                                foreach ($defaults as $key => $value) {
-                                    $currentValue = $get($key);
-                                    if (empty($currentValue)) {
-                                        $set($key, $value);
-                                    }
+                                foreach ($defaults as $key => $previousConferenceValue) {
+                                    $fieldUserValue = $get($key);
+                                    empty($fieldUserValue) ? $set($key, $previousConferenceValue) : $set($key, $fieldUserValue);
                                 }
-                            }),
+                            })
+                            ->hidden(fn () => Conference::where('status', ConferenceStatus::Archived->value)->doesntExist()),
 
                         SpatieMediaLibraryFileUpload::make('logo')
                             ->collection('logo')

@@ -52,8 +52,3 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 
     return redirect()->route('filament.panel.tenant');
 })->middleware(['auth', 'signed'])->name('verification.verify');
-
-
-Route::get('/test', function () {
-    dd($clonedDataConference = Conference::with(['topics', 'meta', 'navigations'])->findOrFail(354817923763507)->replicate());
-});

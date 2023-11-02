@@ -5,6 +5,7 @@ namespace App\Actions\Conferences;
 use App\Models\Conference;
 use Illuminate\Support\Facades\DB;
 use App\Models\Enums\ConferenceStatus;
+use App\Models\Scopes\ConferenceScope;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class ConferenceCloneAction
@@ -16,30 +17,9 @@ class ConferenceCloneAction
         try {
             DB::beginTransaction();
 
-            $clonedConferenceId = $data['conference_id'];
+            $clonedDataConference = $this->cloneConference($data);
 
-            // dd($clonedDataConference = Conference::with(['topics', 'meta', 'navigations'])->findOrFail(354817923763507)->replicate());
-            dd($clonedDataConference = Conference::withoutGlobalScopes([ScopeConference::class])->with(['topics', 'meta', 'navigations'])->findOrFail(354817923763507)->replicate());
-
-
-            $clonedDataConference = Conference::with(['topics', 'meta', 'navigations'])->findOrFail($clonedConferenceId)->replicate();
-
-            dd($clonedDataConference);
-
-            $clonedDataConference->fill($data);
-
-            $clonedDataConference->status = ConferenceStatus::Upcoming;
-
-            $clonedDataConference->path = $this->generateUniquePath($clonedDataConference->path);
-
-            $clonedDataConference->save();
-
-            // clone topic
-            foreach ($clonedDataConference->topics as $topic) {
-                $clonedTopic = $topic->replicate();
-                $clonedTopic->conference_id = $clonedDataConference->id;
-                $clonedTopic->save();
-            }
+            $this->cloneRelations($clonedDataConference);
 
             DB::commit();
 
@@ -50,6 +30,63 @@ class ConferenceCloneAction
         }
     }
 
+    private function cloneConference(array $data): Conference
+    {
+        $clonedConferenceId = $data['conference_id'];
+
+        $clonedDataConference = Conference::with([
+            'meta',
+
+            'topics' => function ($query) {
+                $query->withoutGlobalScopes([ConferenceScope::class]);
+            },
+
+            'staticPages' => function ($query) {
+                $query->withoutGlobalScopes([ConferenceScope::class]);
+            }
+        ])->findOrFail($clonedConferenceId)->replicate();
+
+        $clonedDataConference->fill($data);
+        $clonedDataConference->status = ConferenceStatus::Upcoming;
+        $clonedDataConference->path = $this->generateUniquePath($clonedDataConference->path);
+        $clonedDataConference->save();
+
+        return $clonedDataConference;
+    }
+
+    private function cloneRelations(Conference $clonedDataConference): void
+    {
+        $this->cloneTopics($clonedDataConference);
+        $this->cloneStaticPages($clonedDataConference);
+        $this->cloneMeta($clonedDataConference);
+    }
+
+    private function cloneTopics(Conference $clonedDataConference): void
+    {
+        foreach ($clonedDataConference->topics as $topic) {
+            $clonedTopic = $topic->replicate();
+            $clonedTopic->conference_id = $clonedDataConference->id;
+            $clonedTopic->save();
+        }
+    }
+
+    private function cloneStaticPages(Conference $clonedDataConference): void
+    {
+        foreach ($clonedDataConference->staticPages as $staticPage) {
+            $clonedStaticPage = $staticPage->replicate();
+            $clonedStaticPage->conference_id = $clonedDataConference->id;
+            $clonedStaticPage->save();
+        }
+    }
+
+    private function cloneMeta(Conference $clonedDataConference): void
+    {
+        foreach ($clonedDataConference->meta as $meta) {
+            $clonedMeta = $meta->replicate();
+            $clonedMeta->metable_id = $clonedDataConference->id;
+            $clonedMeta->save();
+        }
+    }
     private function generateUniquePath($basePath)
     {
         $uniquePath = $basePath;
