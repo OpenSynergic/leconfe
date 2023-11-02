@@ -3,10 +3,10 @@
 namespace App\Panel\Livewire\Submissions\Components\Files;
 
 use App\Actions\SubmissionFiles\UploadSubmissionFileAction;
-use App\Constants\SubmissionFileCategory;
 use App\Models\Submission;
 use App\Models\SubmissionFile;
 use App\Models\SubmissionFileType;
+use App\Panel\Livewire\Workflows\Classes\StageManager;
 use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -104,6 +104,14 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
                 ->reorderable()
                 ->disk('private-files')
                 ->preserveFilenames()
+                ->acceptedFileTypes(
+                    /**
+                     * TODO:
+                     * Should change this to be more dynamically
+                     */
+                    fn (): array => StageManager::stage('call-for-abstract')
+                        ->getSetting('allowed_file_types', config('media-library.accepted_file_types'))
+                )
                 ->collection($this->category)
                 ->visibility('private')
                 ->model(fn () => $this->submission)

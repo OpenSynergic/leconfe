@@ -2,23 +2,16 @@
 
 namespace App\Panel\Livewire\Workflows;
 
-use App\Models\Conference;
 use App\Panel\Livewire\Workflows\Base\WorkflowStage;
-use App\Panel\Livewire\Workflows\Traits\CanOpenStage;
-use App\Panel\Pages\Settings\Workflow;
 use Awcodes\Shout\Components\Shout;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Facades\Filament;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
-use Filament\Notifications\Notification;
-use Livewire\Component;
 
 /**
  * Create a job to change status
@@ -35,7 +28,7 @@ class AbstractSetting extends WorkflowStage implements HasForms, HasActions
     {
         $this->form->fill([
             'settings' => [
-                'allowed_file_types' => $this->getSetting('allowed_file_types', ['pdf', 'docx', 'doc'])
+                'allowed_file_types' => $this->getSetting('allowed_file_types', config('media-library.accepted_file_types'))
             ],
         ]);
     }

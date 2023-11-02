@@ -4,7 +4,6 @@ namespace App\Panel\Livewire\Submissions\Components\Files;
 
 use App\Constants\SubmissionFileCategory;
 use App\Models\Enums\SubmissionStage;
-use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class AbstractFiles extends SubmissionFilesTable
 {
