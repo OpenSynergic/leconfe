@@ -2,23 +2,21 @@
 
 namespace App\Administration\Pages;
 
-use Filament\Pages\Page;
 use Filament\Facades\Filament;
-use Filament\Infolists\Infolist;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Session;
-use Filament\Notifications\Notification;
 use Filament\Infolists\Components\Actions;
-use Filament\Infolists\Components\Section;
-use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Components\Actions\Action;
+use Filament\Infolists\Components\Section;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
-
+use Filament\Infolists\Contracts\HasInfolists;
+use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
+use Filament\Pages\Page;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class Dashboard extends Page implements HasInfolists
 {
-
     use InteractsWithInfolists;
 
     protected static ?string $navigationIcon = 'heroicon-m-home';
@@ -58,7 +56,7 @@ class Dashboard extends Page implements HasInfolists
                                         ->body('User session cleared succesfully'),
                                 )
                                 ->extraAttributes(['class' => 'w-48'])
-                                ->action(fn (Action $action) => $this->expireUserSession($action))
+                                ->action(fn (Action $action) => $this->expireUserSession($action)),
 
                         ]),
                         Actions::make([
@@ -98,7 +96,7 @@ class Dashboard extends Page implements HasInfolists
                                     $this->runArtisanCommand('icons:cache', $action);
                                 }),
                         ]),
-                    ])
+                    ]),
             ]);
     }
 
