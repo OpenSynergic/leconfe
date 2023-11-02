@@ -38,7 +38,7 @@ class PluginManager
     public function getPlugins(): array
     {
         $pluginsList = [];
-        $plugins = DB::table('plugins')->get(); // connection() is yet running on register(), so yeah.
+        $plugins = DB::table('plugins')->get(); // connection() is yet running on register(), cannot querying using Model::class
 
         foreach ($plugins as $plugin) {
             if ($pluginInstance = $this->readPlugin($plugin->path)) {
@@ -46,7 +46,7 @@ class PluginManager
                 array_pop($pluginDir);
                 $pluginInfo = $this->aboutPlugin(implode('/', $pluginDir) . '/about.json');
                 
-                if ($pluginInstance instanceof ClassesPlugin) {
+                if ($pluginInstance instanceof ClassesPlugin && !in_array($pluginInfo, ['invalid', 'not_found'])) {
                     $pluginsList[$pluginInfo['plugin_name']] = $pluginInstance;
                 } else {
                     $pluginsList[$pluginInfo['plugin_name']] = false; // False means invalid
@@ -97,18 +97,55 @@ class PluginManager
         $currentPlugin = $this->readPlugin("plugins/{$plugin[2]}/index.php");
         $pluginInfo = $this->aboutPlugin("plugins/{$plugin[2]}/about.json");
 
-        ModelsPlugin::updateOrCreate([
-            'name' => $pluginInfo['plugin_name'],
-            'author' => $pluginInfo['author'],
-        ],
-        [
-            'description' => $pluginInfo['description'],
-            'version' => $pluginInfo['version'],
-            'path' => "plugins/{$plugin[2]}/index.php",
-            'is_active' => false,
-        ]);
+        if (!in_array($currentPlugin, ['invalid', 'PluginName_not_found', 'not_found'])) {
+            if (!in_array($pluginInfo, ['invalid', 'not_found'])) {
+                ModelsPlugin::updateOrCreate([
+                    'name' => $pluginInfo['plugin_name'],
+                    'author' => $pluginInfo['author'],
+                ],
+                [
+                    'description' => $pluginInfo['description'],
+                    'version' => $pluginInfo['version'],
+                    'path' => "plugins/{$plugin[2]}/index.php",
+                    'is_active' => false,
+                ]);
 
-        $currentPlugin->onInstall();
+                $currentPlugin->onInstall();
+                return;
+            } else if ($pluginInfo == 'invalid') {
+                Notification::make()
+                    ->title('Failed to install')
+                    ->body('about.json is not valid, please refers to Documentation')
+                    ->danger()
+                    ->send();
+            } else {
+                Notification::make()
+                    ->title('Failed to install')
+                    ->body('about.json is not found')
+                    ->danger()
+                    ->send();
+            }
+        } else if ($currentPlugin == 'PluginName_not_found') {
+            Notification::make()
+                ->title('Failed to install')
+                ->body("{$plugin[2]}.php is not found")
+                ->danger()
+                ->send();
+        } else if ($currentPlugin == 'invalid') {
+            Notification::make()
+                ->title('Failed to install')
+                ->body("index.php must return {$plugin[2]}.php instance and {$plugin[2]}.php must be an instanceof App\\Classes\\Plugin")
+                ->danger()
+                ->send();
+        } else {
+            Notification::make()
+                ->title('Failed to install')
+                ->body('index.php is not found')
+                ->danger()
+                ->send();
+        }
+
+        File::deleteDirectory(base_path("plugins/{$plugin[2]}"));
     }
 
     public function pluginUninstall(ModelsPlugin $record): void
@@ -147,12 +184,36 @@ class PluginManager
 
     public function readPlugin(string $pluginPath)
     {
-        return include base_path($pluginPath);
+        if (file_exists($file = base_path($pluginPath))) {
+            try {
+                $currentPlugin = include $file;
+            } catch (\Throwable $th) {
+                return 'PluginName_not_found';
+            }
+            if ($currentPlugin instanceof ClassesPlugin) {
+                return $currentPlugin;
+            }
+            return 'invalid';
+        } else {
+            return 'not_found';
+        }
     }
 
-    public function aboutPlugin(string $jsonPath): array
+    public function aboutPlugin(string $jsonPath)
     {
-        return File::json(base_path($jsonPath));
+        $validValues = ['plugin_name', 'author', 'description', 'version'];
+
+        if (file_exists($file = base_path($jsonPath))) {
+            $about = File::json($file);
+            foreach ($validValues as $validValue) {
+                if (!array_key_exists($validValue, $about)) {
+                    return 'invalid';
+                }
+            }
+            return $about;
+        } else {
+            return 'not_found';
+        }
     }
 
     public function scanPlugins()

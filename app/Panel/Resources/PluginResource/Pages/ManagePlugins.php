@@ -26,6 +26,7 @@ class ManagePlugins extends ManageRecords
                 }),
             Actions\CreateAction::make()
                 ->modalSubmitActionLabel('Add')
+                ->successNotification(null)
                 ->using(function (array $data) {
                     Plugin::pluginInstall($data['file']);
                 })
