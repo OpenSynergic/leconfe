@@ -9,6 +9,7 @@ use App\Infolists\Components\LivewireEntry;
 use App\Mail\Templates\ReviewerCancelationMail;
 use App\Mail\Templates\ReviewerInvitationMail;
 use App\Models\Enums\SubmissionStage;
+use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
 use App\Models\MailTemplate;
 use App\Models\Media;
@@ -223,10 +224,10 @@ class ReviewerList extends Component implements HasForms, HasTable
                     }),
                 ActionGroup::make([
                     Action::make('edit-reviewer')
-                        ->authorize('Submission:editReviewer')
-                        ->hidden(
-                            fn (): bool => $this->record->isDeclined() || $this->record->stage == SubmissionStage::Editing
+                        ->visible(
+                            fn (): bool => $this->record->status == SubmissionStatus::OnReview
                         )
+                        ->authorize('Submission:editReviewer')
                         ->modalWidth("2xl")
                         ->icon("iconpark-edit")
                         ->label("Edit")
@@ -393,9 +394,12 @@ class ReviewerList extends Component implements HasForms, HasTable
                             'reviewer-invitation-message' => MailTemplate::where('mailable', ReviewerInvitationMail::class)->first()->html_template,
                         ]);
                     })
-                    ->hidden(
-                        fn (): bool => $this->record->isDeclined() || $this->record->stage == SubmissionStage::Editing
+                    ->visible(
+                        fn (): bool => $this->record->status == SubmissionStatus::OnReview
                     )
+                    // ->hidden(
+                    //     fn (): bool => $this->record->isDeclined() || $this->record->stage == SubmissionStage::Editing || $this->record->isPublished()
+                    // )
                     ->icon("iconpark-adduser-o")
                     ->label("Reviewer")
                     ->modalHeading("Assign Reviewer")

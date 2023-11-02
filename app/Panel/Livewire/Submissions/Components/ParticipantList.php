@@ -172,6 +172,7 @@ class ParticipantList extends Component implements HasForms, HasTable
             ->actions([
                 ActionGroup::make([
                     Action::make('notify-participant')
+                        ->authorize("SubmissionParticipant:notify")
                         ->color('primary')
                         ->modalHeading("Notify Participant")
                         ->icon("iconpark-sendemail")
@@ -237,6 +238,7 @@ class ParticipantList extends Component implements HasForms, HasTable
                             }
                         }),
                     Action::make('remove-participant')
+                        ->authorize('SubmissionParticipant:delete')
                         ->color('danger')
                         ->icon("iconpark-deletethree-o")
                         ->visible(

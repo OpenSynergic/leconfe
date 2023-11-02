@@ -134,6 +134,12 @@ class PeerReview extends Component implements HasForms, HasActions
                     'stage' => SubmissionStage::Editing,
                     'status' => SubmissionStatus::Editing,
                 ], $this->submission);
+
+                Mail::to($this->submission->user)
+                    ->send(
+                        new AcceptPaperMail($this->submission)
+                    );
+
                 $action->success();
             });
     }

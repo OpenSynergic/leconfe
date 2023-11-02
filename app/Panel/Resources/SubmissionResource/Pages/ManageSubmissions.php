@@ -44,6 +44,10 @@ class ManageSubmissions extends ManageRecords
         ];
     }
 
+    /**
+     * Questions
+     * 1. The code is still look ugly
+     */
     public function getTabs(): array
     {
         $currentUser = auth()->user();
@@ -61,7 +65,7 @@ class ManageSubmissions extends ManageRecords
                 ...$tabs,
                 SubmissionStage::CallforAbstract->value => Tab::make(SubmissionStage::CallforAbstract->value)
                     ->modifyQueryUsing(
-                        function (Builder $query) use ($currentUser) {
+                        function (Builder $query) {
                             return $query->stage(SubmissionStage::CallforAbstract);
                         }
                     ),
@@ -104,12 +108,24 @@ class ManageSubmissions extends ManageRecords
             ];
         }
 
+        // Editor, Author, Admin
         if (!$currentUser->hasRole(UserRole::Reviewer->value)) {
             $tabs = [
                 ...$tabs,
                 'Active' => Tab::make('Active')
                     ->modifyQueryUsing(
-                        fn (Builder $query): Builder => $query->where('status', '!=', SubmissionStatus::Declined)
+                        function (Builder $query) {
+                            $query
+                                ->when(
+                                    !auth()->user()->hasRole(UserRole::Admin->value),
+                                    function (Builder $query) {
+                                        return $query->whereHas('participants', function ($query) {
+                                            $query->where('user_id', auth()->id());
+                                        });
+                                    }
+                                )
+                                ->where('status', '!=', SubmissionStatus::Declined);
+                        }
                     ),
                 'Published' => Tab::make("Published")
                     ->modifyQueryUsing(

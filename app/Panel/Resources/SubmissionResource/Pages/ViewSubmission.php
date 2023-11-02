@@ -2,6 +2,7 @@
 
 namespace App\Panel\Resources\SubmissionResource\Pages;
 
+use App\Infolists\Components\BladeEntry;
 use App\Infolists\Components\LivewireEntry;
 use App\Infolists\Components\VerticalTabs\Tab as Tab;
 use App\Infolists\Components\VerticalTabs\Tabs as Tabs;
@@ -28,6 +29,7 @@ use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
 
 class ViewSubmission extends Page implements HasInfolists, HasForms
@@ -50,7 +52,32 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
             403
         );
 
+        /**
+         * Check if the authenticated user has the 'Editor' role and is assigned to the submission.
+         * If the user is not an editor or has additional roles, the request will be aborted with a 403 status code.
+         *
+         * @return void 
+         */
+        if (
+            auth()->user()->hasRole(UserRole::Editor->value)
+            && !auth()->user()->hasRole(UserRole::Admin->value)
+            && !auth()->user()->hasRole(UserRole::ConferenceManager->value)
+        ) {
+            $editorAssgined = $this->record
+                ->participants()
+                ->where('user_id', auth()->id());
+
+            abort_unless(
+                $editorAssgined->exists(),
+                403
+            );
+        }
         abort_unless(static::getResource()::canView($this->getRecord()), 403);
+    }
+
+    public function getSubheading(): string|Htmlable|null
+    {
+        return $this->record->status->value;
     }
 
     public function getHeading(): string

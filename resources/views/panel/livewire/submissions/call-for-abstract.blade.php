@@ -13,7 +13,7 @@
         <div class="self-start sticky top-24 flex flex-col gap-3 col-span-4">
             @if ($submission->stage == SubmissionStage::PeerReview && !$reviewStageOpen)
                 <div class="bg-primary-700 p-4 rounded-lg text-base">
-                    Your submission has been accepted. Now, we are waiting to next stage is open.
+                    This submission has been accepted. Now, we are waiting to next stage is open.
                 </div>
             @endif
                 @if(auth()->user()->can('Submission:accept') && auth()->user()->can('Submission:decline'))

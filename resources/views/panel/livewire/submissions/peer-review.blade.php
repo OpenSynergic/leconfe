@@ -18,7 +18,7 @@
                 @livewire(Components\Files\RevisionFiles::class, ['submission' => $submission])
 
                 {{-- Discussions --}}
-                @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\Discussions::class, ['record' => $submission])
+                {{-- @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\Discussions::class, ['record' => $submission]) --}}
             </div>
             <div class="self-start sticky top-24 flex flex-col gap-4 col-span-4">
                 @if ($submission->revision_required)
@@ -33,18 +33,20 @@
                 {{-- Participants --}}
                 @livewire(Components\ParticipantList::class, ['submission' => $submission, 'lazy' => true])
 
-                {{-- TODO: is this a good way using hasanyrole --}}
-         
-                    @hasanyrole([UserRole::Admin->value, UserRole::Editor->value])
                         @if ($submission->stage == SubmissionStage::PeerReview && $submission->status == SubmissionStatus::OnReview)
-                            {{ $this->skipReviewAction() }}
+                            @can('Submission:skipReview')
+                                {{ $this->skipReviewAction() }}
+                            @endcan
+                            @can('Submission:requestRevision')
+                                {{ $this->requestRevisionAction() }}
+                            @endcan
+                            @can('Submission:acceptReview')
+                                {{ $this->acceptSubmissionAction() }}
+                            @endcan
+                            @can('Submission:declineReview')
+                                {{ $this->declineSubmissionAction() }}
+                            @endcan
                         @endif
-                        @if ($submission->stage != SubmissionStage::Editing && $submission->status != SubmissionStatus::Declined)
-                            {{ $this->requestRevisionAction() }}
-                            {{ $this->acceptSubmissionAction() }}
-                            {{ $this->declineSubmissionAction() }}
-                        @endif
-                    @endhasanyrole
             </div>
         </div>
         <x-filament-actions::modals />

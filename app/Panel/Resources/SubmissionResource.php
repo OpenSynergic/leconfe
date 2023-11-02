@@ -177,8 +177,8 @@ class SubmissionResource extends Resource
         ];
     }
 
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::where('status', '!=', SubmissionStatus::Declined)->count();
-    }
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     return static::getModel()::where('status', '!=', SubmissionStatus::Declined)->count();
+    // }
 }
