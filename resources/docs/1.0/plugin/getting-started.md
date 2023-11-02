@@ -15,8 +15,8 @@ Plugins are located in `/plugins` folder at the root of application. A correct p
     ├── index.php
     └── pluginName.php
 ```
-### Plugin information
-A detailed information about the plugin are stored in `plugin.json`.
+### about.json
+A detailed information about the plugin.
 ```json
 {
     "plugin_name": "Plugin Name",
@@ -25,36 +25,45 @@ A detailed information about the plugin are stored in `plugin.json`.
     "version": "1.0"
 }
 ```
-## Plugin Actions
-Plugin actions are core functions to the plugin and are located at `pluginName.php`.
-
+### index.php
+The `index.php` is the main entry point of plugin that must return `Plugins\PluginName\PluginName` instance.
 ```php
-...
+use Plugins\PluginName\PluginName;
 
-public function boot()
+return new PluginName();
+```
+### PluginName.php
+Contains core actions to the plugin at runtime.
+```php
+namespace Plugins\DummyWithComposer;
+
+use App\Classes\Plugin;
+
+class PluginName extends Plugin
 {
-    // Runs when plugin has been activated
-}
+    public function boot()
+    {
+        // Runs when plugin has been activated
+    }
 
-public function onActivation()
-{
-    // Runs on plugin activation
-}
+    public function onActivation()
+    {
+        // Runs on plugin activation
+    }
 
-public function onDeactivation()
-{
-    // Runs on plugin deactivation
-}
+    public function onDeactivation()
+    {
+        // Runs on plugin deactivation
+    }
 
-public function onInstall()
-{
-    // Runs on plugin installation
-}
+    public function onInstall()
+    {
+        // Runs on plugin installation
+    }
 
-public function onUninstall()
-{
-    // Runs on plugin uninstallation
+    public function onUninstall()
+    {
+        // Runs on plugin uninstallation
+    }
 }
-
-...
 ```

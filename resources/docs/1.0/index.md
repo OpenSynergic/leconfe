@@ -20,3 +20,4 @@
 -   ## Plugin
     -   [Introduction](/{{route}}/{{version}}/plugin/introduction)
     -   [Getting Started](/{{route}}/{{version}}/plugin/getting-started)
+    -   [Plugin API](/{{route}}/{{version}}/plugin/plugin-api)

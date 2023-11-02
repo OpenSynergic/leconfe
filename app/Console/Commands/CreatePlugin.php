@@ -48,7 +48,6 @@ class CreatePlugin extends Command
         namespace Plugins\\{$name};
 
         use App\Classes\Plugin;
-        use App\Interfaces\HasPlugin;
 
         class {$name} extends Plugin
         {
