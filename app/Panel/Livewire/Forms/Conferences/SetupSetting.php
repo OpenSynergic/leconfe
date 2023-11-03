@@ -6,11 +6,15 @@ use App\Actions\Conferences\ConferenceUpdateAction;
 use App\Models\Conference;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Illuminate\Support\Facades\File;
 use Livewire\Component;
 
 class SetupSetting extends Component implements HasForms
@@ -41,6 +45,20 @@ class SetupSetting extends Component implements HasForms
             ->schema([
                 Section::make()
                     ->schema([
+                        Grid::make(2)
+                            ->schema([
+                                Select::make('font'),
+                                ColorPicker::make('accent_color')
+                                    ->helperText('Header, Button, and more...')
+                                    ->formatStateUsing(function () {
+                                        $config = File::get(base_path('resources/website/css/tailwind.config.js'));
+
+                                        $pattern = "/primary\s*:\s*'([#a-zA-Z0-9]+)'/";
+                                        preg_match($pattern, $config, $matches);
+
+                                        return $matches[1];
+                                    }),
+                            ]),
                         SpatieMediaLibraryFileUpload::make('logo')
                             ->collection('logo')
                             ->image()
