@@ -3,9 +3,9 @@
 namespace App\Actions\Conferences;
 
 use App\Models\Conference;
-use Illuminate\Support\Facades\DB;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Scopes\ConferenceScope;
+use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class ConferenceCloneAction
@@ -43,7 +43,7 @@ class ConferenceCloneAction
 
             'staticPages' => function ($query) {
                 $query->withoutGlobalScopes([ConferenceScope::class]);
-            }
+            },
         ])->findOrFail($clonedConferenceId)->replicate();
 
         $clonedDataConference->fill($data);
@@ -87,6 +87,7 @@ class ConferenceCloneAction
             $clonedMeta->save();
         }
     }
+
     private function generateUniquePath($basePath)
     {
         $uniquePath = $basePath;
@@ -94,7 +95,7 @@ class ConferenceCloneAction
 
         while (Conference::where('path', $uniquePath)->exists()) {
             $counter++;
-            $uniquePath = $basePath . $counter;
+            $uniquePath = $basePath.$counter;
         }
 
         return $uniquePath;

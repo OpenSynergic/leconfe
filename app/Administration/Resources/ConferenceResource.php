@@ -2,34 +2,33 @@
 
 namespace App\Administration\Resources;
 
-use Filament\Tables;
+use App\Actions\Conferences\ConferenceSetActiveAction;
+use App\Administration\Resources\ConferenceResource\Pages;
+use App\Models\Conference;
+use App\Models\Enums\ConferenceStatus;
+use App\Models\Enums\ConferenceType;
+use App\Tables\Columns\IndexColumn;
+use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
-use Filament\Forms\Form;
-use App\Models\Conference;
-use Filament\Tables\Table;
-use Squire\Models\Country;
-use Illuminate\Support\Str;
 use Filament\Resources\Resource;
-use App\Tables\Columns\IndexColumn;
-use Filament\Forms\Components\Grid;
-use App\Models\Enums\ConferenceType;
-use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\Select;
-use App\Models\Enums\ConferenceStatus;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Textarea;
+use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
-use App\Actions\Conferences\ConferenceSetActiveAction;
-use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
-use App\Administration\Resources\ConferenceResource\Pages;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use Squire\Models\Country;
 
 class ConferenceResource extends Resource
 {
     protected static ?string $model = Conference::class;
-
 
     protected static ?string $navigationIcon = 'heroicon-o-window';
 

@@ -5,7 +5,6 @@ namespace App\Actions\Conferences;
 use App\Models\Conference;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
-use App\Actions\Conferences\ConferenceCloneAction;
 
 class ConferenceCreateAction
 {
@@ -19,7 +18,6 @@ class ConferenceCreateAction
             $conferenceData = data_get($data, 'conference_id')
                 ? ConferenceCloneAction::run($data)
                 : Conference::create($data);
-
 
             if (data_get($data, 'meta')) {
                 $conferenceData->setManyMeta($data['meta']);
