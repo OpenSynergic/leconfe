@@ -498,8 +498,7 @@
 }
 
 .vanilla-calendar-day__btn_selected {
-    background-color: #38BDF8!important;
-    color: #fff
+   @apply text-primary
 }
 
 .past_timeline{
@@ -510,8 +509,7 @@
 
 
 .current_timeline {
-    background-color: #38bdf8!important;
-    color: #fff
+   @apply text-primary
 }
 
 .upcoming_timeline {
@@ -521,8 +519,7 @@
 
 
 .vanilla-calendar-day__btn_selected:hover {
-    background-color: #38BDF8;
-    color: #fff
+   @apply text-primary
 }
 
 .vanilla-calendar-day__btn_selected.vanilla-calendar-day__btn_intermediate {
