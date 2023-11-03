@@ -2,30 +2,34 @@
 
 namespace App\Administration\Resources;
 
-use App\Actions\Conferences\ConferenceSetActiveAction;
-use App\Administration\Resources\ConferenceResource\Pages;
-use App\Models\Conference;
-use App\Models\Enums\ConferenceType;
-use App\Tables\Columns\IndexColumn;
-use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use Filament\Forms\Form;
+use App\Models\Conference;
 use Filament\Tables\Table;
 use Squire\Models\Country;
+use Illuminate\Support\Str;
+use Filament\Resources\Resource;
+use App\Tables\Columns\IndexColumn;
+use Filament\Forms\Components\Grid;
+use App\Models\Enums\ConferenceType;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Select;
+use App\Models\Enums\ConferenceStatus;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use App\Actions\Conferences\ConferenceSetActiveAction;
+use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
+use App\Administration\Resources\ConferenceResource\Pages;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
 class ConferenceResource extends Resource
 {
     protected static ?string $model = Conference::class;
+
 
     protected static ?string $navigationIcon = 'heroicon-o-window';
 
@@ -45,7 +49,9 @@ class ConferenceResource extends Resource
                             ])
                             ->schema([
                                 TextInput::make('name')
-                                    ->required(),
+                                    ->required()
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('path', Str::slug($state))),
                                 TextInput::make('path')
                                     ->rule('alpha_dash')
                                     ->required(),
@@ -73,6 +79,43 @@ class ConferenceResource extends Resource
                         'sm' => 1,
                     ])
                     ->schema([
+                        Select::make('conference_id')
+                            ->label('Previous Conference')
+                            ->options(function () {
+                                return Conference::query()
+                                    ->where('status', ConferenceStatus::Archived)
+                                    ->latest('created_at')
+                                    ->take(5)
+                                    ->pluck('name', 'id')
+                                    ->toArray();
+                            })
+                            ->helperText('Fill the data from previous conference')
+                            ->searchable()
+                            ->preload()
+                            ->live()
+                            ->afterStateUpdated(function (Set $set, ?string $state, Get $get) {
+                                $getDataConference = Conference::find($state);
+
+                                $defaults = [
+                                    'name' => $getDataConference?->name,
+                                    'path' => $getDataConference?->path,
+                                    'type' => $getDataConference?->type,
+                                    'meta.location' => $getDataConference?->getMeta('location'),
+                                    'meta.date_held' => $getDataConference?->getMeta('date_held'),
+                                    'meta.description' => $getDataConference?->getMeta('description'),
+                                    'meta.publisher_name' => $getDataConference?->getMeta('publisher_name'),
+                                    'meta.affiliation' => $getDataConference?->getMeta('affiliation'),
+                                    'meta.abbreviation' => $getDataConference?->getMeta('abbreviation'),
+                                    'meta.country' => $getDataConference?->getMeta('country'),
+                                ];
+
+                                foreach ($defaults as $key => $previousConferenceValue) {
+                                    $fieldUserValue = $get($key);
+                                    empty($fieldUserValue) ? $set($key, $previousConferenceValue) : $set($key, $fieldUserValue);
+                                }
+                            })
+                            ->hidden(fn () => Conference::where('status', ConferenceStatus::Archived->value)->doesntExist()),
+
                         SpatieMediaLibraryFileUpload::make('logo')
                             ->collection('logo')
                             ->image()
