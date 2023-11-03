@@ -47,7 +47,19 @@ class SetupSetting extends Component implements HasForms
                     ->schema([
                         Grid::make(2)
                             ->schema([
-                                Select::make('font'),
+                                Select::make('font')
+                                    ->options([
+                                        'Inter' => 'Inter',
+                                        'Times New Roman' => 'Times New Roman',
+                                    ])
+                                    ->formatStateUsing(function () {
+                                        $style = File::get(base_path('resources/website/css/website.css'));
+
+                                        $pattern = "/--font-family\s*:\s*'([\s*a-zA-Z0-9]+)'/";
+                                        preg_match($pattern, $style, $matches);
+
+                                        return $matches[1];
+                                    }),
                                 ColorPicker::make('accent_color')
                                     ->helperText('Header, Button, and more...')
                                     ->formatStateUsing(function () {
