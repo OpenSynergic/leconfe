@@ -111,14 +111,14 @@ class PluginManager
     public function readPlugin(string $pluginPath)
     {
         try {
-            $currentPlugin = include base_path($pluginPath . '/index.php');
+            $currentPlugin = require base_path($pluginPath . '/index.php');
         } catch (\Throwable $th) {
             File::deleteDirectory(base_path($pluginPath));
             throw new Exception("index.php is not found in {$pluginPath}.");
         }
         if (!$currentPlugin instanceof ClassesPlugin) {
             File::deleteDirectory(base_path($pluginPath));
-            throw new Exception("index.php must return an instance of App\\Classes\\Plugin");
+            throw new Exception("index.php in {$pluginPath} must return an instance of App\\Classes\\Plugin");
         }
 
         return $currentPlugin;
@@ -137,7 +137,7 @@ class PluginManager
         foreach ($validValues as $validValue) {
             if (!array_key_exists($validValue, $about)) {
                 File::deleteDirectory(base_path($jsonPath));
-                throw new Exception("about.json is not valid, key \"{$validValue}\" is not found.");
+                throw new Exception("about.json in {$jsonPath} is not valid, key \"{$validValue}\" is not found.");
             }
         }
 
