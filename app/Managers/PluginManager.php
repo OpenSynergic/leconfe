@@ -13,53 +13,25 @@ use ZipArchive;
 
 class PluginManager
 {
-    protected array $activePlugins = [];
+    protected array $plugins = [];
 
     public function boot()
     {
         $this->runPlugins();
     }
 
-    public function getActivePlugins(): array
+    public function getPlugins(): array
     {
-        return $this->activePlugins;
+        return $this->plugins;
     }
 
     public function getPlugin(string $pluginName)
     {
-        if ($plugin = $this->activePlugins[$pluginName] ?? false) {
+        if ($plugin = $this->plugins[$pluginName] ?? false) {
             return $plugin;
-        } else if ($plugin = DB::table('plugins')->where('name', $pluginName)->first()) {
-            $pluginInstance = $this->readPlugin($plugin->path);
-
-            if (!in_array($pluginInstance, ['invalid', 'PluginName_not_found', 'not_found'])) {
-                return $pluginInstance;
-            } else {
-                return false; // False means invalid
-            }
+        } else {
+            return false; // false means not running
         }
-    }
-
-    public function getPlugins(): array
-    {
-        $pluginsList = [];
-        $plugins = DB::table('plugins')->get(); // connection() is yet running on register(), cannot querying using Model::class
-
-        foreach ($plugins as $plugin) {
-            if ($pluginInstance = $this->readPlugin($plugin->path)) {
-                $pluginDir = explode('/', $plugin->path);
-                array_pop($pluginDir);
-                $pluginInfo = $this->aboutPlugin(implode('/', $pluginDir) . '/about.json');
-                
-                if (!in_array($pluginInstance, ['invalid', 'PluginName_not_found', 'not_found'])) {
-                    $pluginsList[$pluginInfo['plugin_name']] = $pluginInstance;
-                } else {
-                    $pluginsList[$pluginInfo['plugin_name']] = false; // False means invalid
-                }
-            }
-        }
-
-        return $pluginsList;
     }
 
     public function pluginActivation(string $pluginPath): void
