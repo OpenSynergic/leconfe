@@ -110,12 +110,11 @@ class PluginManager
 
     public function readPlugin(string $pluginPath)
     {
-        try {
-            $currentPlugin = require base_path($pluginPath . '/index.php');
-        } catch (\Throwable $th) {
+        if (!file_exists(base_path($pluginPath . '/index.php'))) {
             File::deleteDirectory(base_path($pluginPath));
             throw new Exception("index.php is not found in {$pluginPath}.");
         }
+        $currentPlugin = require base_path($pluginPath . '/index.php');
         if (!$currentPlugin instanceof ClassesPlugin) {
             File::deleteDirectory(base_path($pluginPath));
             throw new Exception("index.php in {$pluginPath} must return an instance of App\\Classes\\Plugin");
