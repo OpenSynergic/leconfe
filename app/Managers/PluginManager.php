@@ -112,12 +112,16 @@ class PluginManager
     public function readPlugin(string $pluginPath)
     {
         if (!file_exists(base_path($pluginPath . DIRECTORY_SEPARATOR . 'index.php'))) {
-            File::deleteDirectory(base_path($pluginPath));
+            if (app()->isProduction()) {
+                File::deleteDirectory(base_path($pluginPath));
+            }
             throw new Exception("index.php is not found in {$pluginPath}.");
         }
         $currentPlugin = require base_path($pluginPath . DIRECTORY_SEPARATOR . 'index.php');
         if (!$currentPlugin instanceof ClassesPlugin) {
-            File::deleteDirectory(base_path($pluginPath));
+            if (app()->isProduction()) {
+                File::deleteDirectory(base_path($pluginPath));
+            }
             throw new Exception("index.php in {$pluginPath} must return an instance of App\\Classes\\Plugin");
         }
 
@@ -131,12 +135,16 @@ class PluginManager
         try {
             $about = File::json(base_path($jsonPath . DIRECTORY_SEPARATOR . 'about.json'));
         } catch (\Throwable $th) {
-            File::deleteDirectory(base_path($jsonPath));
+            if (app()->isProduction()) {
+                File::deleteDirectory(base_path($jsonPath));
+            }
             throw new Exception("about.json is not found in {$jsonPath}.");
         }
         foreach ($validValues as $validValue) {
             if (!array_key_exists($validValue, $about)) {
-                File::deleteDirectory(base_path($jsonPath));
+                if (app()->isProduction()) {
+                    File::deleteDirectory(base_path($jsonPath));
+                }
                 throw new Exception("about.json in {$jsonPath} is not valid, key \"{$validValue}\" is not found.");
             }
         }
