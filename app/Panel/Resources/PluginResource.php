@@ -25,8 +25,6 @@ class PluginResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    // protected static ?string $navigationIcon = 'heroicon-o-user-circle';
-
     protected static ?string $navigationGroup = 'Settings';
 
     public static function getEloquentQuery(): Builder
