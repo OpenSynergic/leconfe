@@ -58,15 +58,16 @@ class PluginManager
 
     public function pluginInstall(string $file): void
     {
-        $filePath = storage_path("app/plugins/{$file}");
-        $temp = 'app/plugins/.temp';
+        $storagePlugin = 'app'. DIRECTORY_SEPARATOR .'plugins' . DIRECTORY_SEPARATOR;
+        $filePath = storage_path($storagePlugin . $file);
+        $temp = $storagePlugin . '.temp';
 
         $this->extractPlugin($filePath, $temp);
         $plugin = scandir(storage_path($temp));
-        $pluginPath = "plugins/{$plugin[2]}";
+        $pluginPath = 'plugins' . DIRECTORY_SEPARATOR . $plugin[2];
 
         $filesystem = new Filesystem();
-        $filesystem->moveDirectory(storage_path("{$temp}/{$plugin[2]}"), base_path($pluginPath), true);
+        $filesystem->moveDirectory(storage_path($temp . DIRECTORY_SEPARATOR . $plugin[2]), base_path($pluginPath), true);
 
         $currentPlugin = $this->readPlugin($pluginPath);
         $pluginInfo = $this->aboutPlugin($pluginPath);
@@ -110,11 +111,11 @@ class PluginManager
 
     public function readPlugin(string $pluginPath)
     {
-        if (!file_exists(base_path($pluginPath . '/index.php'))) {
+        if (!file_exists(base_path($pluginPath . DIRECTORY_SEPARATOR . 'index.php'))) {
             File::deleteDirectory(base_path($pluginPath));
             throw new Exception("index.php is not found in {$pluginPath}.");
         }
-        $currentPlugin = require base_path($pluginPath . '/index.php');
+        $currentPlugin = require base_path($pluginPath . DIRECTORY_SEPARATOR . 'index.php');
         if (!$currentPlugin instanceof ClassesPlugin) {
             File::deleteDirectory(base_path($pluginPath));
             throw new Exception("index.php in {$pluginPath} must return an instance of App\\Classes\\Plugin");
@@ -128,7 +129,7 @@ class PluginManager
         $validValues = ['plugin_name', 'author', 'description', 'version'];
 
         try {
-            $about = File::json(base_path($jsonPath . '/about.json'));
+            $about = File::json(base_path($jsonPath . DIRECTORY_SEPARATOR . 'about.json'));
         } catch (\Throwable $th) {
             File::deleteDirectory(base_path($jsonPath));
             throw new Exception("about.json is not found in {$jsonPath}.");
@@ -146,9 +147,10 @@ class PluginManager
     public function scanPlugins()
     {
         $pluginsList = array_diff(scandir(base_path('plugins')), ['.', '..', '.temp']);
+        $pluginDir = 'plugins' . DIRECTORY_SEPARATOR;
 
         foreach ($pluginsList as $plugin) {
-            $about = $this->aboutPlugin("plugins/{$plugin}");
+            $about = $this->aboutPlugin($pluginDir . $plugin);
             ModelsPlugin::updateOrCreate([
                 'name' => $about['plugin_name'],
                 'author' => $about['author'],
@@ -156,7 +158,7 @@ class PluginManager
             [
                 'description' => $about['description'],
                 'version' => $about['version'],
-                'path' => "plugins/{$plugin}",
+                'path' => $pluginDir . $plugin,
                 'is_active' => false,
             ]);
         }
