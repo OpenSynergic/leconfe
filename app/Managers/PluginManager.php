@@ -102,12 +102,8 @@ class PluginManager
             if ($pluginInstance = $this->readPlugin($plugin->path)) {
                 $pluginInfo = $this->aboutPlugin($plugin->path);
                 
-                if ($pluginInstance instanceof ClassesPlugin) {
-                    $this->activePlugins[$pluginInfo['plugin_name']] = $pluginInstance;
-                    $this->activePlugins[$pluginInfo['plugin_name']]->boot();
-                } else {
-                    $this->activePlugins[$pluginInfo['plugin_name']] = false; // False means invalid
-                }
+                $this->plugins[$pluginInfo['plugin_name']] = $pluginInstance;
+                $this->plugins[$pluginInfo['plugin_name']]->boot();
             }
         }
     }
