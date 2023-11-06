@@ -8,6 +8,7 @@ use App\Panel\Resources\PluginResource;
 use Filament\Actions;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ManageRecords;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
@@ -23,6 +24,12 @@ class ManagePlugins extends ManageRecords
                 ->icon('heroicon-o-arrow-path')
                 ->action(function () {
                     Plugin::scanPlugins();
+
+                    Notification::make()
+                    ->title('Successfully scanned')
+                    ->body('New plugins should be now listed')
+                    ->success()
+                    ->send();
                 }),
             Actions\CreateAction::make()
                 ->modalSubmitActionLabel('Add')

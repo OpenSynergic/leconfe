@@ -4,7 +4,8 @@ namespace App\Managers;
 
 use App\Classes\Plugin as ClassesPlugin;
 use App\Models\Plugin as ModelsPlugin;
-use Filament\Notifications\Notification;
+use Exception;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -73,11 +74,11 @@ class PluginManager
         $plugin->onDeactivation();
     }
 
-    public function extractPlugin(string $filePath)
+    public function extractPlugin(string $filePath, string $to)
     {
         $zip = new ZipArchive();
         $zip->open($filePath);
-        $zip->extractTo(storage_path('app/plugins/.temp'));
+        $zip->extractTo(storage_path($to));
         $zip->close();
 
         File::delete($filePath);
@@ -85,71 +86,31 @@ class PluginManager
 
     public function pluginInstall(string $file): void
     {
-        $pluginZipPath = Storage::disk('plugin-upload');
         $filePath = storage_path("app/plugins/{$file}");
-        $temp = storage_path('app/plugins/.temp');
+        $temp = 'app/plugins/.temp';
 
-        $this->extractPlugin($filePath);
-        $plugin = scandir($temp);
+        $this->extractPlugin($filePath, $temp);
+        $plugin = scandir(storage_path($temp));
+        $pluginPath = "plugins/{$plugin[2]}";
 
-        if ($pluginZipPath->exists("plugins/{$plugin[2]}")) {
-            $pluginZipPath->deleteDirectory("plugins/{$plugin[2]}");
-        }
-        $pluginZipPath->move("/.temp/{$plugin[2]}", base_path("plugins/{$plugin[2]}"));
-        File::moveDirectory(storage_path("app/plugins/.temp/{$plugin[2]}"), base_path("plugins/{$plugin[2]}"));
+        $filesystem = new Filesystem();
+        $filesystem->moveDirectory(storage_path("{$temp}/{$plugin[2]}"), base_path($pluginPath), true);
 
-        $currentPlugin = $this->readPlugin("plugins/{$plugin[2]}/index.php");
-        $pluginInfo = $this->aboutPlugin("plugins/{$plugin[2]}/about.json");
+        $currentPlugin = $this->readPlugin($pluginPath);
+        $pluginInfo = $this->aboutPlugin($pluginPath);
 
-        if (!in_array($currentPlugin, ['invalid', 'PluginName_not_found', 'not_found'])) {
-            if (!in_array($pluginInfo, ['invalid', 'not_found'])) {
-                ModelsPlugin::updateOrCreate([
-                    'name' => $pluginInfo['plugin_name'],
-                    'author' => $pluginInfo['author'],
-                ],
-                [
-                    'description' => $pluginInfo['description'],
-                    'version' => $pluginInfo['version'],
-                    'path' => "plugins/{$plugin[2]}/index.php",
-                    'is_active' => false,
-                ]);
+        ModelsPlugin::updateOrCreate([
+            'name' => $pluginInfo['plugin_name'],
+            'author' => $pluginInfo['author'],
+        ],
+        [
+            'description' => $pluginInfo['description'],
+            'version' => $pluginInfo['version'],
+            'path' => $pluginPath,
+            'is_active' => false,
+        ]);
 
-                $currentPlugin->onInstall();
-                return;
-            } else if ($pluginInfo == 'invalid') {
-                Notification::make()
-                    ->title('Failed to install')
-                    ->body('about.json is not valid, please refers to Documentation')
-                    ->danger()
-                    ->send();
-            } else {
-                Notification::make()
-                    ->title('Failed to install')
-                    ->body('about.json is not found')
-                    ->danger()
-                    ->send();
-            }
-        } else if ($currentPlugin == 'PluginName_not_found') {
-            Notification::make()
-                ->title('Failed to install')
-                ->body("{$plugin[2]}.php is not found")
-                ->danger()
-                ->send();
-        } else if ($currentPlugin == 'invalid') {
-            Notification::make()
-                ->title('Failed to install')
-                ->body("index.php must return {$plugin[2]}.php instance and {$plugin[2]}.php must be an instanceof App\\Classes\\Plugin")
-                ->danger()
-                ->send();
-        } else {
-            Notification::make()
-                ->title('Failed to install')
-                ->body('index.php is not found')
-                ->danger()
-                ->send();
-        }
-
-        File::deleteDirectory(base_path("plugins/{$plugin[2]}"));
+        $currentPlugin->onInstall();
     }
 
     public function pluginUninstall(ModelsPlugin $record): void
@@ -157,12 +118,7 @@ class PluginManager
         $plugin = $this->readPlugin($record->path);
         $plugin->onUninstall();
 
-        $bruh = explode('/', $record->path);
-        array_shift($bruh);
-        $pluginPath = implode('/', $bruh);
-        $pluginDir = dirname($pluginPath);
-
-        Storage::disk('plugin-directory')->deleteDirectory($pluginDir);
+        Storage::disk('plugin-directory')->deleteDirectory($record->path);
         $record->delete();
     }
 
@@ -172,9 +128,7 @@ class PluginManager
 
         foreach ($plugins as $plugin) {
             if ($pluginInstance = $this->readPlugin($plugin->path)) {
-                $pluginDir = explode('/', $plugin->path);
-                array_pop($pluginDir);
-                $pluginInfo = $this->aboutPlugin(implode('/', $pluginDir) . '/about.json');
+                $pluginInfo = $this->aboutPlugin($plugin->path);
                 
                 if ($pluginInstance instanceof ClassesPlugin) {
                     $this->activePlugins[$pluginInfo['plugin_name']] = $pluginInstance;
@@ -188,36 +142,38 @@ class PluginManager
 
     public function readPlugin(string $pluginPath)
     {
-        if (file_exists($file = base_path($pluginPath))) {
-            try {
-                $currentPlugin = include $file;
-            } catch (\Throwable $th) {
-                return 'PluginName_not_found';
-            }
-            if ($currentPlugin instanceof ClassesPlugin) {
-                return $currentPlugin;
-            }
-            return 'invalid';
-        } else {
-            return 'not_found';
+        try {
+            $currentPlugin = include base_path($pluginPath . '/index.php');
+        } catch (\Throwable $th) {
+            File::deleteDirectory(base_path($pluginPath));
+            throw new Exception("index.php is not found in {$pluginPath}.");
         }
+        if (!$currentPlugin instanceof ClassesPlugin) {
+            File::deleteDirectory(base_path($pluginPath));
+            throw new Exception("index.php must return an instance of App\\Classes\\Plugin");
+        }
+
+        return $currentPlugin;
     }
 
     public function aboutPlugin(string $jsonPath)
     {
         $validValues = ['plugin_name', 'author', 'description', 'version'];
 
-        if (file_exists($file = base_path($jsonPath))) {
-            $about = File::json($file);
-            foreach ($validValues as $validValue) {
-                if (!array_key_exists($validValue, $about)) {
-                    return 'invalid';
-                }
-            }
-            return $about;
-        } else {
-            return 'not_found';
+        try {
+            $about = File::json(base_path($jsonPath . '/about.json'));
+        } catch (\Throwable $th) {
+            File::deleteDirectory(base_path($jsonPath));
+            throw new Exception("about.json is not found in {$jsonPath}.");
         }
+        foreach ($validValues as $validValue) {
+            if (!array_key_exists($validValue, $about)) {
+                File::deleteDirectory(base_path($jsonPath));
+                throw new Exception("about.json is not valid, key \"{$validValue}\" is not found.");
+            }
+        }
+
+        return $about;
     }
 
     public function scanPlugins()
@@ -225,7 +181,7 @@ class PluginManager
         $pluginsList = array_diff(scandir(base_path('plugins')), ['.', '..', '.temp']);
 
         foreach ($pluginsList as $plugin) {
-            $about = $this->aboutPlugin("plugins/{$plugin}/about.json");
+            $about = $this->aboutPlugin("plugins/{$plugin}");
             ModelsPlugin::updateOrCreate([
                 'name' => $about['plugin_name'],
                 'author' => $about['author'],
@@ -233,15 +189,9 @@ class PluginManager
             [
                 'description' => $about['description'],
                 'version' => $about['version'],
-                'path' => "plugins/{$plugin}/index.php",
+                'path' => "plugins/{$plugin}",
                 'is_active' => false,
             ]);
         }
-
-        Notification::make()
-            ->title('Successfully scanned')
-            ->body('New plugins should be now listed')
-            ->success()
-            ->send();
     }
 }
