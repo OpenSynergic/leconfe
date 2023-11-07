@@ -1,6 +1,6 @@
 <x-website::layouts.main>
     <div class="card-body">
-        <h2 class="text-heading text-gray-900 mt-6 ms-1">{{ 'Announcements' }}</h2>
+        <h2 class="text-heading mt-6 ms-1">{{ 'Announcements' }}</h2>
         <div class="divide-y overflow-y-auto mb-1">
             @foreach ($this->records as $announcement)
                 <a href="{{ route('livewirePageGroup.current-conference.pages.announcement-page', ['announcement' => $announcement->id]) }}"
