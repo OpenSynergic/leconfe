@@ -42,7 +42,12 @@ class PluginManager
         $plugin->onDeactivation();
     }
 
-    public function extractPlugin(string $filePath, string $to): bool
+    protected function getPluginFullPath($pluginPath): string
+    {
+        return base_path($pluginPath);
+    } 
+
+    protected function extractPlugin(string $filePath, string $to): bool
     {
         try {
             $zip = new ZipArchive();
@@ -81,7 +86,7 @@ class PluginManager
         $pluginPath = 'plugins' . DIRECTORY_SEPARATOR . $plugin[2];
 
         $filesystem = new Filesystem();
-        $filesystem->moveDirectory(storage_path($temp . DIRECTORY_SEPARATOR . $plugin[2]), base_path($pluginPath), true);
+        $filesystem->moveDirectory(storage_path($temp . DIRECTORY_SEPARATOR . $plugin[2]), $this->getPluginFullPath($pluginPath), true);
 
         $currentPlugin = $this->readPlugin($pluginPath);
         $pluginInfo = $currentPlugin->aboutPlugin;
@@ -109,7 +114,7 @@ class PluginManager
         $record->delete();
     }
 
-    public function runPlugins(): void
+    protected function runPlugins(): void
     {
         $plugins = DB::table('plugins')->where('is_active', true)->get(); // connection() is yet running on register(), cannot querying using Model::class
 
@@ -123,18 +128,20 @@ class PluginManager
         }
     }
 
-    public function readPlugin(string $pluginPath)
+    protected function readPlugin(string $pluginPath)
     {
+        $pluginFullPath = $this->getPluginFullPath($pluginPath);
+
         if (!file_exists(base_path($pluginPath . DIRECTORY_SEPARATOR . 'index.php'))) {
             if (app()->isProduction()) {
-                File::deleteDirectory(base_path($pluginPath));
+                File::deleteDirectory($pluginFullPath);
             }
             throw new Exception("index.php is not found in {$pluginPath}.");
         }
         $currentPlugin = require base_path($pluginPath . DIRECTORY_SEPARATOR . 'index.php');
         if (!$currentPlugin instanceof ClassesPlugin) {
             if (app()->isProduction()) {
-                File::deleteDirectory(base_path($pluginPath));
+                File::deleteDirectory($pluginFullPath);
             }
             throw new Exception("index.php in {$pluginPath} must return an instance of App\\Classes\\Plugin");
         }
@@ -145,14 +152,14 @@ class PluginManager
             $about = File::json(base_path($pluginPath . DIRECTORY_SEPARATOR . 'about.json'));
         } catch (\Throwable $th) {
             if (app()->isProduction()) {
-                File::deleteDirectory(base_path($pluginPath));
+                File::deleteDirectory($pluginFullPath);
             }
             throw new Exception("about.json is not found in {$pluginPath}.");
         }
         foreach ($validValues as $validValue) {
             if (!array_key_exists($validValue, $about)) {
                 if (app()->isProduction()) {
-                    File::deleteDirectory(base_path($pluginPath));
+                    File::deleteDirectory($pluginFullPath);
                 }
                 throw new Exception("about.json in {$pluginPath} is not valid, key \"{$validValue}\" is not found.");
             }
@@ -161,30 +168,6 @@ class PluginManager
         $currentPlugin->aboutPlugin = $about;
 
         return $currentPlugin;
-    }
-
-    public function aboutPlugin(string $jsonPath)
-    {
-        $validValues = ['plugin_name', 'author', 'description', 'version'];
-
-        try {
-            $about = File::json(base_path($jsonPath . DIRECTORY_SEPARATOR . 'about.json'));
-        } catch (\Throwable $th) {
-            if (app()->isProduction()) {
-                File::deleteDirectory(base_path($jsonPath));
-            }
-            throw new Exception("about.json is not found in {$jsonPath}.");
-        }
-        foreach ($validValues as $validValue) {
-            if (!array_key_exists($validValue, $about)) {
-                if (app()->isProduction()) {
-                    File::deleteDirectory(base_path($jsonPath));
-                }
-                throw new Exception("about.json in {$jsonPath} is not valid, key \"{$validValue}\" is not found.");
-            }
-        }
-
-        return $about;
     }
 
     public function scanPlugins()
