@@ -2,12 +2,12 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
 use App\Facades\MetaTag;
 use App\Models\Conference;
+use App\Models\Enums\ConferenceStatus;
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
-use App\Models\Enums\ConferenceStatus;
 use Symfony\Component\HttpFoundation\Response;
 
 class SetupDefaultData
