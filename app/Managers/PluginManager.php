@@ -27,11 +27,7 @@ class PluginManager
 
     public function getPlugin(string $pluginName)
     {
-        if ($plugin = $this->plugins[$pluginName] ?? false) {
-            return $plugin;
-        } else {
-            return false; // false means not running
-        }
+        return $this->plugins[$pluginName] ?? false;
     }
 
     public function pluginActivation(string $pluginPath): void
