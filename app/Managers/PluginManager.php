@@ -110,7 +110,8 @@ class PluginManager
         $plugin = $this->readPlugin($record->path);
         $plugin->onUninstall();
 
-        Storage::disk('plugin-directory')->deleteDirectory($record->path);
+        $filesystem = new Filesystem();
+        $filesystem->deleteDirectory($this->getPluginFullPath($record->path));
         $record->delete();
     }
 
@@ -177,7 +178,8 @@ class PluginManager
         $pluginDir = 'plugins' . DIRECTORY_SEPARATOR;
 
         foreach ($pluginsList as $plugin) {
-            $about = $plugin->aboutPlugin;
+            $pluginInstance = $this->readPlugin($pluginDir . $plugin);
+            $about = $pluginInstance->aboutPlugin;
             ModelsPlugin::updateOrCreate([
                 'name' => $about['plugin_name'],
                 'author' => $about['author'],
