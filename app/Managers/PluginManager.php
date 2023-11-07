@@ -58,15 +58,18 @@ class PluginManager
                 try {
                     $extracted = $zip->extractTo(storage_path($to));
                 } catch (\Throwable $th) {
+                    File::delete($filePath);
                     throw new Exception("Cannot extract the plugin, please check the zip file");
                 }
                 $zip->close();
                 File::delete($filePath);
                 return $extracted;
             } else {
+                File::delete($filePath);
                 throw new Exception("Cannot open the zip, please check the zip file");
             }
         } else {
+            File::delete($filePath);
             throw new Exception("Plugin extension must be .zip");
         }
     }
