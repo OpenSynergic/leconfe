@@ -84,7 +84,7 @@ class PluginManager
         $filesystem->moveDirectory(storage_path($temp . DIRECTORY_SEPARATOR . $plugin[2]), base_path($pluginPath), true);
 
         $currentPlugin = $this->readPlugin($pluginPath);
-        $pluginInfo = $this->aboutPlugin($pluginPath);
+        $pluginInfo = $currentPlugin->aboutPlugin;
 
         ModelsPlugin::updateOrCreate([
             'name' => $pluginInfo['plugin_name'],
@@ -115,7 +115,7 @@ class PluginManager
 
         foreach ($plugins as $plugin) {
             if ($pluginInstance = $this->readPlugin($plugin->path)) {
-                $pluginInfo = $this->aboutPlugin($plugin->path);
+                $pluginInfo = $pluginInstance->aboutPlugin;
                 
                 $this->plugins[$pluginInfo['plugin_name']] = $pluginInstance;
                 $this->plugins[$pluginInfo['plugin_name']]->boot();
@@ -138,6 +138,27 @@ class PluginManager
             }
             throw new Exception("index.php in {$pluginPath} must return an instance of App\\Classes\\Plugin");
         }
+
+        $validValues = ['plugin_name', 'author', 'description', 'version'];
+
+        try {
+            $about = File::json(base_path($pluginPath . DIRECTORY_SEPARATOR . 'about.json'));
+        } catch (\Throwable $th) {
+            if (app()->isProduction()) {
+                File::deleteDirectory(base_path($pluginPath));
+            }
+            throw new Exception("about.json is not found in {$pluginPath}.");
+        }
+        foreach ($validValues as $validValue) {
+            if (!array_key_exists($validValue, $about)) {
+                if (app()->isProduction()) {
+                    File::deleteDirectory(base_path($pluginPath));
+                }
+                throw new Exception("about.json in {$pluginPath} is not valid, key \"{$validValue}\" is not found.");
+            }
+        }
+
+        $currentPlugin->aboutPlugin = $about;
 
         return $currentPlugin;
     }
@@ -172,7 +193,7 @@ class PluginManager
         $pluginDir = 'plugins' . DIRECTORY_SEPARATOR;
 
         foreach ($pluginsList as $plugin) {
-            $about = $this->aboutPlugin($pluginDir . $plugin);
+            $about = $plugin->aboutPlugin;
             ModelsPlugin::updateOrCreate([
                 'name' => $about['plugin_name'],
                 'author' => $about['author'],

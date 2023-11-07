@@ -51,6 +51,8 @@ class CreatePlugin extends Command
 
         class {$name} extends Plugin
         {
+            public \$aboutPlugin;
+
             public function boot()
             {
                 // Stage is yours
