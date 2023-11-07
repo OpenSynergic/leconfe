@@ -46,14 +46,29 @@ class PluginManager
         $plugin->onDeactivation();
     }
 
-    public function extractPlugin(string $filePath, string $to)
+    public function extractPlugin(string $filePath, string $to): bool
     {
-        $zip = new ZipArchive();
-        $zip->open($filePath);
-        $zip->extractTo(storage_path($to));
-        $zip->close();
-
-        File::delete($filePath);
+        try {
+            $zip = new ZipArchive();
+        } catch (\Throwable $th) {
+            throw new Exception("PHP zip extension is not installed");
+        }
+        if (pathinfo($filePath)['extension'] == 'zip') {
+            if ($zip->open($filePath) == true) { // Opening other than zip file is returning integer 19 not false
+                try {
+                    $extracted = $zip->extractTo(storage_path($to));
+                } catch (\Throwable $th) {
+                    throw new Exception("Cannot extract the plugin, please check the zip file");
+                }
+                $zip->close();
+                File::delete($filePath);
+                return $extracted;
+            } else {
+                throw new Exception("Cannot open the zip, please check the zip file");
+            }
+        } else {
+            throw new Exception("Plugin extension must be .zip");
+        }
     }
 
     public function pluginInstall(string $file): void
