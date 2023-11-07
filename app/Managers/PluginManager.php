@@ -131,14 +131,15 @@ class PluginManager
     protected function readPlugin(string $pluginPath)
     {
         $pluginFullPath = $this->getPluginFullPath($pluginPath);
+        $pluginIndex = base_path($pluginPath . DIRECTORY_SEPARATOR . 'index.php');
 
-        if (!file_exists(base_path($pluginPath . DIRECTORY_SEPARATOR . 'index.php'))) {
+        if (!file_exists($pluginIndex)) {
             if (app()->isProduction()) {
                 File::deleteDirectory($pluginFullPath);
             }
             throw new Exception("index.php is not found in {$pluginPath}.");
         }
-        $currentPlugin = require base_path($pluginPath . DIRECTORY_SEPARATOR . 'index.php');
+        $currentPlugin = require $pluginIndex;
         if (!$currentPlugin instanceof ClassesPlugin) {
             if (app()->isProduction()) {
                 File::deleteDirectory($pluginFullPath);
