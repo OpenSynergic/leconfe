@@ -2,11 +2,12 @@
 
 namespace App\Http\Middleware;
 
-use App\Facades\MetaTag;
-use App\Models\Enums\ConferenceStatus;
 use Closure;
+use App\Facades\MetaTag;
+use App\Models\Conference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
+use App\Models\Enums\ConferenceStatus;
 use Symfony\Component\HttpFoundation\Response;
 
 class SetupDefaultData
@@ -19,7 +20,7 @@ class SetupDefaultData
     public function handle(Request $request, Closure $next): Response
     {
         if ($currentConference = app()->getCurrentConference()) {
-            $this->setupConference($currentConference);
+            $this->setupConference($request, $currentConference);
         } else {
             $this->setupSite();
         }
@@ -44,11 +45,14 @@ class SetupDefaultData
         MetaTag::add('description', $site->getMeta('description') ?? 'dsadsa');
     }
 
-    protected function setupConference($currentConference)
+    protected function setupConference(Request $request, $currentConference)
     {
+        $previousConference = Conference::where('path', $request->route()->parameter('conference'))->first();
+
+        View::share('headerLogoAltText', $request->route()->hasParameter('conference') ? $previousConference?->name : $currentConference?->name);
+        View::share('headerLogo', $request->route()->hasParameter('conference') ? $previousConference->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl'])
+            : $currentConference->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl']));
         View::share('currentConference', $currentConference);
-        View::share('headerLogo', $currentConference->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl']));
-        View::share('headerLogoAltText', $currentConference->name);
         View::share('contextName', $currentConference->name);
         View::share('footer', $currentConference->getMeta('page_footer'));
         View::share('favicon', $currentConference->getFirstMediaUrl('favicon'));
