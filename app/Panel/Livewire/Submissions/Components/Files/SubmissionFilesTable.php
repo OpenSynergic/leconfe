@@ -28,6 +28,8 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
 {
     use InteractsWithTable, InteractsWithForms;
 
+    public const ACCEPTED_FILE_TYPES = ['pdf', 'docx', 'xls', 'png', 'jpg', 'jpeg'];
+
     public Submission $submission;
 
     public bool $viewOnly = false;
@@ -48,7 +50,7 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
 
     public function getAcceptedFiles(): array
     {
-        return ['pdf', 'docx', 'xls', 'png', 'jpg', 'jpeg'];
+        return static::ACCEPTED_FILE_TYPES;
     }
 
     public function tableColumns(): array

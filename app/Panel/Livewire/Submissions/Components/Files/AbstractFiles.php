@@ -21,7 +21,7 @@ class AbstractFiles extends SubmissionFilesTable
         return StageManager::stage('call-for-abstract')
             ->getSetting(
                 'allowed_file_types',
-                config('media-library.accepted_file_types')
+                parent::ACCEPTED_FILE_TYPES
             );
     }
 

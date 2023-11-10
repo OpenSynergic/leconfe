@@ -2,6 +2,7 @@
 
 namespace App\Panel\Livewire\Workflows;
 
+use App\Panel\Livewire\Submissions\Components\Files\SubmissionFilesTable;
 use App\Panel\Livewire\Workflows\Base\WorkflowStage;
 use Awcodes\Shout\Components\Shout;
 use Filament\Actions\Action;
@@ -28,7 +29,7 @@ class AbstractSetting extends WorkflowStage implements HasForms, HasActions
     {
         $this->form->fill([
             'settings' => [
-                'allowed_file_types' => $this->getSetting('allowed_file_types', config('media-library.accepted_file_types'))
+                'allowed_file_types' => $this->getSetting('allowed_file_types', SubmissionFilesTable::ACCEPTED_FILE_TYPES)
             ],
         ]);
     }
