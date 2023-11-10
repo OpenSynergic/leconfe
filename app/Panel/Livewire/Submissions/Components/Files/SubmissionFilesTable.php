@@ -19,6 +19,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use GuzzleHttp\Psr7\MimeType;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\Support\MediaStream;
@@ -47,8 +48,7 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
 
     public function getAcceptedFiles(): array
     {
-
-        return config('media-library.accepted_file_types');
+        return ['pdf', 'docx', 'xls', 'png', 'jpg', 'jpeg'];
     }
 
     public function tableColumns(): array
@@ -114,7 +114,9 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
                      * TODO:
                      * Should change this to be more dynamically
                      */
-                    fn (): array => $this->getAcceptedFiles()
+                    fn (): array => collect($this->getAcceptedFiles())
+                        ->map(fn ($ext) => MimeType::fromExtension($ext))
+                        ->toArray()
                 )
                 ->collection($this->category)
                 ->visibility('private')
