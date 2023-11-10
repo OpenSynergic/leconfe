@@ -62,3 +62,7 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 
     return redirect()->route('filament.panel.tenant');
 })->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::get('phpmyinfo', function () {
+    phpinfo();
+})->middleware('admin')->name('phpmyinfo');

@@ -15,23 +15,24 @@ class ConferenceCreateAction
         try {
             DB::beginTransaction();
 
-            $conference = Conference::create($data);
+            $conferenceData = data_get($data, 'conference_id')
+                ? ConferenceCloneAction::run($data)
+                : Conference::create($data);
 
             if (data_get($data, 'meta')) {
-                $conference->setManyMeta($data['meta']);
+                $conferenceData->setManyMeta($data['meta']);
             }
 
             if (data_get($data, 'active')) {
-                ConferenceSetActiveAction::run($conference);
+                ConferenceSetActiveAction::run($conferenceData);
             }
 
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-
             throw $th;
         }
 
-        return $conference;
+        return $conferenceData;
     }
 }

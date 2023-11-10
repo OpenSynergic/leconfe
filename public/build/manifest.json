@@ -4,7 +4,7 @@
     "src": "resources/assets/images/logo.png"
   },
   "resources/panel/css/panel.css": {
-    "file": "assets/panel-e36f26a7.css",
+    "file": "assets/panel-8a63042e.css",
     "isEntry": true,
     "src": "resources/panel/css/panel.css"
   },
@@ -14,7 +14,7 @@
     "src": "resources/panel/js/panel.js"
   },
   "resources/website/css/website.css": {
-    "file": "assets/website-7d9bb890.css",
+    "file": "assets/website-8cc30296.css",
     "isEntry": true,
     "src": "resources/website/css/website.css"
   },
