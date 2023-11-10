@@ -4,6 +4,7 @@ namespace App\Panel\Livewire\Wizards\SubmissionWizard\Steps;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Mail\Templates\NewSubmissionMail;
+use App\Mail\Templates\ThankAuthorMail;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
@@ -51,6 +52,12 @@ class ReviewStep extends Component implements HasWizardStep, HasActions, HasForm
                     'stage' => SubmissionStage::CallforAbstract,
                     'status' => SubmissionStatus::Queued,
                 ], $this->record);
+
+                Mail::to(
+                    $this->record->user
+                )->send(
+                    new ThankAuthorMail($this->record)
+                );
 
                 Mail::to(
                     User::role([
