@@ -327,15 +327,17 @@ class ReviewerList extends Component implements HasForms, HasTable
                                         ->columnSpanFull(),
                                 ])
                         ])
-                        ->action(function (Action $action, Review $record) {
+                        ->action(function (Action $action, Review $record, array $data) {
                             $record->update([
                                 'status' => ReviewerStatus::CANCELED
                             ]);
 
-                            Mail::to($record->user->email)
-                                ->send(
-                                    new ReviewerCancelationMail($record)
-                                );
+                            if (!isset($data['do-not-notify-cancelation'])) {
+                                Mail::to($record->user->email)
+                                    ->send(
+                                        new ReviewerCancelationMail($record)
+                                    );
+                            }
 
                             $action->success();
                         }),
@@ -446,10 +448,12 @@ class ReviewerList extends Component implements HasForms, HasTable
                             }
                         }
 
-                        Mail::to($reviewAssignment->user->email)
-                            ->send(
-                                new ReviewerInvitationMail($reviewAssignment)
-                            );
+                        if (!isset($data['no-invitation-notification'])) {
+                            Mail::to($reviewAssignment->user->email)
+                                ->send(
+                                    new ReviewerInvitationMail($reviewAssignment)
+                                );
+                        }
                     })
             ]);
     }

@@ -78,16 +78,20 @@ class PeerReview extends Component implements HasForms, HasActions
                             ->columnSpanFull(),
                     ])
             ])
-            ->action(function (Action $action) {
+            ->action(function (Action $action, array $data) {
                 SubmissionUpdateAction::run([
                     'revision_required' => false,
                     'status' => SubmissionStatus::Declined,
                 ], $this->submission);
 
-                Mail::to($this->submission->user)
-                    ->send(
-                        new DeclinePaperMail($this->submission)
-                    );
+                if (isset($data['do-not-notify-author'])) {
+                    Mail::to($this->submission->user)
+                        ->send(
+                            new DeclinePaperMail($this->submission)
+                        );
+                }
+
+
 
                 $action->success();
             });
@@ -128,17 +132,19 @@ class PeerReview extends Component implements HasForms, HasActions
                             ->columnSpanFull(),
                     ])
             ])
-            ->action(function (Action $action) {
+            ->action(function (Action $action, array $data) {
                 SubmissionUpdateAction::run([
                     'revision_required' => false,
                     'stage' => SubmissionStage::Editing,
                     'status' => SubmissionStatus::Editing,
                 ], $this->submission);
 
-                Mail::to($this->submission->user)
-                    ->send(
-                        new AcceptPaperMail($this->submission)
-                    );
+                if (!isset($data['do-not-notify-author'])) {
+                    Mail::to($this->submission->user)
+                        ->send(
+                            new AcceptPaperMail($this->submission)
+                        );
+                }
 
                 $action->success();
             });
@@ -180,15 +186,17 @@ class PeerReview extends Component implements HasForms, HasActions
                     ])
             ])
             ->successNotificationTitle("Revision Requested")
-            ->action(function (Action $action) {
+            ->action(function (Action $action, array $data) {
                 SubmissionUpdateAction::run([
                     'revision_required' => true
                 ], $this->submission);
 
-                Mail::to($this->submission->user)
-                    ->send(
-                        new RevisionRequestMail($this->submission)
-                    );
+                if (!isset($data['do-not-notify-author'])) {
+                    Mail::to($this->submission->user)
+                        ->send(
+                            new RevisionRequestMail($this->submission)
+                        );
+                }
 
                 $action->success();
             });

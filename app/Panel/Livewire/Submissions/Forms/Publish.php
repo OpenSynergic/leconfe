@@ -33,12 +33,17 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
 
     public Submission $submission;
 
-    public function handlePublishAction(Action $action)
+    public function handlePublishAction(Action $action, array $data)
     {
         SubmissionUpdateAction::run([
             'stage' => SubmissionStage::Proceeding,
             'status' => SubmissionStatus::Published
         ], $this->submission);
+
+        if (!$data['do-not-notify-author']) {
+            Mail::to($this->submission->user->email)
+                ->send(new PublishSubmissionMail($this->submission, $data['subject'], $data['message']));
+        }
 
         Mail::to($this->submission->user->email)
             ->send(new PublishSubmissionMail($this->submission));
@@ -81,7 +86,7 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
                             ->label("Don't Send Notification to Author"),
                     ])
             ])
-            ->action(fn (Action $action) => $this->handlePublishAction($action));
+            ->action(fn (Action $action, array $data) => $this->handlePublishAction($action, $data));
     }
 
     public function infolist(Infolist $infolist): Infolist
