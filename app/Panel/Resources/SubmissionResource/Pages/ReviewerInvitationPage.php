@@ -4,8 +4,12 @@ namespace App\Panel\Resources\SubmissionResource\Pages;
 
 use App\Constants\ReviewerStatus;
 use App\Infolists\Components\LivewireEntry;
+use App\Mail\Templates\ReviewerAcceptedInvitationMail;
+use App\Models\Enums\UserRole;
 use App\Models\Review;
+use App\Models\Role;
 use App\Models\Submission;
+use App\Models\User;
 use App\Panel\Livewire\Submissions\Components\Files\PaperFiles;
 use App\Panel\Resources\SubmissionResource;
 use Filament\Actions\Action;
@@ -19,14 +23,15 @@ use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Facades\Mail;
 
-class ReviewerRequestPage extends Page implements HasInfolists, HasActions
+class ReviewerInvitationPage extends Page implements HasInfolists, HasActions
 {
     use InteractsWithInfolists, InteractsWithActions;
 
     protected static string $resource = SubmissionResource::class;
 
-    protected static string $view = 'panel.resources.submission-resource.pages.reviewer-request-page';
+    protected static string $view = 'panel.resources.submission-resource.pages.reviewer-invitation-page';
 
     public Submission $record;
 
@@ -56,6 +61,21 @@ class ReviewerRequestPage extends Page implements HasInfolists, HasActions
                     'date_confirmed' => now(),
                     'status' => ReviewerStatus::ACCEPTED
                 ]);
+
+                $editors = $this->record
+                    ->participants()
+                    ->whereHas('role', fn ($query) => $query->where('name', UserRole::Editor))
+                    ->get()
+                    ->pluck('user_id')
+                    ->toArray();
+
+                $editors = User::whereIn('id', $editors)->get();
+
+                Mail::to($editors)
+                    ->send(
+                        new ReviewerAcceptedInvitationMail($this->review)
+                    );
+
                 $action->success();
                 $action->redirect(SubmissionResource::getUrl('review', ['record' => $this->record->id]));
             });

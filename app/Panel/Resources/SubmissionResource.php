@@ -109,7 +109,7 @@ class SubmissionResource extends Resource
 
                 if ($participantReviewer) {
                     if ($participantReviewer->needConfirmation()) {
-                        return static::getUrl('reviewer-request', [
+                        return static::getUrl('reviewer-invitation', [
                             'record' => $record->id,
                         ]);
                     } else {
@@ -173,7 +173,7 @@ class SubmissionResource extends Resource
             'complete' => Pages\CompleteSubmission::route('/complete/{record}'),
             'view' => Pages\ViewSubmission::route('/{record}'),
             'review' => Pages\ReviewSubmissionPage::route('/{record}/review'),
-            'reviewer-request' => Pages\ReviewerRequestPage::route('/{record}/reviewer-request'),
+            'reviewer-invitation' => Pages\ReviewerInvitationPage::route('/{record}/reviewer-invitation'),
         ];
     }
 

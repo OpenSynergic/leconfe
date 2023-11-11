@@ -4,8 +4,11 @@ namespace App\Panel\Resources\SubmissionResource\Pages;
 
 use App\Constants\SubmissionFileCategory;
 use App\Constants\SubmissionStatusRecommendation;
+use App\Mail\Templates\ReviewCompleteMail;
+use App\Models\Enums\UserRole;
 use App\Models\Review;
 use App\Models\Submission;
+use App\Models\User;
 use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
 use App\Panel\Resources\SubmissionResource;
 use Filament\Actions\Action;
@@ -25,6 +28,7 @@ use Filament\Resources\Pages\Page;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Facades\Mail;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class ReviewSubmissionPage extends Page implements HasInfolists, HasActions
@@ -185,6 +189,19 @@ class ReviewSubmissionPage extends Page implements HasInfolists, HasActions
                         ...$this->reviewForm->getState()['reviewData'],
                         'recommendation' => $this->recommendation
                     ]);
+
+                    $editors = $this->record->participants()
+                        ->whereHas('role', fn ($query) => $query->where('name', UserRole::Editor))
+                        ->get()
+                        ->pluck('user_id')
+                        ->toArray();
+
+                    $editors = User::whereIn('id', $editors)->get();
+
+                    Mail::to($editors)
+                        ->send(
+                            new ReviewCompleteMail($this->review)
+                        );
                 }
 
                 $action->success();
