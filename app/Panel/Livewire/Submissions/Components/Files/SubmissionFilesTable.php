@@ -112,10 +112,6 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
                 ->disk('private-files')
                 ->preserveFilenames()
                 ->acceptedFileTypes(
-                    /**
-                     * TODO:
-                     * Should change this to be more dynamically
-                     */
                     fn (): array => collect($this->getAcceptedFiles())
                         ->map(fn ($ext) => MimeType::fromExtension($ext))
                         ->toArray()
