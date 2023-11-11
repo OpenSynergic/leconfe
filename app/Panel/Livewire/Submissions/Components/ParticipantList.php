@@ -155,15 +155,16 @@ class ParticipantList extends Component implements HasForms, HasTable
                     ])
                     ->successNotificationTitle("Participant Assigned")
                     ->action(function (Action $action, array $data) {
-                        $this->submission->participants()->create([
+                        $submissionParticipant = $this->submission->participants()->create([
                             'user_id' => $data['user_id'],
                             'role_id' => $data['role_id'],
                         ]);
 
                         if (!$data['no-notification']) {
-                            /**
-                             * TODO: Send notification
-                             */
+                            Mail::to($submissionParticipant)
+                                ->send(
+                                    new ParticipantAssignedMail($submissionParticipant)
+                                );
                         }
 
                         $action->success();
