@@ -2,41 +2,41 @@
 
 namespace App\Panel\Resources;
 
-use App\Actions\User\UserDeleteAction;
-use App\Actions\User\UserMailAction;
-use App\Actions\User\UserUpdateAction;
-use App\Models\Enums\UserRole;
-use App\Models\User;
-use App\Panel\Resources\Conferences\ParticipantResource;
-use App\Panel\Resources\UserResource\Pages;
 use Carbon\Carbon;
-use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
-use Filament\Facades\Filament;
 use Filament\Forms;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Support\Colors\Color;
-use Filament\Support\Enums\FontWeight;
+use App\Models\User;
 use Filament\Tables;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use App\Models\Enums\UserRole;
+use Filament\Facades\Filament;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Grid;
 use Filament\Tables\Actions\Action;
+use App\Actions\User\UserMailAction;
+use Illuminate\Support\Facades\Hash;
+use App\Actions\User\UserDeleteAction;
+use App\Actions\User\UserUpdateAction;
+use Filament\Support\Enums\FontWeight;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
+use App\Panel\Resources\UserResource\Pages;
+use Filament\Tables\Actions\DeleteBulkAction;
 use STS\FilamentImpersonate\Tables\Actions\Impersonate;
+use App\Panel\Resources\Conferences\ParticipantResource;
+use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
+use App\Panel\Resources\UserResource\Widgets\UserOverview;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class UserResource extends Resource
 {
@@ -75,10 +75,10 @@ class UserResource extends Resource
                                 Forms\Components\TextInput::make('email')
                                     ->columnSpan(['lg' => 2])
                                     ->disabled(fn (?User $record) => $record)
-                                    ->dehydrated(fn (?User $record) => ! $record)
+                                    ->dehydrated(fn (?User $record) => !$record)
                                     ->unique(ignoreRecord: true),
                                 Forms\Components\TextInput::make('password')
-                                    ->required(fn (?User $record) => ! $record)
+                                    ->required(fn (?User $record) => !$record)
                                     ->password()
                                     ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                                     ->dehydrated(fn ($state) => filled($state))
@@ -134,7 +134,7 @@ class UserResource extends Resource
                                         modifyQueryUsing: fn (Builder $query) => $query
                                             // Only let users that have assignRoles permission that can assign all roles, otherwise only self assigned roles are allowed
                                             ->when(
-                                                value: ! auth()->user()->can('assignRoles', static::getModel()),
+                                                value: !auth()->user()->can('assignRoles', static::getModel()),
                                                 callback: fn (Builder $query) => $query->whereIn('name', UserRole::selfAssignedRoleValues())
                                             )
                                     ),
@@ -162,7 +162,7 @@ class UserResource extends Resource
                                 ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
                                 ->join(' ');
 
-                            return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=FFFFFF&background=111827&font-size=0.33';
+                            return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=111827&font-size=0.33';
                         })
                         ->extraCellAttributes([
                             'style' => 'width: 1px',
@@ -199,7 +199,7 @@ class UserResource extends Resource
                             ->getStateUsing(fn (User $record) => $record->getMeta('affiliation')),
                         TextColumn::make('disabled')
                             ->getStateUsing(function (User $record) {
-                                if (! $record->isBanned()) {
+                                if (!$record->isBanned()) {
                                     return null;
                                 }
 
@@ -209,7 +209,7 @@ class UserResource extends Resource
 
                                 $bannedUntil = $ban->expired_at;
 
-                                return 'Disabled'.($bannedUntil ? " until {$bannedUntil->format(setting('format.date'))}" : '');
+                                return 'Disabled' . ($bannedUntil ? " until {$bannedUntil->format(setting('format.date'))}" : '');
                             })
                             ->color('danger')
                             ->badge(),
@@ -247,7 +247,7 @@ class UserResource extends Resource
                 ActionGroup::make([
                     Impersonate::make()
                         ->grouped()
-                        ->hidden(fn ($record) => ! auth()->user()->can('loginAs', $record))
+                        ->hidden(fn ($record) => !auth()->user()->can('loginAs', $record))
                         ->label(fn (User $record) => "Login as {$record->given_name}")
                         ->icon('heroicon-m-key')
                         ->color('primary')
@@ -333,6 +333,13 @@ class UserResource extends Resource
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
             'profile' => Pages\ProfileUser::route('/profile/{user_id?}'),
+        ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            UserOverview::class,
         ];
     }
 }

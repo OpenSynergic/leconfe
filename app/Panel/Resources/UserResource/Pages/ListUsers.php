@@ -2,9 +2,10 @@
 
 namespace App\Panel\Resources\UserResource\Pages;
 
-use App\Panel\Resources\UserResource;
 use Filament\Actions;
+use App\Panel\Resources\UserResource;
 use Filament\Resources\Pages\ListRecords;
+use App\Panel\Resources\UserResource\Widgets\UserOverview;
 
 class ListUsers extends ListRecords
 {
@@ -14,6 +15,13 @@ class ListUsers extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            UserOverview::class,
         ];
     }
 }
