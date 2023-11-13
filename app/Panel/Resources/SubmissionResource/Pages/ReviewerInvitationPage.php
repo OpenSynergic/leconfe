@@ -70,12 +70,12 @@ class ReviewerInvitationPage extends Page implements HasInfolists, HasActions
                     ->toArray();
 
                 $editors = User::whereIn('id', $editors)->get();
-
-                Mail::to($editors)
-                    ->send(
-                        new ReviewerAcceptedInvitationMail($this->review)
-                    );
-
+                if ($editors->count()) {
+                    Mail::to($editors)
+                        ->send(
+                            new ReviewerAcceptedInvitationMail($this->review)
+                        );
+                }
                 $action->success();
                 $action->redirect(SubmissionResource::getUrl('review', ['record' => $this->record->id]));
             });

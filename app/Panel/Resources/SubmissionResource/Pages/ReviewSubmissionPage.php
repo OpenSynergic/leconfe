@@ -197,11 +197,12 @@ class ReviewSubmissionPage extends Page implements HasInfolists, HasActions
                         ->toArray();
 
                     $editors = User::whereIn('id', $editors)->get();
-
-                    Mail::to($editors)
-                        ->send(
-                            new ReviewCompleteMail($this->review)
-                        );
+                    if ($editors->count()) {
+                        Mail::to($editors)
+                            ->send(
+                                new ReviewCompleteMail($this->review)
+                            );
+                    }
                 }
 
                 $action->success();

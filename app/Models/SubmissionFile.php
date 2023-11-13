@@ -36,7 +36,9 @@ class SubmissionFile extends Model
                     $query->where('name', 'editor');
                 })->get()->pluck('user_id');
                 $editors = User::whereIn('id', $editors)->get();
-                Mail::to($editors)->send(new NewPaperUploadedMail($createdModel));
+                if ($editors->count()) {
+                    Mail::to($editors)->send(new NewPaperUploadedMail($createdModel));
+                }
             }
         });
 
