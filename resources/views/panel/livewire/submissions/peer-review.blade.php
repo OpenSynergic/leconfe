@@ -51,11 +51,11 @@
         </div>
         <x-filament-actions::modals />
     @elseif($submission->stage == App\Models\Enums\SubmissionStage::CallforAbstract)
-        <div class="bg-warning-700 p-4 rounded-lg text-base">
+        <div class="bg-warning-500 text-white dark:bg-warning-700 p-4 rounded-lg text-base">
             Can not enter the stage until the submission is accepted.
         </div>
     @else
-        <div class="bg-warning-700 p-4 rounded-lg text-base">
+        <div class="bg-warning-500 text-white dark:bg-warning-700 p-4 rounded-lg text-base">
             The stage has not yet been opened.
         </div>
     @endif
