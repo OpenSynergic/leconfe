@@ -1,4 +1,4 @@
-<x-filament-panels::page x-on:show-guidelines="$dispatch('open-modal', {'id': 'guidelines'})">
+<x-filament-panels::page x-on:show-guidelines="$dispatch('open-modal', {'id': 'guidelines'})" x-init="$nextTick(() => {$dispatch('open-modal', {'id': 'guidelines'})})">
     <div class="grid grid-cols-12 gap-4">
         <div class="col-span-8 space-y-4">
             @livewire(App\Panel\Livewire\Submissions\Components\ReviewerAssignedFiles::class, ['record' => $review])
@@ -21,7 +21,7 @@
             {{ $this->reviewAction() }}
         </div>
     </div>
-    <x-filament::modal id="guidelines" :slide-over="true" width="xl">
+    <x-filament::modal id="guidelines" width="xl">
         <x-slot name="heading">
             <h1 class="text-xl font-bold">
                 Review Guidlines & Competing Interests
