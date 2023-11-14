@@ -10,6 +10,7 @@ use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
 use App\Models\Submission;
 use App\Models\User;
+use App\Notifications\NewSubmission;
 use App\Panel\Livewire\Wizards\SubmissionWizard\Contracts\HasWizardStep;
 use App\Panel\Resources\SubmissionResource;
 use Filament\Actions\Action;
@@ -18,6 +19,7 @@ use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Livewire\Component;
 
 class ReviewStep extends Component implements HasWizardStep, HasActions, HasForms
@@ -59,16 +61,12 @@ class ReviewStep extends Component implements HasWizardStep, HasActions, HasForm
                     new ThankAuthorMail($this->record)
                 );
 
-                Mail::to(
-                    User::role([
-                        UserRole::Admin->value,
-                        UserRole::ConferenceManager->value
-                    ])
-                        ->get()
-                )
-                    ->send(
-                        new NewSubmissionMail($this->record)
-                    );
+                $users = User::role([
+                    UserRole::Admin->value,
+                    UserRole::ConferenceManager->value
+                ])->get();
+
+                Notification::send($users, new NewSubmission($this->record));
 
                 $action->success();
                 $action->dispatchSuccessRedirect();
