@@ -2,27 +2,29 @@
 
 namespace App\Models;
 
-use App\Models\Enums\ConferenceStatus;
-use App\Models\Enums\ConferenceType;
-use App\Models\Meta\ConferenceMeta;
-use Filament\Models\Contracts\HasAvatar;
-use Filament\Models\Contracts\HasName;
-use GeneaLabs\LaravelModelCaching\Traits\Cachable;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Kra8\Snowflake\HasShortflakePrimary;
 use Plank\Metable\Metable;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Sluggable\HasSlug;
+use Spatie\MediaLibrary\HasMedia;
 use Spatie\Sluggable\SlugOptions;
+use App\Models\Meta\ConferenceMeta;
+use App\Models\Enums\ConferenceType;
+use App\Models\Enums\ConferenceStatus;
+use Filament\Models\Contracts\HasName;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Models\Contracts\HasAvatar;
+use Kra8\Snowflake\HasShortflakePrimary;
+use Illuminate\Database\Eloquent\Builder;
+use Coderflex\Laravisit\Concerns\CanVisit;
+use Coderflex\Laravisit\Concerns\HasVisits;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Conference extends Model implements HasAvatar, HasMedia, HasName
+class Conference extends Model implements HasAvatar, HasMedia, HasName, CanVisit
 {
-    use Cachable, HasFactory, HasShortflakePrimary, HasSlug, InteractsWithMedia, Metable;
+    use Cachable, HasFactory, HasShortflakePrimary, HasSlug, InteractsWithMedia, Metable, HasVisits;
 
     /**
      * The attributes that are mass assignable.

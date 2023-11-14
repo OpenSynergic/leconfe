@@ -15,6 +15,7 @@
         "codeat3/blade-forkawesome": "^1.9",
         "codeat3/blade-iconpark": "^1.5",
         "codeat3/blade-unicons": "^1.7",
+        "coderflexx/laravisit": "^1.4",
         "coolsam/flatpickr": "^3.0",
         "filament/filament": "3.0.41",
         "filament/spatie-laravel-media-library-plugin": "^3.0",
