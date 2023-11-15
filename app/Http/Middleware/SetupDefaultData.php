@@ -42,7 +42,7 @@ class SetupDefaultData
         View::share('contextName', $site->getMeta('name'));
         View::share('footer', $site->getMeta('page_footer'));
 
-        MetaTag::add('description', $site->getMeta('description') ?? 'dsadsa');
+        MetaTag::add('description', $site->getMeta('description'));
     }
 
     protected function setupConference(Request $request, $currentConference)
@@ -57,6 +57,11 @@ class SetupDefaultData
         View::share('footer', $currentConference->getMeta('page_footer'));
         View::share('favicon', $currentConference->getFirstMediaUrl('favicon'));
         View::share('styleSheet', $currentConference->getFirstMediaUrl('styleSheet'));
+
         MetaTag::add('description', preg_replace("/\r|\n/", '', $currentConference->getMeta('description')));
+
+        foreach ($currentConference->getMeta('meta_tags') ?? [] as $name => $content) {
+            MetaTag::add($name, $content);
+        }
     }
 }
