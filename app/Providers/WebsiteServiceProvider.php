@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Conference\Pages\Home;
 use App\Facades\Block;
+use App\Http\Middleware\CountTotalVisits;
 use App\Http\Middleware\SetupDefaultData;
 use App\Website\Blocks\CalendarBlock;
 use App\Website\Blocks\LoginBlock;
@@ -44,6 +45,7 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
             ->middleware([
                 'web',
                 SetupDefaultData::class,
+                CountTotalVisits::class,
             ], true)
             ->discoverPages(in: app_path('Website/Pages'), for: 'App\\Website\\Pages');
     }

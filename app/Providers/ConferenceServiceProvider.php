@@ -2,23 +2,24 @@
 
 namespace App\Providers;
 
-use App\Conference\Blocks\CalendarBlock;
-use App\Conference\Blocks\CommitteeBlock;
-use App\Conference\Blocks\MenuBlock;
-use App\Conference\Blocks\PreviousBlock;
-use App\Conference\Blocks\SubmitBlock;
-use App\Conference\Blocks\TimelineBlock;
-use App\Conference\Blocks\TopicBlock;
-use App\Conference\Pages\Home;
 use App\Facades\Block;
+use Livewire\Livewire;
+use App\Conference\Pages\Home;
+use App\Conference\Blocks\MenuBlock;
+use App\Conference\Blocks\TopicBlock;
+use Illuminate\Support\Facades\Blade;
+use App\Conference\Blocks\SubmitBlock;
+use Illuminate\Support\ServiceProvider;
+use App\Conference\Blocks\CalendarBlock;
+use App\Conference\Blocks\PreviousBlock;
+use App\Conference\Blocks\TimelineBlock;
+use App\Conference\Blocks\CommitteeBlock;
+use App\Http\Middleware\CountTotalVisits;
+use App\Http\Middleware\SetupDefaultData;
+use Rahmanramsi\LivewirePageGroup\PageGroup;
 use App\Http\Middleware\IdentifyArchiveConference;
 use App\Http\Middleware\IdentifyCurrentConference;
-use App\Http\Middleware\SetupDefaultData;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\ServiceProvider;
-use Livewire\Livewire;
 use Rahmanramsi\LivewirePageGroup\Facades\LivewirePageGroup;
-use Rahmanramsi\LivewirePageGroup\PageGroup;
 
 class ConferenceServiceProvider extends ServiceProvider
 {
@@ -71,6 +72,7 @@ class ConferenceServiceProvider extends ServiceProvider
             ->middleware([
                 'web',
                 IdentifyCurrentConference::class,
+                CountTotalVisits::class,
                 SetupDefaultData::class,
             ], true)
             ->discoverPages(in: app_path('Conference/Pages'), for: 'App\\Conference\\Pages');
@@ -82,6 +84,7 @@ class ConferenceServiceProvider extends ServiceProvider
             ->id('archive-conference')
             ->middleware([
                 IdentifyArchiveConference::class,
+                CountTotalVisits::class,
             ], true)
             ->path('archive/{conference}');
     }
@@ -92,6 +95,7 @@ class ConferenceServiceProvider extends ServiceProvider
             ->id('upcoming-conference')
             ->middleware([
                 IdentifyArchiveConference::class,
+                CountTotalVisits::class,
             ], true)
             ->path('archive/{conference}');
     }
