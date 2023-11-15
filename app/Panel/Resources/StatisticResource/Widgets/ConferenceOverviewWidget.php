@@ -26,7 +26,7 @@ class ConferenceOverviewWidget extends BaseWidget
 
     protected function getTotalVisit()
     {
-        $totalVisit = Conference::with('visits')->first()->visits->count();
+        $totalVisit = Conference::withTotalVisitCount()->first()->visit_count_total;
 
         return number_format($totalVisit);
     }
