@@ -44,7 +44,7 @@ class SearchEngineSetting extends Component implements HasForms
                         KeyValue::make('meta.meta_tags')
                             ->keyLabel('Name')
                             ->valueLabel('Content')
-                            
+
                             ->helperText('Add meta tags, to the head of every page on your conference. Before adding any tags, consult with a technical advisor to ensure that they are compatible with your website and will not cause any problems.'),
                     ]),
                 Actions::make([
