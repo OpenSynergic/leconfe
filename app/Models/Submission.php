@@ -48,12 +48,7 @@ class Submission extends Model implements HasMedia
         'revision_required' => 'boolean',
     ];
 
-    // public function getField()
-    // {
-    //     return match($this->form_type) {
-    //         'radio' => Radio::make(),
-    //     }
-    // }
+
 
     protected function getMetaClassName(): string
     {
