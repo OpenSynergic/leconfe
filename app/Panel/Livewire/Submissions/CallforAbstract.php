@@ -137,19 +137,23 @@ class CallforAbstract extends Component implements HasForms, HasActions
             ])
             ->action(
                 function (Action $action, array $data) {
-
                     SubmissionUpdateAction::run([
                         'stage' => SubmissionStage::PeerReview,
                         'status' => SubmissionStatus::OnReview
                     ], $this->submission);
 
                     if (!$data['no-notification']) {
-                        Mail::to($this->submission->user->email)
-                            ->send(
-                                (new AcceptAbstractMail($this->submission))
-                                    ->contentUsing($data['message'])
-                                    ->subjectUsing($data['subject'])
-                            );
+                        try {
+                            Mail::to($this->submission->user->email)
+                                ->send(
+                                    (new AcceptAbstractMail($this->submission))
+                                        ->contentUsing($data['message'])
+                                        ->subjectUsing($data['subject'])
+                                );
+                        } catch (\Exception $e) {
+                            $action->failureNotificationTitle("Failed to send email, {$e->getMessage()}");
+                            $action->failure();
+                        }
                     }
 
                     // Question
