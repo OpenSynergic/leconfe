@@ -2,10 +2,13 @@
 
 namespace App\Mail\Templates;
 
+use App\Mail\Templates\Traits\CanCustomizeTemplate;
 use App\Models\Submission;
 
 class AcceptAbstractMail extends TemplateMailable
 {
+    use CanCustomizeTemplate;
+
     public string $title;
 
     public string $author;
@@ -21,17 +24,18 @@ class AcceptAbstractMail extends TemplateMailable
 
     public static function getDefaultSubject(): string
     {
-        return 'New Submission: {{ title }}';
+        return 'Abstract Accepted';
     }
 
     public static function getDefaultDescription(): string
     {
-        return 'This email template is sent when a new submission is created.';
+        return 'This is an automated notification from System to inform you about a new submission.';
     }
 
     public static function getDefaultHtmlTemplate(): string
     {
-        return <<<'HTML'
+
+        return  <<<'HTML'
             <p> This is an automated notification from the Leconfe System to inform you about a new submission.</p>
             <p>
                 Submission Details:
