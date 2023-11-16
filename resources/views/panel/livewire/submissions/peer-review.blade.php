@@ -22,7 +22,7 @@
             </div>
             <div class="self-start sticky top-24 flex flex-col gap-4 col-span-4">
                 @if ($submission->revision_required)
-                    <div class="flex items-center p-4 text-sm text-slate-800 rounded-lg bg-white border border-warning-200 dark:border-warning-800 dark:bg-warning-600 dark:text-white"
+                    <div class="flex items-center p-4 text-sm rounded-lg  border border-warning-400 bg-warning-200 text-warning-600"
                         role="alert">
                         <span class="text-base text-center">
                             Revisions have been requested.
