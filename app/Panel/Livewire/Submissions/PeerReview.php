@@ -103,7 +103,7 @@ class PeerReview extends Component implements HasForms, HasActions
     public function acceptSubmissionAction()
     {
         return Action::make('acceptSubmissionAction')
-            ->icon("fluentui-checkmark-16-o")
+            ->icon("lineawesome-check-circle-solid")
             ->color("primary")
             ->label("Accept Submission")
             ->modalSubmitActionLabel("Accept")
