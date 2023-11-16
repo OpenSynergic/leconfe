@@ -9,10 +9,8 @@ use App\Mail\Templates\RevisionRequestMail;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\MailTemplate;
-use App\Models\Review;
 use App\Models\Submission;
 use App\Panel\Livewire\Workflows\Classes\StageManager;
-use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -23,8 +21,8 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Support\Colors\Color;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Notification;
 use Livewire\Component;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
@@ -162,7 +160,7 @@ class PeerReview extends Component implements HasForms, HasActions
             ->hidden(fn (): bool => $this->submission->revision_required)
             ->icon("lineawesome-list-alt-solid")
             ->outlined()
-            ->color('gray')
+            ->color(Color::Orange)
             ->label("Request Revision")
             ->mountUsing(function (Form $form): void {
                 $mailTemplate = MailTemplate::where('mailable', RevisionRequestMail::class)->first();

@@ -317,7 +317,8 @@ class ReviewerList extends Component implements HasForms, HasTable
                                         ->dehydrated(),
                                     TextInput::make('subject')
                                         ->hidden(fn (Get $get) => $get('do-not-notify-cancelation'))
-                                        ->required(),
+                                        ->required()
+                                        ->columnSpanFull(),
                                     TinyEditor::make('message')
                                         ->minHeight(300)
                                         ->hidden(fn (Get $get) => $get('do-not-notify-cancelation'))
@@ -416,20 +417,21 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ...static::formReviewerSchema($this),
                         Fieldset::make("Notification")
                             ->schema([
-                                Checkbox::make('no-invitation-notification')
-                                    ->reactive()
-                                    ->label("Don't send Notification")
-                                    ->columnSpanFull(),
                                 TextInput::make('subject')
                                     ->hidden(
                                         fn (Get $get): bool => $get('no-invitation-notification') ?? false
-                                    ),
+                                    )
+                                    ->columnSpanFull(),
                                 TinyEditor::make('message')
                                     ->minHeight(300)
                                     ->hidden(
                                         fn (Get $get): bool => $get('no-invitation-notification') ?? false
                                     )
                                     ->label("Reviewer invitation message")
+                                    ->columnSpanFull(),
+                                Checkbox::make('no-invitation-notification')
+                                    ->reactive()
+                                    ->label("Don't send Notification")
                                     ->columnSpanFull(),
                             ])
                     ])
@@ -457,7 +459,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                             }
                         }
 
-                        if (!isset($data['no-invitation-notification'])) {
+                        if (!$data['no-invitation-notification']) {
                             Mail::to($reviewAssignment->user->email)
                                 ->send(
                                     (new ReviewerInvitationMail($reviewAssignment))
