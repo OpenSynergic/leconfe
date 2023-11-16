@@ -339,7 +339,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                                     ->send(
                                         (new ReviewerCancelationMail($record))
                                             ->subjectUsing($data['subject'])
-                                            ->contentUsing($data['message'] ?? __('mails.reviewer-cancelation.content'))
+                                            ->contentUsing($data['message'])
                                     );
                             }
 
