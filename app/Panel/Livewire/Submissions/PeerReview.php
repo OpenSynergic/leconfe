@@ -65,8 +65,11 @@ class PeerReview extends Component implements HasForms, HasActions
                     ->columns(1)
                     ->schema([
                         TextInput::make('email')
+                            ->readOnly()
+                            ->hidden(fn (Get $get) => $get('do-not-notify-author'))
                             ->dehydrated(),
                         TextInput::make('subject')
+                            ->hidden(fn (Get $get) => $get('do-not-notify-author'))
                             ->required(),
                         TinyEditor::make('message')
                             ->minHeight(300)
@@ -84,15 +87,14 @@ class PeerReview extends Component implements HasForms, HasActions
                     'status' => SubmissionStatus::Declined,
                 ], $this->submission);
 
-                if (isset($data['do-not-notify-author'])) {
-                    Mail::to($this->submission->user)
+                if (!$data['do-not-notify-author']) {
+                    Mail::to($this->submission->user->email)
                         ->send(
-                            new DeclinePaperMail($this->submission)
+                            (new DeclinePaperMail($this->submission))
+                                ->subjectUsing($data['subject'])
+                                ->contentUsing($data['message'])
                         );
                 }
-
-
-
                 $action->success();
             });
     }
@@ -118,9 +120,11 @@ class PeerReview extends Component implements HasForms, HasActions
                     ->columns(1)
                     ->schema([
                         TextInput::make('email')
-                            ->disabled()
+                            ->readOnly()
+                            ->hidden(fn (Get $get) => $get('do-not-notify-author'))
                             ->dehydrated(),
                         TextInput::make('subject')
+                            ->hidden(fn (Get $get) => $get('do-not-notify-author'))
                             ->required(),
                         TinyEditor::make('message')
                             ->minHeight(300)
@@ -139,10 +143,12 @@ class PeerReview extends Component implements HasForms, HasActions
                     'status' => SubmissionStatus::Editing,
                 ], $this->submission);
 
-                if (!isset($data['do-not-notify-author'])) {
-                    Mail::to($this->submission->user)
+                if (!$data['do-not-notify-author']) {
+                    Mail::to($this->submission->user->email)
                         ->send(
-                            new AcceptPaperMail($this->submission)
+                            (new AcceptPaperMail($this->submission))
+                                ->subjectUsing($data['subject'])
+                                ->contentUsing($data['message'])
                         );
                 }
 
@@ -171,9 +177,11 @@ class PeerReview extends Component implements HasForms, HasActions
                     ->columns(1)
                     ->schema([
                         TextInput::make('email')
-                            ->disabled()
+                            ->readOnly()
+                            ->hidden(fn (Get $get) => $get('do-not-notify-author'))
                             ->dehydrated(),
                         TextInput::make('subject')
+                            ->hidden(fn (Get $get) => $get('do-not-notify-author'))
                             ->required(),
                         TinyEditor::make('message')
                             ->minHeight(300)
@@ -191,10 +199,12 @@ class PeerReview extends Component implements HasForms, HasActions
                     'revision_required' => true
                 ], $this->submission);
 
-                if (!isset($data['do-not-notify-author'])) {
-                    Mail::to($this->submission->user)
+                if (!$data['do-not-notify-author']) {
+                    Mail::to($this->submission->user->email)
                         ->send(
-                            new RevisionRequestMail($this->submission)
+                            (new RevisionRequestMail($this->submission))
+                                ->subjectUsing($data['subject'])
+                                ->contentUsing($data['message'])
                         );
                 }
 

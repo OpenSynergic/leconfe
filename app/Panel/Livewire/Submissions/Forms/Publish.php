@@ -42,12 +42,12 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
 
         if (!$data['do-not-notify-author']) {
             Mail::to($this->submission->user->email)
-                ->send(new PublishSubmissionMail($this->submission, $data['subject'], $data['message']));
+                ->send(
+                    (new PublishSubmissionMail($this->submission))
+                        ->subjectUsing($data['subject'])
+                        ->contentUsing($data['message'])
+                );
         }
-
-        Mail::to($this->submission->user->email)
-            ->send(new PublishSubmissionMail($this->submission));
-
         $action->success();
     }
 
@@ -75,8 +75,10 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
                     ->schema([
                         TextInput::make('email')
                             ->disabled()
+                            ->hidden(fn (Get $get) => $get('do-not-notify-author'))
                             ->dehydrated(),
                         TextInput::make('subject')
+                            ->hidden(fn (Get $get) => $get('do-not-notify-author'))
                             ->required(),
                         TinyEditor::make('message')
                             ->minHeight(300)
