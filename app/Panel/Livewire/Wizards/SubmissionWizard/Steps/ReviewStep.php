@@ -55,9 +55,7 @@ class ReviewStep extends Component implements HasWizardStep, HasActions, HasForm
                     'status' => SubmissionStatus::Queued,
                 ], $this->record);
 
-                Mail::to(
-                    $this->record->user
-                )->send(
+                Mail::to($this->record->user)->send(
                     new ThankAuthorMail($this->record)
                 );
 

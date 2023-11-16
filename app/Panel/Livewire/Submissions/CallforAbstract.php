@@ -9,6 +9,7 @@ use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\MailTemplate;
 use App\Models\Submission;
+use App\Notifications\AbstractAccepted;
 use App\Panel\Livewire\Workflows\Classes\StageManager;
 use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
 use Filament\Actions\Action;
@@ -57,7 +58,9 @@ class CallforAbstract extends Component implements HasForms, HasActions
                             ->hidden(fn (Get $get): bool => $get('no-notification'))
                             ->disabled()
                             ->formatStateUsing(fn (Submission $record): string => $record->user->email),
-                        TextInput::make('subject'),
+                        TextInput::make('subject')
+                            ->hidden(fn (Get $get): bool => $get('no-notification'))
+                            ->required(),
                         TinyEditor::make('message')
                             ->hidden(fn (Get $get): bool => $get('no-notification'))
                             ->minHeight(300),
@@ -73,7 +76,15 @@ class CallforAbstract extends Component implements HasForms, HasActions
                     'stage' => SubmissionStage::CallforAbstract,
                     'status' => SubmissionStatus::Declined
                 ], $this->submission);
-                // Send mail
+
+                if (!$data['no-notification']) {
+                    Mail::to($this->submission->user->email)
+                        ->send(
+                            (new DeclineAbstractMail($this->submission))
+                                ->subjectUsing($data['subject'])
+                                ->contentUsing($data['message'])
+                        );
+                }
                 $action->success();
             })
             ->icon("lineawesome-times-circle-solid");
@@ -93,6 +104,7 @@ class CallforAbstract extends Component implements HasForms, HasActions
             ->mountUsing(function (Form $form): void {
                 $mailTemplate = MailTemplate::where('mailable', AcceptAbstractMail::class)->first();
                 $form->fill([
+                    'subject' => $mailTemplate ? $mailTemplate->subject : '',
                     'message' => $mailTemplate ? $mailTemplate->html_template : ''
                 ]);
             })
@@ -111,6 +123,9 @@ class CallforAbstract extends Component implements HasForms, HasActions
                             ->hidden(fn (Get $get): bool => $get('no-notification'))
                             ->disabled()
                             ->formatStateUsing(fn (Submission $record): string => $record->user->email),
+                        TextInput::make('subject')
+                            ->hidden(fn (Get $get): bool => $get('no-notification'))
+                            ->required(),
                         TinyEditor::make('message')
                             ->minHeight(300)
                             ->hidden(fn (Get $get): bool => $get('no-notification')),
@@ -120,18 +135,34 @@ class CallforAbstract extends Component implements HasForms, HasActions
                             ->default(false),
                     ])
             ])
-            ->action(function (Action $action) {
-                SubmissionUpdateAction::run([
-                    'stage' => SubmissionStage::PeerReview,
-                    'status' => SubmissionStatus::OnReview
-                ], $this->submission);
+            ->action(
+                function (Action $action, array $data) {
 
-                Mail::to($this->submission->user)
-                    ->send(new AcceptAbstractMail($this->submission));
+                    SubmissionUpdateAction::run([
+                        'stage' => SubmissionStage::PeerReview,
+                        'status' => SubmissionStatus::OnReview
+                    ], $this->submission);
 
-                $this->dispatch("refreshPeerReview");
-                $action->success();
-            });
+                    if (!$data['no-notification']) {
+                        Mail::to($this->submission->user->email)
+                            ->send(
+                                (new AcceptAbstractMail($this->submission))
+                                    ->contentUsing($data['message'])
+                                    ->subjectUsing($data['subject'])
+                            );
+                    }
+
+                    // Question
+                    // Which better as a notification
+                    // or just call Notification::make() heren instead
+                    $this->submission->user->notify(
+                        new AbstractAccepted($this->submission)
+                    );
+
+                    $this->dispatch("refreshPeerReview");
+                    $action->success();
+                }
+            );
     }
 
 
