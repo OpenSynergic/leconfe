@@ -9,6 +9,7 @@ use App\Models\Role;
 use App\Models\Submission;
 use App\Models\SubmissionParticipant;
 use App\Models\User;
+use App\Notifications\ParticipantAssigned;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
@@ -96,6 +97,7 @@ class ParticipantList extends Component implements HasForms, HasTable
                     ->mountUsing(function (Form $form): void {
                         $mailTemplate = MailTemplate::where('mailable', ParticipantAssignedMail::class)->first();
                         $form->fill([
+                            'subject' => $mailTemplate ? $mailTemplate->subject : '',
                             'message' => $mailTemplate ? $mailTemplate->html_template : ''
                         ]);
                     })
@@ -147,6 +149,10 @@ class ParticipantList extends Component implements HasForms, HasTable
                                     ->hidden(fn (Get $get): bool => $get('no-notification'))
                                     ->label("Notification")
                                     ->schema([
+                                        TextInput::make('subject')
+                                            ->required()
+                                            ->columnSpanFull()
+                                            ->readOnly(),
                                         TinyEditor::make('message')
                                             ->minHeight(300)
                                             ->columnSpanFull()
@@ -161,11 +167,17 @@ class ParticipantList extends Component implements HasForms, HasTable
                         ]);
 
                         if (!$data['no-notification']) {
-                            Mail::to($submissionParticipant)
+                            Mail::to($submissionParticipant->user->email)
                                 ->send(
-                                    new ParticipantAssignedMail($submissionParticipant)
+                                    (new ParticipantAssignedMail($submissionParticipant))
+                                        ->contentUsing($data['message'])
+                                        ->subjectUsing($data['subject'])
                                 );
                         }
+
+                        $submissionParticipant->user->notify(
+                            new ParticipantAssigned($this->submission)
+                        );
 
                         $action->success();
                     })
@@ -184,7 +196,7 @@ class ParticipantList extends Component implements HasForms, HasTable
                         )
                         ->mountUsing(function (Form $form) {
                             $form->fill([
-                                'subject' => 'Notification from Leconfe',
+                                'subject' => 'Notification from Leconfe', // should it use 'leconfe'
                             ]);
                         })
                         ->form([
@@ -210,17 +222,15 @@ class ParticipantList extends Component implements HasForms, HasTable
                         ->label("Notify")
                         ->successNotificationTitle("Notification Sent")
                         ->action(function (Action $action, array $data) {
-                            /**
-                             * TODO:
-                             * In the future it should able to use existing variable like
-                             * submission title or etc
-                             */
-                            Mail::send([], [], function (Message $message) use ($data) {
-                                $message
-                                    ->to($data['email'])
-                                    ->subject($data['subject'])
-                                    ->html($data['message']);
-                            });
+                            Mail::send(
+                                [],
+                                [],
+                                function (Message $message) use ($data) {
+                                    $message->to($data['email'])
+                                        ->subject($data['subject'])
+                                        ->html($data['message']);
+                                }
+                            );
                             $action->success();
                         }),
                     Impersonate::make()

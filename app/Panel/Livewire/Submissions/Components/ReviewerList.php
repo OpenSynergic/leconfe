@@ -252,11 +252,12 @@ class ReviewerList extends Component implements HasForms, HasTable
                             );
 
                             if (isset($data['papers'])) {
-                                collect($data['papers'])->each(function (int $submisionFileId) use ($record) {
-                                    $record->assignedFiles()->create([
-                                        'submission_file_id' => $submisionFileId
-                                    ]);
-                                });
+                                collect($data['papers'])
+                                    ->each(function (int $submisionFileId) use ($record) {
+                                        $record->assignedFiles()->create([
+                                            'submission_file_id' => $submisionFileId
+                                        ]);
+                                    });
                             }
                             $action->success();
                         }),
@@ -282,13 +283,11 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ])
                         ->successNotificationTitle("E-mail sent")
                         ->action(function (Action $action, Review $record, array $data) {
-                            Mail::send([], [], function (Message $message) use ($data, $record) {
-                                $message
-                                    ->to($record->user->email)
+                            Mail::send([], [], function (Message $message) use ($record, $data) {
+                                $message->to($record->user->email)
                                     ->subject($data['subject'])
                                     ->html($data['message']);
                             });
-
                             $action->success();
                         }),
                     Action::make("cancel-reviewer")
@@ -314,8 +313,10 @@ class ReviewerList extends Component implements HasForms, HasTable
                                 ->schema([
                                     TextInput::make('email')
                                         ->disabled()
+                                        ->hidden(fn (Get $get) => $get('do-not-notify-cancelation'))
                                         ->dehydrated(),
                                     TextInput::make('subject')
+                                        ->hidden(fn (Get $get) => $get('do-not-notify-cancelation'))
                                         ->required(),
                                     TinyEditor::make('message')
                                         ->minHeight(300)
@@ -332,10 +333,12 @@ class ReviewerList extends Component implements HasForms, HasTable
                                 'status' => ReviewerStatus::CANCELED
                             ]);
 
-                            if (!isset($data['do-not-notify-cancelation'])) {
+                            if (!$data['do-not-notify-cancelation']) {
                                 Mail::to($record->user->email)
                                     ->send(
-                                        new ReviewerCancelationMail($record)
+                                        (new ReviewerCancelationMail($record))
+                                            ->subjectUsing($data['subject'])
+                                            ->contentUsing($data['message'] ?? __('mails.reviewer-cancelation.content'))
                                     );
                             }
 
@@ -392,8 +395,10 @@ class ReviewerList extends Component implements HasForms, HasTable
             ->headerActions([
                 Action::make('add-reviewer')
                     ->mountUsing(function (Form $form): void {
+                        $mailTemplate = MailTemplate::where('mailable', ReviewerInvitationMail::class)->first();
                         $form->fill([
-                            'reviewer-invitation-message' => MailTemplate::where('mailable', ReviewerInvitationMail::class)->first()->html_template,
+                            'subject' => $mailTemplate ? $mailTemplate->subject : '',
+                            'message' => $mailTemplate ? $mailTemplate->html_template : '',
                         ]);
                     })
                     ->visible(
@@ -415,7 +420,11 @@ class ReviewerList extends Component implements HasForms, HasTable
                                     ->reactive()
                                     ->label("Don't send Notification")
                                     ->columnSpanFull(),
-                                TinyEditor::make('reviewer-invitation-message')
+                                TextInput::make('subject')
+                                    ->hidden(
+                                        fn (Get $get): bool => $get('no-invitation-notification') ?? false
+                                    ),
+                                TinyEditor::make('message')
                                     ->minHeight(300)
                                     ->hidden(
                                         fn (Get $get): bool => $get('no-invitation-notification') ?? false
@@ -451,7 +460,9 @@ class ReviewerList extends Component implements HasForms, HasTable
                         if (!isset($data['no-invitation-notification'])) {
                             Mail::to($reviewAssignment->user->email)
                                 ->send(
-                                    new ReviewerInvitationMail($reviewAssignment)
+                                    (new ReviewerInvitationMail($reviewAssignment))
+                                        ->subjectUsing($data['subject'])
+                                        ->contentUsing($data['message'])
                                 );
                         }
                     })
