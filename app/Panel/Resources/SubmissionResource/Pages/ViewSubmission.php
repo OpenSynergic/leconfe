@@ -2,11 +2,11 @@
 
 namespace App\Panel\Resources\SubmissionResource\Pages;
 
-use App\Infolists\Components\BladeEntry;
 use App\Infolists\Components\LivewireEntry;
 use App\Infolists\Components\VerticalTabs\Tab as Tab;
 use App\Infolists\Components\VerticalTabs\Tabs as Tabs;
 use App\Models\Enums\SubmissionStage;
+use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
 use App\Panel\Livewire\Submissions\CallforAbstract;
 use App\Panel\Livewire\Submissions\Components\ContributorList;
@@ -30,7 +30,9 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
+use Illuminate\View\Compilers\BladeCompiler;
 
 class ViewSubmission extends Page implements HasInfolists, HasForms
 {
@@ -77,7 +79,18 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
 
     public function getSubheading(): string|Htmlable|null
     {
-        return $this->record->status->value;
+        $badgeHtml = match ($this->record->status->value) {
+            SubmissionStatus::Queued->value => '<x-filament::badge color="primary" class="w-fit">On Queue</x-filament::badge>',
+            SubmissionStatus::Declined->value => '<x-filament::badge color="danger" class="w-fit">Declined</x-filament::badge>',
+            SubmissionStatus::Published->value => '<x-filament::badge color="success" class="w-fit">Published</x-filament::badge>',
+            SubmissionStatus::OnReview->value => '<x-filament::badge color="warning" class="w-fit">Under Review</x-filament::badge>',
+            SubmissionStatus::Incomplete->value => '<x-filament::badge color="secondary" class="w-fit">Incomplete</x-filament::badge>',
+            default => null,
+        };
+
+        return new HtmlString(
+            BladeCompiler::render($badgeHtml)
+        );
     }
 
     public function getHeading(): string
