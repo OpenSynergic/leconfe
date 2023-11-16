@@ -48,6 +48,7 @@ class Detail extends \Livewire\Component implements HasForms
                     ->placeholder('')
                     ->type('submissionKeywords'),
                 TinyEditor::make('meta.abstract')
+                    ->required()
                     ->minHeight(300)
                     ->profile('basic')
             ]);
