@@ -7,6 +7,7 @@ use App\Infolists\Components\VerticalTabs as InfolistsVerticalTabs;
 use App\Panel\Livewire\Forms\Conferences\ContactSetting;
 use App\Panel\Livewire\Forms\Conferences\InformationSetting;
 use App\Panel\Livewire\Forms\Conferences\PrivacySetting;
+use App\Panel\Livewire\Forms\Conferences\SearchEngineSetting;
 use App\Panel\Livewire\Forms\Conferences\SetupSetting;
 use App\Panel\Livewire\Forms\Conferences\SidebarSetting;
 use Filament\Facades\Filament;
@@ -103,6 +104,20 @@ class ConferenceSetting extends Page implements HasForms, HasInfolists
                                             ->schema([
                                                 LivewireEntry::make('sidebar-setting')
                                                     ->livewire(SidebarSetting::class, [
+                                                        'conference' => App::getCurrentConference(),
+                                                    ]),
+                                            ]),
+                                    ]),
+                            ]),
+                        Tabs\Tab::make('Distribution')
+                            ->schema([
+                                InfolistsVerticalTabs\Tabs::make()
+                                    ->schema([
+                                        InfolistsVerticalTabs\Tab::make('Search Indexing')
+                                            ->icon('heroicon-o-magnifying-glass')
+                                            ->schema([
+                                                LivewireEntry::make('sidebar-setting')
+                                                    ->livewire(SearchEngineSetting::class, [
                                                         'conference' => App::getCurrentConference(),
                                                     ]),
                                             ]),
