@@ -2,10 +2,13 @@
 
 namespace App\Mail\Templates;
 
+use App\Mail\Templates\Traits\CanCustomizeTemplate;
 use App\Models\Submission;
 
 class RevisionRequestMail extends TemplateMailable
 {
+    use CanCustomizeTemplate;
+
     public string $title;
 
     public string $loginLink;

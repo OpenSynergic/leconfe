@@ -2,10 +2,13 @@
 
 namespace App\Mail\Templates;
 
+use App\Mail\Templates\Traits\CanCustomizeTemplate;
 use App\Models\Submission;
 
 class AcceptPaperMail extends TemplateMailable
 {
+    use CanCustomizeTemplate;
+
     public string $title;
 
     public string $authorName;

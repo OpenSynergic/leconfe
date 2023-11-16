@@ -2,10 +2,12 @@
 
 namespace App\Mail\Templates;
 
+use App\Mail\Templates\Traits\CanCustomizeTemplate;
 use App\Models\SubmissionParticipant;
 
 class ParticipantAssignedMail extends TemplateMailable
 {
+    use CanCustomizeTemplate;
 
     public string $submissionTitle;
 

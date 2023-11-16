@@ -2,12 +2,15 @@
 
 namespace App\Mail\Templates;
 
+use App\Mail\Templates\Traits\CanCustomizeTemplate;
 use App\Models\Review;
 use App\Panel\Livewire\Workflows\Classes\StageManager;
 use Carbon\Carbon;
 
 class ReviewerInvitationMail extends TemplateMailable
 {
+    use CanCustomizeTemplate;
+
     public string $name;
 
     public string $submissionTitle;

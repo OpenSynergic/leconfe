@@ -2,10 +2,13 @@
 
 namespace App\Mail\Templates;
 
+use App\Mail\Templates\Traits\CanCustomizeTemplate;
 use App\Models\Submission;
 
 class DeclineAbstractMail extends TemplateMailable
 {
+    use CanCustomizeTemplate;
+
     public string $authorName;
 
     public string $title;
