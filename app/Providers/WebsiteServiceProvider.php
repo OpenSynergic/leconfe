@@ -45,6 +45,7 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
             ->middleware([
                 'web',
                 SetupDefaultData::class,
+                CountTotalVisits::class,
             ], true)
             ->discoverPages(in: app_path('Website/Pages'), for: 'App\\Website\\Pages');
     }

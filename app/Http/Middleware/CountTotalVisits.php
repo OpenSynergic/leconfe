@@ -5,6 +5,9 @@ namespace App\Http\Middleware;
 use Closure;
 use App\Models\Conference;
 use Illuminate\Http\Request;
+use App\Website\Pages\Installation;
+use Illuminate\Support\Facades\Route;
+use App\Models\Scopes\ConferenceScope;
 use Symfony\Component\HttpFoundation\Response;
 
 class CountTotalVisits
@@ -17,11 +20,14 @@ class CountTotalVisits
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Get the active conference
-        $conference = Conference::active();
 
-        // Log the visit details
-        $conference->visit()
+        if (Route::getCurrentRoute()->uri === Installation::getSlug()) {
+            return $next($request);
+        }
+
+        $currentConference = Conference::active();
+
+        $currentConference->visit()
             ->withIp()
             ->withSession()
             ->withUser()
