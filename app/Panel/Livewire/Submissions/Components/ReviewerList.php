@@ -71,10 +71,20 @@ class ReviewerList extends Component implements HasForms, HasTable
                 ->preload()
                 ->required()
                 ->searchable()
-                ->options(function () use ($component, $editMode): array {
+                ->options(function ($state) use ($component, $editMode): array {
                     return User::with('roles')
                         ->whereHas('roles', function (Builder $query) use ($component) {
                             $query->where('name', $component->reviewerRole->name);
+                        })
+                        ->when($editMode, function ($query) use ($component, $state) {
+                            $query->whereNotIn(
+                                'id',
+                                $component->record->reviews()
+                                    ->where('user_id', '!=', $state)
+                                    ->get()
+                                    ->pluck('user_id')
+                                    ->toArray()
+                            );
                         })
                         ->when(!$editMode, function ($query) use ($component) {
                             $query->whereNotIn(
