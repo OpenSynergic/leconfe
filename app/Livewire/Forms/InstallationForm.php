@@ -2,18 +2,19 @@
 
 namespace App\Livewire\Forms;
 
-use App\Actions\Conferences\ConferenceCreateAction;
-use App\Actions\User\UserCreateAction;
-use App\Models\Conference;
-use App\Models\Enums\UserRole;
-use App\Models\User;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
-use Livewire\Attributes\Rule;
 use Livewire\Form;
+use App\Models\User;
+use App\Models\Conference;
+use Livewire\Attributes\Rule;
+use App\Models\Enums\UserRole;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
+use App\Actions\User\UserCreateAction;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Artisan;
+use App\Actions\Conferences\ConferenceCreateAction;
 
 class InstallationForm extends Form
 {
@@ -90,6 +91,11 @@ class InstallationForm extends Form
         try {
             DB::beginTransaction();
 
+
+            Event::fake([
+                Registered::class,
+            ]);
+
             $user = UserCreateAction::run($this->only([
                 'given_name',
                 'family_name',
@@ -126,7 +132,7 @@ class InstallationForm extends Form
 
             session()->flash('success', 'Successfully Connected');
         } catch (\Throwable $th) {
-            $this->addError('databaseOperationError', 'Connection failed: '.$th->getMessage());
+            $this->addError('databaseOperationError', 'Connection failed: ' . $th->getMessage());
 
             return false;
         }
@@ -142,7 +148,7 @@ class InstallationForm extends Form
 
             $databaseExists = $this->checkDatabaseExists($dbName);
 
-            if (! $databaseExists) {
+            if (!$databaseExists) {
                 $this->createNewDatabase($dbName);
             }
 
@@ -154,7 +160,7 @@ class InstallationForm extends Form
 
             session()->flash('success', 'Connection success and database successfully created');
         } catch (\Throwable $th) {
-            $this->addError('databaseOperationError', 'Create database failed: Please manually create your database '.$th->getMessage());
+            $this->addError('databaseOperationError', 'Create database failed: Please manually create your database ' . $th->getMessage());
 
             return false;
         }
@@ -171,7 +177,7 @@ class InstallationForm extends Form
             'database' => '',
         ]);
 
-        if (! empty($this->db_username) && ! empty($this->db_password)) {
+        if (!empty($this->db_username) && !empty($this->db_password)) {
             $connectionArray = array_merge($connectionArray, [
                 'username' => $this->db_username,
                 'password' => $this->db_password,
@@ -185,7 +191,7 @@ class InstallationForm extends Form
 
     private function checkDatabaseExists($dbName): bool
     {
-        return ! empty(DB::select("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '$dbName'"));
+        return !empty(DB::select("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '$dbName'"));
     }
 
     private function createNewDatabase($dbName): void
