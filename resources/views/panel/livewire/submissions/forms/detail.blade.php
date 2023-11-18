@@ -1,5 +1,5 @@
 <div>
-    <x-filament::section heading="Submisison Detail">
+    <x-filament::section heading="Submission Detail">
         <form wire:submit='submit'>
             <div class="space-y-4">
                 {{ $this->form }}
