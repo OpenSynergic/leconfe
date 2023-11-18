@@ -9,6 +9,8 @@ use Filament\GlobalSearch\GlobalSearchResult;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\Layout\Split;
+use Filament\Tables\Columns\Layout\Stack;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
@@ -125,27 +127,32 @@ class SubmissionResource extends Resource
             })
             ->columns([
                 Split::make([
-                    Tables\Columns\TextColumn::make('title')
-                        ->getStateUsing(fn (Submission $record) => $record->getMeta('title'))
-                        ->description(function (Submission $record) {
-                            return $record->user->fullName;
-                        })
-                        ->searchable(query: function (Builder $query, string $search): Builder {
-                            return $query
-                                ->whereMeta('title', 'like', "%{$search}%");
-                        }),
-                    Tables\Columns\TextColumn::make('status')
-                        ->badge()
-                        ->color(fn (Submission $record): string => match ($record->status) {
-                            SubmissionStatus::Declined => 'danger',
-                            SubmissionStatus::OnReview => 'warning',
-                            SubmissionStatus::Queued, SubmissionStatus::Editing => 'primary',
-                            SubmissionStatus::Published => 'success',
-                            default => 'gray'
-                        })
-                        ->formatStateUsing(
-                            fn (Submission $record) => $record->status
-                        )
+                    Stack::make([
+                        Tables\Columns\TextColumn::make('title')
+                            ->getStateUsing(fn (Submission $record) => $record->getMeta('title'))
+                            ->description(function (Submission $record) {
+                                return $record->user->fullName;
+                            })
+                            ->searchable(query: function (Builder $query, string $search): Builder {
+                                return $query
+                                    ->whereMeta('title', 'like', "%{$search}%");
+                            }),
+                        Tables\Columns\TextColumn::make('status')
+                            ->extraAttributes([
+                                'class' => 'mt-2'
+                            ])
+                            ->badge()
+                            ->color(fn (Submission $record): string => match ($record->status) {
+                                SubmissionStatus::Declined => 'danger',
+                                SubmissionStatus::OnReview => 'warning',
+                                SubmissionStatus::Queued, SubmissionStatus::Editing => 'primary',
+                                SubmissionStatus::Published => 'success',
+                                default => 'gray'
+                            })
+                            ->formatStateUsing(
+                                fn (Submission $record) => $record->status
+                            )
+                    ])
                 ])
             ])
             ->actions([
@@ -162,6 +169,13 @@ class SubmissionResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+            ])
+            ->filters([
+                SelectFilter::make('status')
+                    ->options(
+                        SubmissionStatus::array()
+                    )
+                    ->searchable()
             ]);
     }
 
