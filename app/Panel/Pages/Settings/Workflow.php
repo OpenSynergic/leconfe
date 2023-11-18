@@ -21,8 +21,7 @@ use Filament\Pages\Page;
 
 class Workflow extends Page implements HasInfolists, HasForms
 {
-    use InteractsWithInfolists;
-    use InteractsWithForms;
+    use InteractsWithInfolists, InteractsWithForms;
 
     protected static ?int $navigationSort = 1;
 
