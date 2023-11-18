@@ -151,7 +151,7 @@ class CallforAbstract extends Component implements HasForms, HasActions
                                         ->subjectUsing($data['subject'])
                                 );
                         } catch (\Exception $e) {
-                            $action->failureNotificationTitle("Failed to send email, {$e->getMessage()}");
+                            $action->failureNotificationTitle("The email notification was not delivered.");
                             $action->failure();
                         }
                     }
