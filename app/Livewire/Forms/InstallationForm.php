@@ -7,7 +7,6 @@ use App\Actions\User\UserCreateAction;
 use App\Models\Conference;
 use App\Models\Enums\UserRole;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -98,8 +97,6 @@ class InstallationForm extends Form
             ]));
 
             $user->assignRole(UserRole::Admin->value);
-
-            event(new Registered($user));
 
             DB::commit();
         } catch (\Throwable $th) {
