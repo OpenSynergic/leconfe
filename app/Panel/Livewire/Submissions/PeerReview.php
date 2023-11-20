@@ -221,6 +221,8 @@ class PeerReview extends Component implements HasForms, HasActions
             ->action(function (Action $action) {
                 SubmissionUpdateAction::run([
                     'skipped_review' => true,
+                    'revision_required' => false,
+                    'status' => SubmissionStatus::Editing,
                 ], $this->submission);
                 $action->success();
             })
