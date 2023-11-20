@@ -91,11 +91,6 @@ class InstallationForm extends Form
         try {
             DB::beginTransaction();
 
-
-            Event::fake([
-                Registered::class,
-            ]);
-
             $user = UserCreateAction::run($this->only([
                 'given_name',
                 'family_name',
@@ -104,8 +99,6 @@ class InstallationForm extends Form
             ]));
 
             $user->assignRole(UserRole::Admin->value);
-
-            event(new Registered($user));
 
             DB::commit();
         } catch (\Throwable $th) {
