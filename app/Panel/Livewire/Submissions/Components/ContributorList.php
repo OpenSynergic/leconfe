@@ -51,7 +51,8 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
             ->when(
                 !$submissionRelated,
                 fn (Builder $query) => $query->whereNotIn('id', $this->submission->contributors()->pluck('participant_id'))
-            );
+            )
+            ->orderBy('order_column');
     }
 
     public static function getContributorFormSchema(): array
@@ -78,6 +79,7 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
     public function table(Table $table): Table
     {
         return $table
+            ->reorderable('order_column')
             ->heading("Contributors")
             ->query(
                 fn (): Builder => $this->getQuery()
