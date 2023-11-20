@@ -33,6 +33,7 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\Layout\Split;
+use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -160,19 +161,26 @@ class ReviewerList extends Component implements HasForms, HasTable
                             'style' => 'width: 1px',
                         ])
                         ->circular(),
-                    TextColumn::make('user.fullName')
-                        ->formatStateUsing(function (Review $record) {
-                            if ($record->status == ReviewerStatus::CANCELED) {
-                                return $record->user->fullName . " (Canceled)";
-                            }
-                            return $record->user->fullName;
-                        })
-                        ->color(
-                            fn (Review $record): string => $record->status == ReviewerStatus::CANCELED ? 'danger' : 'primary'
-                        )
-                        ->description(
-                            fn (Review $record): string => $record->user->email
-                        ),
+                    Stack::make([
+                        TextColumn::make('user.fullName')
+                            ->color(
+                                fn (Review $record): string => $record->status == ReviewerStatus::CANCELED ? 'danger' : 'primary'
+                            )
+                            ->description(
+                                fn (Review $record): string => $record->user->email
+                            ),
+                        TextColumn::make('status')
+                            ->extraAttributes(['class' => 'mt-2'])
+                            ->color(function ($state) {
+                                return match ($state) {
+                                    ReviewerStatus::PENDING => 'warning',
+                                    ReviewerStatus::CANCELED => 'danger',
+                                    ReviewerStatus::ACCEPTED => 'success',
+                                    default => 'primary'
+                                };
+                            })
+                            ->badge(),
+                    ]),
                     TextColumn::make('recommendation')
                         ->badge()
                         ->formatStateUsing(function ($state) {
