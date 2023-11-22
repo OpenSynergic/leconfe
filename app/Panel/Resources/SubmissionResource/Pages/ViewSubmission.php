@@ -85,6 +85,7 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
             SubmissionStatus::Published->value => '<x-filament::badge color="success" class="w-fit">Published</x-filament::badge>',
             SubmissionStatus::OnReview->value => '<x-filament::badge color="warning" class="w-fit">Under Review</x-filament::badge>',
             SubmissionStatus::Incomplete->value => '<x-filament::badge color="secondary" class="w-fit">Incomplete</x-filament::badge>',
+            SubmissionStatus::Editing->value => '<x-filament::badge color="info" class="w-fit">Editing</x-filament::badge>',
             default => null,
         };
 
