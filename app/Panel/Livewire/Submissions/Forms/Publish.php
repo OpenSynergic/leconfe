@@ -35,6 +35,12 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
 
     public function handlePublishAction(Action $action, array $data)
     {
+
+        if ($this->submission->stage != SubmissionStage::Editing) {
+            $action->failure("Submission is not in editing stage");
+            return;
+        }
+
         SubmissionUpdateAction::run([
             'stage' => SubmissionStage::Proceeding,
             'status' => SubmissionStatus::Published
@@ -48,6 +54,7 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
                         ->contentUsing($data['message'])
                 );
         }
+
         $action->success();
     }
 
@@ -55,7 +62,7 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
     {
         return Action::make('publishAction')
             ->disabled(
-                fn (): bool => !StageManager::stage('editing')->isStageOpen()
+                fn (): bool => !StageManager::stage('editing')->isStageOpen() || $this->submission->stage != SubmissionStage::Editing
             )
             ->authorize("Submission:publish")
             ->icon("iconpark-check")
@@ -97,7 +104,18 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
             ->record($this->submission)
             ->schema([
                 ShoutEntry::make('shout')
-                    ->content("Please ensure that you have completed all the required fields before publishing your submission. Once published, you will not be able to edit your submission.")
+                    ->color(function (): string {
+                        if (StageManager::stage('editing')->isStageOpen()) {
+                            return 'primary';
+                        }
+                        return 'warning';
+                    })
+                    ->content(function (): string {
+                        if (StageManager::stage('editing')->isStageOpen()) {
+                            return "Please ensure that you have completed all the required fields before publishing your submission. Once published, you will not be able to edit your submission.";
+                        }
+                        return "You are unable to publish this submission because the editing stage is not yet open.";
+                    })
             ]);
     }
 
