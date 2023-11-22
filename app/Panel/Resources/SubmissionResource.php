@@ -32,7 +32,7 @@ class SubmissionResource extends Resource
 
     public static function getGlobalSearchEloquentQuery(): Builder
     {
-        return parent::getGlobalSearchEloquentQuery()->with(['user']);
+        return parent::getGlobalSearchEloquentQuery()->with(['user', 'participants', 'reviews']);
     }
 
     public static function getRecordTitle(?Model $record): string|Htmlable|null
