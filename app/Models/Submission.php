@@ -61,9 +61,13 @@ class Submission extends Model implements HasMedia
     protected static function booted(): void
     {
         static::addGlobalScope('user', function (Builder $builder) {
-            if (!auth()->user()->hasRole(UserRole::Admin->value) && !auth()->user()->hasRole(UserRole::Editor->value) && !auth()->user()->hasRole(UserRole::Reviewer->value)) {
-                $builder->where('user_id', auth()->id());
-            }
+            // $currentUser = auth()->user();
+            // if (
+            //     $currentUser->hasRole(UserRole::Editor->value)
+            //     || $currentUser->hasRole(UserRole::Reviewer->value)
+            // ) {
+            //     $builder->where('user_id', auth()->id());
+            // }
         });
 
         static::creating(function (Submission $submission) {
