@@ -86,6 +86,23 @@ class ManageSubmissions extends ManageRecords
                         );
                     });
                 }),
+            'Published' => Tab::make('Published')
+                ->when(auth()->user()->hasRole(UserRole::Author->value), function (Tab $tab) {
+                    return $tab->modifyQueryUsing(function (Builder $query) {
+                        return $query->where('user_id', auth()->id());
+                    });
+                })
+                ->when(auth()->user()->hasRole(UserRole::Reviewer->value), function (Tab $tab) {
+                    return $tab->modifyQueryUsing(function (Builder $query) {
+                        return $query->whereHas(
+                            'reviews',
+                            fn (Builder $query) => $query->where('user_id', auth()->id())
+                        );
+                    });
+                })
+                ->modifyQueryUsing(function (Builder $query) {
+                    return $query->where('status', SubmissionStatus::Published);
+                }),
             'Declined' => Tab::make("Declined")
                 ->when(auth()->user()->hasRole(UserRole::Author->value), function (Tab $tab) {
                     return $tab->modifyQueryUsing(function (Builder $query) {
