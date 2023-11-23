@@ -21,6 +21,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Infolists\Components\Actions\Action as ActionsAction;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
@@ -104,17 +105,38 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
             ->record($this->submission)
             ->schema([
                 ShoutEntry::make('shout')
+                    ->registerActions([
+                        ActionsAction::make("OK")
+                    ])
                     ->color(function (): string {
-                        if (StageManager::stage('editing')->isStageOpen()) {
+                        if (!StageManager::stage('editing')->isStageOpen()) {
+                            return 'warning';
+                        }
+
+                        if ($this->submission->status == SubmissionStatus::Published) {
                             return 'primary';
                         }
+
+                        if ($this->submission->stage == SubmissionStatus::Editing) {
+                            return 'info';
+                        }
+
                         return 'warning';
                     })
                     ->content(function (): string {
-                        if (StageManager::stage('editing')->isStageOpen()) {
+                        if (!StageManager::stage('editing')->isStageOpen()) {
+                            return "You are unable to publish this submission because the editing stage is not yet open.";
+                        }
+
+                        if ($this->submission->status == SubmissionStatus::Published) {
+                            return "This submission has been published.";
+                        }
+
+                        if ($this->submission->stage == SubmissionStage::Editing) {
                             return "Please ensure that you have completed all the required fields before publishing your submission. Once published, you will not be able to edit your submission.";
                         }
-                        return "You are unable to publish this submission because the editing stage is not yet open.";
+
+                        return "This submission is not in the editing stage.";
                     })
             ]);
     }
