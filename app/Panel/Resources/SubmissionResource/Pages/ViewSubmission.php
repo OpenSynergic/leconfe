@@ -30,7 +30,6 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\Compilers\BladeCompiler;
 
@@ -150,12 +149,14 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                             ])
                             ->schema([
                                 ShoutEntry::make('can-not-edit')
+                                    ->type('warning')
                                     ->color('warning')
                                     ->visible(
                                         fn (): bool => $this->record->isPublished()
                                     )
-                                    ->content("You can not edit this submission because it is already published."),
+                                    ->content("You can't edit this submission because it is already published."),
                                 Tabs::make()
+                                    ->visible()
                                     ->tabs([
                                         Tab::make('Detail')
                                             ->icon("heroicon-o-information-circle")
@@ -171,7 +172,7 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                                                 LivewireEntry::make('contributors')
                                                     ->livewire(ContributorList::class, [
                                                         'submission' => $this->record,
-                                                        'viewOnly' => !auth()->user()->can('Publication:update') || $this->record->isPublished()
+                                                        'viewOnly' => !auth()->user()->can('Publication:update') || $this->record->isPublished(),
                                                     ])
                                             ]),
                                         Tab::make('References')
@@ -179,14 +180,11 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                                             ->schema([
                                                 LivewireEntry::make('references')
                                                     ->livewire(References::class, [
-                                                        'submission' => $this->record
+                                                        'submission' => $this->record,
                                                     ])
                                             ]),
                                         Tab::make('Proceeding')
                                             ->icon("iconpark-check-o")
-                                            ->hidden(function () {
-                                                return $this->record->stage != SubmissionStage::Editing;
-                                            })
                                             ->schema([
                                                 LivewireEntry::make('publishing')
                                                     ->livewire(Publish::class, [
