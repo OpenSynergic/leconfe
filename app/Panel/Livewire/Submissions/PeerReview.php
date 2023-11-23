@@ -223,6 +223,7 @@ class PeerReview extends Component implements HasForms, HasActions
                     'skipped_review' => true,
                     'revision_required' => false,
                     'status' => SubmissionStatus::Editing,
+                    'stage' => SubmissionStage::Editing,
                 ], $this->submission);
                 $action->success();
             })
