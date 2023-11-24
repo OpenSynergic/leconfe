@@ -55,6 +55,17 @@ class SubmissionPolicy
         }
     }
 
+    public function review(User $user, Submission $submission)
+    {
+        if ($submission->stage != SubmissionStage::PeerReview) {
+            return false;
+        }
+
+        if ($user->can('Submission:review')) {
+            return true;
+        }
+    }
+
     public function publish(User $user, Submission $submission)
     {
         if ($submission->status != SubmissionStatus::Editing) {

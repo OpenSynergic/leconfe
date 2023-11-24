@@ -45,6 +45,8 @@ class ReviewSubmissionPage extends Page implements HasInfolists, HasActions
 
     public function mount()
     {
+        abort_unless(auth()->user()->can('Submission:review'), 403);
+
         $this->review = $this->record->reviews()
             ->user(auth()->user())
             ->first();
