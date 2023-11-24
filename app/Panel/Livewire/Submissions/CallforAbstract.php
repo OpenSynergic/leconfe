@@ -110,7 +110,7 @@ class CallforAbstract extends Component implements HasForms, HasActions
                     ->schema([
                         /**
                          * TODO:
-                         * - We need to create a function for it because it is used frequently.
+                         * - Need to create a function for it because it is used frequently.
                          * 
                          * Something like:
                          *   UserNotificaiton::formSchema()
@@ -123,6 +123,7 @@ class CallforAbstract extends Component implements HasForms, HasActions
                         TinyEditor::make('message')
                             ->minHeight(300),
                         Checkbox::make('no-notification')
+                            ->label("Don't send notification to author")
                             ->default(false),
                     ])
             ])

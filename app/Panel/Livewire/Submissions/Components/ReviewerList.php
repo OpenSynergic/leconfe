@@ -440,6 +440,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                                     ->label("Reviewer invitation message")
                                     ->columnSpanFull(),
                                 Checkbox::make('no-invitation-notification')
+                                    ->label("Don't Send Notification")
                                     ->columnSpanFull(),
                             ])
                     ])
