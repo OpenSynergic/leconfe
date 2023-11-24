@@ -23,15 +23,6 @@
             {{-- @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\Discussions::class, ['record' => $record, 'lazy' => true]) --}}
         </div>
         <div class="col-span-4 space-y-4 self-start sticky top-20">
-            @if(!is_null($review->recommendation))
-            <div class="flex space-x-2 items-center p-4 mb-4 text-sm text-slate-800 rounded-lg bg-white border border-gray-200 dark:border-gray-800 dark:bg-gray-900 dark:text-slate-300"
-                role="alert">
-                {{-- <x-lineawesome-check-circle-solid class="w-5 h-5 text-success-600"/> --}}
-                <span class="text-base text-center">
-                    Thank you, You have successfully submitted your review.
-                </span>
-            </div>
-            @endif
             {{ $this->infolist }}
             {{ $this->recommendationForm }}
             {{ $this->reviewAction() }}

@@ -10,6 +10,7 @@ use App\Models\Submission;
 use App\Models\User;
 use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
 use App\Panel\Resources\SubmissionResource;
+use Awcodes\Shout\Components\ShoutEntry;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -69,6 +70,10 @@ class ReviewSubmissionPage extends Page implements HasInfolists, HasActions
         return $infolist
             ->record($this->record)
             ->schema([
+                ShoutEntry::make('thank-you')
+                    ->visible(fn (): bool => $this->review->reviewSubmitted())
+                    ->type('success')
+                    ->content("Thank you for your time and effort in reviewing this submission. Your review will be used to help the editor make a decision on the submission."),
                 InfolistSection::make()
                     ->heading("Submission Details")
                     ->schema([

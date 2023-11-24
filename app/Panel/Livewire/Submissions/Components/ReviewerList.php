@@ -223,7 +223,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                                 ->size('base')
                                 ->color("gray")
                                 ->html()
-                                ->getStateUsing(fn (): string => $record->review_author_editor),
+                                ->getStateUsing(fn (): ?string => $record->review_author_editor),
                             TextEntry::make('Review for Editor')
                                 ->hidden(
                                     fn (): bool => $this->record->user->getKey() == auth()->id()
@@ -231,7 +231,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                                 ->size('base')
                                 ->color("gray")
                                 ->html()
-                                ->getStateUsing(fn (): string => $record->review_editor),
+                                ->getStateUsing(fn (): ?string => $record->review_editor),
                             LivewireEntry::make('reviewer-files')
                                 ->livewire(Files\ReviewerFiles::class, [
                                     'submission' => $record->submission,

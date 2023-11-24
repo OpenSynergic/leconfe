@@ -141,11 +141,9 @@ class CallforAbstract extends Component implements HasForms, HasActions
 
                     if (!$data['no-notification']) {
                         try {
-                            Mail::to($this->submission->user->email)
-                                ->send(
-                                    (new AcceptAbstractMail($this->submission))
-                                        ->contentUsing($data['message'])
-                                        ->subjectUsing($data['subject'])
+                            $this->submission->user
+                                ->notify(
+                                    new AbstractAccepted($this->submission, $data['message'], $data['subject'])
                                 );
                         } catch (\Exception $e) {
                             $action->failureNotificationTitle("The email notification was not delivered.");
@@ -156,9 +154,7 @@ class CallforAbstract extends Component implements HasForms, HasActions
                     // Question
                     // Which better as a notification
                     // or just call Notification::make() heren instead
-                    $this->submission->user->notify(
-                        new AbstractAccepted($this->submission)
-                    );
+
 
                     $this->dispatch("refreshPeerReview");
                     $action->success();

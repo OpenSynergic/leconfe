@@ -3,11 +3,10 @@
 namespace App\Models;
 
 use App\Constants\SubmissionFileCategory;
-use App\Mail\Templates\NewPaperUploadedMail;
+use App\Notifications\SubmissionFileUploaded;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Mail;
 
 class SubmissionFile extends Model
 {
@@ -30,14 +29,24 @@ class SubmissionFile extends Model
         });
 
         static::created(function (SubmissionFile $createdModel) {
-            // Send notification when there is new papers uploaded
-            if ($createdModel->category == SubmissionFileCategory::PAPER_FILES) {
-                $editors = $createdModel->submission->participants()->whereHas('role', function ($query) {
-                    $query->where('name', 'editor');
-                })->get()->pluck('user_id');
+            // Send notification when there is new papers or revision uploaded
+            // Should we created an event for this ?
+            // for example SubmissionFilesUploaded, then we can listen to this event and send notification
+            $shouldSendNotification = $createdModel->category == SubmissionFileCategory::PAPER_FILES || $createdModel->category == SubmissionFileCategory::REVISION_FILES;
+            if ($shouldSendNotification) {
+                $editors = $createdModel->submission->participants()
+                    ->whereHas('role', function ($query) {
+                        $query->where('name', 'editor');
+                    })
+                    ->get()
+                    ->pluck('user_id');
+
                 $editors = User::whereIn('id', $editors)->get();
+
                 if ($editors->count()) {
-                    Mail::to($editors)->send(new NewPaperUploadedMail($createdModel));
+                    $editors->each(function (User $editor) use ($createdModel) {
+                        $editor->notify(new SubmissionFileUploaded($createdModel));
+                    });
                 }
             }
         });

@@ -50,6 +50,7 @@ class ReviewStep extends Component implements HasWizardStep, HasActions, HasForm
             ->successNotificationTitle("Abstract submitted, please wait for the conference manager to review your submission.")
             ->successRedirectUrl(fn (): string => SubmissionResource::getUrl('complete', ['record' => $this->record]))
             ->action(function (Action $action) {
+
                 SubmissionUpdateAction::run([
                     'stage' => SubmissionStage::CallforAbstract,
                     'status' => SubmissionStatus::Queued,
@@ -59,17 +60,17 @@ class ReviewStep extends Component implements HasWizardStep, HasActions, HasForm
                     Mail::to($this->record->user)->send(
                         new ThankAuthorMail($this->record)
                     );
+
+                    $users = User::role([
+                        UserRole::Admin->value,
+                        UserRole::ConferenceManager->value
+                    ])->get();
+
+                    $users->each(fn ($user) => $user->notify(new NewSubmission($this->record)));
                 } catch (\Exception $e) {
-                    $action->failureNotificationTitle("Failed to send notification to author");
+                    $action->failureNotificationTitle("Failed to send notifications");
                     $action->failure();
                 }
-
-                $users = User::role([
-                    UserRole::Admin->value,
-                    UserRole::ConferenceManager->value
-                ])->get();
-
-                Notification::send($users, new NewSubmission($this->record));
 
                 $action->success();
                 $action->dispatchSuccessRedirect();
