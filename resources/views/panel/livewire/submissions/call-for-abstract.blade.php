@@ -16,13 +16,15 @@
                     This submission has been accepted. Now, we are waiting to next stage is open.
                 </div>
             @endif
-                @if(auth()->user()->can('Submission:accept') && auth()->user()->can('Submission:decline'))
-                    @if($submission->stage == SubmissionStage::CallforAbstract && !$submission->isDeclined())
-                        <div class="space-y-4">
-                            {{ $this->acceptAction() }}
-                            {{ $this->declineAction() }}
-                        </div>
-                    @endif
+            @if($submission->stage == SubmissionStage::CallforAbstract)
+                <div class="space-y-4">
+                    @can('Submission:acceptAbstract')
+                        {{ $this->acceptAction() }}
+                    @endcan
+                    @can('Submission:declineAbstract')
+                        {{ $this->declineAction() }}
+                    @endcan
+                    </div>
                 @endif
                 {{-- Participants --}}
                 @livewire(Components\ParticipantList::class, ['submission' => $submission, 'lazy' => true])
