@@ -12,7 +12,7 @@
             {{-- Participants --}}
             @livewire(App\Panel\Livewire\Submissions\Components\ParticipantList::class, ['submission' => $submission, 'lazy' => true])
             
-            @if(auth()->user()->can('Submission:publish') && $submission->stage == App\Models\Enums\SubmissionStage::Editing)
+            @if(auth()->user()->can('Submission:publish'))
             <x-filament::button x-on:click="$dispatch('open-publication-tab')" class="w-full">
                     Publish
                 </x-filament::button>
