@@ -47,44 +47,18 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
 
         $this->record = $this->resolveRecord($record);
 
-        // The person reviewing this submission cannot open the page with the details of the submission.
-        abort_if(
-            $this->record->reviews()->where('user_id', auth()->id())->exists(),
-            403
-        );
-
-        /**
-         * Check if the authenticated user has the 'Editor' role and is assigned to the submission.
-         * If the user is not an editor or has additional roles, the request will be aborted with a 403 status code.
-         *
-         * @return void 
-         */
-        if (
-            auth()->user()->hasRole(UserRole::Editor->value)
-            && !auth()->user()->hasRole(UserRole::Admin->value)
-            && !auth()->user()->hasRole(UserRole::ConferenceManager->value)
-        ) {
-            $editorAssgined = $this->record
-                ->participants()
-                ->where('user_id', auth()->id());
-
-            abort_unless(
-                $editorAssgined->exists(),
-                403
-            );
-        }
         abort_unless(static::getResource()::canView($this->getRecord()), 403);
     }
 
     public function getSubheading(): string|Htmlable|null
     {
         $badgeHtml = match ($this->record->status->value) {
-            SubmissionStatus::Queued->value => '<x-filament::badge color="primary" class="w-fit">On Queue</x-filament::badge>',
-            SubmissionStatus::Declined->value => '<x-filament::badge color="danger" class="w-fit">Declined</x-filament::badge>',
-            SubmissionStatus::Published->value => '<x-filament::badge color="success" class="w-fit">Published</x-filament::badge>',
-            SubmissionStatus::OnReview->value => '<x-filament::badge color="warning" class="w-fit">Under Review</x-filament::badge>',
-            SubmissionStatus::Incomplete->value => '<x-filament::badge color="secondary" class="w-fit">Incomplete</x-filament::badge>',
-            SubmissionStatus::Editing->value => '<x-filament::badge color="info" class="w-fit">Editing</x-filament::badge>',
+            SubmissionStatus::Queued => '<x-filament::badge color="primary" class="w-fit">On Queue</x-filament::badge>',
+            SubmissionStatus::Declined => '<x-filament::badge color="danger" class="w-fit">Declined</x-filament::badge>',
+            SubmissionStatus::Published => '<x-filament::badge color="success" class="w-fit">Published</x-filament::badge>',
+            SubmissionStatus::OnReview => '<x-filament::badge color="warning" class="w-fit">Under Review</x-filament::badge>',
+            SubmissionStatus::Incomplete => '<x-filament::badge color="gray" class="w-fit">Incomplete</x-filament::badge>',
+            SubmissionStatus::Editing => '<x-filament::badge color="info" class="w-fit">Editing</x-filament::badge>',
             default => null,
         };
 
