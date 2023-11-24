@@ -18,6 +18,21 @@ class StageManager
         $this->__constructInteractWithTenant();
     }
 
+    public static function callForAbstract(): static
+    {
+        return static::stage('call-for-abstract');
+    }
+
+    public static function peerReview(): static
+    {
+        return static::stage('peer-review');
+    }
+
+    public static function editing(): static
+    {
+        return static::stage('editing');
+    }
+
     public static function stage(string $stage): static
     {
         return app(static::class, ['stage' => $stage]);

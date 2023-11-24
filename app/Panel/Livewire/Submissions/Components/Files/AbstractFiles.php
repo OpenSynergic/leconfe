@@ -18,7 +18,7 @@ class AbstractFiles extends SubmissionFilesTable
 
     public function getAcceptedFiles(): array
     {
-        return StageManager::stage('call-for-abstract')
+        return StageManager::callForAbstract()
             ->getSetting(
                 'allowed_file_types',
                 parent::ACCEPTED_FILE_TYPES

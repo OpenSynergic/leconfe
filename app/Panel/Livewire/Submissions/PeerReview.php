@@ -40,7 +40,7 @@ class PeerReview extends Component implements HasForms, HasActions
 
     public function mount(Submission $submission)
     {
-        $this->stageOpened = StageManager::stage('peer-review')->isStageOpen();
+        $this->stageOpened = StageManager::peerReview()->isStageOpen();
     }
 
     public function declineSubmissionAction()

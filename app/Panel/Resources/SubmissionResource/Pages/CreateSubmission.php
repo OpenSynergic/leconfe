@@ -38,7 +38,7 @@ class CreateSubmission extends Page implements HasForms
     protected function getViewData(): array
     {
         return [
-            'isOpen' => StageManager::stage('call-for-abstract')->isStageOpen(),
+            'isOpen' => StageManager::callForAbstract()->isStageOpen(),
         ];
     }
 

@@ -97,7 +97,7 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                                             ]),
                                         Tab::make("Peer Review")
                                             ->visible(
-                                                fn (): bool => StageManager::stage('peer-review')->isStageOpen()
+                                                fn (): bool => StageManager::peerReview()->isStageOpen()
                                             )
                                             ->icon("iconpark-checklist-o")
                                             ->schema([
@@ -107,7 +107,7 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                                                     ])
                                             ]),
                                         Tab::make("Editing")
-                                            ->visible(fn (): bool => StageManager::stage('editing')->isStageOpen())
+                                            ->visible(fn (): bool => StageManager::editing()->isStageOpen())
                                             ->icon("heroicon-o-pencil")
                                             ->schema([
                                                 LivewireEntry::make('editing')

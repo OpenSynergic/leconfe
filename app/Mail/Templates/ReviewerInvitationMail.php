@@ -25,7 +25,7 @@ class ReviewerInvitationMail extends TemplateMailable
 
     public function __construct(Review $review)
     {
-        $stageManager = StageManager::stage('peer-review');
+        $stageManager = StageManager::peerReview();
         $this->name = $review->user->fullName;
         $this->submissionTitle = $review->submission->getMeta('title');
 

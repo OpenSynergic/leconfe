@@ -37,12 +37,6 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
 
     public function handlePublishAction(Action $action, array $data)
     {
-
-        if ($this->submission->stage != SubmissionStage::Editing) {
-            $action->failure("Submission is not in editing stage");
-            return;
-        }
-
         SubmissionUpdateAction::run([
             'stage' => SubmissionStage::Proceeding,
             'status' => SubmissionStatus::Published
@@ -79,7 +73,7 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
     {
         return Action::make('publishAction')
             ->disabled(
-                fn (): bool => !StageManager::stage('editing')->isStageOpen() || $this->submission->stage != SubmissionStage::Editing
+                fn (): bool => !StageManager::editing()->isStageOpen() || $this->submission->stage != SubmissionStage::Editing
             )
             ->authorize("Submission:publish")
             ->icon("iconpark-check")
@@ -117,11 +111,8 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
             ->record($this->submission)
             ->schema([
                 ShoutEntry::make('shout')
-                    ->registerActions([
-                        ActionsAction::make("OK")
-                    ])
                     ->color(function (): string {
-                        if (!StageManager::stage('editing')->isStageOpen()) {
+                        if (!StageManager::editing()->isStageOpen()) {
                             return 'warning';
                         }
 
@@ -136,7 +127,7 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
                         return 'warning';
                     })
                     ->content(function (): string {
-                        if (!StageManager::stage('editing')->isStageOpen()) {
+                        if (!StageManager::editing()->isStageOpen()) {
                             return "You are unable to publish this submission because the editing stage is not yet open.";
                         }
 

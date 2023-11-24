@@ -165,7 +165,7 @@ class CallforAbstract extends Component implements HasForms, HasActions
     public function render()
     {
         return view('panel.livewire.submissions.call-for-abstract', [
-            'reviewStageOpen' => StageManager::stage('peer-review')->isStageOpen(),
+            'reviewStageOpen' => StageManager::peerReview()->isStageOpen(),
         ]);
     }
 }
