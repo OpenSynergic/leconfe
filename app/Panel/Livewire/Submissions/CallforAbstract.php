@@ -55,18 +55,14 @@ class CallforAbstract extends Component implements HasForms, HasActions
                     ->columns(1)
                     ->schema([
                         TextInput::make('email')
-                            ->hidden(fn (Get $get): bool => $get('no-notification'))
                             ->disabled()
                             ->formatStateUsing(fn (Submission $record): string => $record->user->email),
                         TextInput::make('subject')
-                            ->hidden(fn (Get $get): bool => $get('no-notification'))
                             ->required(),
                         TinyEditor::make('message')
-                            ->hidden(fn (Get $get): bool => $get('no-notification'))
                             ->minHeight(300),
                         Checkbox::make('no-notification')
                             ->label("Don't send notification to author")
-                            ->reactive()
                             ->default(false),
                     ])
             ])
@@ -120,18 +116,13 @@ class CallforAbstract extends Component implements HasForms, HasActions
                          *   UserNotificaiton::formSchema()
                          */
                         TextInput::make('email')
-                            ->hidden(fn (Get $get): bool => $get('no-notification'))
                             ->disabled()
                             ->formatStateUsing(fn (Submission $record): string => $record->user->email),
                         TextInput::make('subject')
-                            ->hidden(fn (Get $get): bool => $get('no-notification'))
                             ->required(),
                         TinyEditor::make('message')
-                            ->minHeight(300)
-                            ->hidden(fn (Get $get): bool => $get('no-notification')),
+                            ->minHeight(300),
                         Checkbox::make('no-notification')
-                            ->label("Don't send notification to author")
-                            ->reactive()
                             ->default(false),
                     ])
             ])

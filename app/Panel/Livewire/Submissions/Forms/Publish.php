@@ -99,16 +99,12 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
                     ->schema([
                         TextInput::make('email')
                             ->disabled()
-                            ->hidden(fn (Get $get) => $get('do-not-notify-author'))
                             ->dehydrated(),
                         TextInput::make('subject')
-                            ->hidden(fn (Get $get) => $get('do-not-notify-author'))
                             ->required(),
                         TinyEditor::make('message')
-                            ->minHeight(300)
-                            ->hidden(fn (Get $get) => $get('do-not-notify-author')),
+                            ->minHeight(300),
                         Checkbox::make('do-not-notify-author')
-                            ->reactive()
                             ->label("Don't Send Notification to Author"),
                     ])
             ])

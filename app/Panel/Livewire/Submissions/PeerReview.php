@@ -64,17 +64,13 @@ class PeerReview extends Component implements HasForms, HasActions
                     ->schema([
                         TextInput::make('email')
                             ->readOnly()
-                            ->hidden(fn (Get $get) => $get('do-not-notify-author'))
                             ->dehydrated(),
                         TextInput::make('subject')
-                            ->hidden(fn (Get $get) => $get('do-not-notify-author'))
                             ->required(),
                         TinyEditor::make('message')
                             ->minHeight(300)
-                            ->hidden(fn (Get $get) => $get('do-not-notify-author'))
                             ->columnSpanFull(),
                         Checkbox::make('do-not-notify-author')
-                            ->reactive()
                             ->label("Don't Send Notification to Author")
                             ->columnSpanFull(),
                     ])
@@ -119,17 +115,13 @@ class PeerReview extends Component implements HasForms, HasActions
                     ->schema([
                         TextInput::make('email')
                             ->readOnly()
-                            ->hidden(fn (Get $get) => $get('do-not-notify-author'))
                             ->dehydrated(),
                         TextInput::make('subject')
-                            ->hidden(fn (Get $get) => $get('do-not-notify-author'))
                             ->required(),
                         TinyEditor::make('message')
                             ->minHeight(300)
-                            ->hidden(fn (Get $get) => $get('do-not-notify-author'))
                             ->columnSpanFull(),
                         Checkbox::make('do-not-notify-author')
-                            ->reactive()
                             ->label("Don't Send Notification to Author")
                             ->columnSpanFull(),
                     ])
@@ -176,17 +168,13 @@ class PeerReview extends Component implements HasForms, HasActions
                     ->schema([
                         TextInput::make('email')
                             ->readOnly()
-                            ->hidden(fn (Get $get) => $get('do-not-notify-author'))
                             ->dehydrated(),
                         TextInput::make('subject')
-                            ->hidden(fn (Get $get) => $get('do-not-notify-author'))
                             ->required(),
                         TinyEditor::make('message')
                             ->minHeight(300)
-                            ->hidden(fn (Get $get) => $get('do-not-notify-author'))
                             ->columnSpanFull(),
                         Checkbox::make('do-not-notify-author')
-                            ->reactive()
                             ->label("Don't Send Notification to Author")
                             ->columnSpanFull(),
                     ])

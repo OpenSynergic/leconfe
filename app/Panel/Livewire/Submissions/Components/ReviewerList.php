@@ -374,12 +374,10 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ->successNotificationTitle("Reviewer Reinstated")
                         ->form([
                             Checkbox::make('do-not-notify-reinstatement')
-                                ->reactive()
                                 ->label("Don't Send Notification")
                                 ->columnSpanFull(),
                             TinyEditor::make('message')
                                 ->minHeight(300)
-                                ->hidden(fn (Get $get) => $get('do-not-notify-reinstatement'))
                                 ->columnSpanFull(),
                         ])
                         ->action(function (Action $action, Review $record) {
@@ -436,20 +434,12 @@ class ReviewerList extends Component implements HasForms, HasTable
                         Fieldset::make("Notification")
                             ->schema([
                                 TextInput::make('subject')
-                                    ->hidden(
-                                        fn (Get $get): bool => $get('no-invitation-notification') ?? false
-                                    )
                                     ->columnSpanFull(),
                                 TinyEditor::make('message')
                                     ->minHeight(300)
-                                    ->hidden(
-                                        fn (Get $get): bool => $get('no-invitation-notification') ?? false
-                                    )
                                     ->label("Reviewer invitation message")
                                     ->columnSpanFull(),
                                 Checkbox::make('no-invitation-notification')
-                                    ->reactive()
-                                    ->label("Don't send Notification")
                                     ->columnSpanFull(),
                             ])
                     ])

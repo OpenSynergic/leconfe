@@ -141,12 +141,7 @@ class ParticipantList extends Component implements HasForms, HasTable
                                     ->searchable()
                                     ->preload()
                                     ->columnSpan(2),
-                                Checkbox::make('no-notification')
-                                    ->label("Don't Send Notification")
-                                    ->reactive()
-                                    ->columnSpanFull(),
                                 Fieldset::make()
-                                    ->hidden(fn (Get $get): bool => $get('no-notification'))
                                     ->label("Notification")
                                     ->schema([
                                         TextInput::make('subject')
@@ -156,7 +151,10 @@ class ParticipantList extends Component implements HasForms, HasTable
                                         TinyEditor::make('message')
                                             ->minHeight(300)
                                             ->columnSpanFull()
-                                    ])
+                                    ]),
+                                Checkbox::make('no-notification')
+                                    ->label("Don't Send Notification")
+                                    ->columnSpanFull(),
                             ])
                     ])
                     ->successNotificationTitle("Participant Assigned")
