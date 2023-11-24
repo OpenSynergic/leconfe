@@ -165,12 +165,17 @@ class ParticipantList extends Component implements HasForms, HasTable
                         ]);
 
                         if (!$data['no-notification']) {
-                            Mail::to($submissionParticipant->user->email)
-                                ->send(
-                                    (new ParticipantAssignedMail($submissionParticipant))
-                                        ->contentUsing($data['message'])
-                                        ->subjectUsing($data['subject'])
-                                );
+                            try {
+                                Mail::to($submissionParticipant->user->email)
+                                    ->send(
+                                        (new ParticipantAssignedMail($submissionParticipant))
+                                            ->contentUsing($data['message'])
+                                            ->subjectUsing($data['subject'])
+                                    );
+                            } catch (\Exception $e) {
+                                $action->failureNotificationTitle("The email notification was not delivered.");
+                                $action->failure();
+                            }
                         }
 
                         $submissionParticipant->user->notify(

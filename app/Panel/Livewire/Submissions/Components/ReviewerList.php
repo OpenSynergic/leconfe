@@ -353,12 +353,17 @@ class ReviewerList extends Component implements HasForms, HasTable
                             ]);
 
                             if (!$data['do-not-notify-cancelation']) {
-                                Mail::to($record->user->email)
-                                    ->send(
-                                        (new ReviewerCancelationMail($record))
-                                            ->subjectUsing($data['subject'])
-                                            ->contentUsing($data['message'])
-                                    );
+                                try {
+                                    Mail::to($record->user->email)
+                                        ->send(
+                                            (new ReviewerCancelationMail($record))
+                                                ->subjectUsing($data['subject'])
+                                                ->contentUsing($data['message'])
+                                        );
+                                } catch (\Exception $e) {
+                                    $action->failureNotificationTitle("The email notification was not delivered.");
+                                    $action->failure();
+                                }
                             }
 
                             $action->success();
@@ -469,12 +474,17 @@ class ReviewerList extends Component implements HasForms, HasTable
                         }
 
                         if (!$data['no-invitation-notification']) {
-                            Mail::to($reviewAssignment->user->email)
-                                ->send(
-                                    (new ReviewerInvitationMail($reviewAssignment))
-                                        ->subjectUsing($data['subject'])
-                                        ->contentUsing($data['message'])
-                                );
+                            try {
+                                Mail::to($reviewAssignment->user->email)
+                                    ->send(
+                                        (new ReviewerInvitationMail($reviewAssignment))
+                                            ->subjectUsing($data['subject'])
+                                            ->contentUsing($data['message'])
+                                    );
+                            } catch (\Exception $e) {
+                                $action->failureNotificationTitle("The email notification was not delivered.");
+                                $action->failure();
+                            }
                         }
                     })
             ]);

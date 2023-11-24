@@ -43,12 +43,17 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
         ], $this->submission);
 
         if (!$data['do-not-notify-author']) {
-            Mail::to($this->submission->user->email)
-                ->send(
-                    (new PublishSubmissionMail($this->submission))
-                        ->subjectUsing($data['subject'])
-                        ->contentUsing($data['message'])
-                );
+            try {
+                Mail::to($this->submission->user->email)
+                    ->send(
+                        (new PublishSubmissionMail($this->submission))
+                            ->subjectUsing($data['subject'])
+                            ->contentUsing($data['message'])
+                    );
+            } catch (\Exception $e) {
+                $action->failureNotificationTitle("Failed to send notification to author");
+                $action->failure();
+            }
         }
 
         /**

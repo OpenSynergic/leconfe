@@ -55,9 +55,14 @@ class ReviewStep extends Component implements HasWizardStep, HasActions, HasForm
                     'status' => SubmissionStatus::Queued,
                 ], $this->record);
 
-                Mail::to($this->record->user)->send(
-                    new ThankAuthorMail($this->record)
-                );
+                try {
+                    Mail::to($this->record->user)->send(
+                        new ThankAuthorMail($this->record)
+                    );
+                } catch (\Exception $e) {
+                    $action->failureNotificationTitle("Failed to send notification to author");
+                    $action->failure();
+                }
 
                 $users = User::role([
                     UserRole::Admin->value,

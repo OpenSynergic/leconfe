@@ -71,10 +71,15 @@ class ReviewerInvitationPage extends Page implements HasInfolists, HasActions
 
                 $editors = User::whereIn('id', $editors)->get();
                 if ($editors->count()) {
-                    Mail::to($editors)
-                        ->send(
-                            new ReviewerAcceptedInvitationMail($this->review)
-                        );
+                    try {
+                        Mail::to($editors)
+                            ->send(
+                                new ReviewerAcceptedInvitationMail($this->review)
+                            );
+                    } catch (\Exception $e) {
+                        $action->failureNotificationTitle("Failed to send notification to author");
+                        $action->failure();
+                    }
                 }
                 $action->success();
                 $action->redirect(SubmissionResource::getUrl('review', ['record' => $this->record->id]));

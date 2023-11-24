@@ -83,12 +83,17 @@ class PeerReview extends Component implements HasForms, HasActions
                 ], $this->submission);
 
                 if (!$data['do-not-notify-author']) {
-                    Mail::to($this->submission->user->email)
-                        ->send(
-                            (new DeclinePaperMail($this->submission))
-                                ->subjectUsing($data['subject'])
-                                ->contentUsing($data['message'])
-                        );
+                    try {
+                        Mail::to($this->submission->user->email)
+                            ->send(
+                                (new DeclinePaperMail($this->submission))
+                                    ->subjectUsing($data['subject'])
+                                    ->contentUsing($data['message'])
+                            );
+                    } catch (\Exception $e) {
+                        $action->failureNotificationTitle("The email notification was not delivered.");
+                        $action->failure();
+                    }
                 }
                 $action->success();
             });
@@ -136,12 +141,17 @@ class PeerReview extends Component implements HasForms, HasActions
                 ], $this->submission);
 
                 if (!$data['do-not-notify-author']) {
-                    Mail::to($this->submission->user->email)
-                        ->send(
-                            (new AcceptPaperMail($this->submission))
-                                ->subjectUsing($data['subject'])
-                                ->contentUsing($data['message'])
-                        );
+                    try {
+                        Mail::to($this->submission->user->email)
+                            ->send(
+                                (new AcceptPaperMail($this->submission))
+                                    ->subjectUsing($data['subject'])
+                                    ->contentUsing($data['message'])
+                            );
+                    } catch (\Exception $e) {
+                        $action->failureNotificationTitle("The email notification was not delivered.");
+                        $action->failure();
+                    }
                 }
 
                 $action->success();
@@ -189,12 +199,17 @@ class PeerReview extends Component implements HasForms, HasActions
                 ], $this->submission);
 
                 if (!$data['do-not-notify-author']) {
-                    Mail::to($this->submission->user->email)
-                        ->send(
-                            (new RevisionRequestMail($this->submission))
-                                ->subjectUsing($data['subject'])
-                                ->contentUsing($data['message'])
-                        );
+                    try {
+                        Mail::to($this->submission->user->email)
+                            ->send(
+                                (new RevisionRequestMail($this->submission))
+                                    ->subjectUsing($data['subject'])
+                                    ->contentUsing($data['message'])
+                            );
+                    } catch (\Exception $e) {
+                        $action->failureNotificationTitle("The email notification was not delivered.");
+                        $action->failure();
+                    }
                 }
 
                 $action->success();
