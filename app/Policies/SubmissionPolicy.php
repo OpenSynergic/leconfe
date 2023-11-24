@@ -28,7 +28,7 @@ class SubmissionPolicy
 
     public function view(User $user)
     {
-        if ($user->can('Submission:viewAny')) {
+        if ($user->can('Submission:view')) {
             return true;
         }
     }
@@ -55,6 +55,71 @@ class SubmissionPolicy
         }
     }
 
+    public function declineReview(User $user, Submission $submission)
+    {
+        if ($submission->status == SubmissionStatus::Declined) {
+            return false;
+        }
+
+        if ($submission->stage != SubmissionStage::PeerReview) {
+            return false;
+        }
+
+        if ($user->can('Submission:declinePaper')) {
+            return true;
+        }
+    }
+
+    public function acceptReview(User $user, Submission $submission)
+    {
+        if ($submission->status == SubmissionStatus::Declined) {
+            return false;
+        }
+
+        if ($submission->stage != SubmissionStage::PeerReview) {
+            return false;
+        }
+
+        if ($user->can('Submission:acceptPaper')) {
+            return true;
+        }
+    }
+
+    public function declineAbstract(User $user, Submission $submission)
+    {
+        if ($submission->status == SubmissionStatus::Declined) {
+            return false;
+        }
+
+        if ($submission->stage != SubmissionStage::CallforAbstract) {
+            return false;
+        }
+
+        if ($user->can('Submission:declineAbstract')) {
+            return true;
+        }
+    }
+
+    // Why this method doesn't recognized,
+    // event i return false in the beginning
+    // but the value of @can('Submission:acceptAbstract') is true
+    // or i run dd("OK") in this method, it's still run
+    public function acceptAbstract(User $user, Submission $submission)
+    {
+        return false;
+        if ($submission->status == SubmissionStatus::Declined) {
+            return false;
+        }
+
+        if ($submission->stage != SubmissionStage::CallforAbstract) {
+            return false;
+        }
+
+        if ($user->can('Submission:acceptAbstract')) {
+            return true;
+        }
+    }
+
     public function review(User $user, Submission $submission)
     {
         if ($submission->stage != SubmissionStage::PeerReview) {
@@ -62,6 +127,21 @@ class SubmissionPolicy
         }
 
         if ($user->can('Submission:review')) {
+            return true;
+        }
+    }
+
+    public function requestRevision(User $user, Submission $submission)
+    {
+        if ($submission->revision_required) {
+            return false;
+        }
+
+        if ($submission->stage != SubmissionStage::PeerReview) {
+            return false;
+        }
+
+        if ($user->can('Submission:requestRevision')) {
             return true;
         }
     }
