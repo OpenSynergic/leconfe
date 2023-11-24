@@ -104,6 +104,7 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
         return $infolist
             ->schema([
                 HorizontalTabs::make()
+                    ->persistTabInQueryString('tab')
                     ->contained(false)
                     ->tabs([
                         HorizontalTab::make('Workflow')
@@ -156,7 +157,7 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                                     )
                                     ->content("You can't edit this submission because it is already published."),
                                 Tabs::make()
-                                    ->visible()
+                                    ->persistTabInQueryString('ptab') // ptab shorten of publication-tab
                                     ->tabs([
                                         Tab::make('Detail')
                                             ->icon("heroicon-o-information-circle")

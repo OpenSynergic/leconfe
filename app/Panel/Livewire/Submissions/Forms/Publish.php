@@ -10,6 +10,7 @@ use App\Models\MailTemplate;
 use App\Models\Submission;
 use App\Panel\Livewire\Workflows\Classes\StageManager;
 use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
+use App\Panel\Resources\SubmissionResource;
 use Awcodes\Shout\Components\ShoutEntry;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -55,6 +56,21 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
                         ->contentUsing($data['message'])
                 );
         }
+
+        /**
+         * Using this way because,
+         * can't refresh the component
+         */
+        $action->successRedirectUrl(
+            SubmissionResource::getUrl('view', [
+                'record' => $this->submission->id,
+                'tab' => '-publication-tab',
+                'ptab' => '-proceeding-tab'
+            ])
+        );
+
+        // The subheading has been updated, but the publication's content will be lost after this dispatched.
+        // $this->dispatch('refreshSubHeading');
 
         $action->success();
     }
