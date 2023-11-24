@@ -57,6 +57,7 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
     {
         return [
             TextColumn::make('media.file_name')
+                ->wrap()
                 ->label('Filename')
                 ->color('primary')
                 ->action(fn (Model $record) => $record->media)
