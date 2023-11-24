@@ -52,13 +52,13 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
 
     public function getSubheading(): string|Htmlable|null
     {
-        $badgeHtml = match ($this->record->status->value) {
-            SubmissionStatus::Queued => '<x-filament::badge color="primary" class="w-fit">On Queue</x-filament::badge>',
-            SubmissionStatus::Declined => '<x-filament::badge color="danger" class="w-fit">Declined</x-filament::badge>',
-            SubmissionStatus::Published => '<x-filament::badge color="success" class="w-fit">Published</x-filament::badge>',
-            SubmissionStatus::OnReview => '<x-filament::badge color="warning" class="w-fit">Under Review</x-filament::badge>',
-            SubmissionStatus::Incomplete => '<x-filament::badge color="gray" class="w-fit">Incomplete</x-filament::badge>',
-            SubmissionStatus::Editing => '<x-filament::badge color="info" class="w-fit">Editing</x-filament::badge>',
+        $badgeHtml = match ($this->record->status) {
+            SubmissionStatus::Queued => '<x-filament::badge color="primary" class="w-fit">' . SubmissionStatus::Queued->value . '</x-filament::badge>',
+            SubmissionStatus::Declined => '<x-filament::badge color="danger" class="w-fit">' . SubmissionStatus::Declined->value . '</x-filament::badge>',
+            SubmissionStatus::Published => '<x-filament::badge color="success" class="w-fit">' . SubmissionStatus::Published->value . '</x-filament::badge>',
+            SubmissionStatus::OnReview => '<x-filament::badge color="warning" class="w-fit">' . SubmissionStatus::OnReview->value . '</x-filament::badge>',
+            SubmissionStatus::Incomplete => '<x-filament::badge color="gray" class="w-fit">' . SubmissionStatus::Incomplete->value . '</x-filament::badge>',
+            SubmissionStatus::Editing => '<x-filament::badge color="info" class="w-fit">' . SubmissionStatus::Editing->value . '</x-filament::badge>',
             default => null,
         };
 
