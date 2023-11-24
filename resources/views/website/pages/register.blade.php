@@ -54,6 +54,7 @@
                         </div>
                     @enderror
                 </div>
+
                 <div class="form-control sm:col-span-6 gap-2">
                     <label class="label-text">
                         Email <span class="text-red-500">*</span>
@@ -87,6 +88,31 @@
                         </div>
                     @enderror
                 </div>
+
+                <div class="form-control sm:col-span-3 gap-2">
+                    <label class="label-text">
+                       Choose Roles <span class="text-red-500">*</span>
+                    </label>
+
+                    <div class="flex flex-row gap-2 px-2 py-3 rounded-lg bg-[#F0F5FA]">
+                        <div class="inline-flex items-center gap-2">
+                            <span>Author</span>
+                            <input type="checkbox"  class="checkbox checkbox-sm" />
+                        </div>
+
+                        <div class="inline-flex items-center gap-2">
+                            <span>Participant</span>
+                            <input type="checkbox" class="checkbox checkbox-sm" />
+                        </div>
+
+                        <div class="inline-flex items-center gap-2">
+                            <span>Reviewer</span>
+                            <input type="checkbox" class="checkbox checkbox-sm" />
+                        </div>
+                    </div>
+
+                </div>
+
                 <div class="form-control sm:col-span-6 gap-2">
                     <div class="form-control">
                         <label class="label justify-normal gap-2">
