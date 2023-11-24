@@ -38,12 +38,17 @@
         "Submission:create",
         "Submission:decline",
         "Submission:declineReview",
+        "Submission:delete",
         "Submission:editReviewer",
         "Submission:emailReviewer",
         "Submission:publish",
         "Submission:requestRevision",
         "Submission:skipReview",
         "Submission:update",
+        "Submission:view",
+        "Submission:viewAny",
+        "SubmissionParticipant:delete",
+        "SubmissionParticipant:notify",
         "Topic:create",
         "Topic:delete",
         "Topic:update",
@@ -86,6 +91,8 @@
         "Submission:requestRevision",
         "Submission:skipReview",
         "Submission:update",
+        "Submission:view",
+        "Submission:viewAny",
         "User:assignRoles",
         "User:create",
         "User:delete",
@@ -109,11 +116,16 @@
         "Submission:publish",
         "Submission:requestRevision",
         "Submission:skipReview",
-        "Submission:update"
+        "Submission:update",
+        "Submission:view"
     ],
-    "Reviewer": [],
+    "Reviewer": [
+        "Submission:viewAny"
+    ],
     "Author": [
-        "Submission:create"
+        "Submission:create",
+        "Submission:view",
+        "Submission:viewAny"
     ],
     "Participant": []
 }
