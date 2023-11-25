@@ -51,6 +51,12 @@ class SubmissionFile extends Model
             }
         });
 
+        static::deleting(function (SubmissionFile $record) {
+            if ($record->category == SubmissionFileCategory::PAPER_FILES) {
+                $record->reviewerAssginedFiles()->delete();
+            }
+        });
+
         static::deleted(function (SubmissionFile $deletedModel) {
             if ($deletedModel->media()->exists()) {
                 $deletedModel->media()->delete();
