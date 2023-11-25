@@ -21,6 +21,6 @@ trait UsefulEnums
 
     public static function random(): static
     {
-        return self::fromValue(self::values()[array_rand(self::values())]);
+        return self::from(self::values()[array_rand(self::values())]);
     }
 }
