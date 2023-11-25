@@ -110,6 +110,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                 ->options(function () use ($component) {
                     return $component->record
                         ->submissionFiles()
+                        ->with(['media'])
                         ->where('category', SubmissionFileCategory::PAPER_FILES)
                         ->get()
                         ->mapWithKeys(function (SubmissionFile $paper) {
@@ -252,7 +253,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ->mountUsing(function (Review $record, Form $form) {
                             $form->fill([
                                 'user_id' => $record->user_id,
-                                'papers' => $record->assignedFiles()->with('submissionFile')
+                                'papers' => $record->assignedFiles()->with(['submissionFile'])
                                     ->get()
                                     ->pluck('submission_file_id')
                                     ->toArray()
@@ -426,14 +427,11 @@ class ReviewerList extends Component implements HasForms, HasTable
                     ->visible(
                         fn (): bool => $this->record->status == SubmissionStatus::OnReview
                     )
-                    // ->hidden(
-                    //     fn (): bool => $this->record->isDeclined() || $this->record->stage == SubmissionStage::Editing || $this->record->isPublished()
-                    // )
                     ->icon("iconpark-adduser-o")
                     ->label("Reviewer")
                     ->modalHeading("Assign Reviewer")
                     ->modalWidth("2xl")
-                    ->authorize('assignReviewer', $this->record)
+                    ->authorize(fn () => auth()->user()->can('assignReviewer', $this->record))
                     ->form([
                         ...static::formReviewerSchema($this),
                         Fieldset::make("Notification")

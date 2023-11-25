@@ -51,6 +51,21 @@ class SubmissionPolicy
         }
     }
 
+    public function assignReviewer(User $user, Submission $submission)
+    {
+        if ($submission->stage != SubmissionStage::PeerReview) {
+            return false;
+        }
+
+        if ($submission->status == SubmissionStatus::Declined) {
+            return false;
+        }
+
+        if ($user->can('Submission:assignReviewer')) {
+            return true;
+        }
+    }
+
     public function declineReview(User $user, Submission $submission)
     {
         if ($submission->status == SubmissionStatus::Declined) {
@@ -133,6 +148,17 @@ class SubmissionPolicy
         }
 
         if ($user->can('Submission:requestRevision')) {
+            return true;
+        }
+    }
+
+    public function skipReview(User $user, Submission $submission)
+    {
+        if ($submission->stage != SubmissionStage::PeerReview) {
+            return false;
+        }
+
+        if ($user->can('Submission:skipReview')) {
             return true;
         }
     }
