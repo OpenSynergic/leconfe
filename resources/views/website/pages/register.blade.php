@@ -89,27 +89,22 @@
                         @enderror
                     </div>
 
-                    <div class="form-control sm:col-span-3 gap-2">
-                        <label class="label-text">
-                            Choose Roles <span class="text-red-500">*</span>
-                        </label>
-
-                        <div class="flex flex-row gap-2 mx-1 rounded-lg flex-wrap">
-                            @foreach ($roles as $role)
-                                <div class="form-control">
-                                    <label class="cursor-pointer inline-flex justify-center gap-2">
-                                        <input type="checkbox" class="checkbox checkbox-sm " wire:model='selfAssignRole'
-                                            value="{{ $role }}" />
-                                        <span class="label-text">{{ $role }}</span>
-                                    </label>
+                    <div class="form-control sm:col-span-6 gap-2 p-1">
+                        <label class="label-text">Register as <span class="text-red-500">*</span></label>
+                        @foreach ($roles as $role)
+                            <div class="form-control">
+                                <div class="inline-flex gap-2 items-center cursor">
+                                    <input type="checkbox" class="checkbox checkbox-sm" wire:model='selfAssignRole'
+                                        value="{{ $role }}" />
+                                    <label class="label-text">{{ $role }}</label>
                                 </div>
-                            @endforeach
-                            @error('selfAssignRole')
-                                <div class="text-red-600 text-sm">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
+                            </div>
+                        @endforeach
+                        @error('selfAssignRole')
+                            <div class="text-red-600 text-sm">
+                                {{ $message }}
+                            </div>
+                        @enderror
                     </div>
 
                     <div class="form-control sm:col-span-6 gap-2">
