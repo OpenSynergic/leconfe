@@ -5,9 +5,9 @@ namespace App\Panel\Resources\SubmissionResource\Pages;
 use App\Constants\ReviewerStatus;
 use App\Infolists\Components\LivewireEntry;
 use App\Mail\Templates\ReviewerAcceptedInvitationMail;
+use App\Mail\Templates\ReviewerDeclinedInvitationMail;
 use App\Models\Enums\UserRole;
 use App\Models\Review;
-use App\Models\Role;
 use App\Models\Submission;
 use App\Models\User;
 use App\Panel\Livewire\Submissions\Components\Files\PaperFiles;
@@ -24,6 +24,8 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\HtmlString;
+use Illuminate\View\Compilers\BladeCompiler;
 
 class ReviewerInvitationPage extends Page implements HasInfolists, HasActions
 {
@@ -47,11 +49,24 @@ class ReviewerInvitationPage extends Page implements HasInfolists, HasActions
         return 'Reviewer Request: ' . $this->record->getMeta('title');
     }
 
+    public function getSubheading(): string|Htmlable|null
+    {
+        if ($this->review->status == ReviewerStatus::DECLINED) {
+            return new HtmlString(
+                BladeCompiler::render("<x-filament::badge color='danger' class='w-fit'>" . ReviewerStatus::DECLINED . "</x-filament::badge>")
+            );
+        }
+        return null;
+    }
+
     public function acceptAction()
     {
         return Action::make('acceptAction')
             ->label("Accept Request")
             ->icon("lineawesome-check-circle-solid")
+            ->visible(
+                fn (): bool => $this->review->status == ReviewerStatus::PENDING
+            )
             ->color('primary')
             ->outlined()
             ->requiresConfirmation()
@@ -91,10 +106,30 @@ class ReviewerInvitationPage extends Page implements HasInfolists, HasActions
         return Action::make('declineAction')
             ->label("Decline Request")
             ->icon("lineawesome-times-circle-solid")
+            ->visible(
+                fn (): bool => $this->review->status == ReviewerStatus::PENDING
+            )
             ->outlined()
             ->color('danger')
             ->requiresConfirmation()
-            ->action(function () {
+            ->successNotificationTitle("Request Declined")
+            ->action(function (Action $action) {
+                $this->review->update([
+                    'date_confirmed' => now(),
+                    'status' => ReviewerStatus::DECLINED
+                ]);
+
+                try {
+                    Mail::to($this->review->user->email)
+                        ->send(
+                            new ReviewerDeclinedInvitationMail($this->review)
+                        );
+                } catch (\Exception $e) {
+                    $action->failureNotificationTitle("Failed to send notification to author");
+                    $action->failure();
+                }
+
+                $action->success();
             });
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Panel\Resources\SubmissionResource\Pages;
 
+use App\Constants\ReviewerStatus;
 use App\Constants\SubmissionStatusRecommendation;
 use App\Mail\Templates\ReviewCompleteMail;
 use App\Models\Enums\UserRole;
@@ -51,6 +52,8 @@ class ReviewSubmissionPage extends Page implements HasInfolists, HasActions
         $this->review = $this->record->reviews()
             ->user(auth()->user())
             ->first();
+
+        abort_if($this->review->status == ReviewerStatus::DECLINED, 403, "You have declined this review request");
 
         $this->recommendation = $this->review->recommendation;
 

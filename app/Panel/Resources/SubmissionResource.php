@@ -2,6 +2,7 @@
 
 namespace App\Panel\Resources;
 
+use App\Constants\ReviewerStatus;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Submission;
 use App\Panel\Resources\SubmissionResource\Pages;
@@ -98,19 +99,10 @@ class SubmissionResource extends Resource
     {
         return $table
             ->recordUrl(function (Submission $record) {
-                // TODO: Fix this code, to many if else.
-                $userAsParticipant = auth()->user()->asParticipant();
-
-                if (!$userAsParticipant) {
-                    return static::getUrl('view', [
-                        'record' => $record->id,
-                    ]);
-                }
-
                 $participantReviewer = $record->reviews()->where('user_id', auth()->id())->first();
 
                 if ($participantReviewer) {
-                    if ($participantReviewer->needConfirmation()) {
+                    if ($participantReviewer->needConfirmation() || $participantReviewer->status == ReviewerStatus::DECLINED) {
                         return static::getUrl('reviewer-invitation', [
                             'record' => $record->id,
                         ]);
@@ -159,6 +151,9 @@ class SubmissionResource extends Resource
             ->actions([
                 Tables\Actions\Action::make('view')
                     ->icon("lineawesome-eye-solid")
+                    ->authorize(function (Submission $record) {
+                        return auth()->user()->can('view', $record);
+                    })
                     ->url(fn (Submission $record) => static::getUrl('view', [
                         'record' => $record->id,
                     ])),

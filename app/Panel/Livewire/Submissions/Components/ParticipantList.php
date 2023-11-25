@@ -82,7 +82,7 @@ class ParticipantList extends Component implements HasForms, HasTable
             ->headerActions([
                 CreateAction::make()
                     ->modalHeading("Assign Participant")
-                    ->authorize('assignParticipant', $this->submission)
+                    ->authorize(fn () => auth()->user()->can('assignParticipant', $this->submission))
                     ->hidden($this->submission->isDeclined())
                     ->icon("lineawesome-user-plus-solid")
                     ->label("Assign")

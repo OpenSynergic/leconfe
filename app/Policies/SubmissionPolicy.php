@@ -163,6 +163,13 @@ class SubmissionPolicy
         }
     }
 
+    public function assignParticipant(User $user)
+    {
+        if ($user->can('Submission:assignParticipant')) {
+            return true;
+        }
+    }
+
     public function publish(User $user, Submission $submission)
     {
         if ($submission->status != SubmissionStatus::Editing) {
