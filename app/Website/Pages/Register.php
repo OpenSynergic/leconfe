@@ -3,6 +3,7 @@
 namespace App\Website\Pages;
 
 use App\Actions\User\UserCreateAction;
+use App\Models\Enums\UserRole;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Filament\Facades\Filament;
 use Filament\Http\Responses\Auth\Contracts\RegistrationResponse;
@@ -42,6 +43,9 @@ class Register extends Page
     #[Rule('required')]
     public $privacy_statement_agree = false;
 
+    #[Rule('required')]
+    public $selfAssignRole = [];
+
     public function mount()
     {
         if (Filament::auth()->check()) {
@@ -61,6 +65,7 @@ class Register extends Page
     {
         return [
             'countries' => Country::all(),
+            'roles' => UserRole::selfAssignedRoleNames()
         ];
     }
 
@@ -73,7 +78,11 @@ class Register extends Page
             'meta' => Arr::only($data, ['affiliation', 'country']),
         ]);
 
-        event(new Registered($user));
+        if (data_get($data, 'selfAssignRole')) {
+            $user->assignRole($data['selfAssignRole']);
+        }
+
+        // event(new Registered($user));
 
         Filament::auth()->login($user);
 
