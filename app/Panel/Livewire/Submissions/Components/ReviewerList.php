@@ -173,7 +173,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                             ->color(function ($state) {
                                 return match ($state) {
                                     ReviewerStatus::PENDING => 'warning',
-                                    ReviewerStatus::CANCELED => 'danger',
+                                    ReviewerStatus::CANCELED, ReviewerStatus::DECLINED => 'danger',
                                     ReviewerStatus::ACCEPTED => 'success',
                                     default => 'primary'
                                 };
