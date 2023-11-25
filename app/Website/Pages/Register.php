@@ -65,7 +65,7 @@ class Register extends Page
     {
         return [
             'countries' => Country::all(),
-            'roles' => UserRole::selfAssignedRoleNames()
+            'roles' => UserRole::selfAssignedRoleNames(),
         ];
     }
 
