@@ -8,11 +8,9 @@ use App\Constants\SubmissionStatusRecommendation;
 use App\Infolists\Components\LivewireEntry;
 use App\Mail\Templates\ReviewerCancelationMail;
 use App\Mail\Templates\ReviewerInvitationMail;
-use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
 use App\Models\MailTemplate;
-use App\Models\Media;
 use App\Models\Review;
 use App\Models\ReviewerAssignedFile;
 use App\Models\Role;
@@ -246,7 +244,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ->visible(
                             fn (): bool => $this->record->status == SubmissionStatus::OnReview
                         )
-                        ->authorize('editReviewer', $this->record)
+                        ->authorize(fn () => auth()->user()->can('editReviewer', $this->record))
                         ->modalWidth("2xl")
                         ->icon("iconpark-edit")
                         ->label("Edit")

@@ -66,6 +66,21 @@ class SubmissionPolicy
         }
     }
 
+    public function editReviewer(User $user, Submission $submission)
+    {
+        if ($submission->stage != SubmissionStage::PeerReview) {
+            return false;
+        }
+
+        if ($submission->status == SubmissionStatus::Declined) {
+            return false;
+        }
+
+        if ($user->can('Submission:editReviewer')) {
+            return true;
+        }
+    }
+
     public function declineReview(User $user, Submission $submission)
     {
         if ($submission->status == SubmissionStatus::Declined) {
