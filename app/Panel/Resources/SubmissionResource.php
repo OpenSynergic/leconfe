@@ -163,7 +163,9 @@ class SubmissionResource extends Resource
                         'record' => $record->id,
                     ])),
                 Tables\Actions\DeleteAction::make()
-                    ->authorize('Submission:delete')
+                    ->authorize(function (Submission $record) {
+                        return auth()->user()->can('delete', $record);
+                    })
                     ->visible(
                         fn (Submission $record): bool => $record->isDeclined() || $record->isIncomplete()
                     ),
