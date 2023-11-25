@@ -80,7 +80,7 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
             ->disabled(
                 fn (): bool => !StageManager::editing()->isStageOpen() || $this->submission->stage != SubmissionStage::Editing
             )
-            ->authorize("Submission:publish")
+            ->authorize("publish", $this->submission)
             ->icon("iconpark-check")
             ->label("Send to Proceeding")
             ->successNotificationTitle("Submission published successfully")

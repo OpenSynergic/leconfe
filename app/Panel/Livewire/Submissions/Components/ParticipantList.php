@@ -35,7 +35,6 @@ use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use STS\FilamentImpersonate\Tables\Actions\Impersonate;
-use Symfony\Component\Mime\Part\AbstractPart;
 
 class ParticipantList extends Component implements HasForms, HasTable
 {
@@ -83,7 +82,7 @@ class ParticipantList extends Component implements HasForms, HasTable
             ->headerActions([
                 CreateAction::make()
                     ->modalHeading("Assign Participant")
-                    ->authorize('Submission:assignParticipant')
+                    ->authorize('assignParticipant', $this->submission)
                     ->hidden($this->submission->isDeclined())
                     ->icon("lineawesome-user-plus-solid")
                     ->label("Assign")

@@ -12,11 +12,11 @@
             {{-- Participants --}}
             @livewire(App\Panel\Livewire\Submissions\Components\ParticipantList::class, ['submission' => $submission, 'lazy' => true])
             
-            @if(auth()->user()->can('Submission:publish'))
+            @can('publish', $submission)
             <x-filament::button x-on:click="$dispatch('open-publication-tab')" class="w-full">
                     Publish
                 </x-filament::button>
-            @endif
+            @endcan
         </div>
     </div>
 </div>

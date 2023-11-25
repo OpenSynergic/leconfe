@@ -12,10 +12,6 @@ class SubmissionPolicy
 {
     public function create(User $user)
     {
-        if (!StageManager::callForAbstract()->isStageOpen()) {
-            return false;
-        }
-
         if ($user->can('Submission:create')) {
             return true;
         }
@@ -100,13 +96,8 @@ class SubmissionPolicy
         }
     }
 
-    // Why this method doesn't recognized,
-    // event i return false in the beginning
-    // but the value of @can('Submission:acceptAbstract') is true
-    // or i run dd("OK") in this method, it's still run
     public function acceptAbstract(User $user, Submission $submission)
     {
-        return false;
         if ($submission->status == SubmissionStatus::Declined) {
             return false;
         }

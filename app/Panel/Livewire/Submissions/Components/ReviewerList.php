@@ -245,7 +245,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ->visible(
                             fn (): bool => $this->record->status == SubmissionStatus::OnReview
                         )
-                        ->authorize('Submission:editReviewer')
+                        ->authorize('editReviewer', $this->record)
                         ->modalWidth("2xl")
                         ->icon("iconpark-edit")
                         ->label("Edit")
@@ -280,7 +280,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                             $action->success();
                         }),
                     Action::make("email-reviewer")
-                        ->authorize('Submission:emailReviewer')
+                        ->authorize('emailReviewer', $this->record)
                         ->label("E-Mail Reviewer")
                         ->icon("iconpark-sendemail")
                         ->modalSubmitActionLabel("Send")
@@ -433,7 +433,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                     ->label("Reviewer")
                     ->modalHeading("Assign Reviewer")
                     ->modalWidth("2xl")
-                    ->authorize('Submission:assignReviewer')
+                    ->authorize('assignReviewer', $this->record)
                     ->form([
                         ...static::formReviewerSchema($this),
                         Fieldset::make("Notification")

@@ -47,7 +47,7 @@ class PeerReview extends Component implements HasForms, HasActions
     {
         return Action::make('declineSubmissionAction')
             ->icon("lineawesome-times-solid")
-            ->authorize('Submission:declineReview')
+            ->authorize('declineReview', $this->submission)
             ->label("Decline Submission")
             ->color('danger')
             ->outlined()
@@ -103,7 +103,7 @@ class PeerReview extends Component implements HasForms, HasActions
     public function acceptSubmissionAction()
     {
         return Action::make('acceptSubmissionAction')
-            ->authorize('Submission:acceptReview')
+            ->authorize('acceptReview', $this->submission)
             ->icon("lineawesome-check-circle-solid")
             ->color("primary")
             ->label("Accept Submission")
@@ -161,7 +161,7 @@ class PeerReview extends Component implements HasForms, HasActions
     public function requestRevisionAction()
     {
         return Action::make('requestRevisionAction')
-            ->authorize('Submission:requestRevision')
+            ->authorize('requestRevision', $this->submission)
             ->hidden(fn (): bool => $this->submission->revision_required)
             ->icon("lineawesome-list-alt-solid")
             ->outlined()

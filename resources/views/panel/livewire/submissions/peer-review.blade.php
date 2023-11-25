@@ -34,16 +34,16 @@
                 @livewire(Components\ParticipantList::class, ['submission' => $submission, 'lazy' => true])
 
                         @if ($submission->stage == SubmissionStage::PeerReview && $submission->status == SubmissionStatus::OnReview)
-                            @can('Submission:skipReview')
+                            @can('skipReview', $submission)
                                 {{ $this->skipReviewAction() }}
                             @endcan
-                            @can('Submission:requestRevision')
+                            @can('requestRevision', $submission)
                                 {{ $this->requestRevisionAction() }}
                             @endcan
-                            @can('Submission:acceptReview')
+                            @can('acceptReview', $submission)
                                 {{ $this->acceptSubmissionAction() }}
                             @endcan
-                            @can('Submission:declineReview')
+                            @can('declineReview', $submission)
                                 {{ $this->declineSubmissionAction() }}
                             @endcan
                         @endif

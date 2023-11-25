@@ -16,15 +16,15 @@
                     This submission has been accepted. Now, we are waiting to next stage is open.
                 </div>
             @endif
-            @if($submission->stage == SubmissionStage::CallforAbstract)
+            @if($submission->status == \App\Models\Enums\SubmissionStatus::Queued)
                 <div class="space-y-4">
-                    @can('Submission:acceptAbstract')
+                    @can('acceptAbstract', $submission)
                         {{ $this->acceptAction() }}
                     @endcan
-                    @can('Submission:declineAbstract')
+                    @can('declineAbstract', $submission)
                         {{ $this->declineAction() }}
                     @endcan
-                    </div>
+                </div>
                 @endif
                 {{-- Participants --}}
                 @livewire(Components\ParticipantList::class, ['submission' => $submission, 'lazy' => true])

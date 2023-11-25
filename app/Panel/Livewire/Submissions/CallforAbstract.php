@@ -12,6 +12,7 @@ use App\Models\Submission;
 use App\Notifications\AbstractAccepted;
 use App\Panel\Livewire\Workflows\Classes\StageManager;
 use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
+use App\Panel\Resources\SubmissionResource;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -21,7 +22,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
@@ -37,7 +37,7 @@ class CallforAbstract extends Component implements HasForms, HasActions
         return Action::make('decline')
             ->outlined()
             ->color("danger")
-            ->authorize('Submission:declineAbstract')
+            ->authorize('declineAbstract', $this->submission)
             ->modalWidth("2xl")
             ->record($this->submission)
             ->modalHeading("Confirmation")
@@ -67,6 +67,7 @@ class CallforAbstract extends Component implements HasForms, HasActions
                     ])
             ])
             ->successNotificationTitle("Submission declined")
+            ->successRedirectUrl(fn (): string => SubmissionResource::getUrl('view', ['record' => $this->submission]))
             ->action(function (Action $action, array $data) {
                 SubmissionUpdateAction::run([
                     'stage' => SubmissionStage::CallforAbstract,
@@ -87,6 +88,7 @@ class CallforAbstract extends Component implements HasForms, HasActions
                     }
                 }
                 $action->success();
+                $action->dispatchSuccessRedirect();
             })
             ->icon("lineawesome-times-circle-solid");
     }
@@ -96,7 +98,7 @@ class CallforAbstract extends Component implements HasForms, HasActions
         return Action::make('accept')
             ->modalHeading("Confirmation")
             ->modalSubmitActionLabel("Accept")
-            ->authorize('Submission:acceptAbstract')
+            ->authorize('acceptAbstract', $this->submission)
             ->modalWidth("2xl")
             ->record($this->submission)
             ->successNotificationTitle("Accepted")
