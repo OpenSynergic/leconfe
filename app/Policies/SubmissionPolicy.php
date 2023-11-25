@@ -191,7 +191,7 @@ class SubmissionPolicy
             return false;
         }
 
-        if ($user->can('Submission::publish')) {
+        if ($user->can('Submission:publish')) {
             return true;
         }
     }
