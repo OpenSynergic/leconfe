@@ -15,7 +15,7 @@ class DeclineAbstractMail extends TemplateMailable
 
     public function __construct(Submission $submission)
     {
-        $this->authorName = $submission->user->name;
+        $this->authorName = $submission->user->fullName;
         $this->title = $submission->getMeta('title');
     }
 
