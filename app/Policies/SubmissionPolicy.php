@@ -81,7 +81,7 @@ class SubmissionPolicy
         }
     }
 
-    public function declineReview(User $user, Submission $submission)
+    public function declinePaper(User $user, Submission $submission)
     {
         if ($submission->status == SubmissionStatus::Declined) {
             return false;
@@ -96,7 +96,7 @@ class SubmissionPolicy
         }
     }
 
-    public function acceptReview(User $user, Submission $submission)
+    public function acceptPaper(User $user, Submission $submission)
     {
         if ($submission->status == SubmissionStatus::Declined) {
             return false;

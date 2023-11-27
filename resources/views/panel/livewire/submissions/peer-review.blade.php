@@ -40,10 +40,10 @@
                             @can('requestRevision', $submission)
                                 {{ $this->requestRevisionAction() }}
                             @endcan
-                            @can('acceptReview', $submission)
+                            @can('acceptPaper', $submission)
                                 {{ $this->acceptSubmissionAction() }}
                             @endcan
-                            @can('declineReview', $submission)
+                            @can('declinePaper', $submission)
                                 {{ $this->declineSubmissionAction() }}
                             @endcan
                         @endif

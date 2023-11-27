@@ -47,7 +47,7 @@ class PeerReview extends Component implements HasForms, HasActions
     {
         return Action::make('declineSubmissionAction')
             ->icon("lineawesome-times-solid")
-            ->authorize('declineReview', $this->submission)
+            ->authorize(fn () => auth()->user()->can('declinePaper', $this->submission))
             ->label("Decline Submission")
             ->color('danger')
             ->outlined()
@@ -103,7 +103,7 @@ class PeerReview extends Component implements HasForms, HasActions
     public function acceptSubmissionAction()
     {
         return Action::make('acceptSubmissionAction')
-            ->authorize('acceptReview', $this->submission)
+            ->authorize(fn () => auth()->user()->can('acceptPaper', $this->submission))
             ->icon("lineawesome-check-circle-solid")
             ->color("primary")
             ->label("Accept Submission")
