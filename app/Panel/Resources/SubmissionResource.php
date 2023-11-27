@@ -115,6 +115,7 @@ class SubmissionResource extends Resource
 
                 return static::getUrl('view', [
                     'record' => $record->id,
+                    'stage' => '-' . str($record->stage->value)->slug('-') . '-tab'
                 ]);
             })
             ->columns([

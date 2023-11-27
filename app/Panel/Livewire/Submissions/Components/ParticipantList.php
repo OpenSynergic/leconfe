@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Panel\LiveWire\Submissions\Components;
+namespace App\Panel\Livewire\Submissions\Components;
 
 use App\Mail\Templates\ParticipantAssignedMail;
 use App\Models\Enums\UserRole;

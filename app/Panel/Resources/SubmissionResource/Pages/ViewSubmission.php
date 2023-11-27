@@ -84,6 +84,8 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                         HorizontalTab::make('Workflow')
                             ->schema([
                                 Tabs::make()
+                        ->persistTabInQueryString('stage')
+
                                     ->sticky()
                                     ->tabs([
                                         Tab::make("Call for Abstract")
