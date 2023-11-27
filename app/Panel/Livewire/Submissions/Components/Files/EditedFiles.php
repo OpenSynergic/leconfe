@@ -18,7 +18,7 @@ class EditedFiles extends SubmissionFilesTable
             return $this->viewOnly;
         }
 
-        return $this->submission->isPublished();
+        return !auth()->user()->can('Submission:editing');
     }
 
     public function getTargetCategory(): string

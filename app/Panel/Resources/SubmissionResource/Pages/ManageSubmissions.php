@@ -2,8 +2,6 @@
 
 namespace App\Panel\Resources\SubmissionResource\Pages;
 
-use App\Models\Conference;
-use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
 use App\Panel\Livewire\Workflows\Classes\StageManager;

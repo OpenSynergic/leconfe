@@ -185,6 +185,21 @@ class SubmissionPolicy
         }
     }
 
+    public function editing(User $user, Submission $submission)
+    {
+        if ($submission->stage != SubmissionStage::Editing) {
+            return false;
+        }
+
+        if ($submission->status == SubmissionStatus::Published || $submission->status == SubmissionStatus::Declined) {
+            return false;
+        }
+
+        if ($user->can('Submission:editing')) {
+            return true;
+        }
+    }
+
     public function publish(User $user, Submission $submission)
     {
         if ($submission->status != SubmissionStatus::Editing) {
