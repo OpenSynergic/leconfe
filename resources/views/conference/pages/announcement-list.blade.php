@@ -1,8 +1,8 @@
 <x-website::layouts.main>
     <div class="card-body">
         <h2 class="text-heading mt-6 ms-1">{{ 'Announcements' }}</h2>
-        <div class="divide-y overflow-y-auto mb-1">
-            @foreach ($this->records as $announcement)
+        <div class="divide-y overflow-y-auto mb-1 ms-1">
+            @forelse ($this->records as $announcement)
                 <a href="{{ route('livewirePageGroup.current-conference.pages.announcement-page', ['announcement' => $announcement->id]) }}"
                     class="flex flex-col bg-white md:flex-row hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
                     @if ($featuredImage = $announcement->getFirstMedia('featured_image'))
@@ -32,8 +32,9 @@
                         @if ($announcement->tags_count)
                             <div class="mt-1">
                                 @foreach ($announcement->tags as $tag)
-                                    <div class="badge badge-outline text-xs text-gray-500 keyword_tags"><span
-                                            class="text-gray-900">{{ $tag->name }}</span></div>
+                                    <div class="badge badge-primary badge-outline text-xs keyword_tags">
+                                        {{ $tag->name }}
+                                    </div>
                                 @endforeach
                                 @if ($announcement->tags_count > 3)
                                     <span class="text-xs">+ {{ $announcement->tags_count - 3 }}</span>
@@ -42,7 +43,11 @@
                         @endif
                     </div>
                 </a>
-            @endforeach
+            @empty
+                <div>
+                    No Announcements created yet.
+                </div>
+            @endforelse
         </div>
     </div>
 </x-conference::layouts.main>
