@@ -46,8 +46,10 @@
         "Submission:review",
         "Submission:skipReview",
         "Submission:update",
+        "Submission:uploadPaper",
         "Submission:view",
         "Submission:viewAny",
+        "Submission:withdraw",
         "SubmissionParticipant:delete",
         "SubmissionParticipant:notify",
         "Topic:create",
@@ -93,8 +95,10 @@
         "Submission:requestRevision",
         "Submission:skipReview",
         "Submission:update",
+        "Submission:uploadPaper",
         "Submission:view",
         "Submission:viewAny",
+        "Submission:withdraw",
         "SubmissionParticipant:delete",
         "SubmissionParticipant:notify",
         "User:assignRoles",
@@ -122,8 +126,10 @@
         "Submission:requestRevision",
         "Submission:skipReview",
         "Submission:update",
+        "Submission:uploadPaper",
         "Submission:view",
-        "Submission:viewAny"
+        "Submission:viewAny",
+        "Submission:withdraw"
     ],
     "Reviewer": [
         "Submission:review",

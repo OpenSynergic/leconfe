@@ -6,7 +6,6 @@ use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Submission;
 use App\Models\User;
-use App\Panel\Livewire\Workflows\Classes\StageManager;
 
 class SubmissionPolicy
 {
@@ -53,11 +52,7 @@ class SubmissionPolicy
 
     public function assignReviewer(User $user, Submission $submission)
     {
-        if ($submission->stage != SubmissionStage::PeerReview) {
-            return false;
-        }
-
-        if ($submission->status == SubmissionStatus::Declined) {
+        if ($submission->stage != SubmissionStage::PeerReview && $submission->status != SubmissionStatus::OnReview) {
             return false;
         }
 
@@ -87,6 +82,10 @@ class SubmissionPolicy
             return false;
         }
 
+        if ($submission->status == SubmissionStatus::Withdrawn) {
+            return false;
+        }
+
         if ($submission->stage != SubmissionStage::PeerReview) {
             return false;
         }
@@ -96,9 +95,44 @@ class SubmissionPolicy
         }
     }
 
+    public function uploadAbstract(User $user, Submission $submission)
+    {
+        if ($submission->status == SubmissionStatus::Declined || $submission->status == SubmissionStatus::Withdrawn) {
+            return false;
+        }
+
+        // Cannot upload an abstract if it has not been accepted yet.
+        if ($submission->stage == SubmissionStage::CallforAbstract) {
+            return false;
+        }
+
+        if ($user->can('Submission:uploadAbstract') && $submission->stage == SubmissionStage::Wizard) {
+            return true;
+        }
+    }
+
+    public function uploadPaper(User $user, Submission $submission)
+    {
+        if ($submission->status == SubmissionStatus::Declined || $submission->status == SubmissionStatus::Withdrawn) {
+            return false;
+        }
+
+        if ($submission->stage != SubmissionStage::PeerReview) {
+            return false;
+        }
+
+        if ($user->can('Submission:uploadPaper')) {
+            return true;
+        }
+    }
+
     public function acceptPaper(User $user, Submission $submission)
     {
         if ($submission->status == SubmissionStatus::Declined) {
+            return false;
+        }
+
+        if ($submission->status == SubmissionStatus::Withdrawn) {
             return false;
         }
 
@@ -117,6 +151,10 @@ class SubmissionPolicy
             return false;
         }
 
+        if ($submission->status == SubmissionStatus::Withdrawn) {
+            return false;
+        }
+
         if ($submission->stage != SubmissionStage::CallforAbstract) {
             return false;
         }
@@ -128,11 +166,7 @@ class SubmissionPolicy
 
     public function acceptAbstract(User $user, Submission $submission)
     {
-        if ($submission->status == SubmissionStatus::Declined) {
-            return false;
-        }
-
-        if ($submission->stage != SubmissionStage::CallforAbstract) {
+        if ($submission->stage != SubmissionStage::CallforAbstract || $submission->status != SubmissionStatus::Queued) {
             return false;
         }
 
@@ -143,7 +177,7 @@ class SubmissionPolicy
 
     public function review(User $user, Submission $submission)
     {
-        if ($submission->stage != SubmissionStage::PeerReview) {
+        if ($submission->stage != SubmissionStage::PeerReview || $submission->status != SubmissionStatus::OnReview) {
             return false;
         }
 
@@ -154,11 +188,7 @@ class SubmissionPolicy
 
     public function requestRevision(User $user, Submission $submission)
     {
-        if ($submission->revision_required) {
-            return false;
-        }
-
-        if ($submission->stage != SubmissionStage::PeerReview) {
+        if ($submission->stage != SubmissionStage::PeerReview || $submission->status != SubmissionStatus::OnReview || !$submission->revision_required) {
             return false;
         }
 
@@ -169,7 +199,7 @@ class SubmissionPolicy
 
     public function skipReview(User $user, Submission $submission)
     {
-        if ($submission->stage != SubmissionStage::PeerReview) {
+        if ($submission->stage != SubmissionStage::PeerReview || $submission->status != SubmissionStatus::OnReview) {
             return false;
         }
 
@@ -191,11 +221,22 @@ class SubmissionPolicy
             return false;
         }
 
-        if ($submission->status == SubmissionStatus::Published || $submission->status == SubmissionStatus::Declined) {
+        if ($submission->status == SubmissionStatus::Published || $submission->status == SubmissionStatus::Declined || $submission->status == SubmissionStatus::Withdrawn) {
             return false;
         }
 
         if ($user->can('Submission:editing')) {
+            return true;
+        }
+    }
+
+    public function withdraw(User $user, Submission $submission)
+    {
+        if ($submission->status == SubmissionStatus::Withdrawn || $submission->status == SubmissionStatus::Declined) {
+            return false;
+        }
+
+        if ($user->can('Submission:withdraw')) {
             return true;
         }
     }
