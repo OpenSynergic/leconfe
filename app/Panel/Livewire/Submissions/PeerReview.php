@@ -11,6 +11,7 @@ use App\Models\Enums\SubmissionStatus;
 use App\Models\MailTemplate;
 use App\Models\Submission;
 use App\Panel\Livewire\Workflows\Classes\StageManager;
+use App\Panel\Resources\SubmissionResource;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -33,10 +34,6 @@ class PeerReview extends Component implements HasForms, HasActions
     public Submission $submission;
 
     public bool $stageOpened = false;
-
-    protected $listeners = [
-        'refreshPeerReview' => '$refresh'
-    ];
 
     public function mount(Submission $submission)
     {
@@ -153,6 +150,13 @@ class PeerReview extends Component implements HasForms, HasActions
                         $action->failure();
                     }
                 }
+
+                $action->successRedirectUrl(
+                    SubmissionResource::getUrl('view', [
+                        'record' => $this->submission->getKey(),
+                        'stage' => sprintf('-%s-tab', str($this->submission->stage->value)->slug())
+                    ])
+                );
 
                 $action->success();
             });

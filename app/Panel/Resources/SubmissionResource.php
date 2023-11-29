@@ -136,7 +136,7 @@ class SubmissionResource extends Resource
                             ])
                             ->badge()
                             ->color(fn (Submission $record): string => match ($record->status) {
-                                SubmissionStatus::Declined => 'danger',
+                                SubmissionStatus::Declined, SubmissionStatus::Withdrawn => 'danger',
                                 SubmissionStatus::OnReview => 'warning',
                                 SubmissionStatus::Queued => 'primary',
                                 SubmissionStatus::Editing => 'info',

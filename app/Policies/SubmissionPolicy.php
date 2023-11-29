@@ -106,7 +106,7 @@ class SubmissionPolicy
             return false;
         }
 
-        if ($user->can('Submission:uploadAbstract') && $submission->stage == SubmissionStage::Wizard) {
+        if ($user->can('Submission:uploadAbstract')) {
             return true;
         }
     }
@@ -188,7 +188,7 @@ class SubmissionPolicy
 
     public function requestRevision(User $user, Submission $submission)
     {
-        if ($submission->stage != SubmissionStage::PeerReview || $submission->status != SubmissionStatus::OnReview || !$submission->revision_required) {
+        if ($submission->stage != SubmissionStage::PeerReview || $submission->status != SubmissionStatus::OnReview || $submission->revision_required) {
             return false;
         }
 

@@ -22,7 +22,6 @@ use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
 use App\Panel\Resources\SubmissionResource;
 use Awcodes\Shout\Components\ShoutEntry;
 use Filament\Actions\Action;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Components\Tabs as HorizontalTabs;
@@ -35,7 +34,6 @@ use Filament\Resources\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\Compilers\BladeCompiler;
-use Livewire\Attributes\On;
 
 class ViewSubmission extends Page implements HasInfolists, HasForms
 {
@@ -58,6 +56,7 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
     {
         return [
             Action::make('withdraw')
+                ->icon('lineawesome-times-circle-solid')
                 ->authorize('withdraw', $this->record)
                 ->color("danger")
                 ->requiresConfirmation()
@@ -65,7 +64,6 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                 ->modalHeading("Are you sure you want to withdraw this submission?")
                 ->modalDescription("You will not be able to undo this action.")
                 ->successNotificationTitle("Submission Withdrawn")
-                ->successRedirectUrl(static::getResource()::getUrl('view', ['record' => $this->record->getKey()]))
                 ->action(function (Action $action) {
                     SubmissionWithdrawAction::run($this->record);
                     try {
@@ -78,6 +76,13 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                         $action->failureNotificationTitle("Failed to send notification");
                         $action->failure();
                     }
+
+                    $action->successRedirectUrl(
+                        static::getResource()::getUrl('view', [
+                            'record' => $this->record->getKey()
+                        ])
+                    );
+
                     $action->success();
                 })
         ];
@@ -119,7 +124,6 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                             ->schema([
                                 Tabs::make()
                                     ->persistTabInQueryString('stage')
-
                                     ->sticky()
                                     ->tabs([
                                         Tab::make("Call for Abstract")

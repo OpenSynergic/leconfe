@@ -3,12 +3,9 @@
 namespace App\Panel\Livewire\Submissions\Components\Files;
 
 use App\Constants\SubmissionFileCategory;
-use App\Mail\Templates\NewPaperUploadedMail;
-use App\Models\Enums\SubmissionStage;
-use App\Models\User;
 use Awcodes\Shout\Components\Shout;
-use Filament\Tables\Actions\Action;
-use Illuminate\Support\Facades\Mail;
+
+use function Filament\authorize;
 
 class PaperFiles extends SubmissionFilesTable
 {
@@ -18,11 +15,7 @@ class PaperFiles extends SubmissionFilesTable
 
     public function isViewOnly(): bool
     {
-        if ($this->viewOnly) {
-            return $this->viewOnly;
-        }
-
-        return $this->submission->stage != SubmissionStage::PeerReview;
+        return !auth()->user()->can('uploadPaper', $this->submission);
     }
 
     public function uploadFormSchema(): array

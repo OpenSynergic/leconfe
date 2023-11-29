@@ -79,7 +79,9 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
     public function table(Table $table): Table
     {
         return $table
-            ->reorderable('order_column')
+            ->reorderable(
+                fn () => $this->viewOnly ? false : 'order_column'
+            )
             ->heading("Contributors")
             ->query(
                 fn (): Builder => $this->getQuery()

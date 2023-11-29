@@ -88,7 +88,6 @@ class CallforAbstract extends Component implements HasForms, HasActions
                     }
                 }
                 $action->success();
-                $action->dispatchSuccessRedirect();
             })
             ->icon("lineawesome-times-circle-solid");
     }
@@ -152,13 +151,12 @@ class CallforAbstract extends Component implements HasForms, HasActions
                             $action->failure();
                         }
                     }
-
-                    // Question
-                    // Which better as a notification
-                    // or just call Notification::make() heren instead
-
-
-                    $this->dispatch("refreshPeerReview");
+                    $action->successRedirectUrl(
+                        SubmissionResource::getUrl('view', [
+                            'record' => $this->submission->getKey(),
+                            'stage' => '-peer-review-tab',
+                        ])
+                    );
                     $action->success();
                 }
             );

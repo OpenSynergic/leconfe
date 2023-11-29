@@ -13,8 +13,13 @@ class AbstractFiles extends SubmissionFilesTable
     protected string $tableHeading = "Abstract Files";
 
     protected $listeners = [
-        'refreshAbstractFiles' => '$refresh'
+        'refreshAbstractsFiles' => '$refresh'
     ];
+
+    public function getTargetCategory(): string
+    {
+        return $this->getCategory();
+    }
 
     public function getAcceptedFiles(): array
     {
@@ -28,15 +33,6 @@ class AbstractFiles extends SubmissionFilesTable
 
     public function isViewOnly(): bool
     {
-        if ($this->viewOnly) {
-            return $this->viewOnly;
-        }
-
-        // Jika sudah submit, maka tidak akan bisa lagi melakukan pengeditan
-        if ($this->submission->stage == SubmissionStage::CallforAbstract) {
-            return true;
-        }
-
-        return $this->submission->stage != SubmissionStage::Wizard;
+        return !auth()->user()->can('uploadAbstract', $this->submission);
     }
 }

@@ -71,7 +71,7 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
             ->icon("iconpark-download-o")
             ->label('Download All Files')
             ->button()
-            ->hidden($this->isViewOnly())
+            ->hidden(fn (): bool => $this->isViewOnly())
             ->color('gray')
             ->action(function (TableAction $action) {
                 $files = $this->submission->media()->where('collection_name', $this->category)->get();
@@ -145,15 +145,7 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
         return TableAction::make('upload')
             ->icon("iconpark-upload")
             ->label('Upload Files')
-            ->hidden(function (): bool {
-                if ($this->submission->isDeclined()) {
-                    return true;
-                }
-                // if (static::class == SelectFiles::class) {
-                //     dd($this->isViewOnly());
-                // }
-                return $this->isViewOnly();
-            })
+            ->hidden(fn (): bool => $this->isViewOnly())
             ->modalWidth('xl')
             ->form(
                 $this->uploadFormSchema()

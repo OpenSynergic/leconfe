@@ -45,6 +45,7 @@
     "Submission:review",
     "Submission:skipReview",
     "Submission:update",
+    "Submission:uploadAbstract",
     "Submission:uploadPaper",
     "Submission:view",
     "Submission:viewAny",

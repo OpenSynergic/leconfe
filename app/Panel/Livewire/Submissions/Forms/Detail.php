@@ -3,6 +3,8 @@
 namespace App\Panel\Livewire\Submissions\Forms;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
+use App\Models\Enums\SubmissionStage;
+use App\Models\Enums\SubmissionStatus;
 use App\Models\Submission;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieTagsInput;
@@ -34,6 +36,9 @@ class Detail extends \Livewire\Component implements HasForms
     public function form(Form $form): Form
     {
         return $form
+            ->disabled(function (): bool {
+                return auth()->user()->can('editing', $this->submission);
+            })
             ->model($this->submission)
             ->schema([
                 TextInput::make('meta.title'),

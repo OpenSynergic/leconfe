@@ -46,6 +46,7 @@
         "Submission:review",
         "Submission:skipReview",
         "Submission:update",
+        "Submission:uploadAbstract",
         "Submission:uploadPaper",
         "Submission:view",
         "Submission:viewAny",
@@ -95,6 +96,7 @@
         "Submission:requestRevision",
         "Submission:skipReview",
         "Submission:update",
+        "Submission:uploadAbstract",
         "Submission:uploadPaper",
         "Submission:view",
         "Submission:viewAny",
@@ -126,6 +128,7 @@
         "Submission:requestRevision",
         "Submission:skipReview",
         "Submission:update",
+        "Submission:uploadAbstract",
         "Submission:uploadPaper",
         "Submission:view",
         "Submission:viewAny",
@@ -138,6 +141,7 @@
     "Author": [
         "Submission:create",
         "Submission:delete",
+        "Submission:uploadAbstract",
         "Submission:view",
         "Submission:viewAny"
     ],
