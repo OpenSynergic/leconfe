@@ -47,14 +47,17 @@ class SetupDefaultData
         View::share('headerLogoAltText', $site->getMeta('name'));
         View::share('contextName', $site->getMeta('name'));
         View::share('footer', $site->getMeta('page_footer'));
+        View::share('favicon', $site->getFirstMediaUrl('favicon'));
+        View::share('styleSheet', $site->getFirstMediaUrl('styleSheet'));
+
 
         MetaTag::add('description', $site->getMeta('description'));
     }
 
     protected function setupConference(Request $request, $currentConference)
     {
-        View::share('headerLogoAltText', $currentConference->name);
         View::share('headerLogo', $currentConference->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl']));
+        View::share('headerLogoAltText', $currentConference->name);
         View::share('currentConference', $currentConference);
         View::share('contextName', $currentConference->name);
         View::share('footer', $currentConference->getMeta('page_footer'));

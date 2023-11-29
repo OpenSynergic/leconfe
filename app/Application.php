@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Actions\Site\SiteCreateAction;
 use App\Models\Announcement;
 use App\Models\Block;
 use App\Models\Conference;
@@ -81,7 +82,7 @@ class Application extends LaravelApplication
     public function getSite(): Site
     {
         if (! isset($this->site)) {
-            $this->site = Site::getSite();
+            $this->site = Site::getSite() ?? SiteCreateAction::run();
         }
 
         return $this->site;
