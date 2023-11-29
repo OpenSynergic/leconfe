@@ -30,6 +30,12 @@ class SetupDefaultData
             ConferenceStatus::Archived => route('livewirePageGroup.archive-conference.pages.home', ['conference' => $currentConference->path]),
             default => route('livewirePageGroup.website.pages.home'),
         });
+        
+        View::share('panelUrl', match ($currentConference instanceof Conference) {
+            true => route('filament.panel.pages.dashboard', $currentConference?->path),
+            default => route('filament.panel.tenant'),
+        });
+        
 
         return $next($request);
     }
@@ -47,11 +53,8 @@ class SetupDefaultData
 
     protected function setupConference(Request $request, $currentConference)
     {
-        $previousConference = Conference::where('path', $request->route()->parameter('conference'))->first();
-
-        View::share('headerLogoAltText', $request->route()->hasParameter('conference') ? $previousConference?->name : $currentConference?->name);
-        View::share('headerLogo', $request->route()->hasParameter('conference') ? $previousConference->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl'])
-            : $currentConference->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl']));
+        View::share('headerLogoAltText', $currentConference->name);
+        View::share('headerLogo', $currentConference->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl']));
         View::share('currentConference', $currentConference);
         View::share('contextName', $currentConference->name);
         View::share('footer', $currentConference->getMeta('page_footer'));

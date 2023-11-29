@@ -43,17 +43,15 @@ class ConferenceServiceProvider extends ServiceProvider
     {
         Blade::anonymousComponentPath(resource_path('views/conference/components'), 'conference');
 
-        Livewire::addPersistentMiddleware([
-            IdentifyCurrentConference::class,
-            SetupDefaultData::class,
-        ]);
+        // Livewire::addPersistentMiddleware([
+        //     IdentifyCurrentConference::class,
+        //     SetupDefaultData::class,
+        // ]);
     }
 
-    protected function currentConference(PageGroup $pageGroup): PageGroup
+    protected function setupPageGroup(PageGroup $pageGroup): PageGroup
     {
         return $pageGroup
-            ->id('current-conference')
-            ->path('current')
             ->layout('website.components.layouts.app')
             ->homePage(Home::class)
             ->bootUsing(function () {
@@ -70,28 +68,40 @@ class ConferenceServiceProvider extends ServiceProvider
             })
             ->middleware([
                 'web',
-                IdentifyCurrentConference::class,
-                SetupDefaultData::class,
             ], true)
             ->discoverPages(in: app_path('Conference/Pages'), for: 'App\\Conference\\Pages');
     }
 
+
+    protected function currentConference(PageGroup $pageGroup): PageGroup
+    {
+        return $this->setupPageGroup($pageGroup)
+            ->id('current-conference')
+            ->path('current')
+            ->middleware([
+                IdentifyCurrentConference::class,
+                SetupDefaultData::class,
+            ], true);
+    }
+
     protected function archiveConference(PageGroup $pageGroup): PageGroup
     {
-        return $this->currentConference($pageGroup)
+        return $this->setupPageGroup($pageGroup)
             ->id('archive-conference')
             ->middleware([
                 IdentifyArchiveConference::class,
+                SetupDefaultData::class,
             ], true)
             ->path('archive/{conference}');
     }
 
     protected function upcomingConference(PageGroup $pageGroup): PageGroup
     {
-        return $this->currentConference($pageGroup)
+        return $this->setupPageGroup($pageGroup)
             ->id('upcoming-conference')
             ->middleware([
                 IdentifyArchiveConference::class,
+                SetupDefaultData::class,
             ], true)
             ->path('archive/{conference}');
     }
