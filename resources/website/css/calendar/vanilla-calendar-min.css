@@ -498,7 +498,7 @@
 }
 
 .vanilla-calendar-day__btn_selected {
-    background-color: #38BDF8!important;
+    background-color: #38BDF8;
     color: #fff
 }
 
@@ -510,7 +510,7 @@
 
 
 .current_timeline {
-    background-color: #38bdf8!important;
+    background-color: #38bdf8;
     color: #fff
 }
 

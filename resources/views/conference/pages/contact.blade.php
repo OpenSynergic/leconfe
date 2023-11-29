@@ -3,7 +3,7 @@
         <section class="bg-white dark:bg-gray-900 flex justify-center items-center md:p-16">
             <div class="container px-6 py-12 mx-auto">
                 <div>
-                    <p class="font-medium text-primary dark:text-blue-400">Contact us</p>
+                    <p class="font-medium text-primary">Contact us</p>
                     <h1 class="mt-2 text-2xl font-semibold text-gray-800 md:text-3xl dark:text-white">Contact Form
                     </h1>
                 </div>
@@ -73,7 +73,7 @@
                                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Our friendly team is here
                                         to
                                         help.</p>
-                                    <p class="mt-2 text-sm text-primary dark:text-blue-400">
+                                    <p class="mt-2 text-sm text-primary">
                                         {{ $currentConference->getMeta('email') }}</p>
                                 </div>
                             @endif
@@ -91,7 +91,7 @@
                                     <h2 class="mt-4 text-base font-medium text-gray-800 dark:text-white">Phone</h2>
                                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
                                         {{ $currentConference->getMeta('bussines_hour') }}</p>
-                                    <p class="mt-2 text-sm text-primary dark:text-blue-400">
+                                    <p class="mt-2 text-sm text-primary">
                                         {{ $currentConference->getMeta('phone') }}</p>
                                 </div>
                             @endif
@@ -116,7 +116,7 @@
                                     </span>
                                     <h2 class="mt-4 text-base font-medium text-gray-800 dark:text-white">Whatsapp</h2>
                                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">We're here to help</p>
-                                    <a class="mt-2 block text-sm text-primary dark:text-blue-400"
+                                    <a class="mt-2 block text-sm text-primary"
                                         href="https://wa.me/{{ $currentConference->getMeta('whatsapp') }}"
                                         target="_blank">{{ $currentConference->getMeta('label_chat') }}</a>
                                 </div>
@@ -136,7 +136,7 @@
                                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Come say hello at our
                                         office
                                     </p>
-                                    <p class="mt-2 text-sm text-primary dark:text-blue-400">
+                                    <p class="mt-2 text-sm text-primary">
                                         {{ $currentConference->getMeta('address') }}
                                     </p>
                                 </div>

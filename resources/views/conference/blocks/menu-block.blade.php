@@ -14,7 +14,7 @@
                                             d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                                     </svg>
                                     <a href="{{ route('livewirePageGroup.current-conference.pages.static-page', ['staticPage' => $content->slug]) }}"
-                                        class="text-xs text-primary hover:text-blue-500">{{ $content->title }}</a>
+                                        class="text-xs text-primary hover:text-primary-focus">{{ $content->title }}</a>
                                 </div>
 
                                 <div class="accordion-body" x-cloak x-show="accordOpen" x-collapse

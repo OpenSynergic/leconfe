@@ -11,10 +11,6 @@ export default {
     ],
     theme: {
         extend: {
-            colors: {
-                primary : '#38BDF8',
-                secondary: '#4a4a5b',
-            },
             fontFamily: {
                 sans: ['var(--font-family)', ...defaultTheme.fontFamily.sans],
             },
@@ -47,6 +43,7 @@ export default {
                     ...require('daisyui/src/theming/themes')[
                         '[data-theme=winter]'
                     ],
+                    // primary: '#BA2823',
                     primary: '#38BDF8',
                     secondary: '#4a4a5b',
                     'base-100': '#F1F6FA',
