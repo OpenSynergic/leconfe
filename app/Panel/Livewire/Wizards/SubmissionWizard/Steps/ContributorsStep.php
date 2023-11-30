@@ -29,7 +29,7 @@ class ContributorsStep extends Component implements HasWizardStep
         }
 
         $this->dispatch("refreshLivewire");
-        $this->dispatch('refreshAbstractFiles');
+        $this->dispatch('refreshAbstractsFiles');
         $this->dispatch('next-wizard-step');
     }
 }

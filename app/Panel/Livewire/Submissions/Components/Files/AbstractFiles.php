@@ -33,6 +33,9 @@ class AbstractFiles extends SubmissionFilesTable
 
     public function isViewOnly(): bool
     {
+        if ($this->viewOnly) {
+            return true;
+        }
         return !auth()->user()->can('uploadAbstract', $this->submission);
     }
 }
