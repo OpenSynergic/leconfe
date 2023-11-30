@@ -23,6 +23,8 @@ return new class extends Migration
             $table->boolean('skipped_review')->default(false);
             $table->enum('stage', SubmissionStage::array())->default(SubmissionStage::Wizard->value);
             $table->enum('status', SubmissionStatus::array())->default(SubmissionStatus::Incomplete->value);
+            $table->string('withdrawn_reason')->nullable();
+            $table->timestamp('withdrawn_at')->nullable();
             $table->timestamps();
         });
 

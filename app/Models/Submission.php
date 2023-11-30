@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Kra8\Snowflake\HasShortflakePrimary;
 use Plank\Metable\Metable;
@@ -33,7 +34,9 @@ class Submission extends Model implements HasMedia
         'skipped_review',
         'stage',
         'status',
-        'revision_required'
+        'revision_required',
+        'withdrawn_reason',
+        'withdrawn_at',
     ];
 
     /**
@@ -159,5 +162,18 @@ class Submission extends Model implements HasMedia
     public function isIncomplete(): bool
     {
         return $this->status == SubmissionStatus::Incomplete;
+    }
+
+    /**
+     * Get all the editors of this submission
+     */
+    public function getEditors(): Collection
+    {
+        return $this->participants()
+            ->whereHas('role', function ($query) {
+                $query->where('name', UserRole::Editor->value);
+            })
+            ->get()
+            ->pluck('user_id');
     }
 }

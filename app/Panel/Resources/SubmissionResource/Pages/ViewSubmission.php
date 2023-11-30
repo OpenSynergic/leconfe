@@ -2,14 +2,17 @@
 
 namespace App\Panel\Resources\SubmissionResource\Pages;
 
-use App\Actions\Submissions\SubmissionWithdrawAction;
+use App\Actions\Submissions\AcceptWithdrawalAction;
+use App\Actions\Submissions\RequestWithdrawalAction;
 use App\Infolists\Components\LivewireEntry;
 use App\Infolists\Components\VerticalTabs\Tab as Tab;
 use App\Infolists\Components\VerticalTabs\Tabs as Tabs;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
+use App\Models\User;
 use App\Notifications\SubmissionWithdrawn;
+use App\Notifications\SubmissionWithdrawRequested;
 use App\Panel\Livewire\Submissions\CallforAbstract;
 use App\Panel\Livewire\Submissions\Components\ContributorList;
 use App\Panel\Livewire\Submissions\Editing;
@@ -22,8 +25,10 @@ use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
 use App\Panel\Resources\SubmissionResource;
 use Awcodes\Shout\Components\ShoutEntry;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Form;
 use Filament\Infolists\Components\Tabs as HorizontalTabs;
 use Filament\Infolists\Components\Tabs\Tab as HorizontalTab;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
@@ -55,34 +60,91 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('withdraw')
+            Action::make('request_withdraw')
+                ->color('danger')
+                ->authorize('requestWithdraw', $this->record)
+                ->label("Request for Withdrawal")
                 ->icon('lineawesome-times-circle-solid')
-                ->authorize('withdraw', $this->record)
-                ->color("danger")
+                ->form([
+                    Textarea::make('reason')
+                        ->hint('Optional')
+                        ->placeholder('Reason for withdrawal')
+                        ->label("Reason")
+                ])
                 ->requiresConfirmation()
-                ->modalWidth('xl')
-                ->modalHeading("Are you sure you want to withdraw this submission?")
-                ->modalDescription("You will not be able to undo this action.")
-                ->successNotificationTitle("Submission Withdrawn")
-                ->action(function (Action $action) {
-                    SubmissionWithdrawAction::run($this->record);
+                ->successNotificationTitle("Withdraw Requested, Please wait for editor to approve")
+                ->action(function (Action $action, array $data) {
+                    RequestWithdrawalAction::run(
+                        $this->record,
+                        $data['reason']
+                    );
+
                     try {
-                        $this->record->user->notify(
-                            new SubmissionWithdrawn(
-                                $this->record,
-                            )
-                        );
+                        // Currently using admin, next is admin removed only managers
+                        User::whereHas(
+                            'roles',
+                            fn ($query) => $query->whereIn('name', [UserRole::Admin->value, UserRole::ConferenceManager->value])
+                        )
+                            ->get()
+                            ->each(
+                                fn ($manager) => $manager->notify(new SubmissionWithdrawRequested($this->record))
+                            );
+
+                        $this->record->getEditors()
+                            ->each(
+                                fn ($editor) => $editor->notify(new SubmissionWithdrawRequested($this->record))
+                            );
                     } catch (\Exception $e) {
                         $action->failureNotificationTitle("Failed to send notification");
                         $action->failure();
                     }
 
                     $action->successRedirectUrl(
-                        static::getResource()::getUrl('view', [
-                            'record' => $this->record->getKey()
-                        ])
+                        SubmissionResource::getUrl('view', [
+                            'record' => $this->record,
+                            'stage' => '-' . str($this->record->stage->value)->slug('-') . '-tab'
+                        ]),
                     );
-
+                    $action->success();
+                })
+                ->modalWidth('xl'),
+            Action::make('withdraw')
+                ->modalWidth('xl')
+                ->color('danger')
+                ->authorize('withdraw', $this->record)
+                ->mountUsing(function (Form $form) {
+                    $form->fill([
+                        'reason' => $this->record->withdrawn_reason
+                    ]);
+                })
+                ->form([
+                    Textarea::make('reason')
+                        ->readonly()
+                        ->hint('Read Only')
+                        ->placeholder('Reason for withdrawal')
+                        ->label("Reason")
+                ])
+                ->requiresConfirmation()
+                ->modalHeading("Are you sure you want to withdraw this submission?")
+                ->modalDescription("You will not be able to undo this action.")
+                ->modalSubmitActionLabel("Withdraw")
+                ->successNotificationTitle("Withdrawn")
+                ->action(function (Action $action) {
+                    AcceptWithdrawalAction::run($this->record);
+                    try {
+                        $this->record->user->notify(
+                            new SubmissionWithdrawn($this->record)
+                        );
+                    } catch (\Exception $e) {
+                        $action->failureNotificationTitle("Failed to send notification");
+                        $action->failure();
+                    }
+                    $action->successRedirectUrl(
+                        SubmissionResource::getUrl('view', [
+                            'record' => $this->record,
+                            'stage' => '-' . str($this->record->stage->value)->slug('-') . '-tab'
+                        ]),
+                    );
                     $action->success();
                 })
         ];
@@ -113,9 +175,17 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
 
     public function infolist(Infolist $infolist): Infolist
     {
-        $currentUserIsReviewer = auth()->user()->hasRole(UserRole::Reviewer->value);
         return $infolist
             ->schema([
+                ShoutEntry::make('withdraw-information')
+                    ->visible(
+                        fn (): bool => filled($this->record->withdrawn_reason) && $this->record->status != SubmissionStatus::Withdrawn
+                    )
+                    ->content(function (): string {
+                        return "The submission is currently awaiting approval for the withdrawal request.";
+                    })
+                    ->color('warning')
+                    ->type('info'),
                 HorizontalTabs::make()
                     ->persistTabInQueryString('tab')
                     ->contained(false)
@@ -127,7 +197,6 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                                     ->sticky()
                                     ->tabs([
                                         Tab::make("Call for Abstract")
-                                            ->hidden($currentUserIsReviewer)
                                             ->icon("heroicon-o-information-circle")
                                             ->schema([
                                                 LivewireEntry::make('call-for-abstract')

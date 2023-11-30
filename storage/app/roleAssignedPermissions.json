@@ -43,6 +43,7 @@
         "Submission:emailReviewer",
         "Submission:publish",
         "Submission:requestRevision",
+        "Submission:requestWithdraw",
         "Submission:review",
         "Submission:skipReview",
         "Submission:update",
@@ -141,6 +142,7 @@
     "Author": [
         "Submission:create",
         "Submission:delete",
+        "Submission:requestWithdraw",
         "Submission:uploadAbstract",
         "Submission:view",
         "Submission:viewAny"

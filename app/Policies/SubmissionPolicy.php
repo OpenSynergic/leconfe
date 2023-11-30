@@ -41,7 +41,8 @@ class SubmissionPolicy
 
     public function delete(User $user, Submission $submission)
     {
-        if ($submission->status != SubmissionStatus::Declined) {
+        // Only submission with status: withdrawn or declined can be deleted.
+        if (!in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn])) {
             return false;
         }
 
@@ -232,11 +233,35 @@ class SubmissionPolicy
 
     public function withdraw(User $user, Submission $submission)
     {
-        if ($submission->status == SubmissionStatus::Withdrawn || $submission->status == SubmissionStatus::Declined) {
+        if ($submission->status == SubmissionStatus::Withdrawn) {
+            return false;
+        }
+
+        if ($submission->status == SubmissionStatus::Declined) {
+            return false;
+        }
+
+        // Editors cannot withdraw submissions; they must wait for the author to request it..
+        if (!filled($submission->withdrawn_reason)) {
             return false;
         }
 
         if ($user->can('Submission:withdraw')) {
+            return true;
+        }
+    }
+
+    public function requestWithdraw(User $user, Submission $submission)
+    {
+        if ($submission->status == SubmissionStatus::Withdrawn) {
+            return false;
+        }
+
+        if (filled($submission->withdrawn_reason)) {
+            return false;
+        }
+
+        if ($user->can('Submission:requestWithdraw')) {
             return true;
         }
     }

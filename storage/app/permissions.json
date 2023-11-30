@@ -42,6 +42,7 @@
     "Submission:emailReviewer",
     "Submission:publish",
     "Submission:requestRevision",
+    "Submission:requestWithdraw",
     "Submission:review",
     "Submission:skipReview",
     "Submission:update",
