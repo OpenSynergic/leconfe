@@ -257,6 +257,10 @@ class SubmissionPolicy
             return false;
         }
 
+        if ($submission->stage == SubmissionStage::Wizard) {
+            return false;
+        }
+
         if (filled($submission->withdrawn_reason)) {
             return false;
         }
