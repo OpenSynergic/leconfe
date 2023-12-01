@@ -253,6 +253,11 @@ class SubmissionPolicy
 
     public function requestWithdraw(User $user, Submission $submission)
     {
+        // Only the author can request a withdrawal.
+        if ($user->getKey() !== $submission->user->getKey()) {
+            return false;
+        }
+
         if ($submission->status == SubmissionStatus::Withdrawn) {
             return false;
         }
