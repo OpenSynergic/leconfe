@@ -15,10 +15,11 @@ class Home extends Page
 
     protected function getViewData(): array
     {
+        $activeConference = Conference::active();
         return [
-            'topics' => Topic::where('conference_id', Conference::active()->getKey())->get(),
-            'upcomings' => Conference::upcoming()->get(),
-            'activeConference' => Conference::active(),
+            'topics' => Topic::withoutGlobalScopes()->where('conference_id', $activeConference->getKey())->get(),
+            'upcomingConferences' => Conference::upcoming()->get(),
+            'activeConference' => $activeConference,
         ];
     }
 

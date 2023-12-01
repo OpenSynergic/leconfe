@@ -12,31 +12,22 @@ class AnnouncementList extends Page
 {
     protected static string $view = 'conference.pages.announcement-list';
 
-    public Carbon $currentDate;
-
-    public function mount()
-    {
-        $this->currentDate = today();
-    }
-
-    public function getRecordsProperty()
-    {
-        return Announcement::query()
-            ->whereMeta('expires_at', '>', now()->startOfDay())
-            ->orWhereMeta('expires_at', '')->orderBy('created_at', 'desc')
-            ->with([
-                'tags' => function ($query) {
-                    $query->take(3);
-                },
-                'user',
-            ])
-            ->withCount('tags')
-            ->get();
-    }
-
     protected function getViewData(): array
     {
-        return [];
+        return [
+            'announcements' => Announcement::query()
+                ->whereMeta('expires_at', '>', now()->startOfDay())
+                ->orWhereMeta('expires_at', '')
+                ->orderBy('created_at', 'desc')
+                ->with([
+                    'tags' => function ($query) {
+                        $query->take(3);
+                    },
+                    'user',
+                ])
+                ->withCount('tags')
+                ->get(),
+        ];
     }
 
     public static function routes(PageGroup $pageGroup): void
