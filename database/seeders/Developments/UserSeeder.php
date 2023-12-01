@@ -26,6 +26,6 @@ class UserSeeder extends Seeder
 
         $users = \App\Models\User::factory(100)->create();
 
-        $users->each(fn($user) => $user->assignRole(UserRole::random()->value));
+        $users->each(fn ($user) => $user->assignRole(UserRole::random()->value));
     }
 }

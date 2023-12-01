@@ -72,7 +72,6 @@ class ConferenceServiceProvider extends ServiceProvider
             ->discoverPages(in: app_path('Conference/Pages'), for: 'App\\Conference\\Pages');
     }
 
-
     protected function currentConference(PageGroup $pageGroup): PageGroup
     {
         return $this->setupPageGroup($pageGroup)

@@ -2,23 +2,22 @@
 
 namespace App\Administration\Livewire;
 
-use Livewire\Component;
-use Filament\Forms\Form;
-use App\Models\Conference;
-use Illuminate\Support\Str;
-use Filament\Forms\Components\Actions;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\BaseFileUpload;
-use Filament\Forms\Concerns\InteractsWithForms;
-use App\Actions\Conferences\ConferenceUpdateAction;
 use App\Actions\Site\SiteUpdateAction;
 use App\Forms\Components\CssFileUpload;
+use App\Models\Conference;
 use App\Models\Site;
+use Filament\Forms\Components\Actions;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\BaseFileUpload;
 use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Form;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Str;
+use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class SetupSetting extends Component implements HasForms
@@ -32,7 +31,6 @@ class SetupSetting extends Component implements HasForms
     public function mount(Conference $conference): void
     {
         $this->site = App::getSite();
-
 
         $this->form->fill([
             'meta' => $this->site->getAllMeta()->toArray(),
@@ -65,7 +63,7 @@ class SetupSetting extends Component implements HasForms
                             ->label('Custom Stylesheet')
                             ->collection('styleSheet')
                             ->getUploadedFileNameForStorageUsing(static function (BaseFileUpload $component, TemporaryUploadedFile $file) {
-                                return Str::random() . '.css';
+                                return Str::random().'.css';
                             })
                             ->acceptedFileTypes(['text/css'])
                             ->columnSpan([

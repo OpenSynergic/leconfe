@@ -47,7 +47,7 @@ class Participant extends Model implements HasMedia, Sortable
     protected function fullName(): Attribute
     {
         return Attribute::make(
-            get: fn () => Str::squish($this->given_name . ' ' . $this->family_name),
+            get: fn () => Str::squish($this->given_name.' '.$this->family_name),
         );
     }
 
@@ -84,7 +84,7 @@ class Participant extends Model implements HasMedia, Sortable
 
     public function getProfilePicture()
     {
-        if($profilePicture = $this->getFirstMedia('profile')?->getAvailableUrl(['thumb', 'thumb-xl'])){
+        if ($profilePicture = $this->getFirstMedia('profile')?->getAvailableUrl(['thumb', 'thumb-xl'])) {
             return $profilePicture;
         }
 
@@ -94,6 +94,6 @@ class Participant extends Model implements HasMedia, Sortable
             ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
             ->join(' ');
 
-        return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=111827&font-size=0.33';
+        return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=FFFFFF&background=111827&font-size=0.33';
     }
 }

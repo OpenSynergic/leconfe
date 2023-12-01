@@ -12,7 +12,7 @@ class CssFileUpload extends SpatieMediaLibraryFileUpload
     /**
      * @param  array<string> | Arrayable | Closure  $types
      */
-    public function acceptedFileTypes(array | Arrayable | Closure $types): static
+    public function acceptedFileTypes(array|Arrayable|Closure $types): static
     {
         $this->acceptedFileTypes = $types;
 

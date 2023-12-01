@@ -68,7 +68,7 @@ class SiteSettings extends Page implements HasInfolists
                                                     ->livewire(SidebarSetting::class)
                                                     ->lazy(),
                                             ]),
-                                        
+
                                     ]),
                             ]),
 

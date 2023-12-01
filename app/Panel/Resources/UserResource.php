@@ -215,8 +215,8 @@ class UserResource extends Resource
                     ]),
                     Stack::make([
                         TextColumn::make('roles.name')
-                            ->badge()
-                    ])
+                            ->badge(),
+                    ]),
                     // Stack::make([
                     //     TextColumn::make('phone')
                     //         ->icon('heroicon-m-phone')
@@ -240,7 +240,7 @@ class UserResource extends Resource
                 SelectFilter::make('roles')
                     ->relationship('roles', 'name')
                     ->multiple()
-                    ->preload()
+                    ->preload(),
             ])
             ->actions([
                 EditAction::make()

@@ -7,7 +7,6 @@ use App\Models\User;
 
 class AnnouncementPolicy
 {
-
     public function view(User $user, Announcement $announcement)
     {
         if ($user->can('Announcement:view')) {

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Actions\Site\SiteCreateAction;
 use App\Models\Meta\SiteMeta;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Model;
@@ -19,7 +18,7 @@ class Site extends Model implements HasMedia
 
     public static function getSite()
     {
-        return Site::query()->first(); 
+        return Site::query()->first();
     }
 
     public function registerMediaConversions(Media $media = null): void
