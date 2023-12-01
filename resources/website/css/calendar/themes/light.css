@@ -49,7 +49,7 @@
 }
 
 [data-calendar-theme="light"] .vanilla-calendar-months__month.vanilla-calendar-months__month_selected {
-	@apply bg-primary-focus text-white hover:bg-primary-focus hover:text-white
+	@apply bg-primary text-white hover:bg-primary hover:text-white
 }
 
 [data-calendar-theme="light"] .vanilla-calendar-months__month.vanilla-calendar-months__month_disabled {
@@ -61,7 +61,7 @@
 }
 
 [data-calendar-theme="light"] .vanilla-calendar-years__year.vanilla-calendar-years__year_selected {
-	@apply bg-primary-focus text-white hover:bg-primary-focus hover:text-white
+	@apply bg-primary text-white hover:bg-primary hover:text-white
 }
 
 [data-calendar-theme="light"] .vanilla-calendar-years__year.vanilla-calendar-years__year_disabled {
@@ -117,7 +117,7 @@
 
 [data-calendar-theme="light"] .vanilla-calendar-day__btn_weekend.vanilla-calendar-day__btn_hover,
 [data-calendar-theme="light"] .vanilla-calendar-day__btn_holiday.vanilla-calendar-day__btn_hover {
-	@apply bg-primary-focus
+	@apply bg-primary
 }
 
 [data-calendar-theme="light"] .vanilla-calendar-day__btn_weekend.vanilla-calendar-day__btn_disabled,
@@ -165,12 +165,12 @@
 
 [data-calendar-theme="light"] .vanilla-calendar-day__btn_weekend.vanilla-calendar-day__btn_selected,
 [data-calendar-theme="light"] .vanilla-calendar-day__btn_holiday.vanilla-calendar-day__btn_selected {
-	@apply bg-primary-focus text-white hover:bg-primary-focus hover:text-white
+	@apply bg-primary text-white hover:bg-primary hover:text-white
 }
 
 [data-calendar-theme="light"] .vanilla-calendar-day__btn_weekend.vanilla-calendar-day__btn_selected.vanilla-calendar-day__btn_intermediate,
 [data-calendar-theme="light"] .vanilla-calendar-day__btn_holiday.vanilla-calendar-day__btn_selected.vanilla-calendar-day__btn_intermediate {
-	@apply bg-primary-focus bg-opacity-70 text-white hover:bg-primary-focus hover:bg-opacity-70 hover:text-white
+	@apply bg-primary bg-opacity-70 text-white hover:bg-primary hover:bg-opacity-70 hover:text-white
 }
 
 [data-calendar-theme="light"] .vanilla-calendar-day__btn_weekend.vanilla-calendar-day__btn_prev.vanilla-calendar-day__btn_selected,
@@ -188,11 +188,11 @@
 }
 
 [data-calendar-theme="light"] .vanilla-calendar-day__btn_selected {
-	@apply bg-primary-focus text-white hover:bg-primary-focus hover:text-white
+	@apply bg-primary text-white hover:bg-primary hover:text-white
 }
 
 [data-calendar-theme="light"] .vanilla-calendar-day__btn_selected.vanilla-calendar-day__btn_intermediate {
-	@apply bg-primary-focus bg-opacity-70 text-white hover:bg-primary-focus hover:bg-opacity-70 hover:text-white
+	@apply bg-primary bg-opacity-70 text-white hover:bg-primary hover:bg-opacity-70 hover:text-white
 }
 
 [data-calendar-theme="light"] .vanilla-calendar-day__btn_selected.vanilla-calendar-day__btn_prev,

@@ -8,6 +8,9 @@ use App\Models\Enums\ConferenceStatus;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
+use matthieumastadenis\couleur\ColorFactory;
+use matthieumastadenis\couleur\ColorSpace;
+use luizbills\CSS_Generator\Generator as CSSGenerator;
 use Symfony\Component\HttpFoundation\Response;
 
 class SetupDefaultData
@@ -43,6 +46,7 @@ class SetupDefaultData
     protected function setupSite()
     {
         $site = app()->getSite();
+
         View::share('headerLogo', $site->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl']));
         View::share('headerLogoAltText', $site->getMeta('name'));
         View::share('contextName', $site->getMeta('name'));
@@ -50,6 +54,13 @@ class SetupDefaultData
         View::share('favicon', $site->getFirstMediaUrl('favicon'));
         View::share('styleSheet', $site->getFirstMediaUrl('styleSheet'));
 
+        if($appearanceColor = $site->getMeta('appearance_color')){
+            $oklch       = ColorFactory::new($appearanceColor)->to(ColorSpace::OkLch);
+            $css         = new CSSGenerator();
+            $css->root_variable('p', "{$oklch->lightness}% {$oklch->chroma} {$oklch->hue}");
+
+            View::share('appearanceColor', $css->get_output());
+        }        
 
         MetaTag::add('description', $site->getMeta('description'));
     }
@@ -63,6 +74,14 @@ class SetupDefaultData
         View::share('footer', $currentConference->getMeta('page_footer'));
         View::share('favicon', $currentConference->getFirstMediaUrl('favicon'));
         View::share('styleSheet', $currentConference->getFirstMediaUrl('styleSheet'));
+
+        if($appearanceColor = $currentConference->getMeta('appearance_color')){
+            $oklch       = ColorFactory::new($appearanceColor)->to(ColorSpace::OkLch);
+            $css         = new CSSGenerator();
+            $css->root_variable('p', "{$oklch->lightness}% {$oklch->chroma} {$oklch->hue}");
+
+            View::share('appearanceColor', $css->get_output());
+        }  
 
         MetaTag::add('description', preg_replace("/\r|\n/", '', $currentConference->getMeta('description')));
 

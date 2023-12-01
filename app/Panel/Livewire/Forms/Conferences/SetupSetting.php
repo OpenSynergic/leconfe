@@ -14,6 +14,7 @@ use Filament\Forms\Components\BaseFileUpload;
 use Filament\Forms\Concerns\InteractsWithForms;
 use App\Actions\Conferences\ConferenceUpdateAction;
 use App\Forms\Components\CssFileUpload;
+use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
@@ -54,6 +55,8 @@ class SetupSetting extends Component implements HasForms
                                 'xl' => 1,
                                 'sm' => 2,
                             ]),
+                        ColorPicker::make('meta.appearance_color')
+                            ->label('Appearance Color'),
                         CssFileUpload::make('styleSheet')
                             ->label('Custom Stylesheet')
                             ->collection('styleSheet')
