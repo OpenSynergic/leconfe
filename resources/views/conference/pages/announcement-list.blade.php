@@ -1,19 +1,19 @@
 <x-website::layouts.main>
-    <div class="card-body">
-        <h2 class="text-heading mt-6 ms-1">{{ 'Announcements' }}</h2>
-        <div class="divide-y overflow-y-auto mb-1">
-            @foreach ($this->records as $announcement)
+    <div class="p-5 space-y-2">
+        <h2 class="text-heading">{{ 'Announcements' }}</h2>
+        <div class="divide-y overflow-y-auto space-y-2">
+            @forelse ($announcements as $announcement)
                 <a href="{{ route('livewirePageGroup.current-conference.pages.announcement-page', ['announcement' => $announcement->id]) }}"
-                    class="flex flex-col bg-white md:flex-row hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
+                    class="flex w-full bg-white md:flex-row hover:bg-gray-100 gap-x-2 p-1 group">
                     @if ($featuredImage = $announcement->getFirstMedia('featured_image'))
-                        <img class="object-cover h-28 aspect-square mt-4 mb-4"
+                        <img class="object-cover h-28 aspect-square"
                             src="{{ $featuredImage->getAvailableUrl(['thumb']) }}" alt="">
                     @endif
-                    <div class="flex flex-col justify-between p-4 leading-normal">
-                        <h5 class=" text-lg tracking-tight text-gray-900 dark:text-white">{{ $announcement->title }}</h5>
+                    <div class="leading-normal">
+                        <h3 class="text-lg tracking-tight text-gray-900 dark:text-white">{{ $announcement->title }}</h3>
                         @php
                             $announcementCreatedDate = $announcement->created_at->startOfDay();
-                            $diffInDays = $announcementCreatedDate->diffInDays($currentDate);
+                            $diffInDays = $announcementCreatedDate->diffInDays(today());
                         @endphp
                         <p class="mb-3 text-xs font-medium text-gray-500 dark:text-gray-400">
                             @if ($diffInDays > 0)
@@ -32,8 +32,9 @@
                         @if ($announcement->tags_count)
                             <div class="mt-1">
                                 @foreach ($announcement->tags as $tag)
-                                    <div class="badge badge-outline text-xs text-gray-500 keyword_tags"><span
-                                            class="text-gray-900">{{ $tag->name }}</span></div>
+                                    <div class="badge badge-primary badge-outline text-xs keyword_tags">
+                                        {{ $tag->name }}
+                                    </div>
                                 @endforeach
                                 @if ($announcement->tags_count > 3)
                                     <span class="text-xs">+ {{ $announcement->tags_count - 3 }}</span>
@@ -42,7 +43,11 @@
                         @endif
                     </div>
                 </a>
-            @endforeach
+            @empty
+                <div>
+                    No Announcements created yet.
+                </div>
+            @endforelse
         </div>
     </div>
 </x-conference::layouts.main>

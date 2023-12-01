@@ -105,6 +105,7 @@ return [
             'date' => 'j F Y',
             'time' => 'h:i A',
         ],
+        'allow_registration' => true,
     ],
 
     /*

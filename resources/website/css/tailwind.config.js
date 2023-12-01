@@ -11,10 +11,6 @@ export default {
     ],
     theme: {
         extend: {
-            colors: {
-                primary : '#38BDF8',
-                secondary: '#4a4a5b',
-            },
             fontFamily: {
                 sans: ['var(--font-family)', ...defaultTheme.fontFamily.sans],
             },
@@ -47,6 +43,7 @@ export default {
                     ...require('daisyui/src/theming/themes')[
                         '[data-theme=winter]'
                     ],
+                    // primary: '#BA2823',
                     primary: '#38BDF8',
                     secondary: '#4a4a5b',
                     'base-100': '#F1F6FA',
@@ -56,9 +53,5 @@ export default {
                 },
             },
         ],
-        // true: all themes | false: only light + dark | array: specific themes like this ["light", "dark", "cupcake"]
-        base: true, // applies background color and foreground color for root element by default
-        styled: true, // include daisyUI colors and design decisions for all components
-        utils: true, // adds responsive and modifier utility classes
     },
 }
