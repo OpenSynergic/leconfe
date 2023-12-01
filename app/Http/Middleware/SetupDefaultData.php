@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Facades\MetaTag;
+use App\Models\Conference;
 use App\Models\Enums\ConferenceStatus;
 use Closure;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class SetupDefaultData
     public function handle(Request $request, Closure $next): Response
     {
         if ($currentConference = app()->getCurrentConference()) {
-            $this->setupConference($currentConference);
+            $this->setupConference($request, $currentConference);
         } else {
             $this->setupSite();
         }
@@ -41,18 +42,26 @@ class SetupDefaultData
         View::share('contextName', $site->getMeta('name'));
         View::share('footer', $site->getMeta('page_footer'));
 
-        MetaTag::add('description', $site->getMeta('description') ?? 'dsadsa');
+        MetaTag::add('description', $site->getMeta('description'));
     }
 
-    protected function setupConference($currentConference)
+    protected function setupConference(Request $request, $currentConference)
     {
+        $previousConference = Conference::where('path', $request->route()->parameter('conference'))->first();
+
+        View::share('headerLogoAltText', $request->route()->hasParameter('conference') ? $previousConference?->name : $currentConference?->name);
+        View::share('headerLogo', $request->route()->hasParameter('conference') ? $previousConference->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl'])
+            : $currentConference->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl']));
         View::share('currentConference', $currentConference);
-        View::share('headerLogo', $currentConference->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl']));
-        View::share('headerLogoAltText', $currentConference->name);
         View::share('contextName', $currentConference->name);
         View::share('footer', $currentConference->getMeta('page_footer'));
         View::share('favicon', $currentConference->getFirstMediaUrl('favicon'));
         View::share('styleSheet', $currentConference->getFirstMediaUrl('styleSheet'));
+
         MetaTag::add('description', preg_replace("/\r|\n/", '', $currentConference->getMeta('description')));
+
+        foreach ($currentConference->getMeta('meta_tags') ?? [] as $name => $content) {
+            MetaTag::add($name, $content);
+        }
     }
 }

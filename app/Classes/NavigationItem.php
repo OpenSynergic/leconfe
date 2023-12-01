@@ -69,8 +69,14 @@ class NavigationItem
                 ConferenceStatus::Archived => route('livewirePageGroup.archive-conference.pages.home', ['conference' => $conference->path]),
                 default => route('livewirePageGroup.website.pages.home'),
             },
-            'about' => fn () => route('livewirePageGroup.current-conference.pages.about'),
-            'contact' => fn () => route('livewirePageGroup.current-conference.pages.contact'),
+            'about' => fn (Conference $conference = null) => match ($conference?->status) {
+                ConferenceStatus::Archived => route('livewirePageGroup.archive-conference.pages.about', ['conference' => $conference->path]),
+                default => route('livewirePageGroup.current-conference.pages.about')
+            },
+            'contact' => fn (Conference $conference = null) => match ($conference?->status) {
+                ConferenceStatus::Archived => route('livewirePageGroup.archive-conference.pages.contact', ['conference' => $conference->path]),
+                default => route('livewirePageGroup.current-conference.pages.contact')
+            },
             default => fn () => '#',
         };
     }

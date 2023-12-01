@@ -5,6 +5,7 @@ namespace App\Administration\Resources;
 use App\Actions\Conferences\ConferenceSetActiveAction;
 use App\Administration\Resources\ConferenceResource\Pages;
 use App\Models\Conference;
+use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ConferenceType;
 use App\Tables\Columns\IndexColumn;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
@@ -16,11 +17,13 @@ use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use Squire\Models\Country;
 
 class ConferenceResource extends Resource
@@ -45,7 +48,9 @@ class ConferenceResource extends Resource
                             ])
                             ->schema([
                                 TextInput::make('name')
-                                    ->required(),
+                                    ->required()
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('path', Str::slug($state))),
                                 TextInput::make('path')
                                     ->rule('alpha_dash')
                                     ->required(),
@@ -73,6 +78,43 @@ class ConferenceResource extends Resource
                         'sm' => 1,
                     ])
                     ->schema([
+                        Select::make('conference_id')
+                            ->label('Previous Conference')
+                            ->options(function () {
+                                return Conference::query()
+                                    ->where('status', ConferenceStatus::Archived)
+                                    ->latest('created_at')
+                                    ->take(5)
+                                    ->pluck('name', 'id')
+                                    ->toArray();
+                            })
+                            ->helperText('Fill the data from previous conference')
+                            ->searchable()
+                            ->preload()
+                            ->live()
+                            ->afterStateUpdated(function (Set $set, ?string $state, Get $get) {
+                                $getDataConference = Conference::find($state);
+
+                                $defaults = [
+                                    'name' => $getDataConference?->name,
+                                    'path' => $getDataConference?->path,
+                                    'type' => $getDataConference?->type,
+                                    'meta.location' => $getDataConference?->getMeta('location'),
+                                    'meta.date_held' => $getDataConference?->getMeta('date_held'),
+                                    'meta.description' => $getDataConference?->getMeta('description'),
+                                    'meta.publisher_name' => $getDataConference?->getMeta('publisher_name'),
+                                    'meta.affiliation' => $getDataConference?->getMeta('affiliation'),
+                                    'meta.abbreviation' => $getDataConference?->getMeta('abbreviation'),
+                                    'meta.country' => $getDataConference?->getMeta('country'),
+                                ];
+
+                                foreach ($defaults as $key => $previousConferenceValue) {
+                                    $fieldUserValue = $get($key);
+                                    empty($fieldUserValue) ? $set($key, $previousConferenceValue) : $set($key, $fieldUserValue);
+                                }
+                            })
+                            ->hidden(fn () => Conference::where('status', ConferenceStatus::Archived->value)->doesntExist()),
+
                         SpatieMediaLibraryFileUpload::make('logo')
                             ->collection('logo')
                             ->image()
