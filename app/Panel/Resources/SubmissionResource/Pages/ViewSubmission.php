@@ -3,6 +3,7 @@
 namespace App\Panel\Resources\SubmissionResource\Pages;
 
 use App\Actions\Submissions\AcceptWithdrawalAction;
+use App\Actions\Submissions\CancelWithdrawalAction;
 use App\Actions\Submissions\RequestWithdrawalAction;
 use App\Infolists\Components\LivewireEntry;
 use App\Infolists\Components\VerticalTabs\Tab as Tab;
@@ -127,8 +128,25 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                 ->requiresConfirmation()
                 ->modalHeading("Are you sure you want to withdraw this submission?")
                 ->modalDescription("You will not be able to undo this action.")
+                ->modalCancelAction(false)
+                ->modalCancelActionLabel("Reject")
                 ->modalSubmitActionLabel("Withdraw")
                 ->successNotificationTitle("Withdrawn")
+                ->extraModalFooterActions([
+                    Action::make('reject')
+                        ->color('gray')
+                        ->action(function (Action $action) {
+                            CancelWithdrawalAction::run($this->record);
+                            $action->successRedirectUrl(
+                                SubmissionResource::getUrl('view', [
+                                    'record' => $this->record,
+                                    'stage' => '-' . str($this->record->stage->value)->slug('-') . '-tab'
+                                ]),
+                            );
+                            $action->successNotificationTitle("Withdrawal request rejected");
+                            $action->success();
+                        })
+                ])
                 ->action(function (Action $action) {
                     AcceptWithdrawalAction::run($this->record);
                     try {
