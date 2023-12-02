@@ -37,7 +37,10 @@
         "Venue:delete",
         "Venue:update",
         "Venue:view",
-        "Venue:viewAny"
+        "Venue:viewAny",
+        "Plugin:create",
+        "Plugin:delete",
+        "Plugin:viewAny"
     ],
     "Conference Manager": [
         "Role:assignPermissions",
