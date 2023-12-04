@@ -32,7 +32,14 @@ class SubmissionFile extends Model
             // Send notification when there is new papers or revision uploaded
             // Should we created an event for this ?
             // for example SubmissionFilesUploaded, then we can listen to this event and send notification
-            $shouldSendNotification = $createdModel->category == SubmissionFileCategory::PAPER_FILES || $createdModel->category == SubmissionFileCategory::REVISION_FILES;
+            $shouldSendNotification = in_array(
+                $createdModel->category,
+                [
+                    SubmissionFileCategory::PAPER_FILES,
+                    SubmissionFileCategory::REVISION_FILES
+                ]
+            );
+
             if ($shouldSendNotification) {
                 $editors = $createdModel->submission->participants()
                     ->whereHas('role', function ($query) {
