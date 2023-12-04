@@ -7,10 +7,20 @@ use App\Models\User;
 
 class AnnouncementPolicy
 {
+    public function view(User $user, Announcement $announcement)
+    {
+        if ($user->can('Announcement:view')) {
+            return true;
+        }
+    }
+
     public function viewAny(User $user)
     {
-        return $user->can('Announcement:viewAny');
+        if ($user->can('Announcement:viewAny')) {
+            return true;
+        }
     }
+
     /**
      * Determine whether the user can create models.
      */

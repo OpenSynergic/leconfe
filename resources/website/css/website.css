@@ -46,12 +46,12 @@
 }
 
 .text-heading {
-    @apply text-lg text-gray-800 tracking-normal;
+    @apply text-xl mb-2 text-gray-800 tracking-normal;
 }
 
 
 .text-content {
-    @apply  text-sm leading-6 text-secondary;
+    @apply text-sm leading-6 text-secondary;
 }
 
 

@@ -19,6 +19,7 @@ use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 
 class ConferenceSetting extends Page implements HasForms, HasInfolists
 {
@@ -36,19 +37,14 @@ class ConferenceSetting extends Page implements HasForms, HasInfolists
 
     protected static ?string $navigationLabel = 'Conference';
 
-    public function booted(): void
+    public function mount(): void
     {
-        abort_if(!static::canView(), 403);
+        $this->authorize('update', App::getCurrentConference());
     }
 
     public static function shouldRegisterNavigation(): bool
     {
-        return static::canView() && static::$shouldRegisterNavigation;
-    }
-
-    public static function canView(): bool
-    {
-        return Filament::auth()->user()->can('ConferenceSetting:update');
+        return Auth::user()->can('update', App::getCurrentConference());
     }
 
     public function infolist(Infolist $infolist): Infolist

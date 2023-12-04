@@ -12,7 +12,9 @@ class ParticipantPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->can('Participant:viewAny');
+        if ($user->can('Participant:viewAny')) {
+            return true;
+        }
     }
 
     /**

@@ -93,11 +93,11 @@ class Participant extends Model implements HasMedia, Sortable, HasAvatar
 
     public function getFilamentAvatarUrl(): ?string
     {
-        if ($this->hasMedia('profile')) {
-            return $this->getFirstMedia('profile')->getAvailableUrl(['avatar']);
+        if ($profilePicture = $this->getFirstMedia('profile')?->getAvailableUrl(['thumb', 'thumb-xl'])) {
+            return $profilePicture;
         }
 
-        $name = str($this->fullName)
+        $name = Str::of($this->fullName)
             ->trim()
             ->explode(' ')
             ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
@@ -105,22 +105,4 @@ class Participant extends Model implements HasMedia, Sortable, HasAvatar
 
         return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=111827&font-size=0.33';
     }
-
-
-    // public function createUserAccount(UserRole $role, ?string $password = null, bool $withMetas = true): void
-    // {
-    //     $user = UserCreateAction::run([...$this->toArray(), 'password' => Hash::make($password)]);
-    //     if ($withMetas) {
-    //         $participantMetas = $this->meta()->get()->toArray();
-    //         foreach ($participantMetas as $meta) {
-    //             $user->meta()->create($meta);
-    //         }
-    //     }
-    //     $user->assignRole($role->value);
-    // }
-
-    // public function reviews()
-    // {
-    //     return $this->hasMany(Review::class);
-    // }
 }

@@ -4,6 +4,7 @@ namespace App\Conference\Pages;
 
 use App\Models\Announcement;
 use App\Models\ParticipantPosition;
+use App\Models\Topic;
 use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
@@ -12,32 +13,20 @@ class Home extends Page
 {
     protected static string $view = 'conference.pages.home';
 
-    protected function getViewData(): array
-    {
-        $filteredPositions = $this->getFilteredParticipantPositions();
-        $announcements = $this->getAnnouncements();
-
-        return [
-            'announcements' => $announcements,
-            'participantPosition' => $filteredPositions,
-        ];
-    }
-
-    protected function getFilteredParticipantPositions()
-    {
-        return ParticipantPosition::query()
-            ->whereHas('participants')
-            ->with(['participants' => ['media', 'meta']])
-            ->get();
-    }
-
-    protected function getAnnouncements()
-    {
-        return Announcement::query()->get();
-    }
-
     public function mount()
     {
+    }
+
+    protected function getViewData(): array
+    {
+        return [
+            'announcements' => Announcement::query()->get(),
+            'participantPosition' => ParticipantPosition::query()
+                ->whereHas('participants')
+                ->with(['participants' => ['media', 'meta']])
+                ->get(),
+            'topics' => Topic::query()->get(),
+        ];
     }
 
     public static function routes(PageGroup $pageGroup): void
