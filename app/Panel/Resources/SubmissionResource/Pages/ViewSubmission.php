@@ -68,7 +68,7 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                 ->icon('lineawesome-times-circle-solid')
                 ->form([
                     Textarea::make('reason')
-                        ->hint('Optional')
+                        ->required()
                         ->placeholder('Reason for withdrawal')
                         ->label("Reason")
                 ])
@@ -91,10 +91,11 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                                 fn ($manager) => $manager->notify(new SubmissionWithdrawRequested($this->record))
                             );
 
+
                         $this->record->getEditors()
-                            ->each(
-                                fn ($editor) => $editor->notify(new SubmissionWithdrawRequested($this->record))
-                            );
+                            ->each(function (User $editor) {
+                                $editor->notify(new SubmissionWithdrawRequested($this->record));
+                            });
                     } catch (\Exception $e) {
                         $action->failureNotificationTitle("Failed to send notification");
                         $action->failure();
@@ -110,8 +111,15 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                 })
                 ->modalWidth('xl'),
             Action::make('withdraw')
-                ->modalWidth('xl')
                 ->color('danger')
+                ->extraAttributes(function (Action $action) {
+                    if (filled($this->record->withdrawn_reason)) {
+                        return [
+                            'x-init' => new HtmlString('$wire.mountAction(\'' . $action->getName() . '\')')
+                        ];
+                    }
+                    return [];
+                })
                 ->authorize('withdraw', $this->record)
                 ->mountUsing(function (Form $form) {
                     $form->fill([
@@ -126,15 +134,17 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                         ->label("Reason")
                 ])
                 ->requiresConfirmation()
-                ->modalHeading("Are you sure you want to withdraw this submission?")
-                ->modalDescription("You will not be able to undo this action.")
-                ->modalCancelAction(false)
-                ->modalCancelActionLabel("Reject")
+                ->modalHeading(function () {
+                    return $this->record->user->fullName . ' has requested to withdraw this submission.';
+                })
+                ->modalDescription("You can either reject the request or accept it, remember it can't be undone.")
+                ->modalCancelActionLabel("Ignore")
                 ->modalSubmitActionLabel("Withdraw")
                 ->successNotificationTitle("Withdrawn")
                 ->extraModalFooterActions([
                     Action::make('reject')
-                        ->color('gray')
+                        ->color('warning')
+                        ->outlined()
                         ->action(function (Action $action) {
                             CancelWithdrawalAction::run($this->record);
                             $action->successRedirectUrl(
@@ -165,6 +175,7 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                     );
                     $action->success();
                 })
+                ->modalWidth('2xl')
         ];
     }
 

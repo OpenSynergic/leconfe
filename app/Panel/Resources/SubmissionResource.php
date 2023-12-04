@@ -4,6 +4,7 @@ namespace App\Panel\Resources;
 
 use App\Constants\ReviewerStatus;
 use App\Models\Enums\SubmissionStatus;
+use App\Models\Enums\UserRole;
 use App\Models\Submission;
 use App\Panel\Resources\SubmissionResource\Pages;
 use Filament\GlobalSearch\GlobalSearchResult;
@@ -145,7 +146,38 @@ class SubmissionResource extends Resource
                             })
                             ->formatStateUsing(
                                 fn (Submission $record) => $record->status
-                            )
+                            ),
+
+                    ]),
+                    Stack::make([
+                        Tables\Columns\TextColumn::make('editor-assigned-badges')
+                            ->badge()
+                            ->extraAttributes([
+                                'class' => 'mt-2'
+                            ])
+                            ->color('warning')
+                            ->getStateUsing(function (Submission $record) {
+                                $editorAssigned = $record->participants()
+                                    ->whereHas(
+                                        'role',
+                                        fn (Builder $query) => $query->where('name', UserRole::Editor)
+                                    )
+                                    ->count();
+                                if (!$editorAssigned) {
+                                    return 'No Editor Assigned';
+                                }
+                            }),
+                        Tables\Columns\TextColumn::make('withdrawn-notification')
+                            ->badge()
+                            ->extraAttributes([
+                                'class' => 'mt-2'
+                            ])
+                            ->color('danger')
+                            ->getStateUsing(function (Submission $record) {
+                                if (filled($record->withdrawn_reason)) {
+                                    return "Pending Withdrawal";
+                                }
+                            }),
                     ])
                 ])
             ])

@@ -174,6 +174,7 @@ class Submission extends Model implements HasMedia
                 $query->where('name', UserRole::Editor->value);
             })
             ->get()
-            ->pluck('user_id');
+            ->pluck('user_id')
+            ->map(fn ($userId) => User::find($userId));
     }
 }

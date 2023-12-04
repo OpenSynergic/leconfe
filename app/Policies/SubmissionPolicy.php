@@ -57,6 +57,10 @@ class SubmissionPolicy
             return false;
         }
 
+        if (filled($submission->withdrawn_reason)) {
+            return false;
+        }
+
         if ($user->can('Submission:assignReviewer')) {
             return true;
         }
@@ -94,6 +98,10 @@ class SubmissionPolicy
             return false;
         }
 
+        if (filled($submission->withdrawn_reason)) {
+            return false;
+        }
+
         // Cannot upload an abstract if it has not been accepted yet.
         if ($submission->stage == SubmissionStage::CallforAbstract) {
             return false;
@@ -107,6 +115,10 @@ class SubmissionPolicy
     public function uploadPaper(User $user, Submission $submission)
     {
         if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn])) {
+            return false;
+        }
+
+        if (filled($submission->withdrawn_reason)) {
             return false;
         }
 
@@ -124,7 +136,12 @@ class SubmissionPolicy
         if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn])) {
             return false;
         }
+
         if ($submission->stage != SubmissionStage::PeerReview) {
+            return false;
+        }
+
+        if (filled($submission->withdrawn_reason)) {
             return false;
         }
 
@@ -138,7 +155,12 @@ class SubmissionPolicy
         if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn])) {
             return false;
         }
+
         if ($submission->stage != SubmissionStage::CallforAbstract) {
+            return false;
+        }
+
+        if (filled($submission->withdrawn_reason)) {
             return false;
         }
 
@@ -153,6 +175,10 @@ class SubmissionPolicy
             return false;
         }
 
+        if (filled($submission->withdrawn_reason)) {
+            return false;
+        }
+
         if ($user->can('Submission:acceptAbstract')) {
             return true;
         }
@@ -161,6 +187,10 @@ class SubmissionPolicy
     public function review(User $user, Submission $submission)
     {
         if ($submission->stage != SubmissionStage::PeerReview || $submission->status != SubmissionStatus::OnReview) {
+            return false;
+        }
+
+        if (filled($submission->withdrawn_reason)) {
             return false;
         }
 
@@ -175,6 +205,10 @@ class SubmissionPolicy
             return false;
         }
 
+        if (filled($submission->withdrawn_reason)) {
+            return false;
+        }
+
         if ($user->can('Submission:requestRevision')) {
             return true;
         }
@@ -186,13 +220,21 @@ class SubmissionPolicy
             return false;
         }
 
+        if (filled($submission->withdrawn_reason)) {
+            return false;
+        }
+
         if ($user->can('Submission:skipReview')) {
             return true;
         }
     }
 
-    public function assignParticipant(User $user)
+    public function assignParticipant(User $user, Submission $submission)
     {
+        if (filled($submission->withdrawn_reason)) {
+            return false;
+        }
+
         if ($user->can('Submission:assignParticipant')) {
             return true;
         }
@@ -201,6 +243,10 @@ class SubmissionPolicy
     public function editing(User $user, Submission $submission)
     {
         if ($submission->stage != SubmissionStage::Editing) {
+            return false;
+        }
+
+        if (filled($submission->withdrawn_reason)) {
             return false;
         }
 
@@ -218,6 +264,7 @@ class SubmissionPolicy
         if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Declined])) {
             return false;
         }
+
         // Editors cannot withdraw submissions; they must wait for the author to request it..
         if (!filled($submission->withdrawn_reason)) {
             return false;
@@ -255,6 +302,10 @@ class SubmissionPolicy
     public function publish(User $user, Submission $submission)
     {
         if ($submission->status != SubmissionStatus::Editing) {
+            return false;
+        }
+
+        if (filled($submission->withdrawn_reason)) {
             return false;
         }
 
