@@ -2,7 +2,7 @@
 
 namespace App\Panel\Resources\Conferences\AuthorPositionResource\Pages;
 
-use App\Panel\Resources\AuthorPositionResource;
+use App\Panel\Resources\Conferences\AuthorPositionResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
 

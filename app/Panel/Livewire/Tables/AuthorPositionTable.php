@@ -3,7 +3,7 @@
 namespace App\Panel\Livewire\Tables;
 
 // use App\Panel\Livewire\Traits\PlaceholderTrait;
-use App\Panel\Resources\AuthorPositionResource;
+use App\Panel\Resources\Conferences\AuthorPositionResource;
 use Filament\Actions\CreateAction;
 use Filament\Facades\Filament;
 use Filament\Forms\Concerns\InteractsWithForms;

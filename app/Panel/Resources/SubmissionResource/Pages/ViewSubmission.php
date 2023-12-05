@@ -207,15 +207,6 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
     {
         return $infolist
             ->schema([
-                ShoutEntry::make('withdraw-information')
-                    ->visible(
-                        fn (): bool => filled($this->record->withdrawn_reason) && $this->record->status != SubmissionStatus::Withdrawn
-                    )
-                    ->content(function (): string {
-                        return "The submission is currently awaiting approval for the withdrawal request.";
-                    })
-                    ->color('warning')
-                    ->type('info'),
                 HorizontalTabs::make()
                     ->persistTabInQueryString('tab')
                     ->contained(false)
