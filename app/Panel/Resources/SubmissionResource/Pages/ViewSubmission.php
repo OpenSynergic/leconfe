@@ -5,6 +5,7 @@ namespace App\Panel\Resources\SubmissionResource\Pages;
 use App\Actions\Submissions\AcceptWithdrawalAction;
 use App\Actions\Submissions\CancelWithdrawalAction;
 use App\Actions\Submissions\RequestWithdrawalAction;
+use App\Actions\Submissions\UnpublishSubmissionAction;
 use App\Infolists\Components\LivewireEntry;
 use App\Infolists\Components\VerticalTabs\Tab as Tab;
 use App\Infolists\Components\VerticalTabs\Tabs as Tabs;
@@ -61,7 +62,25 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('unpublish')
+                ->icon('lineawesome-calendar-times-solid')
+                ->color('danger')
+                ->authorize('unpublish', $this->record)
+                ->requiresConfirmation()
+                ->successNotificationTitle("Submission unpublished")
+                ->action(function (Action $action) {
+                    UnpublishSubmissionAction::run($this->record);
+                    $action->successRedirectUrl(
+                        static::getResource()::getUrl('view', [
+                            'record' => $this->record,
+                            'stage' => '-' . str($this->record->stage->value)->slug('-') . '-tab'
+                        ])
+                    );
+
+                    $action->success();
+                }),
             Action::make('request_withdraw')
+                ->outlined()
                 ->color('danger')
                 ->authorize('requestWithdraw', $this->record)
                 ->label("Request for Withdrawal")
@@ -111,6 +130,7 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                 })
                 ->modalWidth('xl'),
             Action::make('withdraw')
+                ->outlined()
                 ->color('danger')
                 ->extraAttributes(function (Action $action) {
                     if (filled($this->record->withdrawn_reason)) {

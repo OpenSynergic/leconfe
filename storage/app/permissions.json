@@ -49,6 +49,7 @@
     "Submission:requestWithdraw",
     "Submission:review",
     "Submission:skipReview",
+    "Submission:unpublish",
     "Submission:update",
     "Submission:uploadAbstract",
     "Submission:uploadPaper",

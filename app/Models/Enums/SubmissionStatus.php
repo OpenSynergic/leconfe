@@ -17,6 +17,7 @@ enum SubmissionStatus: string implements HasLabel
     case Declined = 'Declined';
     case Scheduled = 'Scheduled';
     case Withdrawn = 'Withdrawn';
+    case Unpublished = 'Unpublished';
 
     public function getLabel(): ?string
     {

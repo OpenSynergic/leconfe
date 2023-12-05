@@ -6,6 +6,7 @@ use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Submission;
 use App\Models\User;
+use Mockery\Matcher\Subset;
 
 class SubmissionPolicy
 {
@@ -295,6 +296,17 @@ class SubmissionPolicy
         }
 
         if ($user->can('Submission:requestWithdraw')) {
+            return true;
+        }
+    }
+
+    public function unpublish(User $user, Submission $submission)
+    {
+        if ($submission->status != SubmissionStatus::Published) {
+            return false;
+        }
+
+        if ($user->can('Submission:unpublish')) {
             return true;
         }
     }
