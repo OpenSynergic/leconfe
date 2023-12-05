@@ -44,7 +44,8 @@ class PeerReview extends Component implements HasForms, HasActions
     {
         return Action::make('declineSubmissionAction')
             ->icon("lineawesome-times-solid")
-            ->authorize(fn () => auth()->user()->can('declinePaper', $this->submission))
+            ->authorize('declinePaper', $this->submission)
+            // ->authorize(fn () => auth()->user()->can('declinePaper', $this->submission))
             ->label("Decline Submission")
             ->color('danger')
             ->outlined()
@@ -92,6 +93,14 @@ class PeerReview extends Component implements HasForms, HasActions
                         $action->failure();
                     }
                 }
+
+                $action->successRedirectUrl(
+                    SubmissionResource::getUrl('view', [
+                        'record' => $this->submission->getKey(),
+                        'stage' => sprintf('-%s-tab', str($this->submission->stage->value)->slug())
+                    ])
+                );
+
                 $action->success();
             });
     }
@@ -100,7 +109,8 @@ class PeerReview extends Component implements HasForms, HasActions
     public function acceptSubmissionAction()
     {
         return Action::make('acceptSubmissionAction')
-            ->authorize(fn () => auth()->user()->can('acceptPaper', $this->submission))
+            ->authorize('acceptPaper', $this->submission)
+            // ->authorize(fn () => auth()->user()->can('acceptPaper', $this->submission))
             ->icon("lineawesome-check-circle-solid")
             ->color("primary")
             ->label("Accept Submission")
@@ -216,6 +226,13 @@ class PeerReview extends Component implements HasForms, HasActions
                     }
                 }
 
+                $action->successRedirectUrl(
+                    SubmissionResource::getUrl('view', [
+                        'record' => $this->submission->getKey(),
+                        'stage' => sprintf('-%s-tab', str($this->submission->stage->value)->slug())
+                    ])
+                );
+
                 $action->success();
             });
     }
@@ -235,6 +252,14 @@ class PeerReview extends Component implements HasForms, HasActions
                     'status' => SubmissionStatus::Editing,
                     'stage' => SubmissionStage::Editing,
                 ], $this->submission);
+
+                $action->successRedirectUrl(
+                    SubmissionResource::getUrl('view', [
+                        'record' => $this->submission->getKey(),
+                        'stage' => sprintf('-%s-tab', str($this->submission->stage->value)->slug())
+                    ])
+                );
+
                 $action->success();
             })
             ->requiresConfirmation();
