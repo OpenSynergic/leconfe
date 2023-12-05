@@ -26,17 +26,17 @@ class ManagePlugins extends ManageRecords
                     Plugin::scanPlugins();
 
                     Notification::make()
-                    ->title('Successfully scanned')
-                    ->body('New plugins should be now listed')
-                    ->success()
-                    ->send();
+                        ->title('Successfully scanned')
+                        ->body('New plugins should be now listed')
+                        ->success()
+                        ->send();
                 }),
             Actions\CreateAction::make()
-                ->modalSubmitActionLabel('Add')
-                ->successNotification(null)
                 ->using(function (array $data) {
                     Plugin::pluginInstall($data['file']);
                 })
+                ->modalSubmitActionLabel('Add')
+                ->successNotification(null)
                 ->createAnother(false),
         ];
     }

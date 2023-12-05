@@ -40,7 +40,8 @@ class PluginResource extends Resource
                     ->schema([
                         FileUpload::make('file')
                             ->disk('plugin-upload')
-                            ->acceptedFileTypes(['application/zip'])
+                            // TODO : handling error for plugin type
+                            // ->acceptedFileTypes(['application/zip'])
                             ->preserveFilenames()
                     ])
             ]);
@@ -78,7 +79,7 @@ class PluginResource extends Resource
                                 ->body("Please refresh page to take effect")
                                 ->success()
                                 ->send();
-                        } 
+                        }
                     })
             ])
             ->filters([
@@ -95,15 +96,13 @@ class PluginResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
-            ]);
+            ->emptyStateActions([]);
     }
-    
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ManagePlugins::route('/'),
         ];
-    }    
+    }
 }
