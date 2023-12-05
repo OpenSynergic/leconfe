@@ -5,7 +5,7 @@
             @livewire(App\Panel\Livewire\Submissions\Components\Files\DraftFiles::class, ['submission' => $submission, 'lazy' => true])
 
             {{-- Edited Files --}}
-            @livewire(App\Panel\Livewire\Submissions\Components\Files\EditedFiles::class, ['submission' => $submission, 'lazy' => true])
+            @livewire(App\Panel\Livewire\Submissions\Components\Files\ProductionFiles::class, ['submission' => $submission, 'lazy' => true])
         </div>
         <div class="space-y-4 col-span-4">
 

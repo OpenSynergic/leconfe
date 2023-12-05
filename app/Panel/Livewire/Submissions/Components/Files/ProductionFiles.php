@@ -4,13 +4,13 @@ namespace App\Panel\Livewire\Submissions\Components\Files;
 
 use App\Constants\SubmissionFileCategory;
 
-class EditedFiles extends SubmissionFilesTable
+class ProductionFiles extends SubmissionFilesTable
 {
     use Traits\CanSelectFiles;
 
     protected ?string $category = SubmissionFileCategory::EDITED_FILES;
 
-    protected string $tableHeading = "Edited Files";
+    protected string $tableHeading = "Production Files";
 
     public function isViewOnly(): bool
     {
