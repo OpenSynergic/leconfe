@@ -114,8 +114,9 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                 ->color('danger')
                 ->extraAttributes(function (Action $action) {
                     if (filled($this->record->withdrawn_reason)) {
+                        $attributeValue = '$nextTick(() => { $wire.mountAction(\'' . $action->getName() . '\') })';
                         return [
-                            'x-init' => new HtmlString('$wire.mountAction(\'' . $action->getName() . '\')')
+                            'x-init' => new HtmlString($attributeValue)
                         ];
                     }
                     return [];
