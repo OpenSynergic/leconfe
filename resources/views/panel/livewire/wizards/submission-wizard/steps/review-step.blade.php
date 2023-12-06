@@ -83,7 +83,7 @@
                                     Edit Files
                                 </x-filament::button>
                             </div>
-                            @livewire(App\Panel\Livewire\Submissions\Components\Files\AbstractFiles::class, ['submission' => $record, 'viewOnly' => true])
+                            @livewire(App\Panel\Livewire\Submissions\Components\Files\AbstractFiles::class, ['submission' => $record, 'viewOnly' => true, 'lazy' => true])
                         </div>
                         <div class="space-y-4">
                             <div class="flex ml-auto">
