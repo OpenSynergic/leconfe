@@ -10,6 +10,7 @@ use App\Models\Enums\SubmissionStatus;
 use App\Models\MailTemplate;
 use App\Models\Submission;
 use App\Notifications\AbstractAccepted;
+use App\Notifications\AbstractDeclined;
 use App\Panel\Livewire\Workflows\Classes\StageManager;
 use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
 use App\Panel\Resources\SubmissionResource;
@@ -76,17 +77,29 @@ class CallforAbstract extends Component implements HasForms, HasActions
 
                 if (!$data['no-notification']) {
                     try {
-                        Mail::to($this->submission->user->email)
-                            ->send(
-                                (new DeclineAbstractMail($this->submission))
-                                    ->subjectUsing($data['subject'])
-                                    ->contentUsing($data['message'])
-                            );
+                        $this->submission->user->notify(
+                            new AbstractDeclined(
+                                submission: $this->submission,
+                                message: $data['message'],
+                                subject: $data['subject'],
+                                channels: ['mail']
+                            )
+                        );
                     } catch (\Exception $e) {
                         $action->failureNotificationTitle("The email notification was not delivered.");
                         $action->failure();
                     }
                 }
+
+                $this->submission->user->notify(
+                    new AbstractDeclined(
+                        submission: $this->submission,
+                        message: $data['message'],
+                        subject: $data['subject'],
+                        channels: ['database']
+                    )
+                );
+
                 $action->success();
             })
             ->icon("lineawesome-times-circle-solid");
@@ -144,19 +157,36 @@ class CallforAbstract extends Component implements HasForms, HasActions
                         try {
                             $this->submission->user
                                 ->notify(
-                                    new AbstractAccepted($this->submission, $data['message'], $data['subject'])
+                                    new AbstractAccepted(
+                                        submission: $this->submission,
+                                        message: $data['message'],
+                                        subject: $data['subject'],
+                                        channels: ['mail']
+                                    )
                                 );
                         } catch (\Exception $e) {
                             $action->failureNotificationTitle("The email notification was not delivered.");
                             $action->failure();
                         }
                     }
+
+                    $this->submission->user
+                        ->notify(
+                            new AbstractAccepted(
+                                submission: $this->submission,
+                                message: $data['message'],
+                                subject: $data['subject'],
+                                channels: ['database']
+                            )
+                        );
+
                     $action->successRedirectUrl(
                         SubmissionResource::getUrl('view', [
                             'record' => $this->submission->getKey(),
                             'stage' => '-peer-review-tab',
                         ])
                     );
+
                     $action->success();
                 }
             );
