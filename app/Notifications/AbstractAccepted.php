@@ -46,6 +46,7 @@ class AbstractAccepted extends Notification implements ShouldQueue
                 Action::make('view-abstract')
                     ->url(SubmissionResource::getUrl('view', ['record' => $this->submission]))
                     ->label("View")
+                    ->markAsRead()
             ])
             ->toDatabase();
     }

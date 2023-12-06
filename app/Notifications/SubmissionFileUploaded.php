@@ -72,6 +72,7 @@ class SubmissionFileUploaded extends Notification implements ShouldQueue
                 Action::make('new-submission')
                     ->url(SubmissionResource::getUrl('view', ['record' => $this->submissionFile->submission]))
                     ->label("View")
+                    ->markAsRead()
             ])
             ->getDatabaseMessage();
     }
