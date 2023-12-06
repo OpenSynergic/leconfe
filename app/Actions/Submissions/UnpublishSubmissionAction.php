@@ -10,8 +10,11 @@ class UnpublishSubmissionAction
 {
     use AsAction;
 
+    // When a submission is unpublished, it should be returned to the latest status, which is editing.
     public function handle(Submission $submission)
     {
-        SubmissionUpdateAction::run(['status' => SubmissionStatus::Unpublished], $submission);
+        SubmissionUpdateAction::run([
+            'status' => SubmissionStatus::Editing,
+        ], $submission);
     }
 }
