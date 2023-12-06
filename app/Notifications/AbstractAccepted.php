@@ -15,13 +15,16 @@ class AbstractAccepted extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(public Submission $submission, public string $message = '', public string $subject = '')
+    public function __construct(public Submission $submission, public string $message = '', public string $subject = '', public array $channels = [])
     {
     }
 
     public function via($notifiable): array
     {
-        return ['database', 'mail'];
+        if (!filled($this->channels)) {
+            return ['database', 'mail'];
+        }
+        return $this->channels;
     }
 
     public function toMail($notifiable)
@@ -40,6 +43,8 @@ class AbstractAccepted extends Notification implements ShouldQueue
     public function toDatabase($notifiable)
     {
         return FilamentNotification::make('abstract-accepted')
+            ->icon('lineawesome-check-circle')
+            ->iconColor('success')
             ->title("Abstract Accepted")
             ->body("Title: {$this->submission->getMeta('title')}")
             ->actions([

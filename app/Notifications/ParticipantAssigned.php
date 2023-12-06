@@ -26,6 +26,8 @@ class ParticipantAssigned extends Notification implements ShouldQueue
     public function toDatabase($notifiable)
     {
         return FilamentNotification::make('participant-assigned')
+            ->icon('lineawesome-exclamation-circle-solid')
+            ->iconColor('primary')
             ->title("You have been assigned as a participant")
             ->body("Title: {$this->submission->getMeta('title')}")
             ->actions([

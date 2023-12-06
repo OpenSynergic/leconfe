@@ -46,6 +46,8 @@ class NewSubmission extends Notification implements ShouldQueue
     public function toDatabase(object $notifiable)
     {
         return FilamentNotification::make()
+            ->icon("lineawesome-exclamation-circle-solid")
+            ->iconColor('primary')
             ->title("New Submission")
             ->body("Title: {$this->submission->getMeta('title')}")
             ->actions([

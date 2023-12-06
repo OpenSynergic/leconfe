@@ -60,6 +60,8 @@ class SubmissionFileUploaded extends Notification implements ShouldQueue
     public function toDatabase(object $notifiable)
     {
         return FilamentNotification::make()
+            ->icon("lineawesome-exclamation-circle-solid")
+            ->iconColor('primary')
             ->title(function () {
                 return match ($this->submissionFile->category) {
                     SubmissionFileCategory::PAPER_FILES => "New Paper Uploaded",
