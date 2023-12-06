@@ -73,7 +73,7 @@ class DetailStep extends Component implements HasForms, HasWizardStep, HasAction
                         TextInput::make('meta.title')
                             ->required(),
                         SpatieTagsInput::make('meta.keywords')
-                            ->splitKeys([',', ' '])
+                            ->splitKeys([','])
                             ->placeholder('')
                             ->model($this->record)
                             ->type('submissionKeywords'),
