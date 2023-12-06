@@ -3,6 +3,7 @@
 namespace App\Panel\Resources;
 
 use App\Constants\ReviewerStatus;
+use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
 use App\Models\Submission;
@@ -163,7 +164,8 @@ class SubmissionResource extends Resource
                                         fn (Builder $query) => $query->where('name', UserRole::Editor)
                                     )
                                     ->count();
-                                if (!$editorAssigned) {
+
+                                if (!$editorAssigned && $record->stage != SubmissionStage::Wizard) {
                                     return 'No Editor Assigned';
                                 }
                             }),
