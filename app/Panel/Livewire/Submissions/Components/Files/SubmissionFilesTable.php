@@ -38,6 +38,8 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
 
     protected string $tableHeading = 'Files';
 
+    protected string $tableDescription = '';
+
     public function isViewOnly(): bool
     {
         return $this->viewOnly;
@@ -219,6 +221,11 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
         return $this->submission->submissionFiles()->where('category', $this->category)->getQuery();
     }
 
+    public function tableDescription(): string
+    {
+        return $this->tableDescription;
+    }
+
     public function tableHeading(): string
     {
         return $this->tableHeading;
@@ -228,6 +235,7 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
     {
         return $table
             ->heading($this->tableHeading())
+            ->description($this->tableDescription())
             ->emptyStateHeading("No Files")
             ->query($this->tableQuery())
             ->columns($this->tableColumns())

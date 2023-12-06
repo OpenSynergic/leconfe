@@ -12,6 +12,8 @@ class RevisionFiles extends SubmissionFilesTable
 
     protected string $tableHeading = "Revisions";
 
+    protected string $tableDescription = "Upload your revision files here.";
+
     public function isViewOnly(): bool
     {
         return $this->submission->stage != SubmissionStage::PeerReview || !$this->submission->revision_required;
