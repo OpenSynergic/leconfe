@@ -80,7 +80,7 @@
         "Venue:viewAny",
         "Plugin:create",
         "Plugin:delete",
-        "Plugin:viewAny"
+        "Plugin:viewAny",
         "Workflow:update",
         "WorkflowSetting:update"
     ],
