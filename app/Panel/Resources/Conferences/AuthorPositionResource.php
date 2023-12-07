@@ -69,7 +69,7 @@ class AuthorPositionResource extends Resource
                         try {
                             $authorCount = $record->participants()->count();
                             if ($authorCount > 0) {
-                                throw new \Exception('Cannot delete ' . $record->name . ', there are authors who are still associated with this position');
+                                throw new \Exception('Cannot delete '.$record->name.', there are authors who are still associated with this position');
                             }
 
                             return $record->delete();

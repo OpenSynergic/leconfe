@@ -4,7 +4,6 @@ namespace App\Panel\Livewire\Workflows\Concerns;
 
 trait CanModifySetting
 {
-
     public array $settings = [];
 
     public function getSetting(string $key, mixed $default = false): mixed

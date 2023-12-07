@@ -5,7 +5,6 @@ namespace App\Panel\Resources\Conferences;
 use App\Actions\Participants\ParticipantCreateAction;
 use App\Models\Participant;
 use App\Panel\Resources\Conferences\AuthorResource\Pages;
-use App\Panel\Resources\Conferences\ParticipantResource;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -41,7 +40,7 @@ class AuthorResource extends Resource
                 'positions' => fn ($query) => $query
                     ->whereType(AuthorPositionResource::$positionType),
                 'media',
-                'meta'
+                'meta',
             ])
             ->whereHas(
                 'positions',
@@ -79,7 +78,7 @@ class AuthorResource extends Resource
         return $table
             ->reorderable('order_column')
 
-            ->heading("Author table")
+            ->heading('Author table')
             ->headerActions([
                 ActionGroup::make([
                     CreateAction::make()
@@ -87,12 +86,12 @@ class AuthorResource extends Resource
                         ->icon('heroicon-o-user-plus')
                         ->using(fn (array $data) => ParticipantCreateAction::run($data)),
                     Action::make('add_existing')
-                        ->label("Add Existing")
+                        ->label('Add Existing')
                         ->icon('heroicon-o-plus')
-                        ->modalWidth("xl")
+                        ->modalWidth('xl')
                         ->form([
                             Select::make('participant_id')
-                                ->label("Author")
+                                ->label('Author')
                                 ->required()
                                 ->preload()
                                 ->searchable()
@@ -138,7 +137,7 @@ class AuthorResource extends Resource
                             return Participant::find(data_get($data, 'participant_id'))
                                 ->positions()
                                 ->attach(data_get($data, 'positions'));
-                        })
+                        }),
                 ])->button(),
             ])
             ->columns([

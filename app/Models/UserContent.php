@@ -54,7 +54,7 @@ class UserContent extends Model implements HasMedia
             ->slugsShouldBeNoLongerThan(50);
     }
 
-    public function registerMediaConversions(Media $media = null): void
+    public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumb')
             ->keepOriginalImageFormat()

@@ -117,7 +117,7 @@ class SubmissionResource extends Resource
 
                 return static::getUrl('view', [
                     'record' => $record->id,
-                    'stage' => '-' . str($record->stage->value)->slug('-') . '-tab'
+                    'stage' => '-'.str($record->stage->value)->slug('-').'-tab',
                 ]);
             })
             ->columns([
@@ -134,7 +134,7 @@ class SubmissionResource extends Resource
                             }),
                         Tables\Columns\TextColumn::make('status')
                             ->extraAttributes([
-                                'class' => 'mt-2'
+                                'class' => 'mt-2',
                             ])
                             ->badge()
                             ->color(fn (Submission $record): string => match ($record->status) {
@@ -154,7 +154,7 @@ class SubmissionResource extends Resource
                         Tables\Columns\TextColumn::make('editor-assigned-badges')
                             ->badge()
                             ->extraAttributes([
-                                'class' => 'mt-2'
+                                'class' => 'mt-2',
                             ])
                             ->color('warning')
                             ->getStateUsing(function (Submission $record) {
@@ -165,27 +165,27 @@ class SubmissionResource extends Resource
                                     )
                                     ->count();
 
-                                if (!$editorAssigned && $record->stage != SubmissionStage::Wizard) {
+                                if (! $editorAssigned && $record->stage != SubmissionStage::Wizard) {
                                     return 'No Editor Assigned';
                                 }
                             }),
                         Tables\Columns\TextColumn::make('withdrawn-notification')
                             ->badge()
                             ->extraAttributes([
-                                'class' => 'mt-2'
+                                'class' => 'mt-2',
                             ])
                             ->color('danger')
                             ->getStateUsing(function (Submission $record) {
                                 if (filled($record->withdrawn_reason)) {
-                                    return "Pending Withdrawal";
+                                    return 'Pending Withdrawal';
                                 }
                             }),
-                    ])
-                ])
+                    ]),
+                ]),
             ])
             ->actions([
                 Tables\Actions\Action::make('view')
-                    ->icon("lineawesome-eye-solid")
+                    ->icon('lineawesome-eye-solid')
                     ->authorize(function (Submission $record) {
                         return auth()->user()->can('view', $record);
                     })
@@ -205,7 +205,7 @@ class SubmissionResource extends Resource
                     ->options(
                         SubmissionStatus::array()
                     )
-                    ->searchable()
+                    ->searchable(),
             ]);
     }
 

@@ -8,13 +8,12 @@ use Awcodes\Shout\Components\ShoutEntry;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Illuminate\Support\HtmlString;
-use Illuminate\Support\Js;
 
 trait CanSelectFiles
 {
-    abstract function getTargetCategory(): string;
+    abstract public function getTargetCategory(): string;
 
-    abstract function getSelectableCategories(): array;
+    abstract public function getSelectableCategories(): array;
 
     public function uploadAction()
     {
@@ -22,16 +21,16 @@ trait CanSelectFiles
             Action::make('select-files')
                 ->hidden($this->isViewOnly())
                 ->modalSubmitAction(false)
-                ->modalCancelActionLabel("Close")
-                ->icon("iconpark-check")
+                ->modalCancelActionLabel('Close')
+                ->icon('iconpark-check')
                 ->label('Select Files')
                 ->extraAttributes([
-                    'x-on:close-select-files.window' => new HtmlString('$wire.unmountTableAction(\'select-files\')')
+                    'x-on:close-select-files.window' => new HtmlString('$wire.unmountTableAction(\'select-files\')'),
                 ])
                 ->infolist([
                     ShoutEntry::make('information')
-                        ->color("info")
-                        ->content("Choose the files to create duplicates."),
+                        ->color('info')
+                        ->content('Choose the files to create duplicates.'),
                     LivewireEntry::make('list-files')
                         ->livewire(
                             SelectFiles::class,
@@ -39,13 +38,13 @@ trait CanSelectFiles
                                 'submission' => $this->submission,
                                 'targetCategory' => $this->getTargetCategory(),
                                 'selectableCategories' => $this->getSelectableCategories(),
-                                'lazy' => true
+                                'lazy' => true,
                             ]
-                        )
+                        ),
                 ]),
             Action::make('upload')
-                ->icon("iconpark-upload")
-                ->label("Upload Files")
+                ->icon('iconpark-upload')
+                ->label('Upload Files')
                 ->hidden(
                     fn (): bool => $this->submission->isDeclined() ?: $this->isViewOnly()
                 )
@@ -57,7 +56,7 @@ trait CanSelectFiles
                 ->failureNotificationTitle('There was a problem adding the files')
                 ->action(
                     fn (array $data, Action $action) => $this->handleUploadAction($data, $action)
-                )
+                ),
         ])
             ->button();
     }

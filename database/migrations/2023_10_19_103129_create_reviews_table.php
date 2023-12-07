@@ -1,7 +1,6 @@
 <?php
 
 use App\Constants\ReviewerStatus;
-use App\Models\Participant;
 use App\Models\Review;
 use App\Models\Submission;
 use App\Models\SubmissionFile;
@@ -24,8 +23,8 @@ return new class extends Migration
             $table->string('recommendation')->nullable();
             $table->string('status')->default(ReviewerStatus::PENDING);
             $table->integer('quality')->nullable();
-            $table->longText("review_author_editor")->nullable();
-            $table->longText("review_editor")->nullable();
+            $table->longText('review_author_editor')->nullable();
+            $table->longText('review_editor')->nullable();
             $table->timestamp('date_assigned')->useCurrent();
             $table->timestamp('date_confirmed')->nullable();
             $table->timestamp('date_completed')->nullable();

@@ -24,9 +24,9 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\Support\MediaStream;
 
-abstract class SubmissionFilesTable extends \Livewire\Component implements HasTable, HasForms
+abstract class SubmissionFilesTable extends \Livewire\Component implements HasForms, HasTable
 {
-    use InteractsWithTable, InteractsWithForms;
+    use InteractsWithForms, InteractsWithTable;
 
     public const ACCEPTED_FILE_TYPES = ['pdf', 'docx', 'xls', 'png', 'jpg', 'jpeg'];
 
@@ -63,14 +63,14 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
                 ->label('Filename')
                 ->color('primary')
                 ->action(fn (Model $record) => $record->media)
-                ->description(fn (Model $record) => $record->type->name)
+                ->description(fn (Model $record) => $record->type->name),
         ];
     }
 
     public function downloadAllAction()
     {
         return TableAction::make('download_all')
-            ->icon("iconpark-download-o")
+            ->icon('iconpark-download-o')
             ->label('Download All Files')
             ->button()
             ->hidden(fn (): bool => $this->isViewOnly())
@@ -100,8 +100,8 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
                 ])
                 ->createOptionAction(function (FormAction $action) {
                     $action->modalWidth('xl')
-                        ->failureNotificationTitle("There was a problem creating the file type")
-                        ->successNotificationTitle("File type created successfully");
+                        ->failureNotificationTitle('There was a problem creating the file type')
+                        ->successNotificationTitle('File type created successfully');
                 })
                 ->createOptionUsing(function (array $data) {
                     SubmissionFileType::create($data);
@@ -124,7 +124,7 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
                 ->model(fn () => $this->submission)
                 ->saveRelationshipsUsing(
                     static fn (SpatieMediaLibraryFileUpload $component) => $component->saveUploadedFiles()
-                )
+                ),
         ];
     }
 
@@ -145,7 +145,7 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
     public function uploadAction()
     {
         return TableAction::make('upload')
-            ->icon("iconpark-upload")
+            ->icon('iconpark-upload')
             ->label('Upload Files')
             ->hidden(fn (): bool => $this->isViewOnly())
             ->modalWidth('xl')
@@ -163,7 +163,7 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
     {
         return [
             $this->downloadAllAction(),
-            $this->uploadAction()
+            $this->uploadAction(),
         ];
     }
 
@@ -171,46 +171,47 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
     {
         return [
             TableAction::make('rename')
-                ->icon("iconpark-edit")
-                ->label("Rename")
+                ->icon('iconpark-edit')
+                ->label('Rename')
                 ->modalWidth('md')
                 ->modalHeading('Edit file')
-                ->modalHeading("Rename")
+                ->modalHeading('Rename')
                 ->hidden(
                     fn (): bool => $this->isViewOnly() || $this->submission->isDeclined()
                 )
-                ->successNotificationTitle("File renamed successfully")
+                ->successNotificationTitle('File renamed successfully')
                 ->mountUsing(function (SubmissionFile $record, Form $form) {
                     $form->fill([
-                        'file_name' => $record->media->file_name
+                        'file_name' => $record->media->file_name,
                     ]);
                 })
                 ->action(function (SubmissionFile $record, array $data, TableAction $action) {
                     $record->media->update([
                         'file_name' => $data['file_name'],
-                        'name' => $data['file_name']
+                        'name' => $data['file_name'],
                     ]);
                     $action->success();
                 })
-                ->modalSubmitActionLabel("Rename")
+                ->modalSubmitActionLabel('Rename')
                 ->form([
                     TextInput::make('file_name')
-                        ->label("New Filename")
+                        ->label('New Filename')
                         ->formatStateUsing(function (SubmissionFile $record) {
-                            return str($record->media->file_name)->beforeLast('.' . $record->media->extension);
+                            return str($record->media->file_name)->beforeLast('.'.$record->media->extension);
                         })
                         ->dehydrateStateUsing(function (SubmissionFile $record, $state) {
-                            return str($state)->append('.' . $record->media->extension);
+                            return str($state)->append('.'.$record->media->extension);
                         })
                         ->suffix(function (SubmissionFile $record) {
-                            return '.' . $record->media->extension;
-                        })
+                            return '.'.$record->media->extension;
+                        }),
                 ]),
             DeleteAction::make()
                 ->hidden(function (): bool {
                     if ($this->submission->isDeclined()) {
                         return true;
                     }
+
                     return $this->isViewOnly();
                 }),
         ];
@@ -236,7 +237,7 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasTa
         return $table
             ->heading($this->tableHeading())
             ->description($this->tableDescription())
-            ->emptyStateHeading("No Files")
+            ->emptyStateHeading('No Files')
             ->query($this->tableQuery())
             ->columns($this->tableColumns())
             ->headerActions($this->headerActions())

@@ -42,9 +42,9 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\Compilers\BladeCompiler;
 
-class ViewSubmission extends Page implements HasInfolists, HasForms
+class ViewSubmission extends Page implements HasForms, HasInfolists
 {
-    use InteractsWithInfolists, InteractsWithForms, InteractsWithRecord, InteractWithTenant;
+    use InteractsWithForms, InteractsWithInfolists, InteractsWithRecord, InteractWithTenant;
 
     protected static string $resource = SubmissionResource::class;
 
@@ -67,13 +67,13 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                 ->color('danger')
                 ->authorize('unpublish', $this->record)
                 ->requiresConfirmation()
-                ->successNotificationTitle("Submission unpublished")
+                ->successNotificationTitle('Submission unpublished')
                 ->action(function (Action $action) {
                     UnpublishSubmissionAction::run($this->record);
                     $action->successRedirectUrl(
                         static::getResource()::getUrl('view', [
                             'record' => $this->record,
-                            'stage' => '-' . str($this->record->stage->value)->slug('-') . '-tab'
+                            'stage' => '-'.str($this->record->stage->value)->slug('-').'-tab',
                         ])
                     );
 
@@ -83,16 +83,16 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                 ->outlined()
                 ->color('danger')
                 ->authorize('requestWithdraw', $this->record)
-                ->label("Request for Withdrawal")
+                ->label('Request for Withdrawal')
                 ->icon('lineawesome-times-circle-solid')
                 ->form([
                     Textarea::make('reason')
                         ->required()
                         ->placeholder('Reason for withdrawal')
-                        ->label("Reason")
+                        ->label('Reason'),
                 ])
                 ->requiresConfirmation()
-                ->successNotificationTitle("Withdraw Requested, Please wait for editor to approve")
+                ->successNotificationTitle('Withdraw Requested, Please wait for editor to approve')
                 ->action(function (Action $action, array $data) {
                     RequestWithdrawalAction::run(
                         $this->record,
@@ -110,20 +110,19 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                                 fn ($manager) => $manager->notify(new SubmissionWithdrawRequested($this->record))
                             );
 
-
                         $this->record->getEditors()
                             ->each(function (User $editor) {
                                 $editor->notify(new SubmissionWithdrawRequested($this->record));
                             });
                     } catch (\Exception $e) {
-                        $action->failureNotificationTitle("Failed to send notification");
+                        $action->failureNotificationTitle('Failed to send notification');
                         $action->failure();
                     }
 
                     $action->successRedirectUrl(
                         SubmissionResource::getUrl('view', [
                             'record' => $this->record,
-                            'stage' => '-' . str($this->record->stage->value)->slug('-') . '-tab'
+                            'stage' => '-'.str($this->record->stage->value)->slug('-').'-tab',
                         ]),
                     );
                     $action->success();
@@ -134,17 +133,19 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                 ->color('danger')
                 ->extraAttributes(function (Action $action) {
                     if (filled($this->record->withdrawn_reason)) {
-                        $attributeValue = '$nextTick(() => { $wire.mountAction(\'' . $action->getName() . '\') })';
+                        $attributeValue = '$nextTick(() => { $wire.mountAction(\''.$action->getName().'\') })';
+
                         return [
-                            'x-init' => new HtmlString($attributeValue)
+                            'x-init' => new HtmlString($attributeValue),
                         ];
                     }
+
                     return [];
                 })
                 ->authorize('withdraw', $this->record)
                 ->mountUsing(function (Form $form) {
                     $form->fill([
-                        'reason' => $this->record->withdrawn_reason
+                        'reason' => $this->record->withdrawn_reason,
                     ]);
                 })
                 ->form([
@@ -152,16 +153,16 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                         ->readonly()
                         ->hint('Read Only')
                         ->placeholder('Reason for withdrawal')
-                        ->label("Reason")
+                        ->label('Reason'),
                 ])
                 ->requiresConfirmation()
                 ->modalHeading(function () {
-                    return $this->record->user->fullName . ' has requested to withdraw this submission.';
+                    return $this->record->user->fullName.' has requested to withdraw this submission.';
                 })
                 ->modalDescription("You can either reject the request or accept it, remember it can't be undone.")
-                ->modalCancelActionLabel("Ignore")
-                ->modalSubmitActionLabel("Withdraw")
-                ->successNotificationTitle("Withdrawn")
+                ->modalCancelActionLabel('Ignore')
+                ->modalSubmitActionLabel('Withdraw')
+                ->successNotificationTitle('Withdrawn')
                 ->extraModalFooterActions([
                     Action::make('reject')
                         ->color('warning')
@@ -171,12 +172,12 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                             $action->successRedirectUrl(
                                 SubmissionResource::getUrl('view', [
                                     'record' => $this->record,
-                                    'stage' => '-' . str($this->record->stage->value)->slug('-') . '-tab'
+                                    'stage' => '-'.str($this->record->stage->value)->slug('-').'-tab',
                                 ]),
                             );
-                            $action->successNotificationTitle("Withdrawal request rejected");
+                            $action->successNotificationTitle('Withdrawal request rejected');
                             $action->success();
-                        })
+                        }),
                 ])
                 ->action(function (Action $action) {
                     AcceptWithdrawalAction::run($this->record);
@@ -185,31 +186,31 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                             new SubmissionWithdrawn($this->record)
                         );
                     } catch (\Exception $e) {
-                        $action->failureNotificationTitle("Failed to send notification");
+                        $action->failureNotificationTitle('Failed to send notification');
                         $action->failure();
                     }
                     $action->successRedirectUrl(
                         SubmissionResource::getUrl('view', [
                             'record' => $this->record,
-                            'stage' => '-' . str($this->record->stage->value)->slug('-') . '-tab'
+                            'stage' => '-'.str($this->record->stage->value)->slug('-').'-tab',
                         ]),
                     );
                     $action->success();
                 })
-                ->modalWidth('2xl')
+                ->modalWidth('2xl'),
         ];
     }
 
     public function getSubheading(): string|Htmlable|null
     {
         $badgeHtml = match ($this->record->status) {
-            SubmissionStatus::Queued => '<x-filament::badge color="primary" class="w-fit">' . SubmissionStatus::Queued->value . '</x-filament::badge>',
-            SubmissionStatus::Declined => '<x-filament::badge color="danger" class="w-fit">' . SubmissionStatus::Declined->value . '</x-filament::badge>',
-            SubmissionStatus::Withdrawn => '<x-filament::badge color="danger" class="w-fit">' . SubmissionStatus::Withdrawn->value . '</x-filament::badge>',
-            SubmissionStatus::Published => '<x-filament::badge color="success" class="w-fit">' . SubmissionStatus::Published->value . '</x-filament::badge>',
-            SubmissionStatus::OnReview => '<x-filament::badge color="warning" class="w-fit">' . SubmissionStatus::OnReview->value . '</x-filament::badge>',
-            SubmissionStatus::Incomplete => '<x-filament::badge color="gray" class="w-fit">' . SubmissionStatus::Incomplete->value . '</x-filament::badge>',
-            SubmissionStatus::Editing => '<x-filament::badge color="info" class="w-fit">' . SubmissionStatus::Editing->value . '</x-filament::badge>',
+            SubmissionStatus::Queued => '<x-filament::badge color="primary" class="w-fit">'.SubmissionStatus::Queued->value.'</x-filament::badge>',
+            SubmissionStatus::Declined => '<x-filament::badge color="danger" class="w-fit">'.SubmissionStatus::Declined->value.'</x-filament::badge>',
+            SubmissionStatus::Withdrawn => '<x-filament::badge color="danger" class="w-fit">'.SubmissionStatus::Withdrawn->value.'</x-filament::badge>',
+            SubmissionStatus::Published => '<x-filament::badge color="success" class="w-fit">'.SubmissionStatus::Published->value.'</x-filament::badge>',
+            SubmissionStatus::OnReview => '<x-filament::badge color="warning" class="w-fit">'.SubmissionStatus::OnReview->value.'</x-filament::badge>',
+            SubmissionStatus::Incomplete => '<x-filament::badge color="gray" class="w-fit">'.SubmissionStatus::Incomplete->value.'</x-filament::badge>',
+            SubmissionStatus::Editing => '<x-filament::badge color="info" class="w-fit">'.SubmissionStatus::Editing->value.'</x-filament::badge>',
             default => null,
         };
 
@@ -237,40 +238,40 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                                     ->persistTabInQueryString('stage')
                                     ->sticky()
                                     ->tabs([
-                                        Tab::make("Call for Abstract")
-                                            ->icon("heroicon-o-information-circle")
+                                        Tab::make('Call for Abstract')
+                                            ->icon('heroicon-o-information-circle')
                                             ->schema([
                                                 LivewireEntry::make('call-for-abstract')
                                                     ->livewire(CallforAbstract::class, [
-                                                        'submission' => $this->record
-                                                    ])
+                                                        'submission' => $this->record,
+                                                    ]),
                                             ]),
-                                        Tab::make("Peer Review")
+                                        Tab::make('Peer Review')
                                             ->visible(
                                                 fn (): bool => StageManager::peerReview()->isStageOpen()
                                             )
-                                            ->icon("iconpark-checklist-o")
+                                            ->icon('iconpark-checklist-o')
                                             ->schema([
                                                 LivewireEntry::make('peer-review')
                                                     ->livewire(PeerReview::class, [
-                                                        'submission' => $this->record
-                                                    ])
+                                                        'submission' => $this->record,
+                                                    ]),
                                             ]),
-                                        Tab::make("Editing")
+                                        Tab::make('Editing')
                                             ->visible(fn (): bool => StageManager::editing()->isStageOpen())
-                                            ->icon("heroicon-o-pencil")
+                                            ->icon('heroicon-o-pencil')
                                             ->schema([
                                                 LivewireEntry::make('editing')
                                                     ->livewire(Editing::class, [
-                                                        'submission' => $this->record
-                                                    ])
-                                            ])
+                                                        'submission' => $this->record,
+                                                    ]),
+                                            ]),
                                     ])
-                                    ->maxWidth('full')
+                                    ->maxWidth('full'),
                             ]),
                         HorizontalTab::make('Publication')
                             ->extraAttributes([
-                                'x-on:open-publication-tab.window' => new HtmlString('tab = \'-publication-tab\'')
+                                'x-on:open-publication-tab.window' => new HtmlString('tab = \'-publication-tab\''),
                             ])
                             ->schema([
                                 ShoutEntry::make('can-not-edit')
@@ -284,41 +285,41 @@ class ViewSubmission extends Page implements HasInfolists, HasForms
                                     ->persistTabInQueryString('ptab') // ptab shorten of publication-tab
                                     ->tabs([
                                         Tab::make('Detail')
-                                            ->icon("heroicon-o-information-circle")
+                                            ->icon('heroicon-o-information-circle')
                                             ->schema([
                                                 LivewireEntry::make('detail-form')
                                                     ->livewire(Detail::class, [
-                                                        'submission' => $this->record
-                                                    ])
+                                                        'submission' => $this->record,
+                                                    ]),
                                             ]),
                                         Tab::make('Contributors')
-                                            ->icon("heroicon-o-user-group")
+                                            ->icon('heroicon-o-user-group')
                                             ->schema([
                                                 LivewireEntry::make('contributors')
                                                     ->livewire(ContributorList::class, [
                                                         'submission' => $this->record,
-                                                        'viewOnly' => !auth()->user()->can('editing', $this->record),
-                                                    ])
+                                                        'viewOnly' => ! auth()->user()->can('editing', $this->record),
+                                                    ]),
                                             ]),
                                         Tab::make('References')
-                                            ->icon("iconpark-list")
+                                            ->icon('iconpark-list')
                                             ->schema([
                                                 LivewireEntry::make('references')
                                                     ->livewire(References::class, [
                                                         'submission' => $this->record,
-                                                    ])
+                                                    ]),
                                             ]),
                                         Tab::make('Proceeding')
-                                            ->icon("iconpark-check-o")
+                                            ->icon('iconpark-check-o')
                                             ->schema([
                                                 LivewireEntry::make('publishing')
                                                     ->livewire(Publish::class, [
-                                                        'submission' => $this->record
-                                                    ])
+                                                        'submission' => $this->record,
+                                                    ]),
                                             ]),
-                                    ])
-                            ])
-                    ])
+                                    ]),
+                            ]),
+                    ]),
             ]);
     }
 

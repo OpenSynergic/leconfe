@@ -7,11 +7,10 @@ use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
 
 class StageManager
 {
+    use CanOpenStage;
     use InteractWithTenant {
         InteractWithTenant::__construct as __constructInteractWithTenant;
     }
-
-    use CanOpenStage;
 
     public function __construct(protected string $stage)
     {

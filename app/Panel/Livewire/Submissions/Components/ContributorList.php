@@ -26,7 +26,7 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 
-class ContributorList extends \Livewire\Component implements HasTable, HasForms
+class ContributorList extends \Livewire\Component implements HasForms, HasTable
 {
     use InteractsWithForms, InteractsWithTable;
 
@@ -42,14 +42,14 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
                 'positions' => fn ($query) => $query
                     ->whereIn('type', ['author', 'speaker']),
                 'media',
-                'meta'
+                'meta',
             ])
             ->when(
                 $submissionRelated,
                 fn (Builder $query) => $query->whereIn('id', $this->submission->contributors()->pluck('participant_id'))
             )
             ->when(
-                !$submissionRelated,
+                ! $submissionRelated,
                 fn (Builder $query) => $query->whereNotIn('id', $this->submission->contributors()->pluck('participant_id'))
             )
             ->orderBy('order_column');
@@ -76,13 +76,14 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
                 ]),
         ];
     }
+
     public function table(Table $table): Table
     {
         return $table
             ->reorderable(
                 fn () => $this->viewOnly ? false : 'order_column'
             )
-            ->heading("Contributors")
+            ->heading('Contributors')
             ->query(
                 fn (): Builder => $this->getQuery()
             )
@@ -97,6 +98,7 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
                             $data['meta'] = $record->getAllMeta()->toArray();
                             $contributor = $this->submission->contributors()->where('participant_id', $record->getKey())->first();
                             $data['position'] = $contributor->position->getKey();
+
                             return $data;
                         })
                         ->form(static::getContributorFormSchema())
@@ -105,11 +107,12 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
                             $this->submission
                                 ->contributors()
                                 ->updateOrCreate([
-                                    'participant_id' => $participant->getKey()
+                                    'participant_id' => $participant->getKey(),
                                 ], [
                                     'participant_id' => $participant->getKey(),
-                                    'participant_position_id' => $data['position']
+                                    'participant_position_id' => $data['position'],
                                 ]);
+
                             return $participant;
                         }),
                     DeleteAction::make()
@@ -118,22 +121,22 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
                         })
                         ->hidden(
                             fn (Participant $record): bool => $record->email == auth()->user()->email
-                        )
+                        ),
                 ])
-                    ->hidden($this->viewOnly)
+                    ->hidden($this->viewOnly),
             ])
             ->headerActions([
                 ActionGroup::make([
                     CreateAction::make()
                         ->label('Create new')
                         ->modalWidth('2xl')
-                        ->modalHeading("Add Contributor")
-                        ->successNotificationTitle("Contributor added")
+                        ->modalHeading('Add Contributor')
+                        ->successNotificationTitle('Contributor added')
                         ->record($this->submission)
                         ->form(static::getContributorFormSchema())
                         ->using(function (array $data) {
                             $participant = Participant::email($data['email'])->first();
-                            if (!$participant) {
+                            if (! $participant) {
                                 $participant = ParticipantCreateAction::run($data);
                             }
                             $this->submission
@@ -142,18 +145,19 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
                                     'participant_id' => $participant->getKey(),
                                 ], [
                                     'participant_id' => $participant->getKey(),
-                                    'participant_position_id' => $data['position']
+                                    'participant_position_id' => $data['position'],
                                 ]);
+
                             return $participant;
                         }),
                     Action::make('add_existing')
-                        ->label("Add from existing")
-                        ->modalWidth("lg")
+                        ->label('Add from existing')
+                        ->modalWidth('lg')
                         ->form([
                             Grid::make()
                                 ->schema([
                                     Select::make('participant_id')
-                                        ->label("Name")
+                                        ->label('Name')
                                         ->options(function () {
                                             return $this->getQuery(submissionRelated: false)
                                                 ->get()
@@ -172,22 +176,23 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
                                         ->preload()
                                         ->required()
                                         ->columnSpanFull(),
-                                ])
+                                ]),
                         ])
                         ->action(function (array $data) {
                             $participant = Participant::find($data['participant_id']);
                             $this->submission->contributors()->updateOrCreate([
-                                'participant_id' => $participant->getKey()
+                                'participant_id' => $participant->getKey(),
                             ], [
                                 'participant_id' => $participant->getKey(),
-                                'participant_position_id' => $data['type']
+                                'participant_position_id' => $data['type'],
                             ]);
+
                             return $participant;
-                        })
+                        }),
                 ])
                     ->button()
-                    ->label("Add Contributor")
-                    ->hidden($this->viewOnly)
+                    ->label('Add Contributor')
+                    ->hidden($this->viewOnly),
             ])
             ->columns([
                 Split::make([
@@ -204,27 +209,28 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
                             'style' => 'width: 1px',
                         ])
                         ->circular()
-                        ->toggleable(!$this->viewOnly),
+                        ->toggleable(! $this->viewOnly),
                     Stack::make([
                         TextColumn::make('fullName')
                             ->formatStateUsing(function (Participant $record) {
                                 if ($record->email == auth()->user()->email) {
-                                    return $record->fullName . " (You)";
+                                    return $record->fullName.' (You)';
                                 }
+
                                 return $record->fullName;
                             }),
                         TextColumn::make('affiliation')
-                            ->size("xs")
+                            ->size('xs')
                             ->getStateUsing(
                                 fn (Participant $record) => $record->getMeta('affiliation')
                             )
-                            ->icon("heroicon-o-building-library")
+                            ->icon('heroicon-o-building-library')
                             ->extraAttributes([
                                 'class' => 'text-xs',
                             ])
                             ->color('gray'),
                         TextColumn::make('email')
-                            ->size("xs")
+                            ->size('xs')
                             ->extraAttributes([
                                 'class' => 'text-xs',
                             ])
@@ -232,7 +238,7 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
                             ->icon('heroicon-o-envelope')
                             ->alignStart(),
                     ])->space(1),
-                    TextColumn::make("position")
+                    TextColumn::make('position')
                         ->getStateUsing(function (Participant $record) {
                             /**
                              * Questions:
@@ -241,11 +247,12 @@ class ContributorList extends \Livewire\Component implements HasTable, HasForms
                             $contributor = $this->submission->contributors()
                                 ->where('participant_id', $record->getKey())
                                 ->first();
+
                             return $contributor->position->name;
                         })
                         ->badge()
-                        ->alignEnd()
-                ])
+                        ->alignEnd(),
+                ]),
             ]);
     }
 

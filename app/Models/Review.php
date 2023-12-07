@@ -10,12 +10,12 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Review extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia, HasShortflakePrimary;
+    use HasFactory, HasShortflakePrimary, InteractsWithMedia;
 
     protected $casts = [
         'date_assigned' => 'datetime',
         'date_confirmed' => 'datetime',
-        'date_completed' => 'datetime'
+        'date_completed' => 'datetime',
     ];
 
     protected $fillable = [
@@ -28,7 +28,7 @@ class Review extends Model implements HasMedia
         'date_completed',
         'quality',
         'review_author_editor',
-        'review_editor'
+        'review_editor',
     ];
 
     protected static function booted(): void
@@ -42,7 +42,7 @@ class Review extends Model implements HasMedia
 
     public function reviewSubmitted(): bool
     {
-        return !is_null($this->recommendation) && !is_null($this->date_completed);
+        return ! is_null($this->recommendation) && ! is_null($this->date_completed);
     }
 
     public function assignedFiles()
@@ -77,7 +77,7 @@ class Review extends Model implements HasMedia
 
     public function confirmed(): bool
     {
-        return !$this->needConfirmation();
+        return ! $this->needConfirmation();
     }
 
     public function needConfirmation(): bool

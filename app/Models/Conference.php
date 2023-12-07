@@ -101,7 +101,7 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
         return $this->getFirstMediaUrl('logo', 'tenant');
     }
 
-    public function registerMediaConversions(Media $media = null): void
+    public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('tenant')
             ->keepOriginalImageFormat()

@@ -35,7 +35,7 @@ class ParticipantPositionPopulateDefaultDataAction
 
             foreach ([
                 UserRole::Author->value,
-                'Co Author'
+                'Co Author',
             ] as $authorPosition) {
                 ParticipantPosition::firstOrCreate([
                     'name' => $authorPosition,

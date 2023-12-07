@@ -23,7 +23,7 @@ class ConferencePolicy
      */
     public function update(User $user, Conference $conference)
     {
-        if (!in_array($conference->status, [ConferenceStatus::Active, ConferenceStatus::Upcoming])) {
+        if (! in_array($conference->status, [ConferenceStatus::Active, ConferenceStatus::Upcoming])) {
             return false;
         }
 

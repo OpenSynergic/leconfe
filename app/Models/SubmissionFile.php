@@ -17,7 +17,7 @@ class SubmissionFile extends Model
         'submission_file_type_id',
         'media_id',
         'user_id',
-        'category'
+        'category',
     ];
 
     protected $with = ['type'];
@@ -36,7 +36,7 @@ class SubmissionFile extends Model
                 $createdModel->category,
                 [
                     SubmissionFileCategory::PAPER_FILES,
-                    SubmissionFileCategory::REVISION_FILES
+                    SubmissionFileCategory::REVISION_FILES,
                 ]
             );
 

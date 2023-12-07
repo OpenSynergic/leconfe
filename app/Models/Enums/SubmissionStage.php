@@ -11,9 +11,9 @@ enum SubmissionStage: string implements HasLabel
 
     case Wizard = 'Wizard';
     case CallforAbstract = 'Call for Abstract';
-    case PeerReview = "Peer Review";
-    case Editing = "Editing";
-    case Proceeding = "Proceeding";
+    case PeerReview = 'Peer Review';
+    case Editing = 'Editing';
+    case Proceeding = 'Proceeding';
 
     public function getLabel(): ?string
     {

@@ -28,7 +28,7 @@ class NewRevisionUploadedMail extends TemplateMailable
 
     public static function getDefaultHtmlTemplate(): string
     {
-        return <<<HTML
+        return <<<'HTML'
             <p>This is a automatic notification to let you know that "{{ uploader }}" has uploaded a new revision for the submission titled "{{ submissionTitle }}".</p>
         HTML;
     }

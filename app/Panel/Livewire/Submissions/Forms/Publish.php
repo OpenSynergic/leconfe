@@ -21,8 +21,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Infolists\Components\Actions\Action as ActionsAction;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
@@ -31,7 +29,7 @@ use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class Publish extends \Livewire\Component implements HasActions, HasForms, HasInfolists
 {
-    use InteractsWithForms, InteractsWithActions, InteractsWithInfolists, InteractWithTenant;
+    use InteractsWithActions, InteractsWithForms, InteractsWithInfolists, InteractWithTenant;
 
     public Submission $submission;
 
@@ -39,10 +37,10 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
     {
         SubmissionUpdateAction::run([
             'stage' => SubmissionStage::Proceeding,
-            'status' => SubmissionStatus::Published
+            'status' => SubmissionStatus::Published,
         ], $this->submission);
 
-        if (!$data['do-not-notify-author']) {
+        if (! $data['do-not-notify-author']) {
             try {
                 Mail::to($this->submission->user->email)
                     ->send(
@@ -51,7 +49,7 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
                             ->contentUsing($data['message'])
                     );
             } catch (\Exception $e) {
-                $action->failureNotificationTitle("Failed to send notification to author");
+                $action->failureNotificationTitle('Failed to send notification to author');
                 $action->failure();
             }
         }
@@ -64,7 +62,7 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
             SubmissionResource::getUrl('view', [
                 'record' => $this->submission->id,
                 'tab' => '-publication-tab',
-                'ptab' => '-proceeding-tab'
+                'ptab' => '-proceeding-tab',
             ])
         );
 
@@ -78,18 +76,18 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
     {
         return Action::make('publishAction')
             ->disabled(
-                fn (): bool => !StageManager::editing()->isStageOpen()
+                fn (): bool => ! StageManager::editing()->isStageOpen()
             )
-            ->authorize("publish", $this->submission)
-            ->icon("iconpark-check")
-            ->label("Send to Proceeding")
-            ->successNotificationTitle("Submission published successfully")
+            ->authorize('publish', $this->submission)
+            ->icon('iconpark-check')
+            ->label('Send to Proceeding')
+            ->successNotificationTitle('Submission published successfully')
             ->mountUsing(function (Form $form) {
                 $mailTemplate = MailTemplate::where('mailable', PublishSubmissionMail::class)->first();
                 $form->fill([
                     'email' => $this->submission->user->email,
                     'subject' => $mailTemplate ? $mailTemplate->subject : '',
-                    'message' => $mailTemplate ? $mailTemplate->html_template : ''
+                    'message' => $mailTemplate ? $mailTemplate->html_template : '',
                 ]);
             })
             ->form([
@@ -105,7 +103,7 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
                             ->minHeight(300),
                         Checkbox::make('do-not-notify-author')
                             ->label("Don't Send Notification to Author"),
-                    ])
+                    ]),
             ])
             ->action(fn (Action $action, array $data) => $this->handlePublishAction($action, $data));
     }
@@ -117,7 +115,7 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
             ->schema([
                 ShoutEntry::make('shout')
                     ->color(function (): string {
-                        if (!StageManager::editing()->isStageOpen()) {
+                        if (! StageManager::editing()->isStageOpen()) {
                             return 'warning';
                         }
 
@@ -132,20 +130,20 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
                         return 'warning';
                     })
                     ->content(function (): string {
-                        if (!StageManager::editing()->isStageOpen()) {
-                            return "You are unable to publish this submission because the editing stage is not yet open.";
+                        if (! StageManager::editing()->isStageOpen()) {
+                            return 'You are unable to publish this submission because the editing stage is not yet open.';
                         }
 
                         if ($this->submission->status == SubmissionStatus::Published) {
-                            return "This submission has been published.";
+                            return 'This submission has been published.';
                         }
 
                         if ($this->submission->stage == SubmissionStage::Editing) {
-                            return "Please ensure that you have completed all the required fields before publishing your submission. Once published, you will not be able to edit your submission.";
+                            return 'Please ensure that you have completed all the required fields before publishing your submission. Once published, you will not be able to edit your submission.';
                         }
 
-                        return "This submission is not in the editing stage.";
-                    })
+                        return 'This submission is not in the editing stage.';
+                    }),
             ]);
     }
 

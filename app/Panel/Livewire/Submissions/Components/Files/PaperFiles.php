@@ -5,25 +5,23 @@ namespace App\Panel\Livewire\Submissions\Components\Files;
 use App\Constants\SubmissionFileCategory;
 use Awcodes\Shout\Components\Shout;
 
-use function Filament\authorize;
-
 class PaperFiles extends SubmissionFilesTable
 {
     protected ?string $category = SubmissionFileCategory::PAPER_FILES;
 
-    protected string $tableHeading = "Papers";
+    protected string $tableHeading = 'Papers';
 
     public function isViewOnly(): bool
     {
-        return !auth()->user()->can('uploadPaper', $this->submission);
+        return ! auth()->user()->can('uploadPaper', $this->submission);
     }
 
     public function uploadFormSchema(): array
     {
         return [
             Shout::make('information')
-                ->content("After uploading your paper, system will send notification to the editor."),
-            ...parent::uploadFormSchema()
+                ->content('After uploading your paper, system will send notification to the editor.'),
+            ...parent::uploadFormSchema(),
         ];
     }
 }

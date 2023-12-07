@@ -19,9 +19,9 @@ use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
 
-class Workflow extends Page implements HasInfolists, HasForms
+class Workflow extends Page implements HasForms, HasInfolists
 {
-    use InteractsWithInfolists, InteractsWithForms;
+    use InteractsWithForms, InteractsWithInfolists;
 
     protected static ?int $navigationSort = 1;
 
@@ -33,7 +33,7 @@ class Workflow extends Page implements HasInfolists, HasForms
 
     public function booted(): void
     {
-        abort_if(!static::canView(), 403);
+        abort_if(! static::canView(), 403);
     }
 
     public static function shouldRegisterNavigation(): bool
@@ -51,37 +51,37 @@ class Workflow extends Page implements HasInfolists, HasForms
         return $infolist->schema([
             Tabs::make()
                 ->tabs([
-                    Tab::make("Call for Abstract")
-                        ->icon("iconpark-documentfolder-o")
+                    Tab::make('Call for Abstract')
+                        ->icon('iconpark-documentfolder-o')
                         ->schema([
                             HorizontalTabs::make()
                                 ->tabs([
                                     HorizontalTab::make('General')
-                                        ->icon("iconpark-documentfolder-o")
+                                        ->icon('iconpark-documentfolder-o')
                                         ->schema([
-                                            LivewireEntry::make("abstract-setting")
-                                                ->livewire(AbstractSetting::class)
+                                            LivewireEntry::make('abstract-setting')
+                                                ->livewire(AbstractSetting::class),
                                         ]),
-                                ])
+                                ]),
                         ]),
-                    Tab::make("Peer Review")
-                        ->icon("iconpark-search-o")
+                    Tab::make('Peer Review')
+                        ->icon('iconpark-search-o')
                         ->schema([
                             HorizontalTabs::make()
                                 ->tabs([
-                                    HorizontalTab::make("General")
-                                        ->icon("iconpark-documentfolder-o")
+                                    HorizontalTab::make('General')
+                                        ->icon('iconpark-documentfolder-o')
                                         ->schema([
-                                            LivewireEntry::make("peer-review-setting")
+                                            LivewireEntry::make('peer-review-setting')
                                                 ->livewire(PeerReviewSetting::class)
-                                                ->lazy()
+                                                ->lazy(),
                                         ]),
-                                    HorizontalTab::make("Reviewer Guidelines")
-                                        ->icon("iconpark-docsuccess-o")
+                                    HorizontalTab::make('Reviewer Guidelines')
+                                        ->icon('iconpark-docsuccess-o')
                                         ->schema([
-                                            LivewireEntry::make("peer-review-setting")
+                                            LivewireEntry::make('peer-review-setting')
                                                 ->livewire(Guidelines::class)
-                                                ->lazy()
+                                                ->lazy(),
                                         ]),
                                     // HorizontalTab::make("Review Forms")
                                     //     ->icon("iconpark-formone-o")
@@ -90,21 +90,21 @@ class Workflow extends Page implements HasInfolists, HasForms
                                     //             ->livewire(FormTemplate::class)
                                     //             ->lazy()
                                     //     ])
-                                ])
+                                ]),
                         ]),
-                    Tab::make("Editing")
-                        ->icon("iconpark-paperclip")
+                    Tab::make('Editing')
+                        ->icon('iconpark-paperclip')
                         ->schema([
                             HorizontalTabs::make()
                                 ->tabs([
-                                    HorizontalTab::make("General")
-                                        ->icon("iconpark-documentfolder-o")
+                                    HorizontalTab::make('General')
+                                        ->icon('iconpark-documentfolder-o')
                                         ->schema([
-                                            LivewireEntry::make("editing-setting")
+                                            LivewireEntry::make('editing-setting')
                                                 ->livewire(EditingSetting::class)
-                                                ->lazy()
+                                                ->lazy(),
                                         ]),
-                                ])
+                                ]),
                         ]),
                 ])
                 ->maxWidth('full'),

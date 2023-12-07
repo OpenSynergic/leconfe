@@ -24,12 +24,12 @@ final class SelectFiles extends SubmissionFilesTable
     {
         return [
             TextColumn::make('media.file_name')
-                ->label("Filename")
+                ->label('Filename')
                 ->color('primary')
                 ->wrap()
                 ->action(fn (Model $record) => $record->media)
                 ->description(fn (Model $record) => $record->type->name),
-            TextColumn::make('category')
+            TextColumn::make('category'),
         ];
     }
 
@@ -39,7 +39,6 @@ final class SelectFiles extends SubmissionFilesTable
             ->submissionFiles()
             ->select('media_id')
             ->where('category', $this->targetCategory);
-
 
         return $this->submission
             ->submissionFiles()
@@ -52,10 +51,10 @@ final class SelectFiles extends SubmissionFilesTable
     {
         return [
             BulkAction::make('confirm')
-                ->icon("iconpark-check")
-                ->label("Confirm")
+                ->icon('iconpark-check')
+                ->label('Confirm')
                 ->requiresConfirmation()
-                ->successNotificationTitle("Files selected successfully")
+                ->successNotificationTitle('Files selected successfully')
                 ->action(function (Collection $records, BulkAction $action) {
                     foreach ($records as $record) {
                         $clonedMedia = $record->media->copy(
@@ -73,7 +72,7 @@ final class SelectFiles extends SubmissionFilesTable
                     }
                     $this->dispatch('close-select-files');
                     $action->success();
-                })
+                }),
         ];
     }
 }

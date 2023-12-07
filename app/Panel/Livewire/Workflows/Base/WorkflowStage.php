@@ -2,15 +2,13 @@
 
 namespace App\Panel\Livewire\Workflows\Base;
 
-use App\Panel\Livewire\Workflows\Concerns\CanModifySetting;
 use App\Panel\Livewire\Workflows\Concerns\CanOpenStage;
 use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
-use Filament\Facades\Filament;
 use Livewire\Component;
 
 abstract class WorkflowStage extends Component
 {
-    use InteractWithTenant, CanOpenStage;
+    use CanOpenStage, InteractWithTenant;
 
     protected ?string $stage = null;
 

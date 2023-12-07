@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\ParticipantPosition;
 use App\Models\Role;
 use App\Models\Submission;
 use App\Models\User;

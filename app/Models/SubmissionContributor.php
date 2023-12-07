@@ -16,7 +16,7 @@ class SubmissionContributor extends Model implements Sortable
     protected $fillable = [
         'submission_id',
         'participant_id',
-        'participant_position_id'
+        'participant_position_id',
     ];
 
     public function participant()

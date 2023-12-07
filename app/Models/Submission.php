@@ -51,8 +51,6 @@ class Submission extends Model implements HasMedia
         'revision_required' => 'boolean',
     ];
 
-
-
     protected function getMetaClassName(): string
     {
         return SubmissionMeta::class;
@@ -92,14 +90,14 @@ class Submission extends Model implements HasMedia
             ]);
 
             //If current user does not exists in participant
-            if (!$userAsParticipant = auth()->user()->asParticipant()) {
+            if (! $userAsParticipant = auth()->user()->asParticipant()) {
                 $userAsParticipant = CreateParticipantFromUserAction::run(auth()->user());
             }
 
             // Current user as a contributors
             $submission->contributors()->create([
                 'participant_id' => $userAsParticipant->getKey(),
-                'participant_position_id' => ParticipantPosition::where('name', UserRole::Author->value)->first()->getKey()
+                'participant_position_id' => ParticipantPosition::where('name', UserRole::Author->value)->first()->getKey(),
             ]);
         });
     }

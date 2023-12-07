@@ -28,13 +28,13 @@ class ParticipantAssigned extends Notification implements ShouldQueue
         return FilamentNotification::make('participant-assigned')
             ->icon('lineawesome-exclamation-circle-solid')
             ->iconColor('primary')
-            ->title("You have been assigned as a participant")
+            ->title('You have been assigned as a participant')
             ->body("Title: {$this->submission->getMeta('title')}")
             ->actions([
                 Action::make('view-participant')
                     ->url(SubmissionResource::getUrl('view', ['record' => $this->submission]))
-                    ->label("View")
-                    ->markAsRead()
+                    ->label('View')
+                    ->markAsRead(),
             ])
             ->toDatabase();
     }

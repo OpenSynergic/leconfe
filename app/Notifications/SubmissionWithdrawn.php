@@ -11,7 +11,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 
-
 class SubmissionWithdrawn extends Notification implements ShouldQueue
 {
     use Queueable;
@@ -35,13 +34,13 @@ class SubmissionWithdrawn extends Notification implements ShouldQueue
         return FilamentNotification::make('submission-withdrawn')
             ->icon('lineawesome-exclamation-circle-solid')
             ->iconColor('danger')
-            ->title("Submission Withdrawn")
+            ->title('Submission Withdrawn')
             ->body("Title: {$this->submission->getMeta('title')}")
             ->actions([
                 Action::make('view-submission')
                     ->url(SubmissionResource::getUrl('view', ['record' => $this->submission]))
-                    ->label("View")
-                    ->markAsRead()
+                    ->label('View')
+                    ->markAsRead(),
             ])
             ->toDatabase();
     }

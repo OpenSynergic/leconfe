@@ -11,6 +11,7 @@ class StaticPagePolicy
     {
         return $user->can('StaticPage:viewAny');
     }
+
     /**
      * Determine whether the user can create models.
      */

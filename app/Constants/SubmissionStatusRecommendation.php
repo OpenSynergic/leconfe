@@ -8,14 +8,14 @@ final class SubmissionStatusRecommendation
 
     public const DECLINE = 'Decline';
 
-    public const REVISION_REQUIRED = "Revision Required";
+    public const REVISION_REQUIRED = 'Revision Required';
 
     public static function list()
     {
         return [
-            static::ACCEPT => static::ACCEPT,
-            static::DECLINE => static::DECLINE,
-            static::REVISION_REQUIRED => static::REVISION_REQUIRED
+            self::ACCEPT => self::ACCEPT,
+            self::DECLINE => self::DECLINE,
+            self::REVISION_REQUIRED => self::REVISION_REQUIRED,
         ];
     }
 }

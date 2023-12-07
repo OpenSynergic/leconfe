@@ -21,16 +21,16 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Support\Colors\Color;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
-class PeerReview extends Component implements HasForms, HasActions
+class PeerReview extends Component implements HasActions, HasForms
 {
-    use InteractsWithForms;
     use InteractsWithActions;
+    use InteractsWithForms;
+
     public Submission $submission;
 
     public bool $stageOpened = false;
@@ -43,9 +43,9 @@ class PeerReview extends Component implements HasForms, HasActions
     public function declineSubmissionAction()
     {
         return Action::make('declineSubmissionAction')
-            ->icon("lineawesome-times-solid")
+            ->icon('lineawesome-times-solid')
             ->authorize('declinePaper', $this->submission)
-            ->label("Decline Submission")
+            ->label('Decline Submission')
             ->color('danger')
             ->outlined()
             ->mountUsing(function (Form $form) {
@@ -53,72 +53,7 @@ class PeerReview extends Component implements HasForms, HasActions
                 $form->fill([
                     'email' => $this->submission->user->email,
                     'subject' => $mailTemplate ? $mailTemplate->subject : '',
-                    'message' => $mailTemplate ? $mailTemplate->html_template : ''
-                ]);
-            })
-            ->form([
-                Fieldset::make("Notification")
-                    ->columns(1)
-                    ->schema([
-                        TextInput::make('email')
-                            ->readOnly()
-                            ->dehydrated(),
-                        TextInput::make('subject')
-                            ->required(),
-                        TinyEditor::make('message')
-                            ->minHeight(300)
-                            ->columnSpanFull(),
-                        Checkbox::make('do-not-notify-author')
-                            ->label("Don't Send Notification to Author")
-                            ->columnSpanFull(),
-                    ])
-            ])
-            ->action(function (Action $action, array $data) {
-                SubmissionUpdateAction::run([
-                    'revision_required' => false,
-                    'status' => SubmissionStatus::Declined,
-                ], $this->submission);
-
-                if (!$data['do-not-notify-author']) {
-                    try {
-                        Mail::to($this->submission->user->email)
-                            ->send(
-                                (new DeclinePaperMail($this->submission))
-                                    ->subjectUsing($data['subject'])
-                                    ->contentUsing($data['message'])
-                            );
-                    } catch (\Exception $e) {
-                        $action->failureNotificationTitle("The email notification was not delivered.");
-                        $action->failure();
-                    }
-                }
-
-                $action->successRedirectUrl(
-                    SubmissionResource::getUrl('view', [
-                        'record' => $this->submission->getKey(),
-                        'stage' => sprintf('-%s-tab', str($this->submission->stage->value)->slug())
-                    ])
-                );
-
-                $action->success();
-            });
-    }
-
-
-    public function acceptSubmissionAction()
-    {
-        return Action::make('acceptSubmissionAction')
-            ->authorize('acceptPaper', $this->submission)
-            ->icon("lineawesome-check-circle-solid")
-            ->color("primary")
-            ->label("Accept Submission")
-            ->modalSubmitActionLabel("Accept")
-            ->mountUsing(function (Form $form) {
-                $mailTemplate = MailTemplate::where('mailable', AcceptPaperMail::class)->first();
-                $form->fill([
-                    'email' => $this->submission->user->email,
-                    'subject' => $mailTemplate ? $mailTemplate->subject : '',
-                    'message' => $mailTemplate ? $mailTemplate->html_template : ''
+                    'message' => $mailTemplate ? $mailTemplate->html_template : '',
                 ]);
             })
             ->form([
@@ -136,25 +71,24 @@ class PeerReview extends Component implements HasForms, HasActions
                         Checkbox::make('do-not-notify-author')
                             ->label("Don't Send Notification to Author")
                             ->columnSpanFull(),
-                    ])
+                    ]),
             ])
             ->action(function (Action $action, array $data) {
                 SubmissionUpdateAction::run([
                     'revision_required' => false,
-                    'stage' => SubmissionStage::Editing,
-                    'status' => SubmissionStatus::Editing,
+                    'status' => SubmissionStatus::Declined,
                 ], $this->submission);
 
-                if (!$data['do-not-notify-author']) {
+                if (! $data['do-not-notify-author']) {
                     try {
                         Mail::to($this->submission->user->email)
                             ->send(
-                                (new AcceptPaperMail($this->submission))
+                                (new DeclinePaperMail($this->submission))
                                     ->subjectUsing($data['subject'])
                                     ->contentUsing($data['message'])
                             );
                     } catch (\Exception $e) {
-                        $action->failureNotificationTitle("The email notification was not delivered.");
+                        $action->failureNotificationTitle('The email notification was not delivered.');
                         $action->failure();
                     }
                 }
@@ -162,7 +96,7 @@ class PeerReview extends Component implements HasForms, HasActions
                 $action->successRedirectUrl(
                     SubmissionResource::getUrl('view', [
                         'record' => $this->submission->getKey(),
-                        'stage' => sprintf('-%s-tab', str($this->submission->stage->value)->slug())
+                        'stage' => sprintf('-%s-tab', str($this->submission->stage->value)->slug()),
                     ])
                 );
 
@@ -170,25 +104,24 @@ class PeerReview extends Component implements HasForms, HasActions
             });
     }
 
-    public function requestRevisionAction()
+    public function acceptSubmissionAction()
     {
-        return Action::make('requestRevisionAction')
-            ->authorize('requestRevision', $this->submission)
-            ->hidden(fn (): bool => $this->submission->revision_required)
-            ->icon("lineawesome-list-alt-solid")
-            ->outlined()
-            ->color(Color::Orange)
-            ->label("Request Revision")
-            ->mountUsing(function (Form $form): void {
-                $mailTemplate = MailTemplate::where('mailable', RevisionRequestMail::class)->first();
+        return Action::make('acceptSubmissionAction')
+            ->authorize('acceptPaper', $this->submission)
+            ->icon('lineawesome-check-circle-solid')
+            ->color('primary')
+            ->label('Accept Submission')
+            ->modalSubmitActionLabel('Accept')
+            ->mountUsing(function (Form $form) {
+                $mailTemplate = MailTemplate::where('mailable', AcceptPaperMail::class)->first();
                 $form->fill([
                     'email' => $this->submission->user->email,
                     'subject' => $mailTemplate ? $mailTemplate->subject : '',
-                    'message' => $mailTemplate ? $mailTemplate->html_template : ''
+                    'message' => $mailTemplate ? $mailTemplate->html_template : '',
                 ]);
             })
             ->form([
-                Fieldset::make("Notification")
+                Fieldset::make('Notification')
                     ->columns(1)
                     ->schema([
                         TextInput::make('email')
@@ -202,15 +135,81 @@ class PeerReview extends Component implements HasForms, HasActions
                         Checkbox::make('do-not-notify-author')
                             ->label("Don't Send Notification to Author")
                             ->columnSpanFull(),
-                    ])
+                    ]),
             ])
-            ->successNotificationTitle("Revision Requested")
             ->action(function (Action $action, array $data) {
                 SubmissionUpdateAction::run([
-                    'revision_required' => true
+                    'revision_required' => false,
+                    'stage' => SubmissionStage::Editing,
+                    'status' => SubmissionStatus::Editing,
                 ], $this->submission);
 
-                if (!$data['do-not-notify-author']) {
+                if (! $data['do-not-notify-author']) {
+                    try {
+                        Mail::to($this->submission->user->email)
+                            ->send(
+                                (new AcceptPaperMail($this->submission))
+                                    ->subjectUsing($data['subject'])
+                                    ->contentUsing($data['message'])
+                            );
+                    } catch (\Exception $e) {
+                        $action->failureNotificationTitle('The email notification was not delivered.');
+                        $action->failure();
+                    }
+                }
+
+                $action->successRedirectUrl(
+                    SubmissionResource::getUrl('view', [
+                        'record' => $this->submission->getKey(),
+                        'stage' => sprintf('-%s-tab', str($this->submission->stage->value)->slug()),
+                    ])
+                );
+
+                $action->success();
+            });
+    }
+
+    public function requestRevisionAction()
+    {
+        return Action::make('requestRevisionAction')
+            ->authorize('requestRevision', $this->submission)
+            ->hidden(fn (): bool => $this->submission->revision_required)
+            ->icon('lineawesome-list-alt-solid')
+            ->outlined()
+            ->color(Color::Orange)
+            ->label('Request Revision')
+            ->mountUsing(function (Form $form): void {
+                $mailTemplate = MailTemplate::where('mailable', RevisionRequestMail::class)->first();
+                $form->fill([
+                    'email' => $this->submission->user->email,
+                    'subject' => $mailTemplate ? $mailTemplate->subject : '',
+                    'message' => $mailTemplate ? $mailTemplate->html_template : '',
+                ]);
+            })
+            ->form([
+                Fieldset::make('Notification')
+                    ->columns(1)
+                    ->schema([
+                        TextInput::make('email')
+                            ->readOnly()
+                            ->dehydrated(),
+                        TextInput::make('subject')
+                            ->required(),
+                        TinyEditor::make('message')
+                            ->minHeight(300)
+                            ->columnSpanFull(),
+                        Checkbox::make('do-not-notify-author')
+                            ->label("Don't Send Notification to Author")
+                            ->columnSpanFull(),
+                    ]),
+            ])
+            ->successNotificationTitle('Revision Requested')
+            ->action(function (Action $action, array $data) {
+                SubmissionUpdateAction::run([
+                    'revision_required' => true,
+                ], $this->submission);
+
+                if (! $data['do-not-notify-author']) {
                     try {
                         Mail::to($this->submission->user->email)
                             ->send(
@@ -219,7 +218,7 @@ class PeerReview extends Component implements HasForms, HasActions
                                     ->contentUsing($data['message'])
                             );
                     } catch (\Exception $e) {
-                        $action->failureNotificationTitle("The email notification was not delivered.");
+                        $action->failureNotificationTitle('The email notification was not delivered.');
                         $action->failure();
                     }
                 }
@@ -227,7 +226,7 @@ class PeerReview extends Component implements HasForms, HasActions
                 $action->successRedirectUrl(
                     SubmissionResource::getUrl('view', [
                         'record' => $this->submission->getKey(),
-                        'stage' => sprintf('-%s-tab', str($this->submission->stage->value)->slug())
+                        'stage' => sprintf('-%s-tab', str($this->submission->stage->value)->slug()),
                     ])
                 );
 
@@ -239,10 +238,10 @@ class PeerReview extends Component implements HasForms, HasActions
     {
         return Action::make('skipReviewAction')
             ->label('Skip Review')
-            ->icon("lineawesome-check-circle-solid")
+            ->icon('lineawesome-check-circle-solid')
             ->color('gray')
             ->outlined()
-            ->successNotificationTitle("Review Skipped")
+            ->successNotificationTitle('Review Skipped')
             ->action(function (Action $action) {
                 SubmissionUpdateAction::run([
                     'skipped_review' => true,
@@ -254,7 +253,7 @@ class PeerReview extends Component implements HasForms, HasActions
                 $action->successRedirectUrl(
                     SubmissionResource::getUrl('view', [
                         'record' => $this->submission->getKey(),
-                        'stage' => sprintf('-%s-tab', str($this->submission->stage->value)->slug())
+                        'stage' => sprintf('-%s-tab', str($this->submission->stage->value)->slug()),
                     ])
                 );
 

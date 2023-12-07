@@ -16,12 +16,14 @@ trait CanCustomizeTemplate
     public function contentUsing(?string $customizedContent): static
     {
         $this->customizedContent = $customizedContent;
+
         return $this;
     }
 
     public function subjectUsing(?string $customizedSubject): static
     {
         $this->customizedSubject = $customizedSubject;
+
         return $this;
     }
 

@@ -26,7 +26,7 @@ use Spatie\Sitemap\Sitemap;
 Route::get('private/files/{uuid}', function ($uuid, Request $request) {
     $media = \App\Models\Media::findByUuid($uuid);
 
-    abort_if(!$media, 404);
+    abort_if(! $media, 404);
 
     return response()
         ->download($media->getPath(), $media->file_name, [
@@ -48,11 +48,11 @@ Route::get('/sitemap', function () {
 })->name('generate-sitemap');
 
 Route::get('local/temp/{path}', function (string $path, Request $request) {
-    abort_if(!$request->hasValidSignature(), 401);
+    abort_if(! $request->hasValidSignature(), 401);
 
     $storage = Storage::disk('local');
 
-    abort_if(!$storage->exists($path), 404);
+    abort_if(! $storage->exists($path), 404);
 
     return $storage->download($path);
 })->where('path', '.*')->name('local.temp');

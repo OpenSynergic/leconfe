@@ -9,7 +9,6 @@ use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification as FilamentNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class NewSubmission extends Notification implements ShouldQueue
@@ -46,18 +45,19 @@ class NewSubmission extends Notification implements ShouldQueue
     public function toDatabase(object $notifiable)
     {
         return FilamentNotification::make()
-            ->icon("lineawesome-exclamation-circle-solid")
+            ->icon('lineawesome-exclamation-circle-solid')
             ->iconColor('primary')
-            ->title("New Submission")
+            ->title('New Submission')
             ->body("Title: {$this->submission->getMeta('title')}")
             ->actions([
                 Action::make('new-submission')
                     ->url(SubmissionResource::getUrl('view', ['record' => $this->submission]))
-                    ->label("View")
-                    ->markAsRead()
+                    ->label('View')
+                    ->markAsRead(),
             ])
             ->getDatabaseMessage();
     }
+
     /**
      * Get the array representation of the notification.
      *

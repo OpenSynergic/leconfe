@@ -25,7 +25,7 @@ class CreateParticipantFromUserAction
 
         $participant = Participant::where('email', $user->email)->first();
 
-        if (!$participant) {
+        if (! $participant) {
             $participant = ParticipantCreateAction::run($userData);
         }
 
@@ -35,13 +35,14 @@ class CreateParticipantFromUserAction
                 UserRole::Author->value, UserRole::Reviewer->value, UserRole::Editor->value => true,
                 default => false,
             };
-            if (!$shouldCreateParticipant) {
+            if (! $shouldCreateParticipant) {
                 continue;
             }
             $position = ParticipantPosition::where('name', $userRole)->first();
             $participant->positions()->detach($position);
             $participant->positions()->attach($position);
         }
+
         return $participant;
     }
 }

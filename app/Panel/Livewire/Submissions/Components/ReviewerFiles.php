@@ -17,35 +17,36 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Spatie\MediaLibrary\Support\MediaStream;
 
-class ReviewerFiles extends \Livewire\Component implements HasTable, HasForms
+class ReviewerFiles extends \Livewire\Component implements HasForms, HasTable
 {
-    use InteractsWithTable, InteractsWithForms;
+    use InteractsWithForms, InteractsWithTable;
 
     public Review $record;
 
     public function table(Table $table): Table
     {
         return $table
-            ->heading("Reviewer Files")
+            ->heading('Reviewer Files')
             ->headerActions([
                 Action::make('download_all')
                     ->hidden(
                         fn (): bool => $this->record->reviewSubmitted()
                     )
-                    ->icon("iconpark-download-o")
+                    ->icon('iconpark-download-o')
                     ->label('Download All Files')
                     ->button()
                     ->color('gray')
                     ->action(function () {
                         $downloads = $this->record->getMedia(SubmissionFileCategory::REVIEWER_FILES);
+
                         return MediaStream::create('files.zip')->addMedia($downloads);
                     }),
                 Action::make('upload')
-                    ->label("Upload Files")
+                    ->label('Upload Files')
                     ->hidden(
                         fn (): bool => $this->record->reviewSubmitted()
                     )
-                    ->icon("iconpark-upload")
+                    ->icon('iconpark-upload')
                     ->form([
                         SpatieMediaLibraryFileUpload::make('reviewer-files')
                             ->required()
@@ -59,14 +60,14 @@ class ReviewerFiles extends \Livewire\Component implements HasTable, HasForms
                             ->model(fn () => $this->record)
                             ->saveRelationshipsUsing(
                                 static fn (SpatieMediaLibraryFileUpload $component) => $component->saveUploadedFiles()
-                            )
-                    ])
+                            ),
+                    ]),
             ])
             ->actions([
                 DeleteAction::make()
                     ->hidden(
                         fn (): bool => $this->record->reviewSubmitted()
-                    )
+                    ),
             ])
             ->query(
                 fn (): Builder => $this->record
@@ -82,7 +83,7 @@ class ReviewerFiles extends \Livewire\Component implements HasTable, HasForms
                     ->color('primary')
                     ->action(
                         fn (Media $record) => $record
-                    )
+                    ),
             ]);
     }
 

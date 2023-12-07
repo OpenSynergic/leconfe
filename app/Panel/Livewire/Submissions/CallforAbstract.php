@@ -23,13 +23,12 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
-use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
-class CallforAbstract extends Component implements HasForms, HasActions
+class CallforAbstract extends Component implements HasActions, HasForms
 {
-    use InteractsWithForms, InteractsWithActions, InteractWithTenant;
+    use InteractsWithActions, InteractsWithForms, InteractWithTenant;
 
     public Submission $submission;
 
@@ -37,12 +36,12 @@ class CallforAbstract extends Component implements HasForms, HasActions
     {
         return Action::make('decline')
             ->outlined()
-            ->color("danger")
+            ->color('danger')
             ->authorize('declineAbstract', $this->submission)
-            ->modalWidth("2xl")
+            ->modalWidth('2xl')
             ->record($this->submission)
-            ->modalHeading("Confirmation")
-            ->modalSubmitActionLabel("Decline")
+            ->modalHeading('Confirmation')
+            ->modalSubmitActionLabel('Decline')
             ->extraAttributes(['class' => 'w-full'], true)
             ->mountUsing(function (Form $form): void {
                 $mailTempalte = MailTemplate::where('mailable', DeclineAbstractMail::class)->first();
@@ -52,7 +51,7 @@ class CallforAbstract extends Component implements HasForms, HasActions
                 ]);
             })
             ->form([
-                Fieldset::make("Notification")
+                Fieldset::make('Notification')
                     ->columns(1)
                     ->schema([
                         TextInput::make('email')
@@ -65,17 +64,17 @@ class CallforAbstract extends Component implements HasForms, HasActions
                         Checkbox::make('no-notification')
                             ->label("Don't send notification to author")
                             ->default(false),
-                    ])
+                    ]),
             ])
-            ->successNotificationTitle("Submission declined")
+            ->successNotificationTitle('Submission declined')
             ->successRedirectUrl(fn (): string => SubmissionResource::getUrl('view', ['record' => $this->submission]))
             ->action(function (Action $action, array $data) {
                 SubmissionUpdateAction::run([
                     'stage' => SubmissionStage::CallforAbstract,
-                    'status' => SubmissionStatus::Declined
+                    'status' => SubmissionStatus::Declined,
                 ], $this->submission);
 
-                if (!$data['no-notification']) {
+                if (! $data['no-notification']) {
                     try {
                         $this->submission->user->notify(
                             new AbstractDeclined(
@@ -86,7 +85,7 @@ class CallforAbstract extends Component implements HasForms, HasActions
                             )
                         );
                     } catch (\Exception $e) {
-                        $action->failureNotificationTitle("The email notification was not delivered.");
+                        $action->failureNotificationTitle('The email notification was not delivered.');
                         $action->failure();
                     }
                 }
@@ -102,35 +101,35 @@ class CallforAbstract extends Component implements HasForms, HasActions
 
                 $action->success();
             })
-            ->icon("lineawesome-times-circle-solid");
+            ->icon('lineawesome-times-circle-solid');
     }
 
     public function acceptAction()
     {
         return Action::make('accept')
-            ->modalHeading("Confirmation")
-            ->modalSubmitActionLabel("Accept")
+            ->modalHeading('Confirmation')
+            ->modalSubmitActionLabel('Accept')
             ->authorize('acceptAbstract', $this->submission)
-            ->modalWidth("2xl")
+            ->modalWidth('2xl')
             ->record($this->submission)
-            ->successNotificationTitle("Accepted")
+            ->successNotificationTitle('Accepted')
             ->extraAttributes(['class' => 'w-full'])
-            ->icon("lineawesome-check-circle-solid")
+            ->icon('lineawesome-check-circle-solid')
             ->mountUsing(function (Form $form): void {
                 $mailTemplate = MailTemplate::where('mailable', AcceptAbstractMail::class)->first();
                 $form->fill([
                     'subject' => $mailTemplate ? $mailTemplate->subject : '',
-                    'message' => $mailTemplate ? $mailTemplate->html_template : ''
+                    'message' => $mailTemplate ? $mailTemplate->html_template : '',
                 ]);
             })
             ->form([
-                Fieldset::make("Notification")
+                Fieldset::make('Notification')
                     ->columns(1)
                     ->schema([
                         /**
                          * TODO:
                          * - Need to create a function for it because it is used frequently.
-                         * 
+                         *
                          * Something like:
                          *   UserNotificaiton::formSchema()
                          */
@@ -144,16 +143,16 @@ class CallforAbstract extends Component implements HasForms, HasActions
                         Checkbox::make('no-notification')
                             ->label("Don't send notification to author")
                             ->default(false),
-                    ])
+                    ]),
             ])
             ->action(
                 function (Action $action, array $data) {
                     SubmissionUpdateAction::run([
                         'stage' => SubmissionStage::PeerReview,
-                        'status' => SubmissionStatus::OnReview
+                        'status' => SubmissionStatus::OnReview,
                     ], $this->submission);
 
-                    if (!$data['no-notification']) {
+                    if (! $data['no-notification']) {
                         try {
                             $this->submission->user
                                 ->notify(
@@ -165,7 +164,7 @@ class CallforAbstract extends Component implements HasForms, HasActions
                                     )
                                 );
                         } catch (\Exception $e) {
-                            $action->failureNotificationTitle("The email notification was not delivered.");
+                            $action->failureNotificationTitle('The email notification was not delivered.');
                             $action->failure();
                         }
                     }
@@ -191,7 +190,6 @@ class CallforAbstract extends Component implements HasForms, HasActions
                 }
             );
     }
-
 
     public function render()
     {

@@ -17,9 +17,9 @@ use Filament\Forms\Form;
 /**
  * Create a job to change status
  */
-class AbstractSetting extends WorkflowStage implements HasForms, HasActions
+class AbstractSetting extends WorkflowStage implements HasActions, HasForms
 {
-    use InteractsWithForms, InteractsWithActions;
+    use InteractsWithActions, InteractsWithForms;
 
     protected ?string $stage = 'call-for-abstract';
 
@@ -29,7 +29,7 @@ class AbstractSetting extends WorkflowStage implements HasForms, HasActions
     {
         $this->form->fill([
             'settings' => [
-                'allowed_file_types' => $this->getSetting('allowed_file_types', SubmissionFilesTable::ACCEPTED_FILE_TYPES)
+                'allowed_file_types' => $this->getSetting('allowed_file_types', SubmissionFilesTable::ACCEPTED_FILE_TYPES),
             ],
         ]);
     }
@@ -38,8 +38,8 @@ class AbstractSetting extends WorkflowStage implements HasForms, HasActions
     {
         return Action::make('submitAction')
             ->label('Save')
-            ->icon("lineawesome-save-solid")
-            ->successNotificationTitle("Saved")
+            ->icon('lineawesome-save-solid')
+            ->successNotificationTitle('Saved')
             ->action(function (Action $action) {
                 $this->form->validate();
                 foreach ($this->form->getState()['settings'] as $key => $value) {
@@ -57,12 +57,12 @@ class AbstractSetting extends WorkflowStage implements HasForms, HasActions
                 ->color('warning')
                 ->content("The {$this->getStageLabel()} is not open yet, Start now or schedule opening"),
             Grid::make()->schema([
-                TagsInput::make("settings.allowed_file_types")
-                    ->label("Allowed File Types")
-                    ->helperText("Allowed file types for abstracts")
-                    ->splitKeys([',', 'enter', ' '])
+                TagsInput::make('settings.allowed_file_types')
+                    ->label('Allowed File Types')
+                    ->helperText('Allowed file types for abstracts')
+                    ->splitKeys([',', 'enter', ' ']),
             ])
-                ->columns(1)
+                ->columns(1),
         ]);
     }
 

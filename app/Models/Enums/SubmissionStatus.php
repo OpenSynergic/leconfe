@@ -11,8 +11,8 @@ enum SubmissionStatus: string implements HasLabel
 
     case Incomplete = 'Incomplete';
     case Queued = 'Queued';
-    case OnReview = "On Review";
-    case Editing = "Editing";
+    case OnReview = 'On Review';
+    case Editing = 'Editing';
     case Published = 'Published';
     case Declined = 'Declined';
     case Scheduled = 'Scheduled';

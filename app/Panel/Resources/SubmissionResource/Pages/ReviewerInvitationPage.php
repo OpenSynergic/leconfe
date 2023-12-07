@@ -27,9 +27,9 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\Compilers\BladeCompiler;
 
-class ReviewerInvitationPage extends Page implements HasInfolists, HasActions
+class ReviewerInvitationPage extends Page implements HasActions, HasInfolists
 {
-    use InteractsWithInfolists, InteractsWithActions;
+    use InteractsWithActions, InteractsWithInfolists;
 
     protected static string $resource = SubmissionResource::class;
 
@@ -46,35 +46,36 @@ class ReviewerInvitationPage extends Page implements HasInfolists, HasActions
 
     public function getHeading(): string|Htmlable
     {
-        return 'Reviewer Request: ' . $this->record->getMeta('title');
+        return 'Reviewer Request: '.$this->record->getMeta('title');
     }
 
     public function getSubheading(): string|Htmlable|null
     {
         if ($this->review->status == ReviewerStatus::DECLINED) {
             return new HtmlString(
-                BladeCompiler::render("<x-filament::badge color='danger' class='w-fit'>" . ReviewerStatus::DECLINED . "</x-filament::badge>")
+                BladeCompiler::render("<x-filament::badge color='danger' class='w-fit'>".ReviewerStatus::DECLINED.'</x-filament::badge>')
             );
         }
+
         return null;
     }
 
     public function acceptAction()
     {
         return Action::make('acceptAction')
-            ->label("Accept Request")
-            ->icon("lineawesome-check-circle-solid")
+            ->label('Accept Request')
+            ->icon('lineawesome-check-circle-solid')
             ->visible(
                 fn (): bool => $this->review->status == ReviewerStatus::PENDING
             )
             ->color('primary')
             ->outlined()
             ->requiresConfirmation()
-            ->successNotificationTitle("Request Accepted")
+            ->successNotificationTitle('Request Accepted')
             ->action(function (Action $action) {
                 $this->review->update([
                     'date_confirmed' => now(),
-                    'status' => ReviewerStatus::ACCEPTED
+                    'status' => ReviewerStatus::ACCEPTED,
                 ]);
 
                 $editors = $this->record
@@ -92,7 +93,7 @@ class ReviewerInvitationPage extends Page implements HasInfolists, HasActions
                                 new ReviewerAcceptedInvitationMail($this->review)
                             );
                     } catch (\Exception $e) {
-                        $action->failureNotificationTitle("Failed to send notification to author");
+                        $action->failureNotificationTitle('Failed to send notification to author');
                         $action->failure();
                     }
                 }
@@ -104,19 +105,19 @@ class ReviewerInvitationPage extends Page implements HasInfolists, HasActions
     public function declineAction()
     {
         return Action::make('declineAction')
-            ->label("Decline Request")
-            ->icon("lineawesome-times-circle-solid")
+            ->label('Decline Request')
+            ->icon('lineawesome-times-circle-solid')
             ->visible(
                 fn (): bool => $this->review->status == ReviewerStatus::PENDING
             )
             ->outlined()
             ->color('danger')
             ->requiresConfirmation()
-            ->successNotificationTitle("Request Declined")
+            ->successNotificationTitle('Request Declined')
             ->action(function (Action $action) {
                 $this->review->update([
                     'date_confirmed' => now(),
-                    'status' => ReviewerStatus::DECLINED
+                    'status' => ReviewerStatus::DECLINED,
                 ]);
 
                 try {
@@ -125,7 +126,7 @@ class ReviewerInvitationPage extends Page implements HasInfolists, HasActions
                             new ReviewerDeclinedInvitationMail($this->review)
                         );
                 } catch (\Exception $e) {
-                    $action->failureNotificationTitle("Failed to send notification to author");
+                    $action->failureNotificationTitle('Failed to send notification to author');
                     $action->failure();
                 }
 
@@ -140,10 +141,10 @@ class ReviewerInvitationPage extends Page implements HasInfolists, HasActions
             ->schema([
                 Section::make()
                     ->aside()
-                    ->heading("Request for review")
-                    ->description("You have been selected as a potential reviewer of the following submission. Below is an overview of the submission, as well as the timeline for this review. We hope that you are able to participate")
+                    ->heading('Request for review')
+                    ->description('You have been selected as a potential reviewer of the following submission. Below is an overview of the submission, as well as the timeline for this review. We hope that you are able to participate')
                     ->schema([
-                        Fieldset::make("Submission Details")
+                        Fieldset::make('Submission Details')
                             ->schema([
                                 TextEntry::make('Title')
                                     ->getStateUsing(fn (Submission $submission) => $submission->getMeta('title')),
@@ -154,14 +155,14 @@ class ReviewerInvitationPage extends Page implements HasInfolists, HasActions
                                 TextEntry::make('Abstract')
                                     ->html()
                                     ->columnSpanFull()
-                                    ->getStateUsing(fn (Submission $submission) => $submission->getMeta('abstract'))
+                                    ->getStateUsing(fn (Submission $submission) => $submission->getMeta('abstract')),
                             ]),
-                        LivewireEntry::make("review-files")
+                        LivewireEntry::make('review-files')
                             ->livewire(PaperFiles::class, [
                                 'submission' => $this->record,
-                                'viewOnly' => true
+                                'viewOnly' => true,
                             ]),
-                        Fieldset::make("Review Schedule")
+                        Fieldset::make('Review Schedule')
                             ->columns(2)
                             ->schema([
                                 TextEntry::make('Review Start at')
@@ -182,8 +183,8 @@ class ReviewerInvitationPage extends Page implements HasInfolists, HasActions
                                                 $this->review->date_assigned->addDays(14)->format(setting('format.date'))
                                             )
                                     ),
-                            ])
-                    ])
+                            ]),
+                    ]),
             ]);
     }
 }

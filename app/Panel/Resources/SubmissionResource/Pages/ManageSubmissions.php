@@ -21,15 +21,15 @@ class ManageSubmissions extends ManageRecords
         return [
             Action::make('Settings')
                 ->button()
-                ->authorize("WorkflowSetting:update")
+                ->authorize('WorkflowSetting:update')
                 ->outlined()
-                ->icon("heroicon-o-cog")
+                ->icon('heroicon-o-cog')
                 ->url(Workflow::getUrl()),
             Action::make('create')
                 ->button()
-                ->authorize("Submission:create")
+                ->authorize('Submission:create')
                 ->disabled(
-                    fn (): bool => !StageManager::callForAbstract()->isStageOpen()
+                    fn (): bool => ! StageManager::callForAbstract()->isStageOpen()
                 )
                 ->url(static::$resource::getUrl('create'))
                 ->icon('heroicon-o-plus')
@@ -37,6 +37,7 @@ class ManageSubmissions extends ManageRecords
                     if ($action->isDisabled()) {
                         return 'Submission is not open';
                     }
+
                     return 'Submission';
                 }),
         ];
@@ -45,7 +46,7 @@ class ManageSubmissions extends ManageRecords
     public function getTabs(): array
     {
         return [
-            'My Queue' => Tab::make("My Queue")
+            'My Queue' => Tab::make('My Queue')
                 ->when(auth()->user()->hasRole(UserRole::Author->value), function (Tab $tab) {
                     return $tab->modifyQueryUsing(function (Builder $query) {
                         return $query->where('user_id', auth()->id());
@@ -101,7 +102,7 @@ class ManageSubmissions extends ManageRecords
                 ->modifyQueryUsing(function (Builder $query) {
                     return $query->where('status', SubmissionStatus::Published);
                 }),
-            'Declined' => Tab::make("Declined")
+            'Declined' => Tab::make('Declined')
                 ->when(auth()->user()->hasRole(UserRole::Author->value), function (Tab $tab) {
                     return $tab->modifyQueryUsing(function (Builder $query) {
                         return $query->where('user_id', auth()->id());

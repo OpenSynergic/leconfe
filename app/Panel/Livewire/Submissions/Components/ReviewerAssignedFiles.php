@@ -4,20 +4,18 @@ namespace App\Panel\Livewire\Submissions\Components;
 
 use App\Models\Review;
 use App\Models\ReviewerAssignedFile;
-use App\Models\SubmissionFileType;
 use App\Models\User;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 
-class ReviewerAssignedFiles extends \Livewire\Component implements HasTable, HasForms
+class ReviewerAssignedFiles extends \Livewire\Component implements HasForms, HasTable
 {
-    use InteractsWithTable, InteractsWithForms;
+    use InteractsWithForms, InteractsWithTable;
 
     public Review $record;
 
@@ -31,7 +29,7 @@ class ReviewerAssignedFiles extends \Livewire\Component implements HasTable, Has
     public function table(Table $table): Table
     {
         return $table
-            ->heading("Assigned Files")
+            ->heading('Assigned Files')
             ->query(
                 fn (): Builder => $this->record->assignedFiles()->getQuery()
             )
@@ -43,7 +41,7 @@ class ReviewerAssignedFiles extends \Livewire\Component implements HasTable, Has
                     })
                     ->description(function (ReviewerAssignedFile $record) {
                         return $record->submissionFile->type->name;
-                    })
+                    }),
             ]);
     }
 

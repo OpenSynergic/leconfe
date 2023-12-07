@@ -33,13 +33,13 @@ class SubmissionWithdrawRequested extends Notification implements ShouldQueue
         return FilamentNotification::make('submission-withdraw-requested')
             ->icon('lineawesome-exclamation-circle-solid')
             ->iconColor('danger')
-            ->title("Withdrawal Request")
+            ->title('Withdrawal Request')
             ->body("Title: {$this->submission->getMeta('title')}")
             ->actions([
                 Action::make('view-submission')
                     ->url(SubmissionResource::getUrl('view', ['record' => $this->submission]))
-                    ->label("View")
-                    ->markAsRead()
+                    ->label('View')
+                    ->markAsRead(),
             ])
             ->toDatabase();
     }

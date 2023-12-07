@@ -18,9 +18,9 @@ use Filament\Forms\Contracts\HasForms;
 use Livewire\Component;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
-class DetailStep extends Component implements HasForms, HasWizardStep, HasActions
+class DetailStep extends Component implements HasActions, HasForms, HasWizardStep
 {
-    use InteractsWithForms, InteractsWithActions;
+    use InteractsWithActions, InteractsWithForms;
 
     public Submission $record;
 
@@ -67,7 +67,7 @@ class DetailStep extends Component implements HasForms, HasWizardStep, HasAction
                         Select::make('topic')
                             ->preload()
                             ->multiple()
-                            ->label("Topic")
+                            ->label('Topic')
                             ->searchable()
                             ->relationship('topics', 'name'),
                         TextInput::make('meta.title')
@@ -88,8 +88,8 @@ class DetailStep extends Component implements HasForms, HasWizardStep, HasAction
     public function nextStep()
     {
         return Action::make('nextStep')
-            ->label("Next")
-            ->successNotificationTitle("Saved")
+            ->label('Next')
+            ->successNotificationTitle('Saved')
             ->action(function (Action $action) {
                 $this->record = SubmissionUpdateAction::run($this->form->getState(), $this->record);
                 $this->dispatch('next-wizard-step');

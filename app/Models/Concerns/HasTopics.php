@@ -24,7 +24,7 @@ trait HasTopics
             ->morphToMany(Topic::class, 'topicable');
     }
 
-    public function attachTopics(array|ArrayAccess|Topic $topics, string $type = null): static
+    public function attachTopics(array|ArrayAccess|Topic $topics, ?string $type = null): static
     {
         $topics = collect(Topic::findOrCreate($topics, $type));
 
@@ -33,7 +33,7 @@ trait HasTopics
         return $this;
     }
 
-    public function attachTopic(string|Topic $topic, string $type = null)
+    public function attachTopic(string|Topic $topic, ?string $type = null)
     {
         return $this->attachTopics([$topic], $type);
     }

@@ -18,7 +18,7 @@ class Tag extends \Spatie\Tags\Tag
         'name',
     ];
 
-    public static function whereInFromString(array $array, string $type = null)
+    public static function whereInFromString(array $array, ?string $type = null)
     {
         return collect(array_map(fn ($tag) => static::findFromString($tag, $type), $array));
     }

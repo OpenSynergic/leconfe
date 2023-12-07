@@ -35,7 +35,7 @@ class AcceptAbstractMail extends TemplateMailable
     public static function getDefaultHtmlTemplate(): string
     {
 
-        return  <<<'HTML'
+        return <<<'HTML'
             <p> This is an automated notification from the Leconfe System to inform you about a new submission.</p>
             <p>
                 Submission Details:

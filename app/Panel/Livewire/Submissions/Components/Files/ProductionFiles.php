@@ -10,7 +10,7 @@ class ProductionFiles extends SubmissionFilesTable
 
     protected ?string $category = SubmissionFileCategory::EDITED_FILES;
 
-    protected string $tableHeading = "Production Files";
+    protected string $tableHeading = 'Production Files';
 
     public function isViewOnly(): bool
     {
@@ -18,7 +18,7 @@ class ProductionFiles extends SubmissionFilesTable
             return $this->viewOnly;
         }
 
-        return !auth()->user()->can('editing', $this->submission);
+        return ! auth()->user()->can('editing', $this->submission);
     }
 
     public function getTargetCategory(): string
@@ -32,7 +32,7 @@ class ProductionFiles extends SubmissionFilesTable
             SubmissionFileCategory::PAPER_FILES,
             SubmissionFileCategory::REVIEWER_FILES,
             SubmissionFileCategory::REVISION_FILES,
-            SubmissionFileCategory::EDITING_DRAFT_FILES
+            SubmissionFileCategory::EDITING_DRAFT_FILES,
         ];
     }
 }

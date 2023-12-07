@@ -25,7 +25,7 @@ class SubmissionWithdrawnRequestMail extends TemplateMailable
 
     public static function getDefaultHtmlTemplate(): string
     {
-        return <<<HTML
+        return <<<'HTML'
             <p>This is an automated notification. We wanted to inform you that your submission titled "{{ title }}" has been requested to be withdrawn.</p>
         HTML;
     }

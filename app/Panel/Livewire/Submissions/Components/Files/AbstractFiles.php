@@ -3,17 +3,16 @@
 namespace App\Panel\Livewire\Submissions\Components\Files;
 
 use App\Constants\SubmissionFileCategory;
-use App\Models\Enums\SubmissionStage;
 use App\Panel\Livewire\Workflows\Classes\StageManager;
 
 class AbstractFiles extends SubmissionFilesTable
 {
     protected ?string $category = SubmissionFileCategory::ABSTRACT_FILES;
 
-    protected string $tableHeading = "Abstract Files";
+    protected string $tableHeading = 'Abstract Files';
 
     protected $listeners = [
-        'refreshAbstractsFiles' => '$refresh'
+        'refreshAbstractsFiles' => '$refresh',
     ];
 
     public function getTargetCategory(): string
@@ -30,12 +29,12 @@ class AbstractFiles extends SubmissionFilesTable
             );
     }
 
-
     public function isViewOnly(): bool
     {
         if ($this->viewOnly) {
             return true;
         }
-        return !auth()->user()->can('uploadAbstract', $this->submission);
+
+        return ! auth()->user()->can('uploadAbstract', $this->submission);
     }
 }

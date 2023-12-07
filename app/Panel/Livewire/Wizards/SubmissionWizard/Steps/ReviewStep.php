@@ -3,7 +3,6 @@
 namespace App\Panel\Livewire\Wizards\SubmissionWizard\Steps;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
-use App\Mail\Templates\NewSubmissionMail;
 use App\Mail\Templates\ThankAuthorMail;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
@@ -19,10 +18,9 @@ use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Notification;
 use Livewire\Component;
 
-class ReviewStep extends Component implements HasWizardStep, HasActions, HasForms
+class ReviewStep extends Component implements HasActions, HasForms, HasWizardStep
 {
     use InteractsWithActions, InteractsWithForms;
 
@@ -42,12 +40,12 @@ class ReviewStep extends Component implements HasWizardStep, HasActions, HasForm
             ->modalWidth('xl')
             ->modalAlignment('center')
             ->requiresConfirmation()
-            ->modalHeading("Submit abstract")
+            ->modalHeading('Submit abstract')
             ->modalDescription(function (): string {
-                return "Your about to submit your abstract to the conference, Please review your submission carefully before proceeding.";
+                return 'Your about to submit your abstract to the conference, Please review your submission carefully before proceeding.';
             })
-            ->modalSubmitActionLabel("Submit")
-            ->successNotificationTitle("Abstract submitted, please wait for the conference manager to review your submission.")
+            ->modalSubmitActionLabel('Submit')
+            ->successNotificationTitle('Abstract submitted, please wait for the conference manager to review your submission.')
             ->successRedirectUrl(fn (): string => SubmissionResource::getUrl('complete', ['record' => $this->record]))
             ->action(function (Action $action) {
 
@@ -63,12 +61,12 @@ class ReviewStep extends Component implements HasWizardStep, HasActions, HasForm
 
                     $users = User::role([
                         UserRole::Admin->value,
-                        UserRole::ConferenceManager->value
+                        UserRole::ConferenceManager->value,
                     ])->get();
 
                     $users->each(fn ($user) => $user->notify(new NewSubmission($this->record)));
                 } catch (\Exception $e) {
-                    $action->failureNotificationTitle("Failed to send notifications");
+                    $action->failureNotificationTitle('Failed to send notifications');
                     $action->failure();
                 }
 

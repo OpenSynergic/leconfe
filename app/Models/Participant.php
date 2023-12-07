@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Kra8\Snowflake\HasShortflakePrimary;
 use Plank\Metable\Metable;
@@ -22,9 +21,9 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Participant extends Model implements HasMedia, Sortable, HasAvatar
+class Participant extends Model implements HasAvatar, HasMedia, Sortable
 {
-    use HasFactory, HasShortflakePrimary, InteractsWithMedia, Metable, SortableTrait, Notifiable;
+    use HasFactory, HasShortflakePrimary, InteractsWithMedia, Metable, Notifiable, SortableTrait;
 
     /**
      * The table associated with the model.
@@ -51,7 +50,7 @@ class Participant extends Model implements HasMedia, Sortable, HasAvatar
     protected function fullName(): Attribute
     {
         return Attribute::make(
-            get: fn () => Str::squish($this->given_name . ' ' . $this->family_name),
+            get: fn () => Str::squish($this->given_name.' '.$this->family_name),
         );
     }
 
@@ -60,7 +59,7 @@ class Participant extends Model implements HasMedia, Sortable, HasAvatar
         return ParticipantFactory::new();
     }
 
-    public function registerMediaConversions(Media $media = null): void
+    public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('avatar')
             ->keepOriginalImageFormat()
@@ -103,6 +102,6 @@ class Participant extends Model implements HasMedia, Sortable, HasAvatar
             ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
             ->join(' ');
 
-        return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=111827&font-size=0.33';
+        return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=FFFFFF&background=111827&font-size=0.33';
     }
 }

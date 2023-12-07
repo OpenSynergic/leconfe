@@ -6,7 +6,6 @@ use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Submission;
 use App\Models\User;
-use Mockery\Matcher\Subset;
 
 class SubmissionPolicy
 {
@@ -43,7 +42,7 @@ class SubmissionPolicy
     public function delete(User $user, Submission $submission)
     {
         // Only submission with status: withdrawn or declined can be deleted.
-        if (!in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn])) {
+        if (! in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn])) {
             return false;
         }
 
@@ -267,7 +266,7 @@ class SubmissionPolicy
         }
 
         // Editors cannot withdraw submissions; they must wait for the author to request it..
-        if (!filled($submission->withdrawn_reason)) {
+        if (! filled($submission->withdrawn_reason)) {
             return false;
         }
 

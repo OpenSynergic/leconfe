@@ -2,11 +2,8 @@
 
 namespace App\Panel\Livewire\Tables\Submissions;
 
-use App\Actions\Participants\ParticipantCreateAction;
 use App\Actions\Participants\ParticipantUpdateAction;
-use App\Actions\Submissions\SubmissionAssignParticipantAction;
 use App\Models\Participant;
-use App\Models\ParticipantPosition;
 use App\Models\Submission;
 use App\Panel\Resources\Conferences\AuthorPositionResource;
 use App\Panel\Resources\Conferences\ParticipantResource;
@@ -30,9 +27,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 
-class SubmissionAuthorsTable extends Component implements HasTable, HasForms
+class SubmissionAuthorsTable extends Component implements HasForms, HasTable
 {
-    use InteractsWithTable, InteractsWithForms;
+    use InteractsWithForms, InteractsWithTable;
 
     public Submission $record;
 
@@ -76,7 +73,7 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
                 'positions' => fn ($query) => $query
                     ->where('type', AuthorPositionResource::$positionType),
                 'media',
-                'meta'
+                'meta',
             ])
 
             ->whereHas(
@@ -88,7 +85,7 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
                 fn (Builder $query) => $query->whereIn('id', $this->record->participants()->pluck('participant_id'))
             )
             ->when(
-                !$submissionRelated,
+                ! $submissionRelated,
                 fn (Builder $query) => $query->whereNotIn('id', $this->record->participants()->pluck('participant_id'))
             );
     }
@@ -97,14 +94,14 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
     {
         return $table
             ->query(fn (): Builder => $this->getQuery())
-            ->heading("Authors")
+            ->heading('Authors')
             ->headerActions([
                 ActionGroup::make([
                     CreateAction::make()
                         ->label('Create new')
                         ->modalWidth('2xl')
-                        ->modalHeading("Add Author")
-                        ->successNotificationTitle("Author added")
+                        ->modalHeading('Add Author')
+                        ->successNotificationTitle('Author added')
                         ->form(static::getAuthorFormSchema())
                         ->using(function (array $data) {
                             $participant = Participant::email($data['email'])->first();
@@ -112,18 +109,19 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
                                 'participant_id' => $participant->getKey(),
                             ], [
                                 'participant_id' => $participant->getKey(),
-                                'participant_position_id' => $data['position']
+                                'participant_position_id' => $data['position'],
                             ]);
+
                             return $participant;
                         }),
                     Action::make('add_existing')
-                        ->label("Add from existing")
-                        ->modalWidth("lg")
+                        ->label('Add from existing')
+                        ->modalWidth('lg')
                         ->form([
                             FormGrid::make()
                                 ->schema([
                                     Select::make('participant_id')
-                                        ->label("Name")
+                                        ->label('Name')
                                         ->options(function () {
                                             return $this->getQuery(submissionRelated: false)
                                                 ->get()
@@ -144,22 +142,23 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
                                         ->preload()
                                         ->required()
                                         ->columnSpanFull(),
-                                ])
+                                ]),
                         ])
                         ->action(function (array $data) {
                             $participant = Participant::find($data['participant_id']);
                             $this->record->contributors()->updateOrCreate([
-                                'participant_id' => $participant->getKey()
+                                'participant_id' => $participant->getKey(),
                             ], [
                                 'participant_id' => $participant->getKey(),
-                                'participant_position_id' => $data['type']
+                                'participant_position_id' => $data['type'],
                             ]);
+
                             return $participant;
-                        })
+                        }),
                 ])
                     ->button()
-                    ->label("Add author")
-                    ->hidden($this->viewOnly)
+                    ->label('Add author')
+                    ->hidden($this->viewOnly),
             ])
             ->columns([
                 Split::make([
@@ -176,25 +175,26 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
                             'style' => 'width: 1px',
                         ])
                         ->circular()
-                        ->toggleable(!$this->viewOnly),
+                        ->toggleable(! $this->viewOnly),
                     Stack::make([
                         TextColumn::make('fullName')
                             ->formatStateUsing(function (Participant $record) {
                                 if ($record->email == auth()->user()->email) {
-                                    return $record->fullName . " (You)";
+                                    return $record->fullName.' (You)';
                                 }
+
                                 return $record->fullName;
                             }),
                         TextColumn::make('affiliation')
-                            ->size("xs")
+                            ->size('xs')
                             ->getStateUsing(fn ($record) => $record->getMeta('affiliation'))
-                            ->icon("heroicon-o-building-library")
+                            ->icon('heroicon-o-building-library')
                             ->extraAttributes([
                                 'class' => 'text-xs',
                             ])
                             ->color('gray'),
                         TextColumn::make('email')
-                            ->size("xs")
+                            ->size('xs')
                             ->extraAttributes([
                                 'class' => 'text-xs',
                             ])
@@ -202,7 +202,7 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
                             ->icon('heroicon-o-envelope')
                             ->alignStart(),
                     ])->space(1),
-                    TextColumn::make("position")
+                    TextColumn::make('position')
                         ->getStateUsing(function (Participant $record) {
                             return $this->record->participants()
                                 ->where('participant_id', $record->id)
@@ -211,8 +211,8 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
                                 ?->name;
                         })
                         ->badge()
-                        ->alignEnd()
-                ])
+                        ->alignEnd(),
+                ]),
             ])
             ->actions([
                 ActionGroup::make([
@@ -237,25 +237,27 @@ class SubmissionAuthorsTable extends Component implements HasTable, HasForms
                             $this->record
                                 ->contributors()
                                 ->updateOrCreate([
-                                    'participant_id' => $participant->getKey()
+                                    'participant_id' => $participant->getKey(),
                                 ], [
                                     'participant_id' => $participant->getKey(),
-                                    'participant_position_id' => $data['position']
+                                    'participant_position_id' => $data['position'],
                                 ]);
+
                             return $participant;
                         }),
                     DeleteAction::make()
                         ->hidden(
                             fn (Participant $record): bool => $record->email == auth()->user()->email
-                        )
+                        ),
                 ])
-                    ->hidden($this->viewOnly)
+                    ->hidden($this->viewOnly),
             ])
             ->reorderable(function () {
                 if ($this->viewOnly) {
                     return false;
                 }
-                return "order_column";
+
+                return 'order_column';
             });
     }
 

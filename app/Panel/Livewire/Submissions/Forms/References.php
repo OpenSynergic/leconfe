@@ -21,7 +21,7 @@ class References extends \Livewire\Component implements HasForms
     public function mount(Submission $submission)
     {
         $this->form->fill([
-            'meta' => $this->submission->getAllMeta()->toArray()
+            'meta' => $this->submission->getAllMeta()->toArray(),
         ]);
     }
 
@@ -33,7 +33,7 @@ class References extends \Livewire\Component implements HasForms
         );
 
         Notification::make()
-            ->body("Saved successfully")
+            ->body('Saved successfully')
             ->success()
             ->send();
     }
@@ -44,7 +44,7 @@ class References extends \Livewire\Component implements HasForms
             ->schema([
                 TinyEditor::make('meta.references')
                     ->label('References')
-                    ->minHeight(300)
+                    ->minHeight(300),
             ]);
     }
 

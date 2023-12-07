@@ -16,12 +16,12 @@ use Livewire\Component;
  * TODO:
  * - Create job to check if stage is open if it's scheduled
  */
-class StageSchedule extends Component implements HasForms, HasActions
+class StageSchedule extends Component implements HasActions, HasForms
 {
+    use CanOpenStage;
     use InteractsWithActions;
     use InteractsWithForms;
     use InteractWithTenant;
-    use CanOpenStage;
 
     public string $stage;
 
@@ -32,19 +32,19 @@ class StageSchedule extends Component implements HasForms, HasActions
 
     public function closeAction()
     {
-        return Action::make("closeAction")
+        return Action::make('closeAction')
             ->hidden(
-                fn (): bool => !$this->isStageOpen()
+                fn (): bool => ! $this->isStageOpen()
             )
             ->modalWidth('xl')
             ->modalAlignment('center')
-            ->icon("iconpark-internaltransmission-o")
-            ->label("Close")
+            ->icon('iconpark-internaltransmission-o')
+            ->label('Close')
             ->requiresConfirmation()
-            ->modalHeading("Are you sure you want to close the stage ?")
-            ->modalDescription("Authors will not be allowed to submit to this stage.")
-            ->modalIconColor("danger")
-            ->successNotificationTitle("Stage Closed")
+            ->modalHeading('Are you sure you want to close the stage ?')
+            ->modalDescription('Authors will not be allowed to submit to this stage.')
+            ->modalIconColor('danger')
+            ->successNotificationTitle('Stage Closed')
             ->action(function (Action $action) {
                 $this->closeStage();
                 $action->success();
@@ -53,17 +53,17 @@ class StageSchedule extends Component implements HasForms, HasActions
 
     public function openAction()
     {
-        return Action::make("openAction")
+        return Action::make('openAction')
             ->hidden(
                 fn (): bool => $this->isStageOpen()
             )
-            ->icon("iconpark-externaltransmission")
-            ->label("Open")
+            ->icon('iconpark-externaltransmission')
+            ->label('Open')
             ->requiresConfirmation()
-            ->modalHeading("Are you sure you want to open the stage ?")
-            ->modalDescription("This will allow authors to submit to this stage.")
-            ->successNotificationTitle("Stage Opened")
-            ->modalIconColor("success")
+            ->modalHeading('Are you sure you want to open the stage ?')
+            ->modalDescription('This will allow authors to submit to this stage.')
+            ->successNotificationTitle('Stage Opened')
+            ->modalIconColor('success')
             ->action(function (Action $action) {
                 $this->openStage();
                 $action->success();
@@ -73,26 +73,26 @@ class StageSchedule extends Component implements HasForms, HasActions
     public function scheduleAction()
     {
         return Action::make('scheduleAction')
-            ->label("Schedule")
-            ->icon("iconpark-calendar-o")
-            ->modalWidth("xl")
+            ->label('Schedule')
+            ->icon('iconpark-calendar-o')
+            ->modalWidth('xl')
             ->form([
                 DatePicker::make("settings.{$this->stage}.start_date")
-                    ->label("Start")
+                    ->label('Start')
                     ->required()
                     ->native(false)
                     ->displayFormat('d-F-Y')
                     ->default(now())
                     ->maxDate(now()->addYear()),
                 DatePicker::make("settings.{$this->stage}.end_date")
-                    ->label("End")
+                    ->label('End')
                     ->required()
                     ->native(false)
                     ->displayFormat('d-F-Y')
                     ->default(now())
                     ->maxDate(now()->addYear()),
             ])
-            ->successNotificationTitle("Scheduled")
+            ->successNotificationTitle('Scheduled')
             ->action(function (array $data, Action $action) {
                 $setting = $data['settings'][$this->stage];
                 $this->setSchedule(
@@ -102,7 +102,6 @@ class StageSchedule extends Component implements HasForms, HasActions
                 $action->success();
             });
     }
-
 
     // public function start()
     // {

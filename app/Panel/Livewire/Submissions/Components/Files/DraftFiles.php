@@ -10,7 +10,7 @@ class DraftFiles extends SubmissionFilesTable
 
     protected ?string $category = SubmissionFileCategory::EDITING_DRAFT_FILES;
 
-    protected string $tableHeading = "Draft Files";
+    protected string $tableHeading = 'Draft Files';
 
     public function isViewOnly(): bool
     {
@@ -18,7 +18,7 @@ class DraftFiles extends SubmissionFilesTable
             return $this->viewOnly;
         }
 
-        return !auth()->user()->can('editing', $this->submission);
+        return ! auth()->user()->can('editing', $this->submission);
     }
 
     public function getTargetCategory(): string
@@ -31,7 +31,7 @@ class DraftFiles extends SubmissionFilesTable
         return [
             SubmissionFileCategory::PAPER_FILES,
             SubmissionFileCategory::REVIEWER_FILES,
-            SubmissionFileCategory::REVISION_FILES
+            SubmissionFileCategory::REVISION_FILES,
         ];
     }
 }

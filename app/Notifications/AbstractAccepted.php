@@ -21,9 +21,10 @@ class AbstractAccepted extends Notification implements ShouldQueue
 
     public function via($notifiable): array
     {
-        if (!filled($this->channels)) {
+        if (! filled($this->channels)) {
             return ['database', 'mail'];
         }
+
         return $this->channels;
     }
 
@@ -36,6 +37,7 @@ class AbstractAccepted extends Notification implements ShouldQueue
         if (filled($this->message)) {
             $mailTempalte = $mailTempalte->contentUsing($this->message);
         }
+
         return $mailTempalte
             ->to($notifiable);
     }
@@ -45,13 +47,13 @@ class AbstractAccepted extends Notification implements ShouldQueue
         return FilamentNotification::make('abstract-accepted')
             ->icon('lineawesome-check-circle')
             ->iconColor('success')
-            ->title("Abstract Accepted")
+            ->title('Abstract Accepted')
             ->body("Title: {$this->submission->getMeta('title')}")
             ->actions([
                 Action::make('view-abstract')
                     ->url(SubmissionResource::getUrl('view', ['record' => $this->submission]))
-                    ->label("View")
-                    ->markAsRead()
+                    ->label('View')
+                    ->markAsRead(),
             ])
             ->toDatabase();
     }

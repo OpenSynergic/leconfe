@@ -28,7 +28,7 @@ class ReviewCompleteMail extends TemplateMailable
 
     public static function getDefaultHtmlTemplate(): string
     {
-        return <<<HTML
+        return <<<'HTML'
             <p>This is a automatic notification to let you know that {{ reviewer }} has completed the review of the submission titled "{{ submissionTitle }}".</p>
         HTML;
     }

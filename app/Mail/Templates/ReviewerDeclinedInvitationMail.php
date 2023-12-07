@@ -10,7 +10,6 @@ class ReviewerDeclinedInvitationMail extends TemplateMailable
 
     public string $submissionTitle;
 
-
     public function __construct(Review $review)
     {
         $this->reviewer = $review->user->fullName;
@@ -29,7 +28,7 @@ class ReviewerDeclinedInvitationMail extends TemplateMailable
 
     public static function getDefaultHtmlTemplate(): string
     {
-        return <<<HTML
+        return <<<'HTML'
             <p>This is a automatic notification to let you know that {{ reviewer }} has declined the invitation to review the submission titled "{{ submissionTitle }}".</p>
         HTML;
     }

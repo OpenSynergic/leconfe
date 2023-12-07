@@ -11,9 +11,9 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Livewire\Component;
 
-class UploadFilesStep extends Component implements HasWizardStep, HasForms, HasActions
+class UploadFilesStep extends Component implements HasActions, HasForms, HasWizardStep
 {
-    use InteractsWithForms, InteractsWithActions;
+    use InteractsWithActions, InteractsWithForms;
 
     public Submission $record;
 
@@ -32,11 +32,11 @@ class UploadFilesStep extends Component implements HasWizardStep, HasForms, HasA
     public function nextStep()
     {
         return PageAction::make('nextStep')
-            ->label("Next")
-            ->failureNotificationTitle("No files were added to the submission")
-            ->successNotificationTitle("Saved")
+            ->label('Next')
+            ->failureNotificationTitle('No files were added to the submission')
+            ->successNotificationTitle('Saved')
             ->action(function (PageAction $action) {
-                if (!$this->record->submissionFiles()->exists()) {
+                if (! $this->record->submissionFiles()->exists()) {
                     return $action->failure();
                 }
                 $action->success();

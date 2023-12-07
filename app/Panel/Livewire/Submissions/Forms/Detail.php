@@ -27,7 +27,7 @@ class Detail extends \Livewire\Component implements HasForms
     {
         $this->form->fill([
             'topics' => $this->submission->topics()->pluck('id')->toArray(),
-            'meta' => $this->submission->getAllMeta()->toArray()
+            'meta' => $this->submission->getAllMeta()->toArray(),
         ]);
     }
 
@@ -35,7 +35,7 @@ class Detail extends \Livewire\Component implements HasForms
     {
         return $form
             ->disabled(function (): bool {
-                return !auth()->user()->can('editing', $this->submission);
+                return ! auth()->user()->can('editing', $this->submission);
             })
             ->model($this->submission)
             ->schema([
@@ -44,7 +44,7 @@ class Detail extends \Livewire\Component implements HasForms
                     ->preload()
                     ->multiple()
                     ->relationship('topics', 'name')
-                    ->label("Topic")
+                    ->label('Topic')
                     ->searchable(),
                 SpatieTagsInput::make('meta.keywords')
                     ->splitKeys([','])
@@ -53,7 +53,7 @@ class Detail extends \Livewire\Component implements HasForms
                 TinyEditor::make('meta.abstract')
                     ->required()
                     ->minHeight(300)
-                    ->profile('basic')
+                    ->profile('basic'),
             ]);
     }
 
@@ -66,7 +66,7 @@ class Detail extends \Livewire\Component implements HasForms
         );
 
         Notification::make()
-            ->body("Saved successfully")
+            ->body('Saved successfully')
             ->success()
             ->send();
     }

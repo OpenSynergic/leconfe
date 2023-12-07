@@ -23,6 +23,7 @@ class SubmissionAssignParticipantAction
                 'role_id' => $role->getKey(),
             ]);
             DB::commit();
+
             return $submissionParticipant;
         } catch (\Throwable $th) {
             DB::rollBack();

@@ -3,7 +3,6 @@
 namespace App\Panel\Livewire\Workflows\Concerns;
 
 use App\Models\Conference;
-use Filament\Facades\Filament;
 
 trait InteractWithTenant
 {

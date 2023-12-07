@@ -8,7 +8,6 @@ use Livewire\Component;
 
 class ContributorsStep extends Component implements HasWizardStep
 {
-
     public Submission $record;
 
     public static function getWizardLabel(): string
@@ -23,12 +22,13 @@ class ContributorsStep extends Component implements HasWizardStep
 
     public function nextStep()
     {
-        if (!$this->record->participants()->exists()) {
+        if (! $this->record->participants()->exists()) {
             $this->addError('errors', 'You must add at least one author');
+
             return;
         }
 
-        $this->dispatch("refreshLivewire");
+        $this->dispatch('refreshLivewire');
         $this->dispatch('refreshAbstractsFiles');
         $this->dispatch('next-wizard-step');
     }

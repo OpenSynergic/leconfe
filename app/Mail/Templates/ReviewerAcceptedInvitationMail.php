@@ -3,15 +3,12 @@
 namespace App\Mail\Templates;
 
 use App\Models\Review;
-use App\Models\User;
 
 class ReviewerAcceptedInvitationMail extends TemplateMailable
 {
-
     public string $reviewer;
 
     public string $submissionTitle;
-
 
     public function __construct(Review $review)
     {
@@ -31,7 +28,7 @@ class ReviewerAcceptedInvitationMail extends TemplateMailable
 
     public static function getDefaultHtmlTemplate(): string
     {
-        return <<<HTML
+        return <<<'HTML'
             <p>This is a automatic notification to let you know that {{ reviewer }} has accepted the invitation to review the submission titled "{{ submissionTitle }}".</p>
         HTML;
     }

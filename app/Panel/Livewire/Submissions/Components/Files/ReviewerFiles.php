@@ -8,5 +8,5 @@ class ReviewerFiles extends SubmissionFilesTable
 {
     protected ?string $category = SubmissionFileCategory::REVIEWER_FILES;
 
-    protected string $tableHeading = "Reviewer Files";
+    protected string $tableHeading = 'Reviewer Files';
 }

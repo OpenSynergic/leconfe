@@ -19,13 +19,13 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 
-class PeerReviewSetting extends WorkflowStage implements HasForms, HasActions
+class PeerReviewSetting extends WorkflowStage implements HasActions, HasForms
 {
-    use InteractsWithForms, InteractsWithActions;
+    use InteractsWithActions, InteractsWithForms;
 
     protected ?string $stage = 'peer-review';
 
-    protected ?string $stageLabel = "Peer Review";
+    protected ?string $stageLabel = 'Peer Review';
 
     public function mount()
     {
@@ -42,9 +42,9 @@ class PeerReviewSetting extends WorkflowStage implements HasForms, HasActions
     public function submitAction()
     {
         return Action::make('submitAction')
-            ->icon("lineawesome-save-solid")
-            ->label("save")
-            ->successNotificationTitle("Setting saved")
+            ->icon('lineawesome-save-solid')
+            ->label('save')
+            ->successNotificationTitle('Setting saved')
             ->action(function (Action $action) {
                 $this->form->validate();
                 $data = $this->form->getState();
@@ -62,12 +62,12 @@ class PeerReviewSetting extends WorkflowStage implements HasForms, HasActions
                 Shout::make('stage-closed')
                     ->hidden(fn (): bool => $this->isStageOpen())
                     ->color('warning')
-                    ->content("The call for abstracts is not open yet, Start now or schedule opening"),
+                    ->content('The call for abstracts is not open yet, Start now or schedule opening'),
                 Grid::make()
                     ->schema([
-                        TagsInput::make("settings.allowed_file_types")
-                            ->label("Allowed File Types")
-                            ->helperText("Allowed file types")
+                        TagsInput::make('settings.allowed_file_types')
+                            ->label('Allowed File Types')
+                            ->helperText('Allowed file types')
                             ->splitKeys([',', 'enter', ' ']),
                         /**
                          * Question:
@@ -86,20 +86,20 @@ class PeerReviewSetting extends WorkflowStage implements HasForms, HasActions
                             ->acceptedFileTypes(
                                 ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
                             )
-                            ->helperText("Upload paper templates")
+                            ->helperText('Upload paper templates')
                             ->saveRelationshipsUsing(
                                 static fn (SpatieMediaLibraryFileUpload $component) => $component->saveUploadedFiles()
                             )
-                            ->label("Paper templates"),
+                            ->label('Paper templates'),
                         TextInput::make('settings.invitation_response_days')
-                            ->label("Invitation Response Deadline")
+                            ->label('Invitation Response Deadline')
                             ->default(14)
-                            ->helperText("Deadline for reviewers to respond to invitations")
+                            ->helperText('Deadline for reviewers to respond to invitations')
                             ->numeric()
                             ->minLength(2)
                             ->columns(1)
                             ->suffix('Days'),
-                        Fieldset::make("Review Deadline")
+                        Fieldset::make('Review Deadline')
                             ->schema([
                                 Flatpickr::make('settings.start_at')
                                     ->dateFormat(setting('format.date'))
@@ -112,7 +112,7 @@ class PeerReviewSetting extends WorkflowStage implements HasForms, HasActions
                                             ->translatedFormat(setting('format.date'));
                                     })
                                     ->dehydrateStateUsing(fn ($state) => $state ? Carbon::createFromFormat(setting('format.date'), $state) : null)
-                                    ->label("Date start")
+                                    ->label('Date start')
                                     ->theme(FlatpickrTheme::DARK),
                                 Flatpickr::make('settings.end_at')
                                     ->dateFormat(setting('format.date'))
@@ -125,11 +125,11 @@ class PeerReviewSetting extends WorkflowStage implements HasForms, HasActions
                                             ->translatedFormat(setting('format.date'));
                                     })
                                     ->dehydrateStateUsing(fn ($state) => $state ? Carbon::createFromFormat(setting('format.date'), $state) : null)
-                                    ->label("Date end")
+                                    ->label('Date end')
                                     ->theme(FlatpickrTheme::DARK),
-                            ])
+                            ]),
                     ])
-                    ->columns(1)
+                    ->columns(1),
             ]);
     }
 

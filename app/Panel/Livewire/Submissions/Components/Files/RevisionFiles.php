@@ -10,21 +10,21 @@ class RevisionFiles extends SubmissionFilesTable
 {
     protected ?string $category = SubmissionFileCategory::REVISION_FILES;
 
-    protected string $tableHeading = "Revisions";
+    protected string $tableHeading = 'Revisions';
 
-    protected string $tableDescription = "Upload your revision files here.";
+    protected string $tableDescription = 'Upload your revision files here.';
 
     public function isViewOnly(): bool
     {
-        return $this->submission->stage != SubmissionStage::PeerReview || !$this->submission->revision_required;
+        return $this->submission->stage != SubmissionStage::PeerReview || ! $this->submission->revision_required;
     }
 
     public function uploadFormSchema(): array
     {
         return [
             Shout::make('information')
-                ->content("After uploading files, system will send notification to the editor."),
-            ...parent::uploadFormSchema()
+                ->content('After uploading files, system will send notification to the editor.'),
+            ...parent::uploadFormSchema(),
         ];
     }
 }

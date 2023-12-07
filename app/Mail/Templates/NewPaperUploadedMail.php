@@ -2,8 +2,6 @@
 
 namespace App\Mail\Templates;
 
-use App\Models\MailTemplate;
-use App\Models\Submission;
 use App\Models\SubmissionFile;
 
 /**
@@ -33,7 +31,7 @@ class NewPaperUploadedMail extends TemplateMailable
 
     public static function getDefaultHtmlTemplate(): string
     {
-        return <<<HTML
+        return <<<'HTML'
             <p>This is a automatic notification to let you know that "{{ uploader }}" has uploaded a new paper for the submission titled "{{ submissionTitle }}".</p>
         HTML;
     }

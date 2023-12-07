@@ -11,7 +11,7 @@ class ReviewerAssignedFile extends Model
 
     protected $fillable = [
         'review_id',
-        'submission_file_id'
+        'submission_file_id',
     ];
 
     public function reviews()
