@@ -37,9 +37,9 @@ final class SelectFiles extends SubmissionFilesTable
     {
         $selectedCategoryIDs = $this->submission
             ->submissionFiles()
-            ->where('category', $this->targetCategory)
-            ->pluck('media_id')
-            ->toArray();
+            ->select('media_id')
+            ->where('category', $this->targetCategory);
+
 
         return $this->submission
             ->submissionFiles()
