@@ -75,20 +75,22 @@
     x-on:next-wizard-step.window="nextStep()" x-cloak
     class="space-y-6">
     <ol role="list"
-        class="border border-gray-300 shadow-sm bg-white rounded-xl overflow-hidden divide-y divide-gray-300 md:flex md:divide-y-0">
-
+        class=" shadow-sm bg-white rounded-xl overflow-hidden divide-y divide-gray-300 md:flex md:divide-y-0 dark:bg-gray-900 dark:ring-white/10">
         @foreach ($this->steps() as $key => $step)
-            <li class="relative overflow-hidden group md:flex-1">
+            <li class="relative overflow-hidden group md:flex-1" x-data="{
+                isActive(){
+                    return getStepIndex(step) === {{ $loop->index }}
+                } 
+            }">
                 <button type="button"
                     x-on:click="if (isStepAccessible(step, {{ $loop->index }})) step = '{{ $key }}'"
-                    x-bind:aria-current="getStepIndex(step) === {{ $loop->index }} ? 'step' : null"
+                    x-bind:aria-current="isActive() ? 'step' : null"
                     x-bind:class="{
                         'cursor-not-allowed pointer-events-none': !isStepAccessible(step, {{ $loop->index }}),
                     }"
                     role="step" class="flex items-center w-full h-full text-start">
                     <div x-bind:class="{
-                        'bg-primary-600': getStepIndex(step) === {{ $loop->index }},
-                        'bg-transparent group-hover:bg-gray-200 @if (config('forms.dark_mode')) dark:group-hover:bg-gray-600 @endif': getStepIndex(
+                        'bg-transparent  @if (config('forms.dark_mode')) dark:group-hover:bg-gray-600 @endif': getStepIndex(
                             step) > {{ $loop->index }},
                     }"
                         class="absolute top-0 left-0 w-1 h-full md:w-full md:h-1 md:bottom-0 md:top-auto"
@@ -99,44 +101,59 @@
                             <div x-bind:class="{
                                 'bg-primary-600': getStepIndex(step) > {{ $loop->index }},
                                 'border-2': getStepIndex(step) <= {{ $loop->index }},
-                                'border-primary-500': getStepIndex(step) === {{ $loop->index }},
-                                'border-gray-300 @if (config('forms.dark_mode'))
-                                dark: border - gray - 500
-                                @endif ': getStepIndex(step) < {{ $loop->index }},
+                                '!border-primary-500': isActive(),
                             }"
-                                class="flex items-center justify-center w-10 h-10 rounded-full">
+                                class="flex items-center justify-center w-10 h-10 rounded-full border-gray-700">
                                 <x-heroicon-o-check x-show="getStepIndex(step) > {{ $loop->index }}" x-cloak
                                     class="w-5 h-5 text-white" />
 
                                 <span x-show="getStepIndex(step) <= {{ $loop->index }}"
                                     x-bind:class="{
-                                        'text-gray-500 @if (config('forms.dark_mode')) dark:text-gray-400 @endif': getStepIndex(
-                                            step) !== {{ $loop->index }},
-                                        'text-primary-500': getStepIndex(step) === {{ $loop->index }},
-                                    }">
+                                        'text-primary-500': isActive(),
+                                    }" class="text-gray-500">
                                     {{ str_pad($loop->index + 1, 2, '0', STR_PAD_LEFT) }}
                                 </span>
                             </div>
                         </div>
 
                         <div class="flex flex-col items-start justify-center">
-                            <div class="text-sm font-semibold tracking-wide uppercase">
+                            <div class="text-sm font-semibold tracking-wide" x-bind:class="{
+                                'text-primary-500': isActive(),
+                            }">
                                 {{ $step::getWizardLabel() }}
                             </div>
                         </div>
                     </div>
                 </button>
 
-                @if (!$loop->first)
-                    <div class="absolute inset-0 top-0 left-0 hidden w-3 md:block" aria-hidden="true">
+                @if (!$loop->last)
+                <div
+                        aria-hidden="true"
+                        class="absolute top-0 end-0 hidden w-5 md:block"
+                    >
+                        <svg
+                            fill="none"
+                            preserveAspectRatio="none"
+                            viewBox="0 0 22 80"
+                            class="h-full w-full text-gray-200 rtl:rotate-180 dark:text-white/5"
+                        >
+                            <path
+                                d="M0 -2L20 40L0 82"
+                                stroke-linejoin="round"
+                                stroke="currentcolor"
+                                vector-effect="non-scaling-stroke"
+                            ></path>
+                        </svg>
+                    </div>
+                    {{-- <div class="absolute inset-0 top-0 left-0 hidden w-3 md:block" aria-hidden="true">
                         <svg @class([
-                            'h-full w-full text-gray-300 rtl:rotate-180',
-                            'dark:text-gray-700' => config('forms.dark_mode'),
+                            'h-full w-full text-gray-800 rtl:rotate-180',
+                            'dark:text-gray-900' => config('forms.dark_mode'),
                         ]) viewBox="0 0 12 82" fill="none" preserveAspectRatio="none">
                             <path d="M0.5 0V31L10.5 41L0.5 51V82" stroke="currentcolor"
                                 vector-effect="non-scaling-stroke" />
                         </svg>
-                    </div>
+                    </div> --}}
                 @endif
             </li>
         @endforeach

@@ -85,7 +85,7 @@
                                     @foreach ($position->participants as $participant)
                                         <div class="cf-speaker h-full flex gap-2">
                                             <img class="w-16 h-16 object-cover aspect-square rounded-full"
-                                                src="{{ $participant->getProfilePicture() }}"
+                                                src="{{ $participant->getFilamentAvatarUrl() }}"
                                                 alt="{{ $participant->fullName }}" />
                                             <div>
                                                 <div class="speaker-name text-sm text-gray-900">

@@ -21,7 +21,7 @@
                                         <div class="flex flex-col text-xs space-y-3">
                                             @if ($member->hasMeta('affiliation'))
                                                 <div class="inline-flex items-center gap-2">
-                                                    <x-forkawesome-university class="w-4 h-4" />
+                                                    <x-lineawesome-university-solid class="w-4 h-4" />
                                                     <p>{{ $member->getMeta('affiliation') }}</p>
                                                 </div>
                                             @endif

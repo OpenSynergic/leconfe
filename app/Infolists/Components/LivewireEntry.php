@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Blade;
 
 class LivewireEntry extends Entry
 {
-    public static function make(string $name, string $component = null, array $viewData = []): static
+    public static function make(string $name, ?string $component = null, array $viewData = []): static
     {
         $static = app(static::class, ['name' => $name]);
         $static->configure();
@@ -24,7 +24,7 @@ class LivewireEntry extends Entry
         return Blade::render('@livewire($component, $viewData, key($key))', [
             'component' => $this->getState(),
             'viewData' => $this->viewData,
-            'key' => 'data',
+            'key' => $this->getId(),
         ]);
     }
 

@@ -49,6 +49,12 @@ return [
             'root' => base_path('plugins'),
             'throw' => false,
             'visibility' => 'private',
+          ],
+
+        'private-files' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private/files'),
+            'visibility' => 'private',
         ],
 
         'public' => [

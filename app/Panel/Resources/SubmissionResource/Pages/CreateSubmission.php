@@ -3,6 +3,7 @@
 namespace App\Panel\Resources\SubmissionResource\Pages;
 
 use App\Actions\Submissions\SubmissionCreateAction;
+use App\Panel\Livewire\Workflows\Classes\StageManager;
 use App\Panel\Resources\SubmissionResource;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Section;
@@ -36,7 +37,7 @@ class CreateSubmission extends Page implements HasForms
     protected function getViewData(): array
     {
         return [
-            'disable_submission' => setting('disable_submission'),
+            'isOpen' => StageManager::callForAbstract()->isStageOpen(),
         ];
     }
 
@@ -45,8 +46,6 @@ class CreateSubmission extends Page implements HasForms
         return [
             TextInput::make('meta.title')
                 ->required(),
-            // CheckboxList::make('topics')
-            //     ->required(),
             Section::make('Privacy Consent')
                 ->schema([
                     Checkbox::make('privacy_consent')
@@ -63,11 +62,6 @@ class CreateSubmission extends Page implements HasForms
 
         $submission = SubmissionCreateAction::run($data);
 
-        return redirect()->to(SubmissionResource::getUrl('view', [$submission]));
+        return redirect()->to(SubmissionResource::getUrl('view', [$submission->id]));
     }
-
-    // protected function getBreadcrumbs(): array
-    // {
-    //     return [];
-    // }
 }

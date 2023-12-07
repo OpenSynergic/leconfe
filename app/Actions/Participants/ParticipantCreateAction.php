@@ -21,6 +21,11 @@ class ParticipantCreateAction
                 $participant->setManyMeta(data_get($data, 'meta'));
             }
 
+            if ($position = data_get($data, 'position')) {
+                $participant->positions()->detach($position);
+                $participant->positions()->attach($position);
+            }
+
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();

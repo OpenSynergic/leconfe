@@ -60,6 +60,7 @@ class ForTheEditorsStep extends Component implements HasForms, HasWizardStep
                             ->model($this->record)
                             ->type('submissionDisiplines'),
                         TinyEditor::make('meta.comments_for_the_editor')
+                            ->minHeight(300)
                             ->label('Comments for the Editor')
                             ->profile('basic')
                             ->helperText('Please include any additional information that you believe would be valuable for our editorial staff to consider while evaluating your submission. This could include relevant background information, prior research, or any other context that may be helpful in assessing the quality and significance of your work.'),
