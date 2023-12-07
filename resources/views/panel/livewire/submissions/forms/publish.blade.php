@@ -1,4 +1,4 @@
-<x-filament::section heading="Confiration Publishing">
+<x-filament::section heading="Confirmation Publishing">
     <div class="space-y-4">
         {{ $this->infolist }}
         @can('publish', $submission)
