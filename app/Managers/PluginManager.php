@@ -2,14 +2,15 @@
 
 namespace App\Managers;
 
-use App\Classes\Plugin as ClassesPlugin;
-use App\Models\Plugin as ModelsPlugin;
 use Exception;
-use Illuminate\Filesystem\Filesystem;
+use ZipArchive;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
-use ZipArchive;
+use Illuminate\Filesystem\Filesystem;
+use App\Models\Plugin as ModelsPlugin;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Artisan;
+use App\Classes\Plugin as ClassesPlugin;
 
 class PluginManager
 {
@@ -69,11 +70,10 @@ class PluginManager
 
         try {
 
-
             $extracted = $zip->extractTo(storage_path($to));
-            // C:\Users\J\Documents\leconfe\storage\app\plugins\.temp
 
             $zip->close();
+
 
             File::delete($filePath);
 
@@ -87,47 +87,26 @@ class PluginManager
 
     public function pluginInstall(string $file): void
     {
-        $this->createPluginDirectory();
-
 
         $storagePlugin = 'app' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR;
-        // app\plugins\
 
         $filePath = storage_path($storagePlugin . $file);
-        // "C:\Users\J\Documents\leconfe\storage\app\plugins\Order.zip"
-
 
         $temp = $storagePlugin . '.temp';
-        // "app\plugins\.temp"
 
         $this->extractPlugin($filePath, $temp);
-        // extract plugin goes here if true -> storage\app\plugins\.temp
-
 
         $plugin = scandir(storage_path($temp));
-        // "C:\Users\J\Documents\leconfe\storage\app\plugins\.temp"
-
 
         $pluginPath = 'plugins' . DIRECTORY_SEPARATOR . $plugin[2];
-        // "plugins\Order"
-
 
         $filesystem = new Filesystem();
 
-
         $filesystem->moveDirectory(storage_path($temp . DIRECTORY_SEPARATOR . $plugin[2]), $this->getPluginFullPath($pluginPath), true);
-        // from C:\Users\J\Documents\leconfe\storage\app\plugins\.temp\Order
-        // to C:\Users\J\Documents\leconfe\plugins\Order
-
-
 
         $currentPlugin = $this->readPlugin($pluginPath);
 
-
         $pluginInfo = $currentPlugin->aboutPlugin;
-
-
-
 
 
         ModelsPlugin::updateOrCreate(
@@ -142,65 +121,30 @@ class PluginManager
                 'is_active' => false,
             ]
         );
-
         $currentPlugin->onInstall();
-    }
-
-    public function pluginUninstall(ModelsPlugin $record): void
-    {
-        $plugin = $this->readPlugin($record->path);
-        $plugin->onUninstall();
-
-        $filesystem = new Filesystem();
-        $filesystem->deleteDirectory($this->getPluginFullPath($record->path));
-        $record->delete();
-    }
-
-    protected function runPlugins(): void
-    {
-        $plugins = DB::table('plugins')->where('is_active', true)->get(); // connection() is yet running on register(), cannot querying using Model::class
-
-        foreach ($plugins as $plugin) {
-            if ($pluginInstance = $this->readPlugin($plugin->path)) {
-                $pluginInfo = $pluginInstance->aboutPlugin;
-
-                $this->plugins[$pluginInfo['plugin_name']] = $pluginInstance;
-                $this->plugins[$pluginInfo['plugin_name']]->boot();
-            }
-        }
     }
 
     protected function readPlugin(string $pluginPath)
     {
-        // ->pluginPath "plugins\Order"
         $pluginFullPath = $this->getPluginFullPath($pluginPath);
-        // "C:\Users\J\Documents\leconfe\plugins\Order"
-
 
         $pluginIndex = base_path($pluginPath . DIRECTORY_SEPARATOR . 'index.php');
-        // "C:\Users\J\Documents\leconfe\plugins\Order\index.php"
 
-
-
-        // Check if index.php exists in plugin directory
         if (!file_exists($pluginIndex)) {
             $this->handleErrorAndCleanup($pluginFullPath, "index.php is not found in {$pluginPath}.");
         }
 
-        //TODO : make sure to run composer dump-autoload before execute this line, it will throw error classes not found
         $currentPlugin = require $pluginIndex;
-
-
 
         if (!$currentPlugin instanceof ClassesPlugin) {
             $this->handleErrorAndCleanup($pluginFullPath, "index.php in {$pluginPath} must return an instance of App\\Classes\\Plugin");
         }
 
-        // prepare valid about.json
-        $validValues = ['plugin_name', 'author', 'description', 'version'];
+        $validValues = ['plugin_name', 'author', 'description', 'version', 'is_active'];
 
         try {
             $about = File::json(base_path($pluginPath . DIRECTORY_SEPARATOR . 'about.json'));
+
             foreach ($validValues as $validValue) {
                 if (!array_key_exists($validValue, $about)) {
                     $this->handleErrorAndCleanup($pluginFullPath, "about.json in {$pluginPath} is not valid, key \"{$validValue}\" is not found.");
@@ -210,21 +154,42 @@ class PluginManager
             $this->handleErrorAndCleanup($pluginFullPath, "about.json is not found in {$pluginPath}.");
         }
 
-
         $currentPlugin->aboutPlugin = $about;
 
         return $currentPlugin;
+    }
+
+    public function pluginUninstall(ModelsPlugin $record): void
+    {
+        $plugin = $this->readPlugin($record->path);
+
+        $plugin->onUninstall();
+
+        $filesystem = new Filesystem();
+
+        $filesystem->deleteDirectory($this->getPluginFullPath($record->path));
+
+        $record->delete();
+    }
+
+    protected function runPlugins(): void
+    {
+        $this->isDatabaseConnected() && $this->pluginTableIsExist() ? $this->getPluginFromDatabase() : $this->getPluginFromDirectory();
     }
 
 
     public function scanPlugins()
     {
         $pluginsList = array_diff(scandir(base_path('plugins')), ['.', '..', '.temp']);
+
         $pluginDir = 'plugins' . DIRECTORY_SEPARATOR;
 
         foreach ($pluginsList as $plugin) {
+
             $pluginInstance = $this->readPlugin($pluginDir . $plugin);
+
             $about = $pluginInstance->aboutPlugin;
+
             ModelsPlugin::updateOrCreate(
                 [
                     'name' => $about['plugin_name'],
@@ -240,18 +205,68 @@ class PluginManager
         }
     }
 
-    public function createPluginDirectory(): void
-    {
-        if (!File::exists(base_path('plugins'))) {
-            File::makeDirectory(base_path('plugins'));
-        }
-    }
 
     protected function handleErrorAndCleanup($pluginFullPath, $errorMessage)
     {
         if (app()->isProduction()) {
-            File::deleteDirectory($pluginFullPath);
+            File::isDirectory($pluginFullPath) ? File::deleteDirectory($pluginFullPath) : File::delete($pluginFullPath);
         }
         throw new Exception($errorMessage);
+    }
+
+
+    protected function getPluginFromDirectory(): void
+    {
+
+        if (!File::exists(base_path('plugins'))) {
+            File::makeDirectory(base_path('plugins'));
+        }
+
+        $pluginsList = array_diff(scandir(base_path('plugins')), ['.', '..', '.temp']);
+
+        $pluginDir = 'plugins' . DIRECTORY_SEPARATOR;
+
+        foreach ($pluginsList as $plugin) {
+
+            $pluginInstance = $this->readPlugin($pluginDir . $plugin);
+
+            $pluginInfo = $pluginInstance->aboutPlugin;
+
+            $this->plugins[$pluginInfo['plugin_name']] = $pluginInstance;
+
+            $this->plugins[$pluginInfo['plugin_name']]->boot();
+        }
+    }
+
+    protected function getPluginFromDatabase(): void
+    {
+        $plugins = DB::table('plugins')->where('is_active', true)->get(); // connection() is yet running on register(), cannot querying using Model::class
+
+        foreach ($plugins as $plugin) {
+            if ($pluginInstance = $this->readPlugin($plugin->path)) {
+
+                $pluginInfo = $pluginInstance->aboutPlugin;
+
+                $this->plugins[$pluginInfo['plugin_name']] = $pluginInstance;
+
+                $this->plugins[$pluginInfo['plugin_name']]->boot();
+            }
+        }
+    }
+
+    protected function isDatabaseConnected(): bool
+    {
+        try {
+            DB::connection()->getPdo();
+        } catch (\Throwable $th) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function pluginTableIsExist(): bool
+    {
+        return Schema::hasTable('plugins');
     }
 }
