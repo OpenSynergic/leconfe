@@ -23,9 +23,7 @@ class PluginServiceProvider extends ServiceProvider
             return new PluginManager();
         });
 
-        if ($this->isDatabaseConnected()) {
-            Plugin::boot(); // So it runs before PanelProvider
-        }
+        Plugin::boot();
     }
 
 
@@ -35,20 +33,5 @@ class PluginServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
-    }
-
-    /**
-     * Checking database connection.
-     */
-
-    protected function isDatabaseConnected(): bool
-    {
-        try {
-            DB::connection()->getPdo();
-        } catch (\Throwable $th) {
-            return false;
-        }
-
-        return true;
     }
 }
