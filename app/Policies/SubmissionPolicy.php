@@ -313,7 +313,11 @@ class SubmissionPolicy
 
     public function publish(User $user, Submission $submission)
     {
-        if ($submission->status != SubmissionStatus::Editing) {
+        if (in_array($submission->status, [SubmissionStatus::Published, SubmissionStatus::Declined, SubmissionStatus::Withdrawn])) {
+            return false;
+        }
+
+        if (!in_array($submission->stage, [SubmissionStage::Editing, SubmissionStage::Proceeding])) {
             return false;
         }
 
