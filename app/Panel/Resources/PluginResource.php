@@ -9,6 +9,7 @@ use App\Models\Plugin;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -40,7 +41,7 @@ class PluginResource extends Resource
                     ->schema([
                         FileUpload::make('file')
                             ->disk('plugin-upload')
-                            // TODO : handling error for plugin type
+                            // TODO : validation doesn't work
                             // ->acceptedFileTypes(['application/zip'])
                             ->preserveFilenames()
                     ])
@@ -52,7 +53,7 @@ class PluginResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name'),
-                TextColumn::make('description'),
+
                 TextColumn::make('author'),
                 ToggleColumn::make('is_active')
                     ->label('Enabled')
