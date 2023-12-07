@@ -1,7 +1,7 @@
 <x-website::layouts.main>
-<section class="h-screen">
-        <div class="flex flex-wrap py-10">
-            <div class="flex flex-col ps-6 basis-1/2">
+    <section class="p-5">
+        <div class="flex flex-wrap">
+            <div class="flex flex-col basis-1/2">
                 <div class="flex flex-col space-y-1 mb-3">
                     <h2 class="text-heading">Event</h2>
                     <div class="border border-primary w-12"></div>
