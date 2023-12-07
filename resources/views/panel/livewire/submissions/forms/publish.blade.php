@@ -1,9 +1,9 @@
 <x-filament::section heading="Confiration Publishing">
     <div class="space-y-4">
         {{ $this->infolist }}
-        @if($submission->stage == App\Models\Enums\SubmissionStage::Editing)
+        @can('publish', $submission)
             {{ $this->publishAction() }}
-        @endif
+        @endcan
     </div>
     <x-filament-actions::modals />
 </x-filament::section>
