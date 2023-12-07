@@ -2,20 +2,26 @@
 
 namespace App\Panel\Livewire\Wizards\SubmissionWizard\Steps;
 
-use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Models\Submission;
 use App\Panel\Livewire\Wizards\SubmissionWizard\Contracts\HasWizardStep;
+use Filament\Actions\Action as PageAction;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
 use Livewire\Component;
 
-class UploadFilesStep extends Component implements HasWizardStep
+class UploadFilesStep extends Component implements HasWizardStep, HasForms, HasActions
 {
+    use InteractsWithForms, InteractsWithActions;
+
     public Submission $record;
 
     protected $listeners = ['refreshLivewire' => '$refresh'];
 
     public static function getWizardLabel(): string
     {
-        return 'Upload Files';
+        return 'Upload Abstract';
     }
 
     public function render()
@@ -25,14 +31,16 @@ class UploadFilesStep extends Component implements HasWizardStep
 
     public function nextStep()
     {
-        if ($this->record->getMedia('files')->isEmpty()) {
-            return session()->flash('no_files', 'No files were added to the submission');
-        }
-
-        SubmissionUpdateAction::run([
-            'submission_progress' => 'authors',
-        ], $this->record);
-
-        $this->dispatchBrowserEvent('next-wizard-step');
+        return PageAction::make('nextStep')
+            ->label("Next")
+            ->failureNotificationTitle("No files were added to the submission")
+            ->successNotificationTitle("Saved")
+            ->action(function (PageAction $action) {
+                if (!$this->record->submissionFiles()->exists()) {
+                    return $action->failure();
+                }
+                $action->success();
+                $this->dispatch('next-wizard-step');
+            });
     }
 }

@@ -4,11 +4,15 @@ namespace App\Models;
 
 use App\Models\Meta\ParticipantMeta;
 use Database\Factories\ParticipantFactory;
+use Filament\Models\Contracts\HasAvatar;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Kra8\Snowflake\HasShortflakePrimary;
 use Plank\Metable\Metable;
@@ -18,9 +22,9 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Participant extends Model implements HasMedia, Sortable
+class Participant extends Model implements HasMedia, Sortable, HasAvatar
 {
-    use HasFactory, HasShortflakePrimary, InteractsWithMedia, Metable, SortableTrait;
+    use HasFactory, HasShortflakePrimary, InteractsWithMedia, Metable, SortableTrait, Notifiable;
 
     /**
      * The table associated with the model.
@@ -30,7 +34,7 @@ class Participant extends Model implements HasMedia, Sortable
     public $table = 'participants';
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that a mass assignable.
      *
      * @var array<int, string>
      */
@@ -47,7 +51,7 @@ class Participant extends Model implements HasMedia, Sortable
     protected function fullName(): Attribute
     {
         return Attribute::make(
-            get: fn () => Str::squish($this->given_name.' '.$this->family_name),
+            get: fn () => Str::squish($this->given_name . ' ' . $this->family_name),
         );
     }
 
@@ -82,7 +86,12 @@ class Participant extends Model implements HasMedia, Sortable
             ->morphedByMany(ParticipantPosition::class, 'model', 'model_has_participants', 'participant_id', 'model_id');
     }
 
-    public function getProfilePicture()
+    public function scopeEmail(Builder $query, string $email)
+    {
+        return $query->where('email', $email);
+    }
+
+    public function getFilamentAvatarUrl(): ?string
     {
         if ($profilePicture = $this->getFirstMedia('profile')?->getAvailableUrl(['thumb', 'thumb-xl'])) {
             return $profilePicture;
@@ -94,6 +103,6 @@ class Participant extends Model implements HasMedia, Sortable
             ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
             ->join(' ');
 
-        return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=FFFFFF&background=111827&font-size=0.33';
+        return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=111827&font-size=0.33';
     }
 }

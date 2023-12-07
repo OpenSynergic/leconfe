@@ -66,7 +66,7 @@ class ParticipantResource extends Resource
             Forms\Components\Select::make('meta.country')
                 ->placeholder('Select a country')
                 ->searchable()
-                ->options(fn () => Country::all()->mapWithKeys(fn ($country) => [$country->id => $country->flag.' '.$country->name]))
+                ->options(fn () => Country::all()->mapWithKeys(fn ($country) => [$country->id => $country->flag . ' ' . $country->name]))
                 ->optionsLimit(250),
             Forms\Components\TextInput::make('meta.phone')
                 ->prefixIcon('heroicon-s-phone')
@@ -108,6 +108,7 @@ class ParticipantResource extends Resource
                     'style' => 'width: 1px',
                 ])
                 ->circular()
+                ->defaultImageUrl(fn (Participant $record): string => $record->getFilamentAvatarUrl())
                 ->toggleable(),
             TextColumn::make('email')
                 ->searchable()

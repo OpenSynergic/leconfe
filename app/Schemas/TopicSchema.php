@@ -42,6 +42,7 @@ class TopicSchema
     {
         return [
             Grid::make()
+                ->columns(1)
                 ->schema([
                     TextInput::make('name')
                         ->required(),

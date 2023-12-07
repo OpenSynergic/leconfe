@@ -24,7 +24,7 @@ class LivewireEntry extends Entry
         return Blade::render('@livewire($component, $viewData, key($key))', [
             'component' => $this->getState(),
             'viewData' => $this->viewData,
-            'key' => 'data',
+            'key' => $this->getId(),
         ]);
     }
 

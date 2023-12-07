@@ -23,6 +23,7 @@ class ParticipantFactory extends Factory
             'given_name' => fake()->firstName(),
             'family_name' => fake()->lastName(),
             'public_name' => fake()->name(),
+            'email' => fake()->email(),
             'country' => 'id',
         ];
     }

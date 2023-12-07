@@ -90,7 +90,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
     protected function fullName(): Attribute
     {
         return Attribute::make(
-            get: fn () => Str::squish($this->given_name.' '.$this->family_name),
+            get: fn () => Str::squish($this->given_name . ' ' . $this->family_name),
         );
     }
 
@@ -200,11 +200,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
         }]);
 
         foreach ($this->roles as $role) {
-            if (! $role->parent_id) {
+            if (!$role->parent_id) {
                 continue;
             }
 
-            if (! $role->ancestors->pluck('id')->intersect($permission->roles->pluck('id')->toArray())->isEmpty()) {
+            if (!$role->ancestors->pluck('id')->intersect($permission->roles->pluck('id')->toArray())->isEmpty()) {
                 return true;
             }
         }
@@ -214,7 +214,17 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
 
     public function getFilamentAvatarUrl(): ?string
     {
-        return $this->getFirstMediaUrl('profile', 'avatar');
+        if ($this->hasMedia('profile')) {
+            return $this->getFirstMediaUrl('profile', 'avatar');
+        }
+
+        $name = str($this->fullName)
+            ->trim()
+            ->explode(' ')
+            ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
+            ->join(' ');
+
+        return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=111827&font-size=0.33';
     }
 
     public function registerMediaConversions(Media $media = null): void
@@ -234,7 +244,12 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
 
     public function hasVerifiedEmail()
     {
-        return ! is_null($this->email_verified_at);
+        return !is_null($this->email_verified_at);
+    }
+
+    public function asParticipant()
+    {
+        return Participant::email($this->email)->first();
     }
 
     /**
