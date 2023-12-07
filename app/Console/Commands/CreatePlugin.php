@@ -3,10 +3,11 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
-class CreatePlugin extends Command
+class CreatePlugin extends Command implements PromptsForMissingInput
 {
     /**
      * The name and signature of the console command.
@@ -28,16 +29,32 @@ class CreatePlugin extends Command
     public function handle()
     {
         $name = Str::studly($this->argument('name'));
+
+
         $author = $this->argument('author');
 
-        if(!File::exists(base_path('plugins'))) {
+
+        $pluginDirectory = base_path('plugins' . DIRECTORY_SEPARATOR . $name);
+
+
+        if (!File::exists(base_path('plugins'))) {
             File::makeDirectory(base_path('plugins'));
         }
 
-        File::makeDirectory(base_path("/plugins/{$name}"));
-        File::put(base_path("/plugins/{$name}/index.php"), "<?php\n\nuse Plugins\\{$name}\\{$name};\n\nreturn new {$name}();");
-        File::put(base_path("/plugins/{$name}/{$name}.php"), $this->template($name));
-        File::put(base_path("/plugins/{$name}/about.json"), $this->about($name, $author));
+
+        if (!File::exists($pluginDirectory)) {
+            File::makeDirectory(base_path("/plugins/{$name}"));
+
+            File::put(base_path("/plugins/{$name}/index.php"), "<?php\n\nuse Plugins\\{$name}\\{$name};\n\nreturn new {$name}();");
+
+            File::put(base_path("/plugins/{$name}/{$name}.php"), $this->template($name));
+
+            File::put(base_path("/plugins/{$name}/about.json"), $this->about($name, $author));
+
+            return $this->info("Plugin {$name} created succesfully!");
+        }
+
+        return $this->info("Plugin {$name} already exists in " . base_path('plugins'));
     }
 
     public function template($name): string
@@ -88,8 +105,17 @@ class CreatePlugin extends Command
             "plugin_name": "{$name}",
             "author": "{$author}",
             "description": "",
-            "version": "1.0"
+            "version": "1.0",
+            "is_active": false
         }
         EOD;
+    }
+
+    protected function promptForMissingArgumentsUsing()
+    {
+        return [
+            'name' => 'Which name of plugin?',
+            'author' => 'Which name of author?'
+        ];
     }
 }
