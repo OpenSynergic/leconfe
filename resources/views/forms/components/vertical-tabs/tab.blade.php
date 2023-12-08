@@ -7,7 +7,7 @@
         'mt-6' => ! $isContained,
     ]);
 
-    $invisibleTabClasses = 'invisible h-0 overflow-y-hidden p-0';
+    $invisibleTabClasses = 'hidden p-0';
 @endphp
 
 <div
