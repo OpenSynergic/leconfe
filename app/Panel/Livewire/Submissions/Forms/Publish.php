@@ -2,7 +2,7 @@
 
 namespace App\Panel\Livewire\Submissions\Forms;
 
-use App\Actions\Submissions\SubmissionUpdateAction;
+use App\Actions\Submissions\PublishSubmissionAction;
 use App\Mail\Templates\PublishSubmissionMail;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
@@ -35,12 +35,9 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
 
     public function handlePublishAction(Action $action, array $data)
     {
-        SubmissionUpdateAction::run([
-            'stage' => SubmissionStage::Proceeding,
-            'status' => SubmissionStatus::Published,
-        ], $this->submission);
+        PublishSubmissionAction::run($this->submission);
 
-        if (! $data['do-not-notify-author']) {
+        if (!$data['do-not-notify-author']) {
             try {
                 Mail::to($this->submission->user->email)
                     ->send(
@@ -76,7 +73,7 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
     {
         return Action::make('publishAction')
             ->disabled(
-                fn (): bool => ! StageManager::editing()->isStageOpen()
+                fn (): bool => !StageManager::editing()->isStageOpen()
             )
             ->authorize('publish', $this->submission)
             ->icon('iconpark-check')
@@ -115,7 +112,7 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
             ->schema([
                 ShoutEntry::make('shout')
                     ->color(function (): string {
-                        if (! StageManager::editing()->isStageOpen()) {
+                        if (!StageManager::editing()->isStageOpen()) {
                             return 'warning';
                         }
 
@@ -130,7 +127,7 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
                         return 'warning';
                     })
                     ->content(function (): string {
-                        if (! StageManager::editing()->isStageOpen()) {
+                        if (!StageManager::editing()->isStageOpen()) {
                             return 'You are unable to publish this submission because the editing stage is not yet open.';
                         }
 
