@@ -161,4 +161,11 @@ class UserPolicy
             return true;
         }
     }
+
+    public function assignPermissions(User $user)
+    {
+        if ($user->can('User:assignPermissions')) {
+            return true;
+        }
+    }
 }

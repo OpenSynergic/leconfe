@@ -27,8 +27,8 @@
                 </div>
             </div>
         @endforeach
-        <div class="w-full flex justify-start flex pt-1">
-            <a href="{{ route('livewirePageGroup.current-conference.pages.timeline') }}"
+        <div class="w-full flex justify-start pt-1">
+            <a href="{{ route('livewirePageGroup.current-conference.pages.timelines') }}"
                 class="btn btn-primary text-xs btn-sm text-white rounded-md w-16">More</a>
         </div>
     @endif

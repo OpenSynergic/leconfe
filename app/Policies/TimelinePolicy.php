@@ -2,17 +2,18 @@
 
 namespace App\Policies;
 
-use App\Models\Permission;
+use App\Models\Timeline;
 use App\Models\User;
+use Illuminate\Auth\Access\Response;
 
-class PermissionPolicy
+class TimelinePolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user)
     {
-        if ($user->can('Permission:viewAny')) {
+        if ($user->can('Timeline:viewAny')) {
             return true;
         }
     }
@@ -20,9 +21,9 @@ class PermissionPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Permission $permission)
+    public function view(User $user, Timeline $timeline)
     {
-        if ($user->can('Permission:view')) {
+        if ($user->can('Timeline:view')) {
             return true;
         }
     }
@@ -32,7 +33,7 @@ class PermissionPolicy
      */
     public function create(User $user)
     {
-        if ($user->can('Permission:create')) {
+        if ($user->can('Timeline:create')) {
             return true;
         }
     }
@@ -40,9 +41,9 @@ class PermissionPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Permission $permission)
+    public function update(User $user, Timeline $timeline)
     {
-        if ($user->can('Permission:update')) {
+        if ($user->can('Timeline:update')) {
             return true;
         }
     }
@@ -50,9 +51,9 @@ class PermissionPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Permission $permission)
+    public function delete(User $user, Timeline $timeline)
     {
-        if ($user->can('Permission:delete')) {
+        if ($user->can('Timeline:delete')) {
             return true;
         }
     }
