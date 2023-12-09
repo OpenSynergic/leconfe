@@ -61,7 +61,6 @@ class ConferenceServiceProvider extends ServiceProvider
                     PreviousBlock::class,
                     SubmitBlock::class,
                     TopicBlock::class,
-                    MenuBlock::class,
                     CommitteeBlock::class,
                 ]);
                 Block::boot();

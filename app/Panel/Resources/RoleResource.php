@@ -55,11 +55,13 @@ class RoleResource extends Resource
                                     return;
                                 }
 
-                                $newParent = Role::find($state);
+                                /** @var Role */
+                                $newParent = Role::find($state); 
 
                                 app(PermissionRegistrar::class)
                                     ->getPermissions()
                                     ->each(function (Permission $permission) use ($set, $newParent) {
+                                        
                                         $condition = $newParent->hasPermissionOnAncestorsAndSelf($permission);
 
                                         $set('permissions.'.$permission->name, $condition);
@@ -142,7 +144,7 @@ class RoleResource extends Resource
                 ->extraAttributes([
                     'class' => 'h-full',
                 ])
-                ->disabled(fn ($record) => ! auth()->user()->can('assignPermissions', $record))
+                ->disabled(fn ($record) => auth()->user()->can('assignPermissions', User::class))
                 ->columnSpan([
                     'lg' => 2,
                     'xl' => 1,
@@ -153,14 +155,17 @@ class RoleResource extends Resource
                     return Checkbox::make('permissions.'.$permission->name)
                         ->disabled(function (Get $get) use ($permission) {
                             $parentId = $get('parent_id');
-
                             if (! $parentId) {
                                 return false;
                             }
 
                             $parent = static::getParentRole($parentId);
 
-                            return $parent->hasPermissionOnAncestorsAndSelf($permission);
+                            if($parent->hasPermissionOnAncestorsAndSelf($permission)){
+                                return true;
+                            }
+
+                            return false;
                         })
                         ->label(Str::headline($action));
                 })->toArray());

@@ -55,7 +55,6 @@ class PanelProvider extends FilamentPanelProvider
                     PreviousBlock::class,
                     SubmitBlock::class,
                     TopicBlock::class,
-                    MenuBlock::class,
                     CommitteeBlock::class,
                 ]);
                 Block::boot();
