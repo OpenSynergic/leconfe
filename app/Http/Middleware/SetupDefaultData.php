@@ -28,11 +28,7 @@ class SetupDefaultData
             $this->setupSite();
         }
 
-        View::share('homeUrl', match ($currentConference?->status) {
-            ConferenceStatus::Active => route('livewirePageGroup.current-conference.pages.home'),
-            ConferenceStatus::Archived => route('livewirePageGroup.archive-conference.pages.home', ['conference' => $currentConference->path]),
-            default => route('livewirePageGroup.website.pages.home'),
-        });
+        View::share('homeUrl', $currentConference?->getHomeUrl() ?? route('livewirePageGroup.website.pages.home'));
 
         View::share('panelUrl', match ($currentConference instanceof Conference) {
             true => route('filament.panel.pages.dashboard', $currentConference?->path),

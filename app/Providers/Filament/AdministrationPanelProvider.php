@@ -26,6 +26,7 @@ class AdministrationPanelProvider extends FilamentPanelProvider
             ->homeUrl(fn () => route('livewirePageGroup.website.pages.home'))
             ->colors(PanelProvider::getColors())
             ->bootUsing(fn () => $this->bootUsing())
+            ->spa()
             ->renderHook(
                 'panels::sidebar.nav.start',
                 fn () => view('administration.components.sidebar.nav-start')

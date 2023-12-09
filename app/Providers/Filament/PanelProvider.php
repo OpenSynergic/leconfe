@@ -53,7 +53,7 @@ class PanelProvider extends FilamentPanelProvider
             ->path(config('app.filament.panel_path'))
             ->maxContentWidth('full')
             ->spa()
-            ->homeUrl(fn () => route('livewirePageGroup.website.pages.home'))
+            ->homeUrl(fn () => App::getCurrentConference()->getHomeUrl())
             ->bootUsing(fn($panel) => $this->panelBootUsing($panel))
             // ->renderHook(
             //     'panels::sidebar.footer',
