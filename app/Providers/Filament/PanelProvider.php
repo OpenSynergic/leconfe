@@ -20,6 +20,9 @@ use App\Panel\Resources\NavigationResource;
 use App\Panel\Resources\UserResource;
 use Carbon\Carbon;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
+use Filament\Actions\Action;
+use Filament\Actions\MountableAction;
+use Filament\Actions\StaticAction;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -51,25 +54,7 @@ class PanelProvider extends FilamentPanelProvider
             ->maxContentWidth('full')
             ->spa()
             ->homeUrl(fn () => route('livewirePageGroup.website.pages.home'))
-            ->bootUsing(function () {
-                static::setupFilamentComponent();
-
-                ComponentContainer::configureUsing(function (ComponentContainer $componentContainer): void {
-                    if(App::getCurrentConference()->status == ConferenceStatus::Archived){
-                        $componentContainer->disabled(true);
-                    }
-                });
-
-                Block::registerBlocks([
-                    CalendarBlock::class,
-                    TimelineBlock::class,
-                    PreviousBlock::class,
-                    SubmitBlock::class,
-                    TopicBlock::class,
-                    CommitteeBlock::class,
-                ]);
-                Block::boot();
-            })
+            ->bootUsing(fn($panel) => $this->panelBootUsing($panel))
             // ->renderHook(
             //     'panels::sidebar.footer',
             //     fn () => view('panel.components.sidebar.footer')
@@ -89,7 +74,7 @@ class PanelProvider extends FilamentPanelProvider
                     ->url(fn (): string => url('administration'))
                     // ->url(fn (): string => route('filament.administration.pages.dashboard'))
                     ->icon('heroicon-m-cog-8-tooth')
-                    ->hidden(fn() => !auth()->user()->can('view', Site::class))
+                    ->hidden(fn () => !auth()->user()->can('view', Site::class))
             ])
             ->navigationGroups(static::getNavigationGroups())
             ->navigationItems(static::getNavigationItems())
@@ -118,6 +103,33 @@ class PanelProvider extends FilamentPanelProvider
 
         // Persistent middleware option on filament doesnt work, currently we use this workaround
         Livewire::addPersistentMiddleware(static::getTenantMiddleware());
+    }
+
+    public function panelBootUsing(Panel $panel): void
+    {
+        static::setupFilamentComponent();
+
+        ComponentContainer::configureUsing(function (ComponentContainer $componentContainer): void {
+            if (App::getCurrentConference()->status == ConferenceStatus::Archived) {
+                $componentContainer->disabled(true);
+            }
+        });
+
+        MountableAction::configureUsing(function (MountableAction $action): void {
+            if (App::getCurrentConference()->status == ConferenceStatus::Archived) {
+                $action->disabled(true);
+            }
+        });
+
+        Block::registerBlocks([
+            CalendarBlock::class,
+            TimelineBlock::class,
+            PreviousBlock::class,
+            SubmitBlock::class,
+            TopicBlock::class,
+            CommitteeBlock::class,
+        ]);
+        Block::boot();
     }
 
     public static function getTenantMiddleware(): array
