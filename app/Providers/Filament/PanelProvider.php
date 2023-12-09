@@ -13,11 +13,14 @@ use App\Http\Middleware\MustVerifyEmail;
 use App\Http\Middleware\Panel\PanelAuthenticate;
 use App\Http\Middleware\Panel\TenantConference;
 use App\Models\Conference;
+use App\Models\Enums\ConferenceStatus;
 use App\Models\Navigation;
+use App\Models\Site;
 use App\Panel\Resources\NavigationResource;
 use App\Panel\Resources\UserResource;
 use Carbon\Carbon;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
+use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TimePicker;
@@ -30,6 +33,7 @@ use Filament\Panel;
 use Filament\PanelProvider as FilamentPanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Blade;
 use Livewire\Livewire;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
@@ -45,9 +49,17 @@ class PanelProvider extends FilamentPanelProvider
             ->id('panel')
             ->path(config('app.filament.panel_path'))
             ->maxContentWidth('full')
+            ->spa()
             ->homeUrl(fn () => route('livewirePageGroup.website.pages.home'))
             ->bootUsing(function () {
                 static::setupFilamentComponent();
+
+                ComponentContainer::configureUsing(function (ComponentContainer $componentContainer): void {
+                    if(App::getCurrentConference()->status == ConferenceStatus::Archived){
+                        $componentContainer->disabled(true);
+                    }
+                });
+
                 Block::registerBlocks([
                     CalendarBlock::class,
                     TimelineBlock::class,
@@ -76,7 +88,8 @@ class PanelProvider extends FilamentPanelProvider
                     ->label('Administration')
                     ->url(fn (): string => url('administration'))
                     // ->url(fn (): string => route('filament.administration.pages.dashboard'))
-                    ->icon('heroicon-m-cog-8-tooth'),
+                    ->icon('heroicon-m-cog-8-tooth')
+                    ->hidden(fn() => !auth()->user()->can('view', Site::class))
             ])
             ->navigationGroups(static::getNavigationGroups())
             ->navigationItems(static::getNavigationItems())

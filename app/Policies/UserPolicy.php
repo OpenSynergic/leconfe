@@ -168,4 +168,11 @@ class UserPolicy
             return true;
         }
     }
+
+    public function accessAdministration(User $user)
+    {
+        if ($user->can('User:accessAdministration')) {
+            return true;
+        }
+    }
 }
