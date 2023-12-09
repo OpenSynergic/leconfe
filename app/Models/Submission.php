@@ -48,6 +48,7 @@ class Submission extends Model implements HasMedia
     protected $casts = [
         'stage' => SubmissionStage::class,
         'status' => SubmissionStatus::class,
+        'published_at'  => 'datetime',
         'skipped_review' => 'boolean',
         'revision_required' => 'boolean',
     ];
