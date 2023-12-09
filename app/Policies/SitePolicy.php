@@ -4,11 +4,9 @@ namespace App\Policies;
 
 use App\Models\Site;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class SitePolicy
 {
-   
     public function view(User $user)
     {
         if ($user->can('Administration:view')) {

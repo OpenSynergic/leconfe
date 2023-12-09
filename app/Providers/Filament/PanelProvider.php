@@ -22,7 +22,6 @@ use Carbon\Carbon;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Actions\Action;
 use Filament\Actions\MountableAction;
-use Filament\Actions\StaticAction;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -54,7 +53,7 @@ class PanelProvider extends FilamentPanelProvider
             ->maxContentWidth('full')
             ->spa()
             ->homeUrl(fn () => App::getCurrentConference()->getHomeUrl())
-            ->bootUsing(fn($panel) => $this->panelBootUsing($panel))
+            ->bootUsing(fn ($panel) => $this->panelBootUsing($panel))
             // ->renderHook(
             //     'panels::sidebar.footer',
             //     fn () => view('panel.components.sidebar.footer')
@@ -74,7 +73,7 @@ class PanelProvider extends FilamentPanelProvider
                     ->url(fn (): string => url('administration'))
                     // ->url(fn (): string => route('filament.administration.pages.dashboard'))
                     ->icon('heroicon-m-cog-8-tooth')
-                    ->hidden(fn () => !auth()->user()->can('view', Site::class))
+                    ->hidden(fn () => ! auth()->user()->can('view', Site::class)),
             ])
             ->navigationGroups(static::getNavigationGroups())
             ->navigationItems(static::getNavigationItems())

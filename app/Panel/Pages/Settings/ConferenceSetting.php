@@ -10,7 +10,6 @@ use App\Panel\Livewire\Forms\Conferences\PrivacySetting;
 use App\Panel\Livewire\Forms\Conferences\SearchEngineSetting;
 use App\Panel\Livewire\Forms\Conferences\SetupSetting;
 use App\Panel\Livewire\Forms\Conferences\SidebarSetting;
-use Filament\Facades\Filament;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Components\Tabs;

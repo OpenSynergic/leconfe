@@ -149,9 +149,9 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
     {
         return Conference::query()
             ->with('media')
-            ->when(!$this->can('Conference:viewUpcoming'), fn ($query) => $query->where('status', '!=', ConferenceStatus::Upcoming))
-            ->when(!$this->can('Conference:viewArchived'), fn ($query) => $query->where('status', '!=', ConferenceStatus::Archived))
-            // ->where('status', '!=', ConferenceStatus::Archived) 
+            ->when(! $this->can('Conference:viewUpcoming'), fn ($query) => $query->where('status', '!=', ConferenceStatus::Upcoming))
+            ->when(! $this->can('Conference:viewArchived'), fn ($query) => $query->where('status', '!=', ConferenceStatus::Archived))
+            // ->where('status', '!=', ConferenceStatus::Archived)
             ->get();
     }
 

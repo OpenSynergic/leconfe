@@ -10,11 +10,11 @@ class ConferencePolicy
 {
     public function view(User $user, Conference $conference)
     {
-        if($conference->status == ConferenceStatus::Archived){
+        if ($conference->status == ConferenceStatus::Archived) {
             return $user->can('Conference:viewArchived');
         }
 
-        if($conference->status == ConferenceStatus::Upcoming){
+        if ($conference->status == ConferenceStatus::Upcoming) {
             return $user->can('Conference:viewUpcoming');
         }
 
