@@ -1,5 +1,6 @@
 {
     "Admin": [
+        "Administration:view",
         "Announcement:create",
         "Announcement:delete",
         "Announcement:update",
@@ -8,7 +9,8 @@
         "Conference:delete",
         "Conference:setAsActive",
         "Conference:update",
-        "ConferenceSetting:update",
+        "Conference:viewArchived",
+        "Conference:viewUpcoming",
         "Navigation:create",
         "Navigation:delete",
         "Navigation:update",
@@ -123,6 +125,8 @@
         "WorkflowSetting:update"
     ],
     "Editor": [
+        "Conference:viewArchived",
+        "Conference:viewUpcoming",
         "Publication:update",
         "Submission:acceptAbstract",
         "Submission:acceptPaper",
@@ -146,10 +150,12 @@
         "Submission:withdraw"
     ],
     "Reviewer": [
+        "Conference:viewArchived",
         "Submission:review",
         "Submission:viewAny"
     ],
     "Author": [
+        "Conference:viewArchived",
         "Submission:create",
         "Submission:delete",
         "Submission:requestWithdraw",

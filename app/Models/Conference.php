@@ -150,4 +150,13 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
     {
         return $this->status == ConferenceStatus::Active;
     }
+
+    public function getHomeUrl() : string
+    {
+        return match ($this?->status) {
+            ConferenceStatus::Active => route('livewirePageGroup.current-conference.pages.home'),
+            ConferenceStatus::Archived => route('livewirePageGroup.archive-conference.pages.home', ['conference' => $this->path]),
+            default => route('livewirePageGroup.website.pages.home'),
+        };
+    }
 }
