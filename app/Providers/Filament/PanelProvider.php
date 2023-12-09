@@ -109,12 +109,14 @@ class PanelProvider extends FilamentPanelProvider
     {
         static::setupFilamentComponent();
 
+        // Disable form when Conference status is archived
         ComponentContainer::configureUsing(function (ComponentContainer $componentContainer): void {
             if (App::getCurrentConference()->status == ConferenceStatus::Archived) {
                 $componentContainer->disabled(true);
             }
         });
 
+        // Disable action when Conference status is archived
         MountableAction::configureUsing(function (MountableAction $action): void {
             if (App::getCurrentConference()->status == ConferenceStatus::Archived) {
                 $action->disabled(true);
