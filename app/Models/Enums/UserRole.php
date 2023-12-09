@@ -14,7 +14,6 @@ enum UserRole: string implements HasLabel
     case Editor = 'Editor';
     case Reviewer = 'Reviewer';
     case Author = 'Author';
-    case Participant = 'Participant';
 
     public function getLabel(): ?string
     {
@@ -26,7 +25,6 @@ enum UserRole: string implements HasLabel
         return [
             UserRole::Reviewer,
             UserRole::Author,
-            UserRole::Participant,
         ];
     }
 
