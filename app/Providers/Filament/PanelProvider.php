@@ -4,7 +4,6 @@ namespace App\Providers\Filament;
 
 use App\Conference\Blocks\CalendarBlock;
 use App\Conference\Blocks\CommitteeBlock;
-use App\Conference\Blocks\MenuBlock;
 use App\Conference\Blocks\PreviousBlock;
 use App\Conference\Blocks\SubmitBlock;
 use App\Conference\Blocks\TimelineBlock;

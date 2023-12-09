@@ -56,12 +56,12 @@ class RoleResource extends Resource
                                 }
 
                                 /** @var Role */
-                                $newParent = Role::find($state); 
+                                $newParent = Role::find($state);
 
                                 app(PermissionRegistrar::class)
                                     ->getPermissions()
                                     ->each(function (Permission $permission) use ($set, $newParent) {
-                                        
+
                                         $condition = $newParent->hasPermissionOnAncestorsAndSelf($permission);
 
                                         $set('permissions.'.$permission->name, $condition);
@@ -161,7 +161,7 @@ class RoleResource extends Resource
 
                             $parent = static::getParentRole($parentId);
 
-                            if($parent->hasPermissionOnAncestorsAndSelf($permission)){
+                            if ($parent->hasPermissionOnAncestorsAndSelf($permission)) {
                                 return true;
                             }
 
