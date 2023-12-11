@@ -3,6 +3,7 @@
 namespace App\Panel\Livewire\Submissions\Components\Files;
 
 use App\Constants\SubmissionFileCategory;
+use App\Panel\Livewire\Workflows\Classes\StageManager;
 
 class DraftFiles extends SubmissionFilesTable
 {
@@ -18,12 +19,21 @@ class DraftFiles extends SubmissionFilesTable
             return $this->viewOnly;
         }
 
-        return ! auth()->user()->can('editing', $this->submission);
+        return !auth()->user()->can('editing', $this->submission);
     }
 
     public function getTargetCategory(): string
     {
         return $this->getCategory();
+    }
+
+    public function getAcceptedFiles(): array
+    {
+        return StageManager::editing()
+            ->getSetting(
+                'draft_allowed_file_types',
+                ['pdf', 'doc', 'docx']
+            );
     }
 
     public function getSelectableCategories(): array
