@@ -139,7 +139,8 @@ class CallforAbstract extends Component implements HasActions, HasForms
                         TextInput::make('subject')
                             ->required(),
                         TinyEditor::make('message')
-                            ->minHeight(300),
+                            ->minHeight(300)
+                            ->toolbarSticky(false),
                         Checkbox::make('no-notification')
                             ->label("Don't send notification to author")
                             ->default(false),
