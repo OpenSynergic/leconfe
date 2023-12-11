@@ -10,6 +10,7 @@ use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Form;
 use Livewire\Component;
 
 /**
@@ -18,10 +19,7 @@ use Livewire\Component;
  */
 class StageSchedule extends Component implements HasActions, HasForms
 {
-    use CanOpenStage;
-    use InteractsWithActions;
-    use InteractsWithForms;
-    use InteractWithTenant;
+    use CanOpenStage, InteractsWithActions, InteractsWithForms, InteractWithTenant;
 
     public string $stage;
 
@@ -34,7 +32,7 @@ class StageSchedule extends Component implements HasActions, HasForms
     {
         return Action::make('closeAction')
             ->hidden(
-                fn (): bool => ! $this->isStageOpen()
+                fn (): bool => !$this->isStageOpen()
             )
             ->modalWidth('xl')
             ->modalAlignment('center')
@@ -76,15 +74,21 @@ class StageSchedule extends Component implements HasActions, HasForms
             ->label('Schedule')
             ->icon('iconpark-calendar-o')
             ->modalWidth('xl')
+            ->mountUsing(function (Form $form) {
+                $form->fill([
+                    'start_date' => $this->getSetting('start_date'),
+                    'end_date' => $this->getSetting('end_date'),
+                ]);
+            })
             ->form([
-                DatePicker::make("settings.{$this->stage}.start_date")
+                DatePicker::make("start_date")
                     ->label('Start')
                     ->required()
                     ->native(false)
                     ->displayFormat('d-F-Y')
                     ->default(now())
                     ->maxDate(now()->addYear()),
-                DatePicker::make("settings.{$this->stage}.end_date")
+                DatePicker::make("end_date")
                     ->label('End')
                     ->required()
                     ->native(false)
@@ -94,10 +98,9 @@ class StageSchedule extends Component implements HasActions, HasForms
             ])
             ->successNotificationTitle('Scheduled')
             ->action(function (array $data, Action $action) {
-                $setting = $data['settings'][$this->stage];
                 $this->setSchedule(
-                    $setting['start_date'],
-                    $setting['end_date']
+                    $data['start_date'],
+                    $data['end_date']
                 );
                 $action->success();
             });
