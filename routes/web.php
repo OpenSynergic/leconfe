@@ -30,14 +30,13 @@ Route::get('private/preview/{uuid}', function ($uuid) {
     abort_if(!$media, 404);
 
     return response()
-        ->withHeaders([
+        ->file($media->getPath(), [
             'Content-Type' => $media->mime_type,
             'Content-Disposition' => 'inline; filename="' . $media->file_name . '"',
             'Content-Length' => $media->size,
             'Content-Transfer-Encoding' => 'binary',
             'Accept-Ranges' => 'bytes',
-        ])
-        ->file($media->getPath());
+        ]);
 })->name('private.preview');
 
 Route::get('private/files/{uuid}', function ($uuid, Request $request) {
