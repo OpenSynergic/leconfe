@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
+
 class Conference extends Model implements HasAvatar, HasMedia, HasName, CanVisit
 {
     use Cachable, HasFactory, HasShortflakePrimary, HasSlug, InteractsWithMedia, Metable, HasVisits;
