@@ -103,7 +103,7 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName, CanVisit
         return $this->getFirstMediaUrl('logo', 'tenant');
     }
 
-    public function registerMediaConversions(Media $media = null): void
+    public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('tenant')
             ->keepOriginalImageFormat()
@@ -151,5 +151,14 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName, CanVisit
     public function isActive(): bool
     {
         return $this->status == ConferenceStatus::Active;
+    }
+
+    public function getHomeUrl(): string
+    {
+        return match ($this?->status) {
+            ConferenceStatus::Active => route('livewirePageGroup.current-conference.pages.home'),
+            ConferenceStatus::Archived => route('livewirePageGroup.archive-conference.pages.home', ['conference' => $this->path]),
+            default => route('livewirePageGroup.website.pages.home'),
+        };
     }
 }

@@ -8,6 +8,21 @@ use App\Models\User;
 
 class ConferencePolicy
 {
+    public function view(User $user, Conference $conference)
+    {
+        if ($conference->status == ConferenceStatus::Archived) {
+            return $user->can('Conference:viewArchived');
+        }
+
+        if ($conference->status == ConferenceStatus::Upcoming) {
+            return $user->can('Conference:viewUpcoming');
+        }
+
+        if ($user->can('Conference:view')) {
+            return true;
+        }
+    }
+
     /**
      * Determine whether the user can create models.
      */
@@ -53,6 +68,13 @@ class ConferencePolicy
         }
 
         if ($user->can('Conference:setAsActive')) {
+            return true;
+        }
+    }
+
+    public function access(User $user, Conference $conference)
+    {
+        if ($user->can('Conference:access')) {
             return true;
         }
     }

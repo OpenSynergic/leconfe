@@ -37,6 +37,12 @@ return [
             'visibility' => 'private',
         ],
 
+        'private-files' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private/files'),
+            'visibility' => 'private',
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

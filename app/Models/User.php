@@ -121,18 +121,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
             return true;
         }
 
-        if ($this->canAccessMultipleTenant()) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function canAccessMultipleTenant(): bool
-    {
-        // TODO implement logic using spatie permissions
-
-        return true;
+        return $this->can('view', $tenant);
     }
 
     public function canImpersonate()
@@ -160,7 +149,9 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
     {
         return Conference::query()
             ->with('media')
-            ->where('status', '!=', ConferenceStatus::Archived)
+            ->when(! $this->can('Conference:viewUpcoming'), fn ($query) => $query->where('status', '!=', ConferenceStatus::Upcoming))
+            ->when(! $this->can('Conference:viewArchived'), fn ($query) => $query->where('status', '!=', ConferenceStatus::Archived))
+            // ->where('status', '!=', ConferenceStatus::Archived)
             ->get();
     }
 
@@ -214,10 +205,20 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
 
     public function getFilamentAvatarUrl(): ?string
     {
-        return $this->getFirstMediaUrl('profile', 'avatar');
+        if ($this->hasMedia('profile')) {
+            return $this->getFirstMediaUrl('profile', 'avatar');
+        }
+
+        $name = str($this->fullName)
+            ->trim()
+            ->explode(' ')
+            ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
+            ->join(' ');
+
+        return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=FFFFFF&background=111827&font-size=0.33';
     }
 
-    public function registerMediaConversions(Media $media = null): void
+    public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('avatar')
             ->keepOriginalImageFormat()
@@ -235,6 +236,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
     public function hasVerifiedEmail()
     {
         return ! is_null($this->email_verified_at);
+    }
+
+    public function asParticipant()
+    {
+        return Participant::email($this->email)->first();
     }
 
     /**

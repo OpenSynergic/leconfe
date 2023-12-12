@@ -2,13 +2,18 @@
 
 namespace App\Panel\Resources;
 
+use App\Constants\ReviewerStatus;
+use App\Models\Enums\SubmissionStage;
+use App\Models\Enums\SubmissionStatus;
+use App\Models\Enums\UserRole;
 use App\Models\Submission;
 use App\Panel\Resources\SubmissionResource\Pages;
-use App\Schemas\SubmissionSchema;
 use Filament\GlobalSearch\GlobalSearchResult;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\Layout\Split;
+use Filament\Tables\Columns\Layout\Stack;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
@@ -30,7 +35,7 @@ class SubmissionResource extends Resource
 
     public static function getGlobalSearchEloquentQuery(): Builder
     {
-        return parent::getGlobalSearchEloquentQuery()->with(['user']);
+        return parent::getGlobalSearchEloquentQuery()->with(['user', 'participants', 'reviews']);
     }
 
     public static function getRecordTitle(?Model $record): string|Htmlable|null
@@ -40,7 +45,7 @@ class SubmissionResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->with(['meta']);
+        return parent::getEloquentQuery()->with(['meta', 'user'])->orderBy('updated_at', 'desc');
     }
 
     public static function getGlobalSearchResults(string $search): Collection
@@ -94,20 +99,113 @@ class SubmissionResource extends Resource
 
     public static function table(Table $table): Table
     {
-        $table = SubmissionSchema::table($table);
-
         return $table
+            ->recordUrl(function (Submission $record) {
+                $participantReviewer = $record->reviews()->where('user_id', auth()->id())->first();
+
+                if ($participantReviewer) {
+                    if ($participantReviewer->needConfirmation() || $participantReviewer->status == ReviewerStatus::DECLINED) {
+                        return static::getUrl('reviewer-invitation', [
+                            'record' => $record->id,
+                        ]);
+                    } else {
+                        return static::getUrl('review', [
+                            'record' => $record->id,
+                        ]);
+                    }
+                }
+
+                return static::getUrl('view', [
+                    'record' => $record->id,
+                    'stage' => '-'.str($record->stage->value)->slug('-').'-tab',
+                ]);
+            })
             ->columns([
-                TextColumn::make('user.name'),
+                Split::make([
+                    Stack::make([
+                        Tables\Columns\TextColumn::make('title')
+                            ->getStateUsing(fn (Submission $record) => $record->getMeta('title'))
+                            ->description(function (Submission $record) {
+                                return $record->user->fullName;
+                            })
+                            ->searchable(query: function (Builder $query, string $search): Builder {
+                                return $query
+                                    ->whereMeta('title', 'like', "%{$search}%");
+                            }),
+                        Tables\Columns\TextColumn::make('status')
+                            ->extraAttributes([
+                                'class' => 'mt-2',
+                            ])
+                            ->badge()
+                            ->color(fn (Submission $record): string => match ($record->status) {
+                                SubmissionStatus::Declined, SubmissionStatus::Withdrawn => 'danger',
+                                SubmissionStatus::OnReview => 'warning',
+                                SubmissionStatus::Queued => 'primary',
+                                SubmissionStatus::Editing => 'info',
+                                SubmissionStatus::Published => 'success',
+                                default => 'gray'
+                            })
+                            ->formatStateUsing(
+                                fn (Submission $record) => $record->status
+                            ),
+
+                    ]),
+                    Stack::make([
+                        Tables\Columns\TextColumn::make('editor-assigned-badges')
+                            ->badge()
+                            ->extraAttributes([
+                                'class' => 'mt-2',
+                            ])
+                            ->color('warning')
+                            ->getStateUsing(function (Submission $record) {
+                                $editorAssigned = $record->participants()
+                                    ->whereHas(
+                                        'role',
+                                        fn (Builder $query) => $query->where('name', UserRole::Editor)
+                                    )
+                                    ->count();
+
+                                if (! $editorAssigned && $record->stage != SubmissionStage::Wizard) {
+                                    return 'No Editor Assigned';
+                                }
+                            }),
+                        Tables\Columns\TextColumn::make('withdrawn-notification')
+                            ->badge()
+                            ->extraAttributes([
+                                'class' => 'mt-2',
+                            ])
+                            ->color('danger')
+                            ->getStateUsing(function (Submission $record) {
+                                if (filled($record->withdrawn_reason)) {
+                                    return 'Pending Withdrawal';
+                                }
+                            }),
+                    ]),
+                ]),
             ])
             ->actions([
                 Tables\Actions\Action::make('view')
+                    ->icon('lineawesome-eye-solid')
+                    ->authorize(function (Submission $record) {
+                        return auth()->user()->can('view', $record);
+                    })
                     ->url(fn (Submission $record) => static::getUrl('view', [
                         'record' => $record->id,
                     ])),
+                Tables\Actions\DeleteAction::make()
+                    ->authorize(
+                        fn (Submission $record) => auth()->user()->can('delete', $record)
+                    ),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+            ])
+            ->filters([
+                SelectFilter::make('status')
+                    ->options(
+                        SubmissionStatus::array()
+                    )
+                    ->searchable(),
             ]);
     }
 
@@ -118,11 +216,13 @@ class SubmissionResource extends Resource
             'create' => Pages\CreateSubmission::route('/create'),
             'complete' => Pages\CompleteSubmission::route('/complete/{record}'),
             'view' => Pages\ViewSubmission::route('/{record}'),
+            'review' => Pages\ReviewSubmissionPage::route('/{record}/review'),
+            'reviewer-invitation' => Pages\ReviewerInvitationPage::route('/{record}/reviewer-invitation'),
         ];
     }
 
     // public static function getNavigationBadge(): ?string
     // {
-    //     return static::getModel()::count();
+    //     return static::getModel()::where('status', '!=', SubmissionStatus::Declined)->count();
     // }
 }

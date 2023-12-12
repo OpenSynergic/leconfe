@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Blade;
 
 class BladeEntry extends Entry
 {
-    public static function make(string $name, string $blade = null, array $viewData = []): static
+    public static function make(string $name, ?string $blade = null, array $viewData = []): static
     {
         $static = app(static::class, ['name' => $name]);
         $static->configure();

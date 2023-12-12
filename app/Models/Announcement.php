@@ -45,7 +45,7 @@ class Announcement extends UserContent implements Sitemapable
         };
     }
 
-    public function registerMediaConversions(Media $media = null): void
+    public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('small')
             ->keepOriginalImageFormat()

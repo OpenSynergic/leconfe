@@ -28,6 +28,8 @@ use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
+
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Panel\Resources\UserResource\Pages;
 use Filament\Tables\Actions\DeleteBulkAction;
@@ -167,8 +169,7 @@ class UserResource extends Resource
                         ->extraCellAttributes([
                             'style' => 'width: 1px',
                         ])
-                        ->circular()
-                        ->toggleable(),
+                        ->circular(),
                     Stack::make([
                         TextColumn::make('full_name')
                             ->weight(FontWeight::Medium)
@@ -181,8 +182,7 @@ class UserResource extends Resource
                                 query: fn ($query, $direction) => $query
                                     ->orderBy('given_name', $direction)
                                     ->orderBy('family_name', $direction)
-                            )
-                            ->toggleable(),
+                            ),
                         TextColumn::make('email')
                             ->wrap()
                             ->color('gray')
@@ -214,6 +214,10 @@ class UserResource extends Resource
                             ->color('danger')
                             ->badge(),
                     ]),
+                    Stack::make([
+                        TextColumn::make('roles.name')
+                            ->badge(),
+                    ]),
                     // Stack::make([
                     //     TextColumn::make('phone')
                     //         ->icon('heroicon-m-phone')
@@ -231,11 +235,13 @@ class UserResource extends Resource
                     //         ->icon('academicon-scopus-square')
                     //         ->getStateUsing(fn (User $record) => $record->getMeta('scopus_id')),
                     // ])
-                ])
-                    ->from('md'),
+                ])->from('md'),
             ])
             ->filters([
-                // ...
+                SelectFilter::make('roles')
+                    ->relationship('roles', 'name')
+                    ->multiple()
+                    ->preload(),
             ])
             ->actions([
                 EditAction::make()

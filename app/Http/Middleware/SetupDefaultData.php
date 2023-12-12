@@ -4,10 +4,12 @@ namespace App\Http\Middleware;
 
 use App\Facades\MetaTag;
 use App\Models\Conference;
-use App\Models\Enums\ConferenceStatus;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
+use luizbills\CSS_Generator\Generator as CSSGenerator;
+use matthieumastadenis\couleur\ColorFactory;
+use matthieumastadenis\couleur\ColorSpace;
 use Symfony\Component\HttpFoundation\Response;
 
 class SetupDefaultData
@@ -25,10 +27,11 @@ class SetupDefaultData
             $this->setupSite();
         }
 
-        View::share('homeUrl', match ($currentConference?->status) {
-            ConferenceStatus::Active => route('livewirePageGroup.current-conference.pages.home'),
-            ConferenceStatus::Archived => route('livewirePageGroup.archive-conference.pages.home', ['conference' => $currentConference->path]),
-            default => route('livewirePageGroup.website.pages.home'),
+        View::share('homeUrl', $currentConference?->getHomeUrl() ?? route('livewirePageGroup.website.pages.home'));
+
+        View::share('panelUrl', match ($currentConference instanceof Conference) {
+            true => route('filament.panel.pages.dashboard', $currentConference?->path),
+            default => route('filament.panel.tenant'),
         });
 
         return $next($request);
@@ -37,26 +40,42 @@ class SetupDefaultData
     protected function setupSite()
     {
         $site = app()->getSite();
+
         View::share('headerLogo', $site->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl']));
         View::share('headerLogoAltText', $site->getMeta('name'));
         View::share('contextName', $site->getMeta('name'));
         View::share('footer', $site->getMeta('page_footer'));
+        View::share('favicon', $site->getFirstMediaUrl('favicon'));
+        View::share('styleSheet', $site->getFirstMediaUrl('styleSheet'));
+
+        if ($appearanceColor = $site->getMeta('appearance_color')) {
+            $oklch = ColorFactory::new($appearanceColor)->to(ColorSpace::OkLch);
+            $css = new CSSGenerator();
+            $css->root_variable('p', "{$oklch->lightness}% {$oklch->chroma} {$oklch->hue}");
+
+            View::share('appearanceColor', $css->get_output());
+        }
 
         MetaTag::add('description', $site->getMeta('description'));
     }
 
     protected function setupConference(Request $request, $currentConference)
     {
-        $previousConference = Conference::where('path', $request->route()->parameter('conference'))->first();
-
-        View::share('headerLogoAltText', $request->route()->hasParameter('conference') ? $previousConference?->name : $currentConference?->name);
-        View::share('headerLogo', $request->route()->hasParameter('conference') ? $previousConference->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl'])
-            : $currentConference->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl']));
+        View::share('headerLogo', $currentConference->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl']));
+        View::share('headerLogoAltText', $currentConference->name);
         View::share('currentConference', $currentConference);
         View::share('contextName', $currentConference->name);
         View::share('footer', $currentConference->getMeta('page_footer'));
         View::share('favicon', $currentConference->getFirstMediaUrl('favicon'));
         View::share('styleSheet', $currentConference->getFirstMediaUrl('styleSheet'));
+
+        if ($appearanceColor = $currentConference->getMeta('appearance_color')) {
+            $oklch = ColorFactory::new($appearanceColor)->to(ColorSpace::OkLch);
+            $css = new CSSGenerator();
+            $css->root_variable('p', "{$oklch->lightness}% {$oklch->chroma} {$oklch->hue}");
+
+            View::share('appearanceColor', $css->get_output());
+        }
 
         MetaTag::add('description', preg_replace("/\r|\n/", '', $currentConference->getMeta('description')));
 

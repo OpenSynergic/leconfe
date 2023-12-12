@@ -2,7 +2,7 @@
     @if (count($upcomings) > 0)
     <h2 class="text-heading px-2 mb-1">Schedule</h2>
     @foreach ($upcomings as $upcoming)
-    <div class="tooltip upcoming-timeline text-start" data-tip="{{ $upcoming->status }}">
+    <div class="upcoming-timeline text-start">
         <div class="w-full flex justify-between">
            @if ($upcoming->hasMeta('date_held'))
            <div class="inline-flex items-center gap-2">

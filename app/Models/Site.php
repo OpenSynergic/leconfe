@@ -21,7 +21,7 @@ class Site extends Model implements HasMedia
         return Site::query()->first();
     }
 
-    public function registerMediaConversions(Media $media = null): void
+    public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('tenant')
             ->keepOriginalImageFormat()

@@ -2,6 +2,7 @@
 
 namespace App\Panel\Resources\SubmissionResource\Pages;
 
+use App\Models\Enums\SubmissionStatus;
 use App\Models\Submission;
 use App\Panel\Resources\SubmissionResource;
 use Filament\Resources\Pages\Page;
@@ -18,6 +19,6 @@ class CompleteSubmission extends Page
 
     public function mount(Submission $record)
     {
-        abort_if($record->status == Submission::STATUS_WIZARD, 404);
+        abort_if($record->status == SubmissionStatus::Incomplete, 404);
     }
 }
