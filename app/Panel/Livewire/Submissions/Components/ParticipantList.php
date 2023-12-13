@@ -138,7 +138,24 @@ class ParticipantList extends Component implements HasForms, HasTable
                                             ->toArray()
                                     )
                                     ->searchable()
-                                    ->preload()
+                                    ->getSearchResultsUsing(function (Get $get, string $search) {
+                                        return User::with('roles')
+                                            ->whereHas(
+                                                'roles',
+                                                fn (Builder $query) => $query->whereId($get('role_id'))
+                                            )
+                                            ->whereNotIn('id', $this->submission->participants->pluck('user_id'))
+                                            ->where('given_name', 'like', "%{$search}%")
+                                            ->orWhere('family_name', 'like', "%{$search}%")
+                                            ->orWhere('email', 'like', "%{$search}%")
+                                            ->get()
+                                            ->mapWithKeys(
+                                                fn (User $user) => [
+                                                    $user->getKey() => static::renderSelectParticipant($user),
+                                                ]
+                                            )
+                                            ->toArray();
+                                    })
                                     ->columnSpan(2),
                                 Fieldset::make()
                                     ->label('Notification')
@@ -163,7 +180,7 @@ class ParticipantList extends Component implements HasForms, HasTable
                             'role_id' => $data['role_id'],
                         ]);
 
-                        if (! $data['no-notification']) {
+                        if (!$data['no-notification']) {
                             try {
                                 Mail::to($submissionParticipant->user->email)
                                     ->send(
@@ -245,7 +262,7 @@ class ParticipantList extends Component implements HasForms, HasTable
                         ->color('primary')
                         ->redirectTo('panel')
                         ->action(function (SubmissionParticipant $record, Impersonate $action) {
-                            if (! $action->impersonate($record->user)) {
+                            if (!$action->impersonate($record->user)) {
                                 $action->failureNotificationTitle("User can't be impersonated");
                                 $action->failure();
                             }
