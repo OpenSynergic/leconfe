@@ -16,6 +16,7 @@ use App\Models\Conference;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Navigation;
 use App\Models\Site;
+use App\Panel\Pages;
 use App\Panel\Resources\NavigationResource;
 use App\Panel\Resources\UserResource;
 use Carbon\Carbon;
@@ -30,7 +31,6 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationGroup;
-use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider as FilamentPanelProvider;
 use Filament\Support\Colors\Color;
@@ -73,7 +73,7 @@ class PanelProvider extends FilamentPanelProvider
                     ->url(fn (): string => url('administration'))
                     // ->url(fn (): string => route('filament.administration.pages.dashboard'))
                     ->icon('heroicon-m-cog-8-tooth')
-                    ->hidden(fn () => ! auth()->user()->can('view', Site::class)),
+                    ->hidden(fn () => !auth()->user()->can('view', Site::class)),
             ])
             ->navigationGroups(static::getNavigationGroups())
             ->navigationItems(static::getNavigationItems())
@@ -165,7 +165,7 @@ class PanelProvider extends FilamentPanelProvider
     public static function getPages(): array
     {
         return [
-            Pages\Dashboard::class,
+            Pages\Dashboard::class
         ];
     }
 
