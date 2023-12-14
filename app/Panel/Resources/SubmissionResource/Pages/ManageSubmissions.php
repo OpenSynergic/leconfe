@@ -12,6 +12,7 @@ use Filament\Actions\Action;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ManageRecords;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class ManageSubmissions extends ManageRecords
 {
@@ -44,209 +45,255 @@ class ManageSubmissions extends ManageRecords
         ];
     }
 
+    /** Need to be optimized */
     public function getTabs(): array
     {
-        $currentUser = auth()->user();
         return [
             'My Queue' => Tab::make('My Queue')
                 ->when(
-                    $currentUser->hasRole(UserRole::Author->value),
-                    function (Tab $tab) use ($currentUser) {
+                    Auth::user()->hasRole(UserRole::Author->value),
+                    function (Tab $tab) {
                         return $tab->modifyQueryUsing(
-                            fn (Builder $query) => $query->where('user_id', $currentUser->getKey())
-                                ->inAnyStatus([
-                                    SubmissionStatus::Incomplete,
-                                    SubmissionStatus::Queued,
-                                    SubmissionStatus::OnReview,
-                                    SubmissionStatus::Editing,
-                                ])
+                            function (Builder $query) {
+                                return $query->where('user_id', Auth::id())
+                                    ->inAnyStatus([
+                                        SubmissionStatus::Queued,
+                                        SubmissionStatus::OnReview,
+                                    ]);
+                            }
                         );
                     }
                 )
                 ->when(
-                    $currentUser->hasRole(UserRole::Reviewer->value),
-                    function (Tab $tab) use ($currentUser) {
+                    Auth::user()->hasRole(UserRole::Reviewer->value),
+                    function (Tab $tab) {
                         return $tab->modifyQueryUsing(
-                            fn (Builder $query) => $query->whereHas(
-                                'reviews',
-                                fn (Builder $query) => $query->where('user_id', $currentUser->getKey())
-                            )
-                                ->inAnyStatus([
+                            function (Builder $query) {
+                                return $query->whereHas('reviews', function (Builder $query) {
+                                    return $query->where('user_id', Auth::id());
+                                })->inAnyStatus([
                                     SubmissionStatus::Incomplete,
                                     SubmissionStatus::Queued,
                                     SubmissionStatus::OnReview,
                                     SubmissionStatus::Editing,
-                                ])
+                                ]);
+                            }
                         );
                     }
                 )
                 ->when(
-                    $currentUser->hasRole(UserRole::Editor->value),
-                    function (Tab $tab) use ($currentUser) {
+                    Auth::user()->hasRole(UserRole::Editor->value),
+                    function (Tab $tab) {
                         return $tab->modifyQueryUsing(
-                            fn (Builder $query) => $query->whereHas(
-                                'participants',
-                                fn (Builder $query) => $query->where('user_id', $currentUser->getKey())
-                            )
-                                ->inAnyStatus([
+                            function (Builder $query) {
+                                return $query->whereHas('participants', function (Builder $query) {
+                                    return $query->where('user_id', Auth::id());
+                                })->inAnyStatus([
                                     SubmissionStatus::Incomplete,
                                     SubmissionStatus::Queued,
                                     SubmissionStatus::OnReview,
                                     SubmissionStatus::Editing,
-                                ])
+                                ]);
+                            }
                         );
                     }
                 )
                 ->when(
-                    $currentUser->hasAnyRole([
+                    Auth::user()->hasAnyRole([
                         UserRole::Admin->value,
                         UserRole::ConferenceManager->value
                     ]),
                     function (Tab $tab) {
                         return $tab->modifyQueryUsing(
-                            fn (Builder $query) => $query->inAnyStatus([
-                                SubmissionStatus::Incomplete,
-                                SubmissionStatus::Queued,
-                                SubmissionStatus::OnReview,
-                                SubmissionStatus::Editing,
-                            ])
+                            function (Builder $query) {
+                                return $query->inAnyStatus([
+                                    SubmissionStatus::Incomplete,
+                                    SubmissionStatus::Queued,
+                                    SubmissionStatus::OnReview,
+                                    SubmissionStatus::Editing,
+                                ]);
+                            }
                         );
                     }
                 ),
             'Active' => Tab::make('Active')
                 ->when(
-                    $currentUser->hasRole(UserRole::Author->value),
+                    Auth::user()->hasRole(UserRole::Author->value),
                     function (Tab $tab) {
                         return $tab->modifyQueryUsing(
-                            fn (Builder $query) => $query->where('user_id', auth()->id())
-                                ->inAnyStatus([
-                                    SubmissionStatus::Queued,
-                                    SubmissionStatus::OnReview,
-                                    SubmissionStatus::Editing,
-                                ])
-                        );
-                    }
-                )
-                ->when(
-                    $currentUser->hasRole(UserRole::Reviewer->value),
-                    function (Tab $tab) use ($currentUser) {
-                        return $tab->modifyQueryUsing(
-                            fn (Builder $query) => $query->whereHas(
-                                'reviews',
-                                fn (Builder $query) => $query->where('user_id', $currentUser->getKey())
+                            function (Builder $query) {
+                                return $query->where('user_id', Auth::id())
                                     ->inAnyStatus([
                                         SubmissionStatus::Queued,
                                         SubmissionStatus::OnReview,
                                         SubmissionStatus::Editing,
-                                    ])
-                            )
+                                    ]);
+                            }
+
                         );
                     }
                 )
                 ->when(
-                    $currentUser->hasRole(UserRole::Editor->value),
-                    function (Tab $tab) use ($currentUser) {
+                    Auth::user()->hasRole(UserRole::Reviewer->value),
+                    function (Tab $tab) {
                         return $tab->modifyQueryUsing(
-                            fn (Builder $query) => $query->whereHas(
-                                'participants',
-                                fn (Builder $query) => $query->where('user_id', $currentUser->getKey())
-                            )
-                                ->inAnyStatus([
+                            function (Builder $query) {
+                                return $query->whereHas('reviews', function (Builder $query) {
+                                    return $query->where('user_id', Auth::id());
+                                })->inAnyStatus([
                                     SubmissionStatus::Queued,
                                     SubmissionStatus::OnReview,
                                     SubmissionStatus::Editing,
-                                ])
+                                ]);
+                            }
                         );
                     }
                 )
                 ->when(
-                    $currentUser->hasAnyRole([
+                    Auth::user()->hasRole(UserRole::Editor->value),
+                    function (Tab $tab) {
+                        return $tab->modifyQueryUsing(
+                            function (Builder $query) {
+                                return $query->whereHas(
+                                    'participants',
+                                    function (Builder $query) {
+                                        return $query->where('user_id', Auth::id());
+                                    }
+                                )
+                                    ->inAnyStatus([
+                                        SubmissionStatus::Queued,
+                                        SubmissionStatus::OnReview,
+                                        SubmissionStatus::Editing,
+                                    ]);
+                            }
+                        );
+                    }
+                )
+                ->when(
+                    Auth::user()->hasAnyRole([
                         UserRole::Admin->value,
                         UserRole::ConferenceManager->value
                     ]),
                     function (Tab $tab) {
                         return $tab->modifyQueryUsing(
-                            fn (Builder $query) => $query
-                                ->inAnyStatus([
+                            function (Builder $query) {
+                                return $query->inAnyStatus([
                                     SubmissionStatus::Queued,
                                     SubmissionStatus::OnReview,
                                     SubmissionStatus::Editing,
-                                ])
+                                ]);
+                            }
                         );
                     }
                 ),
             'Published' => Tab::make('Published')
                 ->when(
-                    $currentUser->hasRole(UserRole::Author->value),
-                    function (Tab $tab) use ($currentUser) {
+                    Auth::user()->hasRole(UserRole::Author->value),
+                    function (Tab $tab) {
                         return $tab->modifyQueryUsing(
-                            fn (Builder $query) => $query
-                                ->where('user_id', $currentUser->getKey())
-                                ->published()
+                            function (Builder $query) {
+                                return $query->where('user_id', Auth::id())
+                                    ->published();
+                            }
                         );
                     }
                 )
                 ->when(
-                    $currentUser->hasRole(UserRole::Reviewer->value),
-                    function (Tab $tab) use ($currentUser) {
+                    Auth::user()->hasRole(UserRole::Editor->value),
+                    function (Tab $tab) {
                         return $tab->modifyQueryUsing(
-                            fn (Builder $query) => $query->whereHas(
-                                'reviews',
-                                fn (Builder $query) => $query->where('user_id', $currentUser->getKey())
-                            )->published()
+                            function (Builder $query) {
+                                return $query->whereHas('participants', function (Builder $query) {
+                                    return $query->where('user_id', Auth::id());
+                                })->published();
+                            }
                         );
                     }
                 )
                 ->when(
-                    $currentUser->hasRole([
+                    Auth::user()->hasRole(UserRole::Reviewer->value),
+                    function (Tab $tab) {
+                        return $tab->modifyQueryUsing(
+                            function (Builder $query) {
+                                return $query->whereHas('reviews', function (Builder $query) {
+                                    return $query->where('user_id', Auth::id());
+                                })->published();
+                            }
+                        );
+                    }
+                )
+                ->when(
+                    Auth::user()->hasRole([
                         UserRole::Admin->value,
                         UserRole::ConferenceManager->value
                     ]),
                     function (Tab $tab) {
                         return $tab->modifyQueryUsing(
-                            fn (Builder $query) => $query->published()
+                            function (Builder $query) {
+                                return $query->published();
+                            }
                         );
                     }
                 ),
             'Archived' => Tab::make('Archived')
                 ->when(
-                    $currentUser->hasRole(UserRole::Author->value),
-                    function (Tab $tab) use ($currentUser) {
-                        return $tab->modifyQueryUsing(
-                            fn (Builder $query) => $query->where('user_id', $currentUser->getKey())
-                                ->inAnyStatus([
-                                    SubmissionStatus::Declined,
-                                    SubmissionStatus::Withdrawn,
-                                ])
-                        );
-                    }
-                )
-                ->when(
-                    $currentUser->hasRole(UserRole::Reviewer->value),
+                    Auth::user()->hasRole(UserRole::Author->value),
                     function (Tab $tab) {
                         return $tab->modifyQueryUsing(
-                            fn (Builder $query) => $query->whereHas(
-                                'reviews',
-                                fn (Builder $query) => $query->where('user_id', auth()->id())
+                            function (Builder $query) {
+                                return $query->where('user_id', Auth::id())
                                     ->inAnyStatus([
                                         SubmissionStatus::Declined,
                                         SubmissionStatus::Withdrawn,
-                                    ])
-                            )
+                                    ]);
+                            }
                         );
                     }
                 )
                 ->when(
-                    $currentUser->hasAnyRole([
+                    Auth::user()->hasRole(UserRole::Editor->value),
+                    function (Tab $tab) {
+                        return $tab->modifyQueryUsing(
+                            function (Builder $query) {
+                                return $query->whereHas('participants', function (Builder $query) {
+                                    return $query->where('user_id', Auth::id());
+                                })->inAnyStatus([
+                                    SubmissionStatus::Declined,
+                                    SubmissionStatus::Withdrawn,
+                                ]);
+                            }
+                        );
+                    }
+                )
+                ->when(
+                    Auth::user()->hasRole(UserRole::Reviewer->value),
+                    function (Tab $tab) {
+                        return $tab->modifyQueryUsing(
+                            function (Builder $query) {
+                                return $query->whereHas('reviews', function (Builder $query) {
+                                    return $query->where('user_id', Auth::id());
+                                })->inAnyStatus([
+                                    SubmissionStatus::Declined,
+                                    SubmissionStatus::Withdrawn,
+                                ]);
+                            }
+
+                        );
+                    }
+                )
+                ->when(
+                    Auth::user()->hasAnyRole([
                         UserRole::Admin->value,
                         UserRole::ConferenceManager->value
                     ]),
                     function (Tab $tab) {
                         return $tab->modifyQueryUsing(
-                            fn (Builder $query) => $query->inAnyStatus([
-                                SubmissionStatus::Declined,
-                                SubmissionStatus::Withdrawn,
-                            ])
+                            function (Builder $query) {
+                                return $query->inAnyStatus([
+                                    SubmissionStatus::Declined,
+                                    SubmissionStatus::Withdrawn,
+                                ]);
+                            }
                         );
                     }
                 )
