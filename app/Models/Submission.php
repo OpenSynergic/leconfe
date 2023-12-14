@@ -144,7 +144,7 @@ class Submission extends Model implements HasMedia
 
     public function scopePublished(Builder $query)
     {
-        return $this->status(SubmissionStatus::Published);
+        return $query->status(SubmissionStatus::Published);
     }
 
     public function scopeStage(Builder $query, SubmissionStage $stage)
