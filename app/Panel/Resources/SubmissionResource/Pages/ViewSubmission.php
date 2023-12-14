@@ -21,6 +21,7 @@ use App\Panel\Livewire\Submissions\Editing;
 use App\Panel\Livewire\Submissions\Forms\Detail;
 use App\Panel\Livewire\Submissions\Forms\Publish;
 use App\Panel\Livewire\Submissions\Forms\References;
+use App\Panel\Livewire\Submissions\Payment;
 use App\Panel\Livewire\Submissions\PeerReview;
 use App\Panel\Livewire\Workflows\Classes\StageManager;
 use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
@@ -73,7 +74,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                     $action->successRedirectUrl(
                         static::getResource()::getUrl('view', [
                             'record' => $this->record,
-                            'stage' => '-'.str($this->record->stage->value)->slug('-').'-tab',
+                            'stage' => '-' . str($this->record->stage->value)->slug('-') . '-tab',
                         ])
                     );
 
@@ -122,7 +123,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                     $action->successRedirectUrl(
                         SubmissionResource::getUrl('view', [
                             'record' => $this->record,
-                            'stage' => '-'.str($this->record->stage->value)->slug('-').'-tab',
+                            'stage' => '-' . str($this->record->stage->value)->slug('-') . '-tab',
                         ]),
                     );
                     $action->success();
@@ -133,7 +134,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                 ->color('danger')
                 ->extraAttributes(function (Action $action) {
                     if (filled($this->record->withdrawn_reason)) {
-                        $attributeValue = '$nextTick(() => { $wire.mountAction(\''.$action->getName().'\') })';
+                        $attributeValue = '$nextTick(() => { $wire.mountAction(\'' . $action->getName() . '\') })';
 
                         return [
                             'x-init' => new HtmlString($attributeValue),
@@ -157,7 +158,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                 ])
                 ->requiresConfirmation()
                 ->modalHeading(function () {
-                    return $this->record->user->fullName.' has requested to withdraw this submission.';
+                    return $this->record->user->fullName . ' has requested to withdraw this submission.';
                 })
                 ->modalDescription("You can either reject the request or accept it, remember it can't be undone.")
                 ->modalCancelActionLabel('Ignore')
@@ -172,7 +173,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                             $action->successRedirectUrl(
                                 SubmissionResource::getUrl('view', [
                                     'record' => $this->record,
-                                    'stage' => '-'.str($this->record->stage->value)->slug('-').'-tab',
+                                    'stage' => '-' . str($this->record->stage->value)->slug('-') . '-tab',
                                 ]),
                             );
                             $action->successNotificationTitle('Withdrawal request rejected');
@@ -192,7 +193,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                     $action->successRedirectUrl(
                         SubmissionResource::getUrl('view', [
                             'record' => $this->record,
-                            'stage' => '-'.str($this->record->stage->value)->slug('-').'-tab',
+                            'stage' => '-' . str($this->record->stage->value)->slug('-') . '-tab',
                         ]),
                     );
                     $action->success();
@@ -204,13 +205,13 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
     public function getSubheading(): string|Htmlable|null
     {
         $badgeHtml = match ($this->record->status) {
-            SubmissionStatus::Queued => '<x-filament::badge color="primary" class="w-fit">'.SubmissionStatus::Queued->value.'</x-filament::badge>',
-            SubmissionStatus::Declined => '<x-filament::badge color="danger" class="w-fit">'.SubmissionStatus::Declined->value.'</x-filament::badge>',
-            SubmissionStatus::Withdrawn => '<x-filament::badge color="danger" class="w-fit">'.SubmissionStatus::Withdrawn->value.'</x-filament::badge>',
-            SubmissionStatus::Published => '<x-filament::badge color="success" class="w-fit">'.SubmissionStatus::Published->value.'</x-filament::badge>',
-            SubmissionStatus::OnReview => '<x-filament::badge color="warning" class="w-fit">'.SubmissionStatus::OnReview->value.'</x-filament::badge>',
-            SubmissionStatus::Incomplete => '<x-filament::badge color="gray" class="w-fit">'.SubmissionStatus::Incomplete->value.'</x-filament::badge>',
-            SubmissionStatus::Editing => '<x-filament::badge color="info" class="w-fit">'.SubmissionStatus::Editing->value.'</x-filament::badge>',
+            SubmissionStatus::Queued => '<x-filament::badge color="primary" class="w-fit">' . SubmissionStatus::Queued->value . '</x-filament::badge>',
+            SubmissionStatus::Declined => '<x-filament::badge color="danger" class="w-fit">' . SubmissionStatus::Declined->value . '</x-filament::badge>',
+            SubmissionStatus::Withdrawn => '<x-filament::badge color="danger" class="w-fit">' . SubmissionStatus::Withdrawn->value . '</x-filament::badge>',
+            SubmissionStatus::Published => '<x-filament::badge color="success" class="w-fit">' . SubmissionStatus::Published->value . '</x-filament::badge>',
+            SubmissionStatus::OnReview => '<x-filament::badge color="warning" class="w-fit">' . SubmissionStatus::OnReview->value . '</x-filament::badge>',
+            SubmissionStatus::Incomplete => '<x-filament::badge color="gray" class="w-fit">' . SubmissionStatus::Incomplete->value . '</x-filament::badge>',
+            SubmissionStatus::Editing => '<x-filament::badge color="info" class="w-fit">' . SubmissionStatus::Editing->value . '</x-filament::badge>',
             default => null,
         };
 
@@ -243,6 +244,14 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                             ->schema([
                                                 LivewireEntry::make('call-for-abstract')
                                                     ->livewire(CallforAbstract::class, [
+                                                        'submission' => $this->record,
+                                                    ]),
+                                            ]),
+                                        Tab::make('Payment')
+                                            ->icon('heroicon-o-currency-dollar')
+                                            ->schema([
+                                                LivewireEntry::make('payment')
+                                                    ->livewire(Payment::class, [
                                                         'submission' => $this->record,
                                                     ]),
                                             ]),
@@ -298,7 +307,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                                 LivewireEntry::make('contributors')
                                                     ->livewire(ContributorList::class, [
                                                         'submission' => $this->record,
-                                                        'viewOnly' => ! auth()->user()->can('editing', $this->record),
+                                                        'viewOnly' => !auth()->user()->can('editing', $this->record),
                                                     ]),
                                             ]),
                                         Tab::make('References')

@@ -85,13 +85,13 @@ class Submission extends Model implements HasMedia
 
         static::created(function (Submission $submission) {
             $submission->participants()->create([
-                'user_id' => auth()->id(),
+                'user_id' => $submission->user_id,
                 'role_id' => Role::where('name', UserRole::Author->value)->first()->getKey(),
             ]);
 
             //If current user does not exists in participant
-            if (! $userAsParticipant = auth()->user()->asParticipant()) {
-                $userAsParticipant = CreateParticipantFromUserAction::run(auth()->user());
+            if (! $userAsParticipant = $submission->user->asParticipant()) {
+                $userAsParticipant = CreateParticipantFromUserAction::run($submission->user);
             }
 
             // Current user as a contributors

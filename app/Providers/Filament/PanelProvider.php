@@ -232,7 +232,7 @@ class PanelProvider extends FilamentPanelProvider
             $tinyEditor
                 ->setRelativeUrls(false)
                 ->setRemoveScriptHost(false)
-                ->toolbarSticky(true);
+                ->toolbarSticky(false);
         });
     }
 
