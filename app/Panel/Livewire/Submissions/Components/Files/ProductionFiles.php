@@ -19,7 +19,7 @@ class ProductionFiles extends SubmissionFilesTable
             return $this->viewOnly;
         }
 
-        return !auth()->user()->can('editing', $this->submission);
+        return ! auth()->user()->can('editing', $this->submission);
     }
 
     public function getAcceptedFiles(): array

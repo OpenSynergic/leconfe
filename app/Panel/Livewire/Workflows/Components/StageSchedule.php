@@ -32,7 +32,7 @@ class StageSchedule extends Component implements HasActions, HasForms
     {
         return Action::make('closeAction')
             ->hidden(
-                fn (): bool => !$this->isStageOpen()
+                fn (): bool => ! $this->isStageOpen()
             )
             ->modalWidth('xl')
             ->modalAlignment('center')
@@ -81,14 +81,14 @@ class StageSchedule extends Component implements HasActions, HasForms
                 ]);
             })
             ->form([
-                DatePicker::make("start_date")
+                DatePicker::make('start_date')
                     ->label('Start')
                     ->required()
                     ->native(false)
                     ->displayFormat('d-F-Y')
                     ->default(now())
                     ->maxDate(now()->addYear()),
-                DatePicker::make("end_date")
+                DatePicker::make('end_date')
                     ->label('End')
                     ->required()
                     ->native(false)

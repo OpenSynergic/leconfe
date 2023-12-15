@@ -26,8 +26,8 @@ class EditingSetting extends WorkflowStage implements HasForms
         $this->form->fill([
             'settings' => [
                 'production_allowed_file_types' => $this->getSetting('production_allowed_file_types', ['pdf']),
-                'draft_allowed_file_types' => $this->getSetting('draft_allowed_file_types', ['pdf', 'doc', 'docx'])
-            ]
+                'draft_allowed_file_types' => $this->getSetting('draft_allowed_file_types', ['pdf', 'doc', 'docx']),
+            ],
         ]);
     }
 
