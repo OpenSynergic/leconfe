@@ -8,6 +8,15 @@ use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
 use App\Models\Meta\SubmissionMeta;
+use App\Models\States\Submission\BaseSubmissionState;
+use App\Models\States\Submission\DeclinedSubmissionState;
+use App\Models\States\Submission\EditingSubmissionState;
+use App\Models\States\Submission\IncompleteSubmissionState;
+use App\Models\States\Submission\OnReviewSubmissionState;
+use App\Models\States\Submission\PaymentSubmissionState;
+use App\Models\States\Submission\PublishedSubmissionState;
+use App\Models\States\Submission\QueuedSubmissionState;
+use App\Models\States\Submission\WithdrawnSubmissionState;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -174,5 +183,20 @@ class Submission extends Model implements HasMedia
             ->get()
             ->pluck('user_id')
             ->map(fn ($userId) => User::find($userId));
+    }
+
+    public function state(): BaseSubmissionState
+    {
+        return match ($this->status) {
+            SubmissionStatus::Incomplete => new IncompleteSubmissionState($this),
+            SubmissionStatus::Queued => new QueuedSubmissionState($this),
+            SubmissionStatus::Payment => new PaymentSubmissionState($this),
+            SubmissionStatus::OnReview => new OnReviewSubmissionState($this),
+            SubmissionStatus::Editing => new EditingSubmissionState($this),
+            SubmissionStatus::Published => new PublishedSubmissionState($this),
+            SubmissionStatus::Declined => new DeclinedSubmissionState($this),
+            SubmissionStatus::Withdrawn => new WithdrawnSubmissionState($this),
+            default => throw new \Exception('Invalid submission status'),
+        };
     }
 }

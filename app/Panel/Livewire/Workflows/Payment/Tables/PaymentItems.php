@@ -3,39 +3,30 @@
 namespace App\Panel\Livewire\Workflows\Payment\Tables;
 
 use App\Models\SubmissionPaymentItem;
-use Filament\Forms\Form;
-use Filament\Forms\Contracts\HasForms;
-use Stevebauman\Purify\Facades\Purify;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Notifications\Notification;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Tables\Concerns\InteractsWithTable;
-use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
 use App\Tables\Columns\IndexColumn;
-use App\Tables\Columns\ListColumn;
-use Faker\Provider\ar_EG\Text;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\Layout\Panel;
-use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\App;
-use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use Squire\Models\Currency;
 
 class PaymentItems extends \Livewire\Component implements HasForms, HasTable
 {
-    use InteractsWithTable;
     use InteractsWithForms;
+    use InteractsWithTable;
 
     public function render()
     {
@@ -67,7 +58,7 @@ class PaymentItems extends \Livewire\Component implements HasForms, HasTable
                             TextInput::make('fee')
                                 ->required()
                                 ->minValue(1)
-                                ->prefix(fn(Get $get) => $get('currency_id') ? Currency::find($get('currency_id'))->symbol_native : null)
+                                ->prefix(fn (Get $get) => $get('currency_id') ? Currency::find($get('currency_id'))->symbol_native : null)
                                 ->numeric(),
                         ]),
                 ])
@@ -75,7 +66,7 @@ class PaymentItems extends \Livewire\Component implements HasForms, HasTable
                 ->reorderable(false)
                 // ->reorderableWithButtons()
                 ->addable(false)
-                ->addActionLabel('Add Fee')
+                ->addActionLabel('Add Fee'),
         ];
 
         return $table
@@ -93,7 +84,7 @@ class PaymentItems extends \Livewire\Component implements HasForms, HasTable
             ])
             ->headerActions([
                 CreateAction::make()
-                    ->label("New Payment Item")
+                    ->label('New Payment Item')
                     ->mountUsing(function (Form $form) {
                         $fees = collect(App::getCurrentConference()->getMeta('workflow.payment.supported_currencies'))->map(function ($currency) {
                             return [
@@ -102,12 +93,12 @@ class PaymentItems extends \Livewire\Component implements HasForms, HasTable
                             ];
                         })->toArray();
                         $form->fill([
-                            'fees' => $fees
+                            'fees' => $fees,
                         ]);
                     })
                     ->model(SubmissionPaymentItem::class)
                     ->modalWidth('2xl')
-                    ->form($formField)
+                    ->form($formField),
             ])
             ->filters([
                 // ...
@@ -120,7 +111,7 @@ class PaymentItems extends \Livewire\Component implements HasForms, HasTable
                             ->map(fn ($currency) => ['currency_id' => $currency, 'fee' => 0])
                             ->keyBy('currency_id')
                             ->merge(collect($data['fees'])->keyBy('currency_id'))
-                            ->filter(fn($fee) => in_array($fee['currency_id'], $supportedCurrencies))
+                            ->filter(fn ($fee) => in_array($fee['currency_id'], $supportedCurrencies))
                             ->toArray();
                         $data['fees'] = $fees;
 

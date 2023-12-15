@@ -74,10 +74,7 @@ class PeerReview extends Component implements HasActions, HasForms
                     ]),
             ])
             ->action(function (Action $action, array $data) {
-                SubmissionUpdateAction::run([
-                    'revision_required' => false,
-                    'status' => SubmissionStatus::Declined,
-                ], $this->submission);
+                $this->submission->state()->decline();
 
                 if (! $data['do-not-notify-author']) {
                     try {
@@ -138,11 +135,7 @@ class PeerReview extends Component implements HasActions, HasForms
                     ]),
             ])
             ->action(function (Action $action, array $data) {
-                SubmissionUpdateAction::run([
-                    'revision_required' => false,
-                    'stage' => SubmissionStage::Editing,
-                    'status' => SubmissionStatus::Editing,
-                ], $this->submission);
+                $this->submission->state()->accept();
 
                 if (! $data['do-not-notify-author']) {
                     try {

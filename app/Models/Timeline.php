@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Timeline extends Model
 {
-    use Cachable, BelongsToConference, HasFactory;
+    use BelongsToConference, Cachable, HasFactory;
 
     protected $fillable = [
         'title',

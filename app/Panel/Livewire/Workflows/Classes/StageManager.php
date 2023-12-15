@@ -22,6 +22,11 @@ class StageManager
         return static::stage('call-for-abstract');
     }
 
+    public static function payment(): static
+    {
+        return static::stage('payment');
+    }
+
     public static function peerReview(): static
     {
         return static::stage('peer-review');

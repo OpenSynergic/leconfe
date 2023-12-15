@@ -137,14 +137,6 @@ class SubmissionResource extends Resource
                                 'class' => 'mt-2',
                             ])
                             ->badge()
-                            ->color(fn (Submission $record): string => match ($record->status) {
-                                SubmissionStatus::Declined, SubmissionStatus::Withdrawn => 'danger',
-                                SubmissionStatus::OnReview => 'warning',
-                                SubmissionStatus::Queued => 'primary',
-                                SubmissionStatus::Editing => 'info',
-                                SubmissionStatus::Published => 'success',
-                                default => 'gray'
-                            })
                             ->formatStateUsing(
                                 fn (Submission $record) => $record->status
                             ),

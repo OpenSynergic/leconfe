@@ -6,14 +6,14 @@ use Filament\Forms\Form;
 
 interface PaymentDriver
 {
-    public function getName() : string;
+    public function getName(): string;
 
     public function pay($amount, $submission);
 
-    public function getPaymentForm(Form $form) : Form;
+    public function getPaymentForm(Form $form): Form;
 
-    public function getSettingFormSchema() : array;
-    
+    public function getSettingFormSchema(): array;
+
     public function getSettingFormFill(): array;
 
     public function saveSetting(array $data): void;

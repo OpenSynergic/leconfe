@@ -3,23 +3,18 @@
 namespace App\Panel\Livewire\Workflows;
 
 use App\Facades\Payment;
-use App\Panel\Livewire\Submissions\Components\Files\SubmissionFilesTable;
 use App\Panel\Livewire\Workflows\Base\WorkflowStage;
 use Awcodes\Shout\Components\Shout;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TagsInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Illuminate\Support\Facades\Log;
-use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use Squire\Models\Currency;
 
 class PaymentSetting extends WorkflowStage implements HasActions, HasForms
@@ -36,7 +31,7 @@ class PaymentSetting extends WorkflowStage implements HasActions, HasForms
     {
         $this->form->fill([
             'settings' => [
-                'payment_method' =>  $this->getSetting('payment_method', 'manual'),
+                'payment_method' => $this->getSetting('payment_method', 'manual'),
                 'supported_currencies' => $this->getSetting('supported_currencies'),
             ],
             ...Payment::getAllDriverNames()->map(fn ($name, $key) => Payment::driver($key)->getSettingFormFill())->toArray(),
@@ -58,13 +53,14 @@ class PaymentSetting extends WorkflowStage implements HasActions, HasForms
                     foreach ($data['settings'] as $key => $value) {
                         $this->updateSetting($key, $value);
                     }
-    
+
                     Payment::driver($data['settings']['payment_method'])
                         ->saveSetting(data_get($data, $data['settings']['payment_method'], []));
                 } catch (\Throwable $th) {
                     //throw $th;
                     Log::error($th);
                     $action->failure();
+
                     return;
                 }
 
@@ -90,11 +86,11 @@ class PaymentSetting extends WorkflowStage implements HasActions, HasForms
                     ->searchable()
                     ->required()
                     ->multiple()
-                    ->options(Currency::query()->get()->mapWithKeys(fn (Currency $currency) => [$currency->id => $currency->name . ' (' . $currency->symbol_native . ')'])->toArray())
+                    ->options(Currency::query()->get()->mapWithKeys(fn (Currency $currency) => [$currency->id => $currency->name.' ('.$currency->symbol_native.')'])->toArray())
                     ->optionsLimit(250),
                 Grid::make(1)
-                    ->hidden(fn (Get $get) => !$get('settings.payment_method'))
-                    ->schema(fn (Get $get) => Payment::driver($get('payment_method'))->getSettingFormSchema())
+                    ->hidden(fn (Get $get) => ! $get('settings.payment_method'))
+                    ->schema(fn (Get $get) => Payment::driver($get('payment_method'))->getSettingFormSchema()),
             ]);
     }
 

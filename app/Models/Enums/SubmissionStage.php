@@ -9,12 +9,12 @@ enum SubmissionStage: string implements HasLabel
 {
     use UsefulEnums;
 
-    case Wizard             = 'Wizard';
-    case CallforAbstract    = 'Call for Abstract';
-    case Payment            = 'Payment';
-    case PeerReview         = 'Peer Review';
-    case Editing            = 'Editing';
-    case Proceeding         = 'Proceeding';
+    case Wizard = 'Wizard';
+    case CallforAbstract = 'Call for Abstract';
+    case Payment = 'Payment';
+    case PeerReview = 'Peer Review';
+    case Editing = 'Editing';
+    case Proceeding = 'Proceeding';
 
     public function getLabel(): ?string
     {

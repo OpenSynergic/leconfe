@@ -3,9 +3,8 @@
 namespace App\Models\Enums;
 
 use App\Models\Enums\Concern\UsefulEnums;
-use Filament\Support\Contracts\HasLabel;
 
-enum PaymentType: string 
+enum PaymentType: string
 {
     use UsefulEnums;
 

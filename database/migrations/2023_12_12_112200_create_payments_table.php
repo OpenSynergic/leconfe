@@ -30,7 +30,7 @@ return new class extends Migration
             $table->index(['state']);
         });
 
-        Schema::create('submission_payment_items', function (Blueprint $table){
+        Schema::create('submission_payment_items', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Conference::class)->constrained();
             $table->string('name');
