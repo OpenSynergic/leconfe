@@ -3,6 +3,7 @@
 namespace App\Panel\Livewire\Submissions\Components\Files;
 
 use App\Constants\SubmissionFileCategory;
+use App\Panel\Livewire\Workflows\Classes\StageManager;
 
 class ProductionFiles extends SubmissionFilesTable
 {
@@ -18,7 +19,16 @@ class ProductionFiles extends SubmissionFilesTable
             return $this->viewOnly;
         }
 
-        return ! auth()->user()->can('editing', $this->submission);
+        return !auth()->user()->can('editing', $this->submission);
+    }
+
+    public function getAcceptedFiles(): array
+    {
+        return StageManager::editing()
+            ->getSetting(
+                'production_allowed_file_types',
+                ['pdf']
+            );
     }
 
     public function getTargetCategory(): string

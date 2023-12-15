@@ -17,12 +17,12 @@ trait CanOpenStage
     #[On('stage-status-changed')]
     public function isStageOpen(): bool
     {
-        if (Carbon::now() >= Carbon::parse($this->getSetting('start_date')) && ! $this->getSetting('end_date')) {
-            $this->stageOpen = true;
-        }
+        $currentTime = Carbon::now();
+        $startDate = Carbon::parse($this->getSetting('start_date'));
+        $endDate = Carbon::parse($this->getSetting('end_date'));
 
-        if (Carbon::now() >= Carbon::parse($this->getSetting('end_date'))) {
-            $this->stageOpen = false;
+        if ($currentTime >= $startDate && $currentTime < $endDate) {
+            $this->stageOpen = true;
         }
 
         return $this->stageOpen;
@@ -45,5 +45,6 @@ trait CanOpenStage
     {
         $this->updateSetting('start_date', $start);
         $this->updateSetting('end_date', $end);
+        $this->dispatch('stage-status-changed');
     }
 }
