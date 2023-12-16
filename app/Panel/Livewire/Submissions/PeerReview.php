@@ -96,7 +96,6 @@ class PeerReview extends Component implements HasActions, HasForms
                 $action->successRedirectUrl(
                     SubmissionResource::getUrl('view', [
                         'record' => $this->submission->getKey(),
-                        'stage' => sprintf('-%s-tab', str($this->submission->stage->value)->slug()),
                     ])
                 );
 
@@ -161,7 +160,6 @@ class PeerReview extends Component implements HasActions, HasForms
                 $action->successRedirectUrl(
                     SubmissionResource::getUrl('view', [
                         'record' => $this->submission->getKey(),
-                        'stage' => sprintf('-%s-tab', str($this->submission->stage->value)->slug()),
                     ])
                 );
 
@@ -226,7 +224,6 @@ class PeerReview extends Component implements HasActions, HasForms
                 $action->successRedirectUrl(
                     SubmissionResource::getUrl('view', [
                         'record' => $this->submission->getKey(),
-                        'stage' => sprintf('-%s-tab', str($this->submission->stage->value)->slug()),
                     ])
                 );
 
@@ -253,7 +250,6 @@ class PeerReview extends Component implements HasActions, HasForms
                 $action->successRedirectUrl(
                     SubmissionResource::getUrl('view', [
                         'record' => $this->submission->getKey(),
-                        'stage' => sprintf('-%s-tab', str($this->submission->stage->value)->slug()),
                     ])
                 );
 

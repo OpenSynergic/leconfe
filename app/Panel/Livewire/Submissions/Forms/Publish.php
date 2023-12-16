@@ -61,8 +61,6 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
         $action->successRedirectUrl(
             SubmissionResource::getUrl('view', [
                 'record' => $this->submission->id,
-                'tab' => '-publication-tab',
-                'ptab' => '-proceeding-tab',
             ])
         );
 
