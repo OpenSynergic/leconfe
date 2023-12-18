@@ -3,11 +3,13 @@
 namespace App\Panel\Resources;
 
 use App\Constants\ReviewerStatus;
+use App\Models\Conference;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
 use App\Models\Submission;
 use App\Panel\Resources\SubmissionResource\Pages;
+use Filament\Facades\Filament;
 use Filament\GlobalSearch\GlobalSearchResult;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -27,6 +29,15 @@ class SubmissionResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?string $recordTitleAttribute = 'title';
+    
+    public static function getUrl(string $name = 'index', array $parameters = [], bool $isAbsolute = true, ?string $panel = null, ?Model $tenant = null): string
+    {
+        $parameters['tenant'] ??= ($tenant ?? Filament::getTenant() ?? Conference::active());
+
+        $routeBaseName = static::getRouteBaseName(panel: $panel);
+
+        return route("{$routeBaseName}.{$name}", $parameters, $isAbsolute);
+    }
 
     public static function getGlobalSearchResultTitle(Model $record): string
     {
