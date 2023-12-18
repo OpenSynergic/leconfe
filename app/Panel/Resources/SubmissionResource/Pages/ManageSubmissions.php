@@ -29,7 +29,7 @@ class ManageSubmissions extends ManageRecords
                 ->button()
                 ->authorize('Submission:create')
                 ->disabled(
-                    fn (): bool => ! StageManager::callForAbstract()->isStageOpen()
+                    fn (): bool => !StageManager::callForAbstract()->isStageOpen()
                 )
                 ->url(static::$resource::getUrl('create'))
                 ->icon('heroicon-o-plus')
