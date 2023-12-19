@@ -69,7 +69,7 @@ class SubmissionFileUploaded extends Notification implements ShouldQueue
             ->body("Title: {$this->submissionFile->submission->getMeta('title')}")
             ->actions([
                 Action::make('new-submission')
-                    ->url(SubmissionResource::getUrl('view', ['record' => $this->submissionFile->submission]))
+                    ->url(SubmissionResource::getUrl('view', ['record' => $this->submissionFile->submission, 'tenant' => $this->submissionFile->submission->conference]))
                     ->label('View')
                     ->markAsRead(),
             ])

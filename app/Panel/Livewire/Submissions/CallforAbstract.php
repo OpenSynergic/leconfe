@@ -182,7 +182,6 @@ class CallforAbstract extends Component implements HasActions, HasForms
                     $action->successRedirectUrl(
                         SubmissionResource::getUrl('view', [
                             'record' => $this->submission->getKey(),
-                            'stage' => '-peer-review-tab',
                         ])
                     );
 
