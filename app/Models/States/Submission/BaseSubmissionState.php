@@ -21,11 +21,6 @@ class BaseSubmissionState implements SubmissionStateInterface
         throw new \Exception('Cannot accept abstract');
     }
 
-    public function pay(): void
-    {
-        throw new \Exception('Cannot pay');
-    }
-
     public function accept(): void
     {
         throw new \Exception('Cannot accept');

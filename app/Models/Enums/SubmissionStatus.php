@@ -12,7 +12,6 @@ enum SubmissionStatus: string implements HasLabel, HasColor
 
     case Incomplete = 'Incomplete';
     case Queued = 'Queued';
-    case Payment = 'Payment';
     case OnReview = 'On Review';
     case Editing = 'Editing';
     case Published = 'Published';
@@ -30,7 +29,7 @@ enum SubmissionStatus: string implements HasLabel, HasColor
         return match ($this) {
             self::Declined, self::Withdrawn => 'danger',
             self::OnReview => 'warning',
-            self::Queued, self::Payment => 'primary',
+            self::Queued => 'primary',
             self::Editing => 'info',
             self::Published => 'success',
             default => 'gray'

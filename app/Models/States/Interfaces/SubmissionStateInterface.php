@@ -8,8 +8,6 @@ interface SubmissionStateInterface
 
     public function acceptAbstract(): void;
 
-    public function pay(): void;
-
     public function accept(): void;
 
     public function publish(): void;

@@ -11,8 +11,8 @@ class QueuedSubmissionState extends BaseSubmissionState
     public function acceptAbstract(): void
     {
         SubmissionUpdateAction::run([
-            'stage' => SubmissionStage::Payment,
-            'status' => SubmissionStatus::Payment,
+            'stage' => SubmissionStage::PeerReview,
+            'status' => SubmissionStatus::OnReview,
         ], $this->submission);
     }
 

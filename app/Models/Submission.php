@@ -4,9 +4,11 @@ namespace App\Models;
 
 use App\Actions\User\CreateParticipantFromUserAction;
 use App\Models\Concerns\HasTopics;
+use App\Models\Concerns\InteractsWithPayment;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
+use App\Models\Interfaces\HasPayment;
 use App\Models\Meta\SubmissionMeta;
 use App\Models\States\Submission\BaseSubmissionState;
 use App\Models\States\Submission\DeclinedSubmissionState;
@@ -22,6 +24,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Kra8\Snowflake\HasShortflakePrimary;
@@ -30,9 +33,9 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Tags\HasTags;
 
-class Submission extends Model implements HasMedia
+class Submission extends Model implements HasMedia, HasPayment
 {
-    use Cachable, HasFactory, HasShortflakePrimary, HasTags, HasTopics, InteractsWithMedia, Metable;
+    use Cachable, HasFactory, HasShortflakePrimary, HasTags, HasTopics, InteractsWithMedia, Metable, InteractsWithPayment;
 
     /**
      * The attributes that are mass assignable.
@@ -190,7 +193,6 @@ class Submission extends Model implements HasMedia
         return match ($this->status) {
             SubmissionStatus::Incomplete => new IncompleteSubmissionState($this),
             SubmissionStatus::Queued => new QueuedSubmissionState($this),
-            SubmissionStatus::Payment => new PaymentSubmissionState($this),
             SubmissionStatus::OnReview => new OnReviewSubmissionState($this),
             SubmissionStatus::Editing => new EditingSubmissionState($this),
             SubmissionStatus::Published => new PublishedSubmissionState($this),

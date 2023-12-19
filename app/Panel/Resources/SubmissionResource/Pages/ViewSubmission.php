@@ -6,12 +6,15 @@ use App\Actions\Submissions\AcceptWithdrawalAction;
 use App\Actions\Submissions\CancelWithdrawalAction;
 use App\Actions\Submissions\RequestWithdrawalAction;
 use App\Actions\Submissions\UnpublishSubmissionAction;
+use App\Facades\Payment as FacadesPayment;
 use App\Infolists\Components\LivewireEntry;
 use App\Infolists\Components\VerticalTabs\Tab as Tab;
 use App\Infolists\Components\VerticalTabs\Tabs as Tabs;
+use App\Models\Enums\PaymentState;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
+use App\Models\SubmissionPaymentItem;
 use App\Models\User;
 use App\Notifications\SubmissionWithdrawn;
 use App\Notifications\SubmissionWithdrawRequested;
@@ -28,10 +31,17 @@ use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
 use App\Panel\Resources\SubmissionResource;
 use Awcodes\Shout\Components\ShoutEntry;
 use Filament\Actions\Action;
+use Filament\Actions\StaticAction;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Infolists\Components\Tabs as HorizontalTabs;
 use Filament\Infolists\Components\Tabs\Tab as HorizontalTab;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
@@ -40,8 +50,10 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\Compilers\BladeCompiler;
+use Squire\Models\Currency;
 
 class ViewSubmission extends Page implements HasForms, HasInfolists
 {
@@ -63,6 +75,104 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('payment')
+                ->model(Payment::class)
+                ->record(fn () => $this->record->payment)
+                ->icon('heroicon-o-currency-dollar')
+                ->color('primary')
+                ->when(
+                    fn (Action $action): bool => !$action->getRecord() || $action->getRecord()?->state === PaymentState::Pending,
+                    fn (Action $action): Action => $action
+                        ->action(function (array $data, Form $form) {
+                            $payment = FacadesPayment::createPayment(
+                                $this->record,
+                                auth()->user(),
+                                collect($data['items'])->sum(),
+                                $data['currency_id'],
+                            );
+
+                            $form->model($payment)->saveRelationships();
+
+                            FacadesPayment::driver($this->record->payment?->payment_method)->handlePayment($payment);
+                        })->mountUsing(function (Form $form) {
+                            $payment = $this->record->payment;
+
+                            $form->fill([
+                                'currency_id' => $payment?->currency_id,
+                                ...FacadesPayment::getPaymentFormFill(),
+                            ]);
+                        })->form([
+                            Select::make('currency_id')
+                                ->label('Currency')
+                                ->options(
+                                    Currency::query()
+                                        ->whereIn('id', App::getCurrentConference()->getSupportedCurrencies())
+                                        ->get()
+                                        ->mapWithKeys(fn (Currency $currency) => [$currency->id => $currency->name . ' (' . $currency->symbol_native . ')'])
+                                )
+                                ->required()
+                                ->reactive(),
+                            CheckboxList::make('items')
+                                ->visible(fn (Get $get) => $get('currency_id'))
+                                ->required()
+                                ->options(function (Get $get) {
+                                    return SubmissionPaymentItem::get()
+                                        ->filter(function (SubmissionPaymentItem $item) use ($get): bool {
+                                            foreach ($item->fees as $fee) {
+                                                if (!array_key_exists('currency_id', $fee)) continue;
+                                                if ($fee['currency_id'] === $get('currency_id')) return true;
+                                            }
+
+                                            return false;
+                                        })
+                                        ->mapWithKeys(fn (SubmissionPaymentItem $item): array => [$item->getAmount($get('currency_id')) => $item->name . ': ' . $item->getFormattedAmount($get('currency_id'))]);
+                                    // ->mapWithKeys(fn (SubmissionPaymentItem $item): array => [$item->getKey() => $item->name . ': ' . $item->getFormattedAmount($get('currency_id'))]);
+                                }),
+                            ...FacadesPayment::driver($this->record->payment?->payment_method)->getPaymentFormSchema(),
+                        ]),
+                )
+                ->when(
+                    fn (Action $action): bool => $action->getRecord()?->state === PaymentState::Processing,
+                    fn (Action $action): Action => $action
+                        ->action(function (array $data, $record) {
+                            $record->state = $data['decision'];
+                            $record->save();
+                        })
+                        ->modalHeading('Payment Processing')
+                        ->mountUsing(function (Form $form) {
+                            $payment = $this->record->payment;
+
+                            $form->fill([
+                                'currency_id' => $payment?->currency_id,
+                                'amount'      => $payment?->amount,
+                                ...FacadesPayment::getPaymentFormFill(),
+                            ]);
+                        })
+                        ->form([
+                            Grid::make(1)
+                                ->schema([
+                                    Grid::make()
+                                        ->schema([
+                                            Select::make('currency_id')
+                                                ->label('Currency')
+                                                ->options(Currency::pluck('name', 'id')),
+                                            TextInput::make('amount')
+                                                ->prefix(fn (Get $get) => $get('currency_id') ? Currency::find($get('currency_id'))->symbol_native : null)
+                                                ->numeric(),
+                                        ]),
+
+                                    ...FacadesPayment::driver($this->record->payment?->payment_method)->getPaymentFormSchema(),
+                                ])
+                                ->disabled(),
+                            Select::make('decision')
+                                ->required()
+                                ->options([
+                                    PaymentState::Pending->value => PaymentState::Pending->name,
+                                    PaymentState::Waived->value => PaymentState::Waived->name,
+                                    PaymentState::Paid->value => PaymentState::Paid->name,
+                                ]),
+                        ])
+                ),
             Action::make('unpublish')
                 ->icon('lineawesome-calendar-times-solid')
                 ->color('danger')
@@ -71,11 +181,11 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                 ->successNotificationTitle('Submission unpublished')
                 ->action(function (Action $action) {
                     $this->record->state()->unpublish();
-                    
+
                     $action->successRedirectUrl(
                         static::getResource()::getUrl('view', [
                             'record' => $this->record,
-                            'stage' => '-'.str($this->record->stage->value)->slug('-').'-tab',
+                            'stage' => '-' . str($this->record->stage->value)->slug('-') . '-tab',
                         ])
                     );
 
@@ -124,7 +234,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                     $action->successRedirectUrl(
                         SubmissionResource::getUrl('view', [
                             'record' => $this->record,
-                            'stage' => '-'.str($this->record->stage->value)->slug('-').'-tab',
+                            'stage' => '-' . str($this->record->stage->value)->slug('-') . '-tab',
                         ]),
                     );
                     $action->success();
@@ -135,7 +245,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                 ->color('danger')
                 ->extraAttributes(function (Action $action) {
                     if (filled($this->record->withdrawn_reason)) {
-                        $attributeValue = '$nextTick(() => { $wire.mountAction(\''.$action->getName().'\') })';
+                        $attributeValue = '$nextTick(() => { $wire.mountAction(\'' . $action->getName() . '\') })';
 
                         return [
                             'x-init' => new HtmlString($attributeValue),
@@ -159,7 +269,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                 ])
                 ->requiresConfirmation()
                 ->modalHeading(function () {
-                    return $this->record->user->fullName.' has requested to withdraw this submission.';
+                    return $this->record->user->fullName . ' has requested to withdraw this submission.';
                 })
                 ->modalDescription("You can either reject the request or accept it, remember it can't be undone.")
                 ->modalCancelActionLabel('Ignore')
@@ -174,7 +284,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                             $action->successRedirectUrl(
                                 SubmissionResource::getUrl('view', [
                                     'record' => $this->record,
-                                    'stage' => '-'.str($this->record->stage->value)->slug('-').'-tab',
+                                    'stage' => '-' . str($this->record->stage->value)->slug('-') . '-tab',
                                 ]),
                             );
                             $action->successNotificationTitle('Withdrawal request rejected');
@@ -194,7 +304,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                     $action->successRedirectUrl(
                         SubmissionResource::getUrl('view', [
                             'record' => $this->record,
-                            'stage' => '-'.str($this->record->stage->value)->slug('-').'-tab',
+                            'stage' => '-' . str($this->record->stage->value)->slug('-') . '-tab',
                         ]),
                     );
                     $action->success();
@@ -206,14 +316,13 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
     public function getSubheading(): string|Htmlable|null
     {
         $badgeHtml = match ($this->record->status) {
-            SubmissionStatus::Incomplete => '<x-filament::badge color="gray" class="w-fit">'.SubmissionStatus::Incomplete->value.'</x-filament::badge>',
-            SubmissionStatus::Queued => '<x-filament::badge color="primary" class="w-fit">'.SubmissionStatus::Queued->value.'</x-filament::badge>',
-            SubmissionStatus::Payment => '<x-filament::badge color="primary" class="w-fit">'.SubmissionStatus::Payment->value.'</x-filament::badge>',
-            SubmissionStatus::OnReview => '<x-filament::badge color="warning" class="w-fit">'.SubmissionStatus::OnReview->value.'</x-filament::badge>',
-            SubmissionStatus::Published => '<x-filament::badge color="success" class="w-fit">'.SubmissionStatus::Published->value.'</x-filament::badge>',
-            SubmissionStatus::Editing => '<x-filament::badge color="info" class="w-fit">'.SubmissionStatus::Editing->value.'</x-filament::badge>',
-            SubmissionStatus::Declined => '<x-filament::badge color="danger" class="w-fit">'.SubmissionStatus::Declined->value.'</x-filament::badge>',
-            SubmissionStatus::Withdrawn => '<x-filament::badge color="danger" class="w-fit">'.SubmissionStatus::Withdrawn->value.'</x-filament::badge>',
+            SubmissionStatus::Incomplete => '<x-filament::badge color="gray" class="w-fit">' . SubmissionStatus::Incomplete->value . '</x-filament::badge>',
+            SubmissionStatus::Queued => '<x-filament::badge color="primary" class="w-fit">' . SubmissionStatus::Queued->value . '</x-filament::badge>',
+            SubmissionStatus::OnReview => '<x-filament::badge color="warning" class="w-fit">' . SubmissionStatus::OnReview->value . '</x-filament::badge>',
+            SubmissionStatus::Published => '<x-filament::badge color="success" class="w-fit">' . SubmissionStatus::Published->value . '</x-filament::badge>',
+            SubmissionStatus::Editing => '<x-filament::badge color="info" class="w-fit">' . SubmissionStatus::Editing->value . '</x-filament::badge>',
+            SubmissionStatus::Declined => '<x-filament::badge color="danger" class="w-fit">' . SubmissionStatus::Declined->value . '</x-filament::badge>',
+            SubmissionStatus::Withdrawn => '<x-filament::badge color="danger" class="w-fit">' . SubmissionStatus::Withdrawn->value . '</x-filament::badge>',
             default => null,
         };
 
@@ -249,14 +358,14 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                                         'submission' => $this->record,
                                                     ]),
                                             ]),
-                                        Tab::make('Payment')
-                                            ->icon('heroicon-o-currency-dollar')
-                                            ->schema([
-                                                LivewireEntry::make('payment')
-                                                    ->livewire(Payment::class, [
-                                                        'submission' => $this->record,
-                                                    ]),
-                                            ]),
+                                        // Tab::make('Payment')
+                                        //     ->icon('heroicon-o-currency-dollar')
+                                        //     ->schema([
+                                        //         LivewireEntry::make('payment')
+                                        //             ->livewire(Payment::class, [
+                                        //                 'submission' => $this->record,
+                                        //             ]),
+                                        //     ]),
                                         Tab::make('Peer Review')
                                             ->visible(
                                                 fn (): bool => StageManager::peerReview()->isStageOpen()
@@ -309,7 +418,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                                 LivewireEntry::make('contributors')
                                                     ->livewire(ContributorList::class, [
                                                         'submission' => $this->record,
-                                                        'viewOnly' => ! auth()->user()->can('editing', $this->record),
+                                                        'viewOnly' => !auth()->user()->can('editing', $this->record),
                                                     ]),
                                             ]),
                                         Tab::make('References')

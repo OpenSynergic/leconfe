@@ -2,16 +2,19 @@
 
 namespace App\Managers;
 
-use App\Models\Enums\PaymentType;
+use App\Models\Interfaces\HasPayment;
+use App\Models\Payment;
+use App\Models\User;
 use App\Services\Payments\ManualPayment;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Manager;
 
 class PaymentManager extends Manager
 {
     public function getDefaultDriver(): string
     {
-        return 'manual';
+        return App::getCurrentConference()?->getMeta('workflow.payment.payment_method') ?? 'manual';
     }
 
     public function createManualDriver()
@@ -19,8 +22,19 @@ class PaymentManager extends Manager
         return new ManualPayment;
     }
 
-    public function createPayment(PaymentType $type, Model $model)
+    public function createPayment(Model $model, User $user, float $amount, string $currencyId, ?string $paymentMethod = null)
     {
+        $payment = $model->payment ?? new Payment;
+        $payment->amount = $amount;
+        $payment->currency_id = $currencyId;
+        $payment->payment_method = $paymentMethod ?? $this->getDefaultDriver();
+        if(!$payment->exists){
+            $payment->user()->associate($user);
+            $payment->payable()->associate($model);
+        }
+        $payment->save();
+
+        return $payment;
     }
 
     public function getAllDriverNames()

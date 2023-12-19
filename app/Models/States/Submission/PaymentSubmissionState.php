@@ -3,6 +3,7 @@
 namespace App\Models\States\Submission;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
+use App\Managers\PaymentManager;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 
@@ -14,6 +15,7 @@ class PaymentSubmissionState extends BaseSubmissionState
             'stage' => SubmissionStage::PeerReview,
             'status' => SubmissionStatus::OnReview,
         ], $this->submission);
+
     }
 
     public function withdraw(): void

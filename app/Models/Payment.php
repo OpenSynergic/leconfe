@@ -2,11 +2,19 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToConference;
 use App\Models\Enums\PaymentState;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Plank\Metable\Metable;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Payment extends Model
+class Payment extends Model implements HasMedia
 {
+    use Metable, InteractsWithMedia, BelongsToConference;
+
     /**
      * The model's default values for attributes.
      *
@@ -23,5 +31,25 @@ class Payment extends Model
      */
     protected $casts = [
         'state' => PaymentState::class,
+        'paid_at' => 'datetime',
     ];
+
+    public static function booted()
+    {
+        // static::saving(function (Model $model) {
+        //     if($model->state === PaymentState::Paid){
+        //         $model->paid_at = now();
+        //     }
+        // });
+    }
+
+    public function payable(): MorphTo
+    {
+        return $this->morphTo();
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -159,4 +159,9 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
             default => route('livewirePageGroup.website.pages.home'),
         };
     }
+
+    public function getSupportedCurrencies(): array
+    {
+        return $this->getMeta('workflow.payment.supported_currencies') ?? ['usd'];
+    }
 }

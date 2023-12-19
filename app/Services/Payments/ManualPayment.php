@@ -2,7 +2,10 @@
 
 namespace App\Services\Payments;
 
+use App\Models\Enums\PaymentState;
+use App\Models\Payment;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Illuminate\Support\Facades\App;
@@ -23,18 +26,37 @@ class ManualPayment extends BasePayment
         ]);
     }
 
-    public function getPaymentForm(Form $form): Form
+    public function handlePayment(Payment $payment)
     {
-        return $form->schema([
-            Section::make('Payment')
-                ->schema([
-                    TextInput::make('payment_amount')
-                        ->label('Payment Amount')
-                        ->placeholder('Payment Amount')
-                        ->required()
-                        ->rules('required', 'numeric'),
-                ]),
-        ]);
+        // Send information to Editor that user is paying the submission
+
+
+        // Change payment status to processing
+        $payment->state = PaymentState::Processing;
+        $payment->save();
+    }
+
+    public function getPaymentFormSchema(): array
+    {
+        return [
+            TinyEditor::make('instructions')
+                ->label('Payment Instruction')
+                ->disabled(),
+            SpatieMediaLibraryFileUpload::make('payment_proof')
+                ->collection('payment_proof')
+                ->label('Payment Proof')
+                ->required()
+                ->downloadable(),
+        ];
+    }
+
+    public function getPaymentFormFill(): array
+    {
+        $conference = App::getCurrentConference();
+
+        return [
+            'instructions' => $conference->getMeta('manual_payment.instructions'),
+        ];
     }
 
     public function getSettingFormSchema(): array

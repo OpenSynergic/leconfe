@@ -10,7 +10,8 @@ enum PaymentState: string implements HasLabel
     use UsefulEnums;
 
     case Pending = 'Pending';
-    case Confirmation = 'Confirmation';
+    case Processing = 'Processing';
+    case Waived = 'Waived';
     case Paid = 'Paid';
 
     public function getLabel(): ?string
