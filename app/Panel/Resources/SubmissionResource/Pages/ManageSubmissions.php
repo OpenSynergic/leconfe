@@ -27,15 +27,16 @@ class ManageSubmissions extends ManageRecords
         return $infolist
             ->schema([
                 ShoutEntry::make('title')
-                    ->hidden(function() {
-                        return StageManager::callForAbstract()->isStageOpen() || ! Auth::user()->can('Workflow:update');;
+                    ->hidden(function () {
+                        return StageManager::callForAbstract()->isStageOpen() || ! Auth::user()->can('Workflow:update');
                     })
                     ->type('warning')
-                    ->content(function() {
-                        $htmlString = "Call for abstract stage is closed. ";
+                    ->content(function () {
+                        $htmlString = 'Call for abstract stage is closed. ';
                         $htmlString .= sprintf("<a href='%s' class='text-warning-700 hover:underline'>Click here</a> to open it.", Workflow::getUrl());
+
                         return new HtmlString($htmlString);
-                    })
+                    }),
             ]);
     }
 
