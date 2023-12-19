@@ -176,12 +176,11 @@ class CallforAbstract extends Component implements HasActions, HasForms
                                 )
                             );
 
-                        $action->successRedirectUrl(
-                            SubmissionResource::getUrl('view', [
-                                'record' => $this->submission->getKey(),
-                                'stage' => '-payment-tab',
-                            ])
-                        );
+                    $action->successRedirectUrl(
+                        SubmissionResource::getUrl('view', [
+                            'record' => $this->submission->getKey(),
+                        ])
+                    );
 
                         $action->success();
                     } catch (\Throwable $th) {

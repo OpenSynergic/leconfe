@@ -38,6 +38,7 @@ trait CanSelectFiles
                                 'submission' => $this->submission,
                                 'targetCategory' => $this->getTargetCategory(),
                                 'selectableCategories' => $this->getSelectableCategories(),
+                                'allowedFileTypes' => $this->getAcceptedFiles(),
                                 'lazy' => true,
                             ]
                         ),

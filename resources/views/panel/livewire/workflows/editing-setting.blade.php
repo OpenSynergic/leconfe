@@ -13,6 +13,11 @@
         @livewire(App\Panel\Livewire\Workflows\Components\StageSchedule::class, ['stage' => $this->getStage()])
     </div>
     <div>
-        {{ $this->form }}
+        <form wire:submit='save' class="space-y-4">
+            {{ $this->form }}
+            <x-filament::button type="submit" color="primary" icon='lineawesome-save-solid'>
+                {{ __('Save') }}
+            </x-filament::button>
+        </form>
     </div>
 </div>

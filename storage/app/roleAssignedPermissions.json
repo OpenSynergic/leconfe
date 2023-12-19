@@ -84,8 +84,7 @@
         "Venue:update",
         "Venue:view",
         "Venue:viewAny",
-        "Workflow:update",
-        "WorkflowSetting:update"
+        "Workflow:update"
     ],
     "Conference Manager": [
         "Publication:update",
@@ -122,7 +121,7 @@
         "User:update",
         "User:view",
         "User:viewAny",
-        "WorkflowSetting:update"
+        "Workflow:update"
     ],
     "Editor": [
         "Conference:viewArchived",
@@ -163,6 +162,5 @@
         "Submission:uploadPaper",
         "Submission:view",
         "Submission:viewAny"
-    ],
-    "Participant": []
+    ]
 }
