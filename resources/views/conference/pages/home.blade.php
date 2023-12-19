@@ -73,8 +73,8 @@
             @endif
         </section>
 
-        <section id="conference-speakers" class="p-5 flex flex-col gap-2">
-            @if ($participantPosition->isNotEmpty())
+        @if ($participantPosition->isNotEmpty())
+            <section id="conference-speakers" class="p-5 flex flex-col gap-2">
                 <h2 class="text-heading">Speakers</h2>
                 <div class="cf-speakers space-y-6">
                     @foreach ($participantPosition as $position)
@@ -92,13 +92,14 @@
                                                     {{ $participant->fullName }}
                                                 </div>
                                                 <div class="speaker-meta">
-                                                    @if($participant->getMeta('expertise'))
-                                                    <div
-                                                        class="speaker-expertise text-2xs text-primary">{{ implode(', ', $participant->getMeta('expertise') ?? []) }}</div>
+                                                    @if ($participant->getMeta('expertise'))
+                                                        <div class="speaker-expertise text-2xs text-primary">
+                                                            {{ implode(', ', $participant->getMeta('expertise') ?? []) }}
+                                                        </div>
                                                     @endif
                                                     @if ($participant->getMeta('affiliation'))
-                                                    <div
-                                                        class="speaker-affiliation text-2xs text-secondary">{{ $participant->getMeta('affiliation') }}</div>
+                                                        <div class="speaker-affiliation text-2xs text-secondary">
+                                                            {{ $participant->getMeta('affiliation') }}</div>
                                                     @endif
                                                 </div>
                                             </div>
@@ -109,13 +110,14 @@
                         @endif
                     @endforeach
                 </div>
-            @endif
-        </section>
+            </section>
+        @endif
 
 
-        {{-- additional content start --}}
+        @if($currentConference->getMeta('additional_content'))
         <section class="user-content px-5">
             {!! $currentConference->getMeta('additional_content') !!}
         </section>
+        @endif
     </div>
 </x-website::layouts.main>

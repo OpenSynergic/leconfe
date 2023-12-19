@@ -2,12 +2,12 @@
 
 namespace App\Conference\Pages;
 
-use App\Models\Timeline as ConferenceTimeline;
+use App\Models\Timeline;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 
-class Timeline extends Page
+class Timelines extends Page
 {
-    protected static string $view = 'conference.pages.timeline';
+    protected static string $view = 'conference.pages.timelines';
 
     public function mount()
     {
@@ -22,8 +22,7 @@ class Timeline extends Page
     protected function getViewData(): array
     {
         return [
-            'events' => ConferenceTimeline::with('conference')
-                ->where('conference_id', app()->getCurrentConference()?->getKey())->get(),
+            'timelines' => Timeline::with('conference')->get(),
         ];
     }
 }

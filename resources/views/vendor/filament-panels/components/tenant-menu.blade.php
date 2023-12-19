@@ -129,7 +129,7 @@
     @endif
 
     @if ($canSwitchTenants)
-        <x-filament::dropdown.list>
+        <x-filament::dropdown.list class="max-h-96 overflow-auto hover:overflow-y-scroll">
             @foreach ($tenants as $tenant)
                 <x-filament::dropdown.list.item
                     :href="filament()->getUrl($tenant)"
