@@ -8,11 +8,11 @@ use App\Models\Block;
 use App\Models\Conference;
 use App\Models\Navigation;
 use App\Models\ParticipantPosition;
+use App\Models\PaymentItem;
 use App\Models\Scopes\ConferenceScope;
 use App\Models\Site;
 use App\Models\StaticPage;
 use App\Models\Submission;
-use App\Models\SubmissionPaymentItem;
 use App\Models\Timeline;
 use App\Models\Topic;
 use App\Models\Venue;
@@ -67,7 +67,7 @@ class Application extends LaravelApplication
             Announcement::class,
             StaticPage::class,
             Timeline::class,
-            SubmissionPaymentItem::class,
+            PaymentItem::class,
         ] as $model) {
             $model::addGlobalScope(new ConferenceScope);
         }

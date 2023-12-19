@@ -9,5 +9,4 @@ enum PaymentType: string
     use UsefulEnums;
 
     case Submission = 'Submission';
-    case Participant = 'Participant';
 }

@@ -9,7 +9,7 @@ enum PaymentState: string implements HasLabel
 {
     use UsefulEnums;
 
-    case Pending = 'Pending';
+    case Unpaid = 'Unpaid';
     case Processing = 'Processing';
     case Waived = 'Waived';
     case Paid = 'Paid';

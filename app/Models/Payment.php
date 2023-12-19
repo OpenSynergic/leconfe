@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Concerns\BelongsToConference;
 use App\Models\Enums\PaymentState;
+use App\Models\Meta\PaymentMeta;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -21,7 +22,7 @@ class Payment extends Model implements HasMedia
      * @var array
      */
     protected $attributes = [
-        'state' => PaymentState::Pending,
+        'state' => PaymentState::Unpaid,
     ];
 
     /**
@@ -52,4 +53,15 @@ class Payment extends Model implements HasMedia
     {
         return $this->belongsTo(User::class);
     }
+
+    protected function getMetaClassName(): string
+    {
+        return PaymentMeta::class;
+    }
+
+    public function isCompleted(): bool
+    {
+        return $this->state->isOneOf(PaymentState::Paid, PaymentState::Waived);
+    }
+
 }

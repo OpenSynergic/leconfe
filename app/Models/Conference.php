@@ -162,6 +162,6 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
 
     public function getSupportedCurrencies(): array
     {
-        return $this->getMeta('workflow.payment.supported_currencies') ?? ['usd'];
+        return $this->getMeta('payment.supported_currencies') ?? ['usd'];
     }
 }

@@ -201,4 +201,13 @@ class Submission extends Model implements HasMedia, HasPayment
             default => throw new \Exception('Invalid submission status'),
         };
     }
+
+    public function hasPaymentProcess() : bool
+    {
+        return $this->conference->getMeta('payment.enabled') && match ($this->status) {
+            SubmissionStatus::OnReview, SubmissionStatus::Editing, SubmissionStatus::Published => true,
+            SubmissionStatus::Incomplete, SubmissionStatus::Queued, SubmissionStatus::Withdrawn, SubmissionStatus::Declined => false,
+            default => false,
+        };
+    }
 }

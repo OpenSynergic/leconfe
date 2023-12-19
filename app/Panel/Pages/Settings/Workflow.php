@@ -7,7 +7,7 @@ use App\Infolists\Components\VerticalTabs\Tab;
 use App\Infolists\Components\VerticalTabs\Tabs;
 use App\Panel\Livewire\Workflows\AbstractSetting;
 use App\Panel\Livewire\Workflows\EditingSetting;
-use App\Panel\Livewire\Workflows\Payment\Tables\PaymentItems;
+use App\Panel\Livewire\Workflows\Payment\Tables\SubmissionPaymentItemTable;
 use App\Panel\Livewire\Workflows\PaymentSetting;
 use App\Panel\Livewire\Workflows\PeerReview\Forms\Guidelines;
 use App\Panel\Livewire\Workflows\PeerReviewSetting;
@@ -35,7 +35,7 @@ class Workflow extends Page implements HasForms, HasInfolists
 
     public function booted(): void
     {
-        abort_if(! static::canView(), 403);
+        abort_if(!static::canView(), 403);
     }
 
     public static function shouldRegisterNavigation(): bool
@@ -77,10 +77,10 @@ class Workflow extends Page implements HasForms, HasInfolists
                                             LivewireEntry::make('payment-setting')
                                                 ->livewire(PaymentSetting::class),
                                         ]),
-                                    HorizontalTab::make('Items')
+                                    HorizontalTab::make('Submission Payment Items')
                                         ->schema([
                                             LivewireEntry::make('payment-items')
-                                                ->livewire(PaymentItems::class),
+                                                ->livewire(SubmissionPaymentItemTable::class),
                                         ]),
                                 ]),
 

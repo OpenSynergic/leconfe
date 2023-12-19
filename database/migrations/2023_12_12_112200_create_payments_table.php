@@ -20,15 +20,15 @@ return new class extends Migration
             $table->foreignIdFor(Conference::class)->constrained();
             $table->morphs('payable');
             $table->foreignIdFor(User::class)->constrained();
-            // $table->enum('type', PaymentType::array());
-            $table->enum('state', PaymentState::array())->default(PaymentState::Pending->value);
+            $table->enum('type', PaymentType::array());
+            $table->enum('state', PaymentState::array())->default(PaymentState::Unpaid->value);
             $table->double('amount');
             $table->string('currency_id');
             $table->timestamp('paid_at')->nullable();
             $table->string('payment_method');
             $table->timestamps();
 
-            // $table->index(['type']);
+            $table->index(['type']);
             $table->index(['state']);
         });
 
@@ -44,25 +44,17 @@ return new class extends Migration
             $table->index(['key', 'metable_type']);
         });
 
-        Schema::create('submission_payment_items', function (Blueprint $table) {
+        Schema::create('payment_items', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Conference::class)->constrained();
             $table->string('name');
+            $table->enum('type', PaymentType::array());
             $table->text('description')->nullable();
             $table->integer('order_column')->nullable();
             $table->json('fees');
             $table->boolean('active')->default(true);
             $table->timestamps();
         });
-
-        // Schema::create('submission_payment_items_details', function (Blueprint $table){
-        //     $table->id();
-        //     $table->foreignId('submission_payment_item_id')->constrained('submission_payment_items', indexName:'items_details_item_id_foreign')->cascadeOnDelete();
-        //     $table->string('currency_id');
-        //     $table->double('fee');
-        //     $table->integer('order_column')->nullable();
-        //     $table->timestamps();
-        // });
     }
 
     /**

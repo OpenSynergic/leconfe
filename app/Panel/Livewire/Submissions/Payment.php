@@ -5,7 +5,7 @@ namespace App\Panel\Livewire\Submissions;
 use App\Facades\Payment as PaymentFacade;
 use App\Models\Conference;
 use App\Models\Submission;
-use App\Models\SubmissionPaymentItem;
+use App\Models\PaymentItem;
 use App\Panel\Livewire\Workflows\Classes\StageManager;
 use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -62,8 +62,8 @@ class Payment extends Component implements HasActions, HasForms
                         CheckboxList::make('items')
                             ->visible(fn (Get $get) => $get('currency_id'))
                             ->options(function (Get $get) {
-                                return SubmissionPaymentItem::get()
-                                    ->filter(function (SubmissionPaymentItem $item) use ($get) : bool {
+                                return PaymentItem::get()
+                                    ->filter(function (PaymentItem $item) use ($get) : bool {
                                         foreach ($item->fees as $fee) {
                                             if(!array_key_exists('currency_id', $fee)) continue;
                                             if($fee['currency_id'] === $get('currency_id')) return true;
@@ -71,7 +71,7 @@ class Payment extends Component implements HasActions, HasForms
 
                                         return false;
                                     })
-                                    ->map(fn (SubmissionPaymentItem $item) : string => $item->name . ': ' . $item->getAmount($get('currency_id')));
+                                    ->map(fn (PaymentItem $item) : string => $item->name . ': ' . $item->getAmount($get('currency_id')));
                             }),
                     ])
             ]);

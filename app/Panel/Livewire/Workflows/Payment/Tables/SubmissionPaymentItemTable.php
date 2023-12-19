@@ -2,9 +2,11 @@
 
 namespace App\Panel\Livewire\Workflows\Payment\Tables;
 
-use App\Models\SubmissionPaymentItem;
+use App\Models\Enums\PaymentType;
+use App\Models\PaymentItem;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -23,7 +25,7 @@ use Filament\Tables\Table;
 use Illuminate\Support\Facades\App;
 use Squire\Models\Currency;
 
-class PaymentItems extends \Livewire\Component implements HasForms, HasTable
+class SubmissionPaymentItemTable extends \Livewire\Component implements HasForms, HasTable
 {
     use InteractsWithForms;
     use InteractsWithTable;
@@ -36,6 +38,7 @@ class PaymentItems extends \Livewire\Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         $formField = [
+            Hidden::make('type'),
             TextInput::make('name')
                 ->required(),
             Textarea::make('description')
@@ -51,7 +54,6 @@ class PaymentItems extends \Livewire\Component implements HasForms, HasTable
                                 ->required()
                                 ->disabled()
                                 ->dehydrated(true)
-                                // ->options(Currency::whereIn('id', App::getCurrentConference()->getMeta('workflow.payment.supported_currencies') ?? [])->pluck('name', 'id'))
                                 ->options(Currency::pluck('name', 'id'))
                                 ->optionsLimit(250)
                                 ->distinct(),
@@ -64,15 +66,17 @@ class PaymentItems extends \Livewire\Component implements HasForms, HasTable
                 ])
                 ->deletable(false)
                 ->reorderable(false)
-                // ->reorderableWithButtons()
                 ->addable(false)
                 ->addActionLabel('Add Fee'),
         ];
 
         return $table
-            ->query(SubmissionPaymentItem::query())
+            ->query(
+                PaymentItem::query()
+                    ->where('type', PaymentType::Submission)
+                    ->orderBy('order_column')
+            )
             ->reorderable('order_column')
-            ->heading('Payment Items')
             ->paginated(false)
             ->columns([
                 IndexColumn::make('no'),
@@ -86,17 +90,18 @@ class PaymentItems extends \Livewire\Component implements HasForms, HasTable
                 CreateAction::make()
                     ->label('New Payment Item')
                     ->mountUsing(function (Form $form) {
-                        $fees = collect(App::getCurrentConference()->getMeta('workflow.payment.supported_currencies'))->map(function ($currency) {
-                            return [
+                        $fees = collect(App::getCurrentConference()->getMeta('payment.supported_currencies'))
+                            ->map(fn ($currency) => [
                                 'currency_id' => $currency,
                                 'fee' => 0,
-                            ];
-                        })->toArray();
+                            ]);
+
                         $form->fill([
-                            'fees' => $fees,
+                            'fees' => $fees->toArray(),
+                            'type' => PaymentType::Submission,
                         ]);
                     })
-                    ->model(SubmissionPaymentItem::class)
+                    ->model(PaymentItem::class)
                     ->modalWidth('2xl')
                     ->form($formField),
             ])
@@ -106,7 +111,7 @@ class PaymentItems extends \Livewire\Component implements HasForms, HasTable
             ->actions([
                 EditAction::make()
                     ->mutateRecordDataUsing(function ($data) {
-                        $supportedCurrencies = App::getCurrentConference()->getMeta('workflow.payment.supported_currencies') ?? [];
+                        $supportedCurrencies = App::getCurrentConference()->getMeta('payment.supported_currencies') ?? [];
                         $fees = collect($supportedCurrencies)
                             ->map(fn ($currency) => ['currency_id' => $currency, 'fee' => 0])
                             ->keyBy('currency_id')

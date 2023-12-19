@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 use Akaunting\Money;
+use App\Models\Enums\PaymentType;
 
-
-class SubmissionPaymentItem extends Model implements Sortable
+class PaymentItem extends Model implements Sortable
 {
     use BelongsToConference, SortableTrait;
 
@@ -23,6 +23,7 @@ class SubmissionPaymentItem extends Model implements Sortable
         'name',
         'description',
         'fees',
+        'type',
     ];
 
     /**
@@ -32,6 +33,7 @@ class SubmissionPaymentItem extends Model implements Sortable
      */
     protected $casts = [
         'fees' => 'array',
+        'type' => PaymentType::class,
     ];
 
     function getAmount($currencyId)

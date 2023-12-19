@@ -10,10 +10,12 @@ use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Squire\Models\Currency;
 
@@ -30,9 +32,10 @@ class PaymentSetting extends WorkflowStage implements HasActions, HasForms
     public function mount()
     {
         $this->form->fill([
-            'settings' => [
-                'payment_method' => $this->getSetting('payment_method', 'manual'),
-                'supported_currencies' => $this->getSetting('supported_currencies'),
+            'payment' => [
+                'enabled' => $this->conference->getMeta('payment.enabled'),
+                'method' => $this->conference->getMeta('payment.method', 'manual'),
+                'supported_currencies' => $this->conference->getMeta('payment.supported_currencies', ['usd']),
             ],
             ...Payment::getAllDriverNames()->map(fn ($name, $key) => Payment::driver($key)->getSettingFormFill())->toArray(),
         ]);
@@ -50,14 +53,15 @@ class PaymentSetting extends WorkflowStage implements HasActions, HasForms
 
                 try {
                     $data = $this->form->getState();
-                    foreach ($data['settings'] as $key => $value) {
-                        $this->updateSetting($key, $value);
+                    
+                    foreach ($data['payment'] as $key => $value) {
+                        $this->conference->setMeta('payment.' . $key, $value);
                     }
 
-                    Payment::driver($data['settings']['payment_method'])
-                        ->saveSetting(data_get($data, $data['settings']['payment_method'], []));
+                    Payment::driver($this->conference->getMeta('payment.method'))
+                        ->saveSetting(data_get($data, $this->conference->getMeta('payment.method'), []));
                 } catch (\Throwable $th) {
-                    //throw $th;
+                    
                     Log::error($th);
                     $action->failure();
 
@@ -73,24 +77,26 @@ class PaymentSetting extends WorkflowStage implements HasActions, HasForms
         return $form
             ->statePath('data')
             ->schema([
-                Shout::make('stage-closed')
-                    ->hidden(fn (): bool => $this->isStageOpen())
-                    ->color('warning')
-                    ->content('The payment stage is not open yet, Start now or schedule opening'),
-                Select::make('settings.payment_method')
-                    ->label('Payment Method')
-                    ->required()
-                    ->options(Payment::getAllDriverNames())
+                Toggle::make('payment.enabled')
                     ->reactive(),
-                Select::make('settings.supported_currencies')
-                    ->searchable()
-                    ->required()
-                    ->multiple()
-                    ->options(Currency::query()->get()->mapWithKeys(fn (Currency $currency) => [$currency->id => $currency->name.' ('.$currency->symbol_native.')'])->toArray())
-                    ->optionsLimit(250),
                 Grid::make(1)
-                    ->hidden(fn (Get $get) => ! $get('settings.payment_method'))
-                    ->schema(fn (Get $get) => Payment::driver($get('payment_method'))->getSettingFormSchema()),
+                    ->hidden(fn (Get $get) => ! $get('payment.enabled'))
+                    ->schema([
+                        Select::make('payment.method')
+                            ->label('Payment Method')
+                            ->required()
+                            ->options(Payment::getAllDriverNames())
+                            ->reactive(),
+                        Select::make('payment.supported_currencies')
+                            ->searchable()
+                            ->required()
+                            ->multiple()
+                            ->options(Currency::query()->get()->mapWithKeys(fn (Currency $currency) => [$currency->id => $currency->name.' ('.$currency->symbol_native.')'])->toArray())
+                            ->optionsLimit(250),
+                        Grid::make(1)
+                            ->hidden(fn (Get $get) => !$get('payment.method'))
+                            ->schema(fn  (Get $get) => Payment::driver($get('payment.method'))->getSettingFormSchema()),
+                    ])
             ]);
     }
 

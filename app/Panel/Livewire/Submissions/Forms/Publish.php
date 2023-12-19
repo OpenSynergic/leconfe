@@ -24,7 +24,9 @@ use Filament\Forms\Form;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
+use HTML5;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\HtmlString;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class Publish extends \Livewire\Component implements HasActions, HasForms, HasInfolists
@@ -76,31 +78,45 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
             ->authorize('publish', $this->submission)
             ->icon('iconpark-check')
             ->label('Send to Proceeding')
-            ->successNotificationTitle('Submission published successfully')
-            ->mountUsing(function (Form $form) {
-                $mailTemplate = MailTemplate::where('mailable', PublishSubmissionMail::class)->first();
-                $form->fill([
-                    'email' => $this->submission->user->email,
-                    'subject' => $mailTemplate ? $mailTemplate->subject : '',
-                    'message' => $mailTemplate ? $mailTemplate->html_template : '',
-                ]);
-            })
-            ->form([
-                Fieldset::make('Notification')
-                    ->columns(1)
-                    ->schema([
-                        TextInput::make('email')
-                            ->disabled()
-                            ->dehydrated(),
-                        TextInput::make('subject')
-                            ->required(),
-                        TinyEditor::make('message')
-                            ->minHeight(300),
-                        Checkbox::make('do-not-notify-author')
-                            ->label("Don't Send Notification to Author"),
-                    ]),
-            ])
-            ->action(fn (Action $action, array $data) => $this->handlePublishAction($action, $data));
+            ->when(
+                fn() => $this->submission->hasPaymentProcess() && !$this->submission->payment?->isCompleted(),
+                fn (Action $action): Action => $action
+                    ->modalContent(new HtmlString(<<<HTML
+                        <p>Submission fee has not been paid, please notify the author.</p>
+                    HTML))
+                    ->modalWidth('xl')
+                    ->modalSubmitAction(false)
+            )
+            ->when(
+                // true,
+                fn() => !$this->submission->hasPaymentProcess() || $this->submission->payment?->isCompleted(),
+                fn (Action $action): Action => $action
+                ->successNotificationTitle('Submission published successfully')
+                ->mountUsing(function (Form $form) {
+                    $mailTemplate = MailTemplate::where('mailable', PublishSubmissionMail::class)->first();
+                    $form->fill([
+                        'email' => $this->submission->user->email,
+                        'subject' => $mailTemplate ? $mailTemplate->subject : '',
+                        'message' => $mailTemplate ? $mailTemplate->html_template : '',
+                    ]);
+                })
+                ->form([
+                    Fieldset::make('Notification')
+                        ->columns(1)
+                        ->schema([
+                            TextInput::make('email')
+                                ->disabled()
+                                ->dehydrated(),
+                            TextInput::make('subject')
+                                ->required(),
+                            TinyEditor::make('message')
+                                ->minHeight(300),
+                            Checkbox::make('do-not-notify-author')
+                                ->label("Don't Send Notification to Author"),
+                        ]),
+                ])
+                ->action(fn (Action $action, array $data) => $this->handlePublishAction($action, $data))
+            );
     }
 
     public function infolist(Infolist $infolist): Infolist
