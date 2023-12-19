@@ -38,7 +38,7 @@ class SubmissionWithdrawn extends Notification implements ShouldQueue
             ->body("Title: {$this->submission->getMeta('title')}")
             ->actions([
                 Action::make('view-submission')
-                    ->url(SubmissionResource::getUrl('view', ['record' => $this->submission]))
+                    ->url(SubmissionResource::getUrl('view', ['record' => $this->submission, 'tenant' => $this->submission->conference]))
                     ->label('View')
                     ->markAsRead(),
             ])
