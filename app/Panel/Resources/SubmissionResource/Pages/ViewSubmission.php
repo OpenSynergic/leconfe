@@ -73,7 +73,6 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                     $action->successRedirectUrl(
                         static::getResource()::getUrl('view', [
                             'record' => $this->record,
-                            'stage' => '-'.str($this->record->stage->value)->slug('-').'-tab',
                         ])
                     );
 
@@ -122,7 +121,6 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                     $action->successRedirectUrl(
                         SubmissionResource::getUrl('view', [
                             'record' => $this->record,
-                            'stage' => '-'.str($this->record->stage->value)->slug('-').'-tab',
                         ]),
                     );
                     $action->success();
@@ -172,7 +170,6 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                             $action->successRedirectUrl(
                                 SubmissionResource::getUrl('view', [
                                     'record' => $this->record,
-                                    'stage' => '-'.str($this->record->stage->value)->slug('-').'-tab',
                                 ]),
                             );
                             $action->successNotificationTitle('Withdrawal request rejected');
@@ -192,7 +189,6 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                     $action->successRedirectUrl(
                         SubmissionResource::getUrl('view', [
                             'record' => $this->record,
-                            'stage' => '-'.str($this->record->stage->value)->slug('-').'-tab',
                         ]),
                     );
                     $action->success();
@@ -204,8 +200,8 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
     public function getSubheading(): string|Htmlable|null
     {
         $badgeHtml = match ($this->record->status) {
-            SubmissionStatus::Queued => '<x-filament::badge color="primary" class="w-fit">'.SubmissionStatus::Queued->value.'</x-filament::badge>',
-            SubmissionStatus::Declined => '<x-filament::badge color="danger" class="w-fit">'.SubmissionStatus::Declined->value.'</x-filament::badge>',
+            SubmissionStatus::Queued => '<x-filament::badge color="primary" class="w-fit">' . SubmissionStatus::Queued->value . '</x-filament::badge>',
+            SubmissionStatus::Declined => '<x-filament::badge color="danger" class="w-fit">' . SubmissionStatus::Declined->value . '</x-filament::badge>',
             SubmissionStatus::Withdrawn => '<x-filament::badge color="danger" class="w-fit">'.SubmissionStatus::Withdrawn->value.'</x-filament::badge>',
             SubmissionStatus::Published => '<x-filament::badge color="success" class="w-fit">'.SubmissionStatus::Published->value.'</x-filament::badge>',
             SubmissionStatus::OnReview => '<x-filament::badge color="warning" class="w-fit">'.SubmissionStatus::OnReview->value.'</x-filament::badge>',
@@ -229,43 +225,77 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
         return $infolist
             ->schema([
                 HorizontalTabs::make()
-                    ->persistTabInQueryString('tab')
+                    // ->persistTabInQueryString('tab')
                     ->contained(false)
                     ->tabs([
                         HorizontalTab::make('Workflow')
                             ->schema([
                                 Tabs::make()
-                                    ->persistTabInQueryString('stage')
+                                    ->activeTab(function () {
+                                        return match ($this->record->stage) {
+                                            SubmissionStage::CallforAbstract => 1,
+                                            SubmissionStage::PeerReview => 2,
+                                            SubmissionStage::Editing, SubmissionStage::Proceeding => 3,
+                                            default => null,
+                                        };
+                                    })
+                                    // ->persistTabInQueryString('stage')
                                     ->sticky()
                                     ->tabs([
                                         Tab::make('Call for Abstract')
                                             ->icon('heroicon-o-information-circle')
-                                            ->schema([
-                                                LivewireEntry::make('call-for-abstract')
-                                                    ->livewire(CallforAbstract::class, [
-                                                        'submission' => $this->record,
-                                                    ]),
-                                            ]),
+                                            ->schema(function () {
+                                                if (!StageManager::callForAbstract()->isStageOpen() && !$this->record->isPublished()) {
+                                                    return [
+                                                        ShoutEntry::make('call-for-abstract-closed')
+                                                            ->type('warning')
+                                                            ->color('warning')
+                                                            ->content('Call for abstract stage is closed.'),
+                                                    ];
+                                                }
+                                                return [
+                                                    LivewireEntry::make('call-for-abstract')
+                                                        ->livewire(CallforAbstract::class, [
+                                                            'submission' => $this->record,
+                                                        ]),
+                                                ];
+                                            }),
                                         Tab::make('Peer Review')
-                                            ->visible(
-                                                fn (): bool => StageManager::peerReview()->isStageOpen()
-                                            )
                                             ->icon('iconpark-checklist-o')
-                                            ->schema([
-                                                LivewireEntry::make('peer-review')
-                                                    ->livewire(PeerReview::class, [
-                                                        'submission' => $this->record,
-                                                    ]),
-                                            ]),
+                                            ->schema(function (): array {
+                                                if (!StageManager::peerReview()->isStageOpen() && !$this->record->isPublished()) {
+                                                    return [
+                                                        ShoutEntry::make('peer-review-closed')
+                                                            ->type('warning')
+                                                            ->color('warning')
+                                                            ->content('Peer review stage is closed.'),
+                                                    ];
+                                                }
+                                                return [
+                                                    LivewireEntry::make('peer-review')
+                                                        ->livewire(PeerReview::class, [
+                                                            'submission' => $this->record,
+                                                        ])
+                                                ];
+                                            }),
                                         Tab::make('Editing')
-                                            ->visible(fn (): bool => StageManager::editing()->isStageOpen())
                                             ->icon('heroicon-o-pencil')
-                                            ->schema([
-                                                LivewireEntry::make('editing')
-                                                    ->livewire(Editing::class, [
-                                                        'submission' => $this->record,
-                                                    ]),
-                                            ]),
+                                            ->schema(function () {
+                                                if (!StageManager::editing()->isStageOpen() && !$this->record->isPublished()) {
+                                                    return [
+                                                        ShoutEntry::make('editing-closed')
+                                                            ->type('warning')
+                                                            ->color('warning')
+                                                            ->content('Editing stage is closed.'),
+                                                    ];
+                                                }
+                                                return [
+                                                    LivewireEntry::make('editing')
+                                                        ->livewire(Editing::class, [
+                                                            'submission' => $this->record,
+                                                        ]),
+                                                ];
+                                            })
                                     ])
                                     ->maxWidth('full'),
                             ]),
@@ -282,7 +312,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                     )
                                     ->content("You can't edit this submission because it is already published."),
                                 Tabs::make()
-                                    ->persistTabInQueryString('ptab') // ptab shorten of publication-tab
+                                    // ->persistTabInQueryString('ptab') // ptab shorten of publication-tab
                                     ->tabs([
                                         Tab::make('Detail')
                                             ->icon('heroicon-o-information-circle')
