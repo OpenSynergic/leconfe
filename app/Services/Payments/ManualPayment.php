@@ -4,10 +4,7 @@ namespace App\Services\Payments;
 
 use App\Models\Enums\PaymentState;
 use App\Models\Payment;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Illuminate\Support\Facades\App;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
@@ -18,18 +15,9 @@ class ManualPayment extends BasePayment
         return 'Manual Payment';
     }
 
-    public function pay($amount, $submission)
-    {
-        $submission->update([
-            'payment_amount' => $amount,
-            'payment_status' => 'paid',
-        ]);
-    }
-
     public function handlePayment(Payment $payment)
     {
         // Send information to Editor that user is paying the submission
-
 
         // Change payment status to processing
         $payment->state = PaymentState::Processing;

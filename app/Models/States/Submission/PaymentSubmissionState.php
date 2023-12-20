@@ -3,7 +3,6 @@
 namespace App\Models\States\Submission;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
-use App\Managers\PaymentManager;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 

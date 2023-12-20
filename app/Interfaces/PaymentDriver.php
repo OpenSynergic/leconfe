@@ -9,8 +9,6 @@ interface PaymentDriver
 {
     public function getName(): string;
 
-    public function pay($amount, $submission);
-
     public function getPaymentFormSchema(): array;
 
     public function getSettingFormSchema(): array;

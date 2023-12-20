@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\HtmlString;
 
-
 class ManageSubmissions extends ManageRecords
 {
     protected static string $resource = SubmissionResource::class;

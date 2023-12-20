@@ -35,7 +35,7 @@ class Workflow extends Page implements HasForms, HasInfolists
 
     public function booted(): void
     {
-        abort_if(!static::canView(), 403);
+        abort_if(! static::canView(), 403);
     }
 
     public static function shouldRegisterNavigation(): bool

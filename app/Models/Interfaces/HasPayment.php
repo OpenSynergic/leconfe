@@ -4,7 +4,7 @@ namespace App\Models\Interfaces;
 
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
-interface HasPayment 
+interface HasPayment
 {
-    public function payment() : MorphOne;
+    public function payment(): MorphOne;
 }

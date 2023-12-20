@@ -14,7 +14,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Payment extends Model implements HasMedia
 {
-    use Metable, InteractsWithMedia, BelongsToConference;
+    use BelongsToConference, InteractsWithMedia, Metable;
 
     /**
      * The model's default values for attributes.
@@ -63,5 +63,4 @@ class Payment extends Model implements HasMedia
     {
         return $this->state->isOneOf(PaymentState::Paid, PaymentState::Waived);
     }
-
 }

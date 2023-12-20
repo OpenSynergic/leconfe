@@ -16,7 +16,7 @@ class QueuedSubmissionState extends BaseSubmissionState
         ], $this->submission);
     }
 
-    public function decline():void
+    public function decline(): void
     {
         SubmissionUpdateAction::run([
             'status' => SubmissionStatus::Declined,

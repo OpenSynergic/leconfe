@@ -2,11 +2,8 @@
 
 namespace App\Panel\Livewire\Submissions;
 
-use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Mail\Templates\AcceptAbstractMail;
 use App\Mail\Templates\DeclineAbstractMail;
-use App\Models\Enums\SubmissionStage;
-use App\Models\Enums\SubmissionStatus;
 use App\Models\MailTemplate;
 use App\Models\Submission;
 use App\Notifications\AbstractAccepted;
@@ -176,11 +173,11 @@ class CallforAbstract extends Component implements HasActions, HasForms
                                 )
                             );
 
-                    $action->successRedirectUrl(
-                        SubmissionResource::getUrl('view', [
-                            'record' => $this->submission->getKey(),
-                        ])
-                    );
+                        $action->successRedirectUrl(
+                            SubmissionResource::getUrl('view', [
+                                'record' => $this->submission->getKey(),
+                            ])
+                        );
 
                         $action->success();
                     } catch (\Throwable $th) {

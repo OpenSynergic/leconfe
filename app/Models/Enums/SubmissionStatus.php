@@ -6,7 +6,7 @@ use App\Models\Enums\Concern\UsefulEnums;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
-enum SubmissionStatus: string implements HasLabel, HasColor
+enum SubmissionStatus: string implements HasColor, HasLabel
 {
     use UsefulEnums;
 
@@ -24,7 +24,7 @@ enum SubmissionStatus: string implements HasLabel, HasColor
         return $this->name;
     }
 
-    public function getColor(): string | array | null
+    public function getColor(): string|array|null
     {
         return match ($this) {
             self::Declined, self::Withdrawn => 'danger',

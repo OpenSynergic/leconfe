@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use Akaunting\Money\Currency;
+use Akaunting\Money;
 use App\Models\Concerns\BelongsToConference;
+use App\Models\Enums\PaymentType;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
-use Akaunting\Money;
-use App\Models\Enums\PaymentType;
 
 class PaymentItem extends Model implements Sortable
 {
@@ -36,16 +35,18 @@ class PaymentItem extends Model implements Sortable
         'type' => PaymentType::class,
     ];
 
-    function getAmount($currencyId)
+    public function getAmount($currencyId)
     {
         $fee = collect($this->fees)->firstWhere('currency_id', $currencyId);
 
-        if($fee === null) return null;
+        if ($fee === null) {
+            return null;
+        }
 
         return $fee['fee'];
     }
 
-    function getFormattedAmount($currencyId)
+    public function getFormattedAmount($currencyId)
     {
         return (new Money\Money(
             $this->getAmount($currencyId),

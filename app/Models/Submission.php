@@ -15,7 +15,6 @@ use App\Models\States\Submission\DeclinedSubmissionState;
 use App\Models\States\Submission\EditingSubmissionState;
 use App\Models\States\Submission\IncompleteSubmissionState;
 use App\Models\States\Submission\OnReviewSubmissionState;
-use App\Models\States\Submission\PaymentSubmissionState;
 use App\Models\States\Submission\PublishedSubmissionState;
 use App\Models\States\Submission\QueuedSubmissionState;
 use App\Models\States\Submission\WithdrawnSubmissionState;
@@ -24,7 +23,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Kra8\Snowflake\HasShortflakePrimary;
@@ -35,7 +33,7 @@ use Spatie\Tags\HasTags;
 
 class Submission extends Model implements HasMedia, HasPayment
 {
-    use Cachable, HasFactory, HasShortflakePrimary, HasTags, HasTopics, InteractsWithMedia, Metable, InteractsWithPayment;
+    use Cachable, HasFactory, HasShortflakePrimary, HasTags, HasTopics, InteractsWithMedia, InteractsWithPayment, Metable;
 
     /**
      * The attributes that are mass assignable.
@@ -202,7 +200,7 @@ class Submission extends Model implements HasMedia, HasPayment
         };
     }
 
-    public function hasPaymentProcess() : bool
+    public function hasPaymentProcess(): bool
     {
         return $this->conference->getMeta('payment.enabled') && match ($this->status) {
             SubmissionStatus::OnReview, SubmissionStatus::Editing, SubmissionStatus::Published => true,

@@ -3,9 +3,8 @@
 namespace App\Panel\Livewire\Submissions;
 
 use App\Facades\Payment as PaymentFacade;
-use App\Models\Conference;
-use App\Models\Submission;
 use App\Models\PaymentItem;
+use App\Models\Submission;
 use App\Panel\Livewire\Workflows\Classes\StageManager;
 use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -55,7 +54,7 @@ class Payment extends Component implements HasActions, HasForms
                                 Currency::query()
                                     ->whereIn('id', App::getCurrentConference()->getSupportedCurrencies())
                                     ->get()
-                                    ->mapWithKeys(fn (Currency $currency) => [$currency->id => $currency->name . ' (' . $currency->symbol_native . ')'])
+                                    ->mapWithKeys(fn (Currency $currency) => [$currency->id => $currency->name.' ('.$currency->symbol_native.')'])
                             )
                             ->required()
                             ->reactive(),
@@ -63,17 +62,21 @@ class Payment extends Component implements HasActions, HasForms
                             ->visible(fn (Get $get) => $get('currency_id'))
                             ->options(function (Get $get) {
                                 return PaymentItem::get()
-                                    ->filter(function (PaymentItem $item) use ($get) : bool {
+                                    ->filter(function (PaymentItem $item) use ($get): bool {
                                         foreach ($item->fees as $fee) {
-                                            if(!array_key_exists('currency_id', $fee)) continue;
-                                            if($fee['currency_id'] === $get('currency_id')) return true;
+                                            if (! array_key_exists('currency_id', $fee)) {
+                                                continue;
+                                            }
+                                            if ($fee['currency_id'] === $get('currency_id')) {
+                                                return true;
+                                            }
                                         }
 
                                         return false;
                                     })
-                                    ->map(fn (PaymentItem $item) : string => $item->name . ': ' . $item->getAmount($get('currency_id')));
+                                    ->map(fn (PaymentItem $item): string => $item->name.': '.$item->getAmount($get('currency_id')));
                             }),
-                    ])
+                    ]),
             ]);
     }
 }
