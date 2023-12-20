@@ -24,7 +24,7 @@ use Spatie\Sitemap\Sitemap;
 //     return view('welcome');
 // });
 
-Route::get('private/preview/{uuid}', function ($uuid) {
+Route::get('view/files/{uuid}', function ($uuid) {
     $media = Media::findByUuid($uuid);
 
     abort_if(!$media, 404);
@@ -37,7 +37,7 @@ Route::get('private/preview/{uuid}', function ($uuid) {
             'Content-Transfer-Encoding' => 'binary',
             'Accept-Ranges' => 'bytes',
         ]);
-})->name('private.preview');
+})->name('submission-files.view');
 
 Route::get('private/files/{uuid}', function ($uuid, Request $request) {
     $media = Media::findByUuid($uuid);

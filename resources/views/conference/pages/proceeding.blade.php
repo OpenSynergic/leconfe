@@ -24,7 +24,7 @@
                     @if (($files = $submission->getMedia(SubmissionFileCategory::EDITED_FILES)) && $files->count())
                         <div class="flex flex-wrap gap-1.5 text-sm mt-2">
                             @foreach ($files as $file)
-                                <a href="{{ route('private.preview', $file->uuid) }}" target="_blank"
+                                <a href="{{ route('submission-files.view', $file->uuid) }}" target="_blank"
                                     class="break-all bg-slate-100 border border-slate-200 py-1 px-3 rounded-md link-primary flex items-center shadow-sm hover:bg-slate-200 hover:border-slate-300 transition ease-in-out duration-200">
                                     {{ $file->file_name }}
                                     <x-lineawesome-external-link-square-alt-solid class="w-4 h-4 ml-0.5" />
