@@ -200,8 +200,8 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
     public function getSubheading(): string|Htmlable|null
     {
         $badgeHtml = match ($this->record->status) {
-            SubmissionStatus::Queued => '<x-filament::badge color="primary" class="w-fit">' . SubmissionStatus::Queued->value . '</x-filament::badge>',
-            SubmissionStatus::Declined => '<x-filament::badge color="danger" class="w-fit">' . SubmissionStatus::Declined->value . '</x-filament::badge>',
+            SubmissionStatus::Queued => '<x-filament::badge color="primary" class="w-fit">'.SubmissionStatus::Queued->value.'</x-filament::badge>',
+            SubmissionStatus::Declined => '<x-filament::badge color="danger" class="w-fit">'.SubmissionStatus::Declined->value.'</x-filament::badge>',
             SubmissionStatus::Withdrawn => '<x-filament::badge color="danger" class="w-fit">'.SubmissionStatus::Withdrawn->value.'</x-filament::badge>',
             SubmissionStatus::Published => '<x-filament::badge color="success" class="w-fit">'.SubmissionStatus::Published->value.'</x-filament::badge>',
             SubmissionStatus::OnReview => '<x-filament::badge color="warning" class="w-fit">'.SubmissionStatus::OnReview->value.'</x-filament::badge>',
@@ -245,7 +245,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                         Tab::make('Call for Abstract')
                                             ->icon('heroicon-o-information-circle')
                                             ->schema(function () {
-                                                if (!StageManager::callForAbstract()->isStageOpen() && !$this->record->isPublished()) {
+                                                if (! StageManager::callForAbstract()->isStageOpen() && ! $this->record->isPublished()) {
                                                     return [
                                                         ShoutEntry::make('call-for-abstract-closed')
                                                             ->type('warning')
@@ -253,6 +253,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                                             ->content('Call for abstract stage is closed.'),
                                                     ];
                                                 }
+
                                                 return [
                                                     LivewireEntry::make('call-for-abstract')
                                                         ->livewire(CallforAbstract::class, [
@@ -263,7 +264,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                         Tab::make('Peer Review')
                                             ->icon('iconpark-checklist-o')
                                             ->schema(function (): array {
-                                                if (!StageManager::peerReview()->isStageOpen() && !$this->record->isPublished()) {
+                                                if (! StageManager::peerReview()->isStageOpen() && ! $this->record->isPublished()) {
                                                     return [
                                                         ShoutEntry::make('peer-review-closed')
                                                             ->type('warning')
@@ -271,17 +272,18 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                                             ->content('Peer review stage is closed.'),
                                                     ];
                                                 }
+
                                                 return [
                                                     LivewireEntry::make('peer-review')
                                                         ->livewire(PeerReview::class, [
                                                             'submission' => $this->record,
-                                                        ])
+                                                        ]),
                                                 ];
                                             }),
                                         Tab::make('Editing')
                                             ->icon('heroicon-o-pencil')
                                             ->schema(function () {
-                                                if (!StageManager::editing()->isStageOpen() && !$this->record->isPublished()) {
+                                                if (! StageManager::editing()->isStageOpen() && ! $this->record->isPublished()) {
                                                     return [
                                                         ShoutEntry::make('editing-closed')
                                                             ->type('warning')
@@ -289,13 +291,14 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                                             ->content('Editing stage is closed.'),
                                                     ];
                                                 }
+
                                                 return [
                                                     LivewireEntry::make('editing')
                                                         ->livewire(Editing::class, [
                                                             'submission' => $this->record,
                                                         ]),
                                                 ];
-                                            })
+                                            }),
                                     ])
                                     ->maxWidth('full'),
                             ]),
