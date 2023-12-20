@@ -16,9 +16,10 @@ class Proceeding extends Page
 
     public function mount(?string $topicSlug = null)
     {
+
         $this->topics = filled($topicSlug)
             ? Topic::whereSlug($topicSlug)->get()
-            : Topic::get();
+            : Topic::whereHas('submissions')->get();
 
         abort_if($this->topics->isEmpty(), 404);
     }
