@@ -14,5 +14,10 @@ class PublishedSubmissionState extends BaseSubmissionState
             'stage' => SubmissionStage::Editing,
             'status' => SubmissionStatus::Editing,
         ], $this->submission);
+
+        activity('submission')
+            ->performedOn($this->submission)
+            ->causedBy(auth()->user())
+            ->log(__('log.submission.unpublished'));
     }
 }

@@ -17,6 +17,23 @@ class SubmissionParticipant extends Model
         'role_id',
     ];
 
+    protected static function booted(): void
+    {
+        static::created(function (SubmissionParticipant $record) {
+            activity('submission')
+                ->performedOn($record->submission)
+                ->causedBy(auth()->user())
+                ->withProperties([
+                    'user_id' => $record->user_id,
+                    'role_id' => $record->role_id,
+                ])
+                ->log(__('log.participant.assigned', [
+                    'name' => $record->user->fullName,
+                    'role' => $record->role->name,
+                ]));
+        });
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

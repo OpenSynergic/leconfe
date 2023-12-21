@@ -20,6 +20,11 @@ class IncompleteSubmissionState extends BaseSubmissionState
             'status' => SubmissionStatus::Queued,
         ], $this->submission);
 
+        activity('submission')
+            ->performedOn($this->submission)
+            ->causedBy(auth()->user())
+            ->log(__('log.submission.created'));
+
         Mail::to($this->submission->user)->send(
             new ThankAuthorMail($this->submission)
         );

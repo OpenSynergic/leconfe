@@ -12,5 +12,10 @@ class RequestWithdrawalAction
     public function handle(Submission $submission, ?string $reason = null)
     {
         SubmissionUpdateAction::run(['withdrawn_reason' => $reason], $submission);
+
+        activity('submission')
+            ->performedOn($submission)
+            ->causedBy(auth()->user())
+            ->log(__('log.submission.requested_withdrawal'));
     }
 }

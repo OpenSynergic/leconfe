@@ -27,6 +27,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Kra8\Snowflake\HasShortflakePrimary;
 use Plank\Metable\Metable;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Tags\HasTags;
@@ -100,7 +101,7 @@ class Submission extends Model implements HasMedia, HasPayment
             ]);
 
             //If current user does not exists in participant
-            if (! $userAsParticipant = $submission->user->asParticipant()) {
+            if (!$userAsParticipant = $submission->user->asParticipant()) {
                 $userAsParticipant = CreateParticipantFromUserAction::run($submission->user);
             }
 
@@ -110,6 +111,11 @@ class Submission extends Model implements HasMedia, HasPayment
                 'participant_position_id' => ParticipantPosition::where('name', UserRole::Author->value)->first()->getKey(),
             ]);
         });
+    }
+
+    public function activities()
+    {
+        return $this->morphMany(Activity::class, 'subject');
     }
 
     public function reviewerAssignedFiles(): HasMany
