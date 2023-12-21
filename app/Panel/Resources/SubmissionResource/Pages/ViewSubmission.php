@@ -107,7 +107,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                         ->modalSubmitAction(false),
                 )
                 ->when(
-                    fn (Action $action): bool => FacadesPayment::driver() && (! $action->getRecord() || $action->getRecord()?->state->isOneOf(PaymentState::Unpaid) && FacadesPayment::driver()),
+                    fn (Action $action): bool => FacadesPayment::driver() && (! $action->getRecord() || $action->getRecord()?->state->isOneOf(PaymentState::Unpaid)),
                     fn (Action $action): Action => $action
                         ->action(function (array $data, Form $form) {
 
@@ -162,7 +162,6 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
 
                                                 return false;
                                             })
-                                            // ->mapWithKeys(fn (PaymentItem $item): array => [$item->getAmount($get('currency_id')) => $item->name . ': ' . $item->getFormattedAmount($get('currency_id'))]);
                                             ->mapWithKeys(fn (PaymentItem $item): array => [$item->id => $item->name.': '.$item->getFormattedAmount($get('currency_id'))]);
                                     }),
                                 ...$paymentDriver->getPaymentFormSchema() ?? [],
