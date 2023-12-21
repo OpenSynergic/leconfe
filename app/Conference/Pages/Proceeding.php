@@ -20,8 +20,6 @@ class Proceeding extends Page
         $this->topics = filled($topicSlug)
             ? Topic::whereSlug($topicSlug)->get()
             : Topic::whereHas('submissions')->get();
-
-        abort_if($this->topics->isEmpty(), 404);
     }
 
     public static function routes(PageGroup $pageGroup): void
