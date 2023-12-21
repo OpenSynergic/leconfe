@@ -27,6 +27,9 @@ return new class extends Migration
             $table->timestamp('withdrawn_at')->nullable();
             $table->timestamp('published_at')->nullable();
             $table->timestamps();
+
+            $table->index(['status']);
+            $table->index(['stage']);
         });
 
         Schema::create('submission_meta', function (Blueprint $table) {

@@ -5,13 +5,16 @@ namespace App\Panel\Resources\SubmissionResource\Pages;
 use App\Actions\Submissions\AcceptWithdrawalAction;
 use App\Actions\Submissions\CancelWithdrawalAction;
 use App\Actions\Submissions\RequestWithdrawalAction;
-use App\Actions\Submissions\UnpublishSubmissionAction;
+use App\Facades\Payment as FacadesPayment;
 use App\Infolists\Components\LivewireEntry;
 use App\Infolists\Components\VerticalTabs\Tab as Tab;
 use App\Infolists\Components\VerticalTabs\Tabs as Tabs;
+use App\Models\Enums\PaymentState;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
+use App\Models\Payment;
+use App\Models\PaymentItem;
 use App\Models\User;
 use App\Notifications\SubmissionWithdrawn;
 use App\Notifications\SubmissionWithdrawRequested;
@@ -27,10 +30,16 @@ use App\Panel\Livewire\Workflows\Concerns\InteractWithTenant;
 use App\Panel\Resources\SubmissionResource;
 use Awcodes\Shout\Components\ShoutEntry;
 use Filament\Actions\Action;
+use Filament\Actions\StaticAction;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Infolists\Components\Tabs as HorizontalTabs;
 use Filament\Infolists\Components\Tabs\Tab as HorizontalTab;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
@@ -39,8 +48,10 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\Compilers\BladeCompiler;
+use Squire\Models\Currency;
 
 class ViewSubmission extends Page implements HasForms, HasInfolists
 {
@@ -59,9 +70,153 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
         abort_unless(static::getResource()::canView($this->getRecord()), 403);
     }
 
+    /**
+     * @return array<string>
+     */
+    public function getBreadcrumbs(): array
+    {
+        $resource = static::getResource();
+
+        $breadcrumb = $this->getBreadcrumb();
+
+        return [
+            $resource::getUrl() => $resource::getBreadcrumb(),
+            ...(filled($breadcrumb) ? [$breadcrumb] : []),
+        ];
+    }
+
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('payment')
+                ->visible($this->record->hasPaymentProcess())
+                ->record(fn () => $this->record->payment)
+                ->model(Payment::class)
+                ->icon('heroicon-o-currency-dollar')
+                ->color('primary')
+                ->modalHeading('Submission Payment')
+                ->when(
+                    fn (Action $action) => ! FacadesPayment::driver($action->getRecord()?->payment_method),
+                    fn (Action $action) => $action
+                        ->modalContent(function ($action) {
+                            $paymentMethod = $action->getRecord()?->payment_method ?? FacadesPayment::getDefaultDriver();
+
+                            return new HtmlString("<p>There's a problem with configured payment method. Please contact administrator. <br>Payment method : ".$paymentMethod.' </p>');
+                        })
+                        ->modalWidth('xl')
+                        ->modalSubmitAction(false),
+                )
+                ->when(
+                    fn (Action $action): bool => FacadesPayment::driver() && (! $action->getRecord() || $action->getRecord()?->state->isOneOf(PaymentState::Unpaid)),
+                    fn (Action $action): Action => $action
+                        ->action(function (array $data, Form $form) {
+
+                            $payment = FacadesPayment::createPayment(
+                                $this->record,
+                                auth()->user(),
+                                $data['currency_id'],
+                                $data['items'],
+                            );
+
+                            $form->model($payment)->saveRelationships();
+
+                            $paymentDriver = FacadesPayment::driver($payment?->payment_method);
+
+                            $paymentDriver->handlePayment($payment);
+                        })->mountUsing(function (Form $form, ?Payment $record) {
+
+                            $paymentDriver = FacadesPayment::driver($record?->payment_method);
+                            $form->fill([
+                                'currency_id' => $record?->currency_id,
+                                ...$paymentDriver->getPaymentFormFill(),
+                            ]);
+                        })->form(function (?Payment $record) {
+
+                            $paymentDriver = FacadesPayment::driver($record?->payment_method);
+
+                            return [
+                                Select::make('currency_id')
+                                    ->label('Currency')
+                                    ->options(
+                                        Currency::query()
+                                            ->whereIn('id', App::getCurrentConference()->getSupportedCurrencies())
+                                            ->get()
+                                            ->mapWithKeys(fn (Currency $currency) => [$currency->id => $currency->name.' ('.$currency->symbol_native.')'])
+                                    )
+                                    ->required()
+                                    ->reactive(),
+                                CheckboxList::make('items')
+                                    ->visible(fn (Get $get) => $get('currency_id'))
+                                    ->required()
+                                    ->options(function (Get $get) {
+                                        return PaymentItem::get()
+                                            ->filter(function (PaymentItem $item) use ($get): bool {
+                                                foreach ($item->fees as $fee) {
+                                                    if (! array_key_exists('currency_id', $fee)) {
+                                                        continue;
+                                                    }
+                                                    if ($fee['currency_id'] === $get('currency_id')) {
+                                                        return true;
+                                                    }
+                                                }
+
+                                                return false;
+                                            })
+                                            ->mapWithKeys(fn (PaymentItem $item): array => [$item->id => $item->name.': '.$item->getFormattedAmount($get('currency_id'))]);
+                                    }),
+                                ...$paymentDriver->getPaymentFormSchema() ?? [],
+                            ];
+                        }),
+                )
+                ->when(
+                    fn (Action $action): bool => FacadesPayment::driver($action->getRecord()?->payment_method) && $action->getRecord()?->state->isOneOf(PaymentState::Processing, PaymentState::Paid, PaymentState::Waived),
+                    fn (Action $action): Action => $action
+                        ->action(function (array $data, $record) {
+                            $record->state = $data['decision'];
+                            $record->save();
+                        })
+                        ->modalSubmitAction(fn (StaticAction $action, ?Payment $record) => $action->visible(auth()->user()->can('update', $record)))
+                        ->modalCancelAction(fn (StaticAction $action, ?Payment $record) => $action->visible(auth()->user()->can('update', $record)))
+                        ->mountUsing(function (Form $form) {
+                            $payment = $this->record->payment;
+
+                            $form->fill([
+                                'currency_id' => $payment?->currency_id,
+                                'amount' => $payment?->amount,
+                                'items' => array_keys($payment?->getMeta('items') ?? []),
+                                ...FacadesPayment::driver($payment?->payment_method)?->getPaymentFormFill() ?? [],
+                            ]);
+
+                            $form->disabled(fn ($record) => ! auth()->user()->can('update', $record));
+                        })
+                        ->form([
+                            Grid::make(1)
+                                ->schema([
+                                    Grid::make()
+                                        ->schema([
+                                            Select::make('currency_id')
+                                                ->label('Currency')
+                                                ->options(Currency::pluck('name', 'id')),
+                                            TextInput::make('amount')
+                                                ->prefix(fn (Get $get) => $get('currency_id') ? Currency::find($get('currency_id'))->symbol_native : null)
+                                                ->numeric(),
+                                        ]),
+                                    CheckboxList::make('items')
+                                        ->options($this->record->payment?->getMeta('items')),
+
+                                    ...FacadesPayment::driver($this->record->payment?->payment_method)?->getPaymentFormSchema() ?? [],
+                                ])
+                                ->disabled(),
+                            Select::make('decision')
+                                ->required()
+                                ->visible(fn ($record) => auth()->user()->can('update', $record))
+                                ->options([
+                                    PaymentState::Unpaid->value => PaymentState::Unpaid->name,
+                                    PaymentState::Waived->value => PaymentState::Waived->name,
+                                    PaymentState::Paid->value => PaymentState::Paid->name,
+                                ]),
+                        ])
+                ),
             Action::make('unpublish')
                 ->icon('lineawesome-calendar-times-solid')
                 ->color('danger')
@@ -69,7 +224,8 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                 ->requiresConfirmation()
                 ->successNotificationTitle('Submission unpublished')
                 ->action(function (Action $action) {
-                    UnpublishSubmissionAction::run($this->record);
+                    $this->record->state()->unpublish();
+
                     $action->successRedirectUrl(
                         static::getResource()::getUrl('view', [
                             'record' => $this->record,
@@ -109,7 +265,9 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                 fn ($manager) => $manager->notify(new SubmissionWithdrawRequested($this->record))
                             );
 
-                        $this->record->getEditors()
+                        $this
+                            ->record
+                            ->getEditors()
                             ->each(function (User $editor) {
                                 $editor->notify(new SubmissionWithdrawRequested($this->record));
                             });
@@ -199,16 +357,30 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
 
     public function getSubheading(): string|Htmlable|null
     {
-        $badgeHtml = match ($this->record->status) {
+        $badgeHtml = '<div class="flex items-center gap-x-2">';
+
+        $badgeHtml .= match ($this->record->status) {
+            SubmissionStatus::Incomplete => '<x-filament::badge color="gray" class="w-fit">'.SubmissionStatus::Incomplete->value.'</x-filament::badge>',
             SubmissionStatus::Queued => '<x-filament::badge color="primary" class="w-fit">'.SubmissionStatus::Queued->value.'</x-filament::badge>',
+            SubmissionStatus::OnReview => '<x-filament::badge color="warning" class="w-fit">'.SubmissionStatus::OnReview->value.'</x-filament::badge>',
+            SubmissionStatus::Published => '<x-filament::badge color="success" class="w-fit">'.SubmissionStatus::Published->value.'</x-filament::badge>',
+            SubmissionStatus::Editing => '<x-filament::badge color="info" class="w-fit">'.SubmissionStatus::Editing->value.'</x-filament::badge>',
             SubmissionStatus::Declined => '<x-filament::badge color="danger" class="w-fit">'.SubmissionStatus::Declined->value.'</x-filament::badge>',
             SubmissionStatus::Withdrawn => '<x-filament::badge color="danger" class="w-fit">'.SubmissionStatus::Withdrawn->value.'</x-filament::badge>',
-            SubmissionStatus::Published => '<x-filament::badge color="success" class="w-fit">'.SubmissionStatus::Published->value.'</x-filament::badge>',
-            SubmissionStatus::OnReview => '<x-filament::badge color="warning" class="w-fit">'.SubmissionStatus::OnReview->value.'</x-filament::badge>',
-            SubmissionStatus::Incomplete => '<x-filament::badge color="gray" class="w-fit">'.SubmissionStatus::Incomplete->value.'</x-filament::badge>',
-            SubmissionStatus::Editing => '<x-filament::badge color="info" class="w-fit">'.SubmissionStatus::Editing->value.'</x-filament::badge>',
             default => null,
         };
+
+        if ($this->record->hasPaymentProcess()) {
+            $badgeHtml .= match ($this->record->payment?->state) {
+                PaymentState::Unpaid => '<x-filament::badge color="danger" class="w-fit">Unpaid</x-filament::badge>',
+                PaymentState::Processing => '<x-filament::badge color="primary" class="w-fit">Payment Processing</x-filament::badge>',
+                PaymentState::Paid => '<x-filament::badge color="success" class="w-fit">Paid</x-filament::badge>',
+                PaymentState::Waived => '<x-filament::badge color="success" class="w-fit">Payment Waived</x-filament::badge>',
+                default => '<x-filament::badge color="danger" class="w-fit">Unpaid</x-filament::badge>',
+            };
+        }
+
+        $badgeHtml .= '</div>';
 
         return new HtmlString(
             BladeCompiler::render($badgeHtml)
