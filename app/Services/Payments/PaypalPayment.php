@@ -4,9 +4,6 @@ namespace App\Services\Payments;
 
 use App\Models\Enums\PaymentState;
 use App\Models\Payment;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Illuminate\Support\Facades\App;
-use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class PaypalPayment extends BasePayment
 {

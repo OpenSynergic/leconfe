@@ -29,7 +29,7 @@ class PaymentSetting extends WorkflowStage implements HasActions, HasForms
 
     public function mount()
     {
-         $this->form->fill([
+        $this->form->fill([
             'payment' => [
                 'enabled' => $this->conference->getMeta('payment.enabled'),
                 'method' => $this->conference->getMeta('payment.method', 'manual'),
