@@ -149,7 +149,8 @@ class ParticipantList extends Component implements HasForms, HasTable
                                             ->readOnly(),
                                         TinyEditor::make('message')
                                             ->minHeight(300)
-                                            ->columnSpanFull(),
+                                            ->columnSpanFull()
+                                            ->toolbarSticky(false),
                                     ]),
                                 Checkbox::make('no-notification')
                                     ->label("Don't Send Notification")
