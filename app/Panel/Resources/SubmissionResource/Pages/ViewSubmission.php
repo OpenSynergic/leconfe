@@ -20,6 +20,7 @@ use App\Notifications\SubmissionWithdrawn;
 use App\Notifications\SubmissionWithdrawRequested;
 use App\Panel\Livewire\Submissions\CallforAbstract;
 use App\Panel\Livewire\Submissions\Components\ContributorList;
+use App\Panel\Livewire\Submissions\Components\Files\PresenterFiles;
 use App\Panel\Livewire\Submissions\Editing;
 use App\Panel\Livewire\Submissions\Forms\Detail;
 use App\Panel\Livewire\Submissions\Forms\Publish;
@@ -511,6 +512,14 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                             ->schema([
                                                 LivewireEntry::make('references')
                                                     ->livewire(References::class, [
+                                                        'submission' => $this->record,
+                                                    ]),
+                                            ]),
+                                        Tab::make('Presenter Files')
+                                            ->icon('heroicon-o-document-text')
+                                            ->schema([
+                                                LivewireEntry::make('presenter')
+                                                    ->livewire(PresenterFiles::class, [
                                                         'submission' => $this->record,
                                                     ]),
                                             ]),

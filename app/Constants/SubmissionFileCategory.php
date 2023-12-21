@@ -19,4 +19,6 @@ final class SubmissionFileCategory
     public const EDITING_DRAFT_FILES = 'editing-draft-files';
 
     public const EDITED_FILES = 'edited-files';
+
+    public const PRESENTER_FILES = 'presenter-files';
 }
