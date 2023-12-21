@@ -86,7 +86,6 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
                     ->modalSubmitAction(false)
             )
             ->when(
-                // true,
                 fn () => ! $this->submission->hasPaymentProcess() || $this->submission->payment?->isCompleted(),
                 fn (Action $action): Action => $action
                     ->successNotificationTitle('Submission published successfully')
