@@ -16,6 +16,7 @@ class EditingSubmissionState extends BaseSubmissionState
         SubmissionUpdateAction::run([
             'stage' => SubmissionStage::Proceeding,
             'status' => SubmissionStatus::Published,
+            'published_at' => now(),
         ], $this->submission);
 
         activity('submission')
