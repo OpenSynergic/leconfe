@@ -16,7 +16,7 @@ class SubmissionDetail extends Page
     public function mount(int $submissionId)
     {
         $this->submission = Submission::find($submissionId);
-        abort_if(!$this->submission, 404);
+        abort_if(! $this->submission, 404);
     }
 
     public static function routes(PageGroup $pageGroup): void

@@ -16,7 +16,7 @@ class PublishSubmissionAction
         SubmissionUpdateAction::run([
             'stage' => SubmissionStage::Proceeding,
             'status' => SubmissionStatus::Published,
-            'published_at' => now()
+            'published_at' => now(),
         ], $submission);
     }
 }

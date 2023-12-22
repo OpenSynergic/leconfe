@@ -27,12 +27,12 @@ use Spatie\Sitemap\Sitemap;
 Route::get('view/files/{uuid}', function ($uuid) {
     $media = Media::findByUuid($uuid);
 
-    abort_if(!$media, 404);
+    abort_if(! $media, 404);
 
     return response()
         ->file($media->getPath(), [
             'Content-Type' => $media->mime_type,
-            'Content-Disposition' => 'inline; filename="' . $media->file_name . '"',
+            'Content-Disposition' => 'inline; filename="'.$media->file_name.'"',
             'Content-Length' => $media->size,
             'Content-Transfer-Encoding' => 'binary',
             'Accept-Ranges' => 'bytes',
@@ -42,7 +42,7 @@ Route::get('view/files/{uuid}', function ($uuid) {
 Route::get('private/files/{uuid}', function ($uuid, Request $request) {
     $media = Media::findByUuid($uuid);
 
-    abort_if(!$media, 404);
+    abort_if(! $media, 404);
 
     return response()
         ->download($media->getPath(), $media->file_name, [
@@ -65,11 +65,11 @@ Route::get('/sitemap', function () {
 })->name('generate-sitemap');
 
 Route::get('local/temp/{path}', function (string $path, Request $request) {
-    abort_if(!$request->hasValidSignature(), 401);
+    abort_if(! $request->hasValidSignature(), 401);
 
     $storage = Storage::disk('local');
 
-    abort_if(!$storage->exists($path), 404);
+    abort_if(! $storage->exists($path), 404);
 
     return $storage->download($path);
 })->where('path', '.*')->name('local.temp');
