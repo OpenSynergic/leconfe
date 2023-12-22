@@ -54,10 +54,8 @@ class ConferenceObserver
                 ],
                 Str::uuid()->toString() => [
                     'label' => 'Proceeding',
-                    'type' => 'external-link',
-                    'data' => [
-                        'url' => route('livewirePageGroup.current-conference.pages.proceeding')
-                    ],
+                    'type' => 'proceeding',
+                    'data' => null,
                     'children' => [],
                 ],
             ],

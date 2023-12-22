@@ -247,7 +247,8 @@ class PanelProvider extends FilamentPanelProvider
                 ->itemType('Announcements', [])
                 ->itemType('Current Conference', [])
                 ->itemType('Login', [])
-                ->itemType('Register', []),
+                ->itemType('Register', [])
+                ->itemType('Proceeding', []),
         ];
     }
 

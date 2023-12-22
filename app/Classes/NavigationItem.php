@@ -77,6 +77,7 @@ class NavigationItem
                 ConferenceStatus::Archived => route('livewirePageGroup.archive-conference.pages.contact', ['conference' => $conference->path]),
                 default => route('livewirePageGroup.current-conference.pages.contact')
             },
+            'proceeding' => fn () => route('livewirePageGroup.current-conference.pages.proceeding'),
             default => fn () => '#',
         };
     }
