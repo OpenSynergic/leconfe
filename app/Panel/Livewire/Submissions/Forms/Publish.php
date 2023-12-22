@@ -37,7 +37,7 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
     {
         $this->submission->state()->publish();
 
-        if (! $data['do-not-notify-author']) {
+        if (!$data['do-not-notify-author']) {
             try {
                 Mail::to($this->submission->user->email)
                     ->send(
@@ -71,13 +71,13 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
     {
         return Action::make('publishAction')
             ->disabled(
-                fn (): bool => ! StageManager::editing()->isStageOpen()
+                fn (): bool => !StageManager::editing()->isStageOpen()
             )
             ->authorize('publish', $this->submission)
             ->icon('iconpark-check')
             ->label('Send to Proceeding')
             ->when(
-                fn () => $this->submission->hasPaymentProcess() && ! $this->submission->payment?->isCompleted(),
+                fn () => $this->submission->hasPaymentProcess() && !$this->submission->payment?->isCompleted(),
                 fn (Action $action): Action => $action
                     ->modalContent(new HtmlString(<<<'HTML'
                         <p>Submission fee has not been paid, please notify the author.</p>
@@ -86,7 +86,7 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
                     ->modalSubmitAction(false)
             )
             ->when(
-                fn () => ! $this->submission->hasPaymentProcess() || $this->submission->payment?->isCompleted(),
+                fn () => !$this->submission->hasPaymentProcess() || $this->submission->payment?->isCompleted(),
                 fn (Action $action): Action => $action
                     ->successNotificationTitle('Submission published successfully')
                     ->mountUsing(function (Form $form) {
@@ -123,7 +123,7 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
             ->schema([
                 ShoutEntry::make('shout')
                     ->color(function (): string {
-                        if (! StageManager::editing()->isStageOpen()) {
+                        if (!StageManager::editing()->isStageOpen()) {
                             return 'warning';
                         }
 
@@ -138,7 +138,7 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
                         return 'warning';
                     })
                     ->content(function (): string {
-                        if (! StageManager::editing()->isStageOpen()) {
+                        if (!StageManager::editing()->isStageOpen()) {
                             return 'You are unable to publish this submission because the editing stage is not yet open.';
                         }
 

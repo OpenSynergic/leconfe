@@ -94,7 +94,7 @@ class SubmissionPolicy
 
     public function uploadAbstract(User $user, Submission $submission)
     {
-        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn])) {
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
             return false;
         }
 
@@ -114,15 +114,15 @@ class SubmissionPolicy
 
     public function uploadPaper(User $user, Submission $submission)
     {
-        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn])) {
+        if ($submission->stage != SubmissionStage::PeerReview) {
+            return false;
+        }
+
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
             return false;
         }
 
         if (filled($submission->withdrawn_reason)) {
-            return false;
-        }
-
-        if ($submission->stage != SubmissionStage::PeerReview) {
             return false;
         }
 
@@ -285,7 +285,7 @@ class SubmissionPolicy
         }
 
         // Editors cannot withdraw submissions; they must wait for the author to request it..
-        if (! filled($submission->withdrawn_reason)) {
+        if (!filled($submission->withdrawn_reason)) {
             return false;
         }
 

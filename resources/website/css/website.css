@@ -98,3 +98,13 @@
 .upcoming-timeline{
     @apply card card-compact bg-white border w-full p-3 flex-col rounded text-gray-600;
 }
+
+/* Handle HTML from TinyMCE */
+#submission-detail #references ul {
+    @apply list-disc list-inside;
+}
+
+/* Handle HTML from TinyMCE */
+#submission-detail #references ol {
+    @apply list-decimal list-inside space-y-3;
+}
