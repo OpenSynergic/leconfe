@@ -29,10 +29,7 @@ class IncompleteSubmissionState extends BaseSubmissionState
             new ThankAuthorMail($this->submission)
         );
 
-        User::role([
-            UserRole::Admin->value,
-            UserRole::ConferenceManager->value,
-        ])
+        User::role([UserRole::ConferenceManager->value])
             ->lazy()
             ->each(fn ($user) => $user->notify(new NewSubmission($this->submission)));
     }
