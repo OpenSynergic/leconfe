@@ -47,7 +47,7 @@ class Submission extends Model implements HasMedia, HasPayment
         'revision_required',
         'withdrawn_reason',
         'withdrawn_at',
-        'published_at'
+        'published_at',
     ];
 
     /**
@@ -58,7 +58,7 @@ class Submission extends Model implements HasMedia, HasPayment
     protected $casts = [
         'stage' => SubmissionStage::class,
         'status' => SubmissionStatus::class,
-        'published_at'  => 'datetime',
+        'published_at' => 'datetime',
         'skipped_review' => 'boolean',
         'revision_required' => 'boolean',
     ];
@@ -102,7 +102,7 @@ class Submission extends Model implements HasMedia, HasPayment
             ]);
 
             //If current user does not exists in participant
-            if (!$userAsParticipant = $submission->user->asParticipant()) {
+            if (! $userAsParticipant = $submission->user->asParticipant()) {
                 $userAsParticipant = CreateParticipantFromUserAction::run($submission->user);
             }
 

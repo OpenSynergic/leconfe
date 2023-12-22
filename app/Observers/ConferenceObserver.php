@@ -56,7 +56,7 @@ class ConferenceObserver
                     'label' => 'Proceeding',
                     'type' => 'external-link',
                     'data' => [
-                        'url' => route('livewirePageGroup.current-conference.pages.proceeding')
+                        'url' => route('livewirePageGroup.current-conference.pages.proceeding'),
                     ],
                     'children' => [],
                 ],
