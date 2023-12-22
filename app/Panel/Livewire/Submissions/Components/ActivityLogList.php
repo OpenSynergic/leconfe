@@ -10,6 +10,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class ActivityLogList extends \Livewire\Component implements HasTable, HasForms
 {
@@ -39,6 +40,12 @@ class ActivityLogList extends \Livewire\Component implements HasTable, HasForms
                         return $record->created_at->diffForHumans();
                     }),
                 TextColumn::make('causer.fullName')
+                    ->getStateUsing(function (Model $record) {
+                        if (!$record->causer_type) {
+                            return "System";
+                        }
+                        return $record->causer->fullName;
+                    })
                     ->label('Causer Name'),
                 TextColumn::make('description'),
             ]);
