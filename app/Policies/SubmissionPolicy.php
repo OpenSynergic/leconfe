@@ -150,8 +150,6 @@ class SubmissionPolicy
         }
     }
 
-    
-
     public function acceptPaper(User $user, Submission $submission)
     {
         if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn])) {
