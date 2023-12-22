@@ -21,6 +21,7 @@ use App\Notifications\SubmissionWithdrawRequested;
 use App\Panel\Livewire\Submissions\CallforAbstract;
 use App\Panel\Livewire\Submissions\Components\ActivityLogList;
 use App\Panel\Livewire\Submissions\Components\ContributorList;
+use App\Panel\Livewire\Submissions\Components\Files\PresenterFiles;
 use App\Panel\Livewire\Submissions\Editing;
 use App\Panel\Livewire\Submissions\Forms\Detail;
 use App\Panel\Livewire\Submissions\Forms\Publish;
@@ -110,7 +111,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                         ->modalSubmitAction(false),
                 )
                 ->when(
-                    fn (Action $action): bool => FacadesPayment::driver() && (!$action->getRecord() || $action->getRecord()?->state->isOneOf(PaymentState::Unpaid) && FacadesPayment::driver()),
+                    fn (Action $action): bool => FacadesPayment::driver() && (!$action->getRecord() || $action->getRecord()?->state->isOneOf(PaymentState::Unpaid)),
                     fn (Action $action): Action => $action
                         ->action(function (array $data, Form $form) {
 
@@ -165,7 +166,6 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
 
                                                 return false;
                                             })
-                                            // ->mapWithKeys(fn (PaymentItem $item): array => [$item->getAmount($get('currency_id')) => $item->name . ': ' . $item->getFormattedAmount($get('currency_id'))]);
                                             ->mapWithKeys(fn (PaymentItem $item): array => [$item->id => $item->name . ': ' . $item->getFormattedAmount($get('currency_id'))]);
                                     }),
                                 ...$paymentDriver->getPaymentFormSchema() ?? [],
@@ -532,6 +532,14 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                             ->schema([
                                                 LivewireEntry::make('references')
                                                     ->livewire(References::class, [
+                                                        'submission' => $this->record,
+                                                    ]),
+                                            ]),
+                                        Tab::make('Presenter Files')
+                                            ->icon('heroicon-o-document-text')
+                                            ->schema([
+                                                LivewireEntry::make('presenter')
+                                                    ->livewire(PresenterFiles::class, [
                                                         'submission' => $this->record,
                                                     ]),
                                             ]),

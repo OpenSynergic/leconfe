@@ -52,6 +52,12 @@ class ConferenceObserver
                     'data' => null,
                     'children' => [],
                 ],
+                Str::uuid()->toString() => [
+                    'label' => 'Proceeding',
+                    'type' => 'proceeding',
+                    'data' => null,
+                    'children' => [],
+                ],
             ],
         ]);
 

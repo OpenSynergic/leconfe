@@ -94,7 +94,7 @@ class SubmissionPolicy
 
     public function uploadAbstract(User $user, Submission $submission)
     {
-        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn])) {
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
             return false;
         }
 
@@ -114,6 +114,25 @@ class SubmissionPolicy
 
     public function uploadPaper(User $user, Submission $submission)
     {
+        if ($submission->stage != SubmissionStage::PeerReview) {
+            return false;
+        }
+
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
+            return false;
+        }
+
+        if (filled($submission->withdrawn_reason)) {
+            return false;
+        }
+
+        if ($user->can('Submission:uploadPaper')) {
+            return true;
+        }
+    }
+
+    public function uploadPresenterFiles(User $user, Submission $submission)
+    {
         if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn])) {
             return false;
         }
@@ -122,11 +141,11 @@ class SubmissionPolicy
             return false;
         }
 
-        if ($submission->stage != SubmissionStage::PeerReview) {
+        if ($submission->stage != SubmissionStage::Editing) {
             return false;
         }
 
-        if ($user->can('Submission:uploadPaper')) {
+        if ($user->can('Submission:uploadPresenterFiles')) {
             return true;
         }
     }

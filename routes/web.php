@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Announcement;
+use App\Models\Media;
 use App\Models\StaticPage;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
@@ -23,8 +24,23 @@ use Spatie\Sitemap\Sitemap;
 //     return view('welcome');
 // });
 
+Route::get('view/files/{uuid}', function ($uuid) {
+    $media = Media::findByUuid($uuid);
+
+    abort_if(! $media, 404);
+
+    return response()
+        ->file($media->getPath(), [
+            'Content-Type' => $media->mime_type,
+            'Content-Disposition' => 'inline; filename="'.$media->file_name.'"',
+            'Content-Length' => $media->size,
+            'Content-Transfer-Encoding' => 'binary',
+            'Accept-Ranges' => 'bytes',
+        ]);
+})->name('submission-files.view');
+
 Route::get('private/files/{uuid}', function ($uuid, Request $request) {
-    $media = \App\Models\Media::findByUuid($uuid);
+    $media = Media::findByUuid($uuid);
 
     abort_if(! $media, 404);
 
@@ -34,6 +50,7 @@ Route::get('private/files/{uuid}', function ($uuid, Request $request) {
             'Content-Length' => $media->size,
         ]);
 })->name('private.files');
+
 Route::get('/sitemap', function () {
     return Sitemap::create()
         ->add('/')
