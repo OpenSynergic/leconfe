@@ -19,6 +19,7 @@
         "Participant:delete",
         "Participant:update",
         "Participant:viewAny",
+        "Payment:update",
         "Permission:create",
         "Permission:delete",
         "Permission:update",
@@ -55,6 +56,7 @@
         "Submission:update",
         "Submission:uploadAbstract",
         "Submission:uploadPaper",
+        "Submission:uploadPresenterFiles",
         "Submission:view",
         "Submission:viewAny",
         "Submission:withdraw",
@@ -160,6 +162,7 @@
         "Submission:requestWithdraw",
         "Submission:uploadAbstract",
         "Submission:uploadPaper",
+        "Submission:uploadPresenterFiles",
         "Submission:view",
         "Submission:viewAny"
     ]
