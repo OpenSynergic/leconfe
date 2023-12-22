@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Listeners\LogSentEmail;
 use App\Models\Conference;
 use App\Models\Site;
 use App\Models\User;
@@ -11,7 +12,7 @@ use App\Observers\UserObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
+use Illuminate\Mail\Events\MessageSent;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -24,6 +25,9 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        MessageSent::class => [
+            LogSentEmail::class,
+        ]
     ];
 
     protected $observers = [
