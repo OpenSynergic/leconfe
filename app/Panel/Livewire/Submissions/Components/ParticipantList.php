@@ -164,7 +164,19 @@ class ParticipantList extends Component implements HasForms, HasTable
                             'role_id' => $data['role_id'],
                         ]);
 
-                        if (! $data['no-notification']) {
+                        activity('submission')
+                            ->performedOn($this->submission)
+                            ->by(auth()->user())
+                            ->withProperties([
+                                'user_id' => $data['user_id'],
+                                'role_id' => $data['role_id'],
+                            ])
+                            ->log(__('log.participant.assigned', [
+                                'name' => $submissionParticipant->user->fullName,
+                                'role' => $submissionParticipant->role->name,
+                            ]));
+
+                        if (!$data['no-notification']) {
                             try {
                                 Mail::to($submissionParticipant->user->email)
                                     ->send(
@@ -246,7 +258,7 @@ class ParticipantList extends Component implements HasForms, HasTable
                         ->color('primary')
                         ->redirectTo('panel')
                         ->action(function (SubmissionParticipant $record, Impersonate $action) {
-                            if (! $action->impersonate($record->user)) {
+                            if (!$action->impersonate($record->user)) {
                                 $action->failureNotificationTitle("User can't be impersonated");
                                 $action->failure();
                             }
