@@ -35,7 +35,7 @@ class Detail extends \Livewire\Component implements HasForms
     {
         return $form
             ->disabled(function (): bool {
-                return ! auth()->user()->can('editing', $this->submission);
+                return !auth()->user()->can('editing', $this->submission);
             })
             ->model($this->submission)
             ->schema([
@@ -64,6 +64,11 @@ class Detail extends \Livewire\Component implements HasForms
             $this->form->getState(),
             $this->submission
         );
+
+        activity('submission')
+            ->performedOn($this->submission)
+            ->causedBy(auth()->user())
+            ->log(__('log.submission.metadata_updated'));
 
         Notification::make()
             ->body('Saved successfully')

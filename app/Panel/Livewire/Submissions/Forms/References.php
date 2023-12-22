@@ -32,6 +32,11 @@ class References extends \Livewire\Component implements HasForms
             $this->submission
         );
 
+        activity('submission')
+            ->performedOn($this->submission)
+            ->causedBy(auth()->user())
+            ->log(__('log.submission.metadata_updated'));
+
         Notification::make()
             ->body('Saved successfully')
             ->success()
