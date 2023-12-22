@@ -13,10 +13,18 @@ class DeclineAbstractMail extends TemplateMailable
 
     public string $title;
 
+    public array $logDetail;
+
     public function __construct(Submission $submission)
     {
         $this->authorName = $submission->user->fullName;
         $this->title = $submission->getMeta('title');
+
+        $this->logDetail = [
+            'subject_type' => $submission::class,
+            'subject_id' => $submission->getKey(),
+            'name' => "Abstract Declined"
+        ];
     }
 
     public static function getDefaultSubject(): string

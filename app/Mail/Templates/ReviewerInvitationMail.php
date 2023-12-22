@@ -23,6 +23,8 @@ class ReviewerInvitationMail extends TemplateMailable
 
     public string $loginLink;
 
+    public array $logDetail;
+
     public function __construct(Review $review)
     {
         $stageManager = StageManager::peerReview();
@@ -50,6 +52,12 @@ class ReviewerInvitationMail extends TemplateMailable
         )->format('d F Y');
 
         $this->loginLink = route('livewirePageGroup.website.pages.login');
+
+        $this->logDetail = [
+            'subject_type' => $review->submission->submission::class,
+            'subject_id' => $review->submission->submission->getKey(),
+            'name' => "Reviewer Assigned"
+        ];
     }
 
     public static function getDefaultSubject(): string

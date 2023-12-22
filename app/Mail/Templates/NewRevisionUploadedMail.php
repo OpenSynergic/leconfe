@@ -10,10 +10,18 @@ class NewRevisionUploadedMail extends TemplateMailable
 
     public string $uploader;
 
+    public array $logDetail;
+
     public function __construct(SubmissionFile $submissionFile)
     {
         $this->submissionTitle = $submissionFile->submission->getMeta('title');
         $this->uploader = $submissionFile->submission->user->fullName;
+
+        $this->logDetail = [
+            'subject_type' => $submissionFile->submission::class,
+            'subject_id' => $submissionFile->submission->getKey(),
+            'name' => "Revision Uploaded"
+        ];
     }
 
     public static function getDefaultSubject(): string

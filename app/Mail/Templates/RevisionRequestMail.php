@@ -13,10 +13,18 @@ class RevisionRequestMail extends TemplateMailable
 
     public string $loginLink;
 
+    public array $logDetail;
+
     public function __construct(protected Submission $submission)
     {
         $this->title = $submission->getMeta('title');
         $this->loginLink = route('livewirePageGroup.website.pages.login');
+
+        $this->logDetail = [
+            'subject_type' => $submission::class,
+            'subject_id' => $submission->getKey(),
+            'name' => "Revision Requested"
+        ];
     }
 
     public static function getDefaultSubject(): string

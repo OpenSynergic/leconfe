@@ -15,11 +15,19 @@ class AcceptPaperMail extends TemplateMailable
 
     public string $loginLink;
 
+    public array $logDetail;
+
     public function __construct(protected Submission $submission)
     {
         $this->title = $submission->getMeta('title');
         $this->authorName = $submission->user->fullName;
         $this->loginLink = route('livewirePageGroup.website.pages.login');
+
+        $this->logDetail = [
+            'subject_type' => $submission::class,
+            'subject_id' => $submission->getKey(),
+            'name' => "Papers Accepted"
+        ];
     }
 
     public static function getDefaultSubject(): string

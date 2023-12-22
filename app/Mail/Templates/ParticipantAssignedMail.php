@@ -15,11 +15,19 @@ class ParticipantAssignedMail extends TemplateMailable
 
     public string $position;
 
+    public array $logDetail;
+
     public function __construct(SubmissionParticipant $participant)
     {
         $this->submissionTitle = $participant->submission->getMeta('title');
         $this->name = $participant->user->fullName;
         $this->position = $participant->role->name;
+
+        $this->logDetail = [
+            'subject_type' => $participant->submission::class,
+            'subject_id' => $participant->submission->getKey(),
+            'name' => "Participant Assigned"
+        ];
     }
 
     public static function getDefaultSubject(): string

@@ -14,12 +14,20 @@ class ThankAuthorMail extends TemplateMailable
 
     public string $loginLink;
 
+    public array $logDetail;
+
     public function __construct(Submission $submission)
     {
         $this->title = $submission->getMeta('title');
         $this->author = $submission->user->fullName;
         $this->conferenceName = $submission->conference->name;
         $this->loginLink = route('livewirePageGroup.website.pages.login');
+
+        $this->logDetail = [
+            'subject_type' => $submission::class,
+            'subject_id' => $submission->getKey(),
+            'name' => "Thank Author"
+        ];
     }
 
     public static function getDefaultSubject(): string

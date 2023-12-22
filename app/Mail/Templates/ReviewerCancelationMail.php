@@ -13,10 +13,18 @@ class ReviewerCancelationMail extends TemplateMailable
 
     public string $submissionTitle;
 
+    public array $logDetail;
+
     public function __construct(Review $review)
     {
         $this->name = $review->user->fullName;
         $this->submissionTitle = $review->submission->getMeta('title');
+
+        $this->logDetail = [
+            'subject_type' => $review->submission::class,
+            'subject_id' => $review->submission->getKey(),
+            'name' => "Reviewer Canceled"
+        ];
     }
 
     public static function getDefaultSubject(): string

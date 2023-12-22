@@ -12,11 +12,19 @@ class NewSubmissionMail extends TemplateMailable
 
     public string $loginLink;
 
+    public array $logDetail;
+
     public function __construct(Submission $submission)
     {
         $this->title = $submission->getMeta('title');
         $this->author = $submission->user->fullName;
         $this->loginLink = route('livewirePageGroup.website.pages.login');
+
+        $this->logDetail = [
+            'subject_type' => $submission::class,
+            'subject_id' => $submission->getKey(),
+            'name' => "New Submission",
+        ];
     }
 
     public static function getDefaultSubject(): string

@@ -8,9 +8,17 @@ class SubmissionWithdrawnMail extends TemplateMailable
 {
     public string $title;
 
+    public array $logDetail;
+
     public function __construct(Submission $submission)
     {
         $this->title = $submission->getMeta('title');
+
+        $this->logDetail = [
+            'subject_type' => $submission::class,
+            'subject_id' => $submission->getKey(),
+            'name' => $this->getDefaultSubject()
+        ];
     }
 
     public static function getDefaultSubject(): string
