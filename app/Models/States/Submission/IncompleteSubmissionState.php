@@ -3,6 +3,7 @@
 namespace App\Models\States\Submission;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
+use App\Classes\Log;
 use App\Mail\Templates\ThankAuthorMail;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
@@ -20,10 +21,13 @@ class IncompleteSubmissionState extends BaseSubmissionState
             'status' => SubmissionStatus::Queued,
         ], $this->submission);
 
-        activity('submission')
-            ->performedOn($this->submission)
-            ->causedBy(auth()->user())
-            ->log(__('log.submission.created'));
+        Log::make(
+            name: 'submission',
+            subject: $this->submission,
+            description: __('log.submission.created')
+        )
+            ->by(auth()->user())
+            ->save();
 
         Mail::to($this->submission->user)->send(
             new ThankAuthorMail($this->submission)

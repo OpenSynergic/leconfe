@@ -2,23 +2,24 @@
 
 namespace App\Mail\Templates;
 
+use App\Classes\Log;
 use App\Models\Submission;
 
 class SubmissionWithdrawnRequestMail extends TemplateMailable
 {
     public string $title;
 
-    public array $logDetail;
+    public Log $log;
 
     public function __construct(Submission $submission)
     {
         $this->title = $submission->getMeta('title');
 
-        $this->logDetail = [
-            'subject_type' => $submission::class,
-            'subject_id' => $submission->getKey(),
-            'name' => $this->getDefaultSubject()
-        ];
+        $this->log = Log::make(
+            name: 'email',
+            subject: $submission,
+            description: __('log.email.sent', ['name' => 'Submission Withdraw Request']),
+        );
     }
 
     public static function getDefaultSubject(): string

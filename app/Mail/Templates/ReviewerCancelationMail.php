@@ -2,6 +2,7 @@
 
 namespace App\Mail\Templates;
 
+use App\Classes\Log;
 use App\Mail\Templates\Traits\CanCustomizeTemplate;
 use App\Models\Review;
 
@@ -13,18 +14,18 @@ class ReviewerCancelationMail extends TemplateMailable
 
     public string $submissionTitle;
 
-    public array $logDetail;
+    public Log $log;
 
     public function __construct(Review $review)
     {
         $this->name = $review->user->fullName;
         $this->submissionTitle = $review->submission->getMeta('title');
 
-        $this->logDetail = [
-            'subject_type' => $review->submission::class,
-            'subject_id' => $review->submission->getKey(),
-            'name' => "Reviewer Canceled"
-        ];
+        $this->log = Log::make(
+            name: 'email',
+            subject: $review->submission,
+            description: __('log.email.sent', ['name' => 'Reviewer Canceled Invitation']),
+        );
     }
 
     public static function getDefaultSubject(): string

@@ -18,5 +18,5 @@ return [
     'participant.assigned' => ':name assigned as :role',
     'review.assgined' => ':name has been assigned as reviewer',
     'review.complete' => ':name has completed review',
-    'email.sent' => 'Email `:name` has been sent to :email',
+    'email.sent' => 'Email `:name` has been sent',
 ];

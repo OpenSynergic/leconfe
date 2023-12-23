@@ -2,6 +2,7 @@
 
 namespace App\Mail\Templates;
 
+use App\Classes\Log;
 use App\Mail\Templates\Traits\CanCustomizeTemplate;
 use App\Models\Submission;
 
@@ -13,18 +14,18 @@ class DeclineAbstractMail extends TemplateMailable
 
     public string $title;
 
-    public array $logDetail;
+    public Log $log;
 
     public function __construct(Submission $submission)
     {
         $this->authorName = $submission->user->fullName;
         $this->title = $submission->getMeta('title');
 
-        $this->logDetail = [
-            'subject_type' => $submission::class,
-            'subject_id' => $submission->getKey(),
-            'name' => "Abstract Declined"
-        ];
+        $this->log = Log::make(
+            name: 'email',
+            subject: $submission,
+            description: __('log.email.sent', ['name' => 'Abstract Declined']),
+        );
     }
 
     public static function getDefaultSubject(): string

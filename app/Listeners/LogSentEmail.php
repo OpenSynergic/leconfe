@@ -20,24 +20,14 @@ class LogSentEmail
      */
     public function handle(MessageSent $event): void
     {
-        if (!isset($event->data['logDetail'])) return;
 
-        $subject = (new $event->data['logDetail']['subject_type'])
-            ->find($event->data['logDetail']['subject_id']);
+        if (!isset($event->data['log'])) return;
 
-        $recipients = collect($event->message->getTo())
-            ->join(fn ($recipient) => $recipient->getAddress() . ':');
+        $log = $event->data['log'];
 
-        if ($subject) {
-            activity('email')
-                ->byAnonymous()
-                ->performedOn($subject)
-                ->log(
-                    __('log.email.sent', [
-                        'name' => $event->data['logDetail']['name'],
-                        'email' => $recipients,
-                    ])
-                );
-        }
+        activity($log->name)
+            ->byAnonymous()
+            ->performedOn($log->subject)
+            ->log($log->description);
     }
 }

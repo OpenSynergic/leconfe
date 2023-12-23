@@ -3,6 +3,7 @@
 namespace App\Models\States\Submission\Concerns;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
+use App\Classes\Log;
 use App\Models\Enums\SubmissionStatus;
 
 trait CanWithdraw
@@ -11,9 +12,12 @@ trait CanWithdraw
     {
         SubmissionUpdateAction::run(['status' => SubmissionStatus::Withdrawn], $this->submission);
 
-        activity('submission')
-            ->performedOn($this->submission)
-            ->causedBy(auth()->user())
-            ->log(__('log.submission.withdrawn'));
+        Log::make(
+            name: 'submission',
+            subject: $this->submission,
+            description: __('log.submission.withdrawn')
+        )
+            ->by(auth()->user())
+            ->save();
     }
 }

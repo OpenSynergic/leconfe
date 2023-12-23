@@ -3,6 +3,7 @@
 namespace App\Models\States\Submission;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
+use App\Classes\Log;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\States\Submission\Concerns\CanWithdraw;
@@ -18,10 +19,13 @@ class QueuedSubmissionState extends BaseSubmissionState
             'status' => SubmissionStatus::OnReview,
         ], $this->submission);
 
-        activity('submission')
-            ->performedOn($this->submission)
-            ->causedBy(auth()->user())
-            ->log('log.submission.abstract_accepted');
+        Log::make(
+            name: 'submission',
+            subject: $this->submission,
+            description: __('log.submission.abstract_accepted')
+        )
+            ->by(auth()->user())
+            ->save();
     }
 
     public function decline(): void
@@ -30,9 +34,12 @@ class QueuedSubmissionState extends BaseSubmissionState
             'status' => SubmissionStatus::Declined,
         ], $this->submission);
 
-        activity('submission')
-            ->performedOn($this->submission)
-            ->causedBy(auth()->user())
-            ->log(__('log.submission.declined'));
+        Log::make(
+            name: 'submission',
+            subject: $this->submission,
+            description: __('log.submission.declined')
+        )
+            ->by(auth()->user())
+            ->save();
     }
 }

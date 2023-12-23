@@ -3,6 +3,7 @@
 namespace App\Models\States\Submission;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
+use App\Classes\Log;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 
@@ -15,9 +16,12 @@ class PublishedSubmissionState extends BaseSubmissionState
             'status' => SubmissionStatus::Editing,
         ], $this->submission);
 
-        activity('submission')
-            ->performedOn($this->submission)
-            ->causedBy(auth()->user())
-            ->log(__('log.submission.unpublished'));
+        Log::make(
+            name: 'submission',
+            subject: $this->submission,
+            description: __('log.submission.unpublished')
+        )
+            ->by(auth()->user())
+            ->save();
     }
 }

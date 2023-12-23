@@ -3,6 +3,7 @@
 namespace App\Models\States\Submission;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
+use App\Classes\Log;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\States\Submission\Concerns\CanWithdraw;
@@ -19,10 +20,13 @@ class OnReviewSubmissionState extends BaseSubmissionState
             'status' => SubmissionStatus::Editing,
         ], $this->submission);
 
-        activity('submission')
-            ->performedOn($this->submission)
-            ->causedBy(auth()->user())
-            ->log(__('log.submission.accepted'));
+        Log::make(
+            name: 'submission',
+            subject: $this->submission,
+            description: __('log.submission.accepted')
+        )
+            ->by(auth()->user())
+            ->save();
     }
 
     public function decline(): void
@@ -33,10 +37,13 @@ class OnReviewSubmissionState extends BaseSubmissionState
             'status' => SubmissionStatus::Declined,
         ], $this->submission);
 
-        activity('submission')
-            ->performedOn($this->submission)
-            ->causedBy(auth()->user())
-            ->log(__('log.submission.declined'));
+        Log::make(
+            name: 'submission',
+            subject: $this->submission,
+            description: __('log.submission.declined')
+        )
+            ->by(auth()->user())
+            ->save();
     }
 
     public function skipReview(): void
@@ -48,10 +55,13 @@ class OnReviewSubmissionState extends BaseSubmissionState
             'stage' => SubmissionStage::Editing,
         ], $this->submission);
 
-        activity('submission')
-            ->performedOn($this->submission)
-            ->causedBy(auth()->user())
-            ->log(__('log.submission.skip_review'));
+        Log::make(
+            name: 'submission',
+            subject: $this->submission,
+            description: __('log.submission.skip_review')
+        )
+            ->by(auth()->user())
+            ->save();
     }
 
     public function requestRevision(): void
@@ -60,9 +70,12 @@ class OnReviewSubmissionState extends BaseSubmissionState
             'revision_required' => true,
         ], $this->submission);
 
-        activity('submission')
-            ->performedOn($this->submission)
-            ->causedBy(auth()->user())
-            ->log(__('log.submission.revision_required'));
+        Log::make(
+            name: 'submission',
+            subject: $this->submission,
+            description: __('log.submission.revision_required')
+        )
+            ->by(auth()->user())
+            ->save();
     }
 }

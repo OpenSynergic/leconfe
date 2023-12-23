@@ -2,6 +2,7 @@
 
 namespace App\Mail\Templates;
 
+use App\Classes\Log;
 use App\Mail\Templates\Traits\CanCustomizeTemplate;
 use App\Models\Submission;
 
@@ -13,18 +14,18 @@ class RevisionRequestMail extends TemplateMailable
 
     public string $loginLink;
 
-    public array $logDetail;
+    public Log $log;
 
     public function __construct(protected Submission $submission)
     {
         $this->title = $submission->getMeta('title');
         $this->loginLink = route('livewirePageGroup.website.pages.login');
 
-        $this->logDetail = [
-            'subject_type' => $submission::class,
-            'subject_id' => $submission->getKey(),
-            'name' => "Revision Requested"
-        ];
+        $this->log = Log::make(
+            name: 'email',
+            subject: $submission,
+            description: __('log.email.sent', ['name' => 'Revision Requested']),
+        );
     }
 
     public static function getDefaultSubject(): string

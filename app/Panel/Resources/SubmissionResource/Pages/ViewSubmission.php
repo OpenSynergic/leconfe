@@ -357,6 +357,9 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                 })
                 ->modalWidth('2xl'),
             Action::make('activity-log')
+                ->hidden(
+                    fn (): bool => $this->record->stage == SubmissionStage::Wizard
+                )
                 ->outlined()
                 ->icon("lineawesome-history-solid")
                 ->modalHeading('Activity Log')

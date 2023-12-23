@@ -2,8 +2,10 @@
 
 namespace App\Mail\Templates;
 
+use App\Classes\Log;
 use App\Mail\Templates\Traits\CanCustomizeTemplate;
 use App\Models\Submission;
+
 
 class PublishSubmissionMail extends TemplateMailable
 {
@@ -15,7 +17,7 @@ class PublishSubmissionMail extends TemplateMailable
 
     public string $loginLink;
 
-    public array $logDetail;
+    public Log $log;
 
 
     public function __construct(protected Submission $submission)
@@ -24,11 +26,11 @@ class PublishSubmissionMail extends TemplateMailable
         $this->authorName = $submission->user->fullName;
         $this->loginLink = route('livewirePageGroup.website.pages.login');
 
-        $this->logDetail = [
-            'subject_type' => $submission::class,
-            'subject_id' => $submission->getKey(),
-            'name' => $this->getDefaultSubject(),
-        ];
+        $this->log = Log::make(
+            subject: $submission,
+            name: 'email',
+            description: __('log.email.sent', ['name' => 'Submission Published']),
+        );
     }
 
     public static function getDefaultSubject(): string

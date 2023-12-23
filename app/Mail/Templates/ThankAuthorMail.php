@@ -2,6 +2,7 @@
 
 namespace App\Mail\Templates;
 
+use App\Classes\Log;
 use App\Models\Submission;
 
 class ThankAuthorMail extends TemplateMailable
@@ -14,7 +15,7 @@ class ThankAuthorMail extends TemplateMailable
 
     public string $loginLink;
 
-    public array $logDetail;
+    public Log $log;
 
     public function __construct(Submission $submission)
     {
@@ -23,11 +24,11 @@ class ThankAuthorMail extends TemplateMailable
         $this->conferenceName = $submission->conference->name;
         $this->loginLink = route('livewirePageGroup.website.pages.login');
 
-        $this->logDetail = [
-            'subject_type' => $submission::class,
-            'subject_id' => $submission->getKey(),
-            'name' => "Thank Author"
-        ];
+        $this->log = Log::make(
+            name: 'email',
+            subject: $submission,
+            description: __('log.email.sent', ['name' => 'Thank Author']),
+        );
     }
 
     public static function getDefaultSubject(): string

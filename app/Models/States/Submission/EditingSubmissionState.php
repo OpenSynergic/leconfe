@@ -3,6 +3,7 @@
 namespace App\Models\States\Submission;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
+use App\Classes\Log;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\States\Submission\Concerns\CanWithdraw;
@@ -19,9 +20,12 @@ class EditingSubmissionState extends BaseSubmissionState
             'published_at' => now(),
         ], $this->submission);
 
-        activity('submission')
-            ->performedOn($this->submission)
-            ->causedBy(auth()->user())
-            ->log(__('log.submission.published'));
+        Log::make(
+            name: 'submission',
+            subject: $this->submission,
+            description: __('log.submission.published')
+        )
+            ->by(auth()->user())
+            ->save();
     }
 }

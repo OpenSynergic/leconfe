@@ -2,6 +2,7 @@
 
 namespace App\Mail\Templates;
 
+use App\Classes\Log;
 use App\Mail\Templates\Traits\CanCustomizeTemplate;
 use App\Models\Submission;
 
@@ -15,7 +16,7 @@ class AcceptAbstractMail extends TemplateMailable
 
     public string $loginLink;
 
-    public array $logDetail;
+    public Log $log;
 
     public function __construct(Submission $submission)
     {
@@ -23,11 +24,11 @@ class AcceptAbstractMail extends TemplateMailable
         $this->author = $submission->user->fullName;
         $this->loginLink = route('livewirePageGroup.website.pages.login');
 
-        $this->logDetail = [
-            'subject_type' => $submission::class,
-            'subject_id' => $submission->getKey(),
-            'name' => $this->getDefaultSubject(),
-        ];
+        $this->log = Log::make(
+            name: 'email',
+            subject: $submission,
+            description: __('log.email.sent', ['name' => 'Abstract Accepted']),
+        );
     }
 
     public static function getDefaultSubject(): string

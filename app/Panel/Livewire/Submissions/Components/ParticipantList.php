@@ -2,6 +2,7 @@
 
 namespace App\Panel\Livewire\Submissions\Components;
 
+use App\Classes\Log;
 use App\Mail\Templates\ParticipantAssignedMail;
 use App\Models\Enums\UserRole;
 use App\Models\MailTemplate;
@@ -164,17 +165,21 @@ class ParticipantList extends Component implements HasForms, HasTable
                             'role_id' => $data['role_id'],
                         ]);
 
-                        activity('submission')
-                            ->performedOn($this->submission)
+                        Log::make(
+                            name: 'submission',
+                            subject: $this->submission,
+                            description: __('log.participant.assigned', [
+                                'name' => $submissionParticipant->user->fullName,
+                                'role' => $submissionParticipant->role->name,
+                            ])
+                        )
                             ->by(auth()->user())
-                            ->withProperties([
+                            ->properties([
                                 'user_id' => $data['user_id'],
                                 'role_id' => $data['role_id'],
                             ])
-                            ->log(__('log.participant.assigned', [
-                                'name' => $submissionParticipant->user->fullName,
-                                'role' => $submissionParticipant->role->name,
-                            ]));
+                            ->save();
+
 
                         if (!$data['no-notification']) {
                             try {

@@ -2,6 +2,7 @@
 
 namespace App\Mail\Templates;
 
+use App\Classes\Log;
 use App\Mail\Templates\Traits\CanCustomizeTemplate;
 use App\Models\SubmissionParticipant;
 
@@ -15,7 +16,7 @@ class ParticipantAssignedMail extends TemplateMailable
 
     public string $position;
 
-    public array $logDetail;
+    public Log $log;
 
     public function __construct(SubmissionParticipant $participant)
     {
@@ -23,11 +24,11 @@ class ParticipantAssignedMail extends TemplateMailable
         $this->name = $participant->user->fullName;
         $this->position = $participant->role->name;
 
-        $this->logDetail = [
-            'subject_type' => $participant->submission::class,
-            'subject_id' => $participant->submission->getKey(),
-            'name' => "Participant Assigned"
-        ];
+        $this->log = Log::make(
+            name: 'email',
+            subject: $participant->submission,
+            description: __('log.email.sent', ['name' => 'Participant Assigned'])
+        );
     }
 
     public static function getDefaultSubject(): string
