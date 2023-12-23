@@ -2,6 +2,7 @@
 
 namespace App\Mail\Templates;
 
+use App\Classes\Log;
 use App\Models\Announcement;
 
 class NewAnnouncementMail extends TemplateMailable
@@ -12,6 +13,8 @@ class NewAnnouncementMail extends TemplateMailable
 
     public string $announcementUrl;
 
+    public Log $log;
+
     /**
      * Create a new message instance.
      */
@@ -20,6 +23,12 @@ class NewAnnouncementMail extends TemplateMailable
         $this->title = $announcement->title;
         $this->content = $announcement->getMeta('content');
         $this->announcementUrl = $announcement->getUrl();
+
+        $this->log = Log::make(
+            name: 'email',
+            subject: $announcement,
+            description: __('log.email.sent', ['name' => 'New Announcement']),
+        );
     }
 
     public static function getDefaultSubject(): string

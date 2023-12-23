@@ -76,7 +76,7 @@ class PeerReview extends Component implements HasActions, HasForms
             ->action(function (Action $action, array $data) {
                 $this->submission->state()->decline();
 
-                if (! $data['do-not-notify-author']) {
+                if (!$data['do-not-notify-author']) {
                     try {
                         Mail::to($this->submission->user->email)
                             ->send(
@@ -136,7 +136,7 @@ class PeerReview extends Component implements HasActions, HasForms
             ->action(function (Action $action, array $data) {
                 $this->submission->state()->accept();
 
-                if (! $data['do-not-notify-author']) {
+                if (!$data['do-not-notify-author']) {
                     try {
                         Mail::to($this->submission->user->email)
                             ->send(
@@ -200,7 +200,7 @@ class PeerReview extends Component implements HasActions, HasForms
                     'revision_required' => true,
                 ], $this->submission);
 
-                if (! $data['do-not-notify-author']) {
+                if (!$data['do-not-notify-author']) {
                     try {
                         Mail::to($this->submission->user->email)
                             ->send(
@@ -233,12 +233,7 @@ class PeerReview extends Component implements HasActions, HasForms
             ->outlined()
             ->successNotificationTitle('Review Skipped')
             ->action(function (Action $action) {
-                SubmissionUpdateAction::run([
-                    'skipped_review' => true,
-                    'revision_required' => false,
-                    'status' => SubmissionStatus::Editing,
-                    'stage' => SubmissionStage::Editing,
-                ], $this->submission);
+                $this->submission->state()->skipReview();
 
                 $action->successRedirectUrl(
                     SubmissionResource::getUrl('view', [

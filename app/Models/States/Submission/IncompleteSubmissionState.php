@@ -3,6 +3,7 @@
 namespace App\Models\States\Submission;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
+use App\Classes\Log;
 use App\Mail\Templates\ThankAuthorMail;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
@@ -20,14 +21,19 @@ class IncompleteSubmissionState extends BaseSubmissionState
             'status' => SubmissionStatus::Queued,
         ], $this->submission);
 
+        Log::make(
+            name: 'submission',
+            subject: $this->submission,
+            description: __('log.submission.created')
+        )
+            ->by(auth()->user())
+            ->save();
+
         Mail::to($this->submission->user)->send(
             new ThankAuthorMail($this->submission)
         );
 
-        User::role([
-            UserRole::Admin->value,
-            UserRole::ConferenceManager->value,
-        ])
+        User::role([UserRole::ConferenceManager->value])
             ->lazy()
             ->each(fn ($user) => $user->notify(new NewSubmission($this->submission)));
     }

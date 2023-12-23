@@ -42,7 +42,7 @@ class SubmissionPolicy
     public function delete(User $user, Submission $submission)
     {
         // Only submission with status: withdrawn or declined can be deleted.
-        if (! in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Incomplete])) {
+        if (!in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Incomplete])) {
             return false;
         }
 
@@ -285,7 +285,7 @@ class SubmissionPolicy
         }
 
         // Editors cannot withdraw submissions; they must wait for the author to request it..
-        if (! filled($submission->withdrawn_reason)) {
+        if (!filled($submission->withdrawn_reason)) {
             return false;
         }
 
@@ -301,7 +301,7 @@ class SubmissionPolicy
             return false;
         }
 
-        if ($submission->status == SubmissionStatus::Withdrawn) {
+        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Declined, SubmissionStatus::Published, SubmissionStatus::Editing])) {
             return false;
         }
 

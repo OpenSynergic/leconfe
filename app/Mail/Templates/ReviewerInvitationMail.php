@@ -2,6 +2,7 @@
 
 namespace App\Mail\Templates;
 
+use App\Classes\Log;
 use App\Mail\Templates\Traits\CanCustomizeTemplate;
 use App\Models\Review;
 use App\Panel\Livewire\Workflows\Classes\StageManager;
@@ -22,6 +23,10 @@ class ReviewerInvitationMail extends TemplateMailable
     public string $responseDeadline;
 
     public string $loginLink;
+
+    public array $logDetail;
+
+    public Log $log;
 
     public function __construct(Review $review)
     {
@@ -50,6 +55,12 @@ class ReviewerInvitationMail extends TemplateMailable
         )->format('d F Y');
 
         $this->loginLink = route('livewirePageGroup.website.pages.login');
+
+        $this->log = Log::make(
+            name: 'email',
+            subject: $review->submission,
+            description: __('log.email.sent', ['name' => 'Reviewer Invitation']),
+        );
     }
 
     public static function getDefaultSubject(): string

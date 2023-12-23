@@ -2,6 +2,7 @@
 
 namespace App\Panel\Livewire\Submissions\Components;
 
+use App\Classes\Log;
 use App\Mail\Templates\ParticipantAssignedMail;
 use App\Models\Enums\UserRole;
 use App\Models\MailTemplate;
@@ -164,7 +165,23 @@ class ParticipantList extends Component implements HasForms, HasTable
                             'role_id' => $data['role_id'],
                         ]);
 
-                        if (! $data['no-notification']) {
+                        Log::make(
+                            name: 'submission',
+                            subject: $this->submission,
+                            description: __('log.participant.assigned', [
+                                'name' => $submissionParticipant->user->fullName,
+                                'role' => $submissionParticipant->role->name,
+                            ])
+                        )
+                            ->by(auth()->user())
+                            ->properties([
+                                'user_id' => $data['user_id'],
+                                'role_id' => $data['role_id'],
+                            ])
+                            ->save();
+
+
+                        if (!$data['no-notification']) {
                             try {
                                 Mail::to($submissionParticipant->user->email)
                                     ->send(
@@ -246,7 +263,7 @@ class ParticipantList extends Component implements HasForms, HasTable
                         ->color('primary')
                         ->redirectTo('panel')
                         ->action(function (SubmissionParticipant $record, Impersonate $action) {
-                            if (! $action->impersonate($record->user)) {
+                            if (!$action->impersonate($record->user)) {
                                 $action->failureNotificationTitle("User can't be impersonated");
                                 $action->failure();
                             }
