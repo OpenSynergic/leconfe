@@ -35,7 +35,7 @@ class Publish extends \Livewire\Component implements HasActions, HasForms, HasIn
 
     public function handlePublishAction(Action $action, array $data)
     {
-        // $this->submission->state()->publish();
+        $this->submission->state()->publish();
 
         if (!$data['do-not-notify-author']) {
             try {
