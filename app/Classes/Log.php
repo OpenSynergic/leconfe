@@ -9,13 +9,14 @@ class Log
 {
     public array $properties = [];
 
+    public ?Model $causer = null;
+
     use Conditionable;
 
     public function __construct(
         public Model $subject,
         public string $name,
-        public ?string $description = null,
-        public ?Model $causer = null,
+        public ?string $description = null
     ) {
     }
 
