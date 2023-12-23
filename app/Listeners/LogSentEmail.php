@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Classes\Log;
 use Illuminate\Mail\Events\MessageSent;
 
 class LogSentEmail
@@ -25,9 +26,8 @@ class LogSentEmail
 
         $log = $event->data['log'];
 
-        activity($log->name)
-            ->byAnonymous()
-            ->performedOn($log->subject)
-            ->log($log->description);
+        if ($log instanceof Log) {
+            $log->save();
+        }
     }
 }
