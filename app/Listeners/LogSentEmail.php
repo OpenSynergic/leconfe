@@ -15,14 +15,15 @@ class LogSentEmail
         //
     }
 
-
     /**
      * Handle the event.
      */
     public function handle(MessageSent $event): void
     {
 
-        if (!isset($event->data['log'])) return;
+        if (! isset($event->data['log'])) {
+            return;
+        }
 
         $log = $event->data['log'];
 

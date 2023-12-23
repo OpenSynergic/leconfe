@@ -6,7 +6,6 @@ use App\Classes\Log;
 use App\Mail\Templates\Traits\CanCustomizeTemplate;
 use App\Models\Submission;
 
-
 class PublishSubmissionMail extends TemplateMailable
 {
     use CanCustomizeTemplate;
@@ -18,7 +17,6 @@ class PublishSubmissionMail extends TemplateMailable
     public string $loginLink;
 
     public Log $log;
-
 
     public function __construct(protected Submission $submission)
     {

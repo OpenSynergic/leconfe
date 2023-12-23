@@ -180,8 +180,7 @@ class ParticipantList extends Component implements HasForms, HasTable
                             ])
                             ->save();
 
-
-                        if (!$data['no-notification']) {
+                        if (! $data['no-notification']) {
                             try {
                                 Mail::to($submissionParticipant->user->email)
                                     ->send(
@@ -263,7 +262,7 @@ class ParticipantList extends Component implements HasForms, HasTable
                         ->color('primary')
                         ->redirectTo('panel')
                         ->action(function (SubmissionParticipant $record, Impersonate $action) {
-                            if (!$action->impersonate($record->user)) {
+                            if (! $action->impersonate($record->user)) {
                                 $action->failureNotificationTitle("User can't be impersonated");
                                 $action->failure();
                             }

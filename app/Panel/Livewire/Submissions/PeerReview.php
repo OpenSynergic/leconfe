@@ -6,8 +6,6 @@ use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Mail\Templates\AcceptPaperMail;
 use App\Mail\Templates\DeclinePaperMail;
 use App\Mail\Templates\RevisionRequestMail;
-use App\Models\Enums\SubmissionStage;
-use App\Models\Enums\SubmissionStatus;
 use App\Models\MailTemplate;
 use App\Models\Submission;
 use App\Panel\Livewire\Workflows\Classes\StageManager;
@@ -76,7 +74,7 @@ class PeerReview extends Component implements HasActions, HasForms
             ->action(function (Action $action, array $data) {
                 $this->submission->state()->decline();
 
-                if (!$data['do-not-notify-author']) {
+                if (! $data['do-not-notify-author']) {
                     try {
                         Mail::to($this->submission->user->email)
                             ->send(
@@ -136,7 +134,7 @@ class PeerReview extends Component implements HasActions, HasForms
             ->action(function (Action $action, array $data) {
                 $this->submission->state()->accept();
 
-                if (!$data['do-not-notify-author']) {
+                if (! $data['do-not-notify-author']) {
                     try {
                         Mail::to($this->submission->user->email)
                             ->send(
@@ -200,7 +198,7 @@ class PeerReview extends Component implements HasActions, HasForms
                     'revision_required' => true,
                 ], $this->submission);
 
-                if (!$data['do-not-notify-author']) {
+                if (! $data['do-not-notify-author']) {
                     try {
                         Mail::to($this->submission->user->email)
                             ->send(

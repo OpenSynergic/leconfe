@@ -36,7 +36,7 @@ class Detail extends \Livewire\Component implements HasForms
     {
         return $form
             ->disabled(function (): bool {
-                return !auth()->user()->can('editing', $this->submission);
+                return ! auth()->user()->can('editing', $this->submission);
             })
             ->model($this->submission)
             ->schema([

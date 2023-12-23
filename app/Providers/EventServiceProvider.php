@@ -27,7 +27,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         MessageSent::class => [
             LogSentEmail::class,
-        ]
+        ],
     ];
 
     protected $observers = [
