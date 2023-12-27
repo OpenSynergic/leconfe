@@ -5,6 +5,7 @@ namespace App\Panel\Resources\SubmissionResource\Pages;
 use App\Actions\Submissions\AcceptWithdrawalAction;
 use App\Actions\Submissions\CancelWithdrawalAction;
 use App\Actions\Submissions\RequestWithdrawalAction;
+use App\Classes\Log;
 use App\Facades\Payment as FacadesPayment;
 use App\Infolists\Components\LivewireEntry;
 use App\Infolists\Components\VerticalTabs\Tab as Tab;
@@ -16,6 +17,9 @@ use App\Models\Enums\UserRole;
 use App\Models\Payment;
 use App\Models\PaymentItem;
 use App\Models\User;
+use App\Notifications\NewPayment;
+use App\Notifications\PaymentStatusUpdated;
+use App\Notifications\PaymentSent;
 use App\Notifications\SubmissionWithdrawn;
 use App\Notifications\SubmissionWithdrawRequested;
 use App\Panel\Livewire\Submissions\CallforAbstract;
@@ -50,6 +54,7 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\Compilers\BladeCompiler;
@@ -111,7 +116,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                 ->when(
                     fn (Action $action): bool => FacadesPayment::driver() && (! $action->getRecord() || $action->getRecord()?->state->isOneOf(PaymentState::Unpaid)),
                     fn (Action $action): Action => $action
-                        ->action(function (array $data, Form $form) {
+                        ->action(function (Action $action, array $data, Form $form) {
 
                             $payment = FacadesPayment::createPayment(
                                 $this->record,
@@ -125,6 +130,31 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                             $paymentDriver = FacadesPayment::driver($payment?->payment_method);
 
                             $paymentDriver->handlePayment($payment);
+
+                            $items = Arr::join($payment->getMeta('items'), ', ');
+
+                            Log::make($this->record, 'submission', "Payment for {$items} has been made.")
+                                ->by(auth()->user())
+                                ->save();
+
+                            try {
+                                $this->record->user->notify(
+                                    new PaymentSent($this->record)
+                                );
+                                $this->record->getEditors()->each(
+                                    function (User $editor) {
+                                        $editor->notify(new NewPayment($this->record));
+                                    }
+                                );
+                                User::role([UserRole::Admin->value, UserRole::ConferenceManager->value])
+                                    ->lazy()
+                                    ->each(fn ($user) => $user->notify(new NewPayment($this->record)));
+                            } catch (\Exception $e) {
+                                $action->failureNotificationTitle('Failed to send notification');
+                                $action->failure();
+                            }
+                            $action->successNotificationTitle("Payment Success");
+                            $action->success();
                         })->mountUsing(function (Form $form, ?Payment $record) {
 
                             $paymentDriver = FacadesPayment::driver($record?->payment_method);
@@ -173,9 +203,18 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                 ->when(
                     fn (Action $action): bool => FacadesPayment::driver($action->getRecord()?->payment_method) && $action->getRecord()?->state->isOneOf(PaymentState::Processing, PaymentState::Paid, PaymentState::Waived),
                     fn (Action $action): Action => $action
-                        ->action(function (array $data, $record) {
+                        ->action(function (array $data, $record) use ($action) {
                             $record->state = $data['decision'];
                             $record->save();
+                            try {
+                                $record->user->notify(
+                                    new PaymentStatusUpdated($record)
+                                );
+                            } catch (\Exception $e) {
+                                $action->failureNotificationTitle('Failed to send notification');
+                                $action->failure();
+                            }
+                            $action->success();
                         })
                         ->modalSubmitAction(fn (StaticAction $action, ?Payment $record) => $action->visible(auth()->user()->can('update', $record)))
                         ->modalCancelAction(fn (StaticAction $action, ?Payment $record) => $action->visible(auth()->user()->can('update', $record)))
