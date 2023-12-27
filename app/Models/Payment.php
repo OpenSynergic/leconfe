@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Concerns\BelongsToConference;
 use App\Models\Enums\PaymentState;
+use App\Models\Enums\PaymentType;
 use App\Models\Meta\PaymentMeta;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,6 +33,7 @@ class Payment extends Model implements HasMedia
      */
     protected $casts = [
         'state' => PaymentState::class,
+        'type' => PaymentType::class,
         'paid_at' => 'datetime',
     ];
 
