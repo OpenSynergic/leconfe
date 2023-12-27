@@ -31,7 +31,7 @@ class PaymentSentMail extends TemplateMailable
             $this->items .= "<li>$item</li>";
         }
 
-        $this->items .= "</ul>";
+        $this->items .= '</ul>';
 
         $this->loginLink = route('livewirePageGroup.website.pages.login');
 
@@ -49,7 +49,7 @@ class PaymentSentMail extends TemplateMailable
 
     public static function getDefaultDescription(): string
     {
-        return "This is an automated System notification informing you of your payment.";
+        return 'This is an automated System notification informing you of your payment.';
     }
 
     public static function getDefaultHtmlTemplate(): string

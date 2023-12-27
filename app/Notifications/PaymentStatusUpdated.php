@@ -24,7 +24,7 @@ class PaymentStatusUpdated extends Notification implements ShouldQueue
 
     public function via($notifiable): array
     {
-        if (!filled($this->channels)) {
+        if (! filled($this->channels)) {
             return ['database', 'mail'];
         }
 
@@ -48,12 +48,13 @@ class PaymentStatusUpdated extends Notification implements ShouldQueue
                         Action::make('view-abstract')
                             ->url(SubmissionResource::getUrl('view', [
                                 'record' => $this->payment->payable_id,
-                                'tenant' => $this->payment->payable->conference
+                                'tenant' => $this->payment->payable->conference,
                             ]))
                             ->label('View')
                             ->markAsRead(),
                     ];
                 }
+
                 return [];
             })
             ->toDatabase();

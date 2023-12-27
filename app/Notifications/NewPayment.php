@@ -2,7 +2,6 @@
 
 namespace App\Notifications;
 
-use App\Mail\Templates\AcceptAbstractMail;
 use App\Mail\Templates\NewPaymentMail;
 use App\Models\Submission;
 use App\Panel\Resources\SubmissionResource;
@@ -22,7 +21,7 @@ class NewPayment extends Notification implements ShouldQueue
 
     public function via($notifiable): array
     {
-        if (!filled($this->channels)) {
+        if (! filled($this->channels)) {
             return ['database', 'mail'];
         }
 

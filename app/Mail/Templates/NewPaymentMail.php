@@ -31,7 +31,7 @@ class NewPaymentMail extends TemplateMailable
             $this->items .= "<li>$item</li>";
         }
 
-        $this->items .= "</ul>";
+        $this->items .= '</ul>';
 
         $this->loginLink = route('livewirePageGroup.website.pages.login');
 
