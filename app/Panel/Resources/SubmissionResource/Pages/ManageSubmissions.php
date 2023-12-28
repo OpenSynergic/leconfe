@@ -36,7 +36,7 @@ class ManageSubmissions extends ManageRecords
             ->schema([
                 ShoutEntry::make('title')
                     ->hidden(function () {
-                        return StageManager::callForAbstract()->isStageOpen() || ! Auth::user()->can('Workflow:update');
+                        return StageManager::callForAbstract()->isStageOpen() || !Auth::user()->can('Workflow:update');
                     })
                     ->type('warning')
                     ->content(function () {
@@ -101,27 +101,66 @@ class ManageSubmissions extends ManageRecords
             UserRole::Admin->value,
             UserRole::ConferenceManager->value
         ])) {
-            return $query->whereIn('status', $statuses);
+            return $query->whereIn('status', $statuses)->when(
+                $tabs == static::TAB_MYQUEUE,
+                function (Builder $query) {
+                    $query->orWhere([
+                        ['user_id', '=', Auth::id()],
+                        ['status', '=', SubmissionStatus::Incomplete]
+                    ]);
+                }
+            );
         }
 
+
+        // Digunakan untuk menentukan mengetahui kondisi sebelumnya sudah ada atau belum
+        $conditionBeforeExist = false;
         return $query->when(
             Auth::user()->hasRole(UserRole::Author->value),
-            function (Builder $query) {
-                $query->where('user_id', Auth::id());
+            function (Builder $query) use ($statuses, &$conditionBeforeExist) {
+                $query->where('user_id', Auth::id())->whereIn('status', $statuses);
+                $conditionBeforeExist = true;
             }
         )->when(
             Auth::user()->hasRole(UserRole::Reviewer->value),
-            function (Builder $query) use ($statuses) {
-                $query->whereHas('reviews', function (Builder $query) {
-                    return $query->where('user_id', Auth::id());
-                })->whereIn('status', [...$statuses, SubmissionStatus::OnReview]);
+            function (Builder $query) use (&$conditionBeforeExist, $tabs, $statuses) {
+                $query->when(
+                    $conditionBeforeExist,
+                    function (Builder $query) {
+                        $query->orWhereHas('reviews', function (Builder $query) {
+                            return $query->where('user_id', Auth::id());
+                        });
+                    },
+                    function (Builder $query) {
+                        $query->whereHas('reviews', function (Builder $query) {
+                            return $query->where('user_id', Auth::id());
+                        });
+                    }
+                )->when($tabs != static::TAB_MYQUEUE,  function (Builder $query) use ($statuses) {
+                    $query->whereIn('status', $statuses);
+                });
+                $conditionBeforeExist = true;
             }
         )->when(
             Auth::user()->hasRole(UserRole::Editor->value),
-            function (Builder $query) use ($statuses) {
-                $query->whereHas('participants', function (Builder $query) {
-                    return $query->where('user_id', Auth::id());
+            function (Builder $query) use ($statuses, &$conditionBeforeExist) {
+                $query->when($conditionBeforeExist, function (Builder $query) {
+                    $query->orWhereHas('participants', function (Builder $query) {
+                        return $query->where('user_id', Auth::id());
+                    });
+                }, function (Builder $query) {
+                    $query->whereHas('participants', function (Builder $query) {
+                        return $query->where('user_id', Auth::id());
+                    });
                 })->whereIn('status', $statuses);
+            }
+        )->when(
+            $tabs == static::TAB_MYQUEUE,
+            function (Builder $query) {
+                $query->orWhere([
+                    ['user_id', '=', Auth::id()],
+                    ['status', '=', SubmissionStatus::Incomplete]
+                ]);
             }
         );
     }
