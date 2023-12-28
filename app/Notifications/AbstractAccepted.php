@@ -51,7 +51,7 @@ class AbstractAccepted extends Notification implements ShouldQueue
             ->body("Title: {$this->submission->getMeta('title')}")
             ->actions([
                 Action::make('view-abstract')
-                    ->url(SubmissionResource::getUrl('view', ['record' => $this->submission]))
+                    ->url(SubmissionResource::getUrl('view', ['record' => $this->submission, 'tenant' => $this->submission->conference]))
                     ->label('View')
                     ->markAsRead(),
             ])

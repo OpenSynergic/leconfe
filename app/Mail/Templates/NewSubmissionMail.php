@@ -2,6 +2,7 @@
 
 namespace App\Mail\Templates;
 
+use App\Classes\Log;
 use App\Models\Submission;
 
 class NewSubmissionMail extends TemplateMailable
@@ -12,11 +13,19 @@ class NewSubmissionMail extends TemplateMailable
 
     public string $loginLink;
 
+    public Log $log;
+
     public function __construct(Submission $submission)
     {
         $this->title = $submission->getMeta('title');
         $this->author = $submission->user->fullName;
         $this->loginLink = route('livewirePageGroup.website.pages.login');
+
+        $this->log = Log::make(
+            name: 'email',
+            subject: $submission,
+            description: __('log.email.sent', ['name' => 'New Submission']),
+        );
     }
 
     public static function getDefaultSubject(): string

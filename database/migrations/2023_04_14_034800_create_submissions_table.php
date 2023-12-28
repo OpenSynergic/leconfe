@@ -25,7 +25,11 @@ return new class extends Migration
             $table->enum('status', SubmissionStatus::array())->default(SubmissionStatus::Incomplete->value);
             $table->string('withdrawn_reason')->nullable();
             $table->timestamp('withdrawn_at')->nullable();
+            $table->timestamp('published_at')->nullable();
             $table->timestamps();
+
+            $table->index(['status']);
+            $table->index(['stage']);
         });
 
         Schema::create('submission_meta', function (Blueprint $table) {

@@ -7,6 +7,8 @@ use App\Infolists\Components\VerticalTabs\Tab;
 use App\Infolists\Components\VerticalTabs\Tabs;
 use App\Panel\Livewire\Workflows\AbstractSetting;
 use App\Panel\Livewire\Workflows\EditingSetting;
+use App\Panel\Livewire\Workflows\Payment\Tables\SubmissionPaymentItemTable;
+use App\Panel\Livewire\Workflows\PaymentSetting;
 use App\Panel\Livewire\Workflows\PeerReview\Forms\Guidelines;
 use App\Panel\Livewire\Workflows\PeerReviewSetting;
 use Filament\Facades\Filament;
@@ -50,6 +52,7 @@ class Workflow extends Page implements HasForms, HasInfolists
     {
         return $infolist->schema([
             Tabs::make()
+                ->persistTabInQueryString()
                 ->tabs([
                     Tab::make('Call for Abstract')
                         ->icon('iconpark-documentfolder-o')
@@ -63,6 +66,24 @@ class Workflow extends Page implements HasForms, HasInfolists
                                                 ->livewire(AbstractSetting::class),
                                         ]),
                                 ]),
+                        ]),
+                    Tab::make('Payment')
+                        ->icon('heroicon-o-currency-dollar')
+                        ->schema([
+                            HorizontalTabs::make()
+                                ->tabs([
+                                    HorizontalTab::make('General')
+                                        ->schema([
+                                            LivewireEntry::make('payment-setting')
+                                                ->livewire(PaymentSetting::class),
+                                        ]),
+                                    HorizontalTab::make('Submission Payment Items')
+                                        ->schema([
+                                            LivewireEntry::make('payment-items')
+                                                ->livewire(SubmissionPaymentItemTable::class),
+                                        ]),
+                                ]),
+
                         ]),
                     Tab::make('Peer Review')
                         ->icon('iconpark-search-o')

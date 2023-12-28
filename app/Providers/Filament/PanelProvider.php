@@ -232,7 +232,7 @@ class PanelProvider extends FilamentPanelProvider
             $tinyEditor
                 ->setRelativeUrls(false)
                 ->setRemoveScriptHost(false)
-                ->toolbarSticky(true);
+                ->toolbarSticky(false);
         });
     }
 
@@ -247,7 +247,8 @@ class PanelProvider extends FilamentPanelProvider
                 ->itemType('Announcements', [])
                 ->itemType('Current Conference', [])
                 ->itemType('Login', [])
-                ->itemType('Register', []),
+                ->itemType('Register', [])
+                ->itemType('Proceeding', []),
         ];
     }
 

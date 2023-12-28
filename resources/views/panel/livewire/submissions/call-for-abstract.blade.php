@@ -6,7 +6,7 @@
 <div class="space-y-6">
     <div class="grid grid-cols-12 gap-4">
         <div class="space-y-4 col-span-8">
-            @livewire(Components\Files\AbstractFiles::class, ['submission' => $submission, 'category' => SubmissionFileCategory::SUPPLEMENTARY_FILES, 'lazy' => true])
+            @livewire(Components\Files\AbstractFiles::class, ['submission' => $submission, 'category' => SubmissionFileCategory::SUPPLEMENTARY_FILES])
 
             {{-- @livewire(SubmissionDetail\Discussions::class, ['record' => $submission, 'lazy' => true]) --}}
         </div>
@@ -27,7 +27,7 @@
                 </div>
                 @endif
                 {{-- Participants --}}
-                @livewire(Components\ParticipantList::class, ['submission' => $submission, 'lazy' => true])
+                @livewire(Components\ParticipantList::class, ['submission' => $submission])
             {{-- @endhasanyrole --}}
         </div>
     </div>

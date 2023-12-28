@@ -52,10 +52,17 @@ class ConferenceObserver
                     'data' => null,
                     'children' => [],
                 ],
+                Str::uuid()->toString() => [
+                    'label' => 'Proceeding',
+                    'type' => 'proceeding',
+                    'data' => null,
+                    'children' => [],
+                ],
             ],
         ]);
 
         $conference->setMeta('page_footer', view('examples.footer')->render());
+        $conference->setMeta('workflow.payment.supported_currencies', ['usd']);
         $conference->save();
     }
 

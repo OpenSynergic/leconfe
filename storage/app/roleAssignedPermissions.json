@@ -19,6 +19,7 @@
         "Participant:delete",
         "Participant:update",
         "Participant:viewAny",
+        "Payment:update",
         "Permission:create",
         "Permission:delete",
         "Permission:update",
@@ -55,6 +56,7 @@
         "Submission:update",
         "Submission:uploadAbstract",
         "Submission:uploadPaper",
+        "Submission:uploadPresenterFiles",
         "Submission:view",
         "Submission:viewAny",
         "Submission:withdraw",
@@ -84,8 +86,7 @@
         "Venue:update",
         "Venue:view",
         "Venue:viewAny",
-        "Workflow:update",
-        "WorkflowSetting:update"
+        "Workflow:update"
     ],
     "Conference Manager": [
         "Publication:update",
@@ -122,7 +123,7 @@
         "User:update",
         "User:view",
         "User:viewAny",
-        "WorkflowSetting:update"
+        "Workflow:update"
     ],
     "Editor": [
         "Conference:viewArchived",
@@ -161,8 +162,8 @@
         "Submission:requestWithdraw",
         "Submission:uploadAbstract",
         "Submission:uploadPaper",
+        "Submission:uploadPresenterFiles",
         "Submission:view",
         "Submission:viewAny"
-    ],
-    "Participant": []
+    ]
 }

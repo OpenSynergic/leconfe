@@ -2,6 +2,7 @@
 
 namespace App\Mail\Templates;
 
+use App\Classes\Log;
 use App\Models\Review;
 
 class ReviewerAcceptedInvitationMail extends TemplateMailable
@@ -10,10 +11,18 @@ class ReviewerAcceptedInvitationMail extends TemplateMailable
 
     public string $submissionTitle;
 
+    public Log $log;
+
     public function __construct(Review $review)
     {
         $this->reviewer = $review->user->fullName;
         $this->submissionTitle = $review->submission->getMeta('title');
+
+        $this->log = Log::make(
+            name: 'email',
+            subject: $review->submission,
+            description: __('log.email.sent', ['name' => 'Reviewer Accepted Invitation']),
+        );
     }
 
     public static function getDefaultSubject(): string

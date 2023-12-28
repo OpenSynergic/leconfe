@@ -7,16 +7,16 @@ use App\Models\Enums\SubmissionStatus;
 use App\Models\Submission;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class UnpublishSubmissionAction
+class PublishSubmissionAction
 {
     use AsAction;
 
-    // When a submission is unpublished, it should be returned to the latest status, which is editing.
     public function handle(Submission $submission)
     {
         SubmissionUpdateAction::run([
-            'stage' => SubmissionStage::Editing,
-            'status' => SubmissionStatus::Editing,
+            'stage' => SubmissionStage::Proceeding,
+            'status' => SubmissionStatus::Published,
+            'published_at' => now(),
         ], $submission);
     }
 }

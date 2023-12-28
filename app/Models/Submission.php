@@ -4,10 +4,20 @@ namespace App\Models;
 
 use App\Actions\User\CreateParticipantFromUserAction;
 use App\Models\Concerns\HasTopics;
+use App\Models\Concerns\InteractsWithPayment;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
+use App\Models\Interfaces\HasPayment;
 use App\Models\Meta\SubmissionMeta;
+use App\Models\States\Submission\BaseSubmissionState;
+use App\Models\States\Submission\DeclinedSubmissionState;
+use App\Models\States\Submission\EditingSubmissionState;
+use App\Models\States\Submission\IncompleteSubmissionState;
+use App\Models\States\Submission\OnReviewSubmissionState;
+use App\Models\States\Submission\PublishedSubmissionState;
+use App\Models\States\Submission\QueuedSubmissionState;
+use App\Models\States\Submission\WithdrawnSubmissionState;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,13 +27,14 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Kra8\Snowflake\HasShortflakePrimary;
 use Plank\Metable\Metable;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Tags\HasTags;
 
-class Submission extends Model implements HasMedia
+class Submission extends Model implements HasMedia, HasPayment
 {
-    use Cachable, HasFactory, HasShortflakePrimary, HasTags, HasTopics, InteractsWithMedia, Metable;
+    use Cachable, HasFactory, HasShortflakePrimary, HasTags, HasTopics, InteractsWithMedia, InteractsWithPayment, Metable;
 
     /**
      * The attributes that are mass assignable.
@@ -37,6 +48,7 @@ class Submission extends Model implements HasMedia
         'revision_required',
         'withdrawn_reason',
         'withdrawn_at',
+        'published_at',
     ];
 
     /**
@@ -47,6 +59,7 @@ class Submission extends Model implements HasMedia
     protected $casts = [
         'stage' => SubmissionStage::class,
         'status' => SubmissionStatus::class,
+        'published_at' => 'datetime',
         'skipped_review' => 'boolean',
         'revision_required' => 'boolean',
     ];
@@ -85,13 +98,13 @@ class Submission extends Model implements HasMedia
 
         static::created(function (Submission $submission) {
             $submission->participants()->create([
-                'user_id' => auth()->id(),
+                'user_id' => $submission->user_id,
                 'role_id' => Role::where('name', UserRole::Author->value)->first()->getKey(),
             ]);
 
             //If current user does not exists in participant
-            if (!$userAsParticipant = auth()->user()->asParticipant()) {
-                $userAsParticipant = CreateParticipantFromUserAction::run(auth()->user());
+            if (! $userAsParticipant = $submission->user->asParticipant()) {
+                $userAsParticipant = CreateParticipantFromUserAction::run($submission->user);
             }
 
             // Current user as a contributors
@@ -100,6 +113,11 @@ class Submission extends Model implements HasMedia
                 'participant_position_id' => ParticipantPosition::where('name', UserRole::Author->value)->first()->getKey(),
             ]);
         });
+    }
+
+    public function activities()
+    {
+        return $this->morphMany(Activity::class, 'subject');
     }
 
     public function reviewerAssignedFiles(): HasMany
@@ -184,5 +202,28 @@ class Submission extends Model implements HasMedia
             ->get()
             ->pluck('user_id')
             ->map(fn ($userId) => User::find($userId));
+    }
+
+    public function state(): BaseSubmissionState
+    {
+        return match ($this->status) {
+            SubmissionStatus::Incomplete => new IncompleteSubmissionState($this),
+            SubmissionStatus::Queued => new QueuedSubmissionState($this),
+            SubmissionStatus::OnReview => new OnReviewSubmissionState($this),
+            SubmissionStatus::Editing => new EditingSubmissionState($this),
+            SubmissionStatus::Published => new PublishedSubmissionState($this),
+            SubmissionStatus::Declined => new DeclinedSubmissionState($this),
+            SubmissionStatus::Withdrawn => new WithdrawnSubmissionState($this),
+            default => throw new \Exception('Invalid submission status'),
+        };
+    }
+
+    public function hasPaymentProcess(): bool
+    {
+        return $this->conference->getMeta('payment.enabled') && match ($this->status) {
+            SubmissionStatus::OnReview, SubmissionStatus::Editing, SubmissionStatus::Published => true,
+            SubmissionStatus::Incomplete, SubmissionStatus::Queued, SubmissionStatus::Withdrawn, SubmissionStatus::Declined => false,
+            default => false,
+        };
     }
 }
