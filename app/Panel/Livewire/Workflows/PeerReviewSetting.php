@@ -59,7 +59,7 @@ class PeerReviewSetting extends WorkflowStage implements HasActions, HasForms
     {
         return $form
             ->schema([
-                Shout::make('stage-closed')
+                Shout::make('settings.stage-closed')
                     ->hidden(fn (): bool => $this->isStageOpen())
                     ->color('warning')
                     ->content('The call for abstracts is not open yet, Start now or schedule opening'),

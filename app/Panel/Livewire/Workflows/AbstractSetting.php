@@ -52,7 +52,7 @@ class AbstractSetting extends WorkflowStage implements HasActions, HasForms
     public function form(Form $form): Form
     {
         return $form->schema([
-            Shout::make('stage-closed')
+            Shout::make('settings.stage-closed')
                 ->hidden(fn (): bool => $this->isStageOpen())
                 ->color('warning')
                 ->content("The {$this->getStageLabel()} is not open yet, Start now or schedule opening"),
