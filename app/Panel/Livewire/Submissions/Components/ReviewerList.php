@@ -97,6 +97,26 @@ class ReviewerList extends Component implements HasForms, HasTable
                             return [$user->getKey() => static::renderSelectParticipant($user)];
                         })
                         ->toArray();
+                })
+                ->getSearchResultsUsing(function (Get $get, string $search) use ($component) {
+                    return User::with('roles')
+                        ->whereHas(
+                            'roles',
+                            fn (Builder $query) => $query->whereName(UserRole::Reviewer->value)
+                        )
+                        ->whereNotIn('id', $component->record->reviews->pluck('user_id'))
+                        ->where('given_name', 'like', "%{$search}%")
+                        ->orWhere('family_name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->limit(10)
+                        ->get()
+                        ->lazy()
+                        ->mapWithKeys(
+                            fn (User $user) => [
+                                $user->getKey() => static::renderSelectParticipant($user),
+                            ]
+                        )
+                        ->toArray();
                 }),
             CheckboxList::make('papers')
                 ->label('Files to be reviewed')
