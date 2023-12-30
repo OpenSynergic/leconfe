@@ -21,8 +21,12 @@ class SubmissionPolicy
         return $user->can('Submission:viewAny');
     }
 
-    public function view(User $user)
+    public function view(User $user, Submission $submission)
     {
+        if ($submission->participants()->where('user_id', $user->getKey())->exists()) {
+            return true;
+        }
+
         if ($user->can('Submission:view')) {
             return true;
         }
@@ -285,7 +289,7 @@ class SubmissionPolicy
         }
 
         // Editors cannot withdraw submissions; they must wait for the author to request it..
-        if (! filled($submission->withdrawn_reason)) {
+        if (!filled($submission->withdrawn_reason)) {
             return false;
         }
 

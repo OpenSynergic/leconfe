@@ -103,7 +103,7 @@ class Submission extends Model implements HasMedia, HasPayment
             ]);
 
             //If current user does not exists in participant
-            if (! $userAsParticipant = $submission->user->asParticipant()) {
+            if (!$userAsParticipant = $submission->user->asParticipant()) {
                 $userAsParticipant = CreateParticipantFromUserAction::run($submission->user);
             }
 
@@ -155,14 +155,14 @@ class Submission extends Model implements HasMedia, HasPayment
         return $this->hasMany(SubmissionContributor::class);
     }
 
-    public function scopeStage(Builder $query, SubmissionStage $stage)
-    {
-        return $query->where('stage', $stage);
-    }
-
     public function scopePublished(Builder $query)
     {
         return $query->status(SubmissionStatus::Published);
+    }
+
+    public function scopeStage(Builder $query, SubmissionStage $stage)
+    {
+        return $query->where('stage', $stage);
     }
 
     public function scopeStatus(Builder $query, SubmissionStatus $status)
