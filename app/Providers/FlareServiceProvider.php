@@ -14,7 +14,7 @@ class FlareServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        Flare::determineVersionUsing(function() {
+        Flare::determineVersionUsing(function () {
             return Application::APP_VERSION;
         });
         Flare::group('Informations', [
@@ -28,11 +28,11 @@ class FlareServiceProvider extends ServiceProvider
     public function boot(): void
     {
         try {
-            if(!setting('send-error-report')){
+            if (!setting('send-error-report') || !app()->isProduction()) {
                 Config::set('logging.channels.stack.channels', ['daily']);
             }
         } catch (\Throwable $th) {
-            // 
+            //
         }
 
     }
