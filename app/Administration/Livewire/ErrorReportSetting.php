@@ -5,8 +5,6 @@ namespace App\Administration\Livewire;
 use App\Actions\Settings\SettingUpdateAction;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -24,7 +22,7 @@ class ErrorReportSetting extends Component implements HasForms
     public function mount()
     {
         $this->form->fill([
-            'send-error-report' => setting('send-error-report')
+            'send-error-report' => setting('send-error-report'),
         ]);
     }
 
