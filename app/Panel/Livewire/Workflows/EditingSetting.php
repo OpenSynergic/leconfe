@@ -35,7 +35,7 @@ class EditingSetting extends WorkflowStage implements HasForms
     {
         return $form
             ->schema([
-                Shout::make('stage-closed')
+                Shout::make('settings.stage-closed')
                     ->hidden(fn (): bool => $this->isStageOpen())
                     ->color('warning')
                     ->content("The {$this->getStageLabel()} is not open yet, Start now or schedule opening"),

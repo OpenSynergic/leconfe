@@ -160,14 +160,14 @@ class Submission extends Model implements HasMedia, HasPayment
         return $this->hasMany(SubmissionContributor::class);
     }
 
-    public function scopeStage(Builder $query, SubmissionStage $stage)
-    {
-        return $query->where('stage', $stage);
-    }
-
     public function scopePublished(Builder $query)
     {
         return $query->status(SubmissionStatus::Published);
+    }
+
+    public function scopeStage(Builder $query, SubmissionStage $stage)
+    {
+        return $query->where('stage', $stage);
     }
 
     public function scopeStatus(Builder $query, SubmissionStatus $status)

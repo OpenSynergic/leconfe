@@ -5,6 +5,7 @@ namespace App\Administration\Pages;
 use App\Administration\Livewire\AccessSetting;
 use App\Administration\Livewire\DateAndTimeSetting;
 use App\Administration\Livewire\EmailSetting;
+use App\Administration\Livewire\ErrorReportSetting;
 use App\Administration\Livewire\InformationSetting;
 use App\Administration\Livewire\SetupSetting;
 use App\Administration\Livewire\SidebarSetting;
@@ -88,6 +89,13 @@ class SiteSettings extends Page implements HasInfolists
                                             ->schema([
                                                 LivewireEntry::make('date_and_time')
                                                     ->livewire(DateAndTimeSetting::class)
+                                                    ->lazy(),
+                                            ]),
+                                        VerticalTabs\Tab::make('Error Reporting')
+                                            ->icon('heroicon-o-exclamation-triangle')
+                                            ->schema([
+                                                LivewireEntry::make('error_report_setting')
+                                                    ->livewire(ErrorReportSetting::class)
                                                     ->lazy(),
                                             ]),
                                     ]),
