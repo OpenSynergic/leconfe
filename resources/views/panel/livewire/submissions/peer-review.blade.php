@@ -17,7 +17,7 @@
             @livewire(Components\Files\RevisionFiles::class, ['submission' => $submission])
 
             {{-- Discussions --}}
-            {{-- @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\Discussions::class, ['record' => $submission]) --}}
+            @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\Discussions::class, ['record' => $submission])
         </div>
         <div class="self-start sticky top-24 flex flex-col gap-4 col-span-4">
             @if ($submission->revision_required)
@@ -47,6 +47,7 @@
                 @endcan
             @endif
         </div>
+
     </div>
     <x-filament-actions::modals />
 </div>
