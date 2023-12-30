@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class DiscussionTopicParticipant extends Model
 {
-    protected $table = 'discussion_topic_participants';
-
     use HasFactory;
 
     protected $fillable = [
