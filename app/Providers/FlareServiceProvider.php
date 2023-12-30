@@ -27,8 +27,13 @@ class FlareServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if(!setting('send-error-report')){
-            Config::set('logging.channels.stack.channels', ['daily']);
+        try {
+            if(!setting('send-error-report')){
+                Config::set('logging.channels.stack.channels', ['daily']);
+            }
+        } catch (\Throwable $th) {
+            // 
         }
+
     }
 }
