@@ -289,7 +289,7 @@ class SubmissionPolicy
         }
 
         // Editors cannot withdraw submissions; they must wait for the author to request it..
-        if (!filled($submission->withdrawn_reason)) {
+        if (! filled($submission->withdrawn_reason)) {
             return false;
         }
 

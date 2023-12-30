@@ -36,7 +36,7 @@ class ManageSubmissions extends ManageRecords
             ->schema([
                 ShoutEntry::make('title')
                     ->hidden(function () {
-                        return StageManager::callForAbstract()->isStageOpen() || !Auth::user()->can('Workflow:update');
+                        return StageManager::callForAbstract()->isStageOpen() || ! Auth::user()->can('Workflow:update');
                     })
                     ->type('warning')
                     ->content(function () {
@@ -61,7 +61,7 @@ class ManageSubmissions extends ManageRecords
                 ->button()
                 ->authorize('Submission:create')
                 ->disabled(
-                    fn (): bool => !StageManager::callForAbstract()->isStageOpen()
+                    fn (): bool => ! StageManager::callForAbstract()->isStageOpen()
                 )
                 ->url(static::$resource::getUrl('create'))
                 ->icon('heroicon-o-plus')
@@ -99,22 +99,22 @@ class ManageSubmissions extends ManageRecords
 
         if (Auth::user()->hasAnyRole([
             UserRole::Admin->value,
-            UserRole::ConferenceManager->value
+            UserRole::ConferenceManager->value,
         ])) {
             return $query->whereIn('status', $statuses)->when(
                 $tabs == static::TAB_MYQUEUE,
                 function (Builder $query) {
                     $query->orWhere([
                         ['user_id', '=', Auth::id()],
-                        ['status', '=', SubmissionStatus::Incomplete]
+                        ['status', '=', SubmissionStatus::Incomplete],
                     ]);
                 }
             );
         }
 
-
         // Digunakan untuk menentukan mengetahui kondisi sebelumnya sudah ada atau belum
         $conditionBeforeExist = false;
+
         return $query->when(
             Auth::user()->hasRole(UserRole::Author->value),
             function (Builder $query) use ($statuses, &$conditionBeforeExist) {
@@ -136,7 +136,7 @@ class ManageSubmissions extends ManageRecords
                             return $query->where('user_id', Auth::id());
                         });
                     }
-                )->when($tabs != static::TAB_MYQUEUE,  function (Builder $query) use ($statuses) {
+                )->when($tabs != static::TAB_MYQUEUE, function (Builder $query) use ($statuses) {
                     $query->whereIn('status', $statuses);
                 });
                 $conditionBeforeExist = true;
@@ -159,7 +159,7 @@ class ManageSubmissions extends ManageRecords
             function (Builder $query) {
                 $query->orWhere([
                     ['user_id', '=', Auth::id()],
-                    ['status', '=', SubmissionStatus::Incomplete]
+                    ['status', '=', SubmissionStatus::Incomplete],
                 ]);
             }
         );
@@ -170,13 +170,13 @@ class ManageSubmissions extends ManageRecords
     {
 
         return [
-            static::TAB_MYQUEUE => Tab::make("My Queue")
+            static::TAB_MYQUEUE => Tab::make('My Queue')
                 ->modifyQueryUsing(fn (): Builder => static::generateQueryByCurrentUser(static::TAB_MYQUEUE)),
-            static::TAB_ACTIVE => Tab::make("Active")
+            static::TAB_ACTIVE => Tab::make('Active')
                 ->modifyQueryUsing(fn (): Builder => static::generateQueryByCurrentUser(static::TAB_ACTIVE)),
-            static::TAB_PUBLISHED => Tab::make("Published")
+            static::TAB_PUBLISHED => Tab::make('Published')
                 ->modifyQueryUsing(fn (): Builder => static::generateQueryByCurrentUser(static::TAB_PUBLISHED)),
-            static::TAB_ARCHIVED => Tab::make("Archived")
+            static::TAB_ARCHIVED => Tab::make('Archived')
                 ->modifyQueryUsing(fn (): Builder => static::generateQueryByCurrentUser(static::TAB_ARCHIVED)),
         ];
     }
