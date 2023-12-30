@@ -106,6 +106,7 @@ return [
             'time' => 'h:i A',
         ],
         'allow_registration' => true,
+        'send-error-report' => true,
     ],
 
     /*
