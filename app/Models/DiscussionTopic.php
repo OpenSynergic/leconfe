@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class DiscussionTopic extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'stage',
         'name',
         'user_id',
         'open'
@@ -18,6 +20,18 @@ class DiscussionTopic extends Model
     protected $casts = [
         'open' => 'boolean'
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($topic) {
+            $topic->user_id = Auth::id();
+        });
+
+        static::deleting(function ($topic) {
+            $topic->discussions()->delete();
+            $topic->participants()->delete();
+        });
+    }
 
     public function user()
     {

@@ -1,12 +1,12 @@
-@use('App\Panel\Livewire\Submissions')
+@use('App\Panel\Livewire\Submissions\Components')
 @use('App\Models\Enums\SubmissionStage')
 @use('App\Constants\SubmissionFileCategory')
 <div class="space-y-6">
     <div class="grid grid-cols-12 gap-4">
         <div class="space-y-4 col-span-8">
-            @livewire(Submissions\Components\Files\AbstractFiles::class, ['submission' => $submission, 'category' => SubmissionFileCategory::SUPPLEMENTARY_FILES])
+            @livewire(Components\Files\AbstractFiles::class, ['submission' => $submission, 'category' => SubmissionFileCategory::SUPPLEMENTARY_FILES])
 
-            @livewire(Submissions\DiscussionTopic::class, ['submission' => $submission, 'lazy' => true])
+            @livewire(Components\Discussions\DiscussionTopic::class, ['submission' => $submission, 'stage' => SubmissionStage::CallforAbstract, 'lazy' => true])
         </div>
         <div class="self-start sticky top-24 flex flex-col gap-3 col-span-4">
             @if ($submission->stage == SubmissionStage::PeerReview && !$reviewStageOpen)
@@ -25,7 +25,7 @@
                 </div>
                 @endif
                 {{-- Participants --}}
-                @livewire(Submissions\Components\ParticipantList::class, ['submission' => $submission])
+                @livewire(Components\ParticipantList::class, ['submission' => $submission])
             {{-- @endhasanyrole --}}
         </div>
     </div>

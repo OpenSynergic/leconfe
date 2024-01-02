@@ -2,11 +2,14 @@
 
 use App\Models\Discussion;
 use App\Models\DiscussionTopic;
+use App\Models\Enums\SubmissionStage;
 use App\Models\Submission;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+
+use function matthieumastadenis\couleur\utils\toArray;
 
 return new class extends Migration
 {
@@ -20,6 +23,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->foreignIdFor(Submission::class)->constrained();
+            $table->enum('stage', SubmissionStage::array());
             $table->foreignIdFor(User::class)->constrained();
             $table->boolean('open')->default(true);
             $table->timestamps();
