@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Application;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 use Spatie\LaravelIgnition\Facades\Flare;
@@ -27,13 +28,8 @@ class FlareServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        try {
-            if (! setting('send-error-report') || ! app()->isProduction()) {
-                Config::set('logging.channels.stack.channels', ['daily']);
-            }
-        } catch (\Throwable $th) {
-            //
+        if (App::isReportingErrors()) {
+            Config::set('logging.channels.stack.channels', array_merge(config('logging.channels.stack.channels'), ['flare']));
         }
-
     }
 }
