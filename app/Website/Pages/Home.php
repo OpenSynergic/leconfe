@@ -5,6 +5,7 @@ namespace App\Website\Pages;
 use App\Facades\MetaTag;
 use App\Models\Conference;
 use App\Models\Topic;
+use Exception;
 use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
@@ -22,12 +23,6 @@ class Home extends Page
             'upcomingConferences' => Conference::upcoming()->get(),
             'activeConference' => $activeConference,
         ];
-    }
-
-    public function mount()
-    {
-        // MetaTag::add('description', '');
-
     }
 
     public static function routes(PageGroup $pageGroup): void

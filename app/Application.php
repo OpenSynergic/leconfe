@@ -89,4 +89,16 @@ class Application extends LaravelApplication
 
         return $this->site;
     }
+
+    public function isReportingErrors(): bool
+    {
+        try {
+            if ($this->isProduction() && !$this->hasDebugModeEnabled() && setting('send-error-report', true)){
+                return true;
+            }
+        } catch (\Throwable $th) {
+            // 
+        }
+        return false;
+    }
 }
