@@ -28,8 +28,8 @@ class FlareServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if(App::isReportingErrors()){
-            Config::set('logging.channels.stack.channels',  array_merge(config('logging.channels.stack.channels'), ['flare']));
+        if (App::isReportingErrors()) {
+            Config::set('logging.channels.stack.channels', array_merge(config('logging.channels.stack.channels'), ['flare']));
         }
     }
 }

@@ -2,10 +2,8 @@
 
 namespace App\Website\Pages;
 
-use App\Facades\MetaTag;
 use App\Models\Conference;
 use App\Models\Topic;
-use Exception;
 use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
