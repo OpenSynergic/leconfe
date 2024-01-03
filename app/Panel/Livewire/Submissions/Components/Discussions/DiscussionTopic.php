@@ -3,6 +3,7 @@
 namespace App\Panel\Livewire\Submissions\Components\Discussions;
 
 use App\Actions\Submissions\CreateDiscussionTopic;
+use App\Actions\Submissions\UpdateDiscussionTopic;
 use App\Infolists\Components\LivewireEntry;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Submission;
@@ -34,6 +35,35 @@ class DiscussionTopic extends \Livewire\Component implements HasForms, HasTable
 
     public function mount(Submission $submission, SubmissionStage $stage)
     {
+    }
+
+    protected function getFormSchema(): array
+    {
+        return [
+            TextInput::make('name')
+                ->label('Topic Name')
+                ->placeholder('Topic Name')
+                ->required(),
+            CheckboxList::make('user_id')
+                ->label('Participants')
+                ->default([$this->submission->user->getKey()])
+                ->options(function () {
+                    return $this->submission->participants()
+                        ->with(['user', 'role'])
+                        ->get()
+                        ->mapWithKeys(function ($participant) {
+                            return [$participant->user->getKey() => $participant->user->fullName];
+                        });
+                })
+                ->descriptions(function () {
+                    return $this->submission->participants()
+                        ->with(['user', 'role'])
+                        ->get()
+                        ->mapWithKeys(function ($participant) {
+                            return [$participant->user->getKey() => $participant->role->name];
+                        });
+                })
+        ];
     }
 
     public function table(Table $table): Table
@@ -68,6 +98,26 @@ class DiscussionTopic extends \Livewire\Component implements HasForms, HasTable
                                     ]),
                             ];
                         }),
+                    Action::make('update-topic')
+                        ->label("Edit")
+                        ->icon('lineawesome-edit-solid')
+                        ->mountUsing(function ($record, Form $form) {
+                            $form->fill([
+                                'name' => $record->name,
+                                'user_id' => $record->participants()->pluck('user_id')->toArray()
+                            ]);
+                        })
+                        ->authorize('DiscussionTopic:update')
+                        ->form($this->getFormSchema())
+                        ->successNotificationTitle("Topic updated successfully")
+                        ->action(function (Action $action, array $data, Model $record) {
+                            UpdateDiscussionTopic::run(
+                                $record,
+                                ['name' => $data['name']],
+                                $data['user_id']
+                            );
+                            $action->success();
+                        }),
                     Action::make('update-status-action')
                         ->authorize('DiscussionTopic:update')
                         ->label(fn ($record): string => $record->open ? "Close" : "Open")
@@ -89,31 +139,7 @@ class DiscussionTopic extends \Livewire\Component implements HasForms, HasTable
                     ->icon("lineawesome-plus-solid")
                     ->label("Topic")
                     ->modalWidth("xl")
-                    ->form([
-                        TextInput::make('name')
-                            ->label('Topic Name')
-                            ->placeholder('Topic Name')
-                            ->required(),
-                        CheckboxList::make('user_id')
-                            ->label('Participants')
-                            ->default([$this->submission->user->getKey()])
-                            ->options(function () {
-                                return $this->submission->participants()
-                                    ->with(['user', 'role'])
-                                    ->get()
-                                    ->mapWithKeys(function ($participant) {
-                                        return [$participant->user->getKey() => $participant->user->fullName];
-                                    });
-                            })
-                            ->descriptions(function () {
-                                return $this->submission->participants()
-                                    ->with(['user', 'role'])
-                                    ->get()
-                                    ->mapWithKeys(function ($participant) {
-                                        return [$participant->user->getKey() => $participant->role->name];
-                                    });
-                            })
-                    ])
+                    ->form($this->getFormSchema())
                     ->successNotificationTitle("Topic created successfully")
                     ->failureNotificationTitle("Topic creation failed")
                     ->action(function (Action $action, array $data, Form $form) {
