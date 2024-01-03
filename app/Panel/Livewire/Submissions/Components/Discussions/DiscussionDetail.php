@@ -3,12 +3,8 @@
 namespace App\Panel\Livewire\Submissions\Components\Discussions;
 
 use App\Models\DiscussionTopic;
-use App\Models\SubmissionParticipant;
-use App\Tables\Columns\ListColumn;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\Layout\Panel;
 use Filament\Tables\Columns\Layout\Split;
@@ -19,7 +15,6 @@ use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use HTML5;
 
 class DiscussionDetail extends \Livewire\Component implements HasForms, HasTable
 {
@@ -36,7 +31,6 @@ class DiscussionDetail extends \Livewire\Component implements HasForms, HasTable
         return $table
             ->query(fn () => $this->topic->discussions()->orderBy('created_at', 'desc'))
             ->heading("Discussion")
-            ->description("Topic: {$this->topic->name}")
             ->actions([
                 DeleteAction::make()
                     ->authorize('Discussion:delete')

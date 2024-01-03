@@ -14,6 +14,12 @@ class DiscussionTopicParticipant extends Model
         'user_id',
     ];
 
+    public function getRoleName(): string
+    {
+        $participant = $this->topic->submission->participants()->where('user_id', $this->user->getKey())->first();
+        return $participant->role->name;
+    }
+
     public function topic()
     {
         return $this->belongsTo(DiscussionTopic::class, 'discussion_topic_id');

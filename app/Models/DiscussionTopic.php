@@ -68,4 +68,9 @@ class DiscussionTopic extends Model
     {
         return $this->hasMany(DiscussionTopicParticipant::class);
     }
+
+    public function submission()
+    {
+        return $this->belongsTo(Submission::class);
+    }
 }
