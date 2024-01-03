@@ -39,6 +39,8 @@ class DiscussionDetail extends \Livewire\Component implements HasForms, HasTable
             ->description("Topic: {$this->topic->name}")
             ->actions([
                 DeleteAction::make()
+                    ->authorize('Discussion:delete')
+                    ->visible(fn (): bool => $this->topic->open)
             ])
             ->columns([
                 Split::make([

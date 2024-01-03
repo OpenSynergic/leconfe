@@ -33,6 +33,27 @@ class DiscussionTopic extends Model
         });
     }
 
+    public function getLastDiscussions()
+    {
+        return $this->discussions()->orderBy('created_at', 'desc')->first();
+    }
+
+    public function getLastSender()
+    {
+        if (!$discussions = $this->getLastDiscussions()) {
+            return null;
+        }
+        return $discussions->user;
+    }
+
+    public function getLastUpdate(): ?string
+    {
+        if (!$discussions = $this->getLastDiscussions()) {
+            return null;
+        }
+        return $discussions->updated_at->format(setting('format.date') . ' ' . setting('format.time'));
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

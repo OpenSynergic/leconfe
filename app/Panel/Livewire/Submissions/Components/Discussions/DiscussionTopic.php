@@ -6,6 +6,8 @@ use App\Actions\Submissions\CreateDiscussionTopic;
 use App\Infolists\Components\LivewireEntry;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Submission;
+use Awcodes\FilamentBadgeableColumn\Components\Badge;
+use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -20,7 +22,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\HtmlString;
 
 class DiscussionTopic extends \Livewire\Component implements HasForms, HasTable
 {
@@ -41,7 +43,6 @@ class DiscussionTopic extends \Livewire\Component implements HasForms, HasTable
             ->query(fn () => $this->submission->discussionTopics()->where('stage', $this->stage))
             ->actions([
                 ActionGroup::make([
-
                     Action::make('open-discussion-detail')
                         ->icon('lineawesome-eye-solid')
                         ->label("Details")
@@ -67,11 +68,24 @@ class DiscussionTopic extends \Livewire\Component implements HasForms, HasTable
                                     ]),
                             ];
                         }),
+                    Action::make('update-status-action')
+                        ->authorize('DiscussionTopic:update')
+                        ->label(fn ($record): string => $record->open ? "Close" : "Open")
+                        ->color(fn ($record): string => $record->open ? 'warning' : 'success')
+                        ->icon(fn ($record): string => $record->open ? 'lineawesome-lock-solid' : 'lineawesome-unlock-solid')
+                        ->requiresConfirmation()
+                        ->successNotificationTitle("Topic updated successfully")
+                        ->action(function (Action $action, $record) {
+                            $record->update(['open' => !$record->open]);
+                            $action->success();
+                        }),
                     DeleteAction::make()
+                        ->authorize('DiscussionTopic:delete'),
                 ])
             ])
             ->headerActions([
                 Action::make('create-topic')
+                    ->authorize('DiscussionTopic:create')
                     ->icon("lineawesome-plus-solid")
                     ->label("Topic")
                     ->modalWidth("xl")
@@ -120,14 +134,17 @@ class DiscussionTopic extends \Livewire\Component implements HasForms, HasTable
                     })
             ])
             ->columns([
-                TextColumn::make('name')
-                    ->label('Name')
-                    ->searchable(),
-                TextColumn::make('open')
-                    ->label("Status")
-                    ->badge()
-                    ->color(fn ($state) => $state ? 'success' : 'danger')
-                    ->formatStateUsing(fn ($state) => $state ? 'Open' : 'Closed')
+                BadgeableColumn::make('name')
+                    ->suffixBadges([
+                        Badge::make('status')
+                            ->label(fn ($record) => $record->open ? 'Open' : 'Closed')
+                            ->color(fn ($record) => $record->open ? 'success' : 'danger')
+                    ]),
+                TextColumn::make('Last Update')
+                    ->getStateUsing(fn ($record) => $record->getLastSender()?->fullName)
+                    ->description(function ($record): ?string {
+                        return "{$record->getLastUpdate()}";
+                    })
             ]);
     }
 

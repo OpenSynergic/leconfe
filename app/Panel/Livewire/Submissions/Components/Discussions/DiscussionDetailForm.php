@@ -4,6 +4,7 @@ namespace App\Panel\Livewire\Submissions\Components\Discussions;
 
 use App\Models\Discussion;
 use App\Models\DiscussionTopic;
+use Awcodes\Shout\Components\Shout;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -32,6 +33,10 @@ class DiscussionDetailForm extends \Livewire\Component implements HasForms
     public function submit()
     {
         $this->form->validate();
+
+        if (!$this->topic->open) {
+            return abort('403', 'Discussion is closed.');
+        }
 
         $formData = $this->form->getState();
 
@@ -62,7 +67,12 @@ class DiscussionDetailForm extends \Livewire\Component implements HasForms
     public function form(Form $form)
     {
         return $form
+            ->disabled(fn (): bool => !$this->topic->open)
             ->schema([
+                Shout::make('discussion-alert')
+                    ->type('warning')
+                    ->hidden(fn (): bool => $this->topic->open)
+                    ->content('Can not add message to closed discussion.'),
                 Textarea::make('message')
                     ->placeholder('Message')
                     ->columnSpanFull()
