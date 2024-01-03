@@ -5,7 +5,7 @@ namespace App\Policies;
 use App\Models\DiscussionTopic;
 use App\Models\User;
 
-class DisussionTopicPolicy
+class DiscussionTopicPolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -42,6 +42,11 @@ class DisussionTopicPolicy
      */
     public function update(User $user, DiscussionTopic $discussionTopic): bool
     {
+        // Can't edit when topic is closed.
+        if (!$discussionTopic->open) {
+            return false;
+        }
+
         if ($user->can('DiscussionTopic:update')) {
             return true;
         }
