@@ -29,6 +29,8 @@ class CreateDiscussionTopic
             }
 
             DB::commit();
+
+            return $discussionTopic;
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
