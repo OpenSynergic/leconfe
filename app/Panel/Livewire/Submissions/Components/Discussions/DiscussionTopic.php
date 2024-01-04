@@ -7,6 +7,7 @@ use App\Actions\Submissions\UpdateDiscussionTopic;
 use App\Infolists\Components\LivewireEntry;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Submission;
+use App\Notifications\NewDiscussionTopic;
 use Awcodes\FilamentBadgeableColumn\Components\Badge;
 use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
 use Filament\Forms\Components\CheckboxList;
@@ -23,7 +24,6 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\HtmlString;
 
 class DiscussionTopic extends \Livewire\Component implements HasForms, HasTable
 {
@@ -144,18 +144,31 @@ class DiscussionTopic extends \Livewire\Component implements HasForms, HasTable
                     ->failureNotificationTitle("Topic creation failed")
                     ->action(function (Action $action, array $data, Form $form) {
                         $form->validate();
+
+                        $topic = CreateDiscussionTopic::run(
+                            $this->submission,
+                            [
+                                'name' => $data['name'],
+                                'stage' => $this->stage
+                            ],
+                            $data['user_id']
+                        );
+
                         try {
-                            CreateDiscussionTopic::run(
-                                $this->submission,
-                                [
-                                    'name' => $data['name'],
-                                    'stage' => $this->stage
-                                ],
-                                $data['user_id']
-                            );
-                            $action->success();
+                            $topic->participants()
+                                ->with('user')
+                                ->get()
+                                ->each(function ($participant) use ($topic) {
+                                    $participant->user->notify(
+                                        new NewDiscussionTopic($topic)
+                                    );
+                                });
                         } catch (\Throwable $th) {
+                            dd($th->getMessage());
+                            $action->failureNotificationTitle("Failed to send notification to participants.");
                             $action->failure();
+                        } finally {
+                            $action->success();
                         }
                     })
             ])
