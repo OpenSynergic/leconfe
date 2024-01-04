@@ -164,7 +164,6 @@ class DiscussionTopic extends \Livewire\Component implements HasForms, HasTable
                                     );
                                 });
                         } catch (\Throwable $th) {
-                            dd($th->getMessage());
                             $action->failureNotificationTitle("Failed to send notification to participants.");
                             $action->failure();
                         } finally {
