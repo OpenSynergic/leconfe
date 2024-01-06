@@ -54,6 +54,7 @@ class PanelProvider extends FilamentPanelProvider
             // ->spa()
             ->homeUrl(fn () => App::getCurrentConference()->getHomeUrl())
             ->bootUsing(fn ($panel) => $this->panelBootUsing($panel))
+            ->tenantMenu(false)
             // ->renderHook(
             //     'panels::sidebar.footer',
             //     fn () => view('panel.components.sidebar.footer')
@@ -63,6 +64,10 @@ class PanelProvider extends FilamentPanelProvider
                 fn () => Blade::render(<<<'Blade'
                         @vite(['resources/panel/js/panel.js'])
                     Blade)
+            )
+            ->renderHook(
+                'panels::topbar.start',
+                fn () => view('panel.hooks.topbar'),
             )
             ->viteTheme('resources/panel/css/panel.css')
             ->tenant(Conference::class, 'path')
