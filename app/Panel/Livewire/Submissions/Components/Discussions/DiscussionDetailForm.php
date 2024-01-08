@@ -46,7 +46,7 @@ class DiscussionDetailForm extends \Livewire\Component implements HasForms
             foreach ($formData['attachments'] as $media) {
                 $discussion->addMedia($media->getRealPath())
                     ->usingName($media->getClientOriginalName())
-                    ->toMediaCollection('discussion-attachment');
+                    ->toMediaCollection('discussion-attachment', 'local');
             }
         }
 

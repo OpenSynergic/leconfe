@@ -60,6 +60,7 @@ class DiscussionDetail extends \Livewire\Component implements HasForms, HasTable
                             ->alignCenter()
                     ])
                 ])
+                    ->collapsed(false)
                     ->collapsible()
             ]);
     }
