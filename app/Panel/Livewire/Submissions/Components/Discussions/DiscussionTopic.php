@@ -71,6 +71,7 @@ class DiscussionTopic extends \Livewire\Component implements HasForms, HasTable
         return $table
             ->heading('Discussion')
             ->query(fn () => $this->submission->discussionTopics()->where('stage', $this->stage))
+            ->recordAction('open-discussion-detail')
             ->actions([
                 ActionGroup::make([
                     Action::make('open-discussion-detail')
