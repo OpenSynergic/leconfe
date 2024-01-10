@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DiscussionTopicParticipant extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'discussion_topic_id',
@@ -17,6 +18,11 @@ class DiscussionTopicParticipant extends Model
     public function getRoleName(): string
     {
         $participant = $this->topic->submission->participants()->where('user_id', $this->user->getKey())->first();
+
+        if (!$participant) {
+            return "Unassigned";
+        }
+
         return $participant->role->name;
     }
 

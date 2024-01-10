@@ -27,6 +27,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->constrained();
             $table->boolean('open')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('discussion_topic_participants', function (Blueprint $table) {
@@ -34,6 +35,7 @@ return new class extends Migration
             $table->foreignIdFor(DiscussionTopic::class)->constrained();
             $table->foreignIdFor(User::class)->constrained();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('discussions', function (Blueprint $table) {
@@ -42,6 +44,7 @@ return new class extends Migration
             $table->foreignIdFor(DiscussionTopic::class)->constrained();
             $table->longText('message');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
