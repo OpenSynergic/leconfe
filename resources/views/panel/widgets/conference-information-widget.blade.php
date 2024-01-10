@@ -5,7 +5,7 @@
         @if (is_null($announcement))
             <h2 class="text-xl text-center text-gray-900 dark:text-white">Now there's no announcement here</h2>
         @else
-            <div class="flex justify-between gap-2 flex-wrap">
+            <div class="flex flex-col sm:flex-row justify-between gap-2 flex-wrap">
                 <div class="flex-1">
                     <p class="text-sm text-gray-500">{{ $announcement->created_at?->format(setting('format.date')) }}</p>
                     <div class="prose max-w-none">
@@ -15,8 +15,10 @@
                     </div>
                 </div>
                 @if($announcement->getFirstMedia('featured_image'))
-                    <img class="flex-shrink" src="{{ $announcement->getFirstMedia('featured_image')->getAvailableUrl(['small', 'thumb', 'thumb-xl']) }}"
-                        alt="announcement-cover">
+                    <div class="flex-shrink w-max">
+                        <img class="flex-shrink" src="{{ $announcement->getFirstMedia('featured_image')->getAvailableUrl(['small', 'thumb', 'thumb-xl']) }}"
+                            alt="announcement-cover">
+                    </div>
                 @endif
             </div>
         @endif

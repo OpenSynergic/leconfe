@@ -61,17 +61,17 @@
                     </span>
                 @endif
 
-                <span class="text-gray-950 dark:text-white">
+                <span class="text-gray-950 dark:text-white text-lg">
                     {{ $currentTenantName }}
                 </span>
 
-                <x-filament::badge size="sm" class="text-[10px]" :color="$currentTenant->status->getColor()">
+                {{-- <x-filament::badge size="sm" class="text-[10px]" :color="$currentTenant->status->getColor()">
                     {{ $currentTenant->status }}
-                </x-filament::badge>                
+                </x-filament::badge>                 --}}
                  
             </span>
 
-            <x-filament::icon
+             <x-filament::icon
                 icon="heroicon-m-chevron-down"
                 icon-alias="panels::tenant-menu.toggle-button"
                 class="hidden md:block ms-auto h-5 w-5 shrink-0 text-gray-400 transition duration-75 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400 dark:group-focus:text-gray-400"

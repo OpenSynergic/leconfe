@@ -54,10 +54,6 @@ body {
     @apply animate-in fade-in duration-500;
 }
 
-.fi-dropdown-panel {
-    @apply !max-w-[17rem];
-}
-
 .fi-sidebar{
     @apply lg:!bg-white lg:ring-1 lg:!shadow-xl dark:lg:!bg-gray-900
 }
