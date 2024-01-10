@@ -24,6 +24,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class DiscussionTopic extends \Livewire\Component implements HasForms, HasTable
 {
@@ -46,22 +47,37 @@ class DiscussionTopic extends \Livewire\Component implements HasForms, HasTable
                 ->required(),
             CheckboxList::make('user_id')
                 ->label('Participants')
-                ->default([$this->submission->user->getKey()])
+                ->default([Auth::id()])
+                ->rules('required|array|min:2')
+                ->disableOptionWhen(fn ($value): bool => $value == Auth::id()) // Can't remove self from participant
                 ->options(function () {
-                    return $this->submission->participants()
-                        ->with(['user', 'role'])
+                    $submissionParticipant = $this->submission->participants()
+                        ->with(['user'])
                         ->get()
                         ->mapWithKeys(function ($participant) {
                             return [$participant->user->getKey() => $participant->user->fullName];
-                        });
+                        })->toArray();
+
+                    if (!isset($submissionParticipant[Auth::id()])) {
+                        $submissionParticipant[Auth::id()] = Auth::user()->fullName;
+                    }
+
+
+                    return $submissionParticipant;
                 })
                 ->descriptions(function () {
-                    return $this->submission->participants()
+                    $submissionParticipant = $this->submission->participants()
                         ->with(['user', 'role'])
                         ->get()
                         ->mapWithKeys(function ($participant) {
                             return [$participant->user->getKey() => $participant->role->name];
-                        });
+                        })->toArray();
+
+                    if (!isset($submissionParticipant[Auth::id()])) {
+                        $submissionParticipant[Auth::id()] = "Unassigned";
+                    }
+
+                    return $submissionParticipant;
                 })
         ];
     }
@@ -180,10 +196,8 @@ class DiscussionTopic extends \Livewire\Component implements HasForms, HasTable
                             ->color(fn ($record) => $record->open ? 'success' : 'danger')
                     ]),
                 TextColumn::make('Last Update')
-                    ->getStateUsing(fn ($record) => $record->getLastSender()?->fullName)
-                    ->description(function ($record): ?string {
-                        return "{$record->getLastUpdate()}";
-                    })
+                    ->getStateUsing(fn ($record) => $record->getLastSender()?->fullName ?? "-")
+                    ->description(fn ($record): ?string => $record->getLastUpdate())
             ]);
     }
 
