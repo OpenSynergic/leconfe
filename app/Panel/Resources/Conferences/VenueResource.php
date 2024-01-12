@@ -4,13 +4,11 @@ namespace App\Panel\Resources\Conferences;
 
 use App\Models\Venue;
 use App\Panel\Resources\Conferences\VenueResource\Pages;
-use App\Schemas\VenueSchema;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\TextEntry\TextEntrySize;
@@ -70,7 +68,7 @@ class VenueResource extends Resource
                             ->collection('thumbnail')
                             ->conversion('thumb')
                             ->label('')
-                            ->visible(fn($record) => $record->hasMedia('thumbnail')),
+                            ->visible(fn ($record) => $record->hasMedia('thumbnail')),
                         TextEntry::make('name')
                             ->size(TextEntrySize::Large)
                             ->weight(FontWeight::Bold)
