@@ -18,7 +18,7 @@ class CalendarBlock extends Block
     public function getViewData(): array
     {
         // Retrieve timeline data and format it for the calendar
-        $timelines = Timeline::where('conference_id', app()->getCurrentConference()?->getKey())->get();
+        $timelines = Timeline::all();
 
         $formattedTimelines = [];
 

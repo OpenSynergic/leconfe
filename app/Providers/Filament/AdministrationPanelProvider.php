@@ -8,6 +8,8 @@ use App\Models\Navigation;
 use App\Website\Blocks\CalendarBlock;
 use App\Website\Blocks\LoginBlock;
 use App\Website\Blocks\ScheduleBlock;
+use App\Website\Blocks\SearchBlock;
+use App\Website\Blocks\TimelineBlock;
 use App\Website\Blocks\TopicBlock;
 use Filament\Panel;
 use Filament\PanelProvider as FilamentPanelProvider;
@@ -73,10 +75,12 @@ class AdministrationPanelProvider extends FilamentPanelProvider
         PanelProvider::setupFilamentComponent();
 
         Block::registerBlocks([
+            SearchBlock::class,
             LoginBlock::class,
             CalendarBlock::class,
             ScheduleBlock::class,
             TopicBlock::class,
+            TimelineBlock::class,
         ]);
         Block::boot();
     }

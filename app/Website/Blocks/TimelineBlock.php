@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Conference\Blocks;
+namespace App\Website\Blocks;
 
 use App\Livewire\Block;
 use App\Models\Timeline;
@@ -21,6 +21,7 @@ class TimelineBlock extends Block
         $today = Carbon::now();
 
         $timelines = Timeline::query()
+            ->withoutGlobalScopes()
             ->whereBetween('date', [$today->toDateString(), $today->addMonth(2)->toDateString()])
             ->orderBy('date')
             ->limit(5)
