@@ -76,7 +76,7 @@
                     @foreach ($participantPosition as $position)
                         @if ($position->participants->isNotEmpty())
                             <div class="space-y-4">
-                                <h3 class="text-lg">{{ $position->name }}</h3>
+                                <h3 class="text-base">{{ $position->name }}</h3>
                                 <div class="cf-speaker-list grid sm:grid-cols-2 gap-2">
                                     @foreach ($position->participants as $participant)
                                         <div class="cf-speaker h-full flex gap-2">

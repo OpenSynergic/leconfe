@@ -23,6 +23,7 @@ class Home extends Page
         return [
             'announcements' => Announcement::query()->get(),
             'participantPosition' => ParticipantPosition::query()
+                ->where('type', 'speaker')
                 ->whereHas('participants')
                 ->with(['participants' => ['media', 'meta']])
                 ->get(),
