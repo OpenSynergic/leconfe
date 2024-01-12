@@ -22,14 +22,14 @@ class AdministrationPanelProvider extends FilamentPanelProvider
         return $panel
             ->id('administration')
             ->plugins($this->getPlugins())
+            ->sidebarCollapsibleOnDesktop()
             ->path(config('app.filament.administration_path'))
             ->homeUrl(fn () => route('livewirePageGroup.website.pages.home'))
             ->colors(PanelProvider::getColors())
             ->bootUsing(fn () => $this->bootUsing())
-            ->spa()
             ->renderHook(
-                'panels::sidebar.nav.start',
-                fn () => view('administration.components.sidebar.nav-start')
+                'panels::topbar.start',
+                fn () => view('administration.hooks.topbar'),
             )
             ->discoverLivewireComponents(in: app_path('Administration/Livewire'), for: 'App\\Administration\\Livewire')
             ->discoverResources(in: app_path('Administration/Resources'), for: 'App\\Administration\\Resources')

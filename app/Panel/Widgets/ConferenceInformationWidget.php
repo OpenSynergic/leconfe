@@ -13,8 +13,8 @@ class ConferenceInformationWidget extends Widget
 
     protected function getViewData(): array
     {
-        $announcement = Announcement::latest()->first();
-
-        return ['announcement' => $announcement];
+        return [
+            'announcement' => Announcement::latest()->first(),
+        ];
     }
 }
