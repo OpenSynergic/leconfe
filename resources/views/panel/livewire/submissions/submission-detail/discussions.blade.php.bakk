@@ -1,0 +1,152 @@
+<div class="space-y-6">
+    <x-filament::section heading="Discussions" :compact="true" class="justify-center" :headerEnd="$this->selectDiscussion()">
+        <div class="flex flex-col space-y-4 p-3 overflow-y-scroll h-72">
+            <div class="flex items-end">
+                <div class="flex flex-col space-y-2 w-1/2 mx-2 order-2 items-start">
+                    <span class="px-4 py-2 rounded-lg inline-block bg-gray-800 text-gray-300">
+                        <span class="flex text-xs text-primary-700 justify-start">Dede Nugroho (Author)</span>
+                        Can be verified on any platform using docker
+                    </span>
+                </div>
+                <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144"
+                    alt="My profile" class="w-10 h-10 rounded-full order-1">
+            </div>
+            <div class="flex items-end justify-end">
+                <div class="flex flex-col space-y-2 w-1/2 mx-2 order-1 items-end">
+                    <span class="px-4 py-2 rounded-lg inline-block rounded-br-none bg-gray-700 text-white">
+                        {{-- <span class="flex text-xs text-warning-700 ml-auto justify-end">Nugroho Dede (Admin)</span> --}}
+                        Your error message says permission denied, npm global installs must be given root
+                        privileges.
+                    </span>
+                </div>
+                <img src="https://images.unsplash.com/photo-1590031905470-a1a1feacbb0b?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144"
+                    alt="My profile" class="w-10 h-10 rounded-full order-2">
+            </div>
+            <div class="flex items-end">
+                <div class="flex flex-col space-y-2 w-1/2 mx-2 order-2 items-start">
+                    <div>
+                        <span class="px-4 py-2 rounded-lg inline-block bg-gray-800 text-gray-300">
+                            <span class="flex text-xs text-primary-700 justify-start">Dede Nugroho (Author)</span>
+                            Command was run with root privileges. I'm sure about that.
+                        </span>
+                    </div>
+                    <div>
+                        <span class="px-4 py-2 rounded-lg inline-block bg-gray-800 text-gray-300">
+                            <span class="flex text-xs text-primary-700 justify-start">Dede Nugroho (Author)</span>
+                            I've update the description so it's more obviously now
+                        </span>
+                    </div>
+                    <div>
+                        <span class="px-4 py-2 rounded-lg inline-block bg-gray-800 text-gray-300">
+                            <span class="flex text-xs text-primary-700 justify-start">Dede Nugroho (Author)</span>
+                            FYI https://askubuntu.com/a/700266/510172
+                        </span>
+                    </div>
+                    <div>
+                        <span class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-800 text-gray-300">
+                            <span class="flex text-xs text-primary-700 justify-start">Dede Nugroho (Author)</span>
+                            Check the line above (it ends with a # so, I'm running it as root )
+                            <pre># npm install -g @vue/devtools</pre>
+                        </span>
+                    </div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144"
+                    alt="My profile" class="w-10 h-10 rounded-full order-1">
+            </div>
+            <div class="flex items-end justify-end">
+                <div class="flex flex-col space-y-2 w-1/2 mx-2 order-1 items-end">
+                    <div><span class="px-4 py-2 rounded-lg inline-block rounded-br-none bg-gray-700 text-white ">Any
+                            updates on this issue? I'm getting the same error when trying to install devtools.
+                            Thanks</span></div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1590031905470-a1a1feacbb0b?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144"
+                    alt="My profile" class="w-10 h-10 rounded-full order-2">
+            </div>
+            <div class="flex items-end">
+                <div class="flex flex-col space-y-2 w-1/2 mx-2 order-2 items-start">
+                    <div>
+                        <span class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-800 text-gray-300">
+                            <span class="flex text-xs text-primary-700 justify-start">Dede Nugroho (Author)</span>
+                            Thanks for your message David. I thought I'm alone with this issue. Please, ? the issue
+                            to support it :)
+                        </span>
+                    </div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144"
+                    alt="My profile" class="w-10 h-10 rounded-full order-1">
+            </div>
+            <div class="flex items-end justify-end">
+                <div class="flex flex-col space-y-2 w-1/2 mx-2 order-1 items-end">
+                    <div><span class="px-4 py-2 rounded-lg inline-block bg-gray-700 text-white ">Are you using
+                            sudo?</span></div>
+                    <div><span class="px-4 py-2 rounded-lg inline-block rounded-br-none bg-gray-700 text-white ">Run
+                            this command sudo chown -R `whoami` 7then install the package globally without using
+                            sudo</span></div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1590031905470-a1a1feacbb0b?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144"
+                    alt="My profile" class="w-10 h-10 rounded-full order-2">
+            </div>
+            <div class="flex items-end">
+                <div class="flex flex-col space-y-2 w-1/2 mx-2 order-2 items-start">
+                    <div>
+                        <span class="px-4 py-2 rounded-lg inline-block bg-gray-800 text-gray-300">
+                            <span class="flex text-xs text-primary-700 justify-start">Dede Nugroho (Author)</span>
+                            It seems like you are from Mac OS world. There is no /Users/ folder on linux ?
+                        </span>
+                    </div>
+                    <div>
+                        <span class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-800 text-gray-300">
+                            <span class="flex text-xs text-primary-700 justify-start">Dede Nugroho (Author)</span>
+                            I have no issue with any other packages installed with root permission globally.
+                        </span>
+                    </div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144"
+                    alt="My profile" class="w-10 h-10 rounded-full order-1">
+            </div>
+            <div class="flex items-end justify-end">
+                <div class="flex flex-col space-y-2 w-1/2 mx-2 order-1 items-end">
+                    <div><span class="px-4 py-2 rounded-lg inline-block rounded-br-none bg-gray-700 text-white ">yes, I
+                            have a mac. I never had issues with root permission as well, but this helped me to solve
+                            the problem</span></div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1590031905470-a1a1feacbb0b?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144"
+                    alt="My profile" class="w-10 h-10 rounded-full order-2">
+            </div>
+            <div class="flex items-end">
+                <div class="flex flex-col space-y-2 w-1/2 mx-2 order-2 items-start">
+                    <div>
+                        <span class="px-4 py-2 rounded-lg inline-block bg-gray-800 text-gray-300">
+                            <span class="flex text-xs text-primary-700 justify-start">Dede Nugroho (Author)</span>
+                            I get the same error on Arch Linux (also with sudo)
+                        </span>
+                    </div>
+                    <div>
+                        <span class="px-4 py-2 rounded-lg inline-block bg-gray-800 text-gray-300">
+                            <span class="flex text-xs text-primary-700 justify-start">Dede Nugroho (Author)</span>
+                            I also have this issue, Here is what I was doing until now: #1076
+                        </span>
+                    </div>
+                    <div>
+                        <span class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-800 text-gray-300">
+                            <span class="flex text-xs text-primary-700 justify-start">Dede Nugroho (Author)</span>
+                            even i am facing
+                        </span>
+                    </div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144"
+                    alt="My profile" class="w-10 h-10 rounded-full order-1">
+            </div>
+        </div>
+        <div class="flex space-x-3 justify-center items-center">
+            <div class="w-full">
+                {{ $this->form }}
+            </div>
+            <div class="flex flex-col space-y-2 justify-center">
+                  {{ $this->sendAction }}
+                  {{ $this->addFiles }}
+            </div>
+            </div>
+         </x-filament::section>
+         <x-filament-actions::modals />
+</div>

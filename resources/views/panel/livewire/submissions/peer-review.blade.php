@@ -1,9 +1,7 @@
-@php
-    use App\Models\Enums\SubmissionStage;
-    use App\Models\Enums\SubmissionStatus;
-    use App\Panel\Livewire\Submissions\Components;
-    use App\Models\Enums\UserRole;
-@endphp
+@use('App\Models\Enums\SubmissionStage')
+@use('App\Models\Enums\SubmissionStatus')
+@use('App\Panel\Livewire\Submissions\Components')
+@use('App\Models\Enums\UserRole')
 <div class="space-y-6">
     <div class="grid grid-cols-12 gap-4">
         <div class="space-y-4 col-span-8">
@@ -17,7 +15,7 @@
             @livewire(Components\Files\RevisionFiles::class, ['submission' => $submission])
 
             {{-- Discussions --}}
-            {{-- @livewire(App\Panel\Livewire\Submissions\SubmissionDetail\Discussions::class, ['record' => $submission]) --}}
+            @livewire(Components\Discussions\DiscussionTopic::class, ['submission' => $submission, 'stage' => SubmissionStage::PeerReview, 'lazy' => true])
         </div>
         <div class="self-start sticky top-24 flex flex-col gap-4 col-span-4">
             @if ($submission->revision_required)
@@ -47,6 +45,7 @@
                 @endcan
             @endif
         </div>
+
     </div>
     <x-filament-actions::modals />
 </div>
