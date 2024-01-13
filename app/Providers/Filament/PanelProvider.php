@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Conference\Blocks\CalendarBlock;
 use App\Conference\Blocks\CommitteeBlock;
+use App\Conference\Blocks\InformationBlock;
 use App\Conference\Blocks\PreviousBlock;
 use App\Conference\Blocks\SubmitBlock;
 use App\Conference\Blocks\TimelineBlock;
@@ -134,6 +135,7 @@ class PanelProvider extends FilamentPanelProvider
             SubmitBlock::class,
             TopicBlock::class,
             CommitteeBlock::class,
+            // InformationBlock::class,
         ]);
         Block::boot();
     }

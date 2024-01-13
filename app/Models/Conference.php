@@ -136,6 +136,7 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
     {
         return $query
             ->with(['meta'])
+            ->whereMeta('date_held', '>=', now())
             ->whereHasMeta('date_held')
             ->orderByMetaNumeric('date_held', 'asc')
             ->where('status', ConferenceStatus::Upcoming);

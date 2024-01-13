@@ -3,22 +3,19 @@
         <x-slot name="heading">Timeline</x-slot>
         @if ($timeline->isEmpty())
             <h2 class="text-xl text-center text-gray-900 dark:text-white">Now there's no timeline here</h2>
-        @else 
-            @foreach ($timeline as $timelines)
-                <x-content.timeline>
-                    <x-slot:timeline_time>
-                        {{ $timelines->date->format('d-m-Y') }}
-                    </x-slot:timeline_time>
-                    
-                    <x-slot:timeline_title>
-                        {{ $timelines->title }}
-                    </x-slot:timeline_title>
-                    
-                    <x-slot:timeline_description>
-                        {{ $timelines->subtitle }}
-                    </x-slot:timeline_description>
-                </x-content.timeline>
-            @endforeach
+        @else
+            <div class="timelines max-h-64 overflow-y-scroll divide-y">
+                @foreach ($timeline as $timelines)
+                    <div class="timeline py-2 first:pt-0 last:pb-0">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-base font-semibold text-gray-900 dark:text-white">{{ $timelines->date->format(setting('format.date')) }}</h3>
+                            <time
+                                class="text-sm font-normal leading-none text-gray-400 dark:text-gray-500"> {{ $timelines->title }}</time>
+                        </div>
+                        <p class="text-sm font-normal text-gray-400 dark:text-gray-500">{{ $timelines->subtitle }}</p>
+                    </div>
+                @endforeach
+            </div>
         @endif
     </x-filament::section>
 </x-filament-widgets::widget>
