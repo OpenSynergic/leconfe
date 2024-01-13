@@ -32,6 +32,6 @@
             class="relative flex hover:bg-neutral-100 items-center py-1.5 px-4 pr-6 text-sm outline-none transition-colors gap-4 w-full"
             :href="$item->getUrl()">
             {{ $item->getLabel() }}
-        </x-conference::link>
+        </x-website::link>
     @endforeach
 </div>

@@ -50,4 +50,4 @@
             @endforelse
         </div>
     </div>
-</x-conference::layouts.main>
+</x-website::layouts.main>
