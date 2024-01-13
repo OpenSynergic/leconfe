@@ -5,12 +5,12 @@
     >
         <img src="{{ $headerLogo }}" alt="{{ $headerLogoAltText }}"
         class="max-h-12 w-auto">
-    </x-conference::link>
+    </x-website::link>
 @else
     <x-website::link 
         :href="$homeUrl" 
         {{ $attributes->merge(['class' => 'text-lg sm:text-lg']) }}
     >
         {{ $headerLogoAltText }}
-    </x-conference::link>
+    </x-website::link>
 @endif

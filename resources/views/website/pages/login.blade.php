@@ -37,8 +37,8 @@
                 </button>
                 <x-website::link class="btn btn-outline btn-sm" :href="url('register')">
                     Register
-                </x-conference::link>
+                </x-website::link>
             </div>
         </form>
     </div>
-</x-conference::layouts.main>
+</x-website::layouts.main>

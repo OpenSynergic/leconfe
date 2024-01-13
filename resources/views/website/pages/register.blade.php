@@ -115,7 +115,7 @@
                                 <p class="label-text">
                                     I accept and approve according to <x-website::link
                                         href="{{ route('livewirePageGroup.current-conference.pages.privacy-statement') }}"
-                                        class="link link-primary link-hover">Privacy Statement.</x-conference::link>
+                                        class="link link-primary link-hover">Privacy Statement.</x-website::link>
                                 </p>
                             </label>
                         </div>
@@ -133,11 +133,11 @@
                     </button>
                     <x-website::link class="btn btn-outline btn-sm" :href="url('login')">
                         Login
-                        </x-conference::link>
+                    </x-website::link>
                 </div>
             </form>
         @else
             <p>This conference is currently closing user registrations</p>
         @endif
     </div>
-    </x-conference::layouts.main>
+    </x-website::layouts.main>

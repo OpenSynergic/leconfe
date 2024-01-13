@@ -40,7 +40,7 @@ class ConferenceServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Blade::anonymousComponentPath(resource_path('views/conference/components'), 'conference');
+        // Blade::anonymousComponentPath(resource_path('views/conference/components'), 'conference');
 
         // Livewire::addPersistentMiddleware([
         //     IdentifyCurrentConference::class,
