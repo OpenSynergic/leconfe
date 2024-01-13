@@ -17,14 +17,14 @@
                         'before:hidden before:bg-slate-300 text-slate-500 hover:text-slate-600' => request()->url() !== $item->getUrl(),
                     ]) :href="$item->getUrl()">
                         {{ $item->getLabel() }}
-                    </x-conference::link>
+                    </x-website::link>
                 @else
                     <x-website::link @class([
                         'text-primary font-semibold' => request()->url() === $item->getUrl(),
                         'text-slate-900 font-medium' => request()->url() !== $item->getUrl(),
                     ]) :href="$item->getUrl()">
                         {{ $item->getLabel() }}
-                    </x-conference::link>
+                    </x-website::link>
                 @endif
             </li>
             @if ($item->hasChildren())
