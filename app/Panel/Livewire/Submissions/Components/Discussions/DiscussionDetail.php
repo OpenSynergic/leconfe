@@ -23,18 +23,18 @@ class DiscussionDetail extends \Livewire\Component implements HasForms, HasTable
     public DiscussionTopic $topic;
 
     protected $listeners = [
-        'refreshMessages' => '$refresh'
+        'refreshMessages' => '$refresh',
     ];
 
     public function table(Table $table): Table
     {
         return $table
             ->query(fn () => $this->topic->discussions()->orderBy('created_at', 'desc'))
-            ->heading("Discussion")
+            ->heading('Discussion')
             ->actions([
                 DeleteAction::make()
                     ->authorize('Discussion:delete')
-                    ->visible(fn (): bool => $this->topic->open)
+                    ->visible(fn (): bool => $this->topic->open),
             ])
             ->columns([
                 Split::make([
@@ -48,20 +48,20 @@ class DiscussionDetail extends \Livewire\Component implements HasForms, HasTable
                     Stack::make([
                         TextColumn::make('user.fullName')
                             ->description(fn ($record) => $record->created_at->format(setting('format.date')))
-                            ->label("From"),
+                            ->label('From'),
                     ]),
                 ]),
                 Panel::make([
                     Split::make([
                         TextColumn::make('message')
-                            ->label("Message"),
+                            ->label('Message'),
                         ViewColumn::make('attachment-list')
                             ->view('tables.custom-views.discussions.attachment-list')
-                            ->alignCenter()
-                    ])
+                            ->alignCenter(),
+                    ]),
                 ])
                     ->collapsed(false)
-                    ->collapsible()
+                    ->collapsible(),
             ]);
     }
 

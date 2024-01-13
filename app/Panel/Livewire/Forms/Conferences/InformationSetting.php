@@ -18,7 +18,7 @@ use Filament\Forms\Form;
 use Livewire\Component;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
-class   InformationSetting extends Component implements HasForms
+class InformationSetting extends Component implements HasForms
 {
     use InteractsWithForms;
 

@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Auth;
 
 class DiscussionTopic extends \Livewire\Component implements HasForms, HasTable
 {
-    use InteractsWithTable, InteractsWithForms;
+    use InteractsWithForms, InteractsWithTable;
 
     public Submission $submission;
 
@@ -58,10 +58,9 @@ class DiscussionTopic extends \Livewire\Component implements HasForms, HasTable
                             return [$participant->user->getKey() => $participant->user->fullName];
                         })->toArray();
 
-                    if (!isset($submissionParticipant[Auth::id()])) {
+                    if (! isset($submissionParticipant[Auth::id()])) {
                         $submissionParticipant[Auth::id()] = Auth::user()->fullName;
                     }
-
 
                     return $submissionParticipant;
                 })
@@ -73,12 +72,12 @@ class DiscussionTopic extends \Livewire\Component implements HasForms, HasTable
                             return [$participant->user->getKey() => $participant->role->name];
                         })->toArray();
 
-                    if (!isset($submissionParticipant[Auth::id()])) {
-                        $submissionParticipant[Auth::id()] = "Unassigned";
+                    if (! isset($submissionParticipant[Auth::id()])) {
+                        $submissionParticipant[Auth::id()] = 'Unassigned';
                     }
 
                     return $submissionParticipant;
-                })
+                }),
         ];
     }
 
@@ -92,8 +91,8 @@ class DiscussionTopic extends \Livewire\Component implements HasForms, HasTable
                 ActionGroup::make([
                     Action::make('open-discussion-detail')
                         ->icon('lineawesome-eye-solid')
-                        ->label("Details")
-                        ->modalWidth("6xl")
+                        ->label('Details')
+                        ->modalWidth('6xl')
                         ->modalHeading(fn (Model $discussionTopic): string => "Discussion for topic {$discussionTopic->name}")
                         ->modalSubmitAction(false)
                         ->infolist(function (Model $discussionTopic) {
@@ -104,29 +103,29 @@ class DiscussionTopic extends \Livewire\Component implements HasForms, HasTable
                                         ['topic' => $discussionTopic]
                                     )->lazy(),
                                 Fieldset::make('form-discussion-detail')
-                                    ->label("Add Message")
+                                    ->label('Add Message')
                                     ->columns(1)
                                     ->schema([
                                         LivewireEntry::make('discussion-detail-form')
                                             ->livewire(
                                                 DiscussionDetailForm::class,
                                                 ['topic' => $discussionTopic]
-                                            )->lazy()
+                                            )->lazy(),
                                     ]),
                             ];
                         }),
                     Action::make('update-topic')
-                        ->label("Edit")
+                        ->label('Edit')
                         ->icon('lineawesome-edit-solid')
                         ->mountUsing(function ($record, Form $form) {
                             $form->fill([
                                 'name' => $record->name,
-                                'user_id' => $record->participants()->pluck('user_id')->toArray()
+                                'user_id' => $record->participants()->pluck('user_id')->toArray(),
                             ]);
                         })
                         ->authorize('DiscussionTopic:update')
                         ->form($this->getFormSchema())
-                        ->successNotificationTitle("Topic updated successfully")
+                        ->successNotificationTitle('Topic updated successfully')
                         ->action(function (Action $action, array $data, Model $record) {
                             UpdateDiscussionTopic::run(
                                 $record,
@@ -137,28 +136,28 @@ class DiscussionTopic extends \Livewire\Component implements HasForms, HasTable
                         }),
                     Action::make('update-status-action')
                         ->authorize('DiscussionTopic:update')
-                        ->label(fn ($record): string => $record->open ? "Close" : "Open")
+                        ->label(fn ($record): string => $record->open ? 'Close' : 'Open')
                         ->color(fn ($record): string => $record->open ? 'warning' : 'success')
                         ->icon(fn ($record): string => $record->open ? 'lineawesome-lock-solid' : 'lineawesome-unlock-solid')
                         ->requiresConfirmation()
-                        ->successNotificationTitle("Topic updated successfully")
+                        ->successNotificationTitle('Topic updated successfully')
                         ->action(function (Action $action, $record) {
-                            $record->update(['open' => !$record->open]);
+                            $record->update(['open' => ! $record->open]);
                             $action->success();
                         }),
                     DeleteAction::make()
                         ->authorize('DiscussionTopic:delete'),
-                ])
+                ]),
             ])
             ->headerActions([
                 Action::make('create-topic')
                     ->authorize('DiscussionTopic:create')
-                    ->icon("lineawesome-plus-solid")
-                    ->label("Topic")
-                    ->modalWidth("xl")
+                    ->icon('lineawesome-plus-solid')
+                    ->label('Topic')
+                    ->modalWidth('xl')
                     ->form($this->getFormSchema())
-                    ->successNotificationTitle("Topic created successfully")
-                    ->failureNotificationTitle("Topic creation failed")
+                    ->successNotificationTitle('Topic created successfully')
+                    ->failureNotificationTitle('Topic creation failed')
                     ->action(function (Action $action, array $data, Form $form) {
                         $form->validate();
 
@@ -166,7 +165,7 @@ class DiscussionTopic extends \Livewire\Component implements HasForms, HasTable
                             $this->submission,
                             [
                                 'name' => $data['name'],
-                                'stage' => $this->stage
+                                'stage' => $this->stage,
                             ],
                             $data['user_id']
                         );
@@ -181,23 +180,23 @@ class DiscussionTopic extends \Livewire\Component implements HasForms, HasTable
                                     );
                                 });
                         } catch (\Throwable $th) {
-                            $action->failureNotificationTitle("Failed to send notification to participants.");
+                            $action->failureNotificationTitle('Failed to send notification to participants.');
                             $action->failure();
                         } finally {
                             $action->success();
                         }
-                    })
+                    }),
             ])
             ->columns([
                 BadgeableColumn::make('name')
                     ->suffixBadges([
                         Badge::make('status')
                             ->label(fn ($record) => $record->open ? 'Open' : 'Closed')
-                            ->color(fn ($record) => $record->open ? 'success' : 'danger')
+                            ->color(fn ($record) => $record->open ? 'success' : 'danger'),
                     ]),
                 TextColumn::make('Last Update')
-                    ->getStateUsing(fn ($record) => $record->getLastSender()?->fullName ?? "-")
-                    ->description(fn ($record): ?string => $record->getLastUpdate())
+                    ->getStateUsing(fn ($record) => $record->getLastSender()?->fullName ?? '-')
+                    ->description(fn ($record): ?string => $record->getLastUpdate()),
             ]);
     }
 

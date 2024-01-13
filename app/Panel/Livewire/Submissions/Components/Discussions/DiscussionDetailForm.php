@@ -2,7 +2,6 @@
 
 namespace App\Panel\Livewire\Submissions\Components\Discussions;
 
-use App\Models\Discussion;
 use App\Models\DiscussionTopic;
 use Awcodes\Shout\Components\Shout;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -34,7 +33,7 @@ class DiscussionDetailForm extends \Livewire\Component implements HasForms
     {
         $this->form->validate();
 
-        if (!$this->topic->open) {
+        if (! $this->topic->open) {
             return abort('403', 'Discussion is closed.');
         }
 
@@ -52,8 +51,8 @@ class DiscussionDetailForm extends \Livewire\Component implements HasForms
 
         Notification::make('discussion-added')
             ->success()
-            ->title("Discussion Added")
-            ->body("Discussion has been added successfully.")
+            ->title('Discussion Added')
+            ->body('Discussion has been added successfully.')
             ->send();
 
         $this->form->fill([
@@ -67,7 +66,7 @@ class DiscussionDetailForm extends \Livewire\Component implements HasForms
     public function form(Form $form)
     {
         return $form
-            ->disabled(fn (): bool => !$this->topic->open)
+            ->disabled(fn (): bool => ! $this->topic->open)
             ->schema([
                 Shout::make('discussion-alert')
                     ->type('warning')
@@ -86,7 +85,7 @@ class DiscussionDetailForm extends \Livewire\Component implements HasForms
                     ->multiple()
                     ->previewable(false)
                     ->downloadable()
-                    ->visibility('private')
+                    ->visibility('private'),
             ]);
     }
 

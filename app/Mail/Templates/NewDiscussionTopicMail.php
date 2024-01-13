@@ -12,7 +12,6 @@ class NewDiscussionTopicMail extends TemplateMailable
 
     public string $linkLogin;
 
-
     public function __construct(DiscussionTopic $discussionTopic)
     {
         $this->topicName = $discussionTopic->name;
@@ -32,7 +31,7 @@ class NewDiscussionTopicMail extends TemplateMailable
 
     public static function getDefaultHtmlTemplate(): string
     {
-        return <<<HTML
+        return <<<'HTML'
          <p> You've been added to a new discussion. Here are the details:</p>
          <table>
                 <tr>

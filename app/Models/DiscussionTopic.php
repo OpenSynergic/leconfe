@@ -15,11 +15,11 @@ class DiscussionTopic extends Model
         'stage',
         'name',
         'user_id',
-        'open'
+        'open',
     ];
 
     protected $casts = [
-        'open' => 'boolean'
+        'open' => 'boolean',
     ];
 
     protected static function booted()
@@ -41,18 +41,20 @@ class DiscussionTopic extends Model
 
     public function getLastSender()
     {
-        if (!$discussions = $this->getLastDiscussions()) {
+        if (! $discussions = $this->getLastDiscussions()) {
             return null;
         }
+
         return $discussions->user;
     }
 
     public function getLastUpdate(): ?string
     {
-        if (!$discussions = $this->getLastDiscussions()) {
+        if (! $discussions = $this->getLastDiscussions()) {
             return null;
         }
-        return $discussions->updated_at->format(setting('format.date') . ' ' . setting('format.time'));
+
+        return $discussions->updated_at->format(setting('format.date').' '.setting('format.time'));
     }
 
     public function user()

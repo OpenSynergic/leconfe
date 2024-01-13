@@ -21,7 +21,7 @@ class NewDiscussionTopic extends Notification implements ShouldQueue
 
     public function via($notifiable): array
     {
-        if (!filled($this->channels)) {
+        if (! filled($this->channels)) {
             return ['database', 'mail'];
         }
 

@@ -103,7 +103,7 @@ class Submission extends Model implements HasMedia, HasPayment
             ]);
 
             //If current user does not exists in participant
-            if (!$userAsParticipant = $submission->user->asParticipant()) {
+            if (! $userAsParticipant = $submission->user->asParticipant()) {
                 $userAsParticipant = CreateParticipantFromUserAction::run($submission->user);
             }
 

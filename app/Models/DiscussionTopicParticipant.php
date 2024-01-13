@@ -19,8 +19,8 @@ class DiscussionTopicParticipant extends Model
     {
         $participant = $this->topic->submission->participants()->where('user_id', $this->user->getKey())->first();
 
-        if (!$participant) {
-            return "Unassigned";
+        if (! $participant) {
+            return 'Unassigned';
         }
 
         return $participant->role->name;

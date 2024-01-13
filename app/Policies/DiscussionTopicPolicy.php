@@ -43,7 +43,7 @@ class DiscussionTopicPolicy
     public function update(User $user, DiscussionTopic $discussionTopic): bool
     {
         // Can't edit when topic is closed.
-        if (!$discussionTopic->open) {
+        if (! $discussionTopic->open) {
             return false;
         }
 
