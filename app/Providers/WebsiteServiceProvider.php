@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Conference\Blocks\InformationBlock;
 use App\Conference\Pages\Home;
 use App\Facades\Block;
 use App\Http\Middleware\SetupDefaultData;
@@ -10,7 +9,6 @@ use App\Website\Blocks\CalendarBlock;
 use App\Website\Blocks\LoginBlock;
 use App\Website\Blocks\ScheduleBlock;
 use App\Website\Blocks\SearchBlock;
-use App\Website\Blocks\TimelineBlock;
 use App\Website\Blocks\TopicBlock;
 use Illuminate\Support\Facades\Blade;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
