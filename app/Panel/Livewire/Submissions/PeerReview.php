@@ -6,8 +6,6 @@ use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Mail\Templates\AcceptPaperMail;
 use App\Mail\Templates\DeclinePaperMail;
 use App\Mail\Templates\RevisionRequestMail;
-use App\Models\Enums\SubmissionStage;
-use App\Models\Enums\SubmissionStatus;
 use App\Models\MailTemplate;
 use App\Models\Submission;
 use App\Panel\Livewire\Workflows\Classes\StageManager;
@@ -74,10 +72,7 @@ class PeerReview extends Component implements HasActions, HasForms
                     ]),
             ])
             ->action(function (Action $action, array $data) {
-                SubmissionUpdateAction::run([
-                    'revision_required' => false,
-                    'status' => SubmissionStatus::Declined,
-                ], $this->submission);
+                $this->submission->state()->decline();
 
                 if (! $data['do-not-notify-author']) {
                     try {
@@ -96,7 +91,6 @@ class PeerReview extends Component implements HasActions, HasForms
                 $action->successRedirectUrl(
                     SubmissionResource::getUrl('view', [
                         'record' => $this->submission->getKey(),
-                        'stage' => sprintf('-%s-tab', str($this->submission->stage->value)->slug()),
                     ])
                 );
 
@@ -138,11 +132,7 @@ class PeerReview extends Component implements HasActions, HasForms
                     ]),
             ])
             ->action(function (Action $action, array $data) {
-                SubmissionUpdateAction::run([
-                    'revision_required' => false,
-                    'stage' => SubmissionStage::Editing,
-                    'status' => SubmissionStatus::Editing,
-                ], $this->submission);
+                $this->submission->state()->accept();
 
                 if (! $data['do-not-notify-author']) {
                     try {
@@ -161,7 +151,6 @@ class PeerReview extends Component implements HasActions, HasForms
                 $action->successRedirectUrl(
                     SubmissionResource::getUrl('view', [
                         'record' => $this->submission->getKey(),
-                        'stage' => sprintf('-%s-tab', str($this->submission->stage->value)->slug()),
                     ])
                 );
 
@@ -226,7 +215,6 @@ class PeerReview extends Component implements HasActions, HasForms
                 $action->successRedirectUrl(
                     SubmissionResource::getUrl('view', [
                         'record' => $this->submission->getKey(),
-                        'stage' => sprintf('-%s-tab', str($this->submission->stage->value)->slug()),
                     ])
                 );
 
@@ -243,17 +231,11 @@ class PeerReview extends Component implements HasActions, HasForms
             ->outlined()
             ->successNotificationTitle('Review Skipped')
             ->action(function (Action $action) {
-                SubmissionUpdateAction::run([
-                    'skipped_review' => true,
-                    'revision_required' => false,
-                    'status' => SubmissionStatus::Editing,
-                    'stage' => SubmissionStage::Editing,
-                ], $this->submission);
+                $this->submission->state()->skipReview();
 
                 $action->successRedirectUrl(
                     SubmissionResource::getUrl('view', [
                         'record' => $this->submission->getKey(),
-                        'stage' => sprintf('-%s-tab', str($this->submission->stage->value)->slug()),
                     ])
                 );
 

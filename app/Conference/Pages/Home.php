@@ -5,6 +5,7 @@ namespace App\Conference\Pages;
 use App\Models\Announcement;
 use App\Models\ParticipantPosition;
 use App\Models\Topic;
+use App\Models\Venue;
 use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
@@ -22,10 +23,12 @@ class Home extends Page
         return [
             'announcements' => Announcement::query()->get(),
             'participantPosition' => ParticipantPosition::query()
+                ->where('type', 'speaker')
                 ->whereHas('participants')
                 ->with(['participants' => ['media', 'meta']])
                 ->get(),
             'topics' => Topic::query()->get(),
+            'venues' => Venue::query()->get(),
         ];
     }
 

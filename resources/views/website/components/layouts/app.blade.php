@@ -10,4 +10,4 @@
         {{-- Load Footer Layout --}}
         <x-website::layouts.footer />
     </div>
-</x-conference::layouts.base>
+</x-website::layouts.base>

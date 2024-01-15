@@ -34,4 +34,4 @@
             {{ new Illuminate\Support\HtmlString($this->announcement->getMeta('content')) }}
         </div>
     </div>
-    </x-conference::layouts.main>
+    </x-website::layouts.main>

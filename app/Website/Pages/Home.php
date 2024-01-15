@@ -2,7 +2,6 @@
 
 namespace App\Website\Pages;
 
-use App\Facades\MetaTag;
 use App\Models\Conference;
 use App\Models\Topic;
 use Illuminate\Support\Facades\Route;
@@ -22,12 +21,6 @@ class Home extends Page
             'upcomingConferences' => Conference::upcoming()->get(),
             'activeConference' => $activeConference,
         ];
-    }
-
-    public function mount()
-    {
-        // MetaTag::add('description', '');
-
     }
 
     public static function routes(PageGroup $pageGroup): void

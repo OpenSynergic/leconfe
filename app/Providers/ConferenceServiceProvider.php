@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Conference\Blocks\CalendarBlock;
 use App\Conference\Blocks\CommitteeBlock;
-use App\Conference\Blocks\MenuBlock;
 use App\Conference\Blocks\PreviousBlock;
 use App\Conference\Blocks\SubmitBlock;
 use App\Conference\Blocks\TimelineBlock;
@@ -41,7 +40,7 @@ class ConferenceServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Blade::anonymousComponentPath(resource_path('views/conference/components'), 'conference');
+        // Blade::anonymousComponentPath(resource_path('views/conference/components'), 'conference');
 
         // Livewire::addPersistentMiddleware([
         //     IdentifyCurrentConference::class,
@@ -61,7 +60,6 @@ class ConferenceServiceProvider extends ServiceProvider
                     PreviousBlock::class,
                     SubmitBlock::class,
                     TopicBlock::class,
-                    MenuBlock::class,
                     CommitteeBlock::class,
                 ]);
                 Block::boot();

@@ -2,10 +2,7 @@
 
 namespace App\Panel\Livewire\Wizards\SubmissionWizard\Steps;
 
-use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Mail\Templates\ThankAuthorMail;
-use App\Models\Enums\SubmissionStage;
-use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
 use App\Models\Submission;
 use App\Models\User;
@@ -42,29 +39,22 @@ class ReviewStep extends Component implements HasActions, HasForms, HasWizardSte
             ->requiresConfirmation()
             ->modalHeading('Submit abstract')
             ->modalDescription(function (): string {
-                return 'Your about to submit your abstract to the conference, Please review your submission carefully before proceeding.';
+                return 'You will be submitting your abstract to the conference, Please review your submission carefully before proceeding.';
             })
             ->modalSubmitActionLabel('Submit')
             ->successNotificationTitle('Abstract submitted, please wait for the conference manager to review your submission.')
             ->successRedirectUrl(fn (): string => SubmissionResource::getUrl('complete', ['record' => $this->record]))
             ->action(function (Action $action) {
-
-                SubmissionUpdateAction::run([
-                    'stage' => SubmissionStage::CallforAbstract,
-                    'status' => SubmissionStatus::Queued,
-                ], $this->record);
-
                 try {
+                    $this->record->state()->fulfill();
+
                     Mail::to($this->record->user)->send(
                         new ThankAuthorMail($this->record)
                     );
 
-                    $users = User::role([
-                        UserRole::Admin->value,
-                        UserRole::ConferenceManager->value,
-                    ])->get();
-
-                    $users->each(fn ($user) => $user->notify(new NewSubmission($this->record)));
+                    User::role([UserRole::Admin->value, UserRole::ConferenceManager->value])
+                        ->lazy()
+                        ->each(fn ($user) => $user->notify(new NewSubmission($this->record)));
                 } catch (\Exception $e) {
                     $action->failureNotificationTitle('Failed to send notifications');
                     $action->failure();

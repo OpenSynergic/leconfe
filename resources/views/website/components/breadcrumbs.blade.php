@@ -14,7 +14,7 @@
                 {{-- wire:navigate --}}
             >
                 {{ $label }}
-            </x-conference::link>
+            </x-website::link>
             @else
                 {{ $label }}
             @endif

@@ -4,6 +4,7 @@ namespace App\Panel\Livewire\Submissions\Components\Files;
 
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
+use GuzzleHttp\Psr7\MimeType;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -15,6 +16,8 @@ final class SelectFiles extends SubmissionFilesTable
     public string $targetCategory;
 
     public array $selectableCategories = [];
+
+    public array $allowedFileTypes = [];
 
     public $listeners = [
         'refreshList' => '$refresh',
@@ -43,6 +46,16 @@ final class SelectFiles extends SubmissionFilesTable
         return $this->submission
             ->submissionFiles()
             ->whereNotIn('media_id', $selectedCategoryIDs)
+            ->whereHas('media', function ($query) {
+                $query->whereIn(
+                    'mime_type',
+                    collect($this->allowedFileTypes)
+                        ->map(function ($type) {
+                            return MimeType::fromExtension($type);
+                        })
+                        ->toArray()
+                );
+            })
             ->whereIn('category', $this->selectableCategories)
             ->getQuery();
     }

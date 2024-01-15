@@ -12,7 +12,7 @@ class PermissionPolicy
      */
     public function viewAny(User $user)
     {
-        if ($user->can('Permission:update')) {
+        if ($user->can('Permission:viewAny')) {
             return true;
         }
     }
@@ -20,7 +20,7 @@ class PermissionPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Permission $topic)
+    public function view(User $user, Permission $permission)
     {
         if ($user->can('Permission:view')) {
             return true;
@@ -40,7 +40,7 @@ class PermissionPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Permission $topic)
+    public function update(User $user, Permission $permission)
     {
         if ($user->can('Permission:update')) {
             return true;
@@ -50,7 +50,7 @@ class PermissionPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Permission $topic)
+    public function delete(User $user, Permission $permission)
     {
         if ($user->can('Permission:delete')) {
             return true;

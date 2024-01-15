@@ -21,8 +21,12 @@ class SubmissionPolicy
         return $user->can('Submission:viewAny');
     }
 
-    public function view(User $user)
+    public function view(User $user, Submission $submission)
     {
+        if ($submission->participants()->where('user_id', $user->getKey())->exists()) {
+            return true;
+        }
+
         if ($user->can('Submission:view')) {
             return true;
         }
@@ -42,7 +46,7 @@ class SubmissionPolicy
     public function delete(User $user, Submission $submission)
     {
         // Only submission with status: withdrawn or declined can be deleted.
-        if (! in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn])) {
+        if (! in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Incomplete])) {
             return false;
         }
 
@@ -94,7 +98,7 @@ class SubmissionPolicy
 
     public function uploadAbstract(User $user, Submission $submission)
     {
-        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn])) {
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
             return false;
         }
 
@@ -114,6 +118,25 @@ class SubmissionPolicy
 
     public function uploadPaper(User $user, Submission $submission)
     {
+        if ($submission->stage != SubmissionStage::PeerReview) {
+            return false;
+        }
+
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
+            return false;
+        }
+
+        if (filled($submission->withdrawn_reason)) {
+            return false;
+        }
+
+        if ($user->can('Submission:uploadPaper')) {
+            return true;
+        }
+    }
+
+    public function uploadPresenterFiles(User $user, Submission $submission)
+    {
         if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn])) {
             return false;
         }
@@ -122,11 +145,11 @@ class SubmissionPolicy
             return false;
         }
 
-        if ($submission->stage != SubmissionStage::PeerReview) {
+        if ($submission->stage != SubmissionStage::Editing) {
             return false;
         }
 
-        if ($user->can('Submission:uploadPaper')) {
+        if ($user->can('Submission:uploadPresenterFiles')) {
             return true;
         }
     }
@@ -282,7 +305,7 @@ class SubmissionPolicy
             return false;
         }
 
-        if ($submission->status == SubmissionStatus::Withdrawn) {
+        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Declined, SubmissionStatus::Published, SubmissionStatus::Editing])) {
             return false;
         }
 

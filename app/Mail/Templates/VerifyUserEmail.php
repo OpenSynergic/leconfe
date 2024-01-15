@@ -2,6 +2,7 @@
 
 namespace App\Mail\Templates;
 
+use App\Classes\Log;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
@@ -13,6 +14,8 @@ class VerifyUserEmail extends TemplateMailable
 
     public string $verificationUrl;
 
+    public Log $log;
+
     /**
      * Create a new message instance.
      */
@@ -20,6 +23,12 @@ class VerifyUserEmail extends TemplateMailable
     {
         $this->userFullName = $user->full_name;
         $this->verificationUrl = $this->verificationUrl($user);
+
+        $this->log = Log::make(
+            name: 'email',
+            subject: $user,
+            description: __('log.email.sent', ['name' => 'Verify user Email']),
+        );
     }
 
     protected function verificationUrl($user)

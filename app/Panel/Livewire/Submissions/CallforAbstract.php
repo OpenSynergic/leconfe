@@ -2,11 +2,8 @@
 
 namespace App\Panel\Livewire\Submissions;
 
-use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Mail\Templates\AcceptAbstractMail;
 use App\Mail\Templates\DeclineAbstractMail;
-use App\Models\Enums\SubmissionStage;
-use App\Models\Enums\SubmissionStatus;
 use App\Models\MailTemplate;
 use App\Models\Submission;
 use App\Notifications\AbstractAccepted;
@@ -23,6 +20,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
@@ -69,10 +67,7 @@ class CallforAbstract extends Component implements HasActions, HasForms
             ->successNotificationTitle('Submission declined')
             ->successRedirectUrl(fn (): string => SubmissionResource::getUrl('view', ['record' => $this->submission]))
             ->action(function (Action $action, array $data) {
-                SubmissionUpdateAction::run([
-                    'stage' => SubmissionStage::CallforAbstract,
-                    'status' => SubmissionStatus::Declined,
-                ], $this->submission);
+                $this->submission->state()->decline();
 
                 if (! $data['no-notification']) {
                     try {
@@ -139,7 +134,8 @@ class CallforAbstract extends Component implements HasActions, HasForms
                         TextInput::make('subject')
                             ->required(),
                         TinyEditor::make('message')
-                            ->minHeight(300),
+                            ->minHeight(300)
+                            ->toolbarSticky(false),
                         Checkbox::make('no-notification')
                             ->label("Don't send notification to author")
                             ->default(false),
@@ -147,46 +143,48 @@ class CallforAbstract extends Component implements HasActions, HasForms
             ])
             ->action(
                 function (Action $action, array $data) {
-                    SubmissionUpdateAction::run([
-                        'stage' => SubmissionStage::PeerReview,
-                        'status' => SubmissionStatus::OnReview,
-                    ], $this->submission);
+                    try {
+                        $this->submission->state()->acceptAbstract();
 
-                    if (! $data['no-notification']) {
-                        try {
-                            $this->submission->user
-                                ->notify(
-                                    new AbstractAccepted(
-                                        submission: $this->submission,
-                                        message: $data['message'],
-                                        subject: $data['subject'],
-                                        channels: ['mail']
-                                    )
-                                );
-                        } catch (\Exception $e) {
-                            $action->failureNotificationTitle('The email notification was not delivered.');
-                            $action->failure();
+                        if (! $data['no-notification']) {
+                            try {
+                                $this->submission->user
+                                    ->notify(
+                                        new AbstractAccepted(
+                                            submission: $this->submission,
+                                            message: $data['message'],
+                                            subject: $data['subject'],
+                                            channels: ['mail']
+                                        )
+                                    );
+                            } catch (\Exception $e) {
+                                $action->failureNotificationTitle('The email notification was not delivered.');
+                                $action->failure();
+                            }
                         }
-                    }
 
-                    $this->submission->user
-                        ->notify(
-                            new AbstractAccepted(
-                                submission: $this->submission,
-                                message: $data['message'],
-                                subject: $data['subject'],
-                                channels: ['database']
-                            )
+                        $this->submission->user
+                            ->notify(
+                                new AbstractAccepted(
+                                    submission: $this->submission,
+                                    message: $data['message'],
+                                    subject: $data['subject'],
+                                    channels: ['database']
+                                )
+                            );
+
+                        $action->successRedirectUrl(
+                            SubmissionResource::getUrl('view', [
+                                'record' => $this->submission->getKey(),
+                            ])
                         );
 
-                    $action->successRedirectUrl(
-                        SubmissionResource::getUrl('view', [
-                            'record' => $this->submission->getKey(),
-                            'stage' => '-peer-review-tab',
-                        ])
-                    );
-
-                    $action->success();
+                        $action->success();
+                    } catch (\Throwable $th) {
+                        Log::error($th->getMessage());
+                        $action->failureNotificationTitle('Failed to accept abstract');
+                        $action->failure();
+                    }
                 }
             );
     }

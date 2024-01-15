@@ -8,6 +8,7 @@ use App\Models\Block;
 use App\Models\Conference;
 use App\Models\Navigation;
 use App\Models\ParticipantPosition;
+use App\Models\PaymentItem;
 use App\Models\Scopes\ConferenceScope;
 use App\Models\Site;
 use App\Models\StaticPage;
@@ -66,6 +67,7 @@ class Application extends LaravelApplication
             Announcement::class,
             StaticPage::class,
             Timeline::class,
+            PaymentItem::class,
         ] as $model) {
             $model::addGlobalScope(new ConferenceScope);
         }
@@ -86,5 +88,18 @@ class Application extends LaravelApplication
         }
 
         return $this->site;
+    }
+
+    public function isReportingErrors(): bool
+    {
+        try {
+            if ($this->isProduction() && ! $this->hasDebugModeEnabled() && setting('send-error-report', true)) {
+                return true;
+            }
+        } catch (\Throwable $th) {
+            //
+        }
+
+        return false;
     }
 }

@@ -136,6 +136,7 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
     {
         return $query
             ->with(['meta'])
+            ->whereMeta('date_held', '>=', now())
             ->whereHasMeta('date_held')
             ->orderByMetaNumeric('date_held', 'asc')
             ->where('status', ConferenceStatus::Upcoming);
@@ -149,5 +150,19 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
     public function isActive(): bool
     {
         return $this->status == ConferenceStatus::Active;
+    }
+
+    public function getHomeUrl(): string
+    {
+        return match ($this?->status) {
+            ConferenceStatus::Active => route('livewirePageGroup.current-conference.pages.home'),
+            ConferenceStatus::Archived => route('livewirePageGroup.archive-conference.pages.home', ['conference' => $this->path]),
+            default => route('livewirePageGroup.website.pages.home'),
+        };
+    }
+
+    public function getSupportedCurrencies(): array
+    {
+        return $this->getMeta('payment.supported_currencies') ?? ['usd'];
     }
 }

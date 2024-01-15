@@ -34,4 +34,9 @@ class Topic extends Model
     {
         return 'slug';
     }
+
+    public function submissions()
+    {
+        return $this->morphedByMany(Submission::class, 'topicable');
+    }
 }

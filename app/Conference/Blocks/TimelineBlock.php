@@ -20,18 +20,10 @@ class TimelineBlock extends Block
     {
         $today = Carbon::now();
 
-        $timelines = Timeline::where('conference_id', app()->getCurrentConference()?->getKey())
-            ->where(function ($query) use ($today) {
-                $query->where('date', $today->subDay()->toDateString())
-                    ->orWhereBetween('date', [
-                        $today->addDays(1)->toDateString(), // Today
-                        $today->addDays(2)->toDateString(), // 2 days ahead
-                    ]);
-            })
-            ->orWhere(function ($query) {
-                $query->latest()->limit(3);
-            })
+        $timelines = Timeline::query()
+            ->whereBetween('date', [$today->toDateString(), $today->addMonth(2)->toDateString()])
             ->orderBy('date')
+            ->limit(5)
             ->get();
 
         $timelineData = [];

@@ -7,8 +7,10 @@ use App\Facades\Block;
 use App\Models\Navigation;
 use App\Website\Blocks\CalendarBlock;
 use App\Website\Blocks\LoginBlock;
-use App\Website\Blocks\ScheduleBlock;
+use App\Website\Blocks\SearchBlock;
+use App\Website\Blocks\TimelineBlock;
 use App\Website\Blocks\TopicBlock;
+use App\Website\Blocks\UpcomingConferenceBlock;
 use Filament\Panel;
 use Filament\PanelProvider as FilamentPanelProvider;
 use Filament\Widgets;
@@ -22,13 +24,14 @@ class AdministrationPanelProvider extends FilamentPanelProvider
         return $panel
             ->id('administration')
             ->plugins($this->getPlugins())
+            ->sidebarCollapsibleOnDesktop()
             ->path(config('app.filament.administration_path'))
             ->homeUrl(fn () => route('livewirePageGroup.website.pages.home'))
             ->colors(PanelProvider::getColors())
             ->bootUsing(fn () => $this->bootUsing())
             ->renderHook(
-                'panels::sidebar.nav.start',
-                fn () => view('administration.components.sidebar.nav-start')
+                'panels::topbar.start',
+                fn () => view('administration.hooks.topbar'),
             )
             ->discoverLivewireComponents(in: app_path('Administration/Livewire'), for: 'App\\Administration\\Livewire')
             ->discoverResources(in: app_path('Administration/Resources'), for: 'App\\Administration\\Resources')
@@ -72,10 +75,12 @@ class AdministrationPanelProvider extends FilamentPanelProvider
         PanelProvider::setupFilamentComponent();
 
         Block::registerBlocks([
+            SearchBlock::class,
             LoginBlock::class,
             CalendarBlock::class,
-            ScheduleBlock::class,
+            UpcomingConferenceBlock::class,
             TopicBlock::class,
+            TimelineBlock::class,
         ]);
         Block::boot();
     }

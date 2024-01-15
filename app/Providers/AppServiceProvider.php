@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Facades\Payment;
 use App\Managers\BlockManager;
 use App\Managers\MetaTagManager;
+use App\Services\Payments\PaypalPayment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
@@ -37,6 +39,10 @@ class AppServiceProvider extends ServiceProvider
         $this->setupModel();
         $this->setupStorage();
         $this->extendStr();
+
+        // Payment::extend('paypal', function () {
+        //     return new PaypalPayment;
+        // });
     }
 
     protected function extendStr()

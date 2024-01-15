@@ -3,6 +3,7 @@
 namespace App\Panel\Livewire\Submissions\Forms;
 
 use App\Actions\Submissions\SubmissionUpdateAction;
+use App\Classes\Log;
 use App\Models\Submission;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -31,6 +32,14 @@ class References extends \Livewire\Component implements HasForms
             $this->form->getState(),
             $this->submission
         );
+
+        Log::make(
+            name: 'submission',
+            subject: $this->submission,
+            description: __('log.submission.metadata_updated')
+        )
+            ->by(auth()->user())
+            ->save();
 
         Notification::make()
             ->body('Saved successfully')

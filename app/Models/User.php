@@ -121,18 +121,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
             return true;
         }
 
-        if ($this->canAccessMultipleTenant()) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function canAccessMultipleTenant(): bool
-    {
-        // TODO implement logic using spatie permissions
-
-        return true;
+        return $this->can('view', $tenant);
     }
 
     public function canImpersonate()
@@ -160,7 +149,9 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
     {
         return Conference::query()
             ->with('media')
-            ->where('status', '!=', ConferenceStatus::Archived)
+            ->when(! $this->can('Conference:viewUpcoming'), fn ($query) => $query->where('status', '!=', ConferenceStatus::Upcoming))
+            ->when(! $this->can('Conference:viewArchived'), fn ($query) => $query->where('status', '!=', ConferenceStatus::Archived))
+            // ->where('status', '!=', ConferenceStatus::Archived)
             ->get();
     }
 

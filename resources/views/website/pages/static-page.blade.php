@@ -7,4 +7,4 @@
                 {{ new Illuminate\Support\HtmlString($this->staticPage->getMeta('content')) }}
             </div>
         </div>
-</x-conference::layouts.main>
+</x-website::layouts.main>

@@ -6,4 +6,4 @@
             {{ new Illuminate\Support\HtmlString($currentConference->getMeta('privacy_statement')) }}
         </div>
     </div>
-</x-conference::layouts.main>
+</x-website::layouts.main>

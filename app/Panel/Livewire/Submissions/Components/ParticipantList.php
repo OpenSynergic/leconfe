@@ -2,6 +2,7 @@
 
 namespace App\Panel\Livewire\Submissions\Components;
 
+use App\Classes\Log;
 use App\Mail\Templates\ParticipantAssignedMail;
 use App\Models\Enums\UserRole;
 use App\Models\MailTemplate;
@@ -138,7 +139,24 @@ class ParticipantList extends Component implements HasForms, HasTable
                                             ->toArray()
                                     )
                                     ->searchable()
-                                    ->preload()
+                                    ->getSearchResultsUsing(function (Get $get, string $search) {
+                                        return User::with('roles')
+                                            ->whereHas(
+                                                'roles',
+                                                fn (Builder $query) => $query->whereId($get('role_id'))
+                                            )
+                                            ->whereNotIn('id', $this->submission->participants->pluck('user_id'))
+                                            ->where('given_name', 'like', "%{$search}%")
+                                            ->orWhere('family_name', 'like', "%{$search}%")
+                                            ->orWhere('email', 'like', "%{$search}%")
+                                            ->get()
+                                            ->mapWithKeys(
+                                                fn (User $user) => [
+                                                    $user->getKey() => static::renderSelectParticipant($user),
+                                                ]
+                                            )
+                                            ->toArray();
+                                    })
                                     ->columnSpan(2),
                                 Fieldset::make()
                                     ->label('Notification')
@@ -149,7 +167,8 @@ class ParticipantList extends Component implements HasForms, HasTable
                                             ->readOnly(),
                                         TinyEditor::make('message')
                                             ->minHeight(300)
-                                            ->columnSpanFull(),
+                                            ->columnSpanFull()
+                                            ->toolbarSticky(false),
                                     ]),
                                 Checkbox::make('no-notification')
                                     ->label("Don't Send Notification")
@@ -162,6 +181,21 @@ class ParticipantList extends Component implements HasForms, HasTable
                             'user_id' => $data['user_id'],
                             'role_id' => $data['role_id'],
                         ]);
+
+                        Log::make(
+                            name: 'submission',
+                            subject: $this->submission,
+                            description: __('log.participant.assigned', [
+                                'name' => $submissionParticipant->user->fullName,
+                                'role' => $submissionParticipant->role->name,
+                            ])
+                        )
+                            ->by(auth()->user())
+                            ->properties([
+                                'user_id' => $data['user_id'],
+                                'role_id' => $data['role_id'],
+                            ])
+                            ->save();
 
                         if (! $data['no-notification']) {
                             try {

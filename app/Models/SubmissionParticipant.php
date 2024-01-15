@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Enums\UserRole;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,6 +27,13 @@ class SubmissionParticipant extends Model
     public function role()
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function scopeEditor(Builder $builder)
+    {
+        $roleEditor = Role::where('name', UserRole::Editor->value)->first();
+
+        return $builder->where('role_id', $roleEditor->getKey());
     }
 
     public function submission()

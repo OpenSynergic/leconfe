@@ -14,7 +14,7 @@
                             class="btn btn-ghost btn-sm rounded-full inline-flex items-center justify-center px-4 transition-colors hover:text-primary-content focus:outline-none disabled:opacity-50 disabled:pointer-events-none group w-max"
                             :href="$item->getUrl()">
                             {{ $item->getLabel() }}
-                        </x-conference::link>
+                        </x-website::link>
                     </li>
                 @else
                     <x-website::navigation.dropdown.trigger :key="$key" :item="$item" />

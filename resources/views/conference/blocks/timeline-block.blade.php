@@ -1,6 +1,6 @@
 <div class="flex flex-col space-y-1">
     @if (count($timelines) > 0)
-        <h2 class="text-heading px-2 mb-1">Informations</h2>
+        <h2 class="text-heading px-2 mb-1">Timelines</h2>
         @foreach ($timelines as $timeline)
             <div class="{{ $timeline['timelineBackground'] }}">
                 <div class="w-full flex justify-between">
@@ -22,13 +22,13 @@
                     </div>
                 </div>
                 <div class="flex flex-col gap-2 mt-2">
-                    <h5 class="text-sm">{{ Str::words($timeline['timeline']->title, 3, '...') }}</h5>
+                    <h3 class="text-sm">{{ $timeline['timeline']->title }}</h3>
                     <span class="text-xs -mt-1 break-all">{{ $timeline['timeline']->subtitle ?? '' }}</span>
                 </div>
             </div>
         @endforeach
-        <div class="w-full flex justify-start flex pt-1">
-            <a href="{{ route('livewirePageGroup.current-conference.pages.timeline') }}"
+        <div class="w-full flex justify-start pt-1">
+            <a href="{{ route('livewirePageGroup.current-conference.pages.timelines') }}"
                 class="btn btn-primary text-xs btn-sm text-white rounded-md w-16">More</a>
         </div>
     @endif

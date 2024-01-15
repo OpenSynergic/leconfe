@@ -65,11 +65,4 @@ class RolePolicy
             return true;
         }
     }
-
-    public function assignPermissions(User $user, Role $role)
-    {
-        if ($user->can('Role:assignPermissions')) {
-            return true;
-        }
-    }
 }

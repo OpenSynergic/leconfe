@@ -4,7 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Conference\Blocks\CalendarBlock;
 use App\Conference\Blocks\CommitteeBlock;
-use App\Conference\Blocks\MenuBlock;
+use App\Conference\Blocks\InformationBlock;
 use App\Conference\Blocks\PreviousBlock;
 use App\Conference\Blocks\SubmitBlock;
 use App\Conference\Blocks\TimelineBlock;
@@ -14,11 +14,16 @@ use App\Http\Middleware\MustVerifyEmail;
 use App\Http\Middleware\Panel\PanelAuthenticate;
 use App\Http\Middleware\Panel\TenantConference;
 use App\Models\Conference;
+use App\Models\Enums\ConferenceStatus;
 use App\Models\Navigation;
+use App\Models\Site;
 use App\Panel\Resources\NavigationResource;
 use App\Panel\Resources\UserResource;
 use Carbon\Carbon;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
+use Filament\Actions\Action;
+use Filament\Actions\MountableAction;
+use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TimePicker;
@@ -31,6 +36,7 @@ use Filament\Panel;
 use Filament\PanelProvider as FilamentPanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Blade;
 use Livewire\Livewire;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
@@ -46,20 +52,10 @@ class PanelProvider extends FilamentPanelProvider
             ->id('panel')
             ->path(config('app.filament.panel_path'))
             ->maxContentWidth('full')
-            ->homeUrl(fn () => route('livewirePageGroup.website.pages.home'))
-            ->bootUsing(function () {
-                static::setupFilamentComponent();
-                Block::registerBlocks([
-                    CalendarBlock::class,
-                    TimelineBlock::class,
-                    PreviousBlock::class,
-                    SubmitBlock::class,
-                    TopicBlock::class,
-                    MenuBlock::class,
-                    CommitteeBlock::class,
-                ]);
-                Block::boot();
-            })
+            // ->spa()
+            ->homeUrl(fn () => App::getCurrentConference()->getHomeUrl())
+            ->bootUsing(fn ($panel) => $this->panelBootUsing($panel))
+            ->tenantMenu(false)
             // ->renderHook(
             //     'panels::sidebar.footer',
             //     fn () => view('panel.components.sidebar.footer')
@@ -70,6 +66,10 @@ class PanelProvider extends FilamentPanelProvider
                         @vite(['resources/panel/js/panel.js'])
                     Blade)
             )
+            ->renderHook(
+                'panels::topbar.start',
+                fn () => view('panel.hooks.topbar'),
+            )
             ->viteTheme('resources/panel/css/panel.css')
             ->tenant(Conference::class, 'path')
             ->tenantMiddleware(static::getTenantMiddleware(), true)
@@ -78,7 +78,8 @@ class PanelProvider extends FilamentPanelProvider
                     ->label('Administration')
                     ->url(fn (): string => url('administration'))
                     // ->url(fn (): string => route('filament.administration.pages.dashboard'))
-                    ->icon('heroicon-m-cog-8-tooth'),
+                    ->icon('heroicon-m-cog-8-tooth')
+                    ->hidden(fn () => ! auth()->user()->can('view', Site::class)),
             ])
             ->navigationGroups(static::getNavigationGroups())
             ->navigationItems(static::getNavigationItems())
@@ -107,6 +108,36 @@ class PanelProvider extends FilamentPanelProvider
 
         // Persistent middleware option on filament doesnt work, currently we use this workaround
         Livewire::addPersistentMiddleware(static::getTenantMiddleware());
+    }
+
+    public function panelBootUsing(Panel $panel): void
+    {
+        static::setupFilamentComponent();
+
+        // Disable form when Conference status is archived
+        ComponentContainer::configureUsing(function (ComponentContainer $componentContainer): void {
+            if (App::getCurrentConference()->status == ConferenceStatus::Archived) {
+                $componentContainer->disabled(true);
+            }
+        });
+
+        // Disable action when Conference status is archived
+        MountableAction::configureUsing(function (MountableAction $action): void {
+            if (App::getCurrentConference()->status == ConferenceStatus::Archived) {
+                $action->disabled(true);
+            }
+        });
+
+        Block::registerBlocks([
+            CalendarBlock::class,
+            TimelineBlock::class,
+            PreviousBlock::class,
+            SubmitBlock::class,
+            TopicBlock::class,
+            CommitteeBlock::class,
+            // InformationBlock::class,
+        ]);
+        Block::boot();
     }
 
     public static function getTenantMiddleware(): array
@@ -208,7 +239,7 @@ class PanelProvider extends FilamentPanelProvider
             $tinyEditor
                 ->setRelativeUrls(false)
                 ->setRemoveScriptHost(false)
-                ->toolbarSticky(true);
+                ->toolbarSticky(false);
         });
     }
 
@@ -223,7 +254,8 @@ class PanelProvider extends FilamentPanelProvider
                 ->itemType('Announcements', [])
                 ->itemType('Current Conference', [])
                 ->itemType('Login', [])
-                ->itemType('Register', []),
+                ->itemType('Register', [])
+                ->itemType('Proceeding', []),
         ];
     }
 

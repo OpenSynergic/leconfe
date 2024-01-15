@@ -6,7 +6,9 @@
 
                 <x-filament::icon icon="heroicon-m-cog-8-tooth" class="h-5 w-5" />
 
-                Administration
+                 <span class="text-gray-950 dark:text-white text-lg">
+                    {{-- Administration --}}
+                </span>
 
                 <x-filament::icon icon="heroicon-m-chevron-down" icon-alias="panels::tenant-menu.toggle-button"
                     :x-show="filament()->isSidebarCollapsibleOnDesktop() ? '$store.sidebar.isOpen' : null"
