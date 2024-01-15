@@ -7,7 +7,7 @@ use App\Facades\Block;
 use App\Models\Navigation;
 use App\Website\Blocks\CalendarBlock;
 use App\Website\Blocks\LoginBlock;
-use App\Website\Blocks\ScheduleBlock;
+use App\Website\Blocks\UpcomingConferenceBlock;
 use App\Website\Blocks\SearchBlock;
 use App\Website\Blocks\TimelineBlock;
 use App\Website\Blocks\TopicBlock;
@@ -78,7 +78,7 @@ class AdministrationPanelProvider extends FilamentPanelProvider
             SearchBlock::class,
             LoginBlock::class,
             CalendarBlock::class,
-            ScheduleBlock::class,
+            UpcomingConferenceBlock::class,
             TopicBlock::class,
             TimelineBlock::class,
         ]);

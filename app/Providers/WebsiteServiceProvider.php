@@ -7,7 +7,7 @@ use App\Facades\Block;
 use App\Http\Middleware\SetupDefaultData;
 use App\Website\Blocks\CalendarBlock;
 use App\Website\Blocks\LoginBlock;
-use App\Website\Blocks\ScheduleBlock;
+use App\Website\Blocks\UpcomingConferenceBlock;
 use App\Website\Blocks\SearchBlock;
 use App\Website\Blocks\TopicBlock;
 use Illuminate\Support\Facades\Blade;
@@ -36,7 +36,7 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
                     SearchBlock::class,
                     LoginBlock::class,
                     CalendarBlock::class,
-                    ScheduleBlock::class,
+                    UpcomingConferenceBlock::class,
                     TopicBlock::class,
                 ]);
                 Block::boot();
