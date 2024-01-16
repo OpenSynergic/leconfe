@@ -90,6 +90,9 @@
         "Venue:update",
         "Venue:view",
         "Venue:viewAny",
+        "Plugin:create",
+        "Plugin:delete",
+        "Plugin:viewAny",
         "Workflow:update"
     ],
     "Conference Manager": [

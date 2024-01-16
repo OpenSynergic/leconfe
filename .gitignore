@@ -6,6 +6,7 @@
 /storage/*.key
 /storage/installed
 /vendor
+/plugins
 .env
 .env.backup
 .env.bak

@@ -200,6 +200,7 @@ return [
         App\Providers\WebsiteServiceProvider::class,
         App\Providers\ConferenceServiceProvider::class,
         App\Providers\FlareServiceProvider::class,
+        App\Providers\PluginServiceProvider::class,
     ],
 
     /*

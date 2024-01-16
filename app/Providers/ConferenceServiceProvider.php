@@ -10,6 +10,7 @@ use App\Conference\Blocks\TimelineBlock;
 use App\Conference\Blocks\TopicBlock;
 use App\Conference\Pages\Home;
 use App\Facades\Block;
+use App\Http\Middleware\BootPluginMiddleware;
 use App\Http\Middleware\IdentifyArchiveConference;
 use App\Http\Middleware\IdentifyCurrentConference;
 use App\Http\Middleware\SetupDefaultData;
@@ -78,6 +79,7 @@ class ConferenceServiceProvider extends ServiceProvider
             ->middleware([
                 IdentifyCurrentConference::class,
                 SetupDefaultData::class,
+                // BootPluginMiddleware::class,
             ], true);
     }
 
@@ -88,6 +90,7 @@ class ConferenceServiceProvider extends ServiceProvider
             ->middleware([
                 IdentifyArchiveConference::class,
                 SetupDefaultData::class,
+                // BootPluginMiddleware::class,
             ], true)
             ->path('archive/{conference}');
     }
@@ -99,6 +102,7 @@ class ConferenceServiceProvider extends ServiceProvider
             ->middleware([
                 IdentifyArchiveConference::class,
                 SetupDefaultData::class,
+                // BootPluginMiddleware::class,
             ], true)
             ->path('archive/{conference}');
     }

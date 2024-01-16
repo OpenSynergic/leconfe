@@ -9,6 +9,7 @@ use App\Models\Conference;
 use App\Models\Navigation;
 use App\Models\ParticipantPosition;
 use App\Models\PaymentItem;
+use App\Models\PluginSetting;
 use App\Models\Scopes\ConferenceScope;
 use App\Models\Site;
 use App\Models\StaticPage;
@@ -68,6 +69,7 @@ class Application extends LaravelApplication
             StaticPage::class,
             Timeline::class,
             PaymentItem::class,
+            PluginSetting::class,
         ] as $model) {
             $model::addGlobalScope(new ConferenceScope);
         }

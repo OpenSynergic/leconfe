@@ -37,6 +37,20 @@ return [
             'visibility' => 'private',
         ],
 
+        'plugins-tmp' => [
+            'driver' => 'local',
+            'root' => storage_path('app/local/plugins-tmp'),
+            'throw' => false,
+            'visibility' => 'private',
+        ],
+
+        'plugins' => [
+            'driver' => 'local',
+            'root' => base_path('plugins'),
+            'throw' => false,
+            'visibility' => 'private',
+        ],
+
         'private-files' => [
             'driver' => 'local',
             'root' => storage_path('app/private/files'),
@@ -46,7 +60,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
             'throw' => false,
         ],
@@ -54,7 +68,7 @@ return [
         'media-library' => [
             'driver' => 'local',
             'root' => storage_path('app/public/media'),
-            'url' => env('APP_URL').'/storage/media',
+            'url' => env('APP_URL') . '/storage/media',
             'visibility' => 'public',
             'throw' => false,
         ],

@@ -10,6 +10,7 @@ use App\Conference\Blocks\SubmitBlock;
 use App\Conference\Blocks\TimelineBlock;
 use App\Conference\Blocks\TopicBlock;
 use App\Facades\Block;
+use App\Http\Middleware\BootPluginMiddleware;
 use App\Http\Middleware\MustVerifyEmail;
 use App\Http\Middleware\Panel\PanelAuthenticate;
 use App\Http\Middleware\Panel\TenantConference;
@@ -144,6 +145,7 @@ class PanelProvider extends FilamentPanelProvider
     {
         return [
             TenantConference::class,
+            BootPluginMiddleware::class,
         ];
     }
 
