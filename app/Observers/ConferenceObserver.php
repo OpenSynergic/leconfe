@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Actions\Participants\ParticipantPositionPopulateDefaultDataAction;
+use App\Facades\Plugin;
 use App\Models\Conference;
 use App\Models\Navigation;
 use Illuminate\Support\Str;
@@ -64,6 +65,8 @@ class ConferenceObserver
         $conference->setMeta('page_footer', view('examples.footer')->render());
         $conference->setMeta('workflow.payment.supported_currencies', ['usd']);
         $conference->save();
+
+        Plugin::installDefaultPlugins($conference);
     }
 
     /**

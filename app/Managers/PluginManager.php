@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\File;
 use App\Models\Plugin as ModelsPlugin;
 use Illuminate\Support\Facades\Storage;
 use App\Classes\Plugin as ClassesPlugin;
+use App\Models\Conference;
 use Illuminate\Contracts\Filesystem\Filesystem as FilesystemContract;
 use Illuminate\Filesystem\Filesystem;
 
@@ -29,9 +30,11 @@ class PluginManager
         $this->bootPlugins();
     }
 
-    public function getDisk(): FilesystemContract
+    public function getDisk(?Conference $conference = null): FilesystemContract
     {
-        $pluginsPath = config('filesystems.disks.plugins.root') . DIRECTORY_SEPARATOR . $this->getCurrentConferenceId();
+        $conferenceId = $conference?->getKey() ?? $this->getCurrentConferenceId();
+
+        $pluginsPath = config('filesystems.disks.plugins.root') . DIRECTORY_SEPARATOR . $conferenceId;
 
         if (!File::isDirectory($pluginsPath)) {
             File::makeDirectory($pluginsPath, 0755, true);
@@ -300,5 +303,28 @@ class PluginManager
         $pluginsDisk = $this->getDisk();
 
         $pluginsDisk->deleteDirectory($pluginPath);
+    }
+
+    public function installDefaultPlugins(Conference $conference)
+    {
+        $defaultPluginsPath = base_path('stubs' . DIRECTORY_SEPARATOR . 'plugins');
+
+        $pluginsDisk = $this->getDisk($conference);
+
+        foreach (File::directories($defaultPluginsPath) as $pluginPath) {
+            $pluginName = basename($pluginPath);
+
+            if ($pluginsDisk->exists($pluginName)) {
+                continue;
+            }
+
+            $this->validatePlugin($pluginPath);
+
+            $plugin = $this->loadPlugin($pluginPath);
+            $plugin->boot();
+
+            $fileSystem = new Filesystem();
+            $fileSystem->copyDirectory($pluginPath, $pluginsDisk->path($pluginName));
+        }
     }
 }
