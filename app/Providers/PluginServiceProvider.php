@@ -10,20 +10,14 @@ use Illuminate\Support\ServiceProvider;
 
 class PluginServiceProvider extends ServiceProvider
 {
-
-    //  TODO : for this time plugin just work after installation was succesfull, fix it
     /**
      * Register services.
      */
     public function register(): void
     {
-
-
         $this->app->scoped('plugin', function (): PluginManager {
             return new PluginManager();
         });
-
-        Plugin::boot();
     }
 
 
@@ -32,6 +26,5 @@ class PluginServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
     }
 }

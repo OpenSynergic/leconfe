@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Conference;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,15 +12,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('plugins', function (Blueprint $table) {
+        Schema::create('plugin_settings', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->longText('description');
-            $table->string('author');
-            $table->string('version');
-            $table->string('path');
-            $table->boolean('is_active');
+            $table->foreignIdFor(Conference::class)->constrained();
+            $table->string('plugin');
+            $table->string('key');
+            $table->text('value')->nullable();
             $table->timestamps();
+
+            $table->unique(['conference_id', 'plugin', 'key']);
         });
     }
 

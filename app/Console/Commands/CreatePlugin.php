@@ -2,10 +2,16 @@
 
 namespace App\Console\Commands;
 
+use App\Facades\Plugin;
+use App\Models\Conference;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Symfony\Component\Yaml\Yaml;
+
+use function Laravel\Prompts\select;
+use function Laravel\Prompts\text;
 
 class CreatePlugin extends Command implements PromptsForMissingInput
 {
@@ -14,7 +20,7 @@ class CreatePlugin extends Command implements PromptsForMissingInput
      *
      * @var string
      */
-    protected $signature = 'make:plugin {name} {author}';
+    protected $signature = 'plugin:create';
 
     /**
      * The console command description.
@@ -28,94 +34,69 @@ class CreatePlugin extends Command implements PromptsForMissingInput
      */
     public function handle()
     {
-        $name = Str::studly($this->argument('name'));
+        $pluginName = text(
+            label: 'What is the plugin name?',
+            required: true
+        );
 
+        $pluginFolder = Str::studly($pluginName);
 
-        $author = $this->argument('author');
+        $author = text(
+            label: 'What is the author name?',
+            required: true
+        );
 
+        $description = text(
+            label: 'What is the plugin description?',
+            required: false,
+        );
 
-        $pluginDirectory = base_path('plugins' . DIRECTORY_SEPARATOR . $name);
+        $conferenceId = select(
+            label: "Where the plugin will be installed?",
+            options: Conference::all()
+                ->pluck('name', 'id')
+                ->prepend('Website', 0),
+        );
 
-
-        if (!File::exists(base_path('plugins'))) {
-            File::makeDirectory(base_path('plugins'));
+        if($conferenceId){
+            app()->setCurrentConference(Conference::find($conferenceId));
         }
 
+        $pluginDisk = Plugin::getDisk();
 
-        if (!File::exists($pluginDirectory)) {
-            File::makeDirectory(base_path("/plugins/{$name}"));
 
-            File::put(base_path("/plugins/{$name}/index.php"), "<?php\n\nuse Plugins\\{$name}\\{$name};\n\nreturn new {$name}();");
+        if (!File::exists($pluginDisk->path($pluginFolder))) {
+            File::makeDirectory($pluginDisk->path("{$pluginFolder}"));
 
-            File::put(base_path("/plugins/{$name}/{$name}.php"), $this->template($name));
+            File::put($pluginDisk->path($pluginFolder . DIRECTORY_SEPARATOR . 'index.php'), $this->template());
 
-            File::put(base_path("/plugins/{$name}/about.json"), $this->about($name, $author));
+            File::put($pluginDisk->path($pluginFolder . DIRECTORY_SEPARATOR . "index.yaml"), Yaml::dump([
+                'name' => $pluginName,
+                'folder' => $pluginFolder,
+                'author' => $author,
+                'description' => $description,
+                'version' => '1.0.0.0',
+            ]));
 
-            return $this->info("Plugin {$name} created succesfully!");
+            return $this->info("Plugin {$pluginFolder} created succesfully!");
         }
 
-        return $this->info("Plugin {$name} already exists in " . base_path('plugins'));
+        return $this->info("Plugin {$pluginName} already exists in " . base_path('plugins'));
     }
 
-    public function template($name): string
+    public function template(): string
     {
         return <<<EOD
         <?php
 
-        namespace Plugins\\{$name};
-
         use App\Classes\Plugin;
 
-        class {$name} extends Plugin
+        return new class extends Plugin
         {
-            public \$aboutPlugin;
-
             public function boot()
             {
-                // Stage is yours
             }
-
-            public function onActivation()
-            {
-                // Runs on plugin activation
-            }
-
-            public function onDeactivation()
-            {
-                // Runs on plugin deactivation
-            }
-
-            public function onInstall()
-            {
-                // Runs on plugin installation
-            }
-
-            public function onUninstall()
-            {
-                // Runs on plugin uninstallation
-            }
-        }
+        };
         EOD;
-    }
-
-    public function about($name, $author): string
-    {
-        return <<<EOD
-        {
-            "plugin_name": "{$name}",
-            "author": "{$author}",
-            "description": "",
-            "version": "1.0",
-            "is_active": false
-        }
-        EOD;
-    }
-
-    protected function promptForMissingArgumentsUsing()
-    {
-        return [
-            'name' => 'Which name of plugin?',
-            'author' => 'Which name of author?'
-        ];
     }
 }

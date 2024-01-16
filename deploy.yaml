@@ -1,0 +1,50 @@
+import: 
+  - recipe/laravel.php
+  - contrib/php-fpm.php
+
+config:
+  repository: 'https://github.com/OpenSynergic/leconfe.git'
+  application: 'leconfe'
+  php_fpm_version: "8.1"
+  keep_releases: 3
+
+
+hosts:
+  demo:
+    hostname: 194.233.92.195
+    remote_user: leconfe
+    deploy_path: '/home/leconfe.com/domains/demo.leconfe.com/public_html'
+    shellCommand : 'bash -ls'
+
+tasks:
+  deploy:
+    - deploy:prepare
+    - deploy:vendors
+    - artisan:optimize:clear
+    - artisan:storage:link
+    - artisan:view:cache
+    - artisan:config:cache
+    - artisan:optimize
+    - artisan:down
+    - artisan:migrate
+    - pnpm:build
+    - artisan:up
+    - deploy:publish
+    - php-fpm:reload
+    - supervisor:restart
+  build:
+    - run: 'cd {{release_path}} && npm run build'
+  apache:restart:
+    - run: "sudo systemctl reload apache2"
+  nginx:restart:
+    - run: "sudo systemctl reload nginx"
+  supervisor:restart:
+    - run: "sudo systemctl reload supervisor"
+  pnpm:build:
+    - run: "cd {{release_path}} && pnpm install && pnpm run build"
+  ssl:symlink:
+    - run: "ln -s {{base_deploy_path}}/public_html/.well-known {{base_deploy_path}}/public_html/current/public/.well-known"
+
+  
+after:
+  deploy:failed: deploy:unlock

@@ -4,269 +4,301 @@ namespace App\Managers;
 
 use Exception;
 use ZipArchive;
-use Illuminate\Support\Facades\DB;
+use App\Application;
+use Illuminate\Support\Str;
+use App\Models\PluginSetting;
+use Symfony\Component\Yaml\Yaml;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
-use Illuminate\Filesystem\Filesystem;
 use App\Models\Plugin as ModelsPlugin;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Storage;
 use App\Classes\Plugin as ClassesPlugin;
+use Illuminate\Contracts\Filesystem\Filesystem as FilesystemContract;
+use Illuminate\Filesystem\Filesystem;
 
 class PluginManager
 {
-    protected array $plugins = [];
+    protected Collection $registeredPlugins;
+
+    protected Collection $bootedPlugins;
+
+    protected bool $isBooted = false;
 
     public function boot()
     {
-        $this->runPlugins();
+        $this->bootPlugins();
     }
 
-    public function getPlugins(): array
+    public function getDisk(): FilesystemContract
     {
-        return $this->plugins;
-    }
+        $pluginsPath = config('filesystems.disks.plugins.root') . DIRECTORY_SEPARATOR . $this->getCurrentConferenceId();
 
-    public function getPlugin(string $pluginName)
-    {
-        return $this->plugins[$pluginName] ?? false;
-    }
-
-    public function pluginActivation(string $pluginPath): void
-    {
-        $plugin = $this->readPlugin($pluginPath);
-        $plugin->onActivation();
-    }
-
-    public function pluginDeactivation(string $pluginPath): void
-    {
-        $plugin = $this->readPlugin($pluginPath);
-        $plugin->onDeactivation();
-    }
-
-    protected function getPluginFullPath($pluginPath): string
-    {
-        return base_path($pluginPath);
-    }
-
-    protected function extractPlugin(string $filePath, string $to): bool
-    {
-        try {
-            $zip = new ZipArchive();
-        } catch (\Throwable $th) {
-            throw new Exception("PHP zip extension is not installed");
+        if (!File::isDirectory($pluginsPath)) {
+            File::makeDirectory($pluginsPath, 0755, true);
         }
 
-
-        if (pathinfo($filePath)['extension'] != 'zip') {
-            File::delete($filePath);
-            throw new Exception("Plugin extension must be .zip");
-        }
-
-
-        if ($zip->open($filePath) !== true) {
-            File::delete($filePath);
-            throw new Exception("Cannot open the zip, please check the zip file");
-        }
-
-        try {
-
-            $extracted = $zip->extractTo(storage_path($to));
-
-            $zip->close();
-
-
-            File::delete($filePath);
-
-            return $extracted;
-        } catch (\Throwable $th) {
-            File::delete($filePath);
-            throw new Exception("Cannot extract the plugin, please check the zip file");
-        }
+        return Storage::build([
+            'driver' => 'local',
+            'root' => $pluginsPath,
+            'throw' => false,
+            'visibility' => 'private',
+        ]);
     }
 
-
-    public function pluginInstall(string $file): void
+    public function getTempDisk()
     {
-
-        $storagePlugin = 'app' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR;
-
-        $filePath = storage_path($storagePlugin . $file);
-
-        $temp = $storagePlugin . '.temp';
-
-        $this->extractPlugin($filePath, $temp);
-
-        $plugin = scandir(storage_path($temp));
-
-        $pluginPath = 'plugins' . DIRECTORY_SEPARATOR . $plugin[2];
-
-        $filesystem = new Filesystem();
-
-        $filesystem->moveDirectory(storage_path($temp . DIRECTORY_SEPARATOR . $plugin[2]), $this->getPluginFullPath($pluginPath), true);
-
-        $currentPlugin = $this->readPlugin($pluginPath);
-
-        $pluginInfo = $currentPlugin->aboutPlugin;
-
-
-        ModelsPlugin::updateOrCreate(
-            [
-                'name' => $pluginInfo['plugin_name'],
-                'author' => $pluginInfo['author'],
-            ],
-            [
-                'description' => $pluginInfo['description'],
-                'version' => $pluginInfo['version'],
-                'path' => $pluginPath,
-                'is_active' => false,
-            ]
-        );
-        $currentPlugin->onInstall();
+        return Storage::disk('plugins-tmp');
     }
 
-    protected function readPlugin(string $pluginPath)
+    public function getCurrentConferenceId()
     {
-        $pluginFullPath = $this->getPluginFullPath($pluginPath);
+        return app()->getCurrentConference()?->getKey() ?? Application::CONTEXT_WEBSITE;
+    }
 
-        $pluginIndex = base_path($pluginPath . DIRECTORY_SEPARATOR . 'index.php');
+    public function getPluginFullPath($path)
+    {
+        return $this->getDisk()->path($path);
+    }
 
-        if (!file_exists($pluginIndex)) {
-            $this->handleErrorAndCleanup($pluginFullPath, "index.php is not found in {$pluginPath}.");
-        }
+    protected function registerPlugins(): void
+    {
+        $pluginsDisk = $this->getDisk();
+        $this->registeredPlugins = collect($pluginsDisk->directories())
+            ->filter(function ($pluginDir) use ($pluginsDisk) {
 
-        $currentPlugin = require $pluginIndex;
+                try {
+                    if (Str::contains($pluginDir, ' ')) {
+                        throw new Exception("Plugin folder name ({$pluginDir}) cannot contain spaces");
+                    }
 
-        if (!$currentPlugin instanceof ClassesPlugin) {
-            $this->handleErrorAndCleanup($pluginFullPath, "index.php in {$pluginPath} must return an instance of App\\Classes\\Plugin");
-        }
+                    if (!$pluginsDisk->exists($pluginDir . DIRECTORY_SEPARATOR . 'index.yaml')) {
+                        throw new Exception("Plugin ({$pluginDir}) is missing index.yaml file");
+                    }
 
-        $validValues = ['plugin_name', 'author', 'description', 'version', 'is_active'];
+                    if (!$pluginsDisk->exists($pluginDir . DIRECTORY_SEPARATOR . 'index.php')) {
+                        throw new Exception("Plugin ({$pluginDir}) is missing index.php file");
+                    }
+                } catch (\Throwable $th) {
+                    if (!app()->isProduction()) {
+                        throw $th;
+                    }
 
-        try {
-            $about = File::json(base_path($pluginPath . DIRECTORY_SEPARATOR . 'about.json'));
-
-            foreach ($validValues as $validValue) {
-                if (!array_key_exists($validValue, $about)) {
-                    $this->handleErrorAndCleanup($pluginFullPath, "about.json in {$pluginPath} is not valid, key \"{$validValue}\" is not found.");
+                    return false;
                 }
-            }
-        } catch (\Throwable $th) {
-            $this->handleErrorAndCleanup($pluginFullPath, "about.json is not found in {$pluginPath}.");
+
+                return true;
+            })
+            ->mapWithKeys(fn ($pluginDir) => [$pluginDir => Yaml::parseFile($pluginsDisk->path($pluginDir . DIRECTORY_SEPARATOR . 'index.yaml'))]);
+    }
+
+    public function getPluginInfo($path)
+    {
+        return $this->getRegisteredPlugins()->get($path);
+    }
+
+    protected function bootPlugins(): void
+    {
+        if ($this->isBooted) {
+            return;
         }
 
-        $currentPlugin->aboutPlugin = $about;
+        $this->bootedPlugins = $this->getRegisteredPlugins()
+            ->filter(fn ($pluginInfo, $pluginPath) => $this->getSetting($pluginPath, 'enabled') && $this->loadPlugin($this->getDisk()->path($pluginPath), false))
+            ->mapWithKeys(fn ($pluginInfo, $pluginPath) => [$pluginPath => $this->bootPlugin($this->getDisk()->path($pluginPath))]);
 
-        return $currentPlugin;
+        $this->isBooted = true;
     }
 
-    public function pluginUninstall(ModelsPlugin $record): void
+    public function bootPlugin($pluginPath): ?ClassesPlugin
     {
-        $plugin = $this->readPlugin($record->path);
+        $plugin = require $pluginPath . DIRECTORY_SEPARATOR . 'index.php';
+        $plugin->setPluginPath($pluginPath);
+        $plugin->boot();
 
-        $plugin->onUninstall();
-
-        $filesystem = new Filesystem();
-
-        $filesystem->deleteDirectory($this->getPluginFullPath($record->path));
-
-        $record->delete();
+        return $plugin;
     }
 
-    protected function runPlugins(): void
-    {
-        $this->isDatabaseConnected() && $this->pluginTableIsExist() ? $this->getPluginFromDatabase() : $this->getPluginFromDirectory();
-    }
-
-
-    public function scanPlugins()
-    {
-        $pluginsList = array_diff(scandir(base_path('plugins')), ['.', '..', '.temp']);
-
-        $pluginDir = 'plugins' . DIRECTORY_SEPARATOR;
-
-        foreach ($pluginsList as $plugin) {
-
-            $pluginInstance = $this->readPlugin($pluginDir . $plugin);
-
-            $about = $pluginInstance->aboutPlugin;
-
-            ModelsPlugin::updateOrCreate(
-                [
-                    'name' => $about['plugin_name'],
-                    'author' => $about['author'],
-                ],
-                [
-                    'description' => $about['description'],
-                    'version' => $about['version'],
-                    'path' => $pluginDir . $plugin,
-                    'is_active' => false,
-                ]
-            );
-        }
-    }
-
-
-    protected function handleErrorAndCleanup($pluginFullPath, $errorMessage)
-    {
-        if (app()->isProduction()) {
-            File::isDirectory($pluginFullPath) ? File::deleteDirectory($pluginFullPath) : File::delete($pluginFullPath);
-        }
-        throw new Exception($errorMessage);
-    }
-
-
-    protected function getPluginFromDirectory(): void
-    {
-
-        if (!File::exists(base_path('plugins'))) {
-            File::makeDirectory(base_path('plugins'));
-        }
-
-        $pluginsList = array_diff(scandir(base_path('plugins')), ['.', '..', '.temp']);
-
-        $pluginDir = 'plugins' . DIRECTORY_SEPARATOR;
-
-        foreach ($pluginsList as $plugin) {
-
-            $pluginInstance = $this->readPlugin($pluginDir . $plugin);
-
-            $pluginInfo = $pluginInstance->aboutPlugin;
-
-            $this->plugins[$pluginInfo['plugin_name']] = $pluginInstance;
-
-            $this->plugins[$pluginInfo['plugin_name']]->boot();
-        }
-    }
-
-    protected function getPluginFromDatabase(): void
-    {
-        $plugins = DB::table('plugins')->where('is_active', true)->get(); // connection() is yet running on register(), cannot querying using Model::class
-
-        foreach ($plugins as $plugin) {
-            if ($pluginInstance = $this->readPlugin($plugin->path)) {
-
-                $pluginInfo = $pluginInstance->aboutPlugin;
-
-                $this->plugins[$pluginInfo['plugin_name']] = $pluginInstance;
-
-                $this->plugins[$pluginInfo['plugin_name']]->boot();
-            }
-        }
-    }
-
-    protected function isDatabaseConnected(): bool
+    protected function loadPlugin(string $pluginPath, $throwError = true) : mixed
     {
         try {
-            DB::connection()->getPdo();
+            $plugin = require $pluginPath . DIRECTORY_SEPARATOR . 'index.php';
+   
+            if (!$plugin instanceof ClassesPlugin) {
+                throw new Exception("Plugin must return an instance of " . ClassesPlugin::class);
+            }
         } catch (\Throwable $th) {
+            if ($throwError) throw $th;
+
             return false;
         }
+
+        return $plugin;
+    }
+
+    public function getRegisteredPlugins(): Collection
+    {
+        if (empty($this->registeredPlugins)) {
+            $this->registerPlugins();
+        }
+
+        return $this->registeredPlugins;
+    }
+
+    public function getPlugins()
+    {
+        if (empty($this->bootedPlugins)) {
+            $this->boot();
+        }
+
+        return $this->bootedPlugins;
+    }
+
+    public function getPlugin($path, $onlyEnabled = true)
+    {
+        $plugin = $this->getPlugins()->get($path);
+
+        if ($plugin || $onlyEnabled) {
+            return $plugin;
+        }
+
+        return $this->bootPlugin($path);
+    }
+
+    public function enable($pluginPath, $enable = true)
+    {
+        $this->updateSetting($pluginPath, 'enabled', $enable);
+    }
+
+    public function disable($pluginPath)
+    {
+        $this->enable($pluginPath, false);
+    }
+
+    public function getSetting(string $plugin, $key): mixed
+    {
+        return once(fn () => PluginSetting::query()
+            ->where('plugin', $plugin)
+            ->where('key', $key)
+            ->value('value'));
+    }
+
+    public function updateSetting(string $plugin, $key, $value): mixed
+    {
+        // Flush cache
+        \Spatie\Once\Cache::getInstance()->flush();
+        (new PluginSetting())->flushCache();
+
+        return PluginSetting::updateOrInsert([
+            'plugin' => $plugin, 
+            'key' => $key, 
+            'conference_id' => app()->getCurrentConference()?->getKey() ?? Application::CONTEXT_WEBSITE,
+        ], ['value' => $value]);
+    }
+
+    public function cleanTempPlugins()
+    {
+        $this->getTempDisk()->deleteDirectory('');
+    }
+
+    public function install(string $file)
+    {
+        $pluginTempDisk = $this->getTempDisk();
+
+        if (!$folderName = $this->extractToTempPlugin($file)) {
+            throw new Exception("Cannot extract the plugin, please check the zip file");
+        }
+
+        $this->validatePlugin($pluginTempDisk->path($folderName));
+
+        try {
+            $plugin = $this->loadPlugin($pluginTempDisk->path($folderName));
+            $plugin->boot();
+        } catch (\Throwable $th) {
+            $pluginTempDisk->deleteDirectory($folderName);
+
+            throw $th;
+        }
+
+        $fileSystem = new Filesystem();
+        $fileSystem->moveDirectory($pluginTempDisk->path($folderName), $this->getDisk()->path($folderName), true);
 
         return true;
     }
 
-    protected function pluginTableIsExist(): bool
+    public function validatePlugin(string $pluginPath)
     {
-        return Schema::hasTable('plugins');
+        if (!file_exists($pluginPath)) {
+            throw new Exception("Plugin {$pluginPath} not found");
+        }
+
+        $pluginName = basename($pluginPath);
+
+        if (Str::contains($pluginPath, ' ')) {
+            throw new Exception("Plugin folder name ({$pluginName}) cannot contain spaces");
+        }
+
+        if (!file_exists($pluginPath . DIRECTORY_SEPARATOR . 'index.yaml')) {
+            throw new Exception("Plugin ({$pluginName}) is missing index.yaml file");
+        }
+
+        if (!file_exists($pluginPath . DIRECTORY_SEPARATOR . 'index.php')) {
+            throw new Exception("Plugin ({$pluginName}) is missing index.php file");
+        }
+    }
+
+    protected function extractToTempPlugin(string $filePath): string
+    {
+        try {
+            if (!class_exists('ZipArchive')) {
+                throw new Exception('Please Install PHP Zip Extension');
+            }
+
+            if (!file_exists($filePath)) {
+                throw new Exception("File {$filePath} not found");
+            }
+
+            if (pathinfo($filePath)['extension'] != 'zip') {
+                throw new Exception("Plugin extension must be .zip");
+            }
+
+            $zip = new ZipArchive();
+            if ($zip->open($filePath) !== true) {
+                throw new Exception("Cannot open the zip, please check the zip file");
+            }
+
+            $pluginInfo = null;
+
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                $filename = $zip->getNameIndex($i);
+                if(!Str::contains($filename, 'index.yaml')) continue;
+
+                $pluginInfo = Yaml::parse($zip->getFromIndex($i));
+            }
+
+            if (!$pluginInfo) {
+                throw new Exception("Plugin does not contain index.yaml file");
+            }
+
+            if(!$zip->extractTo($this->getTempDisk()->path(''))){
+                throw new Exception("Cannot extract the zip, please check the zip file");
+            }
+
+            $zip->close();
+
+            if (!file_exists($this->getTempDisk()->path($pluginInfo['folder']))) {
+                throw new Exception("Plugin must contain a folder with the same name as the plugin folder name");
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+
+        return $pluginInfo['folder'];
+    }
+
+    public function uninstall(string $pluginPath): void
+    {
+        $pluginsDisk = $this->getDisk();
+
+        $pluginsDisk->deleteDirectory($pluginPath);
     }
 }

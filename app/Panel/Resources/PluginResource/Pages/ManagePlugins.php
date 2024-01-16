@@ -3,14 +3,11 @@
 namespace App\Panel\Resources\PluginResource\Pages;
 
 use App\Facades\Plugin;
-use App\Models\Plugin as PluginModel;
 use App\Panel\Resources\PluginResource;
 use Filament\Actions;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ManageRecords;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class ManagePlugins extends ManageRecords
 {
@@ -19,25 +16,37 @@ class ManagePlugins extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('scan_plugins')
-                ->link()
-                ->icon('heroicon-o-arrow-path')
-                ->action(function () {
-                    Plugin::scanPlugins();
+            Actions\Action::make('add-plugin')
+                ->label('Add new')
+                ->modalHeading('Add new Plugin')
+                ->form([
+                    FileUpload::make('file')
+                        ->disk('plugins-tmp')
+                        ->acceptedFileTypes(['application/zip'])
+                ])
+                ->action(function (array $data) {
+                    
+                    try {
+                        Plugin::install(Plugin::getTempDisk()->path($data['file']));
+                    } catch (\Throwable $th) {
+                        Notification::make('install-failed')
+                            ->danger()
+                            ->title('Install failed')
+                            ->body($th->getMessage())
+                            ->send();
+                        return;
+                    } finally {
+                        Plugin::getTempDisk()->delete($data['file']);
+                    }
+                    
 
-                    Notification::make()
-                        ->title('Successfully scanned')
-                        ->body('New plugins should be now listed')
+                    Notification::make('install-success')
+                        ->title('Install success')
                         ->success()
+                        ->body('Plugin installed successfully')
                         ->send();
-                }),
-            Actions\CreateAction::make()
-                ->using(function (array $data) {
-                    Plugin::pluginInstall($data['file']);
                 })
-                ->modalSubmitActionLabel('Add')
-                ->successNotification(null)
-                ->createAnother(false),
+                ->modalSubmitActionLabel('Submit'),
         ];
     }
 }
