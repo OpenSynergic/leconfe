@@ -4,14 +4,9 @@ namespace App\Panel\Resources;
 
 use App\Facades\Plugin as FacadesPlugin;
 use App\Panel\Resources\PluginResource\Pages;
-use App\Panel\Resources\PluginResource\RelationManagers;
 use App\Models\Plugin;
-use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Form;
-use Filament\Notifications\Notification;
+use Filament\Resources\Components\Tab;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
@@ -19,7 +14,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class PluginResource extends Resource
 {
@@ -34,36 +28,22 @@ class PluginResource extends Resource
         return static::getModel()::query();
     }
 
-    // public static function form(Form $form): Form
-    // {
-    //     return $form
-    //         ->schema([
-    //             Grid::make(1)
-    //                 ->schema([
-    //                     FileUpload::make('file')
-    //                         ->disk('plugins-tmp')
-    //                         ->acceptedFileTypes(['application/zip'])
-    //                         ->preserveFilenames()
-    //                 ])
-    //         ]);
-    // }
-
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
                 TextColumn::make('name')
                     ->searchable()
-                    ->weight(fn(Plugin $record) => FacadesPlugin::getSetting($record->id, 'enabled') ? FontWeight::SemiBold : FontWeight::Light)
+                    ->weight(fn (Plugin $record) => FacadesPlugin::getSetting($record->id, 'enabled') ? FontWeight::SemiBold : FontWeight::Light)
                     ->wrap()
-                    ->description(fn(Plugin $record) => $record->description),
+                    ->description(fn (Plugin $record) => $record->description),
                 TextColumn::make('author'),
                 ToggleColumn::make('enabled')
                     ->label('Enabled')
-                    ->getStateUsing(fn(Plugin $record)=> FacadesPlugin::getSetting($record->id, 'enabled'))
+                    ->getStateUsing(fn (Plugin $record) => FacadesPlugin::getSetting($record->id, 'enabled'))
                     ->updateStateUsing(function (Plugin $record, $state) {
                         FacadesPlugin::enable($record->id, $state);
-                        
+
                         $record->enabled = $state;
 
                         return $state;
@@ -73,12 +53,26 @@ class PluginResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\DeleteAction::make()
-                    ->action(function (Plugin $record) {
-                        FacadesPlugin::uninstall($record->id);
-                    }),
+                Tables\Actions\ActionGroup::make([
+                    // Tables\Actions\Action::make('upgrade-plugin')
+                    //     ->action(function (Plugin $record, array $data) {
+                    //         FacadesPlugin::upgrade($record, $data['file']);
+                    //     })
+                    //     ->color('primary')
+                    //     ->icon('heroicon-o-arrow-up-circle')
+                    //     ->form([
+                    //         FileUpload::make('file')
+                    //             ->disk('plugins-tmp')
+                    //             ->required()
+                    //             ->acceptedFileTypes(['application/zip'])
+                    //     ]),
+                    Tables\Actions\DeleteAction::make()
+                        ->action(function (Plugin $record) {
+                            FacadesPlugin::uninstall($record->id);
+                        }),
+                ])
                 // TODO : Add actions based on plugin. Currently there's no way to create a dinamically action
-                    
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

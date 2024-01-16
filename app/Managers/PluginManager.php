@@ -121,11 +121,11 @@ class PluginManager
         return $plugin;
     }
 
-    protected function loadPlugin(string $pluginPath, $throwError = true) : mixed
+    protected function loadPlugin(string $pluginPath, $throwError = true): mixed
     {
         try {
             $plugin = require $pluginPath . DIRECTORY_SEPARATOR . 'index.php';
-   
+
             if (!$plugin instanceof ClassesPlugin) {
                 throw new Exception("Plugin must return an instance of " . ClassesPlugin::class);
             }
@@ -192,8 +192,8 @@ class PluginManager
         (new PluginSetting())->flushCache();
 
         return PluginSetting::updateOrInsert([
-            'plugin' => $plugin, 
-            'key' => $key, 
+            'plugin' => $plugin,
+            'key' => $key,
             'conference_id' => app()->getCurrentConference()?->getKey() ?? Application::CONTEXT_WEBSITE,
         ], ['value' => $value]);
     }
@@ -210,6 +210,10 @@ class PluginManager
         if (!$folderName = $this->extractToTempPlugin($file)) {
             throw new Exception("Cannot extract the plugin, please check the zip file");
         }
+
+        // if ($this->getDisk()->exists($folderName)) {
+        //     throw new Exception("Plugin already installed");
+        // }
 
         $this->validatePlugin($pluginTempDisk->path($folderName));
 
@@ -273,7 +277,7 @@ class PluginManager
 
             for ($i = 0; $i < $zip->numFiles; $i++) {
                 $filename = $zip->getNameIndex($i);
-                if(!Str::contains($filename, 'index.yaml')) continue;
+                if (!Str::contains($filename, 'index.yaml')) continue;
 
                 $pluginInfo = Yaml::parse($zip->getFromIndex($i));
             }
@@ -282,7 +286,7 @@ class PluginManager
                 throw new Exception("Plugin does not contain index.yaml file");
             }
 
-            if(!$zip->extractTo($this->getTempDisk()->path(''))){
+            if (!$zip->extractTo($this->getTempDisk()->path(''))) {
                 throw new Exception("Cannot extract the zip, please check the zip file");
             }
 

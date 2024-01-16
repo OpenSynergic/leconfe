@@ -20,7 +20,8 @@ class Plugin extends Model
         'plugin_name' => 'string',
         'author' => 'string',
         'description' => 'string',
-        'version' => 'string'
+        'version' => 'string',
+        'enabled'=> 'boolean',
     ];
 
     public function getRows()
@@ -28,6 +29,7 @@ class Plugin extends Model
         return FacadesPlugin::getRegisteredPlugins()
             ->map(function ($pluginInfo, $pluginDir) {
                 $pluginInfo['id'] = $pluginDir;
+                $pluginInfo['enabled'] = FacadesPlugin::getSetting($pluginDir, 'enabled');
 
                 return $pluginInfo;
             })

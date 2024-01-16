@@ -7,11 +7,22 @@ use App\Panel\Resources\PluginResource;
 use Filament\Actions;
 use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
+use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ManageRecords;
+use Illuminate\Database\Eloquent\Builder;
 
 class ManagePlugins extends ManageRecords
 {
     protected static string $resource = PluginResource::class;
+
+    public function getTabs(): array
+    {
+        return [
+            'all' => Tab::make(),
+            'disabled' => Tab::make()
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('enabled', false)),
+        ];
+    }
 
     protected function getHeaderActions(): array
     {
@@ -23,6 +34,7 @@ class ManagePlugins extends ManageRecords
                     FileUpload::make('file')
                         ->disk('plugins-tmp')
                         ->acceptedFileTypes(['application/zip'])
+                        ->required()
                 ])
                 ->action(function (array $data) {
                     
