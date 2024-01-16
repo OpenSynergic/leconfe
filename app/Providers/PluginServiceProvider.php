@@ -2,10 +2,7 @@
 
 namespace App\Providers;
 
-use App\Facades\Plugin;
 use App\Managers\PluginManager;
-
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 
 class PluginServiceProvider extends ServiceProvider
@@ -19,7 +16,6 @@ class PluginServiceProvider extends ServiceProvider
             return new PluginManager();
         });
     }
-
 
     /**
      * Bootstrap services.

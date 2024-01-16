@@ -2,20 +2,19 @@
 
 namespace App\Managers;
 
-use Exception;
-use ZipArchive;
 use App\Application;
-use Illuminate\Support\Str;
-use App\Models\PluginSetting;
-use Symfony\Component\Yaml\Yaml;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\File;
-use App\Models\Plugin as ModelsPlugin;
-use Illuminate\Support\Facades\Storage;
 use App\Classes\Plugin as ClassesPlugin;
 use App\Models\Conference;
+use App\Models\PluginSetting;
+use Exception;
 use Illuminate\Contracts\Filesystem\Filesystem as FilesystemContract;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Symfony\Component\Yaml\Yaml;
+use ZipArchive;
 
 class PluginManager
 {
@@ -34,9 +33,9 @@ class PluginManager
     {
         $conferenceId = $conference?->getKey() ?? $this->getCurrentConferenceId();
 
-        $pluginsPath = config('filesystems.disks.plugins.root') . DIRECTORY_SEPARATOR . $conferenceId;
+        $pluginsPath = config('filesystems.disks.plugins.root').DIRECTORY_SEPARATOR.$conferenceId;
 
-        if (!File::isDirectory($pluginsPath)) {
+        if (! File::isDirectory($pluginsPath)) {
             File::makeDirectory($pluginsPath, 0755, true);
         }
 
@@ -74,15 +73,15 @@ class PluginManager
                         throw new Exception("Plugin folder name ({$pluginDir}) cannot contain spaces");
                     }
 
-                    if (!$pluginsDisk->exists($pluginDir . DIRECTORY_SEPARATOR . 'index.yaml')) {
+                    if (! $pluginsDisk->exists($pluginDir.DIRECTORY_SEPARATOR.'index.yaml')) {
                         throw new Exception("Plugin ({$pluginDir}) is missing index.yaml file");
                     }
 
-                    if (!$pluginsDisk->exists($pluginDir . DIRECTORY_SEPARATOR . 'index.php')) {
+                    if (! $pluginsDisk->exists($pluginDir.DIRECTORY_SEPARATOR.'index.php')) {
                         throw new Exception("Plugin ({$pluginDir}) is missing index.php file");
                     }
                 } catch (\Throwable $th) {
-                    if (!app()->isProduction()) {
+                    if (! app()->isProduction()) {
                         throw $th;
                     }
 
@@ -91,7 +90,7 @@ class PluginManager
 
                 return true;
             })
-            ->mapWithKeys(fn ($pluginDir) => [$pluginDir => Yaml::parseFile($pluginsDisk->path($pluginDir . DIRECTORY_SEPARATOR . 'index.yaml'))]);
+            ->mapWithKeys(fn ($pluginDir) => [$pluginDir => Yaml::parseFile($pluginsDisk->path($pluginDir.DIRECTORY_SEPARATOR.'index.yaml'))]);
     }
 
     public function getPluginInfo($path)
@@ -114,7 +113,7 @@ class PluginManager
 
     public function bootPlugin($pluginPath): ?ClassesPlugin
     {
-        $plugin = require $pluginPath . DIRECTORY_SEPARATOR . 'index.php';
+        $plugin = require $pluginPath.DIRECTORY_SEPARATOR.'index.php';
         $plugin->setPluginPath($pluginPath);
         $plugin->boot();
 
@@ -124,13 +123,15 @@ class PluginManager
     protected function loadPlugin(string $pluginPath, $throwError = true): mixed
     {
         try {
-            $plugin = require $pluginPath . DIRECTORY_SEPARATOR . 'index.php';
+            $plugin = require $pluginPath.DIRECTORY_SEPARATOR.'index.php';
 
-            if (!$plugin instanceof ClassesPlugin) {
-                throw new Exception("Plugin must return an instance of " . ClassesPlugin::class);
+            if (! $plugin instanceof ClassesPlugin) {
+                throw new Exception('Plugin must return an instance of '.ClassesPlugin::class);
             }
         } catch (\Throwable $th) {
-            if ($throwError) throw $th;
+            if ($throwError) {
+                throw $th;
+            }
 
             return false;
         }
@@ -207,8 +208,8 @@ class PluginManager
     {
         $pluginTempDisk = $this->getTempDisk();
 
-        if (!$folderName = $this->extractToTempPlugin($file)) {
-            throw new Exception("Cannot extract the plugin, please check the zip file");
+        if (! $folderName = $this->extractToTempPlugin($file)) {
+            throw new Exception('Cannot extract the plugin, please check the zip file');
         }
 
         // if ($this->getDisk()->exists($folderName)) {
@@ -234,7 +235,7 @@ class PluginManager
 
     public function validatePlugin(string $pluginPath)
     {
-        if (!file_exists($pluginPath)) {
+        if (! file_exists($pluginPath)) {
             throw new Exception("Plugin {$pluginPath} not found");
         }
 
@@ -244,11 +245,11 @@ class PluginManager
             throw new Exception("Plugin folder name ({$pluginName}) cannot contain spaces");
         }
 
-        if (!file_exists($pluginPath . DIRECTORY_SEPARATOR . 'index.yaml')) {
+        if (! file_exists($pluginPath.DIRECTORY_SEPARATOR.'index.yaml')) {
             throw new Exception("Plugin ({$pluginName}) is missing index.yaml file");
         }
 
-        if (!file_exists($pluginPath . DIRECTORY_SEPARATOR . 'index.php')) {
+        if (! file_exists($pluginPath.DIRECTORY_SEPARATOR.'index.php')) {
             throw new Exception("Plugin ({$pluginName}) is missing index.php file");
         }
     }
@@ -256,44 +257,46 @@ class PluginManager
     protected function extractToTempPlugin(string $filePath): string
     {
         try {
-            if (!class_exists('ZipArchive')) {
+            if (! class_exists('ZipArchive')) {
                 throw new Exception('Please Install PHP Zip Extension');
             }
 
-            if (!file_exists($filePath)) {
+            if (! file_exists($filePath)) {
                 throw new Exception("File {$filePath} not found");
             }
 
             if (pathinfo($filePath)['extension'] != 'zip') {
-                throw new Exception("Plugin extension must be .zip");
+                throw new Exception('Plugin extension must be .zip');
             }
 
             $zip = new ZipArchive();
             if ($zip->open($filePath) !== true) {
-                throw new Exception("Cannot open the zip, please check the zip file");
+                throw new Exception('Cannot open the zip, please check the zip file');
             }
 
             $pluginInfo = null;
 
             for ($i = 0; $i < $zip->numFiles; $i++) {
                 $filename = $zip->getNameIndex($i);
-                if (!Str::contains($filename, 'index.yaml')) continue;
+                if (! Str::contains($filename, 'index.yaml')) {
+                    continue;
+                }
 
                 $pluginInfo = Yaml::parse($zip->getFromIndex($i));
             }
 
-            if (!$pluginInfo) {
-                throw new Exception("Plugin does not contain index.yaml file");
+            if (! $pluginInfo) {
+                throw new Exception('Plugin does not contain index.yaml file');
             }
 
-            if (!$zip->extractTo($this->getTempDisk()->path(''))) {
-                throw new Exception("Cannot extract the zip, please check the zip file");
+            if (! $zip->extractTo($this->getTempDisk()->path(''))) {
+                throw new Exception('Cannot extract the zip, please check the zip file');
             }
 
             $zip->close();
 
-            if (!file_exists($this->getTempDisk()->path($pluginInfo['folder']))) {
-                throw new Exception("Plugin must contain a folder with the same name as the plugin folder name");
+            if (! file_exists($this->getTempDisk()->path($pluginInfo['folder']))) {
+                throw new Exception('Plugin must contain a folder with the same name as the plugin folder name');
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -311,7 +314,7 @@ class PluginManager
 
     public function installDefaultPlugins(Conference $conference)
     {
-        $defaultPluginsPath = base_path('stubs' . DIRECTORY_SEPARATOR . 'plugins');
+        $defaultPluginsPath = base_path('stubs'.DIRECTORY_SEPARATOR.'plugins');
 
         $pluginsDisk = $this->getDisk($conference);
 

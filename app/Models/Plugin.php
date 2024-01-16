@@ -21,7 +21,7 @@ class Plugin extends Model
         'author' => 'string',
         'description' => 'string',
         'version' => 'string',
-        'enabled'=> 'boolean',
+        'enabled' => 'boolean',
     ];
 
     public function getRows()
@@ -42,7 +42,7 @@ class Plugin extends Model
         return false;
     }
 
-    public function settings() : HasMany
+    public function settings(): HasMany
     {
         return $this->hasMany(PluginSetting::class, 'plugin', 'dir');
     }

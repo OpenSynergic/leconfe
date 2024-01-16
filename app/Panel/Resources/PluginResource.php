@@ -3,10 +3,9 @@
 namespace App\Panel\Resources;
 
 use App\Facades\Plugin as FacadesPlugin;
-use App\Panel\Resources\PluginResource\Pages;
 use App\Models\Plugin;
+use App\Panel\Resources\PluginResource\Pages;
 use Filament\Forms\Components\FileUpload;
-use Filament\Resources\Components\Tab;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
@@ -47,7 +46,7 @@ class PluginResource extends Resource
                         $record->enabled = $state;
 
                         return $state;
-                    })
+                    }),
             ])
             ->filters([
                 //
@@ -70,7 +69,7 @@ class PluginResource extends Resource
                         ->action(function (Plugin $record) {
                             FacadesPlugin::uninstall($record->id);
                         }),
-                ])
+                ]),
                 // TODO : Add actions based on plugin. Currently there's no way to create a dinamically action
 
             ])

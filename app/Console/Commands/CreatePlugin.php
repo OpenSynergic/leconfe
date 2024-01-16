@@ -52,25 +52,24 @@ class CreatePlugin extends Command implements PromptsForMissingInput
         );
 
         $conferenceId = select(
-            label: "Where the plugin will be installed?",
+            label: 'Where the plugin will be installed?',
             options: Conference::all()
                 ->pluck('name', 'id')
                 ->prepend('Website', 0),
         );
 
-        if($conferenceId){
+        if ($conferenceId) {
             app()->setCurrentConference(Conference::find($conferenceId));
         }
 
         $pluginDisk = Plugin::getDisk();
 
-
-        if (!File::exists($pluginDisk->path($pluginFolder))) {
+        if (! File::exists($pluginDisk->path($pluginFolder))) {
             File::makeDirectory($pluginDisk->path("{$pluginFolder}"));
 
-            File::put($pluginDisk->path($pluginFolder . DIRECTORY_SEPARATOR . 'index.php'), $this->template());
+            File::put($pluginDisk->path($pluginFolder.DIRECTORY_SEPARATOR.'index.php'), $this->template());
 
-            File::put($pluginDisk->path($pluginFolder . DIRECTORY_SEPARATOR . "index.yaml"), Yaml::dump([
+            File::put($pluginDisk->path($pluginFolder.DIRECTORY_SEPARATOR.'index.yaml'), Yaml::dump([
                 'name' => $pluginName,
                 'folder' => $pluginFolder,
                 'author' => $author,
@@ -81,7 +80,7 @@ class CreatePlugin extends Command implements PromptsForMissingInput
             return $this->info("Plugin {$pluginFolder} created succesfully!");
         }
 
-        return $this->info("Plugin {$pluginName} already exists in " . base_path('plugins'));
+        return $this->info("Plugin {$pluginName} already exists in ".base_path('plugins'));
     }
 
     public function template(): string

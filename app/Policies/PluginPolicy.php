@@ -5,7 +5,6 @@ namespace App\Policies;
 use App\Models\Plugin;
 use App\Models\User;
 
-
 class PluginPolicy
 {
     /**
@@ -18,7 +17,6 @@ class PluginPolicy
         }
     }
 
-
     /**
      * Determine whether the user can create models.
      */
@@ -28,7 +26,6 @@ class PluginPolicy
             return true;
         }
     }
-
 
     /**
      * Determine whether the user can delete the model.

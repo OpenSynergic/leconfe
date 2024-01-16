@@ -18,7 +18,6 @@ class BootPluginMiddleware
     {
         Plugin::boot();
 
-
         return $next($request);
     }
 }

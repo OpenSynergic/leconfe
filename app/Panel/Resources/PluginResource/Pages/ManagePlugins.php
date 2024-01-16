@@ -34,10 +34,10 @@ class ManagePlugins extends ManageRecords
                     FileUpload::make('file')
                         ->disk('plugins-tmp')
                         ->acceptedFileTypes(['application/zip'])
-                        ->required()
+                        ->required(),
                 ])
                 ->action(function (array $data) {
-                    
+
                     try {
                         Plugin::install(Plugin::getTempDisk()->path($data['file']));
                     } catch (\Throwable $th) {
@@ -46,11 +46,11 @@ class ManagePlugins extends ManageRecords
                             ->title('Install failed')
                             ->body($th->getMessage())
                             ->send();
+
                         return;
                     } finally {
                         Plugin::getTempDisk()->delete($data['file']);
                     }
-                    
 
                     Notification::make('install-success')
                         ->title('Install success')
