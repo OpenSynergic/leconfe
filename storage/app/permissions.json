@@ -27,6 +27,9 @@
     "Permission:delete",
     "Permission:update",
     "Permission:viewAny",
+    "Plugin:delete",
+    "Plugin:install",
+    "Plugin:viewAny",
     "Publication:update",
     "Review:create",
     "ReviewAssignment:create",
@@ -89,8 +92,5 @@
     "Venue:update",
     "Venue:view",
     "Venue:viewAny",
-    "Plugin:create",
-    "Plugin:delete",
-    "Plugin:viewAny",
     "Workflow:update"
 ]

@@ -3,6 +3,7 @@
 namespace App\Panel\Resources\PluginResource\Pages;
 
 use App\Facades\Plugin;
+use App\Models\Plugin as ModelsPlugin;
 use App\Panel\Resources\PluginResource;
 use Filament\Actions;
 use Filament\Forms\Components\FileUpload;
@@ -30,6 +31,7 @@ class ManagePlugins extends ManageRecords
             Actions\Action::make('add-plugin')
                 ->label('Add new')
                 ->modalHeading('Add new Plugin')
+                ->disabled(fn () => ! auth()->user()->can('install', ModelsPlugin::class))
                 ->form([
                     FileUpload::make('file')
                         ->disk('plugins-tmp')

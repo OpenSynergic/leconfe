@@ -53,18 +53,6 @@ class PluginResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
-                    // Tables\Actions\Action::make('upgrade-plugin')
-                    //     ->action(function (Plugin $record, array $data) {
-                    //         FacadesPlugin::upgrade($record, $data['file']);
-                    //     })
-                    //     ->color('primary')
-                    //     ->icon('heroicon-o-arrow-up-circle')
-                    //     ->form([
-                    //         FileUpload::make('file')
-                    //             ->disk('plugins-tmp')
-                    //             ->required()
-                    //             ->acceptedFileTypes(['application/zip'])
-                    //     ]),
                     Tables\Actions\DeleteAction::make()
                         ->action(function (Plugin $record) {
                             FacadesPlugin::uninstall($record->id);

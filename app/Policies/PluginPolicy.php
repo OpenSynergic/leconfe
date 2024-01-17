@@ -17,12 +17,9 @@ class PluginPolicy
         }
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user)
+    public function install(User $user)
     {
-        if ($user->can('Plugin:create')) {
+        if ($user->can('Plugin:install')) {
             return true;
         }
     }

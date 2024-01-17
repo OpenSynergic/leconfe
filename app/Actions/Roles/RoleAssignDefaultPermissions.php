@@ -28,6 +28,7 @@ class RoleAssignDefaultPermissions
             }
 
             $role = Role::query()
+                ->with(['permissions'])
                 ->where('name', $roleName)
                 ->first();
 
