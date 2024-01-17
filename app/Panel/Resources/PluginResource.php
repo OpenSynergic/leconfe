@@ -5,7 +5,6 @@ namespace App\Panel\Resources;
 use App\Facades\Plugin as FacadesPlugin;
 use App\Models\Plugin;
 use App\Panel\Resources\PluginResource\Pages;
-use Filament\Forms\Components\FileUpload;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
