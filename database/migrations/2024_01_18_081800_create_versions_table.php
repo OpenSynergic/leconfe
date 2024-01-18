@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('product_folder');
             $table->string('version');
             $table->timestamp('installed_at');
-            $table->boolean('is_current')->default(false);
             $table->timestamps();
 
             $table->unique(['product_name', 'product_folder', 'version']);

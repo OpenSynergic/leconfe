@@ -30,13 +30,6 @@ class Installation extends Page
             return redirect('/');
         }
 
-        if (file_exists(base_path('.env'))) {
-            copy(base_path('.env'), base_path('.env.backup'));
-            unlink(base_path('.env'));
-
-            return redirect(static::getSlug());
-        }
-
         $this->checkPermission();
     }
 

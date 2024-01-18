@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Events\PluginInstalled;
 use App\Listeners\LogSentEmail;
+use App\Listeners\RegisterPluginVersion;
 use App\Models\Conference;
 use App\Models\Site;
 use App\Models\User;
@@ -27,6 +29,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         MessageSent::class => [
             LogSentEmail::class,
+        ],
+        PluginInstalled::class => [
+            RegisterPluginVersion::class,
         ],
     ];
 

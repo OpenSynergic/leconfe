@@ -24,29 +24,33 @@ class Installer
 
     public function run()
     {
-        $this->generateEnvFile();
-        $this->migrate();
-        $this->createConference();
-        $this->createAccount();
+        try {
+            $this->generateEnvFile();
+            $this->migrate();
+            $this->createConference();
+            $this->createAccount();
+    
+            Version::application();
+            
+            AppInstalled::dispatch();
+        } catch (\Throwable $th) {
+            // backup and delete .env file
+            $filesystem = app(Filesystem::class);
+            $filesystem->copy(base_path('.env'), base_path('.env.backup'));
+            $filesystem->delete(base_path('.env'));
 
-        Version::application();
-        
-        $this->createInstalledFile();
-        
-        AppInstalled::dispatch();
+            throw $th;
+        }
     }
 
     public function migrate()
     {
         Artisan::call('optimize:clear');
         Artisan::call('storage:link');
+        Artisan::call('icon:cache');
+
         Schema::dropAllTables();
         Artisan::call('migrate:fresh --force --seed');
-    }
-
-    public function createInstalledFile()
-    {
-        touch(storage_path('installed'));
     }
 
     public function generateEnvFile()
