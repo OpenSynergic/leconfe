@@ -19,6 +19,9 @@ class Kernel extends ConsoleKernel
         Actions\Permissions\PermissionPopulateAction::class,
         Actions\Roles\RolePersistAssignedPermissions::class,
         Actions\Roles\RoleAssignDefaultPermissions::class,
+        Actions\Leconfe\InstallAction::class,
+        Actions\Leconfe\UpgradeAction::class,
+        Actions\Leconfe\CheckVersionAction::class,
     ];
 
     /**

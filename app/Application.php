@@ -17,6 +17,7 @@ use App\Models\Submission;
 use App\Models\Timeline;
 use App\Models\Topic;
 use App\Models\Venue;
+use App\Models\Version;
 use Illuminate\Foundation\Application as LaravelApplication;
 
 class Application extends LaravelApplication
@@ -33,12 +34,17 @@ class Application extends LaravelApplication
 
     public function isInstalled()
     {
-        return file_exists(storage_path('installed'));
+        return config('app.installed');
     }
 
-    public function getAppVersion()
+    public function getCodeVersion() : string
     {
         return static::APP_VERSION;
+    }
+
+    public function getDatabaseVersion() : string
+    {
+        return Version::application()?->version;
     }
 
     public function getPhpMinVersion()

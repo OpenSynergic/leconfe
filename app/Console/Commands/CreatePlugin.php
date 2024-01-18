@@ -74,7 +74,7 @@ class CreatePlugin extends Command implements PromptsForMissingInput
                 'folder' => $pluginFolder,
                 'author' => $author,
                 'description' => $description,
-                'version' => '1.0.0.0',
+                'version' => '1.0.0',
             ]));
 
             return $this->info("Plugin {$pluginFolder} created succesfully!");

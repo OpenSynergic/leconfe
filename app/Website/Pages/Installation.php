@@ -2,12 +2,12 @@
 
 namespace App\Website\Pages;
 
-use App\Events\AppInstalled;
 use App\Http\Middleware\IdentifyCurrentConference;
 use App\Http\Middleware\SetupDefaultData;
 use App\Livewire\Forms\InstallationForm;
 use App\Utils\Installer;
 use App\Utils\PermissionChecker;
+use Illuminate\Support\Facades\App;
 use Jackiedo\Timezonelist\Facades\Timezonelist;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 
@@ -26,7 +26,7 @@ class Installation extends Page
 
     public function mount()
     {
-        if (app()->isInstalled()) {
+        if (App::isInstalled()) {
             return redirect('/');
         }
 

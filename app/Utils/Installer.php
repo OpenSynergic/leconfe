@@ -8,6 +8,7 @@ use App\Events\AppInstalled;
 use App\Models\Conference;
 use App\Models\Enums\UserRole;
 use App\Models\User;
+use App\Models\Version;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Artisan;
@@ -27,6 +28,9 @@ class Installer
         $this->migrate();
         $this->createConference();
         $this->createAccount();
+
+        Version::application();
+        
         $this->createInstalledFile();
         
         AppInstalled::dispatch();
