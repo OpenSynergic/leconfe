@@ -47,7 +47,7 @@ class Installer
     {
         Artisan::call('optimize:clear');
         Artisan::call('storage:link');
-        Artisan::call('icon:cache');
+        Artisan::call('icons:cache');
 
         Schema::dropAllTables();
         Artisan::call('migrate:fresh --force --seed');
