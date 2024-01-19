@@ -47,10 +47,18 @@ class Installer
     {
         Artisan::call('optimize:clear');
         Artisan::call('storage:link');
-        Artisan::call('icons:cache');
-
+        $this->iconCache();
+        
         Schema::dropAllTables();
         Artisan::call('migrate:fresh --force --seed');
+    }
+
+    private function iconCache(): void
+    {
+        $factory = app(\BladeUI\Icons\Factory::class);
+        $manifest = app(\BladeUI\Icons\IconsManifest::class);
+
+        $manifest->write($factory->all());
     }
 
     public function generateEnvFile()
