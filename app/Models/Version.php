@@ -40,6 +40,7 @@ class Version extends Model
 
         if(!$version){
             $version = app()->getVersion();
+            $version->save();
         }
 
         return $version;
