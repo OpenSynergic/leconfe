@@ -5,20 +5,18 @@ namespace App\Actions\Leconfe;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-use function Laravel\Prompts\confirm;
-
 class CheckVersionAction
 {
     use AsAction;
 
     public function handle()
     {
-        
+        return app()->getInstalledVersion();
     }
 
     public function asCommand(Command $command): void
     {
-
+        $command->info('Leconfe version: ' . $this->handle());
     }
 
     public function getCommandSignature(): string
