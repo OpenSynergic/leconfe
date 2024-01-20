@@ -3,13 +3,11 @@
 namespace App\Actions\Leconfe;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 use function Laravel\Prompts\alert;
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\info;
-use function Laravel\Prompts\spin;
 use function Laravel\Prompts\table;
 use function Laravel\Prompts\warning;
 
@@ -37,11 +35,11 @@ class UpgradeAction
 
         $confirmUpgrade = $command->option('confirm') ?: confirm('Are you sure you want to upgrade? This action cannot be undone. (y/n)');
 
-        if (!$confirmUpgrade) {
+        if (! $confirmUpgrade) {
             alert('Upgrade cancelled!');
+
             return;
         }
-
 
         try {
             info('Clearing cache...');
@@ -53,7 +51,7 @@ class UpgradeAction
             $upgrader = new \App\Utils\Upgrader(command: $command);
             $upgrader->run();
 
-            info('Success upgrade Leconfe to ' . $codeVersion . '!');
+            info('Success upgrade Leconfe to '.$codeVersion.'!');
         } catch (\Throwable $th) {
             $command->error($th->getMessage());
         }

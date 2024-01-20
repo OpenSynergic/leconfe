@@ -2,12 +2,7 @@
 
 namespace App\Livewire\Forms;
 
-use App\Actions\Conferences\ConferenceCreateAction;
-use App\Actions\User\UserCreateAction;
 use App\Models\Conference;
-use App\Models\Enums\UserRole;
-use App\Models\User;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -90,10 +85,10 @@ class InstallationForm extends Form
         $dbName = $this->db_name;
 
         try {
-            
+
             $this->reconnectDbWithNewData();
-            
-            if (!$this->checkDatabaseExists($dbName)) {
+
+            if (! $this->checkDatabaseExists($dbName)) {
                 Schema::createDatabase($dbName);
             }
         } catch (\Throwable $th) {
@@ -138,7 +133,7 @@ class InstallationForm extends Form
         Config::set("database.connections.{$this->db_connection}", $connectionArray);
 
         DB::purge();
-            
+
         // reconnect to database with new settings
         DB::reconnect();
 

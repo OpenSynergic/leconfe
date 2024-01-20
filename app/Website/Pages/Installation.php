@@ -59,14 +59,14 @@ class Installation extends Page
 
     public function testConnection()
     {
-        if($this->form->checkDatabaseConnection()){
+        if ($this->form->checkDatabaseConnection()) {
             session()->flash('success', 'Successfully Connected');
         }
     }
 
     public function install()
     {
-        if (!$this->validateInstallation()) {
+        if (! $this->validateInstallation()) {
             return;
         }
 
@@ -80,11 +80,11 @@ class Installation extends Page
     {
         $this->form->validate();
 
-        if (!$this->form->checkDatabaseConnection()) {
+        if (! $this->form->checkDatabaseConnection()) {
             return false;
         }
 
-        if (!$this->form->createDatabase()) {
+        if (! $this->form->createDatabase()) {
             return false;
         }
 

@@ -4,7 +4,6 @@ namespace App\Actions\Leconfe;
 
 use App\Utils\PermissionChecker;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Jackiedo\Timezonelist\Facades\Timezonelist;
@@ -69,12 +68,12 @@ class InstallAction
 
         // Keep prompting password until a valid match is entered
         while (true) {
-            $password               = password('What is your password?');
-            if(!$password){
+            $password = password('What is your password?');
+            if (! $password) {
                 break;
             }
-            
-            $password_confirmation  = password('Please confirm your password?', required: true);
+
+            $password_confirmation = password('Please confirm your password?', required: true);
             // Compare password
             if ($password === $password_confirmation) {
                 // Passwords match, break out of the loop
@@ -108,7 +107,7 @@ class InstallAction
             $data['db_port'] = text('What is your database port?', default: '3306', required: true);
 
             try {
-                spin(fn() => $this->reconnectDbWithNewData($data),'Testing database connection...');
+                spin(fn () => $this->reconnectDbWithNewData($data), 'Testing database connection...');
 
                 info('Database connection success.');
 
@@ -124,14 +123,13 @@ class InstallAction
         $data['conference_type'] = select('What is your conference type?', \App\Models\Enums\ConferenceType::array(), default: 'Offline', required: true);
         $data['conference_description'] = text('What is your conference description?', required: false);
 
-
         info('Please review your information before continue.');
         table(
             ['key', 'value'],
             collect($data)->map(fn ($value, $key) => [$key, $value])->toArray()
         );
 
-        if (!confirm('Are you sure to continue?')) {
+        if (! confirm('Are you sure to continue?')) {
             return;
         }
 
@@ -145,13 +143,12 @@ class InstallAction
             throw $th;
         }
 
-
         info('Application installed.');
     }
 
     private function prepareDatabaseConnection($data): array
     {
-        $connectionArray = config("database.connections.mysql", []);
+        $connectionArray = config('database.connections.mysql', []);
 
         return array_merge($connectionArray, [
             'driver' => $data['db_connection'],
@@ -167,7 +164,7 @@ class InstallAction
     {
         $connectionArray = $this->prepareDatabaseConnection($data);
 
-        Config::set("database.connections.mysql", $connectionArray);
+        Config::set('database.connections.mysql', $connectionArray);
 
         DB::purge();
 

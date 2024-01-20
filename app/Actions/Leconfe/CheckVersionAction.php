@@ -16,7 +16,7 @@ class CheckVersionAction
 
     public function asCommand(Command $command): void
     {
-        $command->info('Leconfe version: ' . $this->handle());
+        $command->info('Leconfe version: '.$this->handle());
     }
 
     public function getCommandSignature(): string

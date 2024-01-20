@@ -37,7 +37,7 @@ class Application extends LaravelApplication
         return config('app.installed');
     }
 
-    public function getCodeVersion() : string
+    public function getCodeVersion(): string
     {
         return static::APP_VERSION;
     }
@@ -52,7 +52,7 @@ class Application extends LaravelApplication
         return $version;
     }
 
-    public function getInstalledVersion() : string
+    public function getInstalledVersion(): string
     {
         return Version::application()?->version;
     }

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Version extends Model
@@ -38,7 +37,7 @@ class Version extends Model
             ->orderBy('installed_at', 'desc')
             ->first();
 
-        if(!$version){
+        if (! $version) {
             $version = app()->getVersion();
             $version->save();
         }

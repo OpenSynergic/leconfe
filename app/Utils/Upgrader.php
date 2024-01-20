@@ -5,18 +5,14 @@ namespace App\Utils;
 use App\Exceptions\Upgrade\NoUpgradeScript;
 use App\Utils\Enums\UpgradeActionPriority;
 use Illuminate\Console\Command;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
-
-use function Laravel\Prompts\info;
-use function Laravel\Prompts\progress;
-use function Laravel\Prompts\spin;
 
 class Upgrader extends Installer
 {
     public array $actions = [];
 
     public string $installedVersion;
+
     public string $codeVersion;
 
     public function __construct(
@@ -41,7 +37,7 @@ class Upgrader extends Installer
 
             $this->optimize();
         } catch (\Throwable $th) {
-            if (!$th instanceof NoUpgradeScript) {
+            if (! $th instanceof NoUpgradeScript) {
                 activity('leconfe')
                     ->causedByAnonymous()
                     ->event('upgrade')
@@ -55,6 +51,7 @@ class Upgrader extends Installer
             }
 
             throw $th;
+
             return;
         }
 

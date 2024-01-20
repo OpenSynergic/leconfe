@@ -62,10 +62,10 @@ class Installer
         $this->call('modelCache:clear');
     }
 
-    public function call(string $command, array $arguments = [], string $info = null)
+    public function call(string $command, array $arguments = [], ?string $info = null)
     {
-        if($this->command){
-            $callableCommand = fn() => $this->command->callSilently($command, $arguments);
+        if ($this->command) {
+            $callableCommand = fn () => $this->command->callSilently($command, $arguments);
             $info ? spin($callableCommand, $info) : $callableCommand();
         } else {
             Artisan::call($command, $arguments);
@@ -107,7 +107,7 @@ class Installer
     {
         $filesystem = app(Filesystem::class);
 
-        $stubPath = base_path("stubs" . DIRECTORY_SEPARATOR . "{$stub}.stub");
+        $stubPath = base_path('stubs'.DIRECTORY_SEPARATOR."{$stub}.stub");
 
         $stub = str($filesystem->get($stubPath));
 
@@ -122,7 +122,7 @@ class Installer
 
     public function writeFile(string $path, string $contents): void
     {
-        $filesystem = app(Filesystem::class); 
+        $filesystem = app(Filesystem::class);
 
         $filesystem->ensureDirectoryExists(
             pathinfo($path, PATHINFO_DIRNAME),

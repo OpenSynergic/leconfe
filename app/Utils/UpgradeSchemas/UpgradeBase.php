@@ -2,9 +2,7 @@
 
 namespace App\Utils\UpgradeSchemas;
 
-use Closure;
-
-abstract class UpgradeBase 
+abstract class UpgradeBase
 {
     public function __invoke()
     {
@@ -15,8 +13,8 @@ abstract class UpgradeBase
         public string $databaseVersion,
         public string $applicationVersion,
     ) {
-        
+
     }
 
-    abstract public function run() : void;
+    abstract public function run(): void;
 }

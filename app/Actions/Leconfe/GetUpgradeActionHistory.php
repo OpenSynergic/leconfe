@@ -6,7 +6,6 @@ use Carbon\CarbonInterval;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
 use Lorisleiva\Actions\Concerns\AsAction;
-use Lorisleiva\Actions\Concerns\AsCommand;
 use Spatie\Activitylog\Models\Activity;
 
 use function Laravel\Prompts\spin;
@@ -15,7 +14,7 @@ class GetUpgradeActionHistory
 {
     use AsAction;
 
-    public function handle() : Collection
+    public function handle(): Collection
     {
         return Activity::where('log_name', 'leconfe')
             ->where('event', 'upgrade')
@@ -27,8 +26,9 @@ class GetUpgradeActionHistory
     {
         $upgradeHistories = spin(fn () => $this->handle(), 'Getting upgrade history');
 
-        if($upgradeHistories->isEmpty()) {
+        if ($upgradeHistories->isEmpty()) {
             $command->info('No upgrade history found');
+
             return;
         }
 

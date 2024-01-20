@@ -2,11 +2,10 @@
 
 namespace App\Utils;
 
-use App\Utils\UpgradeSchemas;
-class UpgradeSchema 
+class UpgradeSchema
 {
     public static $schemas = [
-        // 
+        //
     ];
 
     public static function getSchemasByVersion(string $installedVersion, string $applicationVersion)
