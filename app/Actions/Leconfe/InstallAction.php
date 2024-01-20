@@ -69,9 +69,12 @@ class InstallAction
 
         // Keep prompting password until a valid match is entered
         while (true) {
-            $password               = password('What is your password?', required: true);
+            $password               = password('What is your password?');
+            if(!$password){
+                break;
+            }
+            
             $password_confirmation  = password('Please confirm your password?', required: true);
-
             // Compare password
             if ($password === $password_confirmation) {
                 // Passwords match, break out of the loop
