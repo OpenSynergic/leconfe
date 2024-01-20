@@ -23,14 +23,15 @@ tasks:
   deploy:
     - deploy:prepare
     - deploy:vendors
+    - artisan:down
     - artisan:optimize:clear
     - artisan:storage:link
     - artisan:view:cache
     - artisan:config:cache
     - artisan:optimize
-    - artisan:down
     - artisan:migrate
     - pnpm:build
+    - leconfe:upgrade
     - artisan:up
     - deploy:publish
     - php-fpm:reload
@@ -47,7 +48,8 @@ tasks:
     - run: "cd {{release_path}} && pnpm install && pnpm run build"
   ssl:symlink:
     - run: "ln -s {{base_deploy_path}}/public_html/.well-known {{base_deploy_path}}/public_html/current/public/.well-known"
-
+  leconfe:upgrade:
+    - run : "cd {{release_path}} && php artisan leconfe:upgrade --confirm"
   
 after:
   deploy:failed: deploy:unlock
