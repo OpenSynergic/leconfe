@@ -4,6 +4,7 @@ namespace App\Actions\Leconfe;
 
 use App\Utils\PermissionChecker;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Jackiedo\Timezonelist\Facades\Timezonelist;
@@ -31,7 +32,7 @@ class InstallAction
 
     public function asCommand(Command $command): void
     {
-        $data = [];
+        info('Welcome to leconfe installer.');
 
         $permissionChecker = app(PermissionChecker::class);
 
@@ -96,7 +97,6 @@ class InstallAction
         info('Database information');
 
         while (true) {
-            // $data['db_connection'] = text('What is your database connection?', default: 'mysql', required: true);
             $data['db_connection'] = 'mysql';
             $data['db_username'] = text('What is your database username?', required: true);
             $data['db_password'] = password('What is your database password?', required: true);
@@ -105,11 +105,14 @@ class InstallAction
             $data['db_port'] = text('What is your database port?', default: '3306', required: true);
 
             try {
-                info('Testing database connection...');
-                $this->reconnectDbWithNewData($data);
+                spin(fn() => $this->reconnectDbWithNewData($data),'Testing database connection...');
+
+                info('Database connection success.');
+
                 break;
             } catch (\Throwable $th) {
                 error('Cannot connect to database with provided information. Please check again.');
+                error($th->getMessage());
             }
         }
 
@@ -132,7 +135,7 @@ class InstallAction
         try {
 
             spin(
-                fn () => $this->handle($data),
+                fn () => (new \App\Utils\Installer($data, $command))->run(),
                 'Installing application...'
             );
         } catch (\Throwable $th) {

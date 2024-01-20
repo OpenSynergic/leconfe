@@ -9,51 +9,70 @@ use App\Models\Conference;
 use App\Models\Enums\UserRole;
 use App\Models\User;
 use App\Models\Version;
+use Illuminate\Console\Command;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
+use function Laravel\Prompts\spin;
+
 class Installer
 {
     public function __construct(
         public array $params,
+        public ?Command $command = null,
     ) {
     }
 
     public function run()
     {
-        try {
-            $this->generateEnvFile();
-            $this->migrate();
-            $this->createConference();
-            $this->createAccount();
-    
-            Version::application();
-            
-            AppInstalled::dispatch();
-        } catch (\Throwable $th) {
-            // backup and delete .env file
-            $filesystem = app(Filesystem::class);
-            $filesystem->copy(base_path('.env'), base_path('.env.backup'));
-            $filesystem->delete(base_path('.env'));
+        $this->generateEnvFile();
+        $this->migrate();
+        $this->createConference();
+        $this->createAccount();
 
-            throw $th;
+        Version::application();
+        AppInstalled::dispatch();
+
+        $this->optimize();
+    }
+
+    private function migrate()
+    {
+        Schema::dropAllTables();
+        $this->call('migrate:fresh', [
+            '--force' => true,
+            '--seed' => true,
+        ]);
+    }
+
+    public function optimize()
+    {
+        $this->call('optimize:clear');
+        $this->call('storage:link');
+        $this->iconCache();
+    }
+
+    public function clearCache()
+    {
+        $this->call('optimize:clear');
+        $this->call('icons:clear');
+        $this->call('modelCache:clear');
+    }
+
+    public function call(string $command, array $arguments = [], string $info = null)
+    {
+        if($this->command){
+            $callableCommand = fn() => $this->command->callSilently($command, $arguments);
+            $info ? spin($callableCommand, $info) : $callableCommand();
+        } else {
+            Artisan::call($command, $arguments);
         }
     }
 
-    public function migrate()
-    {
-        Artisan::call('optimize:clear');
-        Artisan::call('storage:link');
-        $this->iconCache();
-        
-        Schema::dropAllTables();
-        Artisan::call('migrate:fresh --force --seed');
-    }
-
-    private function iconCache(): void
+    public function iconCache(): void
     {
         $factory = app(\BladeUI\Icons\Factory::class);
         $manifest = app(\BladeUI\Icons\IconsManifest::class);
@@ -61,7 +80,7 @@ class Installer
         $manifest->write($factory->all());
     }
 
-    public function generateEnvFile()
+    private function generateEnvFile()
     {
         $envs = [
             'APP_ENV' => 'production',
@@ -84,7 +103,7 @@ class Installer
     /**
      * @param  array<string, string>  $replacements
      */
-    function copyStubToPath(string $stub, string $targetPath, array $replacements = []): void
+    public function copyStubToPath(string $stub, string $targetPath, array $replacements = []): void
     {
         $filesystem = app(Filesystem::class);
 
@@ -101,7 +120,7 @@ class Installer
         $this->writeFile($targetPath, $stub);
     }
 
-    protected function writeFile(string $path, string $contents): void
+    public function writeFile(string $path, string $contents): void
     {
         $filesystem = app(Filesystem::class); 
 
@@ -112,12 +131,12 @@ class Installer
         $filesystem->put($path, $contents);
     }
 
-    public function readParam($key)
+    public function readParam(string $key)
     {
         return $this->params[$key] ?? null;
     }
 
-    public function createConference(): Conference
+    private function createConference(): Conference
     {
         return ConferenceCreateAction::run([
             'name' => $this->readParam('conference_name'),
@@ -129,7 +148,7 @@ class Installer
         ]);
     }
 
-    public function createAccount(): User
+    private function createAccount(): User
     {
         try {
             DB::beginTransaction();
