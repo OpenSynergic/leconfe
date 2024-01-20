@@ -47,7 +47,7 @@ class InstallationForm extends Form
     public $db_password = null;
 
     #[Rule('required', onUpdate: false)]
-    public $db_name = null;
+    public $db_name = 'leconfe';
 
     #[Rule('required', onUpdate: false)]
     public $db_host = '127.0.0.1';
@@ -72,56 +72,10 @@ class InstallationForm extends Form
     #[Rule('required')]
     public $timezone = 'Asia/Makassar';
 
-    public function createConference(): Conference
-    {
-        return ConferenceCreateAction::run([
-            'name' => $this->conference_name,
-            'type' => $this->conference_type,
-            'active' => true,
-            'meta' => [
-                'description' => $this->conference_description,
-            ],
-        ]);
-    }
-
-    public function createAccount(): User
-    {
-        try {
-            DB::beginTransaction();
-
-            $user = UserCreateAction::run($this->only([
-                'given_name',
-                'family_name',
-                'email',
-                'password',
-            ]));
-
-            $user->assignRole(UserRole::Admin->value);
-
-            DB::commit();
-        } catch (\Throwable $th) {
-
-            DB::rollBack();
-
-            throw $th;
-        }
-
-        return $user;
-    }
-
     public function checkDatabaseConnection(): bool
     {
-        $connectionArray = $this->prepareDatabaseConnection();
-
-        Config::set("database.connections.{$this->db_connection}", $connectionArray);
-
         try {
-            // reconnect to database with new settings
-            DB::reconnect();
-
-            DB::connection()->getPdo();
-
-            session()->flash('success', 'Successfully Connected');
+            $this->reconnectDbWithNewData();
         } catch (\Throwable $th) {
             $this->addError('databaseOperationError', 'Connection failed: '.$th->getMessage());
 
@@ -136,20 +90,12 @@ class InstallationForm extends Form
         $dbName = $this->db_name;
 
         try {
-
-            $databaseExists = $this->checkDatabaseExists($dbName);
-
-            if (! $databaseExists) {
-                $this->createNewDatabase($dbName);
+            
+            $this->reconnectDbWithNewData();
+            
+            if (!$this->checkDatabaseExists($dbName)) {
+                Schema::createDatabase($dbName);
             }
-
-            $this->updateDatabaseConfig($dbName);
-
-            DB::reconnect();
-
-            DB::connection()->getPdo();
-
-            session()->flash('success', 'Connection success and database successfully created');
         } catch (\Throwable $th) {
             $this->addError('databaseOperationError', 'Create database failed: Please manually create your database '.$th->getMessage());
 
@@ -165,7 +111,7 @@ class InstallationForm extends Form
 
         $connectionArray = array_merge($connectionArray, [
             'driver' => $this->db_connection,
-            'database' => '',
+            'database' => $this->db_name,
         ]);
 
         if (! empty($this->db_username) && ! empty($this->db_password)) {
@@ -185,32 +131,17 @@ class InstallationForm extends Form
         return ! empty(DB::select("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '$dbName'"));
     }
 
-    private function createNewDatabase($dbName): void
+    protected function reconnectDbWithNewData()
     {
-        Schema::createDatabase($dbName);
-    }
+        $connectionArray = $this->prepareDatabaseConnection();
 
-    private function updateDatabaseConfig($dbName): void
-    {
-        Config::set('database.connections.mysql.database', $dbName);
-    }
+        Config::set("database.connections.{$this->db_connection}", $connectionArray);
 
-    public function migrate()
-    {
-        Artisan::call('optimize:clear');
-        Artisan::call('storage:link');
-        Artisan::call('migrate:fresh --force --seed');
-    }
+        DB::purge();
+            
+        // reconnect to database with new settings
+        DB::reconnect();
 
-    public function updateConfig()
-    {
-        Config::set('app.timezone', $this->timezone);
-    }
-
-    public function process()
-    {
-        $this->migrate();
-        $this->createAccount();
-        $this->createConference();
+        DB::connection()->getPdo();
     }
 }

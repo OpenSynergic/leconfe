@@ -5,10 +5,10 @@
                 <img src="{{ asset('logo.png') }}" />
             </div>
         </div>
-        <p class="font-semibold ">Version {{ app()->getAppVersion() }}</p>
+        <p class="font-semibold ">Leconfe version {{ app()->getCodeVersion() }}</p>
         <form wire:submit='install'>
             <div class="card bg-white text-sm">
-                <div class="card-body space-y-6">
+                <div class="card-body space-y-6 p-4 sm:p-8">
                     @error('install')
                         <div class="alert alert-error">
                             <x-heroicon-o-exclamation-circle class="stroke-current shrink-0 h-6 w-6" />
@@ -17,8 +17,8 @@
                     @enderror
 
                     <div class="introduction">
-                        Thank you for downloading the Leconfe, a project by <a class="link link-primary link-hover"
-                            href="https://openjournaltheme.com">Open Journal Theme</a>
+                        Thank you for downloading the <b>Leconfe</b>, a project by <a class="link link-primary link-hover"
+                            target="_blank" href="https://openjournaltheme.com">Open Journal Theme</a>
                     </div>
                     <div class="system-requirement space-y-2">
                         <h2 class="text-lg not-italic font-semibold leading-7 text-black">System Requirements</h2>
@@ -158,7 +158,7 @@
                                 The timezone that application gonna use.
                             </p>
                         </div>
-                        <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="sm:grid sm:grid-cols-2 gap-4">
                             <div class="form-control gap-2">
                                 <select class="select select-sm select-bordered" wire:model="form.timezone" required>
                                     @foreach ($groupedTimezone as $group => $timezones)

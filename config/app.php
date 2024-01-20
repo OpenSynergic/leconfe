@@ -4,6 +4,11 @@ use Illuminate\Support\Facades\Facade;
 
 return [
 
+    /**
+     * Is app installed?
+     */
+    'installed' => env('APP_INSTALLED', false),
+
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -41,7 +46,7 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    'debug' => (bool) env('APP_DEBUG', true),
 
     /*
     |--------------------------------------------------------------------------

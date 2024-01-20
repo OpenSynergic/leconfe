@@ -17,11 +17,12 @@ use App\Models\Submission;
 use App\Models\Timeline;
 use App\Models\Topic;
 use App\Models\Venue;
+use App\Models\Version;
 use Illuminate\Foundation\Application as LaravelApplication;
 
 class Application extends LaravelApplication
 {
-    public const APP_VERSION = '1.0.0';
+    public const APP_VERSION = '1.0.0-beta.1';
 
     public const PHP_MIN_VERSION = '8.1';
 
@@ -33,12 +34,27 @@ class Application extends LaravelApplication
 
     public function isInstalled()
     {
-        return file_exists(storage_path('installed'));
+        return config('app.installed');
     }
 
-    public function getAppVersion()
+    public function getCodeVersion() : string
     {
         return static::APP_VERSION;
+    }
+
+    public function getVersion()
+    {
+        $version = new Version();
+        $version->product_name = 'Leconfe';
+        $version->product_folder = 'leconfe';
+        $version->version = static::APP_VERSION;
+
+        return $version;
+    }
+
+    public function getInstalledVersion() : string
+    {
+        return Version::application()?->version;
     }
 
     public function getPhpMinVersion()
