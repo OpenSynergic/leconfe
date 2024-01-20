@@ -2,48 +2,91 @@
 
 namespace App\Utils;
 
-use App\Actions\Permissions\PermissionPopulateAction;
-use App\Actions\Roles\RoleAssignDefaultPermissions;
-use App\Models\Version;
+use App\Exceptions\Upgrade\NoUpgradeScript;
 use App\Utils\Enums\UpgradeActionPriority;
-use Closure;
+use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Artisan;
 
 use function Laravel\Prompts\info;
 use function Laravel\Prompts\progress;
 use function Laravel\Prompts\spin;
 
-class Upgrader
+class Upgrader extends Installer
 {
-    public bool $isRunningInConsole;
-
     public array $actions = [];
 
-    public function __construct(
-        public array $params,
-    ) {
-        $this->isRunningInConsole = app()->runningInConsole();
+    public string $installedVersion;
+    public string $codeVersion;
 
-        $this->prepareActions();
+    public function __construct(
+        public array $params = [],
+        public ?Command $command = null,
+    ) {
+        $this->installedVersion = App::getInstalledVersion();
+        $this->codeVersion = App::getCodeVersion();
     }
 
     public function run()
     {
-        $this->startActions();
+        try {
+            // count time to upgrade
+            $start = microtime(true);
 
-        // $this->addNewApplicationVersion();
+            $this->prepareActions();
+
+            $this->startActions();
+
+            $this->addNewApplicationVersion();
+
+            $this->optimize();
+        } catch (\Throwable $th) {
+            if (!$th instanceof NoUpgradeScript) {
+                activity('leconfe')
+                    ->causedByAnonymous()
+                    ->event('upgrade')
+                    ->withProperties([
+                        'from' => $this->installedVersion,
+                        'to' => $this->codeVersion,
+                        'duration' => round(microtime(true) - $start, 2),
+                        'status' => 'failed',
+                    ])
+                    ->log($th->getMessage());
+            }
+
+            throw $th;
+            return;
+        }
+
+        activity('leconfe')
+            ->causedByAnonymous()
+            ->event('upgrade')
+            ->withProperties([
+                'from' => $this->installedVersion,
+                'to' => $this->codeVersion,
+                'duration' => round(microtime(true) - $start, 2),
+                'status' => 'success',
+            ])
+            ->log('Upgrade success');
+    }
+
+    public function log($message, $properties = [])
+    {
+        activity('leconfe')
+            ->causedByAnonymous()
+            ->event('upgrade')
+            ->withProperties([
+                'from' => $this->installedVersion,
+                'to' => $this->codeVersion,
+                ...$properties,
+            ])
+            ->log($message);
     }
 
     public function addNewApplicationVersion()
     {
-        $version = Version::firstOrCreate([
-            'product_name' => 'Leconfe',
-            'product_folder' => 'leconfe',
-            'version' => app()->getCodeVersion(),
-        ], [
-            'installed_at' => now(),
-        ]);
+        $version = app()->getVersion();
+        $version->save();
 
         return $version;
     }
@@ -51,7 +94,7 @@ class Upgrader
     public function startActions()
     {
         if (empty($this->actions)) {
-            throw new \Exception('No upgrade script need to be run.');
+            throw new NoUpgradeScript($this->installedVersion, $this->codeVersion);
         }
 
         // Sort by priority
@@ -59,14 +102,7 @@ class Upgrader
 
         foreach ($this->actions as $actions) {
             foreach ($actions as $key => $action) {
-                if ($this->isRunningInConsole) {
-                    spin(
-                        fn () => $action(),
-                        "Running upgrade script : $key"
-                    );
-                    continue;
-                } 
-                  
+                $this->command?->info("Running upgrade actions : $key");
                 $action();
             }
         }
@@ -85,10 +121,5 @@ class Upgrader
     public function addAction(string $name, callable $action, UpgradeActionPriority $priority = UpgradeActionPriority::MEDIUM)
     {
         $this->actions[$priority->value][$name] = $action;
-    }
-
-    public function readParam(string $name)
-    {
-        return $this->params[$name] ?? null;
     }
 }

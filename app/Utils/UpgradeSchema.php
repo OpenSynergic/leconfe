@@ -2,8 +2,7 @@
 
 namespace App\Utils;
 
-use App\Utils\UpgradeSchemas\Upgrade100Beta2;
-
+use App\Utils\UpgradeSchemas;
 class UpgradeSchema 
 {
     public static $schemas = [
