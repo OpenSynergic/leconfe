@@ -5,6 +5,7 @@ namespace App\Actions\Roles;
 use App\Models\Role;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsAction;
+use Symfony\Component\Yaml\Yaml;
 
 class RoleAssignDefaultPermissions
 {
@@ -14,13 +15,13 @@ class RoleAssignDefaultPermissions
 
     public function handle()
     {
-        $file = storage_path('app/roleAssignedPermissions.json');
+        $file = base_path('data/roleAssignedPermissions.yaml');
 
         if (! file_exists($file)) {
             throw new \Exception("File $file  does not exist");
         }
 
-        $roleAssignedPermissions = json_decode(file_get_contents($file));
+        $roleAssignedPermissions = Yaml::parseFile($file);
 
         foreach ($roleAssignedPermissions as $roleName => $permissions) {
             if (empty($permissions)) {
@@ -32,7 +33,7 @@ class RoleAssignDefaultPermissions
                 ->where('name', $roleName)
                 ->first();
 
-            $role->syncPermissions([...$permissions, ...$role->permissions->pluck('name')->toArray()]);
+            $role?->syncPermissions([...$permissions, ...$role->permissions->pluck('name')->toArray()]);
         }
     }
 

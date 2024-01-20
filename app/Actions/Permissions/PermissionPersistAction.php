@@ -3,8 +3,10 @@
 namespace App\Actions\Permissions;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\File;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Spatie\Permission\Models\Permission;
+use Symfony\Component\Yaml\Yaml;
 
 class PermissionPersistAction
 {
@@ -14,13 +16,12 @@ class PermissionPersistAction
 
     public function handle()
     {
-        // save permissions to file in storage/app/permissions.json
         $permissions = Permission::query()
             ->orderBy('name', 'asc')
             ->pluck('name')
             ->toArray();
 
-        file_put_contents(storage_path('app/permissions.json'), json_encode($permissions, JSON_PRETTY_PRINT));
+        File::put(base_path('data' . DIRECTORY_SEPARATOR . 'permissions.yaml'), Yaml::dump($permissions));
     }
 
     public function asCommand(Command $command): void
