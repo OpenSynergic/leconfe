@@ -21,7 +21,7 @@ class PermissionPersistAction
             ->pluck('name')
             ->toArray();
 
-        File::put(base_path('data' . DIRECTORY_SEPARATOR . 'permissions.yaml'), Yaml::dump($permissions));
+        File::put(base_path('data'.DIRECTORY_SEPARATOR.'permissions.yaml'), Yaml::dump($permissions));
     }
 
     public function asCommand(Command $command): void

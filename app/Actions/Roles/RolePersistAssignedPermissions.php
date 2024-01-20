@@ -29,7 +29,7 @@ class RolePersistAssignedPermissions
             $data[$roleName] = ($roleName !== UserRole::Admin) ? $role->permissions->pluck('name')->toArray() : Permission::query()->pluck('name')->toArray();
         }
 
-        File::put(base_path('data' . DIRECTORY_SEPARATOR . 'roleAssignedPermissions.yaml'), Yaml::dump($data));
+        File::put(base_path('data'.DIRECTORY_SEPARATOR.'roleAssignedPermissions.yaml'), Yaml::dump($data));
     }
 
     public function asCommand(Command $command): void
