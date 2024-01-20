@@ -5,6 +5,7 @@ namespace App\Actions\Permissions;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Spatie\Permission\Models\Permission;
+use Symfony\Component\Yaml\Yaml;
 
 class PermissionPopulateAction
 {
@@ -14,12 +15,12 @@ class PermissionPopulateAction
 
     public function handle()
     {
-        // Read permissions from storage/app/permissions.json
-        if (! file_exists(storage_path('app/permissions.json'))) {
-            throw new \Exception('File storage/app/permissions.json does not exist');
+        $file = base_path('data/permissions.yaml');
+        if (! file_exists($file)) {
+            throw new \Exception('File storage/app/permissions.yaml does not exist');
         }
 
-        $permissions = json_decode(file_get_contents(storage_path('app/permissions.json')));
+        $permissions = Yaml::parseFile($file);
 
         // Create permissions if they don't exist
         foreach ($permissions as $permission) {
@@ -31,7 +32,7 @@ class PermissionPopulateAction
     {
         try {
             $this->handle();
-            $command->info('Permissions populated from storage/app/permissions.json');
+            $command->info('Permissions populated from ./data/permissions.yaml');
         } catch (\Throwable $th) {
             $command->error($th->getMessage());
         }

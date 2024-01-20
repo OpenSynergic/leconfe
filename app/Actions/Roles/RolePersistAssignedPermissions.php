@@ -5,8 +5,10 @@ namespace App\Actions\Roles;
 use App\Models\Enums\UserRole;
 use App\Models\Role;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\File;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Spatie\Permission\Models\Permission;
+use Symfony\Component\Yaml\Yaml;
 
 class RolePersistAssignedPermissions
 {
@@ -27,7 +29,7 @@ class RolePersistAssignedPermissions
             $data[$roleName] = ($roleName !== UserRole::Admin) ? $role->permissions->pluck('name')->toArray() : Permission::query()->pluck('name')->toArray();
         }
 
-        file_put_contents(storage_path('app/roleAssignedPermissions.json'), json_encode($data, JSON_PRETTY_PRINT));
+        File::put(base_path('data'.DIRECTORY_SEPARATOR.'roleAssignedPermissions.yaml'), Yaml::dump($data));
     }
 
     public function asCommand(Command $command): void
