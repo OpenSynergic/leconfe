@@ -7,6 +7,8 @@
         {{ filled($title = strip_tags($livewire->getTitle())) ? "{$title} - " : null }}
         {{ $contextName ?? config('app.name') }}
     </title>
+    <meta name="application-name" content="Leconfe">
+    <meta name=generator content="Leconfe {{ app()->getCodeVersion() }}">
     @if(isset($favicon))
         <link rel="icon" type="image/x-icon" href="{{ $favicon }}">
     @endif
