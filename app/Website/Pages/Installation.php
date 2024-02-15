@@ -17,7 +17,7 @@ class Installation extends Page
 
     protected static string|array $withoutRouteMiddleware = [
         SetupDefaultData::class,
-        IdentifyCurrentConference::class,
+        // IdentifyCurrentConference::class,
     ];
 
     public array $folders = [];

@@ -10,10 +10,11 @@ use App\Conference\Blocks\SubmitBlock;
 use App\Conference\Blocks\TimelineBlock;
 use App\Conference\Blocks\TopicBlock;
 use App\Facades\Block;
+use App\Facades\Plugin;
 use App\Http\Middleware\BootPluginMiddleware;
 use App\Http\Middleware\MustVerifyEmail;
 use App\Http\Middleware\Panel\PanelAuthenticate;
-use App\Http\Middleware\Panel\TenantConference;
+use App\Http\Middleware\Panel\TenantConferenceMiddleware;
 use App\Models\Conference;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Navigation;
@@ -37,6 +38,7 @@ use Filament\Panel;
 use Filament\PanelProvider as FilamentPanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Tables\Table;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Blade;
 use Livewire\Livewire;
@@ -47,7 +49,7 @@ class PanelProvider extends FilamentPanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        return $panel
+        $panel
             ->default()
             ->sidebarCollapsibleOnDesktop()
             ->id('panel')
@@ -98,6 +100,13 @@ class PanelProvider extends FilamentPanelProvider
             ->authMiddleware(static::getAuthMiddleware(), true)
             ->userMenuItems(static::getUserMenuItems())
             ->plugins(static::getPlugins());
+
+        
+        Plugin::getPlugins()->each(function ($plugin) use ($panel) {
+            $plugin->onPanel($panel);
+        });
+
+        return $panel;
     }
 
     /**
@@ -144,8 +153,8 @@ class PanelProvider extends FilamentPanelProvider
     public static function getTenantMiddleware(): array
     {
         return [
-            TenantConference::class,
-            BootPluginMiddleware::class,
+            TenantConferenceMiddleware::class,
+            // BootPluginMiddleware::class,
         ];
     }
 

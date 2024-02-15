@@ -14,7 +14,9 @@ use App\Http\Middleware\BootPluginMiddleware;
 use App\Http\Middleware\IdentifyArchiveConference;
 use App\Http\Middleware\IdentifyCurrentConference;
 use App\Http\Middleware\SetupDefaultData;
+use App\Models\Enums\ConferenceStatus;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Rahmanramsi\LivewirePageGroup\Facades\LivewirePageGroup;
@@ -31,6 +33,8 @@ class ConferenceServiceProvider extends ServiceProvider
             LivewirePageGroup::registerPageGroup($this->currentConference(PageGroup::make()));
             LivewirePageGroup::registerPageGroup($this->archiveConference(PageGroup::make()));
         });
+
+        $this->detectConference();
     }
 
     /**
@@ -77,7 +81,7 @@ class ConferenceServiceProvider extends ServiceProvider
             ->id('current-conference')
             ->path('current')
             ->middleware([
-                IdentifyCurrentConference::class,
+                // IdentifyCurrentConference::class,
                 SetupDefaultData::class,
                 // BootPluginMiddleware::class,
             ], true);
@@ -88,7 +92,7 @@ class ConferenceServiceProvider extends ServiceProvider
         return $this->setupPageGroup($pageGroup)
             ->id('archive-conference')
             ->middleware([
-                IdentifyArchiveConference::class,
+                // IdentifyArchiveConference::class,
                 SetupDefaultData::class,
                 // BootPluginMiddleware::class,
             ], true)
@@ -100,10 +104,43 @@ class ConferenceServiceProvider extends ServiceProvider
         return $this->setupPageGroup($pageGroup)
             ->id('upcoming-conference')
             ->middleware([
-                IdentifyArchiveConference::class,
+                // IdentifyArchiveConference::class,
                 SetupDefaultData::class,
                 // BootPluginMiddleware::class,
             ], true)
             ->path('archive/{conference}');
+    }
+
+    protected function detectConference()
+    {
+        $pathInfos = explode('/', request()->getPathInfo());
+
+        // Special case for `current` path
+        if(isset($pathInfos[1]) && $pathInfos[1] === 'current'){
+            $conferenceId = DB::table('conferences')->where('status', ConferenceStatus::Active->value)->value('id');
+            if($conferenceId){
+                app()->setCurrentConferenceId($conferenceId);
+                app()->scopeCurrentConference();
+                return;
+            }
+        }
+
+
+        if(!isset($pathInfos[2])){
+            app()->setCurrentConferenceId(0);
+            return;
+        }
+        
+        
+        $conferencePath = $pathInfos[2];
+        $conferenceId   = DB::table('conferences')->where('path', $conferencePath)->value('id');
+
+        if(!$conferenceId){
+            app()->setCurrentConferenceId(0);
+            return;
+        }
+
+        app()->setCurrentConferenceId($conferenceId);
+        app()->scopeCurrentConference();
     }
 }

@@ -9,7 +9,6 @@ use App\Models\Conference;
 use App\Models\Navigation;
 use App\Models\ParticipantPosition;
 use App\Models\PaymentItem;
-use App\Models\PluginSetting;
 use App\Models\Scopes\ConferenceScope;
 use App\Models\Site;
 use App\Models\StaticPage;
@@ -28,9 +27,9 @@ class Application extends LaravelApplication
 
     public const CONTEXT_WEBSITE = 0;
 
-    protected ?Site $site;
+    protected int $currentConferenceId;
 
-    protected ?Conference $currentConference = null;
+    protected string $currentConferencePath;
 
     public function isInstalled()
     {
@@ -64,12 +63,17 @@ class Application extends LaravelApplication
 
     public function getCurrentConference(): ?Conference
     {
-        return $this->currentConference;
+        return Conference::find($this->getCurrentConferenceId());
     }
 
-    public function setCurrentConference(Conference $conference)
+    public function getCurrentConferenceId(): int
     {
-        $this->currentConference = $conference;
+        return $this->currentConferenceId ?? static::CONTEXT_WEBSITE;
+    }
+
+    public function setCurrentConferenceId(int $conferenceId)
+    {
+        $this->currentConferenceId = $conferenceId;
     }
 
     public function scopeCurrentConference(): void
@@ -85,7 +89,6 @@ class Application extends LaravelApplication
             StaticPage::class,
             Timeline::class,
             PaymentItem::class,
-            PluginSetting::class,
         ] as $model) {
             $model::addGlobalScope(new ConferenceScope);
         }
@@ -101,11 +104,7 @@ class Application extends LaravelApplication
 
     public function getSite(): Site
     {
-        if (! isset($this->site)) {
-            $this->site = Site::getSite() ?? SiteCreateAction::run();
-        }
-
-        return $this->site;
+        return Site::getSite() ?? SiteCreateAction::run();
     }
 
     public function isReportingErrors(): bool

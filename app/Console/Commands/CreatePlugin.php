@@ -51,16 +51,16 @@ class CreatePlugin extends Command implements PromptsForMissingInput
             required: false,
         );
 
-        $conferenceId = select(
-            label: 'Where the plugin will be installed?',
-            options: Conference::all()
-                ->pluck('name', 'id')
-                ->prepend('Website', 0),
-        );
+        // $conferenceId = select(
+        //     label: 'Where the plugin will be installed?',
+        //     options: Conference::all()
+        //         ->pluck('name', 'id')
+        //         ->prepend('Website', 0),
+        // );
 
-        if ($conferenceId) {
-            app()->setCurrentConference(Conference::find($conferenceId));
-        }
+        // if ($conferenceId) {
+        //     app()->setCurrentConference(Conference::find($conferenceId));
+        // }
 
         $pluginDisk = Plugin::getDisk();
 

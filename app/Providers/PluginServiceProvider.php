@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Facades\Plugin;
 use App\Managers\PluginManager;
 use Illuminate\Support\ServiceProvider;
 
@@ -15,6 +16,8 @@ class PluginServiceProvider extends ServiceProvider
         $this->app->scoped('plugin', function (): PluginManager {
             return new PluginManager();
         });
+
+        Plugin::boot();
     }
 
     /**

@@ -42,8 +42,5 @@ class Plugin extends Model
         return false;
     }
 
-    public function settings(): HasMany
-    {
-        return $this->hasMany(PluginSetting::class, 'plugin', 'dir');
-    }
+
 }

@@ -7,7 +7,7 @@ use Filament\Facades\Filament;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class TenantConference
+class TenantConferenceMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,7 +16,7 @@ class TenantConference
      */
     public function handle(Request $request, Closure $next): Response
     {
-        app()->setCurrentConference(Filament::getTenant());
+        app()->setCurrentConferenceId(Filament::getTenant()->getKey());
         app()->scopeCurrentConference();
 
         return $next($request);
