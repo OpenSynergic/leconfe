@@ -90,6 +90,10 @@ class PluginManager
 
     protected function bootPlugins($includeDisabled = false, $refresh = false): void
     {
+        if(!app()->isInstalled()){
+            return;
+        }
+        
         if ($this->isBooted && !$refresh) {
             return;
         }

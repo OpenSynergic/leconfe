@@ -55,7 +55,7 @@ class PanelProvider extends FilamentPanelProvider
             ->path(config('app.filament.panel_path'))
             ->maxContentWidth('full')
             // ->spa()
-            ->homeUrl(fn () => App::getCurrentConference()->getHomeUrl())
+            ->homeUrl(fn () => App::isInstalled() ? App::getCurrentConference()->getHomeUrl() : null)
             ->bootUsing(fn ($panel) => $this->panelBootUsing($panel))
             ->tenantMenu(false)
             // ->renderHook(

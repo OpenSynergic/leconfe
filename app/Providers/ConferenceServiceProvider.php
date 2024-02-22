@@ -41,13 +41,17 @@ class ConferenceServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Scope livewire update path tu current conference
-        $currentConference = app()->getCurrentConference();
-        if($currentConference){
-            Livewire::setUpdateRoute(function ($handle) use  ($currentConference){
-                return Route::post('/livewire/' . $currentConference->path .  '/update', $handle)
-                    ->middleware('web');
-            });
+        
+        if(!app()->runningInConsole() && app()->isInstalled()){
+            // Scope livewire update path tu current conference
+            $currentConference = app()->getCurrentConference();
+            if($currentConference){
+                Livewire::setUpdateRoute(function ($handle) use  ($currentConference){
+                    return Route::post('/livewire/' . $currentConference->path .  '/update', $handle)
+                        ->middleware('web');
+                });
+            }
+            return;
         }
     }
 
@@ -108,6 +112,10 @@ class ConferenceServiceProvider extends ServiceProvider
 
     protected function detectConference()
     {
+        if(!app()->isInstalled()){
+            return;
+        }
+
         $pathInfos = explode('/', request()->getPathInfo());
 
         // Special case for `current` path
