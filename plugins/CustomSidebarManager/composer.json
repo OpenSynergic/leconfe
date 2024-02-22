@@ -1,0 +1,14 @@
+{
+    "name": "leconfe/custom-sidebar-manager",
+    "autoload": {
+        "psr-4": {
+            "CustomSidebarManager\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Leconfe"
+        }
+    ],
+    "require": {}
+}
