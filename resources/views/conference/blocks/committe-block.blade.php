@@ -35,7 +35,7 @@
                                 @foreach ($participant->getMeta('expertise') as $expertise)
                                     <!-- Loop through and display member's expertise badges -->
                                     <div
-                                        class="badge badge-outline text-xs border border-gray-300 h-6 text-xs text-secondary">
+                                        class="badge badge-outline text-xs border border-gray-300 h-6 text-secondary">
                                         {{ $expertise }}</div>
                                 @endforeach
                             </div>
