@@ -4,7 +4,7 @@
     "src": "resources/assets/images/logo.png"
   },
   "resources/panel/css/panel.css": {
-    "file": "assets/panel-5ee67444.css",
+    "file": "assets/panel-819054e6.css",
     "isEntry": true,
     "src": "resources/panel/css/panel.css"
   },
@@ -14,12 +14,12 @@
     "src": "resources/panel/js/panel.js"
   },
   "resources/website/css/website.css": {
-    "file": "assets/website-3924ce8d.css",
+    "file": "assets/website-72929c03.css",
     "isEntry": true,
     "src": "resources/website/css/website.css"
   },
   "resources/website/js/website.js": {
-    "file": "assets/website-02a4b6a2.js",
+    "file": "assets/website-a9ec73b1.js",
     "isEntry": true,
     "src": "resources/website/js/website.js"
   }

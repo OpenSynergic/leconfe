@@ -22,15 +22,16 @@ class Plugin extends Model
         'description' => 'string',
         'version' => 'string',
         'enabled' => 'boolean',
+        'path' => 'string',
     ];
 
     public function getRows()
     {
         return FacadesPlugin::getRegisteredPlugins()
             ->map(function ($pluginInfo, $pluginDir) {
-                $pluginInfo['id'] = $pluginDir;
-                $pluginInfo['enabled'] = FacadesPlugin::getSetting($pluginDir, 'enabled');
-
+                $pluginInfo['id'] = $pluginInfo['folder'];
+                $pluginInfo['enabled'] = FacadesPlugin::getSetting($pluginInfo['folder'], 'enabled');
+                $pluginInfo['path'] = $pluginDir;
                 return $pluginInfo;
             })
             ->values()

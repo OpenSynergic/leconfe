@@ -11,7 +11,6 @@ use App\Conference\Blocks\TimelineBlock;
 use App\Conference\Blocks\TopicBlock;
 use App\Facades\Block;
 use App\Facades\Plugin;
-use App\Http\Middleware\BootPluginMiddleware;
 use App\Http\Middleware\MustVerifyEmail;
 use App\Http\Middleware\Panel\PanelAuthenticate;
 use App\Http\Middleware\Panel\TenantConferenceMiddleware;
@@ -139,12 +138,12 @@ class PanelProvider extends FilamentPanelProvider
         });
 
         Block::registerBlocks([
-            CalendarBlock::class,
-            TimelineBlock::class,
-            PreviousBlock::class,
-            SubmitBlock::class,
-            TopicBlock::class,
-            CommitteeBlock::class,
+            new CalendarBlock,
+            new TimelineBlock,
+            new PreviousBlock,
+            new SubmitBlock,
+            new TopicBlock,
+            new CommitteeBlock,
             // InformationBlock::class,
         ]);
         Block::boot();
@@ -153,8 +152,7 @@ class PanelProvider extends FilamentPanelProvider
     public static function getTenantMiddleware(): array
     {
         return [
-            TenantConferenceMiddleware::class,
-            // BootPluginMiddleware::class,
+            // TenantConferenceMiddleware::class,
         ];
     }
 

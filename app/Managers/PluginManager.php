@@ -27,11 +27,14 @@ class PluginManager
 
     protected bool $isBooted = false;
 
+    public function __construct()
+    {
+        $this->bootedPlugins = collect();
+        $this->registeredPlugins = collect();
+    }
+
     public function boot()
     {
-        
-
-
         $this->bootPlugins();
     }
 
@@ -77,7 +80,7 @@ class PluginManager
 
                 return true;
             })
-            ->mapWithKeys(fn ($pluginDir) => [$pluginDir => Yaml::parseFile($pluginsDisk->path($pluginDir . DIRECTORY_SEPARATOR . 'index.yaml'))]);
+            ->mapWithKeys(fn ($pluginDir) => [$this->getPluginFullPath($pluginDir) => Yaml::parseFile($pluginsDisk->path($pluginDir . DIRECTORY_SEPARATOR . 'index.yaml'))]);
     }
 
     public function getPluginInfo($path)
@@ -90,14 +93,13 @@ class PluginManager
         if ($this->isBooted && !$refresh) {
             return;
         }
-
-        $this->bootedPlugins = $this->getRegisteredPlugins()
+        $this->getRegisteredPlugins()
             ->when(
                 !$includeDisabled,
                 fn ($plugins) => $plugins
-                    ->filter(fn ($pluginInfo, $pluginPath) => $this->getSetting($pluginPath, 'enabled') && $this->loadPlugin($this->getDisk()->path($pluginPath), false))
+                    ->filter(fn ($pluginInfo, $pluginPath) => $this->getSetting($pluginInfo['folder'], 'enabled') && $this->loadPlugin($pluginPath, false))
             )
-            ->mapWithKeys(fn ($pluginInfo, $pluginPath) => [$pluginPath => $this->bootPlugin($this->getDisk()->path($pluginPath))]);
+            ->each(fn ($pluginInfo, $pluginPath) => $this->bootPlugin($pluginPath));
 
         $this->isBooted = true;
     }
@@ -108,6 +110,8 @@ class PluginManager
         $plugin->setPluginPath($pluginPath);
         $plugin->load();
         $plugin->boot();
+
+        $this->bootedPlugins->put($plugin->getInfo('folder'), $plugin);
 
         return $plugin;
     }
@@ -133,7 +137,7 @@ class PluginManager
 
     public function getRegisteredPlugins(): Collection
     {
-        if (empty($this->registeredPlugins)) {
+        if ($this->registeredPlugins->isEmpty()) {
             $this->registerPlugins();
         }
 
@@ -149,7 +153,7 @@ class PluginManager
         return $this->bootedPlugins;
     }
 
-    public function getPlugin($path, $onlyEnabled = true) : ?ClassesPlugin
+    public function getPlugin($path, $onlyEnabled = true): ?ClassesPlugin
     {
         $plugin = $this->getPlugins()->get($path);
 
@@ -170,13 +174,18 @@ class PluginManager
         $this->enable($pluginPath, false);
     }
 
-    public function getSetting(string $plugin, $key): mixed
+    public function getSetting(string $plugin, mixed $key, $default = null): mixed
     {
-        return once(fn () => DB::table('plugin_settings')
+        return once(function() use ($plugin, $key, $default){
+            $setting = DB::table('plugin_settings')
+            ->select(['value', 'type'])
             ->where('conference_id', App::getCurrentConferenceId())
             ->where('plugin', $plugin)
             ->where('key', $key)
-            ->value('value'));
+            ->first();
+
+            return $setting ? $this->convertFromDB($setting->value, $setting->type) : $default;
+        });
     }
 
     public function updateSetting(string $plugin, $key, $value): mixed
@@ -184,14 +193,19 @@ class PluginManager
         // Flush cache
         \Spatie\Once\Cache::getInstance()->flush();
 
+        $type =  $this->getType($value);
+
         return DB::table('plugin_settings')
             ->updateOrInsert(
                 [
                     'plugin' => $plugin,
+                    'conference_id' => App::getCurrentConferenceId(),
                     'key' => $key,
-                    'conference_id' => app()->getCurrentConference()?->getKey() ?? Application::CONTEXT_WEBSITE,
                 ],
-                ['value' => $value],
+                [
+                    'value' => $this->convertToDB($value, $type, true),
+                    'type' => $type,
+                ],
             );
     }
 
@@ -287,12 +301,12 @@ class PluginManager
                 throw new Exception('Plugin does not contain index.yaml file');
             }
 
-            if(!isset($pluginInfo['name'])) {
-                throw new Exception('Plugin must contain a name');
+            if (!isset($pluginInfo['name'])) {
+                throw new Exception('Plugin must contain a name information in the index.yaml file');
             }
 
-            if(!isset($pluginInfo['folder'])) {
-                throw new Exception('Plugin must contain a folder with the same name as the plugin folder name');
+            if (!isset($pluginInfo['folder'])) {
+                throw new Exception('Plugin must contain a `folder` information with the same name as the plugin folder name');
             }
 
             if (!$zip->extractTo($this->getTempDisk()->path(''))) {
@@ -338,6 +352,116 @@ class PluginManager
 
             $fileSystem = new Filesystem();
             $fileSystem->copyDirectory($pluginPath, $pluginsDisk->path($pluginName));
+        }
+    }
+
+    /**
+     * Convert a PHP variable into a string to be stored in the DB
+     *
+     * @param string $type
+     * @param bool $nullable True iff the value is allowed to be null.
+     *
+     * @return string
+     */
+    public function convertToDB($value, &$type, $nullable = false)
+    {
+        if ($nullable && $value === null) {
+            return null;
+        }
+
+        if ($type == null) {
+            $type = $this->getType($value);
+        }
+
+        switch ($type) {
+            case 'object':
+            case 'array':
+                $value = json_encode($value, JSON_UNESCAPED_UNICODE);
+                break;
+            case 'bool':
+            case 'boolean':
+                // Cast to boolean, ensuring that string
+                // "false" evaluates to boolean false
+                $value = ($value && $value !== 'false') ? 1 : 0;
+                break;
+            case 'int':
+            case 'integer':
+                $value = (int) $value;
+                break;
+            case 'float':
+            case 'number':
+                $value = (float) $value;
+                break;
+            case 'date':
+                if ($value !== null) {
+                    if (!is_numeric($value)) {
+                        $value = strtotime($value);
+                    }
+                    $value = date('Y-m-d H:i:s', $value);
+                }
+                break;
+            case 'string':
+            default:
+                // do nothing.
+        }
+
+        return $value;
+    }
+
+    /**
+     * Convert a value from the database to a specific type
+     *
+     * @param mixed $value Value from the database
+     * @param string $type Type from the database, eg `string`
+     * @param bool $nullable True iff the value is allowed to be null
+     */
+    public function convertFromDB($value, $type, $nullable = false)
+    {
+        if ($nullable && $value === null) {
+            return null;
+        }
+        switch ($type) {
+            case 'bool':
+            case 'boolean':
+                return (bool) $value;
+            case 'int':
+            case 'integer':
+                return (int) $value;
+            case 'float':
+            case 'number':
+                return (float) $value;
+            case 'object':
+            case 'array':
+                $decodedValue = json_decode($value, true);
+                return !is_null($decodedValue) ? $decodedValue : [];
+            case 'date':
+                return strtotime($value);
+            case 'string':
+            default:
+                // Nothing required.
+                break;
+        }
+        return $value;
+    }
+
+    public function getType($value)
+    {
+        switch (gettype($value)) {
+            case 'boolean':
+            case 'bool':
+                return 'bool';
+            case 'integer':
+            case 'int':
+                return 'int';
+            case 'double':
+            case 'float':
+                return 'float';
+            case 'array':
+            case 'object':
+                return 'object';
+            case 'string':
+            default:
+                return 'string';
         }
     }
 }

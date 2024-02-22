@@ -42,7 +42,12 @@
 }
 
 .user-content {
-    @apply prose prose-sm prose-a:text-primary prose-a:underline hover:prose-a:text-primary;
+    @apply 
+        prose prose-sm 
+        prose-a:text-primary prose-a:underline hover:prose-a:text-primary 
+        prose-h2:mt-0 
+        prose-h3:mt-0
+        prose-p:my-2
 }
 
 .text-heading {

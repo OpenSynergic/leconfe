@@ -16,8 +16,8 @@ class TenantConferenceMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        app()->setCurrentConferenceId(Filament::getTenant()->getKey());
-        app()->scopeCurrentConference();
+        // app()->setCurrentConferenceId(Filament::getTenant()->getKey());
+        // app()->scopeCurrentConference();
 
         return $next($request);
     }

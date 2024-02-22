@@ -45,9 +45,14 @@ abstract class Plugin implements HasPlugin
         $this->pluginPath = $path;
     }
 
-    public function getSetting($key): mixed
+    public function getSetting($key, $default = null): mixed
     {
-        return FacadesPlugin::getSetting($this->getPluginPath(), $key);
+    return FacadesPlugin::getSetting($this->getInfo('folder'), $key, $default);
+    }
+
+    public function updateSetting($key, $value): mixed
+    {
+        return FacadesPlugin::updateSetting($this->getInfo('folder'), $key, $value);
     }
     
     public function onPanel(Panel $panel): void
@@ -58,5 +63,10 @@ abstract class Plugin implements HasPlugin
     public function onAdministrationPanel(Panel $panel): void
     {
         // Implement this method to add your plugin to the panel administration
+    }
+
+    public function getPluginPage() : ?string
+    {
+        return null;
     }
 }

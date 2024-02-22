@@ -33,11 +33,11 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
 
                 // Register blocks
                 Block::registerBlocks([
-                    SearchBlock::class,
-                    LoginBlock::class,
-                    CalendarBlock::class,
-                    UpcomingConferenceBlock::class,
-                    TopicBlock::class,
+                    new SearchBlock,
+                    new LoginBlock,
+                    new CalendarBlock,
+                    new UpcomingConferenceBlock,
+                    new TopicBlock,
                 ]);
                 Block::boot();
             })

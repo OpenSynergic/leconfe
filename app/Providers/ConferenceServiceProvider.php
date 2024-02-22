@@ -10,13 +10,12 @@ use App\Conference\Blocks\TimelineBlock;
 use App\Conference\Blocks\TopicBlock;
 use App\Conference\Pages\Home;
 use App\Facades\Block;
-use App\Http\Middleware\BootPluginMiddleware;
 use App\Http\Middleware\IdentifyArchiveConference;
 use App\Http\Middleware\IdentifyCurrentConference;
 use App\Http\Middleware\SetupDefaultData;
 use App\Models\Enums\ConferenceStatus;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Rahmanramsi\LivewirePageGroup\Facades\LivewirePageGroup;
@@ -40,17 +39,16 @@ class ConferenceServiceProvider extends ServiceProvider
     /**
      * Bootstrap services.
      */
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        // Blade::anonymousComponentPath(resource_path('views/conference/components'), 'conference');
-
-        // Livewire::addPersistentMiddleware([
-        //     IdentifyCurrentConference::class,
-        //     SetupDefaultData::class,
-        // ]);
+        // Scope livewire update path tu current conference
+        $currentConference = app()->getCurrentConference();
+        if($currentConference){
+            Livewire::setUpdateRoute(function ($handle) use  ($currentConference){
+                return Route::post('/livewire/' . $currentConference->path .  '/update', $handle)
+                    ->middleware('web');
+            });
+        }
     }
 
     protected function setupPageGroup(PageGroup $pageGroup): PageGroup
@@ -60,12 +58,12 @@ class ConferenceServiceProvider extends ServiceProvider
             ->homePage(Home::class)
             ->bootUsing(function () {
                 Block::registerBlocks([
-                    CalendarBlock::class,
-                    TimelineBlock::class,
-                    PreviousBlock::class,
-                    SubmitBlock::class,
-                    TopicBlock::class,
-                    CommitteeBlock::class,
+                    new CalendarBlock,
+                    new TimelineBlock,
+                    new PreviousBlock,
+                    new SubmitBlock,
+                    new TopicBlock,
+                    new CommitteeBlock,
                 ]);
                 Block::boot();
             })
@@ -83,7 +81,6 @@ class ConferenceServiceProvider extends ServiceProvider
             ->middleware([
                 // IdentifyCurrentConference::class,
                 SetupDefaultData::class,
-                // BootPluginMiddleware::class,
             ], true);
     }
 
@@ -92,9 +89,8 @@ class ConferenceServiceProvider extends ServiceProvider
         return $this->setupPageGroup($pageGroup)
             ->id('archive-conference')
             ->middleware([
-                // IdentifyArchiveConference::class,
+                IdentifyArchiveConference::class,
                 SetupDefaultData::class,
-                // BootPluginMiddleware::class,
             ], true)
             ->path('archive/{conference}');
     }
@@ -104,9 +100,8 @@ class ConferenceServiceProvider extends ServiceProvider
         return $this->setupPageGroup($pageGroup)
             ->id('upcoming-conference')
             ->middleware([
-                // IdentifyArchiveConference::class,
+                IdentifyArchiveConference::class,
                 SetupDefaultData::class,
-                // BootPluginMiddleware::class,
             ], true)
             ->path('archive/{conference}');
     }
@@ -134,12 +129,11 @@ class ConferenceServiceProvider extends ServiceProvider
         
         $conferencePath = $pathInfos[2];
         $conferenceId   = DB::table('conferences')->where('path', $conferencePath)->value('id');
-
         if(!$conferenceId){
             app()->setCurrentConferenceId(0);
             return;
         }
-
+        
         app()->setCurrentConferenceId($conferenceId);
         app()->scopeCurrentConference();
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Conference;
+use App\Models\Enums\ConferenceStatus;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,14 +19,21 @@ class IdentifyCurrentConference
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $conference = Conference::active();
+        $conference = app()->getCurrentConference();
 
         if (! $conference) {
             return abort(404);
         }
 
-        app()->setCurrentConference($conference);
-        app()->scopeCurrentConference();
+        switch ($conference->status) {
+            case ConferenceStatus::Archived:
+                return redirect('archive/' . $conference->path);
+                break;
+            case ConferenceStatus::Upcoming:
+                return abort(404);
+                break;
+        }
+
 
         return $next($request);
     }

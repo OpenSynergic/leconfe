@@ -2,9 +2,12 @@
 
 namespace App\Livewire;
 
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Str;
 
-abstract class Block extends \Livewire\Component
+
+abstract class Block implements Htmlable
 {
     protected ?string $position = 'right';
 
@@ -26,9 +29,14 @@ abstract class Block extends \Livewire\Component
         return $this->name;
     }
 
+    public function getDatabaseName(): string
+    {
+        return Str::of($this->name)->lower()->snake();
+    }
+
     public function getSetting(string $name)
     {
-        $blockSetting = \App\Models\Block::where('class', static::class)->first();
+        $blockSetting = \App\Models\Block::where('name', $this->getDatabaseName())->first();
 
         return $blockSetting?->{$name};
     }
@@ -48,6 +56,11 @@ abstract class Block extends \Livewire\Component
         return $this->getSetting('active') ?? $this->active;
     }
 
+    public function toHtml()
+    {
+        return $this->render()->render();
+    }
+
     public function render(): View
     {
         return view($this->view, $this->getViewData());
@@ -58,6 +71,7 @@ abstract class Block extends \Livewire\Component
         return [
             'class' => static::class,
             'name' => $this->getBlockName(),
+            'database_name' => $this->getDatabaseName(),
             'position' => $this->getPosition(),
             'sort' => $this->getSort(),
             'active' => $this->isActive(),

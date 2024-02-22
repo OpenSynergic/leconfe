@@ -11,6 +11,7 @@ use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
@@ -30,18 +31,12 @@ class SidebarSetting extends Component implements HasForms
             'sidebar' => [
                 'blocks' => [
                     'left' => FacadesBlock::getBlocks(position: 'left', includeInactive: true)
-                        ->map(
-                            fn (BlockComponent $block) => (object) $block->getSettings()
-                        )
-                        ->keyBy(
-                            fn () => str()->uuid()->toString()
+                        ->mapWithKeys(
+                            fn (BlockComponent $block) => [$block->getDatabaseName() => (object) $block->getSettings()]
                         ),
                     'right' => FacadesBlock::getBlocks(position: 'right', includeInactive: true)
-                        ->map(
-                            fn (BlockComponent $block) => (object) $block->getSettings()
-                        )
-                        ->keyBy(
-                            fn () => str()->uuid()->toString()
+                        ->mapWithKeys(
+                            fn (BlockComponent $block) => [$block->getDatabaseName() => (object) $block->getSettings()]
                         ),
                 ],
             ],
@@ -60,18 +55,15 @@ class SidebarSetting extends Component implements HasForms
             ->schema([
                 Section::make()
                     ->schema([
-                        Grid::make(3)
+                        Grid::make(2)
                             ->columns([
-                                'xl' => 3,
-                                'sm' => 3,
+                                'sm' => 2,
                             ])
                             ->schema([
                                 BlockList::make('sidebar.blocks.left')
-                                    ->label(__('Left Sidebar'))
-                                    ->reactive(),
+                                    ->label(__('Left Sidebar')),
                                 BlockList::make('sidebar.blocks.right')
-                                    ->label(__('Right Sidebar'))
-                                    ->reactive(),
+                                    ->label(__('Right Sidebar')),
                             ]),
 
                     ]),
@@ -86,7 +78,7 @@ class SidebarSetting extends Component implements HasForms
                                 $sidebarFormData = $formData['sidebar'];
                                 foreach ($sidebarFormData['blocks'] as $blocks) {
                                     foreach ($blocks as $block) {
-                                        UpdateBlockSettingsAction::run($block->class, [
+                                        UpdateBlockSettingsAction::run($block->database_name, [
                                             'position' => $block->position,
                                             'sort' => $block->sort,
                                             'active' => $block->active,
@@ -96,6 +88,7 @@ class SidebarSetting extends Component implements HasForms
                                 $action->sendSuccessNotification();
                             } catch (\Throwable $th) {
                                 $action->sendFailureNotification();
+                                throw $th;
                             }
                         }),
                 ])->alignLeft(),

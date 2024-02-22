@@ -17,12 +17,9 @@ class BlockManager
             return;
         }
 
-        foreach ($this->blocks as $blockClass) {
-            if (is_subclass_of($blockClass, Block::class)) {
-                $componentName = app(ComponentRegistry::class)->getName($blockClass);
-                Livewire::component($componentName, $blockClass);
-            } else {
-                throw new \Exception("{$blockClass} must be an instance of ".Block::class);
+        foreach ($this->blocks as $block) {
+            if (!$block instanceof Block) {
+                throw new \Exception("{$block->getName()} must be an instance of ".Block::class);
             }
         }
     }
@@ -35,7 +32,6 @@ class BlockManager
     public function getBlocks(string $position, bool $includeInactive = false): Collection
     {
         return collect($this->blocks)
-            ->map(fn ($block) => app($block))
             ->reject(function (Block $block) use ($position, $includeInactive) {
                 if ($includeInactive) {
                     return $block->getPosition() != $position;

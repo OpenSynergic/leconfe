@@ -2,10 +2,10 @@
 
 namespace App\Models\Scopes;
 
-use App\Application;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
+use Illuminate\Support\Facades\App;
 
 class ConferenceScope implements Scope
 {
@@ -14,6 +14,6 @@ class ConferenceScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        $builder->where('conference_id', app()->getCurrentConference()?->getKey() ?? Application::CONTEXT_WEBSITE);
+        $builder->where('conference_id', App::getCurrentConferenceId());
     }
 }

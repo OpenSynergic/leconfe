@@ -16,7 +16,7 @@ class UpdateBlockSettingsAction
             DB::beginTransaction();
 
             $block = Block::updateOrCreate([
-                'class' => $blockName,
+                'name' => $blockName,
             ], $settings);
 
             DB::commit();
