@@ -3,6 +3,7 @@
 namespace App\Conference\Pages;
 
 use App\Models\Participant;
+use App\Panel\Resources\Conferences\CommitteePositionResource;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 
 class Committe extends Page
@@ -22,11 +23,9 @@ class Committe extends Page
     protected function getViewData(): array
     {
         // Retrieve participants with their associated committee positions.
-        $participants = Participant::with('positions')
-            ->whereHas('positions', function ($query) {
-                // Filter participants to include only those with 'committee' type positions.
-                $query->where('type', 'committee');
-            })
+        $participants = Participant::with([
+            'positions' => fn ($query) => $query->where('type', CommitteePositionResource::$positionType),
+        ])
             ->orderBy('order_column') // Order the retrieved data by the 'order_column'.
             ->get();
 
