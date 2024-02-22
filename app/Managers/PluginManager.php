@@ -31,7 +31,7 @@ class PluginManager
 
     public function boot()
     {
-        if(app()->runningInConsole()){
+        if (app()->runningInConsole()) {
             return;
         }
 
