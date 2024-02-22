@@ -95,10 +95,6 @@ class SpeakerResource extends Resource
                         'lg' => 2,
                     ]),
                 ...ParticipantResource::additionalFormField(),
-                Forms\Components\Toggle::make('meta.confirmed')
-                    ->columnSpan([
-                        'lg' => 2,
-                    ]),
             ]);
     }
 
@@ -165,10 +161,6 @@ class SpeakerResource extends Resource
             ])
             ->columns([
                 ...ParticipantResource::generalTableColumns(),
-                ToggleColumn::make('confirmed')
-                    ->label('Confirmed')
-                    ->updateStateUsing(fn (bool $state, Participant $record) => $record->setMeta('confirmed', $state))
-                    ->getStateUsing(fn (Participant $record) => $record->getMeta('confirmed') ?? false),
             ])
             ->actions([
                 ...ParticipantResource::tableActions(SpeakerPositionResource::$positionType),

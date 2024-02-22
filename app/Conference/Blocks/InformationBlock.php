@@ -13,9 +13,4 @@ class InformationBlock extends Block
     protected string $name = 'Information Block';
 
     protected ?string $position = 'right';
-
-    public function getViewData(): array
-    {
-        return [];
-    }
 }

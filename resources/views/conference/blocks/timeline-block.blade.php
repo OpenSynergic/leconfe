@@ -1,4 +1,4 @@
-<div class="flex flex-col space-y-1">
+<x-block :id="$id" class="flex flex-col space-y-1">
     @if (count($timelines) > 0)
         <h2 class="text-heading px-2 mb-1">Timelines</h2>
         @foreach ($timelines as $timeline)
@@ -27,9 +27,9 @@
                 </div>
             </div>
         @endforeach
-        <div class="w-full flex justify-start pt-1">
+        <div class="w-full flex justify-end pt-1">
             <a href="{{ route('livewirePageGroup.current-conference.pages.timelines') }}"
                 class="btn btn-primary text-xs btn-sm text-white rounded-md w-16">More</a>
         </div>
     @endif
-</div>
+</x-block>

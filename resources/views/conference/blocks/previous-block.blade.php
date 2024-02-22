@@ -1,4 +1,4 @@
-<div class="flex flex-col space-y-1">
+<x-block :id="$id" class="flex flex-col space-y-1">
     @if ($archives->isNotEmpty())
         <h2 class="text-heading px-2">Previous Event</h2>
         @foreach ($archives as $archive)
@@ -19,4 +19,4 @@
             </div>
         @endforeach
     @endif
-</div>
+</x-block>

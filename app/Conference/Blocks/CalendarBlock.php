@@ -41,6 +41,7 @@ class CalendarBlock extends Block
         }
 
         return [
+            'id' => $this->getDatabaseName(),
             'timelines' => $formattedTimelines,
         ];
     }

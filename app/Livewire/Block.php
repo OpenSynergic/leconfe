@@ -21,7 +21,9 @@ abstract class Block implements Htmlable
 
     public function getViewData(): array
     {
-        return [];
+        return [ 
+            'id' => $this->getDatabaseName(),
+        ];
     }
 
     public function getBlockName(): string
