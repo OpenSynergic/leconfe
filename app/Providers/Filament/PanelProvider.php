@@ -37,7 +37,6 @@ use Filament\Panel;
 use Filament\PanelProvider as FilamentPanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Tables\Table;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Blade;
 use Livewire\Livewire;
@@ -100,7 +99,6 @@ class PanelProvider extends FilamentPanelProvider
             ->userMenuItems(static::getUserMenuItems())
             ->plugins(static::getPlugins());
 
-        
         Plugin::getPlugins()->each(function ($plugin) use ($panel) {
             $plugin->onPanel($panel);
         });

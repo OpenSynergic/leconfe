@@ -4,8 +4,6 @@ namespace App\Managers;
 
 use App\Livewire\Block;
 use Illuminate\Support\Collection;
-use Livewire\Livewire;
-use Livewire\Mechanisms\ComponentRegistry;
 
 class BlockManager
 {
@@ -18,7 +16,7 @@ class BlockManager
         }
 
         foreach ($this->blocks as $block) {
-            if (!$block instanceof Block) {
+            if (! $block instanceof Block) {
                 throw new \Exception("{$block->getName()} must be an instance of ".Block::class);
             }
         }

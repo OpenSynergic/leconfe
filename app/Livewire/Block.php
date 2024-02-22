@@ -6,7 +6,6 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
 
-
 abstract class Block implements Htmlable
 {
     protected ?string $position = 'right';
@@ -21,7 +20,7 @@ abstract class Block implements Htmlable
 
     public function getViewData(): array
     {
-        return [ 
+        return [
             'id' => $this->getDatabaseName(),
         ];
     }

@@ -7,7 +7,7 @@ use App\Livewire\Block;
 class CustomSidebarBlock extends Block
 {
     protected ?string $content;
-    
+
     protected ?string $view = 'CustomSidebarManager::custom-sidebar';
 
     public function __construct(string $name, ?string $content)
@@ -27,7 +27,6 @@ class CustomSidebarBlock extends Block
 
     public function getBlockName(): string
     {
-        return $this->name . ' (Custom Sidebar)';
+        return $this->name.' (Custom Sidebar)';
     }
-
 }

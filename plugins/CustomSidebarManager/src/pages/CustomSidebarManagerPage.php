@@ -4,19 +4,17 @@ namespace CustomSidebarManager\Pages;
 
 use App\Facades\Plugin;
 use App\Tables\Columns\IndexColumn;
-use Filament\Pages\Page;
-use Filament\Tables\Table;
-use Illuminate\Support\Str;
-use Filament\Actions\Action;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Forms\Components\TextInput;
 use CustomSidebarManager\Models\CustomSidebar;
-use Filament\Facades\Filament;
+use Filament\Actions\Action;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Pages\Page;
 use Filament\Tables\Actions\Action as TableAction;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
 use Kra8\Snowflake\Snowflake;
@@ -24,8 +22,8 @@ use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class CustomSidebarManagerPage extends Page implements HasForms, HasTable
 {
-    use InteractsWithTable;
     use InteractsWithForms;
+    use InteractsWithTable;
 
     protected static ?string $title = 'Custom Sidebar Manager';
 
@@ -33,7 +31,7 @@ class CustomSidebarManagerPage extends Page implements HasForms, HasTable
 
     protected static bool $shouldRegisterNavigation = false;
 
-        /**
+    /**
      * @return array<string>
      */
     public function getBreadcrumbs(): array
@@ -62,7 +60,7 @@ class CustomSidebarManagerPage extends Page implements HasForms, HasTable
                     ->modalWidth('3xl')
                     ->fillForm(function (Model $record, Table $table): array {
                         $data = $record->attributesToArray();
-                        
+
                         return $data;
                     })
                     ->form(function ($data) {
@@ -76,15 +74,15 @@ class CustomSidebarManagerPage extends Page implements HasForms, HasTable
                                 ->helperText('Content of the sidebar.'),
                         ];
                     })
-                    ->action(function($record, array $data){
+                    ->action(function ($record, array $data) {
                         $record->name = $data['name'];
                         $record->content = $data['content'];
 
                         $plugin = Plugin::getPlugin('CustomSidebarManager');
                         $blocks = $plugin->getSetting('blocks', []);
 
-                        foreach($blocks as $key => $block){
-                            if($block['id'] == $record->id){
+                        foreach ($blocks as $key => $block) {
+                            if ($block['id'] == $record->id) {
                                 $blocks[$key] = $record->toArray();
                             }
                         }
@@ -95,12 +93,12 @@ class CustomSidebarManagerPage extends Page implements HasForms, HasTable
                     ->label('Delete')
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->action(function($record){
+                    ->action(function ($record) {
                         $plugin = Plugin::getPlugin('CustomSidebarManager');
                         $blocks = $plugin->getSetting('blocks', []);
 
-                        foreach($blocks as $key => $block){
-                            if($block['id'] == $record->id){
+                        foreach ($blocks as $key => $block) {
+                            if ($block['id'] == $record->id) {
                                 unset($blocks[$key]);
                             }
                         }
@@ -125,7 +123,6 @@ class CustomSidebarManagerPage extends Page implements HasForms, HasTable
                     $blocks = $plugin->getSetting('blocks', []);
                     $blocks[] = $data;
 
-
                     $plugin->updateSetting('blocks', $blocks);
                 })
                 ->modalWidth('3xl')
@@ -137,7 +134,7 @@ class CustomSidebarManagerPage extends Page implements HasForms, HasTable
                         ->label('Content')
                         ->minHeight(300)
                         ->helperText('Content of the sidebar.'),
-                ])
+                ]),
         ];
     }
 }

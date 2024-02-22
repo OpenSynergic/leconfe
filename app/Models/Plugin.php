@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Facades\Plugin as FacadesPlugin;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Sushi\Sushi;
 
 class Plugin extends Model
@@ -32,6 +31,7 @@ class Plugin extends Model
                 $pluginInfo['id'] = $pluginInfo['folder'];
                 $pluginInfo['enabled'] = FacadesPlugin::getSetting($pluginInfo['folder'], 'enabled');
                 $pluginInfo['path'] = $pluginDir;
+
                 return $pluginInfo;
             })
             ->values()
@@ -42,6 +42,4 @@ class Plugin extends Model
     {
         return false;
     }
-
-
 }

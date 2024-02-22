@@ -18,11 +18,11 @@ abstract class Plugin implements HasPlugin
     {
         $this->info = Yaml::parseFile($this->getPluginInformationPath());
 
-        View::addNamespace($this->getInfo('folder'), $this->getPluginPath() . DIRECTORY_SEPARATOR . 'views');
+        View::addNamespace($this->getInfo('folder'), $this->getPluginPath().DIRECTORY_SEPARATOR.'views');
     }
-    
+
     public function getInfo(?string $key = null)
-    {   
+    {
         if ($key) {
             return $this->info[$key] ?? null;
         }
@@ -37,7 +37,7 @@ abstract class Plugin implements HasPlugin
 
     public function getPluginInformationPath()
     {
-        return $this->getPluginPath() . DIRECTORY_SEPARATOR . 'index.yaml';
+        return $this->getPluginPath().DIRECTORY_SEPARATOR.'index.yaml';
     }
 
     public function setPluginPath($path): void
@@ -47,14 +47,14 @@ abstract class Plugin implements HasPlugin
 
     public function getSetting($key, $default = null): mixed
     {
-    return FacadesPlugin::getSetting($this->getInfo('folder'), $key, $default);
+        return FacadesPlugin::getSetting($this->getInfo('folder'), $key, $default);
     }
 
     public function updateSetting($key, $value): mixed
     {
         return FacadesPlugin::updateSetting($this->getInfo('folder'), $key, $value);
     }
-    
+
     public function onPanel(Panel $panel): void
     {
         // Implement this method to add your plugin to the panel
@@ -65,7 +65,7 @@ abstract class Plugin implements HasPlugin
         // Implement this method to add your plugin to the panel administration
     }
 
-    public function getPluginPage() : ?string
+    public function getPluginPage(): ?string
     {
         return null;
     }

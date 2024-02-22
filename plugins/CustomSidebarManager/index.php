@@ -13,8 +13,7 @@ return new class extends Plugin
     public function boot()
     {
         $customBlocks = collect($this->getSetting('blocks', []))
-            ->map(fn($block) => new CustomSidebarBlock($block['name'], $block['content']));
-
+            ->map(fn ($block) => new CustomSidebarBlock($block['name'], $block['content']));
 
         Block::registerBlocks($customBlocks->toArray());
     }
@@ -26,8 +25,8 @@ return new class extends Plugin
         ]);
     }
 
-    public function getPluginPage() : ?string
+    public function getPluginPage(): ?string
     {
-        return url('/panel/' . app()->getCurrentConference()->path . '/custom-sidebar-manager-page');
+        return url('/panel/'.app()->getCurrentConference()->path.'/custom-sidebar-manager-page');
     }
 };

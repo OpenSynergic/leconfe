@@ -22,10 +22,10 @@ class CustomSidebar extends Model
         'content' => 'string',
     ];
 
-
     public function getRows()
     {
         $plugin = Plugin::getPlugin('CustomSidebarManager');
+
         return $plugin->getSetting('blocks', []);
     }
 

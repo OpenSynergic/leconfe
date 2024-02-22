@@ -6,7 +6,6 @@ use App\Facades\Plugin as FacadesPlugin;
 use App\Models\Plugin;
 use App\Panel\Resources\PluginResource\Pages;
 use App\Tables\Columns\IndexColumn;
-use Filament\Facades\Filament;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
@@ -39,8 +38,8 @@ class PluginResource extends Resource
                     ->searchable()
                     ->description(fn (Plugin $record) => $record->description)
                     ->weight(fn (Plugin $record) => FacadesPlugin::getSetting($record->id, 'enabled') ? FontWeight::SemiBold : FontWeight::Light)
-                    ->url(fn(Plugin $record) => FacadesPlugin::getSetting($record->id, 'enabled') ? FacadesPlugin::getPlugin($record->id)?->getPluginPage() : null)
-                    ->color(fn(Plugin $record) => (FacadesPlugin::getSetting($record->id, 'enabled') && FacadesPlugin::getPlugin($record->id)?->getPluginPage()) ? 'primary' : null),
+                    ->url(fn (Plugin $record) => FacadesPlugin::getSetting($record->id, 'enabled') ? FacadesPlugin::getPlugin($record->id)?->getPluginPage() : null)
+                    ->color(fn (Plugin $record) => (FacadesPlugin::getSetting($record->id, 'enabled') && FacadesPlugin::getPlugin($record->id)?->getPluginPage()) ? 'primary' : null),
                 TextColumn::make('author'),
                 ToggleColumn::make('enabled')
                     ->label('Enabled')
@@ -49,7 +48,7 @@ class PluginResource extends Resource
                         FacadesPlugin::enable($record->id, $state);
 
                         $record->enabled = $state;
-                        if($state){
+                        if ($state) {
                             FacadesPlugin::bootPlugin($record->path);
                         }
 

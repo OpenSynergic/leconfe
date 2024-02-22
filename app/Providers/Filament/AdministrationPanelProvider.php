@@ -46,7 +46,6 @@ class AdministrationPanelProvider extends FilamentPanelProvider
             ->middleware(PanelProvider::getMiddleware())
             ->authMiddleware(PanelProvider::getAuthMiddleware());
 
-                
         Plugin::getPlugins()->each(function ($plugin) use ($panel) {
             $plugin->onPanel($panel);
         });

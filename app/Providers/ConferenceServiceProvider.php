@@ -41,16 +41,17 @@ class ConferenceServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        
-        if(!app()->runningInConsole() && app()->isInstalled()){
+
+        if (! app()->runningInConsole() && app()->isInstalled()) {
             // Scope livewire update path tu current conference
             $currentConference = app()->getCurrentConference();
-            if($currentConference){
-                Livewire::setUpdateRoute(function ($handle) use  ($currentConference){
-                    return Route::post('/livewire/' . $currentConference->path .  '/update', $handle)
+            if ($currentConference) {
+                Livewire::setUpdateRoute(function ($handle) use ($currentConference) {
+                    return Route::post('/livewire/'.$currentConference->path.'/update', $handle)
                         ->middleware('web');
                 });
             }
+
             return;
         }
     }
@@ -112,36 +113,37 @@ class ConferenceServiceProvider extends ServiceProvider
 
     protected function detectConference()
     {
-        if(!app()->isInstalled()){
+        if (! app()->isInstalled()) {
             return;
         }
 
         $pathInfos = explode('/', request()->getPathInfo());
 
         // Special case for `current` path
-        if(isset($pathInfos[1]) && $pathInfos[1] === 'current'){
+        if (isset($pathInfos[1]) && $pathInfos[1] === 'current') {
             $conferenceId = DB::table('conferences')->where('status', ConferenceStatus::Active->value)->value('id');
-            if($conferenceId){
+            if ($conferenceId) {
                 app()->setCurrentConferenceId($conferenceId);
                 app()->scopeCurrentConference();
+
                 return;
             }
         }
 
+        if (! isset($pathInfos[2])) {
+            app()->setCurrentConferenceId(0);
 
-        if(!isset($pathInfos[2])){
-            app()->setCurrentConferenceId(0);
             return;
         }
-        
-        
+
         $conferencePath = $pathInfos[2];
-        $conferenceId   = DB::table('conferences')->where('path', $conferencePath)->value('id');
-        if(!$conferenceId){
+        $conferenceId = DB::table('conferences')->where('path', $conferencePath)->value('id');
+        if (! $conferenceId) {
             app()->setCurrentConferenceId(0);
+
             return;
         }
-        
+
         app()->setCurrentConferenceId($conferenceId);
         app()->scopeCurrentConference();
     }

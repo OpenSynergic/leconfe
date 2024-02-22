@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Conference;
 use App\Models\Enums\ConferenceStatus;
 use Closure;
 use Illuminate\Http\Request;
