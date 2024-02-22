@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Administration\Resources\NavigationResource;
 use App\Facades\Block;
+use App\Facades\Plugin;
 use App\Models\Navigation;
 use App\Website\Blocks\CalendarBlock;
 use App\Website\Blocks\LoginBlock;
@@ -21,7 +22,7 @@ class AdministrationPanelProvider extends FilamentPanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        return $panel
+        $panel
             ->id('administration')
             ->plugins($this->getPlugins())
             ->sidebarCollapsibleOnDesktop()
@@ -44,6 +45,13 @@ class AdministrationPanelProvider extends FilamentPanelProvider
             ])
             ->middleware(PanelProvider::getMiddleware())
             ->authMiddleware(PanelProvider::getAuthMiddleware());
+
+                
+        Plugin::getPlugins()->each(function ($plugin) use ($panel) {
+            $plugin->onPanel($panel);
+        });
+
+        return $panel;
     }
 
     /**
@@ -75,12 +83,12 @@ class AdministrationPanelProvider extends FilamentPanelProvider
         PanelProvider::setupFilamentComponent();
 
         Block::registerBlocks([
-            SearchBlock::class,
-            LoginBlock::class,
-            CalendarBlock::class,
-            UpcomingConferenceBlock::class,
-            TopicBlock::class,
-            TimelineBlock::class,
+            new SearchBlock,
+            new LoginBlock,
+            new CalendarBlock,
+            new UpcomingConferenceBlock,
+            new TopicBlock,
+            new TimelineBlock,
         ]);
         Block::boot();
     }

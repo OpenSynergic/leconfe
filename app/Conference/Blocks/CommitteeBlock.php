@@ -27,7 +27,7 @@ class CommitteeBlock extends Block
             ->get();
 
         return [
-            // Return the organized data with committee positions as keys and arrays of participants as values.
+            ...parent::getViewData(),
             'participants' => $participants,
         ];
     }

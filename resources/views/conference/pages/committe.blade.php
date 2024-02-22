@@ -29,34 +29,34 @@
                                                 <x-heroicon-m-envelope class="w-4 h-4" />
                                                 <p>{{ $member->email ?? '' }}</p>
                                             </div>
-                                            <div class="inline-flex gap-x-2 gap-y-3 flex-wrap w-full">
+                                            <div class="flex items-center gap-x-2 gap-y-3 flex-wrap w-full">
                                                 <x-heroicon-s-trophy class="w-4 h-4" />
-                                                @forelse ($member->getMeta('expertise') as $expertise)
+                                                @foreach ($member->getMeta('expertise') as $expertise)
                                                     <span class="badge badge-xs text-mini">{{ $expertise }}</span>
-                                                @empty
-                                                @endforelse
+                                                @endforeach
                                             </div>
-
+                                            @if($member->getMeta('orcid_id') || $member->getMeta('google_scholar_id') || $member->getMeta('scopus_id'))
                                             <div class="inline-flex gap-x-1">
-                                                @if ($member->hasMeta('orcid_id'))
+                                                @if ($member->getMeta('orcid_id'))
                                                     <a href="https://orcid.org/{{ $member->getMeta('orcid_id') }}">
                                                         <x-academicon-orcid class="w-5 h-5 text-[#A9D03F]" /></a>
                                                 @endif
 
-                                                @if ($member->hasMeta('google_scholar_id'))
+                                                @if ($member->getMeta('google_scholar_id'))
                                                     <a
                                                         href="https://scholar.google.com/citations?user={{ $member->getMeta('google_scholar_id') }}">
                                                         <x-academicon-google-scholar class="w-5 h-5 text-[#4889F4]" />
                                                     </a>
                                                 @endif
 
-                                                @if ($member->hasMeta('scopus_id'))
+                                                @if ($member->getMeta('scopus_id'))
                                                     <a
                                                         href="https://www.scopus.com/authid/detail.uri?authorId={{ $member->getMeta('scopus_id') }}">
                                                         <x-academicon-scopus
                                                             class="w-5 h-5 text-[#FF8608] stroke-[#FF8608]" /> </a>
                                                 @endif
                                             </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>

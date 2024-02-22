@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('plugin');
             $table->string('key');
             $table->text('value')->nullable();
+            $table->string('type');
             $table->timestamps();
 
             $table->unique(['conference_id', 'plugin', 'key']);

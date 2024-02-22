@@ -12,7 +12,7 @@ class Block extends Model
     use BelongsToConference, Cachable, HasFactory;
 
     protected $fillable = [
-        'class',
+        'name',
         'conference_id',
         'position',
         'sort',

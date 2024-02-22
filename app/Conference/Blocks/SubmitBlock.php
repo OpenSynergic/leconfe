@@ -13,9 +13,4 @@ class SubmitBlock extends Block
     protected string $name = 'Submit Block';
 
     protected ?string $position = 'right';
-
-    public function getViewData(): array
-    {
-        return [];
-    }
 }

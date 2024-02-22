@@ -5,6 +5,8 @@ namespace App\Panel\Resources;
 use App\Facades\Plugin as FacadesPlugin;
 use App\Models\Plugin;
 use App\Panel\Resources\PluginResource\Pages;
+use App\Tables\Columns\IndexColumn;
+use Filament\Facades\Filament;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
@@ -30,11 +32,15 @@ class PluginResource extends Resource
     {
         return $table
             ->columns([
+                IndexColumn::make('no'),
                 TextColumn::make('name')
-                    ->searchable()
-                    ->weight(fn (Plugin $record) => FacadesPlugin::getSetting($record->id, 'enabled') ? FontWeight::SemiBold : FontWeight::Light)
                     ->wrap()
-                    ->description(fn (Plugin $record) => $record->description),
+                    ->sortable()
+                    ->searchable()
+                    ->description(fn (Plugin $record) => $record->description)
+                    ->weight(fn (Plugin $record) => FacadesPlugin::getSetting($record->id, 'enabled') ? FontWeight::SemiBold : FontWeight::Light)
+                    ->url(fn(Plugin $record) => FacadesPlugin::getSetting($record->id, 'enabled') ? FacadesPlugin::getPlugin($record->id)?->getPluginPage() : null)
+                    ->color(fn(Plugin $record) => (FacadesPlugin::getSetting($record->id, 'enabled') && FacadesPlugin::getPlugin($record->id)?->getPluginPage()) ? 'primary' : null),
                 TextColumn::make('author'),
                 ToggleColumn::make('enabled')
                     ->label('Enabled')
@@ -43,12 +49,12 @@ class PluginResource extends Resource
                         FacadesPlugin::enable($record->id, $state);
 
                         $record->enabled = $state;
+                        if($state){
+                            FacadesPlugin::bootPlugin($record->path);
+                        }
 
                         return $state;
                     }),
-            ])
-            ->filters([
-                //
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -59,11 +65,6 @@ class PluginResource extends Resource
                 ]),
                 // TODO : Add actions based on plugin. Currently there's no way to create a dinamically action
 
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ])
             ->emptyStateActions([]);
     }

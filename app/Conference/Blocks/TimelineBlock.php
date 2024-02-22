@@ -72,6 +72,7 @@ class TimelineBlock extends Block
         }
 
         return [
+            'id' => $this->getDatabaseName(),
             'timelines' => $timelineData,
         ];
     }

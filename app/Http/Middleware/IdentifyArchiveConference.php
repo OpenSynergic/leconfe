@@ -21,9 +21,7 @@ class IdentifyArchiveConference
             return abort(404);
         }
 
-        $conference = Conference::query()
-            ->where('path', $request->route()->parameter('conference'))
-            ->first();
+        $conference = app()->getCurrentConference();
 
         if (! $conference) {
             return abort(404);
@@ -37,9 +35,6 @@ class IdentifyArchiveConference
                 return abort(404);
                 break;
         }
-
-        app()->setCurrentConference($conference);
-        app()->scopeCurrentConference();
 
         return $next($request);
     }

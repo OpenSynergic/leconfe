@@ -1,7 +1,7 @@
 <div class="page-rightbar">
-    <div class="space-y-6">
+    <div class="space-y-4">
         @foreach(\App\Facades\Block::getBlocks(position: 'right') as $block)
-            @livewire($block)
+            {!! $block->toHtml() !!}
         @endforeach
     </div>
 </div>

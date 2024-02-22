@@ -1,5 +1,4 @@
-<div class="block space-y-1">
-
+<x-block :id="$id" class="space-y-1">
     @if (count($participants) > 0)
         <h2 class="ml-1 text-heading mb-1">Committee</h2>
         @foreach ($participants as $participant)
@@ -36,7 +35,7 @@
                                 @foreach ($participant->getMeta('expertise') as $expertise)
                                     <!-- Loop through and display member's expertise badges -->
                                     <div
-                                        class="badge badge-outline text-xs border border-gray-300 h-6 text-xs text-secondary">
+                                        class="badge badge-outline text-xs border border-gray-300 h-6 text-secondary">
                                         {{ $expertise }}</div>
                                 @endforeach
                             </div>
@@ -45,10 +44,10 @@
                 </div>
             </div>
         @endforeach
-        <div class="w-full flex justify-start pt-1">
+        <div class="w-full flex justify-end pt-1">
             <a href="{{ route('livewirePageGroup.current-conference.pages.committe') }}"
                 class="btn btn-primary text-xs btn-sm text-white rounded-md" id="showMoreButton">More</a>
         </div>
     @endif
 
-</div>
+</x-block>

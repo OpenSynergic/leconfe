@@ -1,7 +1,7 @@
 <x-dynamic-component :component="$getFieldWrapperView()" :label="$getLabel()" :field="$field">
     <div>
         <div class="space-y-2">
-            <ul class="max-w-xs flex flex-col space-y-2" x-data="blockSortableContainer({
+            <ul class="flex flex-col space-y-2" x-data="blockSortableContainer({
                 state: $wire.$entangle('{{ $getStatePath() }}'),
                 statePath: '{{ $getStatePath() }}',
             })">

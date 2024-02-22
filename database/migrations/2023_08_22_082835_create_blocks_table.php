@@ -14,7 +14,7 @@ return new class extends Migration
 
         Schema::create('blocks', function (Blueprint $table) {
             $table->id();
-            $table->string('class');
+            $table->string('name');
             $table->foreignIdFor(\App\Models\Conference::class)->constrained();
             $table->string('position');
             $table->integer('sort');
