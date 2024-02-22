@@ -332,29 +332,6 @@ class PluginManager
         $pluginsDisk->deleteDirectory($pluginPath);
     }
 
-    public function installDefaultPlugins(Conference $conference)
-    {
-        $defaultPluginsPath = base_path('stubs' . DIRECTORY_SEPARATOR . 'plugins');
-
-        $pluginsDisk = $this->getDisk($conference);
-
-        foreach (File::directories($defaultPluginsPath) as $pluginPath) {
-            $pluginName = basename($pluginPath);
-
-            if ($pluginsDisk->exists($pluginName)) {
-                continue;
-            }
-
-            $this->validatePlugin($pluginPath);
-
-            $plugin = $this->loadPlugin($pluginPath);
-            $plugin->boot();
-
-            $fileSystem = new Filesystem();
-            $fileSystem->copyDirectory($pluginPath, $pluginsDisk->path($pluginName));
-        }
-    }
-
     /**
      * Convert a PHP variable into a string to be stored in the DB
      *
