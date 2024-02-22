@@ -31,6 +31,10 @@ class PluginManager
 
     public function boot()
     {
+        if(app()->runningInConsole()){
+            return;
+        }
+
         $this->bootPlugins();
     }
 

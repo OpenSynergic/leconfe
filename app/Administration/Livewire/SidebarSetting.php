@@ -84,7 +84,7 @@ class SidebarSetting extends Component implements HasForms
                                 $sidebarFormData = $formData['sidebar'];
                                 foreach ($sidebarFormData['blocks'] as $blocks) {
                                     foreach ($blocks as $block) {
-                                        UpdateBlockSettingsAction::run($block->class, [
+                                        UpdateBlockSettingsAction::run($block->name, [
                                             'position' => $block->position,
                                             'sort' => $block->sort,
                                             'active' => $block->active,
@@ -94,6 +94,7 @@ class SidebarSetting extends Component implements HasForms
                                 $action->sendSuccessNotification();
                             } catch (\Throwable $th) {
                                 $action->sendFailureNotification();
+                                throw $th;
                             }
                         }),
                 ])->alignLeft(),
