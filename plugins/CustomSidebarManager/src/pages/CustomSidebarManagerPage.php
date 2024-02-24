@@ -51,9 +51,6 @@ class CustomSidebarManagerPage extends Page implements HasForms, HasTable
                     ->sortable()
                     ->searchable(),
             ])
-            ->filters([
-                // ...
-            ])
             ->actions([
                 TableAction::make('edit')
                     ->label('Edit')

@@ -25,8 +25,8 @@ class CustomSidebarBlock extends Block
         ];
     }
 
-    public function getBlockName(): string
+    public function getSuffixName(): ?string
     {
-        return $this->name.' (Custom Sidebar)';
+        return '<span class="text-gray-500">(Custom Sidebar)</span>';
     }
 }

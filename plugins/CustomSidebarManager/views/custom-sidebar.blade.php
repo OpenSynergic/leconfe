@@ -1,9 +1,7 @@
 <x-website::block :id="$id">
+    <h2 class="text-heading px-2 mb-1">{{ $name }}</h2>
     <div class="card card-compact bg-white border">
         <div class="card-body">
-            <h2 class="card-title border-b">
-                {{ $name }}
-            </h2>
             <div class="user-content">
                 {!! $content !!}
             </div>
