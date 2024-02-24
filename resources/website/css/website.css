@@ -127,5 +127,5 @@
 }
 
 #block_menu .card-body li a {
-    @apply block w-full px-4 py-2 font-medium text-left border-b border-gray-200 cursor-pointer hover:bg-primary hover:text-white;
+    @apply block w-full px-4 py-2 font-medium text-left border-b border-gray-200 cursor-pointer hover:bg-primary hover:text-white no-underline hover:underline;
 }
