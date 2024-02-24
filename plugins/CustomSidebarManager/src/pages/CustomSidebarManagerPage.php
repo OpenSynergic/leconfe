@@ -7,6 +7,7 @@ use App\Tables\Columns\IndexColumn;
 use CustomSidebarManager\Models\CustomSidebar;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\Page;
@@ -65,6 +66,8 @@ class CustomSidebarManagerPage extends Page implements HasForms, HasTable
                             TextInput::make('name')
                                 ->label('Name')
                                 ->required(),
+                            Toggle::make('show_name')
+                                ->label('Show the name of this sidebar above the content?'),
                             TinyEditor::make('content')
                                 ->label('Content')
                                 ->minHeight(300)
@@ -74,6 +77,7 @@ class CustomSidebarManagerPage extends Page implements HasForms, HasTable
                     ->action(function ($record, array $data) {
                         $record->name = $data['name'];
                         $record->content = $data['content'];
+                        $record->show_name = $data['show_name'];
 
                         $plugin = Plugin::getPlugin('CustomSidebarManager');
                         $blocks = $plugin->getSetting('blocks', []);

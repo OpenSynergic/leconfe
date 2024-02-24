@@ -2,7 +2,7 @@
 
 namespace App\Conference\Blocks;
 
-use App\Livewire\Block;
+use App\Classes\Block;
 
 class InformationBlock extends Block
 {

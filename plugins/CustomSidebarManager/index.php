@@ -13,7 +13,7 @@ return new class extends Plugin
     public function boot()
     {
         $customBlocks = collect($this->getSetting('blocks', []))
-            ->map(fn ($block) => new CustomSidebarBlock($block['name'], $block['content']));
+            ->map(fn ($block) => new CustomSidebarBlock($block['name'], $block['content'], $block['show_name'] ?? false));
 
         Block::registerBlocks($customBlocks->toArray());
     }
