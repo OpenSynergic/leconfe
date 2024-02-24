@@ -3,7 +3,7 @@
         <section id="highlight-conference" class="p-5 space-y-4">
             <h1 class="cf-name text-lg">{{ $currentConference->name }}</h1>
 
-            <div class="flex sm:flex-row flex-wrap space-y-4 sm:space-y-0 gap-4">
+            <div class="flex flex-col sm:flex-row flex-wrap space-y-4 sm:space-y-0 gap-4">
                 @if ($currentConference->hasMedia('thumbnail'))
                     <div class="cf-thumbnail">
                         <img class="w-full rounded max-w-[200px]"
