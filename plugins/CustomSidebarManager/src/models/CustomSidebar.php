@@ -19,13 +19,15 @@ class CustomSidebar extends Model
     protected $schema = [
         'id' => 'integer',
         'name' => 'string',
+        'show_name' => 'boolean',
         'content' => 'string',
     ];
 
     public function getRows()
     {
         $plugin = Plugin::getPlugin('CustomSidebarManager');
-
+        // dd($plugin->getSetting('blocks', []));
+        
         return $plugin->getSetting('blocks', []);
     }
 

@@ -2,7 +2,7 @@
 
 namespace App\Website\Blocks;
 
-use App\Livewire\Block;
+use App\Classes\Block;
 use App\Models\Conference;
 use Carbon\Carbon;
 

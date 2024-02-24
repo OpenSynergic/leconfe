@@ -5,7 +5,7 @@ namespace App\Administration\Livewire;
 use App\Actions\Blocks\UpdateBlockSettingsAction;
 use App\Facades\Block as FacadesBlock;
 use App\Forms\Components\BlockList;
-use App\Livewire\Block as BlockComponent;
+use App\Classes\Block as BlockComponent;
 use App\Models\Site;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;

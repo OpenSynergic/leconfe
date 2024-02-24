@@ -2,7 +2,7 @@
 
 namespace App\Website\Blocks;
 
-use App\Livewire\Block;
+use App\Classes\Block;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Filament\Facades\Filament;

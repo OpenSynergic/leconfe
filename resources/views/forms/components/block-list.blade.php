@@ -8,7 +8,8 @@
                 @if (!$getState())
                     <div>
                         <!-- component -->
-                        <div class="border-dashed border-2 dark:border-gray-800 w-64 h-32 rounded flex justify-center items-center">
+                        <div
+                            class="border-dashed border-2 dark:border-gray-800 w-64 h-32 rounded flex justify-center items-center">
                             <span class="block text-grey">
                                 <span class="text-sm text-gray-600">Place the block here.</span>
                             </span>
@@ -31,13 +32,23 @@
                                 '-mt-px first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:bg-gray-800 dark:border-gray-700 dark:text-white hover:cursor-move',
                             ])>
                             <x-iconpark-drag class="w-5 h-5" />
-                            {{ $block->name }}
+                            <div class="block-information">
+                                @if ($block->prefix)
+                                    {!! $block->prefix !!}
+                                @endif
+                                <span>{{ $block->name }}</span>
+                                @if ($block->suffix)
+                                    {!! $block->suffix !!}
+                                @endif
+                            </div>
                             <div class="ml-auto">
                                 <input id="default-checkbox" type="checkbox" value="1" x-on:click="toggleStatus"
-                                    {{ $block->active ? 'checked' : '' }} @class([
+                                    {{ $block->active ? 'checked' : '' }} 
+                                    @class([
                                         'w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-blue-500',
                                         'focus:ring-2 dark:bg-gray-700 dark:border-gray-600',
-                                    ])>
+                                    ])
+                                    >
                             </div>
                         </li>
                     @endforeach

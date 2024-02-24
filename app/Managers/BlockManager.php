@@ -2,7 +2,7 @@
 
 namespace App\Managers;
 
-use App\Livewire\Block;
+use App\Classes\Block;
 use Illuminate\Support\Collection;
 
 class BlockManager

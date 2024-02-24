@@ -7,6 +7,7 @@ use App\Tables\Columns\IndexColumn;
 use CustomSidebarManager\Models\CustomSidebar;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\Page;
@@ -51,9 +52,6 @@ class CustomSidebarManagerPage extends Page implements HasForms, HasTable
                     ->sortable()
                     ->searchable(),
             ])
-            ->filters([
-                // ...
-            ])
             ->actions([
                 TableAction::make('edit')
                     ->label('Edit')
@@ -63,20 +61,11 @@ class CustomSidebarManagerPage extends Page implements HasForms, HasTable
 
                         return $data;
                     })
-                    ->form(function ($data) {
-                        return [
-                            TextInput::make('name')
-                                ->label('Name')
-                                ->required(),
-                            TinyEditor::make('content')
-                                ->label('Content')
-                                ->minHeight(300)
-                                ->helperText('Content of the sidebar.'),
-                        ];
-                    })
+                    ->form($this->getFormSchemas())
                     ->action(function ($record, array $data) {
                         $record->name = $data['name'];
                         $record->content = $data['content'];
+                        $record->show_name = $data['show_name'] ?? false;
 
                         $plugin = Plugin::getPlugin('CustomSidebarManager');
                         $blocks = $plugin->getSetting('blocks', []);
@@ -110,13 +99,13 @@ class CustomSidebarManagerPage extends Page implements HasForms, HasTable
             ]);
     }
 
+
     protected function getHeaderActions(): array
     {
         return [
             Action::make('create')
                 ->label('Create Custom Sidebar')
                 ->action(function (array $data) {
-
                     $data['id'] = app(Snowflake::class)->short();
 
                     $plugin = Plugin::getPlugin('CustomSidebarManager');
@@ -126,15 +115,23 @@ class CustomSidebarManagerPage extends Page implements HasForms, HasTable
                     $plugin->updateSetting('blocks', $blocks);
                 })
                 ->modalWidth('3xl')
-                ->form([
-                    TextInput::make('name')
-                        ->label('Name')
-                        ->required(),
-                    TinyEditor::make('content')
-                        ->label('Content')
-                        ->minHeight(300)
-                        ->helperText('Content of the sidebar.'),
-                ]),
+                ->form($this->getFormSchemas()),
+        ];
+    }
+
+    public function getFormSchemas() : array
+    {
+        return [
+            TextInput::make('name')
+                ->label('Name')
+                ->required(),
+            Toggle::make('show_name')
+                    ->label('Show the name of this sidebar above the content?')
+                    ->default(false),
+            TinyEditor::make('content')
+                ->label('Content')
+                ->minHeight(300)
+                ->helperText('Content of the sidebar.'),
         ];
     }
 }

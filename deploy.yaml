@@ -18,6 +18,11 @@ hosts:
     remote_user: leconfe
     deploy_path: '/home/leconfe.com/domains/demo.leconfe.com/public_html'
     shellCommand : 'bash -ls'
+  testdrive:
+    hostname: 194.233.92.195
+    remote_user: leconfe
+    deploy_path: '/home/leconfe.com/domains/testdrive.leconfe.com/public_html'
+    shellCommand : 'bash -ls'
 
 tasks:
   deploy:

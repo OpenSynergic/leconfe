@@ -2,7 +2,7 @@
 
 namespace CustomSidebarManager;
 
-use App\Livewire\Block;
+use App\Classes\Block;
 
 class CustomSidebarBlock extends Block
 {
@@ -10,10 +10,13 @@ class CustomSidebarBlock extends Block
 
     protected ?string $view = 'CustomSidebarManager::custom-sidebar';
 
-    public function __construct(string $name, ?string $content)
+    protected bool $showName;
+
+    public function __construct(string $name, ?string $content, bool $showName = false)
     {
         $this->name = $name;
         $this->content = $content;
+        $this->showName = $showName;
     }
 
     public function getViewData(): array
@@ -21,12 +24,13 @@ class CustomSidebarBlock extends Block
         return [
             'id' => $this->getDatabaseName(),
             'name' => $this->name,
+            'showName' => $this->showName,
             'content' => $this->content,
         ];
     }
 
-    public function getBlockName(): string
+    public function getSuffixName(): ?string
     {
-        return $this->name.' (Custom Sidebar)';
+        return '<span class="text-gray-500">(Custom Sidebar)</span>';
     }
 }

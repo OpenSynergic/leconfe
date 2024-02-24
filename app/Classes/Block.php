@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Classes;
 
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\View\View;
@@ -25,9 +25,19 @@ abstract class Block implements Htmlable
         ];
     }
 
-    public function getBlockName(): string
+    public function getPrefixName(): ?string
+    {
+        return null;
+    }
+
+    public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getSuffixName(): ?string
+    {
+        return null;
     }
 
     public function getDatabaseName(): string
@@ -71,7 +81,9 @@ abstract class Block implements Htmlable
     {
         return [
             'class' => static::class,
-            'name' => $this->getBlockName(),
+            'prefix' => $this->getPrefixName(),
+            'name' => $this->getName(),
+            'suffix' => $this->getSuffixName(),
             'database_name' => $this->getDatabaseName(),
             'position' => $this->getPosition(),
             'sort' => $this->getSort(),
