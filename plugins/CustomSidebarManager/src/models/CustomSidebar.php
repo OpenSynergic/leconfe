@@ -27,7 +27,7 @@ class CustomSidebar extends Model
     {
         $plugin = Plugin::getPlugin('CustomSidebarManager');
         // dd($plugin->getSetting('blocks', []));
-        
+
         return $plugin->getSetting('blocks', []);
     }
 

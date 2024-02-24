@@ -99,7 +99,6 @@ class CustomSidebarManagerPage extends Page implements HasForms, HasTable
             ]);
     }
 
-
     protected function getHeaderActions(): array
     {
         return [
@@ -119,15 +118,15 @@ class CustomSidebarManagerPage extends Page implements HasForms, HasTable
         ];
     }
 
-    public function getFormSchemas() : array
+    public function getFormSchemas(): array
     {
         return [
             TextInput::make('name')
                 ->label('Name')
                 ->required(),
             Toggle::make('show_name')
-                    ->label('Show the name of this sidebar above the content?')
-                    ->default(false),
+                ->label('Show the name of this sidebar above the content?')
+                ->default(false),
             TinyEditor::make('content')
                 ->label('Content')
                 ->minHeight(300)
