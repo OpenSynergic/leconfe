@@ -204,6 +204,7 @@ return [
         App\Providers\PluginServiceProvider::class,
         App\Providers\Filament\AdministrationPanelProvider::class,
         App\Providers\Filament\PanelProvider::class,
+        Filament\FilamentServiceProvider::class,
         App\Providers\WebsiteServiceProvider::class,
         App\Providers\FlareServiceProvider::class,
     ],

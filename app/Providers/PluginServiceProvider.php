@@ -17,7 +17,6 @@ class PluginServiceProvider extends ServiceProvider
             return new PluginManager();
         });
 
-        Plugin::boot();
     }
 
     /**
@@ -25,5 +24,6 @@ class PluginServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Plugin::boot();
     }
 }

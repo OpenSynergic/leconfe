@@ -9,6 +9,7 @@ use Illuminate\Contracts\Filesystem\Filesystem as FilesystemContract;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -180,7 +181,10 @@ class PluginManager
 
     public function getSetting(string $plugin, mixed $key, $default = null): mixed
     {
-        return once(function () use ($plugin, $key, $default) {
+        $conferenceId = App::getCurrentConferenceId();
+
+
+        return Cache::rememberForever("plugin_setting_{$conferenceId}_{$plugin}_{$key}", function () use ($plugin, $key, $default) {
             $setting = DB::table('plugin_settings')
                 ->select(['value', 'type'])
                 ->where('conference_id', App::getCurrentConferenceId())
@@ -194,8 +198,9 @@ class PluginManager
 
     public function updateSetting(string $plugin, $key, $value): mixed
     {
-        // Flush cache
-        \Spatie\Once\Cache::getInstance()->flush();
+        $conferenceId = App::getCurrentConferenceId();
+
+        Cache::forget("plugin_setting_{$conferenceId}_{$plugin}_{$key}");
 
         $type = $this->getType($value);
 
