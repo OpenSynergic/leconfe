@@ -6,10 +6,8 @@ use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ContentType;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Spatie\Sitemap\Contracts\Sitemapable;
-use Spatie\Sitemap\Tags\Url;
 
-class Announcement extends UserContent implements Sitemapable
+class Announcement extends UserContent
 {
     protected static function booted(): void
     {
@@ -23,11 +21,6 @@ class Announcement extends UserContent implements Sitemapable
         static::addGlobalScope('announcement', function (Builder $builder) {
             $builder->where('content_type', ContentType::Announcement->value);
         });
-    }
-
-    public function toSitemapTag(): Url|string|array
-    {
-        return $this->getUrl();
     }
 
     public function getUrl()

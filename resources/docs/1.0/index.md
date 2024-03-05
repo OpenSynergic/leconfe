@@ -6,7 +6,6 @@
     - [Blocks](/{{route}}/{{version}}/application/blocks)
     - [Mail Template](/{{route}}/{{version}}/application/mail-template)
     - [Meta Tag](/{{route}}/{{version}}/application/meta-tag)
-    - [SEO (Search Engine Optimization)](/{{route}}/{{version}}/application/search-engine-optimization)
 -   ## Filament Forms
     -   [Introduction](/{{route}}/{{version}}/forms/introduction)
     -   [Vertical Tabs](/{{route}}/{{version}}/forms/vertical-tabs)
