@@ -33,7 +33,6 @@ class ConferenceServiceProvider extends ServiceProvider
             LivewirePageGroup::registerPageGroup($this->archiveConference(PageGroup::make()));
         });
 
-        $this->detectConference();
     }
 
     /**
@@ -41,8 +40,9 @@ class ConferenceServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-
         if (! app()->runningInConsole() && app()->isInstalled()) {
+            $this->detectConference();
+
             // Scope livewire update path tu current conference
             $currentConference = app()->getCurrentConference();
             if ($currentConference) {
@@ -52,8 +52,8 @@ class ConferenceServiceProvider extends ServiceProvider
                 });
             }
 
-            return;
         }
+
     }
 
     protected function setupPageGroup(PageGroup $pageGroup): PageGroup
@@ -116,7 +116,6 @@ class ConferenceServiceProvider extends ServiceProvider
         if (! app()->isInstalled()) {
             return;
         }
-
         $pathInfos = explode('/', request()->getPathInfo());
 
         // Special case for `current` path

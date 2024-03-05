@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('plugin_settings', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Conference::class)->constrained();
+            $table->foreignIdFor(Conference::class);
             $table->string('plugin');
             $table->string('key');
             $table->text('value')->nullable();
