@@ -27,6 +27,8 @@ return new class extends Plugin
 
     public function getPluginPage(): ?string
     {
-        return url('/panel/'.app()->getCurrentConference()->path.'/custom-sidebar-manager-page');
+        $path = app()->getCurrentConference()->path;
+        
+        return url("panel/{$path}/custom-sidebar-manager-page");
     }
 };
