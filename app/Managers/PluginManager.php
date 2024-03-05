@@ -183,7 +183,6 @@ class PluginManager
     {
         $conferenceId = App::getCurrentConferenceId();
 
-
         return Cache::rememberForever("plugin_setting_{$conferenceId}_{$plugin}_{$key}", function () use ($plugin, $key, $default) {
             $setting = DB::table('plugin_settings')
                 ->select(['value', 'type'])
@@ -345,7 +344,7 @@ class PluginManager
      * Convert a PHP variable into a string to be stored in the DB
      *
      * @param  string  $type
-     * @param  bool  $nullable True iff the value is allowed to be null.
+     * @param  bool  $nullable  True iff the value is allowed to be null.
      * @return string
      */
     public function convertToDB($value, &$type, $nullable = false)
@@ -396,9 +395,9 @@ class PluginManager
     /**
      * Convert a value from the database to a specific type
      *
-     * @param  mixed  $value Value from the database
-     * @param  string  $type Type from the database, eg `string`
-     * @param  bool  $nullable True iff the value is allowed to be null
+     * @param  mixed  $value  Value from the database
+     * @param  string  $type  Type from the database, eg `string`
+     * @param  bool  $nullable  True iff the value is allowed to be null
      */
     public function convertFromDB($value, $type, $nullable = false)
     {

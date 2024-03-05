@@ -14,7 +14,7 @@ class CreateDiscussionTopic
      * Create a new discussion topic for the given submission.
      * and assign the given participants to the topic.
      *
-     * @param  array  $participants user ids
+     * @param  array  $participants  user ids
      */
     public function handle(Submission $submission, array $topicData = [], array $participants = [])
     {
