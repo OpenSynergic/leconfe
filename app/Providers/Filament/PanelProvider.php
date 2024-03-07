@@ -55,7 +55,9 @@ class PanelProvider extends FilamentPanelProvider
             ->path(config('app.filament.panel_path'))
             ->maxContentWidth('full')
             // ->spa()
-            ->homeUrl(fn () => App::isInstalled() ? App::getCurrentConference()->getHomeUrl() : null)
+            ->homeUrl(function () {
+                return Filament::getTenant()?->getHomeUrl() ?: null;
+            })
             ->bootUsing(fn ($panel) => $this->panelBootUsing($panel))
             ->tenantMenu(false)
             // ->renderHook(
@@ -81,7 +83,7 @@ class PanelProvider extends FilamentPanelProvider
                     ->url(fn (): string => url('administration'))
                     // ->url(fn (): string => route('filament.administration.pages.dashboard'))
                     ->icon('heroicon-m-cog-8-tooth')
-                    ->hidden(fn () => ! auth()->user()->can('view', Site::class)),
+                    ->hidden(fn () => !auth()->user()->can('view', Site::class)),
             ])
             ->navigationGroups(static::getNavigationGroups())
             ->navigationItems(static::getNavigationItems())
