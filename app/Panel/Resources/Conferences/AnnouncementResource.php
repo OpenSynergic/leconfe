@@ -101,7 +101,7 @@ class AnnouncementResource extends Resource
                                     })
                                     ->options(AnnouncementTag::withCount('announcements')->orderBy('announcements_count', 'desc')->limit(10)->pluck('name', 'id')->toArray())
                                     ->afterStateUpdated(function ($set, $state) {
-                                        if (! empty($state)) {
+                                        if (!empty($state)) {
                                             $state = AnnouncementTag::whereIn('id', $state)->get()->map(fn ($tag) => $tag->name)->toArray();
                                         }
 
@@ -153,16 +153,10 @@ class AnnouncementResource extends Resource
                     ->url(function ($record) {
                         $conference = $record->conference;
 
-                        return match ($conference->status) {
-                            ConferenceStatus::Active => route('livewirePageGroup.current-conference.pages.announcement-page', [
-                                'announcement' => $record->id,
-                            ]),
-                            ConferenceStatus::Archived => route('livewirePageGroup.archive-conference.pages.announcement-page', [
-                                'conference' => $conference->id,
-                                'announcement' => $record->id,
-                            ]),
-                            default => null,
-                        };
+                        return route('livewirePageGroup.conference.pages.announcement-page', [
+                            'conference' => $conference->path,
+                            'announcement' => $record->id,
+                        ]);
                     })
                     ->color('gray'),
                 EditAction::make(),

@@ -29,10 +29,8 @@ class ConferenceServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->resolving('livewire-page-group', function () {
-            LivewirePageGroup::registerPageGroup($this->currentConference(PageGroup::make()));
-            LivewirePageGroup::registerPageGroup($this->archiveConference(PageGroup::make()));
+            LivewirePageGroup::registerPageGroup($this->conference(PageGroup::make()));
         });
-
     }
 
     /**
@@ -40,20 +38,18 @@ class ConferenceServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (! app()->runningInConsole() && app()->isInstalled()) {
+        if (!app()->runningInConsole() && app()->isInstalled()) {
             $this->detectConference();
 
             // Scope livewire update path tu current conference
             $currentConference = app()->getCurrentConference();
             if ($currentConference) {
                 Livewire::setUpdateRoute(function ($handle) use ($currentConference) {
-                    return Route::post('/livewire/'.$currentConference->path.'/update', $handle)
+                    return Route::post('/livewire/' . $currentConference->path . '/update', $handle)
                         ->middleware('web');
                 });
             }
-
         }
-
     }
 
     protected function setupPageGroup(PageGroup $pageGroup): PageGroup
@@ -78,58 +74,40 @@ class ConferenceServiceProvider extends ServiceProvider
             ->discoverPages(in: app_path('Conference/Pages'), for: 'App\\Conference\\Pages');
     }
 
-    protected function currentConference(PageGroup $pageGroup): PageGroup
+    protected function conference(PageGroup $pageGroup): PageGroup
     {
         return $this->setupPageGroup($pageGroup)
-            ->id('current-conference')
-            ->path('current')
+            ->id('conference')
+            ->path('{conference}')
             ->middleware([
                 // IdentifyCurrentConference::class,
                 SetupDefaultData::class,
             ], true);
     }
 
-    protected function archiveConference(PageGroup $pageGroup): PageGroup
-    {
-        return $this->setupPageGroup($pageGroup)
-            ->id('archive-conference')
-            ->middleware([
-                IdentifyArchiveConference::class,
-                SetupDefaultData::class,
-            ], true)
-            ->path('archive/{conference}');
-    }
-
-    protected function upcomingConference(PageGroup $pageGroup): PageGroup
-    {
-        return $this->setupPageGroup($pageGroup)
-            ->id('upcoming-conference')
-            ->middleware([
-                IdentifyArchiveConference::class,
-                SetupDefaultData::class,
-            ], true)
-            ->path('archive/{conference}');
-    }
-
     protected function detectConference()
     {
-        if (! app()->isInstalled()) {
+        if (!app()->isInstalled()) {
             return;
         }
         $pathInfos = explode('/', request()->getPathInfo());
 
         // Special case for `current` path
-        if (isset($pathInfos[1]) && $pathInfos[1] === 'current') {
-            $conferenceId = DB::table('conferences')->where('status', ConferenceStatus::Active->value)->value('id');
-            if ($conferenceId) {
-                app()->setCurrentConferenceId($conferenceId);
-                app()->scopeCurrentConference();
-
+        if (isset($pathInfos[1]) && !blank($pathInfos[1])) {
+            $conferenceId = DB::table('conferences')->where('path', $pathInfos[1])->value('id');
+            if (!$conferenceId) {
+                // Conference not found
+                app()->setCurrentConferenceId(0);
                 return;
             }
+
+            app()->setCurrentConferenceId($conferenceId);
+            app()->scopeCurrentConference();
+
+            return;
         }
 
-        if (! isset($pathInfos[2])) {
+        if (!isset($pathInfos[2])) {
             app()->setCurrentConferenceId(0);
 
             return;
@@ -137,7 +115,8 @@ class ConferenceServiceProvider extends ServiceProvider
 
         $conferencePath = $pathInfos[2];
         $conferenceId = DB::table('conferences')->where('path', $conferencePath)->value('id');
-        if (! $conferenceId) {
+
+        if (!$conferenceId) {
             app()->setCurrentConferenceId(0);
 
             return;
