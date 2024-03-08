@@ -4,11 +4,11 @@
             @foreach ($upcomings as $upcoming)
                 <div class="upcoming-timeline text-start">
                     <div class="w-full flex justify-between">
-                        @if ($upcoming->hasMeta('date_held'))
+                        @if ($upcoming->start_date)
                             <div class="inline-flex items-center gap-2">
                                 <div class="upcoming-marker"></div>
                                 <time
-                                    class="text-xs">{{ date(setting('format.date'), strtotime($upcoming->getMeta('date_held'))) }}</time>
+                                    class="text-xs">{{ date(setting('format.date'), strtotime($upcoming->start_date)) }}</time>
                             </div>
                         @endif
 

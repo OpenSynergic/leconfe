@@ -50,12 +50,15 @@ class ConferenceResource extends Resource
                                 TextInput::make('name')
                                     ->required()
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('path', Str::slug($state))),
+                                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('path', Str::slug($state)))
+                                    ->columnSpanFull(),
                                 TextInput::make('path')
                                     ->rule('alpha_dash')
                                     ->required(),
                                 TextInput::make('meta.location'),
-                                Flatpickr::make('meta.date_held'),
+                                Flatpickr::make('start_date'),
+                                Flatpickr::make('end_date')
+                                    ->rule('after:start_at'),
                                 Textarea::make('meta.description')
                                     ->rows(5)
                                     ->autosize()
@@ -99,8 +102,9 @@ class ConferenceResource extends Resource
                                     'name' => $getDataConference?->name,
                                     'path' => $getDataConference?->path,
                                     'type' => $getDataConference?->type,
+                                    'start_date' => $getDataConference?->start_date,
+                                    'end_date' => $getDataConference?->end_date,
                                     'meta.location' => $getDataConference?->getMeta('location'),
-                                    'meta.date_held' => $getDataConference?->getMeta('date_held'),
                                     'meta.description' => $getDataConference?->getMeta('description'),
                                     'meta.publisher_name' => $getDataConference?->getMeta('publisher_name'),
                                     'meta.affiliation' => $getDataConference?->getMeta('affiliation'),

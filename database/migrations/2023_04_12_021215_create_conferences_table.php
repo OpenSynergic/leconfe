@@ -16,6 +16,8 @@ return new class extends Migration
         Schema::create('conferences', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->string('path')->unique();
             $table->enum('status', ConferenceStatus::array())->default(ConferenceStatus::Upcoming->value);
             $table->enum('type', ConferenceType::array())->default(ConferenceType::Offline->value);

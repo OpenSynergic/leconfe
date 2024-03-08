@@ -32,9 +32,11 @@ class ConferenceFactory extends Factory
         $year = fake()->year();
 
         return [
-            'name' => $name.' '.$city.' '.$year,
+            'name' => $name . ' ' . $city . ' ' . $year,
             'path' => Str::slug($city),
             'status' => fake()->boolean(80) ? ConferenceStatus::Upcoming : ConferenceStatus::Archived,
+            'start_date' => fake()->dateTimeBetween('-1 year', '+1 year'),
+            'end_date' => fake()->dateTimeBetween('+1 year', '+2 year'),
         ];
     }
 
@@ -49,7 +51,6 @@ class ConferenceFactory extends Factory
                 'affiliation' => fake()->company(),
                 'country' => Country::inRandomOrder()->first()->id,
                 'location' => fake()->city(),
-                'date_held' => fake()->dateTimeThisDecade(),
                 'description' => fake()->paragraphs(3, true),
                 'about' => fake()->paragraphs(4, true),
                 'page_footer' => view('examples.footer')->render(),

@@ -66,8 +66,14 @@ class InformationSetting extends Component implements HasForms
                                         'xl' => 1,
                                         'sm' => 2,
                                     ]),
-                                Flatpickr::make('meta.date_held')
+                                Flatpickr::make('start_date')
                                     ->rule('date')
+                                    ->columnSpan([
+                                        'xl' => 1,
+                                        'sm' => 2,
+                                    ]),
+                                Flatpickr::make('end_date')
+                                    ->rule('after:start_date')
                                     ->columnSpan([
                                         'xl' => 1,
                                         'sm' => 2,

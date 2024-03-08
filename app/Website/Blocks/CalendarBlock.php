@@ -23,7 +23,7 @@ class CalendarBlock extends Block
         $formattedUpcomings = [];
 
         foreach ($upcomings as $upcoming) {
-            $upcomingDate = Carbon::parse($upcoming->getMeta('date_held'))->format('Y-m-d');
+            $upcomingDate = $upcoming->start_at->format('Y-m-d');
 
             $formattedUpcomings[$upcomingDate] = [
                 'modifier' => 'upcoming_timeline',
