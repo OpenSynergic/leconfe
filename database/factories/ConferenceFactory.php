@@ -35,8 +35,8 @@ class ConferenceFactory extends Factory
             'name' => $name . ' ' . $city . ' ' . $year,
             'path' => Str::slug($city),
             'status' => fake()->boolean(80) ? ConferenceStatus::Upcoming : ConferenceStatus::Archived,
-            'start_date' => fake()->dateTimeBetween('-1 year', '+1 year'),
-            'end_date' => fake()->dateTimeBetween('+1 year', '+2 year'),
+            'date_start' => fake()->dateTimeBetween('-1 year', '+1 year'),
+            'date_end' => fake()->dateTimeBetween('+1 year', '+2 year'),
         ];
     }
 

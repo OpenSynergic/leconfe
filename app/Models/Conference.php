@@ -34,8 +34,8 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
         'type',
         'status',
         'path',
-        'start_date',
-        'end_date',
+        'date_start',
+        'date_end',
     ];
 
     /**
@@ -46,8 +46,8 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
     protected $casts = [
         'status' => ConferenceStatus::class,
         'type' => ConferenceType::class,
-        'start_date' => 'date',
-        'end_date' => 'date',
+        'date_start' => 'date',
+        'date_end' => 'date',
     ];
 
     protected function getMetaClassName(): string
@@ -139,7 +139,7 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
     public function scopeUpcoming(Builder $query)
     {
         return $query
-            ->orderBy('start_at', 'asc')
+            ->orderBy('date_start', 'asc')
             ->where('status', ConferenceStatus::Upcoming);
     }
 

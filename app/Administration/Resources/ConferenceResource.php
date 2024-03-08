@@ -8,12 +8,15 @@ use App\Models\Conference;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ConferenceType;
 use App\Tables\Columns\IndexColumn;
+use Carbon\Carbon;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -25,6 +28,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Squire\Models\Country;
+use Wallo\FilamentSelectify\Components\ButtonGroup;
+use Wallo\FilamentSelectify\Components\ToggleButton;
 
 class ConferenceResource extends Resource
 {
@@ -56,13 +61,40 @@ class ConferenceResource extends Resource
                                     ->rule('alpha_dash')
                                     ->required(),
                                 TextInput::make('meta.location'),
-                                Flatpickr::make('start_date'),
-                                Flatpickr::make('end_date')
-                                    ->rule('after:start_at'),
+                                Flatpickr::make('date_start')
+                                    ->dateFormat(setting('format.date'))
+                                    ->formatStateUsing(function ($state) {
+                                        if (blank($state)) {
+                                            return null;
+                                        }
+
+                                        return Carbon::parse($state)
+                                            ->translatedFormat(setting('format.date'));
+                                    })
+                                    ->autocomplete('off'),
+                                Flatpickr::make('date_end')
+                                    ->dateFormat(setting('format.date'))
+                                    ->formatStateUsing(function ($state) {
+                                        if (blank($state)) {
+                                            return null;
+                                        }
+
+                                        return Carbon::parse($state)
+                                            ->translatedFormat(setting('format.date'));
+                                    })
+                                    ->autocomplete('off')
+                                    ->after('date_start'),
                                 Textarea::make('meta.description')
                                     ->rows(5)
                                     ->autosize()
                                     ->columnSpanFull(),
+                            ]),
+                        Section::make()
+                            ->columnSpanFull()
+                            ->schema([
+                                TagsInput::make('meta.sponsors')
+                                    ->hint("Press 'Enter' or ',' to add a new sponsor")
+                                    ->splitKeys(['Enter', ',']),
                             ]),
                         Section::make()
                             ->columns(2)
@@ -102,8 +134,9 @@ class ConferenceResource extends Resource
                                     'name' => $getDataConference?->name,
                                     'path' => $getDataConference?->path,
                                     'type' => $getDataConference?->type,
-                                    'start_date' => $getDataConference?->start_date,
-                                    'end_date' => $getDataConference?->end_date,
+                                    'date_start' => $getDataConference?->date_start->format(setting('format.date')),
+                                    'date_end' => $getDataConference?->date_end->format(setting('format.date')),
+                                    'meta.sponsors' => $getDataConference?->getMeta('sponsors'),
                                     'meta.location' => $getDataConference?->getMeta('location'),
                                     'meta.description' => $getDataConference?->getMeta('description'),
                                     'meta.publisher_name' => $getDataConference?->getMeta('publisher_name'),
