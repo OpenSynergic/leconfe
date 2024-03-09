@@ -2,7 +2,7 @@
     'items' => [],
 ])
 
-<nav class="navbar-center hidden lg:flex relative z-10 w-auto" x-navigation>
+<nav x-navigation>
     <div class="relative">
         <ul class="navbar-items flex items-center justify-center flex-1 p-1 space-x-1 list-none group">
             @foreach ($items as $key => $item)

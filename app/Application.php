@@ -7,6 +7,7 @@ use App\Models\Announcement;
 use App\Models\Block;
 use App\Models\Conference;
 use App\Models\Navigation;
+use App\Models\NavigationMenu;
 use App\Models\ParticipantPosition;
 use App\Models\PaymentItem;
 use App\Models\Scopes\ConferenceScope;
@@ -18,6 +19,7 @@ use App\Models\Topic;
 use App\Models\Venue;
 use App\Models\Version;
 use Illuminate\Foundation\Application as LaravelApplication;
+use Illuminate\Support\Collection;
 
 class Application extends LaravelApplication
 {
@@ -83,6 +85,7 @@ class Application extends LaravelApplication
             Topic::class,
             Venue::class,
             Navigation::class,
+            NavigationMenu::class,
             Block::class,
             ParticipantPosition::class,
             Announcement::class,
@@ -94,12 +97,21 @@ class Application extends LaravelApplication
         }
     }
 
-    public function getNavigationItems(string $handle): array
+    public function getNavigationItems(string $handle): Collection
     {
-        return Navigation::query()
-            ->where('conference_id', $this->getCurrentConference()?->getKey() ?? static::CONTEXT_WEBSITE)
+        return NavigationMenu::query()
             ->where('handle', $handle)
-            ->first()?->items ?? [];
+            ->with([
+                'items' => function ($query) {
+                    $query
+                        ->ordered()
+                        ->whereNull('parent_id')
+                        ->with('children', function ($query) {
+                            $query->ordered();
+                        });
+                }
+            ])
+            ->first()?->items ?? collect();
     }
 
     public function getSite(): Site

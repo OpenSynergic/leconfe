@@ -14,8 +14,10 @@ use Filament\Forms\Set;
 use Filament\Pages\Page;
 use Illuminate\Support\Str;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Get;
 use Illuminate\Database\Eloquent\Builder;
 
 class NavigationMenuPage extends Page
@@ -44,11 +46,11 @@ class NavigationMenuPage extends Page
         return [
             'navigationMenus' => NavigationMenu::query()
                 ->with([
-                    'items' => function ($query){
+                    'items' => function ($query) {
                         $query
                             ->ordered()
                             ->whereNull('parent_id')
-                            ->with('children', function ($query){
+                            ->with('children', function ($query) {
                                 $query->ordered();
                             });
                     }
@@ -68,7 +70,6 @@ class NavigationMenuPage extends Page
                 ->action(function ($data) {
                     CreateNavigationMenuAction::run($data);
                 }),
-
         ];
     }
 
@@ -118,13 +119,13 @@ class NavigationMenuPage extends Page
             ->color('gray')
             ->modalWidth('xl')
             ->form($this->getNavigationMenuItemForm())
-            ->action(function (array $data,array $arguments) {
+            ->action(function (array $data, array $arguments) {
                 $data['navigation_menu_id'] = $arguments['navigation_menu_id'];
 
                 CreateNavigationMenuItemAction::run($data);
             });
     }
-    
+
     public function addNavigationMenuItemChildAction(): Action
     {
         return Action::make('addNavigationMenuItemChildAction')
@@ -138,7 +139,7 @@ class NavigationMenuPage extends Page
             ])
             ->modalWidth('xl')
             ->form($this->getNavigationMenuItemForm())
-            ->action(function (array $data,array $arguments) {
+            ->action(function (array $data, array $arguments) {
                 $data['parent_id'] = $arguments['parent_id'];
                 $data['navigation_menu_id'] = $arguments['navigation_menu_id'];
 
@@ -166,7 +167,7 @@ class NavigationMenuPage extends Page
             ->color('gray')
             ->modalWidth('xl')
             ->form($this->getNavigationMenuItemForm())
-            ->action(function (array $data,array $arguments) {
+            ->action(function (array $data, array $arguments) {
                 UpdateNavigationMenuItemAction::run(NavigationMenuItem::find($arguments['id']), $data);
             });
     }
@@ -217,24 +218,36 @@ class NavigationMenuPage extends Page
             ];
         };
     }
-    
+
     protected function getNavigationMenuItemForm()
     {
-        return function(array $arguments){
+        return function (array $arguments) {
             return [
                 TextInput::make('label')
                     ->required(),
                 Select::make('type')
                     ->options(NavigationMenuItemType::getOptions())
-                    ->required(),
+                    ->required()
+                    ->reactive(),
+                Group::make()
+                    ->whenTruthy('type')
+                    ->schema(function (Get $get) {
+                        if(!$get('type')){
+                            return [];
+                        }
+
+                        $typeEnum = NavigationMenuItemType::tryFromName($get('type'));
+
+                        return $typeEnum?->getForm() ?? [];
+                    })                
             ];
         };
     }
 
-    public function sortNavigationMenuItems($items, $parentId = null)
+    public function sortNavigationMenuItems($ids, $parentId = null)
     {
         $startOrder = 1;
-        foreach ($items as $id) {
+        foreach ($ids as $id) {
             NavigationMenuItem::query()
                 ->where('id', $id)
                 ->update([
@@ -242,10 +255,5 @@ class NavigationMenuPage extends Page
                     'parent_id' => $parentId
                 ]);
         }
-
-        // NavigationMenuItem::setNewOrder(
-        //     ids : $items,
-        //     modifyQuery: fn(Builder $query) => dd($query->toSql())
-        // );
     }
 }

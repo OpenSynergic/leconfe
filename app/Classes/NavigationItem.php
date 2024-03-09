@@ -14,6 +14,10 @@ class NavigationItem
         public ?array $data = [],
         public array $children = [],
     ) {
+        // replace {$loggedInUsername} label with the actual username
+        if (auth()->check() && str_contains($this->label, '{$username}')) {
+            $this->label = str_replace('{$username}', auth()->user()->fullName, $this->label);
+        }
     }
 
     public function getLabel()
