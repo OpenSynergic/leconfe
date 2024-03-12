@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Enums\NavigationMenuItemType;
 use App\Models\NavigationItemType;
 use App\Models\NavigationItemType\BaseNavigationItemType;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
@@ -15,7 +16,7 @@ use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
 class NavigationMenuItem extends Model implements Sortable
 {
-    use HasFactory, HasRecursiveRelationships, Metable, SortableTrait;
+    use HasFactory, Metable, SortableTrait, HasRecursiveRelationships;
 
     protected $fillable = [
         'label',
