@@ -19,7 +19,7 @@
             <x-website::navigation-menu :items="$primaryNavigationItems" />
         </div>
         <div class="navbar-end gap-x-4 hidden lg:inline-flex">
-            {{-- <x-website::navigation-menu :items="$userNavigationMenu" /> --}}
+            <x-website::navigation-menu :items="$userNavigationMenu" />
         </div>
     </div>
 </div>

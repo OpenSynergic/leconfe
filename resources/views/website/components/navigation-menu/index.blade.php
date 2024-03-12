@@ -5,6 +5,10 @@
 <nav class="relative">
     <ul class="navbar-items flex items-center justify-center flex-1 p-1 space-x-1 list-none group">
         @foreach ($items as $key => $item)
+            @if(!$item->isDisplayed())
+                @continue
+            @endif
+
             @if ($item->children->isEmpty())
                 <li>
                     <x-website::link

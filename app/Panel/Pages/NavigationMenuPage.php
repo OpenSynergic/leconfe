@@ -14,6 +14,7 @@ use Filament\Forms\Set;
 use Filament\Pages\Page;
 use Illuminate\Support\Str;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -158,11 +159,13 @@ class NavigationMenuPage extends Page
                 'class' => 'hidden'
             ])
             ->fillForm(function (array $arguments) {
-                return NavigationMenuItem::query()
-                    ->select(['label', 'type'])
-                    ->where('id', $arguments['id'])
-                    ->first()
-                    ->toArray();
+                $navigationMenuItem = NavigationMenuItem::find($arguments['id']);
+                
+
+                return [
+                    ...$navigationMenuItem->toArray(),
+                    'meta' => $navigationMenuItem->getAllMeta(), 
+                ];
             })
             ->color('gray')
             ->modalWidth('xl')
@@ -226,7 +229,7 @@ class NavigationMenuPage extends Page
                 TextInput::make('label')
                     ->required(),
                 Select::make('type')
-                    ->options(NavigationMenuItemType::getOptions())
+                    ->options(NavigationMenuItem::getTypeOptions())
                     ->required()
                     ->reactive(),
                 Group::make()
@@ -236,10 +239,11 @@ class NavigationMenuPage extends Page
                             return [];
                         }
 
-                        $typeEnum = NavigationMenuItemType::tryFromName($get('type'));
-
-                        return $typeEnum?->getForm() ?? [];
-                    })                
+                        return NavigationMenuItem::getType($get('type'))->getAdditionalForm() ?? [];
+                    }),
+                Checkbox::make('meta.new_tab')
+                    ->label('Open in new tab')
+                    ->default(false),
             ];
         };
     }
