@@ -42,7 +42,6 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Blade;
 use Livewire\Livewire;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
-use RyanChandler\FilamentNavigation\FilamentNavigation;
 
 class PanelProvider extends FilamentPanelProvider
 {
@@ -254,16 +253,7 @@ class PanelProvider extends FilamentPanelProvider
     public static function getPlugins()
     {
         return [
-            FilamentNavigation::make()
-                ->usingModel(Navigation::class)
-                ->usingResource(NavigationResource::class)
-                ->itemType('Home', [])
-                ->itemType('About', [])
-                ->itemType('Announcements', [])
-                ->itemType('Current Conference', [])
-                ->itemType('Login', [])
-                ->itemType('Register', [])
-                ->itemType('Proceeding', []),
+
         ];
     }
 

@@ -6,31 +6,31 @@ use App\Models\NavigationMenuItem;
 
 abstract class BaseNavigationItemType
 {
-    abstract public function getId(): string;  
+    abstract public static function getId(): string;  
 
-    abstract public function getLabel(): string;
+    abstract public static function getLabel(): string;
 
-    public function getDescription(NavigationMenuItem $navigationMenuItem): ?string
+    public static function getDescription(): ?string
     {
         return null;
     }
 
-    public function getIsDisplayed(NavigationMenuItem $navigationMenuItem): bool
+    public static function getIsDisplayed(NavigationMenuItem $navigationMenuItem): bool
     {
         return true;
     }
 
-    public function getAdditionalForm(NavigationMenuItem $navigationMenuItem): array
+    public static function getAdditionalForm(): array
     {
         return [];
     }
     
-    public function getAdditionalFormData(NavigationMenuItem $navigationMenuItem): array
+    public static function getAdditionalFormData(NavigationMenuItem $navigationMenuItem): array
     {
         return [];
     }
 
-    public function getUrl(NavigationMenuItem $navigationMenuItem): string
+    public static function getUrl(NavigationMenuItem $navigationMenuItem): string
     {
         return '#';
     }

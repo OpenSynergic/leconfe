@@ -6,22 +6,22 @@ use App\Models\NavigationMenuItem;
 
 class Login extends BaseNavigationItemType
 {
-    public function getId(): string
+    public static function getId(): string
     {
         return 'login';
     }
 
-    public function getLabel(): string
+    public static function getLabel(): string
     {
         return 'Login';
     }
     
-    public function getUrl(NavigationMenuItem $navigationMenuItem): string
+    public static function getUrl(NavigationMenuItem $navigationMenuItem): string
     {
         return route('livewirePageGroup.website.pages.login');
     }
 
-    public function getIsDisplayed(NavigationMenuItem $navigationMenuItem): bool
+    public static function getIsDisplayed(NavigationMenuItem $navigationMenuItem): bool
     {
         return !auth()->check();
     }

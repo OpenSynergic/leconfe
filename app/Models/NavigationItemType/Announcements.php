@@ -6,17 +6,17 @@ use App\Models\NavigationMenuItem;
 
 class Announcements extends BaseNavigationItemType
 {
-    public function getId(): string
+    public static function getId(): string
     {
         return 'announcements';
     }
 
-    public function getLabel(): string
+    public static function getLabel(): string
     {
         return 'Announcements';
     }
 
-    public function getUrl(NavigationMenuItem $navigationMenuItem): string
+    public static function getUrl(NavigationMenuItem $navigationMenuItem): string
     {
         return route('livewirePageGroup.current-conference.pages.announcement-list');
     }

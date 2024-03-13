@@ -7,17 +7,17 @@ use Filament\Forms\Components\TextInput;
 
 class RemoteUrl extends BaseNavigationItemType
 {
-    public function getId(): string
+    public static function getId(): string
     {
         return 'remote-url';
     }
 
-    public function getLabel(): string
+    public static function getLabel(): string
     {
         return 'Remote URL';
     }
 
-    public function getAdditionalForm(NavigationMenuItem $navigationMenuItem): array
+    public static function getAdditionalForm(): array
     {
         return [
             TextInput::make('meta.url')
@@ -28,7 +28,7 @@ class RemoteUrl extends BaseNavigationItemType
         ];
     }
 
-    public function getAdditionalFormData(NavigationMenuItem $navigationMenuItem): array
+    public static function getAdditionalFormData(NavigationMenuItem $navigationMenuItem): array
     {
         return [
             'meta' => [
@@ -37,7 +37,7 @@ class RemoteUrl extends BaseNavigationItemType
         ];
     }
 
-    public function getUrl(NavigationMenuItem $navigationMenuItem): string
+    public static function getUrl(NavigationMenuItem $navigationMenuItem): string
     {
         return $navigationMenuItem->getMeta('url');
     }

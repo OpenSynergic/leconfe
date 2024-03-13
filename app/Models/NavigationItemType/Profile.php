@@ -6,17 +6,17 @@ use App\Models\NavigationMenuItem;
 
 class Profile extends BaseNavigationItemType
 {
-    public function getId(): string
+    public static function getId(): string
     {
         return 'profile';
     }
 
-    public function getLabel(): string
+    public static function getLabel(): string
     {
         return 'Profile';
     }
 
-    public function getUrl(NavigationMenuItem $navigationMenuItem): string
+    public static function getUrl(NavigationMenuItem $navigationMenuItem): string
     {
         return route('filament.panel.resources.users.profile', [
             'tenant' => app()->getCurrentConference(),

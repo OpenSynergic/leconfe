@@ -4,20 +4,20 @@ namespace App\Models\NavigationItemType;
 
 use App\Models\NavigationMenuItem;
 
-class About extends BaseNavigationItemType
+class ContactUs extends BaseNavigationItemType
 {
     public static function getId(): string
     {
-        return 'about';
+        return 'contact-us';
     }
 
     public static function getLabel(): string
     {
-        return 'About';
+        return 'Contact Us';
     }
 
     public static function getUrl(NavigationMenuItem $navigationMenuItem): string
     {
-        return route('livewirePageGroup.current-conference.pages.about');
+        return '#';
     }
 }

@@ -6,17 +6,17 @@ use App\Models\NavigationMenuItem;
 
 class Home extends BaseNavigationItemType
 {
-    public function getId(): string
+    public static function getId(): string
     {
         return 'home';
     }
 
-    public function getLabel(): string
+    public static function getLabel(): string
     {
         return 'Home';
     }
 
-    public function getUrl(NavigationMenuItem $navigationMenuItem): string
+    public static function getUrl(NavigationMenuItem $navigationMenuItem): string
     {
         return route('livewirePageGroup.website.pages.home');
     }

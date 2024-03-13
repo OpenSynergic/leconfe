@@ -40,7 +40,6 @@
         "propaganistas/laravel-phone": "^5.0",
         "rahmanramsi/livewire-page-group": "^0.0.4",
         "rickselby/laravel-gate-cache": "^3.7",
-        "ryangjchandler/filament-navigation": "^1.0@beta",
         "spatie/eloquent-sortable": "^4.0",
         "spatie/laravel-activitylog": "^4.7",
         "spatie/laravel-database-mail-templates": "^3.5",

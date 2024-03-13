@@ -50,20 +50,21 @@ class NavigationMenuItem extends Model implements Sortable
     public static function getTypes(): array
     {
         return [
-            'remote-url' => new NavigationItemType\RemoteUrl,
-            'about' => new NavigationItemType\About,
-            'announcements' => new NavigationItemType\Announcements,
-            'dashboard' => new NavigationItemType\Dashboard,
-            'home' => new NavigationItemType\Home,
-            'login' => new NavigationItemType\Login,
-            'logout' => new NavigationItemType\Logout,
-            'proceedings' => new NavigationItemType\Proceedings,
-            'profile'=> new NavigationItemType\Profile,
-            'register' => new NavigationItemType\Register,
+            'remote-url' =>  NavigationItemType\RemoteUrl::class,
+            'about' =>  NavigationItemType\About::class,
+            'announcements' =>  NavigationItemType\Announcements::class,
+            'contact-us' =>  NavigationItemType\ContactUs::class,
+            'dashboard' =>  NavigationItemType\Dashboard::class,
+            'home' =>  NavigationItemType\Home::class,
+            'login' =>  NavigationItemType\Login::class,
+            'logout' =>  NavigationItemType\Logout::class,
+            'proceedings' =>  NavigationItemType\Proceedings::class,
+            'profile'=>  NavigationItemType\Profile::class,
+            'register' =>  NavigationItemType\Register::class,
         ];
     }
 
-    public static function getType(string $type): BaseNavigationItemType
+    public static function getType(string $type): string
     {
         return self::getTypes()[$type];
     }
@@ -71,19 +72,19 @@ class NavigationMenuItem extends Model implements Sortable
     public static function getTypeOptions(): array
     {
         return collect(self::getTypes())
-            ->mapWithKeys(fn($type) => [$type->getId() => $type->getLabel()])
+            ->mapWithKeys(fn($type) => [$type::getId() => $type::getLabel()])
             ->toArray();
     }
 
     public function getUrl(): string
     {
-        return self::getType($this->type)->getUrl($this) ?? '#';
+        return self::getType($this->type)::getUrl($this) ?? '#';
     }
 
     public function getLabel(): string
     {
         // replace {$username} with the user's name
-        if (strpos($this->label, '{$username}') !== false) {
+        if (auth()->check() && strpos($this->label, '{$username}') !== false) {
             $this->label = str_replace('{$username}', auth()->user()->fullName, $this->label);
         }
 
@@ -92,6 +93,6 @@ class NavigationMenuItem extends Model implements Sortable
 
     public function isDisplayed(): bool
     {
-        return self::getType($this->type)->getIsDisplayed($this);
+        return self::getType($this->type)::getIsDisplayed($this);
     }
 }

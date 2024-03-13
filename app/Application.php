@@ -6,7 +6,6 @@ use App\Actions\Site\SiteCreateAction;
 use App\Models\Announcement;
 use App\Models\Block;
 use App\Models\Conference;
-use App\Models\Navigation;
 use App\Models\NavigationMenu;
 use App\Models\ParticipantPosition;
 use App\Models\PaymentItem;
@@ -84,7 +83,6 @@ class Application extends LaravelApplication
             Submission::class,
             Topic::class,
             Venue::class,
-            Navigation::class,
             NavigationMenu::class,
             Block::class,
             ParticipantPosition::class,

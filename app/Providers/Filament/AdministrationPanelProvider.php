@@ -16,7 +16,6 @@ use Filament\Panel;
 use Filament\PanelProvider as FilamentPanelProvider;
 use Filament\Widgets;
 use Illuminate\Support\Facades\Blade;
-use RyanChandler\FilamentNavigation\FilamentNavigation;
 
 class AdministrationPanelProvider extends FilamentPanelProvider
 {
@@ -64,14 +63,6 @@ class AdministrationPanelProvider extends FilamentPanelProvider
     public function getPlugins(): array
     {
         return [
-            FilamentNavigation::make()
-                ->usingModel(Navigation::class)
-                ->usingResource(NavigationResource::class)
-                ->itemType('Home', [])
-                ->itemType('Current Conference', [])
-                ->itemType('Login', [])
-                ->itemType('Register', [])
-                ->itemType('Archieve', []),
         ];
     }
 

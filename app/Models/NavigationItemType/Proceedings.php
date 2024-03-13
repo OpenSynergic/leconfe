@@ -6,17 +6,17 @@ use App\Models\NavigationMenuItem;
 
 class Proceedings extends BaseNavigationItemType
 {
-    public function getId(): string
+    public static function getId(): string
     {
         return 'proceedings';
     }
 
-    public function getLabel(): string
+    public static function getLabel(): string
     {
         return 'Proceedings';
     }
 
-    public function getUrl(NavigationMenuItem $navigationMenuItem): string
+    public static function getUrl(NavigationMenuItem $navigationMenuItem): string
     {
         return route('livewirePageGroup.current-conference.pages.proceeding');
     }

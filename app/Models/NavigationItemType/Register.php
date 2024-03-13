@@ -6,17 +6,17 @@ use App\Models\NavigationMenuItem;
 
 class Register extends BaseNavigationItemType
 {
-    public function getId(): string
+    public static function getId(): string
     {
         return 'register';
     }
 
-    public function getLabel(): string
+    public static function getLabel(): string
     {
         return 'Register';
     }
 
-    public function getIsDisplayed(NavigationMenuItem $navigationMenuItem): bool
+    public static function getIsDisplayed(NavigationMenuItem $navigationMenuItem): bool
     {
         return !auth()->check();
     }

@@ -233,13 +233,23 @@ class NavigationMenuPage extends Page
                     ->required()
                     ->reactive(),
                 Group::make()
-                    ->whenTruthy('type')
+                    ->visible(function(Get $get){
+                        if(!$get('type')){
+                            return false;
+                        }
+
+                        $type = NavigationMenuItem::getType($get('type'));
+
+                        return $type ? !empty($type::getAdditionalForm()) : false;
+                    })
                     ->schema(function (Get $get) {
                         if(!$get('type')){
                             return [];
                         }
 
-                        return NavigationMenuItem::getType($get('type'))->getAdditionalForm() ?? [];
+                        $type = NavigationMenuItem::getType($get('type'));
+                        
+                        return $type ? $type::getAdditionalForm() : [];
                     }),
                 Checkbox::make('meta.new_tab')
                     ->label('Open in new tab')

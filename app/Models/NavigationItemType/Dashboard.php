@@ -6,20 +6,25 @@ use App\Models\NavigationMenuItem;
 
 class Dashboard extends BaseNavigationItemType
 {
-    public function getId(): string
+    public static function getId(): string
     {
         return 'dashboard';
     }
 
-    public function getLabel(): string
+    public static function getLabel(): string
     {
         return 'Dashboard';
     }
 
-    public function getUrl(NavigationMenuItem $navigationMenuItem): string
+    public static function getUrl(NavigationMenuItem $navigationMenuItem): string
     {
         $conference = app()->getCurrentConference();
 
         return route('filament.panel.pages.dashboard', $conference);
+    }
+
+    public static function getIsDisplayed(NavigationMenuItem $navigationMenuItem): bool
+    {
+        return auth()->check();
     }
 }
