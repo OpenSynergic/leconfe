@@ -24,6 +24,7 @@ use Carbon\Carbon;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Actions\Action;
 use Filament\Actions\MountableAction;
+use Filament\Enums\ThemeMode;
 use Filament\Facades\Filament;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\DatePicker;
@@ -86,6 +87,7 @@ class PanelProvider extends FilamentPanelProvider
             ->navigationItems(static::getNavigationItems())
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->colors(static::getColors())
+            ->darkMode(false)
             ->discoverResources(in: app_path('Panel/Resources'), for: 'App\\Panel\\Resources')
             ->discoverPages(in: app_path('Panel/Pages'), for: 'App\\Panel\\Pages')
             ->discoverWidgets(in: app_path('Panel/Widgets'), for: 'App\\Panel\\Widgets')

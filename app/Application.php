@@ -30,6 +30,8 @@ class Application extends LaravelApplication
 
     protected int $currentConferenceId;
 
+    protected Conference $currentConference;
+
     protected string $currentConferencePath;
 
     public function isInstalled()
@@ -64,7 +66,10 @@ class Application extends LaravelApplication
 
     public function getCurrentConference(): ?Conference
     {
-        return Conference::find($this->getCurrentConferenceId());
+        if (!isset($this->currentConference)) {
+            $this->currentConference = Conference::find($this->getCurrentConferenceId());
+        }
+        return $this->currentConference;
     }
 
     public function getCurrentConferenceId(): int
@@ -120,7 +125,7 @@ class Application extends LaravelApplication
     public function isReportingErrors(): bool
     {
         try {
-            if ($this->isProduction() && ! $this->hasDebugModeEnabled() && setting('send-error-report', true)) {
+            if ($this->isProduction() && !$this->hasDebugModeEnabled() && setting('send-error-report', true)) {
                 return true;
             }
         } catch (\Throwable $th) {
