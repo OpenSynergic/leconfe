@@ -45,7 +45,7 @@ class ConferenceServiceProvider extends ServiceProvider
             $currentConference = app()->getCurrentConference();
             if ($currentConference) {
                 Livewire::setUpdateRoute(function ($handle) use ($currentConference) {
-                    return Route::post('/livewire/' . $currentConference->path . '/update', $handle)
+                    return Route::post($currentConference->path . '/panel/livewire/update', $handle)
                         ->middleware('web');
                 });
             }
