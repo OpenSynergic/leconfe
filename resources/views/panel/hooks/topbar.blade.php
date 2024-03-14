@@ -50,6 +50,14 @@
     </x-slot>
 
     <x-filament::dropdown.list>
+        <x-filament::dropdown.list.item
+            :href="route('filament.administration.home')"
+            icon="heroicon-s-cog"
+            tag="a"
+        >
+            {{ __('Administration') }}
+        </x-filament::dropdown.list.item>
+
         @foreach (Conference::where('path', '!=', app()->getCurrentConference()->path)->get() as $conference)
             <x-filament::dropdown.list.item
                 :color="$conference->status->getColor()"
