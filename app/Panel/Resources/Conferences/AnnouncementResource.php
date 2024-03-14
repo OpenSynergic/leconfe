@@ -5,9 +5,9 @@ namespace App\Panel\Resources\Conferences;
 use App\Forms\Components\TagSuggestions;
 use App\Models\Announcement;
 use App\Models\AnnouncementTag;
-use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ContentType;
 use App\Panel\Resources\Conferences\AnnouncementResource\Pages;
+use App\Panel\Resources\Traits\CustomizedUrl;
 use Carbon\Carbon;
 use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\Checkbox;
@@ -36,6 +36,8 @@ class AnnouncementResource extends Resource
     protected static ?string $navigationGroup = 'Conferences';
 
     protected static ?string $navigationIcon = 'heroicon-o-speaker-wave';
+
+    use CustomizedUrl;
 
     public static function getEloquentQuery(): Builder
     {

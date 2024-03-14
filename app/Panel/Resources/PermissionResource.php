@@ -4,6 +4,7 @@ namespace App\Panel\Resources;
 
 use App\Models\Permission;
 use App\Panel\Resources\PermissionResource\Pages;
+use App\Panel\Resources\Traits\CustomizedUrl;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -25,12 +26,14 @@ class PermissionResource extends Resource
 
     protected static ?int $navigationSort = 7;
 
+    use CustomizedUrl;
+
     /**
      * This Resource is only for development purposes.
      */
     public static function isDiscovered(): bool
     {
-        return ! app()->isProduction();
+        return !app()->isProduction();
     }
 
     public static function getEloquentQuery(): Builder

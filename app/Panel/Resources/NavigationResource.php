@@ -2,6 +2,7 @@
 
 namespace App\Panel\Resources;
 
+use App\Panel\Resources\Traits\CustomizedUrl;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
@@ -28,6 +29,8 @@ class NavigationResource extends Resource
 
     protected static ?string $navigationGroup = 'Settings';
 
+    use CustomizedUrl;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -38,7 +41,7 @@ class NavigationResource extends Resource
                         ->reactive()
                         ->debounce()
                         ->afterStateUpdated(function (?string $state, Set $set) {
-                            if (! $state) {
+                            if (!$state) {
                                 return;
                             }
 

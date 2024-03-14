@@ -8,6 +8,7 @@ use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
 use App\Models\Submission;
 use App\Panel\Resources\SubmissionResource\Pages;
+use App\Panel\Resources\Traits\CustomizedUrl;
 use Filament\GlobalSearch\GlobalSearchResult;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -27,6 +28,8 @@ class SubmissionResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?string $recordTitleAttribute = 'title';
+
+    use CustomizedUrl;
 
     public static function getGlobalSearchResultTitle(Model $record): string
     {
@@ -157,7 +160,7 @@ class SubmissionResource extends Resource
                                     )
                                     ->count();
 
-                                if (! $editorAssigned && $record->stage != SubmissionStage::Wizard) {
+                                if (!$editorAssigned && $record->stage != SubmissionStage::Wizard) {
                                     return 'No Editor Assigned';
                                 }
                             }),

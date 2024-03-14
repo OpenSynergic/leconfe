@@ -3,6 +3,7 @@
 namespace App\Panel\Resources\Conferences;
 
 use App\Models\ParticipantPosition;
+use App\Panel\Resources\Traits\CustomizedUrl;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -22,6 +23,8 @@ class CommitteePositionResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static string $positionType = 'committee';
+
+    use CustomizedUrl;
 
     public static function getModelLabel(): string
     {
@@ -81,7 +84,7 @@ class CommitteePositionResource extends Resource
                         try {
                             $speakerCount = $record->participants()->count();
                             if ($speakerCount > 0) {
-                                throw new \Exception('Cannot delete '.$record->name.', there are '.static::$positionType.' who are still associated with this position');
+                                throw new \Exception('Cannot delete ' . $record->name . ', there are ' . static::$positionType . ' who are still associated with this position');
                             }
 
                             return $record->delete();

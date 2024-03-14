@@ -3,7 +3,9 @@
 namespace App\Panel\Resources;
 
 use App\Models\Role;
+use App\Models\User;
 use App\Panel\Resources\RoleResource\Pages;
+use App\Panel\Resources\Traits\CustomizedUrl;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Fieldset;
@@ -34,6 +36,8 @@ class RoleResource extends Resource
 
     protected static ?Role $parentRole = null;
 
+    use CustomizedUrl;
+
     public static function getEloquentQuery(): Builder
     {
         return static::getModel()::query();
@@ -51,7 +55,7 @@ class RoleResource extends Resource
                             ->relationship('parent', 'name', fn ($query) => $query->whereNull('parent_id'))
                             ->live()
                             ->afterStateUpdated(function (Set $set, ?string $state) {
-                                if (! $state) {
+                                if (!$state) {
                                     return;
                                 }
 
@@ -64,7 +68,7 @@ class RoleResource extends Resource
 
                                         $condition = $newParent->hasPermissionOnAncestorsAndSelf($permission);
 
-                                        $set('permissions.'.$permission->name, $condition);
+                                        $set('permissions.' . $permission->name, $condition);
                                     });
                             })
                             ->preload(),
@@ -152,10 +156,10 @@ class RoleResource extends Resource
                 ->schema($permissions->map(function ($permission) {
                     [, $action] = explode(':', $permission->name);
 
-                    return Checkbox::make('permissions.'.$permission->name)
+                    return Checkbox::make('permissions.' . $permission->name)
                         ->disabled(function (Get $get) use ($permission) {
                             $parentId = $get('parent_id');
-                            if (! $parentId) {
+                            if (!$parentId) {
                                 return false;
                             }
 

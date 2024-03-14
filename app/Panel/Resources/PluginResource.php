@@ -5,6 +5,7 @@ namespace App\Panel\Resources;
 use App\Facades\Plugin as FacadesPlugin;
 use App\Models\Plugin;
 use App\Panel\Resources\PluginResource\Pages;
+use App\Panel\Resources\Traits\CustomizedUrl;
 use App\Tables\Columns\IndexColumn;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
@@ -21,6 +22,8 @@ class PluginResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-square-3-stack-3d';
 
     protected static ?string $navigationGroup = 'Settings';
+
+    use CustomizedUrl;
 
     public static function getEloquentQuery(): Builder
     {
