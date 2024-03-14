@@ -10,6 +10,7 @@ use App\Panel\Livewire\Forms\Conferences\PrivacySetting;
 use App\Panel\Livewire\Forms\Conferences\SearchEngineSetting;
 use App\Panel\Livewire\Forms\Conferences\SetupSetting;
 use App\Panel\Livewire\Forms\Conferences\SidebarSetting;
+use App\Panel\Pages\Traits\CustomizedUrl;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Components\Tabs;
@@ -36,9 +37,16 @@ class ConferenceSetting extends Page implements HasForms, HasInfolists
 
     protected static ?string $navigationLabel = 'Conference';
 
+    use CustomizedUrl;
+
     public function mount(): void
     {
         $this->authorize('update', App::getCurrentConference());
+    }
+
+    public static function getNavigationUrl(): string
+    {
+        return static::getUrl(['conference' => app()->getCurrentConference()->path]);
     }
 
     public static function shouldRegisterNavigation(): bool

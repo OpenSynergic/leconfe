@@ -11,6 +11,7 @@ use App\Panel\Livewire\Workflows\Payment\Tables\SubmissionPaymentItemTable;
 use App\Panel\Livewire\Workflows\PaymentSetting;
 use App\Panel\Livewire\Workflows\PeerReview\Forms\Guidelines;
 use App\Panel\Livewire\Workflows\PeerReviewSetting;
+use App\Panel\Pages\Traits\CustomizedUrl;
 use Filament\Facades\Filament;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -33,9 +34,11 @@ class Workflow extends Page implements HasForms, HasInfolists
 
     protected static ?string $navigationGroup = 'Settings';
 
+    use CustomizedUrl;
+
     public function booted(): void
     {
-        abort_if(! static::canView(), 403);
+        abort_if(!static::canView(), 403);
     }
 
     public static function shouldRegisterNavigation(): bool
