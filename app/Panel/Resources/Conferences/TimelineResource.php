@@ -5,8 +5,8 @@ namespace App\Panel\Resources\Conferences;
 use App\Models\Role;
 use App\Models\Timeline;
 use App\Panel\Resources\Conferences\TimelineResource\Pages;
-use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -38,7 +38,7 @@ class TimelineResource extends Resource
                     TextInput::make('title')
                         ->required(),
                     TextInput::make('subtitle'),
-                    Flatpickr::make('date')
+                    DatePicker::make('date')
                         ->rule('date')
                         ->required(),
                     Grid::make(2)

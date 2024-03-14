@@ -9,10 +9,9 @@ use App\Models\Enums\UserRole;
 use App\Models\User;
 use App\Panel\Resources\Conferences\ParticipantResource;
 use App\Panel\Resources\UserResource\Pages;
-use Carbon\Carbon;
-use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Facades\Filament;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -276,12 +275,10 @@ class UserResource extends Resource
                         ->form([
                             Textarea::make('comment')
                                 ->label('Reason for Disabling User'),
-                            Flatpickr::make('expired_at')
+                            DatePicker::make('expired_at')
                                 ->label('Until')
-                                // ->native(false)
                                 ->minDate(now()->addDay())
-                                ->hint('To disable permanently, leave field empty')
-                                ->dehydrateStateUsing(fn ($state) => $state ? Carbon::createFromFormat(setting('format.date'), $state) : null),
+                                ->hint('To disable permanently, leave field empty'),
                         ])
                         ->action(function (array $data, User $record) {
                             $record->ban($data);

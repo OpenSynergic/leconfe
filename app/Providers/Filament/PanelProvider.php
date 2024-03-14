@@ -21,7 +21,6 @@ use App\Models\Site;
 use App\Panel\Resources\NavigationResource;
 use App\Panel\Resources\UserResource;
 use Carbon\Carbon;
-use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Actions\Action;
 use Filament\Actions\MountableAction;
 use Filament\Enums\ThemeMode;
@@ -225,17 +224,13 @@ class PanelProvider extends FilamentPanelProvider
             // ->acceptedFileTypes(config('media-library.accepted_file_types'))
         });
         DatePicker::configureUsing(function (DatePicker $datePicker): void {
-            $datePicker->format(setting('format.date'));
+            $datePicker
+                ->native(false)
+                ->format(setting('format.date'));
         });
 
         TimePicker::configureUsing(function (TimePicker $timePicker): void {
             $timePicker->format(setting('format.time'));
-        });
-
-        Flatpickr::configureUsing(function (Flatpickr $flatpickr): void {
-            $flatpickr
-                ->dateFormat(setting('format.date'))
-                ->dehydrateStateUsing(fn ($state) => $state ? Carbon::createFromFormat(setting('format.date'), $state) : null);
         });
 
         Table::configureUsing(function (Table $table): void {

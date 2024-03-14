@@ -4,12 +4,10 @@ namespace App\Panel\Livewire\Workflows;
 
 use App\Panel\Livewire\Workflows\Base\WorkflowStage;
 use Awcodes\Shout\Components\Shout;
-use Carbon\Carbon;
-use Coolsam\FilamentFlatpickr\Enums\FlatpickrTheme;
-use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -101,32 +99,10 @@ class PeerReviewSetting extends WorkflowStage implements HasActions, HasForms
                             ->suffix('Days'),
                         Fieldset::make('Review Deadline')
                             ->schema([
-                                Flatpickr::make('settings.start_at')
-                                    ->dateFormat(setting('format.date'))
-                                    ->formatStateUsing(function ($state) {
-                                        if (blank($state)) {
-                                            return null;
-                                        }
-
-                                        return Carbon::parse($state)
-                                            ->translatedFormat(setting('format.date'));
-                                    })
-                                    ->dehydrateStateUsing(fn ($state) => $state ? Carbon::createFromFormat(setting('format.date'), $state) : null)
-                                    ->label('Date start')
-                                    ->theme(FlatpickrTheme::DARK),
-                                Flatpickr::make('settings.end_at')
-                                    ->dateFormat(setting('format.date'))
-                                    ->formatStateUsing(function ($state) {
-                                        if (blank($state)) {
-                                            return null;
-                                        }
-
-                                        return Carbon::parse($state)
-                                            ->translatedFormat(setting('format.date'));
-                                    })
-                                    ->dehydrateStateUsing(fn ($state) => $state ? Carbon::createFromFormat(setting('format.date'), $state) : null)
-                                    ->label('Date end')
-                                    ->theme(FlatpickrTheme::DARK),
+                                DatePicker::make('settings.start_at')
+                                    ->label('Date start'),
+                                DatePicker::make('settings.end_at')
+                                    ->label('Date end'),
                             ]),
                     ])
                     ->columns(1),

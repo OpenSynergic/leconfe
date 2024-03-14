@@ -30,7 +30,7 @@ class Application extends LaravelApplication
 
     protected int $currentConferenceId;
 
-    protected Conference $currentConference;
+    protected ?Conference $currentConference;
 
     protected string $currentConferencePath;
 
