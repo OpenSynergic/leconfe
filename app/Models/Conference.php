@@ -150,6 +150,11 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
         return $this->status == ConferenceStatus::Active;
     }
 
+    public function getPanelUrl(): string
+    {
+        return route('filament.panel.pages.dashboard', ['conference' => $this->path]);
+    }
+
     public function getHomeUrl(): string
     {
         return route('livewirePageGroup.conference.pages.home', ['conference' => $this->path]);
