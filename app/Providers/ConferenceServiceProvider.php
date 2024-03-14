@@ -13,6 +13,7 @@ use App\Facades\Block;
 use App\Http\Middleware\IdentifyArchiveConference;
 use App\Http\Middleware\IdentifyCurrentConference;
 use App\Http\Middleware\SetupDefaultData;
+use App\Models\Conference;
 use App\Models\Enums\ConferenceStatus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -28,9 +29,12 @@ class ConferenceServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->resolving('livewire-page-group', function () {
-            LivewirePageGroup::registerPageGroup($this->conference(PageGroup::make()));
-        });
+        // This is not a good approach. Issues may arise when new pages are added to the project.
+        if (!in_array(request()->segment(1), ['administration', 'phpmyinfo'])) {
+            $this->app->resolving('livewire-page-group', function () {
+                LivewirePageGroup::registerPageGroup($this->conference(PageGroup::make()));
+            });
+        }
     }
 
     /**
@@ -90,6 +94,7 @@ class ConferenceServiceProvider extends ServiceProvider
         if (!app()->isInstalled()) {
             return;
         }
+
         $pathInfos = explode('/', request()->getPathInfo());
 
         // Special case for `current` path
@@ -107,22 +112,6 @@ class ConferenceServiceProvider extends ServiceProvider
             return;
         }
 
-        if (!isset($pathInfos[2])) {
-            app()->setCurrentConferenceId(0);
-
-            return;
-        }
-
-        $conferencePath = $pathInfos[2];
-        $conferenceId = DB::table('conferences')->where('path', $conferencePath)->value('id');
-
-        if (!$conferenceId) {
-            app()->setCurrentConferenceId(0);
-
-            return;
-        }
-
-        app()->setCurrentConferenceId($conferenceId);
-        app()->scopeCurrentConference();
+        return;
     }
 }
