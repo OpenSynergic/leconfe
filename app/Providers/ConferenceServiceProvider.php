@@ -29,7 +29,7 @@ class ConferenceServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // This is not a good approach. Issues may arise when new pages are added to the project.
+        // This isn't a good way, problem maybe caught up after new pages add to the project
         if (!in_array(request()->segment(1), ['administration', 'phpmyinfo'])) {
             $this->app->resolving('livewire-page-group', function () {
                 LivewirePageGroup::registerPageGroup($this->conference(PageGroup::make()));
@@ -82,9 +82,9 @@ class ConferenceServiceProvider extends ServiceProvider
     {
         return $this->setupPageGroup($pageGroup)
             ->id('conference')
-            ->path('{conference}')
+            ->path('{conference:path}')
             ->middleware([
-                // IdentifyCurrentConference::class,
+                IdentifyCurrentConference::class,
                 SetupDefaultData::class,
             ], true);
     }
