@@ -39,6 +39,11 @@ class Login extends Page
         ];
     }
 
+    public function getRedirectUrl(): string
+    {
+        return Filament::getUrl();
+    }
+
     public function login()
     {
         try {
@@ -65,6 +70,6 @@ class Login extends Page
 
         session()->regenerate();
 
-        $this->redirect(Filament::getUrl(), navigate: false);
+        $this->redirect($this->getRedirectUrl(), navigate: false);
     }
 }
