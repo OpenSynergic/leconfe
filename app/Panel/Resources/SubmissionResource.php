@@ -156,7 +156,7 @@ class SubmissionResource extends BaseResource
                                     )
                                     ->count();
 
-                                if (!$editorAssigned && $record->stage != SubmissionStage::Wizard) {
+                                if (! $editorAssigned && $record->stage != SubmissionStage::Wizard) {
                                     return 'No Editor Assigned';
                                 }
                             }),

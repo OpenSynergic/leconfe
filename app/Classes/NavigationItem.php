@@ -3,7 +3,6 @@
 namespace App\Classes;
 
 use App\Models\Conference;
-use App\Models\Enums\ConferenceStatus;
 use Closure;
 
 class NavigationItem

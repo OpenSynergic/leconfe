@@ -103,7 +103,7 @@ class AnnouncementResource extends Resource
                                     })
                                     ->options(AnnouncementTag::withCount('announcements')->orderBy('announcements_count', 'desc')->limit(10)->pluck('name', 'id')->toArray())
                                     ->afterStateUpdated(function ($set, $state) {
-                                        if (!empty($state)) {
+                                        if (! empty($state)) {
                                             $state = AnnouncementTag::whereIn('id', $state)->get()->map(fn ($tag) => $tag->name)->toArray();
                                         }
 
