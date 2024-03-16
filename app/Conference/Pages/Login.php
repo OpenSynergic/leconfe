@@ -27,7 +27,7 @@ class Login extends Page
     public function mount()
     {
         if (Filament::auth()->check()) {
-            $this->redirect(Filament::getUrl(), navigate: false);
+            $this->redirect($this->getRedirectUrl(), navigate: false);
         }
     }
 
