@@ -4,11 +4,9 @@ namespace App\Panel\Resources;
 
 use App\Models\Permission;
 use App\Panel\Resources\PermissionResource\Pages;
-use App\Panel\Resources\Traits\CustomizedUrl;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Grouping\Group;
@@ -16,7 +14,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
-class PermissionResource extends Resource
+class PermissionResource extends BaseResource
 {
     protected static ?string $model = Permission::class;
 
@@ -26,7 +24,6 @@ class PermissionResource extends Resource
 
     protected static ?int $navigationSort = 7;
 
-    use CustomizedUrl;
 
     /**
      * This Resource is only for development purposes.

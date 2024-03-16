@@ -11,7 +11,7 @@ use App\Panel\Livewire\Workflows\Payment\Tables\SubmissionPaymentItemTable;
 use App\Panel\Livewire\Workflows\PaymentSetting;
 use App\Panel\Livewire\Workflows\PeerReview\Forms\Guidelines;
 use App\Panel\Livewire\Workflows\PeerReviewSetting;
-use App\Panel\Pages\Traits\CustomizedUrl;
+use App\Panel\Pages\BasePage;
 use Filament\Facades\Filament;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -20,9 +20,8 @@ use Filament\Infolists\Components\Tabs\Tab as HorizontalTab;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
-use Filament\Pages\Page;
 
-class Workflow extends Page implements HasForms, HasInfolists
+class Workflow extends BasePage implements HasForms, HasInfolists
 {
     use InteractsWithForms, InteractsWithInfolists;
 
@@ -33,8 +32,6 @@ class Workflow extends Page implements HasForms, HasInfolists
     protected static ?string $navigationIcon = 'heroicon-o-window';
 
     protected static ?string $navigationGroup = 'Settings';
-
-    use CustomizedUrl;
 
     public function booted(): void
     {

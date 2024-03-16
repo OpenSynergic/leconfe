@@ -5,7 +5,6 @@ namespace App\Panel\Resources;
 use App\Models\Role;
 use App\Models\User;
 use App\Panel\Resources\RoleResource\Pages;
-use App\Panel\Resources\Traits\CustomizedUrl;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Fieldset;
@@ -15,7 +14,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
-use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -24,7 +22,7 @@ use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
 
-class RoleResource extends Resource
+class RoleResource extends BaseResource
 {
     protected static ?string $model = Role::class;
 
@@ -35,8 +33,6 @@ class RoleResource extends Resource
     protected static ?int $navigationSort = 6;
 
     protected static ?Role $parentRole = null;
-
-    use CustomizedUrl;
 
     public static function getEloquentQuery(): Builder
     {

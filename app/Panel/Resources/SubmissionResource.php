@@ -8,9 +8,7 @@ use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
 use App\Models\Submission;
 use App\Panel\Resources\SubmissionResource\Pages;
-use App\Panel\Resources\Traits\CustomizedUrl;
 use Filament\GlobalSearch\GlobalSearchResult;
-use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
@@ -21,15 +19,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
-class SubmissionResource extends Resource
+class SubmissionResource extends BaseResource
 {
     protected static ?string $model = Submission::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?string $recordTitleAttribute = 'title';
-
-    use CustomizedUrl;
 
     public static function getGlobalSearchResultTitle(Model $record): string
     {
