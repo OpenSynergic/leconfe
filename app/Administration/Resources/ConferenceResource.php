@@ -22,6 +22,7 @@ use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Squire\Models\Country;
@@ -167,7 +168,10 @@ class ConferenceResource extends Resource
                     ->badge(),
             ])
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->searchable()
+                    ->options(ConferenceStatus::array())
+                    ->default(ConferenceStatus::Active->value)
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([

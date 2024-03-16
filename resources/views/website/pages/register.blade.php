@@ -112,11 +112,11 @@
                             <label class="label justify-normal gap-2">
                                 <input type="checkbox" class="checkbox checkbox-sm" wire:model="privacy_statement_agree"
                                     required />
-                                <p class="label-text">
+                                {{-- <p class="label-text">
                                     I accept and approve according to <x-website::link
-                                        href="{{ route('livewirePageGroup.current-conference.pages.privacy-statement') }}"
+                                        href="{{ route('livewirePageGroup.conference.pages.privacy-statement') }}"
                                         class="link link-primary link-hover">Privacy Statement.</x-website::link>
-                                </p>
+                                </p> --}}
                             </label>
                         </div>
                         @error('password_confirmation')

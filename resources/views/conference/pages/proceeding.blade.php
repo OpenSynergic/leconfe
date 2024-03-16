@@ -8,7 +8,7 @@
             </div>
             @forelse($submissions = $topic->submissions()->published()->get() as $submission)
                 <div class="border-b border-b-slate-100 pb-4 mt-2">
-                    <a href="{{ route('livewirePageGroup.current-conference.pages.submission-detail', $submission->getKey()) }}"
+                    <a href="{{ route('livewirePageGroup.conference.pages.submission-detail', $submission->getKey()) }}"
                         class="link-primary text-xl">
                         {{ $submission->getMeta('title') }}
                     </a>

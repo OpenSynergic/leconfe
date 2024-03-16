@@ -4,7 +4,7 @@
         @foreach ($archives as $archive)
             <div class="card card-compact bg-white w-full p-4 flex-col rounded">
                 <div class="w-full flex justify-between text-primary">
-                    <a href="{{ route('livewirePageGroup.archive-conference.pages.home', ['conference' => $archive->path]) }}"
+                    <a href="{{ route('livewirePageGroup.conference.pages.home', ['conference' => $archive->path]) }}"
                         class="text-sm block hover:text-primary-focus">{{ $archive->name }}</a>
                     <div class="inline-flex gap-x-1 text-sm items-center">
                         @if ($archive->hasMeta('date_held'))

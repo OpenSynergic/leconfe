@@ -4,7 +4,6 @@ namespace App\Providers\Filament;
 
 use App\Conference\Blocks\CalendarBlock;
 use App\Conference\Blocks\CommitteeBlock;
-use App\Conference\Blocks\InformationBlock;
 use App\Conference\Blocks\PreviousBlock;
 use App\Conference\Blocks\SubmitBlock;
 use App\Conference\Blocks\TimelineBlock;
@@ -13,11 +12,9 @@ use App\Facades\Block;
 use App\Facades\Plugin;
 use App\Http\Middleware\MustVerifyEmail;
 use App\Http\Middleware\Panel\PanelAuthenticate;
-use App\Http\Middleware\Panel\TenantConferenceMiddleware;
-use App\Models\Conference;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Navigation;
-use App\Models\Site;
+use App\Panel\Pages\Dashboard;
 use App\Panel\Resources\NavigationResource;
 use App\Panel\Resources\UserResource;
 use Carbon\Carbon;
@@ -33,14 +30,12 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationGroup;
-use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider as FilamentPanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Blade;
-use Livewire\Livewire;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class PanelProvider extends FilamentPanelProvider
@@ -51,16 +46,9 @@ class PanelProvider extends FilamentPanelProvider
             ->default()
             ->sidebarCollapsibleOnDesktop()
             ->id('panel')
-            ->path(config('app.filament.panel_path'))
+            ->path('{conference:path}/panel')
             ->maxContentWidth('full')
-            // ->spa()
-            ->homeUrl(fn () => App::isInstalled() ? App::getCurrentConference()->getHomeUrl() : null)
             ->bootUsing(fn ($panel) => $this->panelBootUsing($panel))
-            ->tenantMenu(false)
-            // ->renderHook(
-            //     'panels::sidebar.footer',
-            //     fn () => view('panel.components.sidebar.footer')
-            // )
             ->renderHook(
                 'panels::scripts.before',
                 fn () => Blade::render(<<<'Blade'
@@ -72,16 +60,6 @@ class PanelProvider extends FilamentPanelProvider
                 fn () => view('panel.hooks.topbar'),
             )
             ->viteTheme('resources/panel/css/panel.css')
-            ->tenant(Conference::class, 'path')
-            ->tenantMiddleware(static::getTenantMiddleware(), true)
-            ->tenantMenuItems([
-                MenuItem::make()
-                    ->label('Administration')
-                    ->url(fn (): string => url('administration'))
-                    // ->url(fn (): string => route('filament.administration.pages.dashboard'))
-                    ->icon('heroicon-m-cog-8-tooth')
-                    ->hidden(fn () => ! auth()->user()->can('view', Site::class)),
-            ])
             ->navigationGroups(static::getNavigationGroups())
             ->navigationItems(static::getNavigationItems())
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
@@ -115,7 +93,7 @@ class PanelProvider extends FilamentPanelProvider
         Blade::anonymousComponentPath(resource_path('views/panel/components'), 'panel');
 
         // Persistent middleware option on filament doesnt work, currently we use this workaround
-        Livewire::addPersistentMiddleware(static::getTenantMiddleware());
+        // Livewire::addPersistentMiddleware(static::getTenantMiddleware());
     }
 
     public function panelBootUsing(Panel $panel): void
@@ -180,7 +158,7 @@ class PanelProvider extends FilamentPanelProvider
     public static function getPages(): array
     {
         return [
-            Pages\Dashboard::class,
+            Dashboard::class,
         ];
     }
 
@@ -257,6 +235,8 @@ class PanelProvider extends FilamentPanelProvider
     public static function getUserMenuItems()
     {
         return [
+            'logout' => MenuItem::make()
+                ->url(fn (): string => route('filament.panel.auth.logout', ['conference' => app()->getCurrentConference()->path])),
             'profile' => MenuItem::make()
                 ->url(fn (): string => UserResource::getUrl('profile')),
         ];

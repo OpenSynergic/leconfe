@@ -7,6 +7,7 @@ use App\Forms\Components\TagSuggestions;
 use App\Models\Enums\ContentType;
 use App\Models\StaticPage;
 use App\Models\StaticPageTag;
+use App\Panel\Resources\Traits\CustomizedUrl;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
@@ -20,6 +21,7 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
@@ -29,6 +31,18 @@ class StaticPageResource extends Resource
     protected static ?string $model = StaticPage::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-credit-card';
+
+    use CustomizedUrl {
+        getUrl as protected getCustomizedUrl;
+    }
+
+    public static function getUrl(string $name = 'index', array $parameters = [], bool $isAbsolute = true, ?string $panel = null, ?Model $tenant = null): string
+    {
+        if (app()->getCurrentConference()) {
+            return static::getCustomizedUrl();
+        }
+        return parent::getUrl($name, $parameters, $isAbsolute, $panel, $tenant);
+    }
 
     public static function getEloquentQuery(): Builder
     {
@@ -47,7 +61,7 @@ class StaticPageResource extends Resource
                                     ->lazy()
                                     ->helperText(function ($state, ?StaticPage $record) {
 
-                                        if (! $record) {
+                                        if (!$record) {
                                             return;
                                         }
 
@@ -137,7 +151,7 @@ class StaticPageResource extends Resource
                                     ->options(StaticPageTag::withCount('staticPages')->orderBy('static_pages_count', 'desc')->limit(10)->pluck('name', 'id')->toArray())
                                     ->columns('2')
                                     ->afterStateUpdated(function ($set, $state) {
-                                        if (! empty($state)) {
+                                        if (!empty($state)) {
                                             $state = StaticPageTag::whereIn('id', $state)->get()->map(fn ($tag) => $tag->name)->toArray();
                                         }
 

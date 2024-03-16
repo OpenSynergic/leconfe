@@ -3,6 +3,7 @@
 namespace App\Panel\Resources\Conferences;
 
 use App\Models\ParticipantPosition;
+use App\Panel\Resources\Traits\CustomizedUrl;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -21,6 +22,8 @@ class SpeakerPositionResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static string $positionType = 'speaker';
+
+    use CustomizedUrl;
 
     public static function getEloquentQuery(): Builder
     {
@@ -69,7 +72,7 @@ class SpeakerPositionResource extends Resource
                         try {
                             $speakerCount = $record->participants()->count();
                             if ($speakerCount > 0) {
-                                throw new \Exception('Cannot delete '.$record->name.', there are speakers who are still associated with this position');
+                                throw new \Exception('Cannot delete ' . $record->name . ', there are speakers who are still associated with this position');
                             }
 
                             return $record->delete();

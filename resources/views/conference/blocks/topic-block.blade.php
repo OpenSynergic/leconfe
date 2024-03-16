@@ -5,7 +5,7 @@
             <div class="card-body">
                 <div class="inline-flex w-full flex-wrap gap-2">
                     @foreach ($topics as $topic)
-                        <a href="{{ route('livewirePageGroup.current-conference.pages.proceeding', $topic->slug) }}" class="badge badge-outline border border-gray-300 h-6 text-xs text-secondary">
+                        <a href="{{ route('livewirePageGroup.conference.pages.proceeding', $topic->slug) }}" class="badge badge-outline border border-gray-300 h-6 text-xs text-secondary">
                             {{ $topic->name }}
                         </a>
                     @endforeach

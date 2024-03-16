@@ -45,7 +45,6 @@ class SiteObserver
      */
     public function deleting(Site $site): void
     {
-
     }
 
     /**

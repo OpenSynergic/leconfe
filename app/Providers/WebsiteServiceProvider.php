@@ -29,7 +29,7 @@ class WebsiteServiceProvider extends PageGroupServiceProvider
             ->layout('website.components.layouts.app')
             ->homePage(Home::class)
             ->bootUsing(function () {
-                app()->scopeCurrentConference();
+                // app()->scopeCurrentConference();
 
                 // Register blocks
                 Block::registerBlocks([

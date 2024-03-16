@@ -5,6 +5,7 @@ namespace App\Panel\Resources\Conferences;
 use App\Actions\Participants\DetachParticipantPositionByType;
 use App\Actions\Participants\ParticipantUpdateAction;
 use App\Models\Participant;
+use App\Panel\Resources\Traits\CustomizedUrl;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms;
 use Filament\Resources\Resource;
@@ -23,6 +24,8 @@ class ParticipantResource extends Resource
     protected static ?string $model = Participant::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    use CustomizedUrl;
 
     public static function generalFormField(): array
     {
@@ -66,7 +69,7 @@ class ParticipantResource extends Resource
             Forms\Components\Select::make('meta.country')
                 ->placeholder('Select a country')
                 ->searchable()
-                ->options(fn () => Country::all()->mapWithKeys(fn ($country) => [$country->id => $country->flag.' '.$country->name]))
+                ->options(fn () => Country::all()->mapWithKeys(fn ($country) => [$country->id => $country->flag . ' ' . $country->name]))
                 ->optionsLimit(250),
             Forms\Components\TextInput::make('meta.phone')
                 ->prefixIcon('heroicon-s-phone')
