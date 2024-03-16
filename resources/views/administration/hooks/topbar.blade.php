@@ -1,3 +1,4 @@
+@use('\App\Models\Conference')
 <x-filament::dropdown placement="bottom-start" teleport>
     <x-slot name="trigger">
         <button  
@@ -26,12 +27,22 @@
         </button>
     </x-slot>
     <x-filament::dropdown.list>
-        @foreach (auth()->user()->getTenants(filament()->getCurrentPanel()) as $tenant)
-            <x-filament::dropdown.list.item :href="route('filament.panel.pages.dashboard', $tenant)" :image="filament()->getTenantAvatarUrl($tenant)" tag="a">
-                {{ filament()->getTenantName($tenant) }}
-                <x-filament::badge size="sm" class="text-[10px] w-fit" :color="$tenant->status->getColor()">
-                    {{ $tenant->status }}
-                </x-filament::badge>
+        <x-filament::dropdown.list.item
+            :href="route('filament.administration.pages.dashboard')"
+            icon="heroicon-s-cog"
+            tag="a"
+        >
+            {{ __('Administration') }}
+        </x-filament::dropdown.list.item>
+
+        @foreach (Conference::all() as $conference)
+            <x-filament::dropdown.list.item
+                :color="$conference->status->getColor()"
+                :href="$conference->getPanelUrl()"
+                :icon="filament()->getTenantAvatarUrl($conference)"
+                tag="a"
+            >
+                {{ $conference->name }}
             </x-filament::dropdown.list.item>
         @endforeach
     </x-filament::dropdown.list>
