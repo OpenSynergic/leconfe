@@ -196,10 +196,6 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        App\Providers\WebsiteServiceProvider::class,
-
-        App\Providers\ConferenceServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\HorizonServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
@@ -207,7 +203,10 @@ return [
         App\Providers\Filament\AdministrationPanelProvider::class,
         App\Providers\Filament\PanelProvider::class,
         Filament\FilamentServiceProvider::class,
+        App\Providers\WebsiteServiceProvider::class,
+        App\Providers\ConferenceServiceProvider::class,
         App\Providers\FlareServiceProvider::class,
+        // App\Providers\BroadcastServiceProvider::class,
     ],
 
     /*
