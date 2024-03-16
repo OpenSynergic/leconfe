@@ -21,7 +21,7 @@
                                 <x-website::navigation-mobile.items :items="$items" />
                                 <div class="flex flex-col gap-2">
                                     @if (\Filament\Facades\Filament::getDefaultPanel()->auth()->user())
-                                        <x-website::link :href="route('filament.panel.tenant')" :spa="false"
+                                        <x-website::link href="#" :spa="false"
                                             class="btn btn-sm btn-primary rounded px-4 font-normal">Dashboard</x-website::link>
                                     @else
                                         <x-website::link :href="route('livewirePageGroup.website.pages.register')" :spa="false"

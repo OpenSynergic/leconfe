@@ -29,18 +29,4 @@ class ListConferences extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
-
-    public function getTabs(): array
-    {
-        return [
-            'upcoming' => Tab::make()
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', ConferenceStatus::Upcoming))
-                ->badge(Conference::query()->where('status', ConferenceStatus::Upcoming)->count()),
-            'active' => Tab::make()
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', ConferenceStatus::Active)),
-            'archive' => Tab::make()
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', ConferenceStatus::Archived))
-                ->badge(Conference::query()->where('status', ConferenceStatus::Archived)->count()),
-        ];
-    }
 }

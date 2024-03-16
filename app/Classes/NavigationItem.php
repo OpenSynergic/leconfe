@@ -57,27 +57,15 @@ class NavigationItem
     {
         return match ($type) {
             'external-link' => fn ($navItem) => $navItem->data['url'] ?? '#',
-            'announcements' => fn (?Conference $conference = null) => match ($conference?->status) {
-                ConferenceStatus::Archived => route('livewirePageGroup.archive-conference.pages.announcement-list', ['conference' => $conference->path]),
-                default => route('livewirePageGroup.current-conference.pages.announcement-list')
-            },
-            'current-conference' => fn () => route('livewirePageGroup.current-conference.pages.home'),
+            'announcements' => fn (?Conference $conference = null) => route('livewirePageGroup.conference.pages.announcement-list', ['conference' => $conference->path]),
             'register' => fn () => route('livewirePageGroup.website.pages.register'),
             'login' => fn () => route('livewirePageGroup.website.pages.login'),
-            'home' => fn (?Conference $conference = null) => match ($conference?->status) {
-                ConferenceStatus::Active => route('livewirePageGroup.current-conference.pages.home'),
-                ConferenceStatus::Archived => route('livewirePageGroup.archive-conference.pages.home', ['conference' => $conference->path]),
-                default => route('livewirePageGroup.website.pages.home'),
-            },
-            'about' => fn (?Conference $conference = null) => match ($conference?->status) {
-                ConferenceStatus::Archived => route('livewirePageGroup.archive-conference.pages.about', ['conference' => $conference->path]),
-                default => route('livewirePageGroup.current-conference.pages.about')
-            },
-            'contact' => fn (?Conference $conference = null) => match ($conference?->status) {
-                ConferenceStatus::Archived => route('livewirePageGroup.archive-conference.pages.contact', ['conference' => $conference->path]),
-                default => route('livewirePageGroup.current-conference.pages.contact')
-            },
-            'proceeding' => fn () => route('livewirePageGroup.current-conference.pages.proceeding'),
+            'home' => fn (?Conference $conference = null) => $conference
+                ? route('livewirePageGroup.conference.pages.home', ['conference' => $conference->path])
+                : route('livewirePageGroup.website.pages.home'),
+            'about' => fn (?Conference $conference = null) => route('livewirePageGroup.conference.pages.about', ['conference' => $conference->path]),
+            'contact' => fn (?Conference $conference = null) => route('livewirePageGroup.conference.pages.contact', ['conference' => $conference->path]),
+            'proceeding' => fn (?Conference $conference = null) => route('livewirePageGroup.conference.pages.proceeding', ['conference' => $conference->path]),
             default => fn () => '#',
         };
     }

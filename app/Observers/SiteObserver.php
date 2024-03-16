@@ -32,12 +32,6 @@ class SiteObserver
                     'data' => null,
                     'children' => [],
                 ],
-                Str::uuid()->toString() => [
-                    'label' => 'Current Conference',
-                    'type' => 'current-conference',
-                    'data' => null,
-                    'children' => [],
-                ],
             ],
         ]);
     }
@@ -63,7 +57,6 @@ class SiteObserver
      */
     public function deleting(Site $site): void
     {
-
     }
 
     /**

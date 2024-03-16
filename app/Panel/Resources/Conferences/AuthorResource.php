@@ -5,6 +5,7 @@ namespace App\Panel\Resources\Conferences;
 use App\Actions\Participants\ParticipantCreateAction;
 use App\Models\Participant;
 use App\Panel\Resources\Conferences\AuthorResource\Pages;
+use App\Panel\Resources\Traits\CustomizedUrl;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -21,6 +22,8 @@ class AuthorResource extends Resource
     protected static ?string $model = Participant::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
+
+    use CustomizedUrl;
 
     public static function getNavigationLabel(): string
     {

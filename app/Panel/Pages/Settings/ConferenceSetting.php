@@ -10,17 +10,17 @@ use App\Panel\Livewire\Forms\Conferences\PrivacySetting;
 use App\Panel\Livewire\Forms\Conferences\SearchEngineSetting;
 use App\Panel\Livewire\Forms\Conferences\SetupSetting;
 use App\Panel\Livewire\Forms\Conferences\SidebarSetting;
+use App\Panel\Pages\BasePage;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
-use Filament\Pages\Page;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 
-class ConferenceSetting extends Page implements HasForms, HasInfolists
+class ConferenceSetting extends BasePage implements HasForms, HasInfolists
 {
     use InteractsWithForms, InteractsWithInfolists;
 
@@ -39,6 +39,11 @@ class ConferenceSetting extends Page implements HasForms, HasInfolists
     public function mount(): void
     {
         $this->authorize('update', App::getCurrentConference());
+    }
+
+    public static function getNavigationUrl(): string
+    {
+        return static::getUrl(['conference' => app()->getCurrentConference()->path]);
     }
 
     public static function shouldRegisterNavigation(): bool

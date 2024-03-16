@@ -24,16 +24,10 @@ class EditAnnouncement extends EditRecord
                 ->url(function ($record) {
                     $conference = $record->conference;
 
-                    return match ($conference->status) {
-                        ConferenceStatus::Active => route('livewirePageGroup.current-conference.pages.announcement-page', [
-                            'announcement' => $record->id,
-                        ]),
-                        ConferenceStatus::Archived => route('livewirePageGroup.archive-conference.pages.announcement-page', [
-                            'conference' => $conference->id,
-                            'announcement' => $record->id,
-                        ]),
-                        default => null,
-                    };
+                    return route('livewirePageGroup.conference.pages.announcement-page', [
+                        'conference' => $conference->path,
+                        'announcement' => $record->id,
+                    ]);
                 }),
         ];
     }

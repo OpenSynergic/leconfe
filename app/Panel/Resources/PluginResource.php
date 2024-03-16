@@ -6,7 +6,6 @@ use App\Facades\Plugin as FacadesPlugin;
 use App\Models\Plugin;
 use App\Panel\Resources\PluginResource\Pages;
 use App\Tables\Columns\IndexColumn;
-use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -14,13 +13,14 @@ use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class PluginResource extends Resource
+class PluginResource extends BaseResource
 {
     protected static ?string $model = Plugin::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-square-3-stack-3d';
 
     protected static ?string $navigationGroup = 'Settings';
+
 
     public static function getEloquentQuery(): Builder
     {
