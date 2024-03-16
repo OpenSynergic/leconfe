@@ -9,7 +9,6 @@ use App\Models\Enums\ContentType;
 use App\Panel\Resources\Conferences\AnnouncementResource\Pages;
 use App\Panel\Resources\Traits\CustomizedUrl;
 use Carbon\Carbon;
-use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;

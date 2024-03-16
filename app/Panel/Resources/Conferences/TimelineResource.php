@@ -6,7 +6,6 @@ use App\Models\Role;
 use App\Models\Timeline;
 use App\Panel\Resources\Conferences\TimelineResource\Pages;
 use App\Panel\Resources\Traits\CustomizedUrl;
-use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
