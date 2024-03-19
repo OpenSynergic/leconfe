@@ -9,8 +9,8 @@ use App\Models\Enums\ContentType;
 use App\Panel\Resources\Conferences\AnnouncementResource\Pages;
 use App\Panel\Resources\Traits\CustomizedUrl;
 use Carbon\Carbon;
-use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -114,18 +114,8 @@ class AnnouncementResource extends Resource
                                 SpatieMediaLibraryFileUpload::make('featured_image')
                                     ->collection('featured_image')
                                     ->image(),
-                                Flatpickr::make('meta.expires_at')
-                                    ->dateFormat(setting('format.date'))
-                                    ->formatStateUsing(function ($state) {
-                                        if (blank($state)) {
-                                            return null;
-                                        }
-
-                                        return Carbon::parse($state)
-                                            ->translatedFormat(setting('format.date'));
-                                    })
-                                    ->minDate(today()->subDay())
-                                    ->dehydrateStateUsing(fn ($state) => $state ? Carbon::createFromFormat(setting('format.date'), $state) : null),
+                                DatePicker::make('meta.expires_at')
+                                    ->minDate(today()->subDay()),
                             ])->columnSpan([
                                 'default' => 'full',
                                 'lg' => 3,

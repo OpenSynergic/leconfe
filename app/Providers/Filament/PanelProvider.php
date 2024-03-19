@@ -18,8 +18,10 @@ use App\Panel\Pages\Dashboard;
 use App\Panel\Resources\NavigationResource;
 use App\Panel\Resources\UserResource;
 use Carbon\Carbon;
-use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
+use Filament\Actions\Action;
 use Filament\Actions\MountableAction;
+use Filament\Enums\ThemeMode;
+use Filament\Facades\Filament;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -35,7 +37,6 @@ use Filament\Tables\Table;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Blade;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
-use RyanChandler\FilamentNavigation\FilamentNavigation;
 
 class PanelProvider extends FilamentPanelProvider
 {
@@ -63,6 +64,7 @@ class PanelProvider extends FilamentPanelProvider
             ->navigationItems(static::getNavigationItems())
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->colors(static::getColors())
+            ->darkMode(false)
             ->discoverResources(in: app_path('Panel/Resources'), for: 'App\\Panel\\Resources')
             ->discoverPages(in: app_path('Panel/Pages'), for: 'App\\Panel\\Pages')
             ->discoverWidgets(in: app_path('Panel/Widgets'), for: 'App\\Panel\\Widgets')
@@ -200,17 +202,13 @@ class PanelProvider extends FilamentPanelProvider
             // ->acceptedFileTypes(config('media-library.accepted_file_types'))
         });
         DatePicker::configureUsing(function (DatePicker $datePicker): void {
-            $datePicker->format(setting('format.date'));
+            $datePicker
+                ->native(false)
+                ->format(setting('format.date'));
         });
 
         TimePicker::configureUsing(function (TimePicker $timePicker): void {
             $timePicker->format(setting('format.time'));
-        });
-
-        Flatpickr::configureUsing(function (Flatpickr $flatpickr): void {
-            $flatpickr
-                ->dateFormat(setting('format.date'))
-                ->dehydrateStateUsing(fn ($state) => $state ? Carbon::createFromFormat(setting('format.date'), $state) : null);
         });
 
         Table::configureUsing(function (Table $table): void {
@@ -230,16 +228,7 @@ class PanelProvider extends FilamentPanelProvider
     public static function getPlugins()
     {
         return [
-            FilamentNavigation::make()
-                ->usingModel(Navigation::class)
-                ->usingResource(NavigationResource::class)
-                ->itemType('Home', [])
-                ->itemType('About', [])
-                ->itemType('Announcements', [])
-                ->itemType('Current Conference', [])
-                ->itemType('Login', [])
-                ->itemType('Register', [])
-                ->itemType('Proceeding', []),
+
         ];
     }
 

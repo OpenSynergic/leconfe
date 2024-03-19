@@ -4,9 +4,9 @@ namespace App\Panel\Livewire\Forms\Conferences;
 
 use App\Actions\Conferences\ConferenceUpdateAction;
 use App\Models\Conference;
-use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -66,7 +66,7 @@ class InformationSetting extends Component implements HasForms
                                         'xl' => 1,
                                         'sm' => 2,
                                     ]),
-                                Flatpickr::make('meta.date_held')
+                                DatePicker::make('meta.date_held')
                                     ->rule('date')
                                     ->columnSpan([
                                         'xl' => 1,
@@ -90,6 +90,7 @@ class InformationSetting extends Component implements HasForms
                                         'xl' => 1,
                                         'sm' => 2,
                                     ]),
+                                
                                 Textarea::make('meta.description')
                                     ->rows(5)
                                     ->autosize()

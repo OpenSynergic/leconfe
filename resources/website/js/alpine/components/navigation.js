@@ -64,9 +64,9 @@ document.addEventListener("alpine:init", () => {
                     this.navigationMenuReposition(this.$el);
                     this.navigationMenu = key;
                 },
-                ["@mouseleave"]() {
-                    this.navigationMenuLeave();
-                },
+                // ["@mouseleave"]() {
+                //     this.navigationMenuLeave();
+                // },
             };
         });
     }
@@ -81,9 +81,9 @@ document.addEventListener("alpine:init", () => {
                 ["@mouseover"]() {
                     this.navigationMenuClearCloseTimeout();
                 },
-                ["@mouseleave"]() {
-                    this.navigationMenuLeave();
-                },
+                // ["@mouseleave"]() {
+                //     this.navigationMenuLeave();
+                // },
             };
         });
     }

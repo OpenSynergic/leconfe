@@ -21,8 +21,9 @@
         }
     </style>
 
-    
+    @livewireStyles
     @vite(['resources/website/css/website.css', 'resources/website/js/website.js'])
+
     @isset($styleSheet)
         <link rel="stylesheet" type="text/css" href="{{ $styleSheet }}">
     @endisset

@@ -8,7 +8,7 @@ use App\Models\Conference;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ConferenceType;
 use App\Tables\Columns\IndexColumn;
-use Coolsam\FilamentFlatpickr\Forms\Components\Flatpickr;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Section;
@@ -56,7 +56,7 @@ class ConferenceResource extends Resource
                                     ->rule('alpha_dash')
                                     ->required(),
                                 TextInput::make('meta.location'),
-                                Flatpickr::make('meta.date_held'),
+                                DatePicker::make('meta.date_held'),
                                 Textarea::make('meta.description')
                                     ->rows(5)
                                     ->autosize()

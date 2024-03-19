@@ -9,6 +9,8 @@
 
 <body class="page page-{{ strtolower($livewire->getTitle()) }} antialiased" x-data>
     {{ $slot }}
+
+    @livewireScriptConfig 
 </body>
 
 </html>

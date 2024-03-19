@@ -21,19 +21,7 @@ class SiteObserver
      */
     public function created(Site $site): void
     {
-        Navigation::create([
-            'name' => 'Primary Navigation Menu',
-            'handle' => 'primary-navigation-menu',
-            'conference_id' => Application::CONTEXT_WEBSITE,
-            'items' => [
-                Str::uuid()->toString() => [
-                    'label' => 'Home',
-                    'type' => 'home',
-                    'data' => null,
-                    'children' => [],
-                ],
-            ],
-        ]);
+
     }
 
     /**
