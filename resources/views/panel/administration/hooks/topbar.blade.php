@@ -1,5 +1,9 @@
 @use('\App\Models\Conference')
-<x-filament::dropdown placement="bottom-start" teleport>
+<x-filament::dropdown 
+    placement="bottom-start" 
+    teleport
+    id="switch-conference"
+    >
     <x-slot name="trigger">
         <button  
             @if (filament()->isSidebarCollapsibleOnDesktop())

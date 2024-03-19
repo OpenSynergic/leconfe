@@ -67,6 +67,6 @@ body {
     @apply !rounded-lg;
 }
 
-.fi-topbar .fi-dropdown-panel {
+#switch-conference .fi-dropdown-panel {
     @apply max-w-sm !w-max;
 }

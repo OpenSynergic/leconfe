@@ -2,12 +2,12 @@
 
 namespace App\Providers;
 
-use App\Conference\Blocks\CalendarBlock;
-use App\Conference\Blocks\CommitteeBlock;
-use App\Conference\Blocks\PreviousBlock;
-use App\Conference\Blocks\SubmitBlock;
-use App\Conference\Blocks\TimelineBlock;
-use App\Conference\Blocks\TopicBlock;
+use App\Frontend\Conference\Blocks\CalendarBlock;
+use App\Frontend\Conference\Blocks\CommitteeBlock;
+use App\Frontend\Conference\Blocks\PreviousBlock;
+use App\Frontend\Conference\Blocks\SubmitBlock;
+use App\Frontend\Conference\Blocks\TimelineBlock;
+use App\Frontend\Conference\Blocks\TopicBlock;
 use App\Facades\Block;
 use App\Facades\Plugin;
 use App\Http\Middleware\MustVerifyEmail;
@@ -29,8 +29,10 @@ use Filament\Panel;
 use Filament\Support\Colors\Color;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Route;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 
 class PanelProvider extends ServiceProvider
 {
@@ -39,6 +41,17 @@ class PanelProvider extends ServiceProvider
         $this->setupPanel($panel)
             ->id('conference')
             ->path('{conference:path}/panel')
+            ->bootUsing(function(){
+                static::setupFilamentComponent();
+                // Scope livewire update path to current conference
+                $currentConference = app()->getCurrentConference();
+                if ($currentConference) {
+                    Livewire::setUpdateRoute(function ($handle) use ($currentConference) {
+                        return Route::post($currentConference->path.'/panel/livewire/update', $handle)
+                            ->middleware('web');
+                    });
+                }
+            })
             ->homeUrl(fn() => route('livewirePageGroup.conference.pages.home', ['conference' => app()->getCurrentConference()]))
             ->discoverResources(in: app_path('Panel/Conference/Resources'), for: 'App\\Panel\\Conference\\Resources')
             ->discoverPages(in: app_path('Panel/Conference/Pages'), for: 'App\\Panel\\Conference\\Pages')
@@ -64,6 +77,9 @@ class PanelProvider extends ServiceProvider
             ->id('administration')
             ->path('administration')
             ->homeUrl(fn() => route('livewirePageGroup.website.pages.home'))
+            ->bootUsing(function(){
+                static::setupFilamentComponent();
+            })
             ->discoverResources(in: app_path('Panel/Administration/Resources'), for: 'App\\Panel\\Administration\\Resources')
             ->discoverPages(in: app_path('Panel/Administration/Pages'), for: 'App\\Panel\\Administration\\Pages')
             ->discoverWidgets(in: app_path('Panel/Administration/Widgets'), for: 'App\\Panel\\Administration\\Widgets')
@@ -85,7 +101,6 @@ class PanelProvider extends ServiceProvider
         return $panel
             ->sidebarCollapsibleOnDesktop()
             ->maxContentWidth('full')
-            ->bootUsing(fn ($panel) => $this->panelBootUsing($panel))
             ->renderHook(
                 'panels::scripts.before',
                 fn () => Blade::render(<<<'Blade'
@@ -121,11 +136,6 @@ class PanelProvider extends ServiceProvider
     {
         Blade::anonymousComponentPath(resource_path('views/panel/conference/components'), 'panel');
         Blade::anonymousComponentPath(resource_path('views/panel/administration/components'), 'administration');
-    }
-
-    public function panelBootUsing(Panel $panel): void
-    {
-        static::setupFilamentComponent();
     }
 
     public static function getPages(): array

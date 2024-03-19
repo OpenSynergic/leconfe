@@ -39,10 +39,7 @@ class AppServiceProvider extends ServiceProvider
         $this->setupModel();
         $this->setupStorage();
         $this->extendStr();
-
-        // Payment::extend('paypal', function () {
-        //     return new PaypalPayment;
-        // });
+        $this->detectConference();
     }
 
     protected function extendStr()
@@ -124,10 +121,30 @@ class AppServiceProvider extends ServiceProvider
         });
     }
 
-    protected function setupView()
+    protected function detectConference()
     {
-        if (! $this->app->runningInConsole()) {
-            // View::share('currentConference', Conference::active());
+        if (! $this->app->isInstalled()) {
+            return;
         }
+
+        $this->app->scopeCurrentConference();
+
+        $pathInfos = explode('/', request()->getPathInfo());
+
+        // Special case for `current` path
+        if (isset($pathInfos[1]) && ! blank($pathInfos[1])) {
+            $conferenceId = DB::table('conferences')->where('path', $pathInfos[1])->value('id');
+            if (! $conferenceId) {
+                // Conference not found
+                $this->app->setCurrentConferenceId(0);
+
+                return;
+            }
+
+            $this->app->setCurrentConferenceId($conferenceId);
+
+            return;
+        }
+
     }
 }
