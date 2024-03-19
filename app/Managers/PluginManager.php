@@ -184,9 +184,8 @@ class PluginManager
     {
         $conferenceId = App::getCurrentConferenceId();
 
-       
         return Cache::rememberForever("plugin_setting_{$conferenceId}_{$plugin}_{$key}", function () use ($plugin, $key, $default, $conferenceId) {
-            $setting =  PluginSetting::query()
+            $setting = PluginSetting::query()
                 ->where('conference_id', $conferenceId)
                 ->where('plugin', $plugin)
                 ->where('key', $key)
@@ -203,7 +202,7 @@ class PluginManager
         Cache::forget("plugin_setting_{$conferenceId}_{$plugin}_{$key}");
 
         $type = $this->getType($value);
-        
+
         return PluginSetting::query()
             ->updateOrInsert(
                 [

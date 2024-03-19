@@ -6,7 +6,7 @@ use App\Models\NavigationMenuItem;
 
 abstract class BaseNavigationItemType
 {
-    abstract public static function getId(): string;  
+    abstract public static function getId(): string;
 
     abstract public static function getLabel(): string;
 
@@ -24,7 +24,7 @@ abstract class BaseNavigationItemType
     {
         return [];
     }
-    
+
     public static function getAdditionalFormData(NavigationMenuItem $navigationMenuItem): array
     {
         return [];

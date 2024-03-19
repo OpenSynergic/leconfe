@@ -90,7 +90,7 @@ class InformationSetting extends Component implements HasForms
                                         'xl' => 1,
                                         'sm' => 2,
                                     ]),
-                                
+
                                 Textarea::make('meta.description')
                                     ->rows(5)
                                     ->autosize()

@@ -66,9 +66,10 @@ class Application extends LaravelApplication
 
     public function getCurrentConference(): ?Conference
     {
-        if (!isset($this->currentConference)) {
+        if (! isset($this->currentConference)) {
             $this->currentConference = Conference::find($this->getCurrentConferenceId());
         }
+
         return $this->currentConference;
     }
 
@@ -112,7 +113,7 @@ class Application extends LaravelApplication
                         ->with('children', function ($query) {
                             $query->ordered();
                         });
-                }
+                },
             ])
             ->first()?->items ?? collect();
     }
@@ -125,7 +126,7 @@ class Application extends LaravelApplication
     public function isReportingErrors(): bool
     {
         try {
-            if ($this->isProduction() && !$this->hasDebugModeEnabled() && setting('send-error-report', true)) {
+            if ($this->isProduction() && ! $this->hasDebugModeEnabled() && setting('send-error-report', true)) {
                 return true;
             }
         } catch (\Throwable $th) {

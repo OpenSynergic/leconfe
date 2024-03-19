@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PluginSetting extends Model
 {
-    // use Cachable;    
+    // use Cachable;
 
     protected $fillable = [
         'conference_id',

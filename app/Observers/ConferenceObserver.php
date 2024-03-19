@@ -4,10 +4,8 @@ namespace App\Observers;
 
 use App\Actions\Participants\ParticipantPositionPopulateDefaultDataAction;
 use App\Models\Conference;
-use App\Models\Navigation;
 use App\Models\NavigationMenu;
 use App\Models\NavigationMenuItem;
-use Illuminate\Support\Str;
 
 class ConferenceObserver
 {
@@ -24,7 +22,6 @@ class ConferenceObserver
     public function created(Conference $conference): void
     {
         ParticipantPositionPopulateDefaultDataAction::run($conference);
-
 
         $primaryNavigationMenu = NavigationMenu::create([
             'name' => 'Primary Navigation Menu',
@@ -132,7 +129,6 @@ class ConferenceObserver
                 'updated_at' => now(),
             ],
         ]);
-
 
         $conference->setMeta('page_footer', view('examples.footer')->render());
         $conference->setMeta('workflow.payment.supported_currencies', ['usd']);

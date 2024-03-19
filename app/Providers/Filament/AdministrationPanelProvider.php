@@ -2,10 +2,8 @@
 
 namespace App\Providers\Filament;
 
-use App\Administration\Resources\NavigationResource;
 use App\Facades\Block;
 use App\Facades\Plugin;
-use App\Models\Navigation;
 use App\Website\Blocks\CalendarBlock;
 use App\Website\Blocks\LoginBlock;
 use App\Website\Blocks\SearchBlock;

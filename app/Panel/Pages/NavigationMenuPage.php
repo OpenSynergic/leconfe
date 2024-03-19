@@ -6,20 +6,17 @@ use App\Actions\NavigationMenu\CreateNavigationMenuAction;
 use App\Actions\NavigationMenu\CreateNavigationMenuItemAction;
 use App\Actions\NavigationMenu\UpdateNavigationMenuAction;
 use App\Actions\NavigationMenu\UpdateNavigationMenuItemAction;
-use App\Models\Enums\NavigationMenuItemType;
 use App\Models\NavigationMenu;
 use App\Models\NavigationMenuItem;
 use Closure;
-use Filament\Forms\Set;
-use Filament\Pages\Page;
-use Illuminate\Support\Str;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Get;
-use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Set;
+use Illuminate\Support\Str;
 
 class NavigationMenuPage extends BasePage
 {
@@ -54,7 +51,7 @@ class NavigationMenuPage extends BasePage
                             ->with('children', function ($query) {
                                 $query->ordered();
                             });
-                    }
+                    },
                 ])
                 ->orderBy('id')
                 ->get(),
@@ -136,7 +133,7 @@ class NavigationMenuPage extends BasePage
             ->size('xs')
             ->color('gray')
             ->extraAttributes([
-                'class' => 'hidden'
+                'class' => 'hidden',
             ])
             ->modalWidth('xl')
             ->form($this->getNavigationMenuItemForm())
@@ -148,23 +145,20 @@ class NavigationMenuPage extends BasePage
             });
     }
 
-
-
     public function editNavigationMenuItemAction(): Action
     {
         return Action::make('editNavigationMenuItemAction')
             ->label('Edit Item')
             ->modalHeading('Edit Navigation Menu Item')
             ->extraAttributes([
-                'class' => 'hidden'
+                'class' => 'hidden',
             ])
             ->fillForm(function (array $arguments) {
                 $navigationMenuItem = NavigationMenuItem::find($arguments['id']);
-                
 
                 return [
                     ...$navigationMenuItem->toArray(),
-                    'meta' => $navigationMenuItem->getAllMeta(), 
+                    'meta' => $navigationMenuItem->getAllMeta(),
                 ];
             })
             ->color('gray')
@@ -183,7 +177,7 @@ class NavigationMenuPage extends BasePage
             ->color('danger')
             ->size('xs')
             ->extraAttributes([
-                'class' => 'hidden'
+                'class' => 'hidden',
             ])
             ->requiresConfirmation()
             ->action(function (array $arguments) {
@@ -195,6 +189,7 @@ class NavigationMenuPage extends BasePage
     {
         return function (array $arguments) {
             $id = $arguments['id'] ?? null;
+
             return [
                 TextInput::make('name')
                     ->label('Name')
@@ -202,7 +197,7 @@ class NavigationMenuPage extends BasePage
                     ->reactive()
                     ->debounce()
                     ->afterStateUpdated(function (?string $state, Set $set) {
-                        if (!$state) {
+                        if (! $state) {
                             return;
                         }
 
@@ -233,22 +228,22 @@ class NavigationMenuPage extends BasePage
                     ->required()
                     ->reactive(),
                 Group::make()
-                    ->visible(function(Get $get){
-                        if(!$get('type')){
+                    ->visible(function (Get $get) {
+                        if (! $get('type')) {
                             return false;
                         }
 
                         $type = NavigationMenuItem::getType($get('type'));
 
-                        return $type ? !empty($type::getAdditionalForm()) : false;
+                        return $type ? ! empty($type::getAdditionalForm()) : false;
                     })
                     ->schema(function (Get $get) {
-                        if(!$get('type')){
+                        if (! $get('type')) {
                             return [];
                         }
 
                         $type = NavigationMenuItem::getType($get('type'));
-                        
+
                         return $type ? $type::getAdditionalForm() : [];
                     }),
                 Checkbox::make('meta.new_tab')
@@ -266,7 +261,7 @@ class NavigationMenuPage extends BasePage
                 ->where('id', $id)
                 ->update([
                     'order_column' => $startOrder++,
-                    'parent_id' => $parentId
+                    'parent_id' => $parentId,
                 ]);
         }
     }

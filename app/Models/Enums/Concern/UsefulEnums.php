@@ -31,19 +31,20 @@ trait UsefulEnums
 
     public static function fromName(string $name): static
     {
-        if($status = self::tryFromName($name) ){
+        if ($status = self::tryFromName($name)) {
             return $status;
         }
-        throw new \ValueError("$name is not a valid backing value for enum " . self::class );
+        throw new \ValueError("$name is not a valid backing value for enum ".self::class);
     }
 
     public static function tryFromName(string $name): ?static
     {
         foreach (self::cases() as $status) {
-            if( $name === $status->name ){
+            if ($name === $status->name) {
                 return $status;
             }
         }
+
         return null;
     }
 }

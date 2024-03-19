@@ -2,10 +2,7 @@
 
 namespace App\Observers;
 
-use App\Application;
-use App\Models\Navigation;
 use App\Models\Site;
-use Illuminate\Support\Str;
 
 class SiteObserver
 {

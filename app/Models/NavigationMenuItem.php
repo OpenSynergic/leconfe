@@ -2,13 +2,8 @@
 
 namespace App\Models;
 
-use App\Models\Enums\NavigationMenuItemType;
-use App\Models\NavigationItemType;
-use App\Models\NavigationItemType\BaseNavigationItemType;
-use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\App;
 use Plank\Metable\Metable;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
@@ -16,7 +11,7 @@ use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
 class NavigationMenuItem extends Model implements Sortable
 {
-    use HasFactory, Metable, SortableTrait, HasRecursiveRelationships;
+    use HasFactory, HasRecursiveRelationships, Metable, SortableTrait;
 
     protected $fillable = [
         'label',
@@ -50,17 +45,17 @@ class NavigationMenuItem extends Model implements Sortable
     public static function getTypes(): array
     {
         return [
-            'remote-url' =>  NavigationItemType\RemoteUrl::class,
-            'about' =>  NavigationItemType\About::class,
-            'announcements' =>  NavigationItemType\Announcements::class,
-            'contact-us' =>  NavigationItemType\ContactUs::class,
-            'dashboard' =>  NavigationItemType\Dashboard::class,
-            'home' =>  NavigationItemType\Home::class,
-            'login' =>  NavigationItemType\Login::class,
-            'logout' =>  NavigationItemType\Logout::class,
-            'proceedings' =>  NavigationItemType\Proceedings::class,
-            'profile'=>  NavigationItemType\Profile::class,
-            'register' =>  NavigationItemType\Register::class,
+            'remote-url' => NavigationItemType\RemoteUrl::class,
+            'about' => NavigationItemType\About::class,
+            'announcements' => NavigationItemType\Announcements::class,
+            'contact-us' => NavigationItemType\ContactUs::class,
+            'dashboard' => NavigationItemType\Dashboard::class,
+            'home' => NavigationItemType\Home::class,
+            'login' => NavigationItemType\Login::class,
+            'logout' => NavigationItemType\Logout::class,
+            'proceedings' => NavigationItemType\Proceedings::class,
+            'profile' => NavigationItemType\Profile::class,
+            'register' => NavigationItemType\Register::class,
         ];
     }
 
@@ -72,7 +67,7 @@ class NavigationMenuItem extends Model implements Sortable
     public static function getTypeOptions(): array
     {
         return collect(self::getTypes())
-            ->mapWithKeys(fn($type) => [$type::getId() => $type::getLabel()])
+            ->mapWithKeys(fn ($type) => [$type::getId() => $type::getLabel()])
             ->toArray();
     }
 

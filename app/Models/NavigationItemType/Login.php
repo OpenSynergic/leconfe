@@ -15,7 +15,7 @@ class Login extends BaseNavigationItemType
     {
         return 'Login';
     }
-    
+
     public static function getUrl(NavigationMenuItem $navigationMenuItem): string
     {
         return route('livewirePageGroup.website.pages.login');
@@ -23,6 +23,6 @@ class Login extends BaseNavigationItemType
 
     public static function getIsDisplayed(NavigationMenuItem $navigationMenuItem): bool
     {
-        return !auth()->check();
+        return ! auth()->check();
     }
 }

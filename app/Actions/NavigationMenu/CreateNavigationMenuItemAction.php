@@ -2,7 +2,6 @@
 
 namespace App\Actions\NavigationMenu;
 
-use App\Models\NavigationMenu;
 use App\Models\NavigationMenuItem;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;

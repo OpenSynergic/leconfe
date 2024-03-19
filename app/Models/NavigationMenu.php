@@ -10,14 +10,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class NavigationMenu extends Model
 {
-    use Cachable, HasFactory, BelongsToConference;
+    use BelongsToConference, Cachable, HasFactory;
 
     protected $fillable = [
         'name',
         'handle',
     ];
 
-    public function items() : HasMany
+    public function items(): HasMany
     {
         return $this->hasMany(NavigationMenuItem::class);
     }
