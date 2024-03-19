@@ -39,13 +39,6 @@ class UserContent extends Model implements HasMedia
         // 'expires_at' => 'date',
     ];
 
-    protected static function booted(): void
-    {
-        static::creating(function (UserContent $userContent) {
-            $userContent->conference_id ??= app()->getCurrentConference()?->getKey();
-        });
-    }
-
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()

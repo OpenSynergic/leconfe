@@ -20,7 +20,7 @@ class Profile extends BaseNavigationItemType
     {
         $conference = app()->getCurrentConference();
 
-        return $conference ? route('filament.panel.resources.users.profile', [
+        return $conference ? route('filament.conference.resources.users.profile', [
             'conference' => app()->getCurrentConference(),
         ]) : '#';
     }

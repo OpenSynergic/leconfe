@@ -2,7 +2,9 @@
     <div class="p-5">
         @can('update', $announcement)
             <div class="flex">
-                <a class="ms-auto btn btn-primary btn-xs" href="{{ route('filament.panel.resources.conferences.announcements.edit', ['tenant' => $currentConference->path, 'record' => $announcement->getKey()]) }}"><x-heroicon-s-pencil-square class="h-4 w-4" /> Edit</a>
+                <a class="ms-auto btn btn-primary btn-xs"
+                    href="{{ route('filament.conference.resources.conferences.announcements.edit', ['conference' => $currentConference, 'record' => $announcement->getKey()]) }}"><x-heroicon-s-pencil-square
+                        class="h-4 w-4" /> Edit</a>
             </div>
         @endcan
         <div class="text-xs text-gray-500 font-medium">
@@ -34,4 +36,4 @@
             {{ new Illuminate\Support\HtmlString($this->announcement->getMeta('content')) }}
         </div>
     </div>
-    </x-website::layouts.main>
+</x-website::layouts.main>

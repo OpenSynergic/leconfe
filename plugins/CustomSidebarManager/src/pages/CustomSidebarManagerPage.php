@@ -38,7 +38,7 @@ class CustomSidebarManagerPage extends Page implements HasForms, HasTable
     public function getBreadcrumbs(): array
     {
         return [
-            route('filament.panel.resources.plugins.index', ['tenant' => App::getCurrentConference()]) => 'Plugins',
+            route('filament.conference.resources.plugins.index', ['tenant' => App::getCurrentConference()]) => 'Plugins',
         ];
     }
 

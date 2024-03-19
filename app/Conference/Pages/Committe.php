@@ -3,7 +3,7 @@
 namespace App\Conference\Pages;
 
 use App\Models\Participant;
-use App\Panel\Resources\Conferences\CommitteePositionResource;
+use App\Panel\Conference\Resources\Conferences\CommitteePositionResource;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 
 class Committe extends Page

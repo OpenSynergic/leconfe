@@ -36,6 +36,7 @@
                         x-show="open"
                         x-transition
                         x-anchor.bottom-start="$refs.button"
+                        x-cloak
                         class="navbar-dropdown-content text-neutral-800"
                         >
                         <div class="flex flex-col divide-y mt-1 min-w-[12rem] bg-white rounded-md shadow-md">

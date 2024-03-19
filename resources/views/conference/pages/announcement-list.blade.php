@@ -3,7 +3,7 @@
         <h2 class="text-heading">{{ 'Announcements' }}</h2>
         <div class="divide-y overflow-y-auto space-y-2">
             @forelse ($announcements as $announcement)
-                <a href="{{ route('livewirePageGroup.conference.pages.announcement-page', ['announcement' => $announcement->id]) }}"
+                <a href="{{ route('livewirePageGroup.conference.pages.announcement-page', ['announcement' => $announcement->id, 'conference' => app()->getCurrentConference()   ]) }}"
                     class="flex w-full bg-white md:flex-row hover:bg-gray-100 gap-x-2 p-1 group">
                     @if ($featuredImage = $announcement->getFirstMedia('featured_image'))
                         <img class="object-cover h-28 aspect-square"

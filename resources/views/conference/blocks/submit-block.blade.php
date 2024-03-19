@@ -1,7 +1,7 @@
 <x-block :id="$id" class="space-y-2">
     <div class="card card-compact bg-white border">
         <div class="card-body">
-            <a href="{{ route('filament.panel.resources.submissions.index', app()->getCurrentConference()->path) }}" class="flex items-center">
+            <a href="{{ route('filament.conference.resources.submissions.index', app()->getCurrentConference()->path) }}" class="flex items-center">
                 <h2 class="ml-1 text-base text-primary">Submit Now</h2>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-10 h-10 fill-primary text-white ms-auto">
