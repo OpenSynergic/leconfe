@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 trait CustomizedUrl
 {
-
     public static function getUrl(string $name = 'index', array $parameters = [], bool $isAbsolute = true, ?string $panel = null, ?Model $tenant = null): string
     {
         if (blank($panel) || Filament::getPanel($panel)->hasTenancy()) {

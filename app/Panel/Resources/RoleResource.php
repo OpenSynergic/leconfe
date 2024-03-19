@@ -51,7 +51,7 @@ class RoleResource extends BaseResource
                             ->relationship('parent', 'name', fn ($query) => $query->whereNull('parent_id'))
                             ->live()
                             ->afterStateUpdated(function (Set $set, ?string $state) {
-                                if (!$state) {
+                                if (! $state) {
                                     return;
                                 }
 
@@ -64,7 +64,7 @@ class RoleResource extends BaseResource
 
                                         $condition = $newParent->hasPermissionOnAncestorsAndSelf($permission);
 
-                                        $set('permissions.' . $permission->name, $condition);
+                                        $set('permissions.'.$permission->name, $condition);
                                     });
                             })
                             ->preload(),
@@ -152,10 +152,10 @@ class RoleResource extends BaseResource
                 ->schema($permissions->map(function ($permission) {
                     [, $action] = explode(':', $permission->name);
 
-                    return Checkbox::make('permissions.' . $permission->name)
+                    return Checkbox::make('permissions.'.$permission->name)
                         ->disabled(function (Get $get) use ($permission) {
                             $parentId = $get('parent_id');
-                            if (!$parentId) {
+                            if (! $parentId) {
                                 return false;
                             }
 

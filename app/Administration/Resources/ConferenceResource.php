@@ -171,7 +171,7 @@ class ConferenceResource extends Resource
                 SelectFilter::make('status')
                     ->searchable()
                     ->options(ConferenceStatus::array())
-                    ->default(ConferenceStatus::Active->value)
+                    ->default(ConferenceStatus::Active->value),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([

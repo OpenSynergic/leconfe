@@ -59,7 +59,7 @@ class Login extends Page
 
         $this->validate();
 
-        if (!Filament::auth()->attempt([
+        if (! Filament::auth()->attempt([
             'email' => $this->email,
             'password' => $this->password,
         ], $this->remember)) {

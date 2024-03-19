@@ -14,6 +14,7 @@ trait CustomizedUrl
         }
 
         $parameters['conference'] ??= app()->getCurrentConference()->path;
+
         return route(static::getRouteName($panel), $parameters, $isAbsolute);
     }
 }

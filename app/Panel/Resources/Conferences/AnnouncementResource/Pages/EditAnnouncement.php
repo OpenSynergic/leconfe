@@ -3,7 +3,6 @@
 namespace App\Panel\Resources\Conferences\AnnouncementResource\Pages;
 
 use App\Actions\Announcements\AnnouncementUpdateAction;
-use App\Models\Enums\ConferenceStatus;
 use App\Panel\Resources\Conferences\AnnouncementResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;

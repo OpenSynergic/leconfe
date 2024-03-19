@@ -24,13 +24,12 @@ class PermissionResource extends BaseResource
 
     protected static ?int $navigationSort = 7;
 
-
     /**
      * This Resource is only for development purposes.
      */
     public static function isDiscovered(): bool
     {
-        return !app()->isProduction();
+        return ! app()->isProduction();
     }
 
     public static function getEloquentQuery(): Builder

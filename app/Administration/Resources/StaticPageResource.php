@@ -41,6 +41,7 @@ class StaticPageResource extends Resource
         if (app()->getCurrentConference()) {
             return static::getCustomizedUrl();
         }
+
         return parent::getUrl($name, $parameters, $isAbsolute, $panel, $tenant);
     }
 
@@ -61,7 +62,7 @@ class StaticPageResource extends Resource
                                     ->lazy()
                                     ->helperText(function ($state, ?StaticPage $record) {
 
-                                        if (!$record) {
+                                        if (! $record) {
                                             return;
                                         }
 
@@ -151,7 +152,7 @@ class StaticPageResource extends Resource
                                     ->options(StaticPageTag::withCount('staticPages')->orderBy('static_pages_count', 'desc')->limit(10)->pluck('name', 'id')->toArray())
                                     ->columns('2')
                                     ->afterStateUpdated(function ($set, $state) {
-                                        if (!empty($state)) {
+                                        if (! empty($state)) {
                                             $state = StaticPageTag::whereIn('id', $state)->get()->map(fn ($tag) => $tag->name)->toArray();
                                         }
 

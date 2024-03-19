@@ -21,7 +21,6 @@ class PluginResource extends BaseResource
 
     protected static ?string $navigationGroup = 'Settings';
 
-
     public static function getEloquentQuery(): Builder
     {
         return static::getModel()::query();

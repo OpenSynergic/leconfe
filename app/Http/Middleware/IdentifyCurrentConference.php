@@ -20,7 +20,7 @@ class IdentifyCurrentConference
     {
         $conference = app()->getCurrentConference();
 
-        if (!$conference) {
+        if (! $conference) {
             return abort(404);
         }
 

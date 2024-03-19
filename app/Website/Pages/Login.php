@@ -8,6 +8,6 @@ class Login extends PagesLogin
 {
     public function getRedirectUrl(): string
     {
-        return route("livewirePageGroup.website.pages.home");
+        return route('livewirePageGroup.website.pages.home');
     }
 }
