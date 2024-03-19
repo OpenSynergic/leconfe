@@ -95,6 +95,8 @@ class ConferenceServiceProvider extends ServiceProvider
             return;
         }
 
+        app()->scopeCurrentConference();
+
         $pathInfos = explode('/', request()->getPathInfo());
 
         // Special case for `current` path
@@ -107,7 +109,6 @@ class ConferenceServiceProvider extends ServiceProvider
             }
 
             app()->setCurrentConferenceId($conferenceId);
-            app()->scopeCurrentConference();
 
             return;
         }

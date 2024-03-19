@@ -20,7 +20,7 @@ class Dashboard extends BaseNavigationItemType
     {
         $conference = app()->getCurrentConference();
 
-        return route('filament.panel.pages.dashboard', $conference);
+        return $conference ? route('filament.panel.pages.dashboard', ['conference' => $conference]) : route('filament.administration.pages.dashboard');
     }
 
     public static function getIsDisplayed(NavigationMenuItem $navigationMenuItem): bool

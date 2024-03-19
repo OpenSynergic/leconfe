@@ -18,8 +18,10 @@ class Profile extends BaseNavigationItemType
 
     public static function getUrl(NavigationMenuItem $navigationMenuItem): string
     {
-        return route('filament.panel.resources.users.profile', [
-            'tenant' => app()->getCurrentConference(),
-        ]); 
+        $conference = app()->getCurrentConference();
+
+        return $conference ? route('filament.panel.resources.users.profile', [
+            'conference' => app()->getCurrentConference(),
+        ]) : '#'; 
     }
 }

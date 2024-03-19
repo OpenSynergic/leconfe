@@ -18,6 +18,8 @@ class About extends BaseNavigationItemType
 
     public static function getUrl(NavigationMenuItem $navigationMenuItem): string
     {
-        return route('livewirePageGroup.current-conference.pages.about');
+        $conference = app()->getCurrentConference();
+
+        return $conference ? route('livewirePageGroup.conference.pages.about', ['conference' => $conference]) : '#';
     }
 }

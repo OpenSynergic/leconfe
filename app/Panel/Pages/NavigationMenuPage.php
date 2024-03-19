@@ -21,7 +21,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Get;
 use Illuminate\Database\Eloquent\Builder;
 
-class NavigationMenuPage extends Page
+class NavigationMenuPage extends BasePage
 {
     protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
 

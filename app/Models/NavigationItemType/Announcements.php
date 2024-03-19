@@ -18,6 +18,8 @@ class Announcements extends BaseNavigationItemType
 
     public static function getUrl(NavigationMenuItem $navigationMenuItem): string
     {
-        return route('livewirePageGroup.current-conference.pages.announcement-list');
+        $conference = app()->getCurrentConference();
+
+        return $conference ? route('livewirePageGroup.conference.pages.announcement-list', ['conference' => $conference]) : '#';
     }
 }
