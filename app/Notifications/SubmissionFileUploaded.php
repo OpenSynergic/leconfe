@@ -6,7 +6,7 @@ use App\Constants\SubmissionFileCategory;
 use App\Mail\Templates\NewPaperUploadedMail;
 use App\Mail\Templates\NewRevisionUploadedMail;
 use App\Models\SubmissionFile;
-use App\Panel\Resources\SubmissionResource;
+use App\Panel\Conference\Resources\SubmissionResource;
 use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification as FilamentNotification;
 use Illuminate\Bus\Queueable;

@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Website\Pages\Installation;
+use App\Frontend\Website\Pages\Installation;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;

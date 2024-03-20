@@ -30,5 +30,5 @@ return [
         Plank\Metable\DataType\ObjectHandler::class,
     ],
 
-    'applyMigrations' => false,
+    'applyMigrations' => true,
 ];

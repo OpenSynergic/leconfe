@@ -4,6 +4,7 @@ namespace App\Managers;
 
 use App\Classes\Plugin as ClassesPlugin;
 use App\Events\PluginInstalled;
+use App\Models\PluginSetting;
 use Exception;
 use Illuminate\Contracts\Filesystem\Filesystem as FilesystemContract;
 use Illuminate\Filesystem\Filesystem;
@@ -183,10 +184,9 @@ class PluginManager
     {
         $conferenceId = App::getCurrentConferenceId();
 
-        return Cache::rememberForever("plugin_setting_{$conferenceId}_{$plugin}_{$key}", function () use ($plugin, $key, $default) {
-            $setting = DB::table('plugin_settings')
-                ->select(['value', 'type'])
-                ->where('conference_id', App::getCurrentConferenceId())
+        return Cache::rememberForever("plugin_setting_{$conferenceId}_{$plugin}_{$key}", function () use ($plugin, $key, $default, $conferenceId) {
+            $setting = PluginSetting::query()
+                ->where('conference_id', $conferenceId)
                 ->where('plugin', $plugin)
                 ->where('key', $key)
                 ->first();
@@ -203,11 +203,11 @@ class PluginManager
 
         $type = $this->getType($value);
 
-        return DB::table('plugin_settings')
+        return PluginSetting::query()
             ->updateOrInsert(
                 [
                     'plugin' => $plugin,
-                    'conference_id' => App::getCurrentConferenceId(),
+                    'conference_id' => $conferenceId,
                     'key' => $key,
                 ],
                 [

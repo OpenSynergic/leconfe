@@ -4,7 +4,7 @@ namespace App\Notifications;
 
 use App\Mail\Templates\NewSubmissionMail;
 use App\Models\Submission;
-use App\Panel\Resources\SubmissionResource;
+use App\Panel\Conference\Resources\SubmissionResource;
 use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification as FilamentNotification;
 use Illuminate\Bus\Queueable;

@@ -24,14 +24,14 @@ class IdentifyCurrentConference
             return abort(404);
         }
 
-        switch ($conference->status) {
-            case ConferenceStatus::Archived:
-                return redirect('archive/'.$conference->path);
-                break;
-            case ConferenceStatus::Upcoming:
-                return abort(404);
-                break;
-        }
+        // switch ($conference->status) {
+        //     case ConferenceStatus::Archived:
+        //         return redirect('archive/'.$conference->path);
+        //         break;
+        //     case ConferenceStatus::Upcoming:
+        //         return abort(404);
+        //         break;
+        // }
 
         return $next($request);
     }

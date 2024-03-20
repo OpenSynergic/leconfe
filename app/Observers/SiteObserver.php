@@ -2,10 +2,7 @@
 
 namespace App\Observers;
 
-use App\Application;
-use App\Models\Navigation;
 use App\Models\Site;
-use Illuminate\Support\Str;
 
 class SiteObserver
 {
@@ -21,25 +18,7 @@ class SiteObserver
      */
     public function created(Site $site): void
     {
-        Navigation::create([
-            'name' => 'Primary Navigation Menu',
-            'handle' => 'primary-navigation-menu',
-            'conference_id' => Application::CONTEXT_WEBSITE,
-            'items' => [
-                Str::uuid()->toString() => [
-                    'label' => 'Home',
-                    'type' => 'home',
-                    'data' => null,
-                    'children' => [],
-                ],
-                Str::uuid()->toString() => [
-                    'label' => 'Current Conference',
-                    'type' => 'current-conference',
-                    'data' => null,
-                    'children' => [],
-                ],
-            ],
-        ]);
+
     }
 
     /**
@@ -63,7 +42,6 @@ class SiteObserver
      */
     public function deleting(Site $site): void
     {
-
     }
 
     /**

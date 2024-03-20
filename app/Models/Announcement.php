@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ContentType;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -25,17 +24,10 @@ class Announcement extends UserContent
 
     public function getUrl()
     {
-        return match ($this->conference->status) {
-            ConferenceStatus::Active => route('livewirePageGroup.current-conference.pages.announcement-page', [
-                'announcement' => $this->id,
-            ]),
-            ConferenceStatus::Archived => route('livewirePageGroup.archive-conference.pages.announcement-page', [
-                'conference' => $this->conference->id,
-                'announcement' => $this->id,
-            ]),
-            ConferenceStatus::Upcoming => '#', // Currently, upcoming conferences are not accessible
-            default => '#',
-        };
+        return route('livewirePageGroup.conference.pages.announcement-page', [
+            'conference' => $this->conference->path,
+            'announcement' => $this->id,
+        ]);
     }
 
     public function registerMediaConversions(?Media $media = null): void

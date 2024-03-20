@@ -196,17 +196,16 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        App\Providers\ConferenceServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\HorizonServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\PluginServiceProvider::class,
-        App\Providers\Filament\AdministrationPanelProvider::class,
-        App\Providers\Filament\PanelProvider::class,
+        App\Providers\PanelProvider::class,
         Filament\FilamentServiceProvider::class,
-        App\Providers\WebsiteServiceProvider::class,
+        App\Providers\FrontendServiceProvider::class,
+        Rahmanramsi\LivewirePageGroup\LivewirePageGroupServiceProvider::class,
         App\Providers\FlareServiceProvider::class,
+        // App\Providers\BroadcastServiceProvider::class,
     ],
 
     /*

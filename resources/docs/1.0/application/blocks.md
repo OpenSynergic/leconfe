@@ -19,7 +19,7 @@ The class must have the following properties:
 for example you can look at the following code:
 
 ```php
-namespace App\Website\Blocks;
+namespace App\Frontend\Website\Blocks;
 
 use App\Classes\Block;
 use Illuminate\Contracts\View\View;

@@ -33,7 +33,6 @@ if (! function_exists('get_navigation_link_by_type')) {
     {
         return match ($type) {
             'announcements' => route('livewirePageGroup.current-conference.pages.announcement-list'),
-            'current-conference' => route('livewirePageGroup.current-conference.pages.home'),
             'register' => route('livewirePageGroup.website.pages.register'),
             'login' => route('livewirePageGroup.website.pages.login'),
             'home' => route('livewirePageGroup.website.pages.home'),
