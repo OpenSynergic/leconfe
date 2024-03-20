@@ -64,12 +64,7 @@ class FrontendServiceProvider extends ServiceProvider
             ], true)
             ->layout('frontend.website.components.layouts.app')
             ->bootUsing(function () {
-                if ($currentConference = app()->getCurrentConference()) {
-                    Livewire::setUpdateRoute(function ($handle) use ($currentConference) {
-                        return Route::post($currentConference->path.'/panel/livewire/update', $handle)
-                            ->middleware('web');
-                    });
-                }
+                
             })
             ->middleware([
                 'web',

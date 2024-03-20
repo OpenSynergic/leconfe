@@ -26,7 +26,7 @@ class Login extends Page
 
     public function mount()
     {
-        if (Filament::auth()->check()) {
+        if (auth()->check()) {
             $this->redirect($this->getRedirectUrl(), navigate: false);
         }
     }
@@ -41,7 +41,7 @@ class Login extends Page
 
     public function getRedirectUrl(): string
     {
-        return Filament::getUrl();
+        return Filament::getPanel()->getHomeUrl();
     }
 
     public function login()
@@ -59,7 +59,7 @@ class Login extends Page
 
         $this->validate();
 
-        if (! Filament::auth()->attempt([
+        if (! auth()->attempt([
             'email' => $this->email,
             'password' => $this->password,
         ], $this->remember)) {

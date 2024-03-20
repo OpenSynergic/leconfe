@@ -40,18 +40,9 @@ class PanelProvider extends ServiceProvider
     {
         $this->setupPanel($panel)
             ->id('conference')
+            ->default()
             ->path('{conference:path}/panel')
-            ->bootUsing(function(){
-                static::setupFilamentComponent();
-                // Scope livewire update path to current conference
-                $currentConference = app()->getCurrentConference();
-                if ($currentConference) {
-                    Livewire::setUpdateRoute(function ($handle) use ($currentConference) {
-                        return Route::post($currentConference->path.'/panel/livewire/update', $handle)
-                            ->middleware('web');
-                    });
-                }
-            })
+            ->bootUsing(fn() => static::setupFilamentComponent())
             ->homeUrl(fn() => route('livewirePageGroup.conference.pages.home', ['conference' => app()->getCurrentConference()]))
             ->discoverResources(in: app_path('Panel/Conference/Resources'), for: 'App\\Panel\\Conference\\Resources')
             ->discoverPages(in: app_path('Panel/Conference/Pages'), for: 'App\\Panel\\Conference\\Pages')
