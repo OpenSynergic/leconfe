@@ -2,18 +2,22 @@
 
 namespace App\Providers;
 
+use App\Application;
 use App\Facades\Payment;
 use App\Managers\BlockManager;
 use App\Managers\MetaTagManager;
+use App\Models\Conference;
 use App\Services\Payments\PaypalPayment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Livewire\Livewire;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -39,10 +43,7 @@ class AppServiceProvider extends ServiceProvider
         $this->setupModel();
         $this->setupStorage();
         $this->extendStr();
-
-        // Payment::extend('paypal', function () {
-        //     return new PaypalPayment;
-        // });
+        $this->detectConference();
     }
 
     protected function extendStr()
@@ -124,10 +125,31 @@ class AppServiceProvider extends ServiceProvider
         });
     }
 
-    protected function setupView()
+    protected function detectConference()
     {
-        if (! $this->app->runningInConsole()) {
-            // View::share('currentConference', Conference::active());
+        if (! $this->app->isInstalled()) {
+            return;
         }
+
+        $this->app->scopeCurrentConference();
+
+        $pathInfos = explode('/', request()->getPathInfo());
+
+        // Special case for `current` path
+        if (isset($pathInfos[1]) && ! blank($pathInfos[1])) {
+            $conferenceId = Conference::where('path', $pathInfos[1])->value('id');
+            
+            $conferenceId ? $this->app->setCurrentConferenceId($conferenceId) : $this->app->setCurrentConferenceId(Application::CONTEXT_WEBSITE);
+        }
+        
+        // Scope livewire update path to current conference
+        $currentConference = app()->getCurrentConference();
+        if ($currentConference) {
+            Livewire::setUpdateRoute(function ($handle) use ($currentConference) {
+                return Route::post($currentConference->path.'/livewire/update', $handle)
+                    ->middleware('web');
+            });
+        }
+
     }
 }

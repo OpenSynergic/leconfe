@@ -7,8 +7,8 @@ export default defineConfig({
             input: [
                 "resources/panel/css/panel.css",
                 "resources/panel/js/panel.js",
-                "resources/website/css/website.css",
-                "resources/website/js/website.js",
+                "resources/frontend/css/frontend.css",
+                "resources/frontend/js/frontend.js",
             ],
             refresh: true,
         }),

@@ -152,7 +152,8 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
 
     public function getPanelUrl(): string
     {
-        return route('filament.panel.pages.dashboard', ['conference' => $this->path]);
+        
+        return route('filament.conference.pages.dashboard', ['conference' => $this->path]);
     }
 
     public function getHomeUrl(): string

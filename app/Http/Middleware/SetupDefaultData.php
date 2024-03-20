@@ -29,12 +29,6 @@ class SetupDefaultData
 
         View::share('homeUrl', $currentConference?->getHomeUrl() ?? route('livewirePageGroup.website.pages.home'));
 
-        View::share('panelUrl', match ($currentConference instanceof Conference) {
-            true => route('filament.panel.pages.dashboard', $currentConference?->path),
-            default => '#',
-            // default => route('filament.panel.tenant'),
-        });
-
         return $next($request);
     }
 

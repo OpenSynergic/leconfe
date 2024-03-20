@@ -101,7 +101,8 @@
     "extra": {
         "laravel": {
             "dont-discover": [
-                "filament/filament"
+                "filament/filament",
+                "rahmanramsi/livewire-page-group"
             ]
         }
     },

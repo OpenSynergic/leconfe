@@ -18,7 +18,7 @@ return new class extends Plugin
         Block::registerBlocks($customBlocks->toArray());
     }
 
-    public function onPanel(Panel $panel): void
+    public function onConferencePanel(Panel $panel): void
     {
         $panel->pages([
             CustomSidebarManagerPage::class,
