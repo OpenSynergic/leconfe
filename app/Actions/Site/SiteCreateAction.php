@@ -19,7 +19,7 @@ class SiteCreateAction
 
             $site->setManyMeta([
                 'name' => 'Leconfe',
-                'page_footer' => view('examples.footer')->render(),
+                'page_footer' => view('frontend.examples.footer')->render(),
             ]);
 
             DB::commit();
