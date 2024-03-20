@@ -61,18 +61,13 @@ class ConferenceResource extends Resource
                                     ->rule('alpha_dash')
                                     ->required(),
                                 TextInput::make('meta.location'),
-                                DatePicker::make('meta.date_held'),
+                                DatePicker::make('date_start'),
+                                DatePicker::make('date_end')
+                                    ->after('date_start'),
                                 Textarea::make('meta.description')
                                     ->rows(5)
                                     ->autosize()
                                     ->columnSpanFull(),
-                            ]),
-                        Section::make()
-                            ->columnSpanFull()
-                            ->schema([
-                                TagsInput::make('meta.sponsors')
-                                    ->hint("Press 'Enter' or ',' to add a new sponsor")
-                                    ->splitKeys(['Enter', ',']),
                             ]),
                         Section::make()
                             ->columns(2)
@@ -114,7 +109,6 @@ class ConferenceResource extends Resource
                                     'type' => $getDataConference?->type,
                                     'date_start' => $getDataConference?->date_start->format(setting('format.date')),
                                     'date_end' => $getDataConference?->date_end->format(setting('format.date')),
-                                    'meta.sponsors' => $getDataConference?->getMeta('sponsors'),
                                     'meta.location' => $getDataConference?->getMeta('location'),
                                     'meta.description' => $getDataConference?->getMeta('description'),
                                     'meta.publisher_name' => $getDataConference?->getMeta('publisher_name'),
