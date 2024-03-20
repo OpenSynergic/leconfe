@@ -42,7 +42,7 @@ class Installation extends Page
 
     public static function getLayout(): string
     {
-        return 'website.components.layouts.base';
+        return 'frontend.website.components.layouts.base';
     }
 
     public function checkPermission()
