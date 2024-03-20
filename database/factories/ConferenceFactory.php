@@ -53,7 +53,7 @@ class ConferenceFactory extends Factory
                 'location' => fake()->city(),
                 'description' => fake()->paragraphs(3, true),
                 'about' => fake()->paragraphs(4, true),
-                'page_footer' => view('examples.footer')->render(),
+                'page_footer' => view('frontend.examples.footer')->render(),
             ]);
         });
     }
