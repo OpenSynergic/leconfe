@@ -22,7 +22,7 @@
     </style>
 
     @livewireStyles
-    @vite(['resources/website/css/website.css', 'resources/website/js/website.js'])
+    @vite(['resources/frontend/css/frontend.css', 'resources/frontend/js/frontend.js'])
 
     @isset($styleSheet)
         <link rel="stylesheet" type="text/css" href="{{ $styleSheet }}">

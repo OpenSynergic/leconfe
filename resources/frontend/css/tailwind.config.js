@@ -5,9 +5,7 @@ import defaultTheme from 'tailwindcss/defaultTheme'
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
-        './resources/views/conference/**/*.blade.php',
-        './resources/views/website/**/*.blade.php',
-        './resources/views/examples/**/*.blade.php',
+        './resources/views/frontend/**/*.blade.php',
     ],
     theme: {
         extend: {
