@@ -130,7 +130,7 @@ class ConferenceObserver
             ],
         ]);
 
-        $conference->setMeta('page_footer', view('examples.footer')->render());
+        $conference->setMeta('page_footer', view('frontend.examples.footer')->render());
         $conference->setMeta('workflow.payment.supported_currencies', ['usd']);
         $conference->save();
     }

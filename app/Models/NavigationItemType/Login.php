@@ -18,7 +18,9 @@ class Login extends BaseNavigationItemType
 
     public static function getUrl(NavigationMenuItem $navigationMenuItem): string
     {
-        return route('livewirePageGroup.website.pages.login');
+        $conference = app()->getCurrentConference();
+
+        return $conference ? route('livewirePageGroup.conference.pages.login', ['conference' => $conference]) : route('livewirePageGroup.website.pages.login');
     }
 
     public static function getIsDisplayed(NavigationMenuItem $navigationMenuItem): bool

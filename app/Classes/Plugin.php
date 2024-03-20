@@ -55,7 +55,7 @@ abstract class Plugin implements HasPlugin
         return FacadesPlugin::updateSetting($this->getInfo('folder'), $key, $value);
     }
 
-    public function onPanel(Panel $panel): void
+    public function onConferencePanel(Panel $panel): void
     {
         // Implement this method to add your plugin to the panel
     }
