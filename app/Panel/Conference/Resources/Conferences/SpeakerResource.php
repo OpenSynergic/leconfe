@@ -2,9 +2,9 @@
 
 namespace App\Panel\Conference\Resources\Conferences;
 
-use App\Actions\Participants\ParticipantCreateAction;
-use App\Models\Participant;
-use App\Models\ParticipantPosition;
+use App\Actions\Speakers\SpeakerCreateAction;
+use App\Models\Speaker;
+use App\Models\SpeakerPosition;
 use App\Panel\Conference\Resources\Conferences\SpeakerResource\Pages;
 use App\Panel\Conference\Resources\Traits\CustomizedUrl;
 use Filament\Forms;
@@ -24,7 +24,7 @@ class SpeakerResource extends Resource
 {
     protected static ?string $navigationGroup = 'Conferences';
 
-    protected static ?string $model = Participant::class;
+    protected static ?string $model = Speaker::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
@@ -40,13 +40,13 @@ class SpeakerResource extends Resource
         return static::getModel()::query()
             ->orderBy('order_column')
             ->with([
-                'positions' => fn ($query) => $query
+                'role' => fn ($query) => $query
                     ->ofType(SpeakerPositionResource::$positionType),
                 'media',
                 'meta',
             ])
             ->whereHas(
-                'positions',
+                'role',
                 fn (Builder $query) => $query
                     ->ofType(SpeakerPositionResource::$positionType)
             );
@@ -62,20 +62,17 @@ class SpeakerResource extends Resource
         return $form
             ->schema([
                 ...ParticipantResource::generalFormField(),
-                Forms\Components\Select::make('positions')
+                Forms\Components\Select::make('speaker_role_id')
+                    ->label('Role')
                     ->required()
                     ->searchable()
                     ->relationship(
-                        name: 'positions',
+                        name: 'role',
                         titleAttribute: 'name',
                         modifyQueryUsing: fn (Builder $query) => $query
                             ->ofType(SpeakerPositionResource::$positionType),
                     )
                     ->preload()
-                    ->saveRelationshipsUsing(function (Select $component, Model $record, $state) {
-                        $record->positions()->detach($record->positions);
-                        $record->positions()->attach($state);
-                    })
                     ->createOptionForm([
                         TextInput::make('name')
                             ->required(),
@@ -108,53 +105,53 @@ class SpeakerResource extends Resource
                 ActionGroup::make([
                     CreateAction::make()
                         ->icon('heroicon-o-user-plus')
-                        ->using(fn (array $data) => ParticipantCreateAction::run($data)),
+                        ->using(fn (array $data) => SpeakerCreateAction::run($data)),
                     Action::make('add_existing_speaker')
                         ->label('Add Existing')
                         ->icon('heroicon-o-plus')
                         ->modalWidth('xl')
                         ->form([
-                            Select::make('participant_id')
+                            Select::make('speaker_id')
                                 ->label('Speaker')
                                 ->required()
                                 ->preload()
                                 ->searchable()
                                 ->allowHtml()
                                 ->options(function () {
-                                    $participants = static::getEloquentQuery()->pluck('id')->toArray();
+                                    $speakers = static::getEloquentQuery()->pluck('id')->toArray();
 
-                                    return Participant::query()
+                                    return Speaker::query()
                                         ->limit(10)
-                                        ->whereNotIn('id', $participants)
+                                        ->whereNotIn('id', $speakers)
                                         ->get()
-                                        ->mapWithKeys(fn (Participant $participant) => [$participant->getKey() => static::renderSelectParticipant($participant)])
+                                        ->mapWithKeys(fn (Speaker $speaker) => [$speaker->getKey() => static::renderSelectSpeaker($speaker)])
                                         ->toArray();
                                 })
                                 ->getSearchResultsUsing(
                                     function (string $search) {
-                                        $participants = static::getEloquentQuery()->pluck('id')->toArray();
+                                        $speakers = static::getEloquentQuery()->pluck('id')->toArray();
 
-                                        return Participant::query()
+                                        return Speaker::query()
                                             ->with(['media', 'meta'])
-                                            ->whereNotIn('id', $participants)
+                                            ->whereNotIn('id', $speakers)
                                             ->where(fn ($query) => $query->where('given_name', 'LIKE', "%{$search}%")
                                                 ->orWhere('family_name', 'LIKE', "%{$search}%")
                                                 ->orWhere('email', 'LIKE', "%{$search}%"))
                                             ->get()
-                                            ->mapWithKeys(fn (Participant $participant) => [$participant->getKey() => static::renderSelectParticipant($participant)])
+                                            ->mapWithKeys(fn (Speaker $speaker) => [$speaker->getKey() => static::renderSelectSpeaker($speaker)])
                                             ->toArray();
                                     }
                                 ),
                             Select::make('positions')
                                 ->required()
                                 ->searchable()
-                                ->options(fn () => ParticipantPosition::query()
+                                ->options(fn () => SpeakerPosition::query()
                                     ->where('type', SpeakerPositionResource::$positionType)
                                     ->pluck('name', 'id')
                                     ->toArray()),
                         ])
                         ->action(function ($data) {
-                            return Participant::find(data_get($data, 'participant_id'))
+                            return Speaker::find(data_get($data, 'speaker_id'))
                                 ->positions()
                                 ->attach(data_get($data, 'positions'));
                         }),
@@ -164,7 +161,7 @@ class SpeakerResource extends Resource
                 ...ParticipantResource::generalTableColumns(),
             ])
             ->actions([
-                ...ParticipantResource::tableActions(SpeakerPositionResource::$positionType),
+                // ...ParticipantResource::tableActions(SpeakerPositionResource::$positionType),
             ])
             ->filters([
                 // SelectFilter::make('position')
@@ -172,9 +169,9 @@ class SpeakerResource extends Resource
             ]);
     }
 
-    public static function renderSelectParticipant(Participant $participant): string
+    public static function renderSelectSpeaker(Speaker $speaker): string
     {
-        return view('forms.select-participant', ['participant' => $participant])->render();
+        return view('forms.select-speaker', ['speaker' => $speaker])->render();
     }
 
     public static function getPages(): array
