@@ -2,8 +2,8 @@
 
 namespace App\Panel\Conference\Resources\Conferences;
 
-use App\Actions\Participants\ParticipantCreateAction;
-use App\Models\Participant;
+use App\Actions\Committees\CommitteeCreateAction;
+use App\Models\Committee;
 use App\Panel\Conference\Resources\Conferences\CommitteeResource\Pages;
 use App\Panel\Conference\Resources\Traits\CustomizedUrl;
 use Filament\Forms;
@@ -22,7 +22,7 @@ class CommitteeResource extends Resource
 {
     protected static ?string $navigationGroup = 'Conferences';
 
-    protected static ?string $model = Participant::class;
+    protected static ?string $model = Committee::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
@@ -38,13 +38,13 @@ class CommitteeResource extends Resource
         return static::getModel()::query()
             ->orderBy('order_column')
             ->with([
-                'positions' => fn ($query) => $query
+                'committeeRole' => fn ($query) => $query
                     ->where('type', CommitteePositionResource::$positionType),
                 'media',
                 'meta',
             ])
             ->whereHas(
-                'positions',
+                'committeeRole',
                 fn (Builder $query) => $query
                     ->where('type', CommitteePositionResource::$positionType)
             );
@@ -60,21 +60,21 @@ class CommitteeResource extends Resource
         return $form
             ->schema([
                 ...ParticipantResource::generalFormField(),
-                Forms\Components\Select::make('positions')
+                Forms\Components\Select::make('committeeRoles')
                     ->label('Position')
                     ->required()
                     ->searchable()
                     // ->multiple()
                     ->relationship(
-                        name: 'positions',
+                        name: 'committeeRoles',
                         titleAttribute: 'name',
                         modifyQueryUsing: fn (Builder $query) => $query
                             ->where('type', CommitteePositionResource::$positionType),
                     )
                     ->preload()
                     ->saveRelationshipsUsing(function (Select $component, Model $record, $state) {
-                        $record->positions()->detach($record->positions);
-                        $record->positions()->attach($state);
+                        $record->committeeroles()->detach($record->committeeroles);
+                        $record->committeeroles()->attach($state);
                     })
                     ->createOptionForm(fn ($form) => CommitteePositionResource::form($form))
                     ->createOptionAction(
@@ -105,45 +105,45 @@ class CommitteeResource extends Resource
             ->headerActions([
                 ActionGroup::make([
                     CreateAction::make()
-                        ->icon('heroicon-o-user-plus')
-                        ->using(fn (array $data) => ParticipantCreateAction::run($data)),
+                        ->icon('heroicon-o-user-plus'),
+                        // ->using(fn (array $data) => CommitteeCreateAction::run($data)),
                     Action::make('add_existing_speaker')
                         ->label('Add Existing')
                         ->icon('heroicon-o-plus')
                         ->modalWidth('xl')
                         ->form([
-                            Select::make('participant_id')
+                            Select::make('committee_id')
                                 ->label('Committee')
                                 ->required()
                                 ->preload()
                                 ->searchable()
                                 ->allowHtml()
                                 ->options(function () {
-                                    $participants = static::getEloquentQuery()->pluck('id')->toArray();
+                                    $committees = static::getEloquentQuery()->pluck('id')->toArray();
 
                                     return static::getModel()::query()
                                         ->limit(10)
-                                        ->whereNotIn('id', $participants)
+                                        ->whereNotIn('id', $committees)
                                         ->get()
-                                        ->mapWithKeys(fn (Participant $participant) => [$participant->getKey() => static::renderSelectParticipant($participant)])
+                                        ->mapWithKeys(fn (Committee $committee) => [$committee->getKey() => static::renderSelectCommittee($committee)])
                                         ->toArray();
                                 })
                                 ->getSearchResultsUsing(
                                     function (string $search) {
-                                        $participants = static::getEloquentQuery()->pluck('id')->toArray();
+                                        $committees = static::getEloquentQuery()->pluck('id')->toArray();
 
                                         return static::getModel()::query()
                                             ->with(['media', 'meta'])
-                                            ->whereNotIn('id', $participants)
+                                            ->whereNotIn('id', $committees)
                                             ->where(fn ($query) => $query->where('given_name', 'LIKE', "%{$search}%")
                                                 ->orWhere('family_name', 'LIKE', "%{$search}%")
                                                 ->orWhere('email', 'LIKE', "%{$search}%"))
                                             ->get()
-                                            ->mapWithKeys(fn (Participant $participant) => [$participant->getKey() => static::renderSelectParticipant($participant)])
+                                            ->mapWithKeys(fn (Committee $committee) => [$committee->getKey() => static::renderSelectCommittee($committee)])
                                             ->toArray();
                                     }
                                 ),
-                            Select::make('positions')
+                            Select::make('committeeroles')
                                 ->required()
                                 ->searchable()
                                 ->options(
@@ -153,9 +153,9 @@ class CommitteeResource extends Resource
                                 ),
                         ])
                         ->action(function ($data) {
-                            return Participant::find(data_get($data, 'participant_id'))
-                                ->positions()
-                                ->attach(data_get($data, 'positions'));
+                            return Committee::find(data_get($data, 'committee_id'))
+                                ->committeeroles()
+                                ->attach(data_get($data, 'committeeroles'));
                         }),
                 ])->button(),
             ])
@@ -171,9 +171,9 @@ class CommitteeResource extends Resource
             ]);
     }
 
-    public static function renderSelectParticipant(Participant $participant): string
+    public static function renderSelectCommittee(Committee $committee): string
     {
-        return view('forms.select-participant', ['participant' => $participant])->render();
+        return view('forms.select-committee', ['committee' => $committee])->render();
     }
 
     public static function getPages(): array

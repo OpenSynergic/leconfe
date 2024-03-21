@@ -2,7 +2,7 @@
 
 namespace App\Panel\Conference\Resources\Conferences;
 
-use App\Models\ParticipantPosition;
+use App\Models\CommitteeRole;
 use App\Panel\Conference\Resources\Traits\CustomizedUrl;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\Select;
@@ -18,7 +18,7 @@ class CommitteePositionResource extends Resource
 {
     protected static bool $isDiscovered = false;
 
-    protected static ?string $model = ParticipantPosition::class;
+    protected static ?string $model = CommitteeRole::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -28,7 +28,7 @@ class CommitteePositionResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return 'Committee Position';
+        return 'Committee Role';
     }
 
     public static function getEloquentQuery(): Builder
@@ -50,7 +50,7 @@ class CommitteePositionResource extends Resource
                             ->where('conference_id', app()->getCurrentConference()->getKey());
                     }),
                 Select::make('parent_id')
-                    ->relationship('parent', 'name', fn ($query, ?ParticipantPosition $record) => $query
+                    ->relationship('parent', 'name', fn ($query, ?CommitteeRole $record) => $query
                         ->when($record, fn ($query) => $query->whereNot('id', $record->getKey()))
                         ->ofType(static::$positionType)),
             ]);
@@ -67,9 +67,9 @@ class CommitteePositionResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('parent.name')
                     ->badge(),
-                Tables\Columns\TextColumn::make('participants_count')
+                Tables\Columns\TextColumn::make('committees_count')
                     ->label('Committees')
-                    ->counts('participants')
+                    ->counts('committees')
                     ->badge()
                     ->color(fn (int $state) => $state > 0 ? 'primary' : 'gray'),
 
@@ -80,9 +80,9 @@ class CommitteePositionResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
-                    ->using(function (ParticipantPosition $record, Tables\Actions\DeleteAction $action) {
+                    ->using(function (CommitteeRole $record, Tables\Actions\DeleteAction $action) {
                         try {
-                            $speakerCount = $record->participants()->count();
+                            $speakerCount = $record->committees()->count();
                             if ($speakerCount > 0) {
                                 throw new \Exception('Cannot delete '.$record->name.', there are '.static::$positionType.' who are still associated with this position');
                             }
