@@ -88,7 +88,7 @@ class ConferenceSetting extends BasePage implements HasForms, HasInfolists
                                                     ]),
                                             ]),
                                         InfolistsVerticalTabs\Tab::make('Sponsors')
-                                            ->icon("heroicon-o-currency-dollar")
+                                            ->icon("lineawesome-users-solid")
                                             ->schema([
                                                 LivewireEntry::make('sponsors-setting')
                                                     ->livewire(SponsorSetting::class, [
