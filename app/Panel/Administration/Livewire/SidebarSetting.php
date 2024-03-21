@@ -22,7 +22,7 @@ class SidebarSetting extends Component implements HasForms
 
     public ?array $formData = [];
 
-    public function mount(Site $site): void
+    public function mount(): void
     {
         $this->form->fill([
             'sidebar' => [

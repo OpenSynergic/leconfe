@@ -11,6 +11,7 @@ use App\Panel\Administration\Livewire\SetupSetting;
 use App\Panel\Administration\Livewire\SidebarSetting;
 use App\Infolists\Components\LivewireEntry;
 use App\Infolists\Components\VerticalTabs;
+use App\Panel\Conference\Livewire\NavigationMenuSetting;
 use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
@@ -67,6 +68,13 @@ class SiteSettings extends Page implements HasInfolists
                                             ->schema([
                                                 LivewireEntry::make('sidebar_setting')
                                                     ->livewire(SidebarSetting::class)
+                                                    ->lazy(),
+                                            ]),
+                                        VerticalTabs\Tab::make('Navigation Menu')
+                                            ->icon('heroicon-o-list-bullet')
+                                            ->schema([
+                                                LivewireEntry::make('navigation-menu-setting')
+                                                    ->livewire(NavigationMenuSetting::class)
                                                     ->lazy(),
                                             ]),
 

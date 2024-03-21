@@ -41,7 +41,7 @@ class Login extends Page
 
     public function getRedirectUrl(): string
     {
-        return Filament::getPanel()->getHomeUrl();
+        return Filament::getPanel()->getUrl();
     }
 
     public function login()
