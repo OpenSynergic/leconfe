@@ -2,19 +2,16 @@
 
 namespace App\Panel\Conference\Pages\Traits;
 
-use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Model;
 
 trait CustomizedUrl
 {
     public static function getUrl(array $parameters = [], bool $isAbsolute = true, ?string $panel = null, ?Model $tenant = null): string
     {
-        if (blank($panel) || Filament::getPanel($panel)->hasTenancy()) {
-            $parameters['tenant'] ??= ($tenant ?? Filament::getTenant());
+        if($conference = app()->getCurrentConference()){
+            $parameters['conference'] ??= $conference->path;
         }
 
-        $parameters['conference'] ??= app()->getCurrentConference()->path;
-
-        return route(static::getRouteName($panel), $parameters, $isAbsolute);
+        return parent::getUrl($parameters, $isAbsolute, $panel, $tenant);
     }
 }
