@@ -33,6 +33,11 @@ class Workflow extends Page implements HasForms, HasInfolists
 
     protected static ?string $navigationGroup = 'Settings';
 
+    public function mount()
+    {
+        // dd(request()->route());
+    }
+
     public function booted(): void
     {
         abort_if(! static::canView(), 403);

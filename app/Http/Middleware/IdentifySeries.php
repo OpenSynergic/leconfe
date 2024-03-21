@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Middleware\Panel;
+namespace App\Http\Middleware;
 
 use Closure;
-use Filament\Facades\Filament;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class TenantConferenceMiddleware
+class IdentifySeries
 {
     /**
      * Handle an incoming request.
@@ -16,8 +15,9 @@ class TenantConferenceMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // app()->setCurrentConferenceId(Filament::getTenant()->getKey());
-        // app()->scopeCurrentConference();
+        if(!app()->getCurrentSerieId()){
+            return abort(404);
+        }
 
         return $next($request);
     }

@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Facades\Plugin;
+use App\Http\Middleware\IdentifyConference;
+use App\Http\Middleware\IdentifySeries;
 use App\Http\Middleware\MustVerifyEmail;
-use App\Http\Middleware\Panel\PanelAuthenticate;
+use App\Http\Middleware\PanelAuthenticate;
 use App\Panel\Conference\Pages\Dashboard;
 use App\Panel\Conference\Resources\UserResource;
 use Filament\Facades\Filament;
@@ -36,7 +38,13 @@ class PanelProvider extends ServiceProvider
             ->userMenuItems([
                 'logout' => MenuItem::make()
                     ->url(fn (): string => route('filament.series.auth.logout', ['conference' => app()->getCurrentConference(), 'serie' => app()->getCurrentSerie()])),
-            ]);
+            ])
+            ->middleware([
+                IdentifyConference::class,
+                IdentifySeries::class,
+                ...static::getMiddleware(),
+            ], true)
+            ->authMiddleware(static::getAuthMiddleware(), true);
 
         return $panel;
     }
@@ -63,7 +71,12 @@ class PanelProvider extends ServiceProvider
             ->renderHook(
                 'panels::topbar.start',
                 fn () => view('panel.conference.hooks.topbar'),
-            );
+            )
+            ->middleware([
+                IdentifyConference::class,
+                ...static::getMiddleware(),
+            ], true)
+            ->authMiddleware(static::getAuthMiddleware(), true);
 
         Plugin::getPlugins()->each(function ($plugin) use ($panel) {
             $plugin->onConferencePanel($panel);
@@ -88,7 +101,9 @@ class PanelProvider extends ServiceProvider
             ->renderHook(
                 'panels::topbar.start',
                 fn () => view('panel.administration.hooks.topbar'),
-            );
+            )
+            ->middleware(static::getMiddleware(), true)
+            ->authMiddleware(static::getAuthMiddleware(), true);
 
         Plugin::getPlugins()->each(function ($plugin) use ($panel) {
             $plugin->onAdministrationPanel($panel);
@@ -114,9 +129,7 @@ class PanelProvider extends ServiceProvider
                 'primary' => Color::hex('#09b8ed'),
             ])
             ->darkMode(false)
-            ->databaseNotifications()
-            ->middleware(static::getMiddleware(), true)
-            ->authMiddleware(static::getAuthMiddleware(), true);
+            ->databaseNotifications();
     }
 
     public function register(): void
@@ -192,11 +205,11 @@ class PanelProvider extends ServiceProvider
         DatePicker::configureUsing(function (DatePicker $datePicker): void {
             $datePicker
                 ->native(false)
-                ->format(setting('format.date'));
+                ->displayFormat(setting('format.date'));
         });
 
         TimePicker::configureUsing(function (TimePicker $timePicker): void {
-            $timePicker->format(setting('format.time'));
+            $timePicker->displayFormat(setting('format.time'));
         });
 
         Table::configureUsing(function (Table $table): void {

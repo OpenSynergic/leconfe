@@ -58,10 +58,13 @@ class SerieResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('title')
+                    ->searchable()
                     ->description(fn (Serie $record) => Str::limit($record->description))
+                    ->url(fn(Serie $record) => route('filament.series.pages.dashboard', ['serie' => $record]))
                     ->wrap()
                     ->wrapHeader(),
-                TextColumn::make('path'),
+                TextColumn::make('path')
+                    ->searchable(),
             ])
             ->filters([
                 //
