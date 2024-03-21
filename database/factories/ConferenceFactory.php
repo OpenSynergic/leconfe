@@ -48,6 +48,9 @@ class ConferenceFactory extends Factory
         return $this->afterCreating(function (Conference $conference) {
             $conference->setManyMeta([
                 'publisher_name' => fake()->company(),
+                'publisher_place' => fake()->city(),
+                'acronym' => Str::upper(Str::substr($conference->name, 0, 3)),
+                'theme' => fake()->sentence(),
                 'affiliation' => fake()->company(),
                 'country' => Country::inRandomOrder()->first()->id,
                 'location' => fake()->city(),
