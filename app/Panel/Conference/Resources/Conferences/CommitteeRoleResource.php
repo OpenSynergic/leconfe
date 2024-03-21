@@ -14,7 +14,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\Rules\Unique;
 
-class CommitteePositionResource extends Resource
+class CommitteeRoleResource extends Resource
 {
     protected static bool $isDiscovered = false;
 
@@ -22,7 +22,7 @@ class CommitteePositionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static string $positionType = 'committee';
+    public static string $roleType = 'committee';
 
     use CustomizedUrl;
 
@@ -34,7 +34,7 @@ class CommitteePositionResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return static::getModel()::query()
-            ->ofType(static::$positionType)
+            ->ofType(static::$roleType)
             ->orderBy('order_column');
     }
 
@@ -46,13 +46,13 @@ class CommitteePositionResource extends Resource
                     ->required()
                     ->unique(modifyRuleUsing: function (Unique $rule) {
                         return $rule
-                            ->where('type', static::$positionType)
+                            ->where('type', static::$roleType)
                             ->where('conference_id', app()->getCurrentConference()->getKey());
                     }),
                 Select::make('parent_id')
                     ->relationship('parent', 'name', fn ($query, ?CommitteeRole $record) => $query
                         ->when($record, fn ($query) => $query->whereNot('id', $record->getKey()))
-                        ->ofType(static::$positionType)),
+                        ->ofType(static::$roleType)),
             ]);
     }
 
@@ -84,7 +84,7 @@ class CommitteePositionResource extends Resource
                         try {
                             $speakerCount = $record->committees()->count();
                             if ($speakerCount > 0) {
-                                throw new \Exception('Cannot delete '.$record->name.', there are '.static::$positionType.' who are still associated with this position');
+                                throw new \Exception('Cannot delete '.$record->name.', there are '.static::$roleType.' who are still associated with this role');
                             }
 
                             return $record->delete();
@@ -101,16 +101,16 @@ class CommitteePositionResource extends Resource
             ->emptyStateActions([
                 // Tables\Actions\CreateAction::make(),
             ])
-            ->heading('Committee Positions Table')
+            ->heading('Committee Roles Table')
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->mutateFormDataUsing(function (array $data): array {
-                        $data['type'] = static::$positionType;
+                        $data['type'] = static::$roleType;
 
                         return $data;
                     })
-                    ->label('New Committee Position')
-                    ->modalHeading('New Committee` Position'),
+                    ->label('New Committee Role')
+                    ->modalHeading('New Committee` Role'),
             ]);
     }
 

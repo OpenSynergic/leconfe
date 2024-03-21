@@ -3,7 +3,11 @@
 namespace App\Panel\Conference\Resources\Conferences;
 
 use App\Actions\Committees\CommitteeCreateAction;
+use App\Actions\Committees\CommitteeDeleteAction;
+use App\Actions\Committees\CommitteeUpdateAction;
+use App\Panel\Conference\Resources\Conferences\ParticipantResource;
 use App\Models\Committee;
+use App\Models\CommitteeRole;
 use App\Panel\Conference\Resources\Conferences\CommitteeResource\Pages;
 use App\Panel\Conference\Resources\Traits\CustomizedUrl;
 use Filament\Forms;
@@ -38,15 +42,15 @@ class CommitteeResource extends Resource
         return static::getModel()::query()
             ->orderBy('order_column')
             ->with([
-                'committeeRole' => fn ($query) => $query
-                    ->where('type', CommitteePositionResource::$positionType),
+                'role' => fn ($query) => $query
+                    ->where('type', CommitteeRoleResource::$roleType),
                 'media',
                 'meta',
             ])
             ->whereHas(
-                'committeeRole',
+                'role',
                 fn (Builder $query) => $query
-                    ->where('type', CommitteePositionResource::$positionType)
+                    ->where('type', CommitteeRoleResource::$roleType)
             );
     }
 
@@ -60,34 +64,27 @@ class CommitteeResource extends Resource
         return $form
             ->schema([
                 ...ParticipantResource::generalFormField(),
-                Forms\Components\Select::make('committeeRoles')
-                    ->label('Position')
+                Forms\Components\Select::make('committee_role_id')
+                    ->label('Role')
                     ->required()
                     ->searchable()
-                    // ->multiple()
                     ->relationship(
-                        name: 'committeeRoles',
+                        name: 'role',
                         titleAttribute: 'name',
                         modifyQueryUsing: fn (Builder $query) => $query
-                            ->where('type', CommitteePositionResource::$positionType),
+                            ->where('type', CommitteeRoleResource::$roleType),
                     )
                     ->preload()
-                    ->saveRelationshipsUsing(function (Select $component, Model $record, $state) {
-                        $record->committeeroles()->detach($record->committeeroles);
-                        $record->committeeroles()->attach($state);
-                    })
-                    ->createOptionForm(fn ($form) => CommitteePositionResource::form($form))
+                    ->createOptionForm(fn ($form) => CommitteeRoleResource::form($form))
                     ->createOptionAction(
-                        fn (FormAction $action) => $action->modalWidth('xl')
-                            ->modalHeading('Create Committee Position')
+                        fn (FormAction $action) => $action->color('primary')
+                            ->modalWidth('xl')
+                            ->modalHeading('Create Committee Role')
                             ->mutateFormDataUsing(function (array $data): array {
-                                $data['type'] = CommitteePositionResource::$positionType;
+                                $data['type'] = CommitteeRoleResource::$roleType;
 
                                 return $data;
                             })
-                        // ->form(function (Select $component, Form $form): array|Form|null {
-                        //     return CommitteePositionResource::form($form);
-                        // })
                     )
                     ->columnSpan([
                         'lg' => 2,
@@ -105,8 +102,8 @@ class CommitteeResource extends Resource
             ->headerActions([
                 ActionGroup::make([
                     CreateAction::make()
-                        ->icon('heroicon-o-user-plus'),
-                        // ->using(fn (array $data) => CommitteeCreateAction::run($data)),
+                        ->icon('heroicon-o-user-plus')
+                        ->using(fn (array $data) => CommitteeCreateAction::run($data)),
                     Action::make('add_existing_speaker')
                         ->label('Add Existing')
                         ->icon('heroicon-o-plus')
@@ -119,22 +116,22 @@ class CommitteeResource extends Resource
                                 ->searchable()
                                 ->allowHtml()
                                 ->options(function () {
-                                    $committees = static::getEloquentQuery()->pluck('id')->toArray();
+                                    $committees = static::getEloquentQuery()->pluck('email')->toArray();
 
                                     return static::getModel()::query()
                                         ->limit(10)
-                                        ->whereNotIn('id', $committees)
+                                        ->whereNotIn('email', $committees)
                                         ->get()
                                         ->mapWithKeys(fn (Committee $committee) => [$committee->getKey() => static::renderSelectCommittee($committee)])
                                         ->toArray();
                                 })
                                 ->getSearchResultsUsing(
                                     function (string $search) {
-                                        $committees = static::getEloquentQuery()->pluck('id')->toArray();
+                                        $committees = static::getEloquentQuery()->pluck('email')->toArray();
 
                                         return static::getModel()::query()
                                             ->with(['media', 'meta'])
-                                            ->whereNotIn('id', $committees)
+                                            ->whereNotIn('email', $committees)
                                             ->where(fn ($query) => $query->where('given_name', 'LIKE', "%{$search}%")
                                                 ->orWhere('family_name', 'LIKE', "%{$search}%")
                                                 ->orWhere('email', 'LIKE', "%{$search}%"))
@@ -143,19 +140,26 @@ class CommitteeResource extends Resource
                                             ->toArray();
                                     }
                                 ),
-                            Select::make('committeeroles')
+                            Select::make('committee_role')
                                 ->required()
                                 ->searchable()
                                 ->options(
-                                    fn () => CommitteePositionResource::getEloquentQuery()
+                                    fn () => CommitteeRoleResource::getEloquentQuery()
                                         ->pluck('name', 'id')
                                         ->toArray()
                                 ),
                         ])
                         ->action(function ($data) {
-                            return Committee::find(data_get($data, 'committee_id'))
-                                ->committeeroles()
-                                ->attach(data_get($data, 'committeeroles'));
+                            $committee = static::getModel()::find($data['committee_id']);
+
+                            $newCommitte = Committee::create([
+                                ...$committee->only(['given_name', 'family_name', 'email']),
+                                'committee_role_id' => $data['committee_role'],
+                            ]);
+
+                            if ($meta = $committee->getAllMeta()->toArray()) {
+                                $newCommitte->setManyMeta($meta);
+                            }                            
                         }),
                 ])->button(),
             ])
@@ -163,17 +167,17 @@ class CommitteeResource extends Resource
                 ...ParticipantResource::generalTableColumns(),
             ])
             ->actions([
-                ...ParticipantResource::tableActions(CommitteePositionResource::$positionType),
+                ...ParticipantResource::tableActions(CommitteeRoleResource::$roleType, CommitteeUpdateAction::class, CommitteeDeleteAction::class),
             ])
             ->filters([
-                // SelectFilter::make('position')
-                //     ->relationship('position', 'name'),
+                // SelectFilter::make('role')
+                //     ->relationship('role', 'name'),
             ]);
     }
 
     public static function renderSelectCommittee(Committee $committee): string
     {
-        return view('forms.select-committee', ['committee' => $committee])->render();
+        return view('forms.select-participant', ['participant' => $committee])->render();
     }
 
     public static function getPages(): array

@@ -2,7 +2,7 @@
 
 namespace App\Panel\Conference\Livewire\Tables;
 
-use App\Panel\Conference\Resources\Conferences\CommitteePositionResource;
+use App\Panel\Conference\Resources\Conferences\CommitteeRoleResource;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -16,11 +16,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Livewire\Component;
 
-class CommiteePositionTable extends Component implements HasForms, HasTable
+class CommiteeRoleTable extends Component implements HasForms, HasTable
 {
     use InteractsWithForms, InteractsWithTable;
 
-    protected static string $resource = CommitteePositionResource::class;
+    protected static string $resource = CommitteeRoleResource::class;
 
     public function render()
     {
