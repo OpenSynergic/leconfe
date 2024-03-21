@@ -35,7 +35,7 @@ class CommitteeRole extends Model implements Sortable
 
     public function committees(): HasMany
     {
-        return $this->hasMany(Participant::class);
+        return $this->hasMany(Committee::class);
     }
 
     public function scopeOfType(Builder $query, string $type): void

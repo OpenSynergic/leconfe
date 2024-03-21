@@ -28,6 +28,7 @@ class Committee extends Model implements HasAvatar, HasMedia, Sortable
     protected $table = 'committees';
 
     protected $fillable = [
+        'committee_role_id',
         'email',
         'given_name',
         'family_name',
