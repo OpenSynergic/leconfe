@@ -5,6 +5,7 @@ namespace App;
 use App\Actions\Site\SiteCreateAction;
 use App\Models\Announcement;
 use App\Models\Block;
+use App\Models\CommitteeRole;
 use App\Models\Conference;
 use App\Models\NavigationMenu;
 use App\Models\ParticipantPosition;
@@ -92,6 +93,7 @@ class Application extends LaravelApplication
             NavigationMenu::class,
             Block::class,
             ParticipantPosition::class,
+            CommitteeRole::class,
             Announcement::class,
             StaticPage::class,
             Timeline::class,
