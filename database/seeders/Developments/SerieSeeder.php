@@ -4,7 +4,6 @@ namespace Database\Seeders\Developments;
 
 use App\Models\Conference;
 use App\Models\Serie;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class SerieSeeder extends Seeder

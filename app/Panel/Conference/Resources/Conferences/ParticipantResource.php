@@ -5,7 +5,6 @@ namespace App\Panel\Conference\Resources\Conferences;
 use App\Actions\Participants\DetachParticipantPositionByType;
 use App\Actions\Participants\ParticipantUpdateAction;
 use App\Models\Participant;
-use App\Panel\Conference\Resources\Traits\CustomizedUrl;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms;
 use Filament\Resources\Resource;
@@ -24,8 +23,6 @@ class ParticipantResource extends Resource
     protected static ?string $model = Participant::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
-    use CustomizedUrl;
 
     public static function generalFormField(): array
     {

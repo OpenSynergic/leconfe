@@ -2,7 +2,6 @@
 
 namespace App\Frontend\Website\Pages;
 
-use App\Http\Middleware\IdentifyCurrentConference;
 use App\Http\Middleware\SetupDefaultData;
 use App\Livewire\Forms\InstallationForm;
 use App\Utils\Installer;
@@ -17,7 +16,6 @@ class Installation extends Page
 
     protected static string|array $withoutRouteMiddleware = [
         SetupDefaultData::class,
-        // IdentifyCurrentConference::class,
     ];
 
     public array $folders = [];

@@ -11,7 +11,6 @@ use App\Panel\Conference\Livewire\Workflows\Payment\Tables\SubmissionPaymentItem
 use App\Panel\Conference\Livewire\Workflows\PaymentSetting;
 use App\Panel\Conference\Livewire\Workflows\PeerReview\Forms\Guidelines;
 use App\Panel\Conference\Livewire\Workflows\PeerReviewSetting;
-use App\Panel\Conference\Pages\BasePage;
 use Filament\Facades\Filament;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -20,8 +19,9 @@ use Filament\Infolists\Components\Tabs\Tab as HorizontalTab;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
+use Filament\Pages\Page;
 
-class Workflow extends BasePage implements HasForms, HasInfolists
+class Workflow extends Page implements HasForms, HasInfolists
 {
     use InteractsWithForms, InteractsWithInfolists;
 

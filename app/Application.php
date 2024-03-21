@@ -97,7 +97,7 @@ class Application extends LaravelApplication
             StaticPage::class,
             Timeline::class,
             PaymentItem::class,
-            Serie::class,  
+            Serie::class,
         ];
 
         foreach ($models as $model) {

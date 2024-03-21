@@ -11,7 +11,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Serie extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia, Metable, BelongsToConference;
+    use BelongsToConference, HasFactory, InteractsWithMedia, Metable;
 
     protected $fillable = [
         'path',

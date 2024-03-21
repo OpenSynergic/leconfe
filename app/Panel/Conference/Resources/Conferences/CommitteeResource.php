@@ -5,7 +5,6 @@ namespace App\Panel\Conference\Resources\Conferences;
 use App\Actions\Participants\ParticipantCreateAction;
 use App\Models\Participant;
 use App\Panel\Conference\Resources\Conferences\CommitteeResource\Pages;
-use App\Panel\Conference\Resources\Traits\CustomizedUrl;
 use Filament\Forms;
 use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Forms\Components\Select;
@@ -25,8 +24,6 @@ class CommitteeResource extends Resource
     protected static ?string $model = Participant::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-
-    use CustomizedUrl;
 
     public static function getNavigationLabel(): string
     {

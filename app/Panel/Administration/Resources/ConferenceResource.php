@@ -3,10 +3,10 @@
 namespace App\Panel\Administration\Resources;
 
 use App\Actions\Conferences\ConferenceSetActiveAction;
-use App\Panel\Administration\Resources\ConferenceResource\Pages;
 use App\Models\Conference;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ConferenceType;
+use App\Panel\Administration\Resources\ConferenceResource\Pages;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;

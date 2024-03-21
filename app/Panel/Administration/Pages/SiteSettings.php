@@ -2,6 +2,8 @@
 
 namespace App\Panel\Administration\Pages;
 
+use App\Infolists\Components\LivewireEntry;
+use App\Infolists\Components\VerticalTabs;
 use App\Panel\Administration\Livewire\AccessSetting;
 use App\Panel\Administration\Livewire\DateAndTimeSetting;
 use App\Panel\Administration\Livewire\EmailSetting;
@@ -9,8 +11,6 @@ use App\Panel\Administration\Livewire\ErrorReportSetting;
 use App\Panel\Administration\Livewire\InformationSetting;
 use App\Panel\Administration\Livewire\SetupSetting;
 use App\Panel\Administration\Livewire\SidebarSetting;
-use App\Infolists\Components\LivewireEntry;
-use App\Infolists\Components\VerticalTabs;
 use App\Panel\Conference\Livewire\NavigationMenuSetting;
 use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Concerns\InteractsWithInfolists;

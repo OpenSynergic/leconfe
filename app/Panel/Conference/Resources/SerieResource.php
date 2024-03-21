@@ -2,24 +2,20 @@
 
 namespace App\Panel\Conference\Resources;
 
-use Filament\Forms;
-use Filament\Tables;
 use App\Models\Serie;
-use Filament\Forms\Set;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Illuminate\Support\Str;
-use Filament\Resources\Resource;
+use App\Panel\Conference\Resources\SerieResource\Pages;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Textarea;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Panel\Conference\Resources\SerieResource\Pages;
-use App\Panel\Conference\Resources\SerieResource\RelationManagers;
+use Filament\Forms\Form;
+use Filament\Forms\Set;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
-class SerieResource extends BaseResource
+class SerieResource extends Resource
 {
     protected static ?string $model = Serie::class;
 
@@ -62,7 +58,7 @@ class SerieResource extends BaseResource
         return $table
             ->columns([
                 TextColumn::make('title')
-                    ->description(fn(Serie $record) => Str::limit($record->description))
+                    ->description(fn (Serie $record) => Str::limit($record->description))
                     ->wrap()
                     ->wrapHeader(),
                 TextColumn::make('path'),

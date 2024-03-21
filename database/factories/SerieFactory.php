@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Serie;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Serie>
@@ -32,7 +32,7 @@ class SerieFactory extends Factory
     public function configure(): static
     {
         return $this->afterCreating(function (Serie $series) {
-            
+
         });
     }
 }

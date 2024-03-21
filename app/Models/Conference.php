@@ -91,7 +91,7 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
         return $this->navigations->firstWhere('handle', $handle)?->items ?? [];
     }
 
-    public function series() : HasMany
+    public function series(): HasMany
     {
         return $this->hasMany(Serie::class);
     }
@@ -157,7 +157,7 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
 
     public function getPanelUrl(): string
     {
-        
+
         return route('filament.conference.pages.dashboard', ['conference' => $this->path]);
     }
 

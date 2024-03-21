@@ -3,7 +3,6 @@
 namespace App\Panel\Conference\Resources\Conferences;
 
 use App\Models\ParticipantPosition;
-use App\Panel\Conference\Resources\Traits\CustomizedUrl;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -23,8 +22,6 @@ class CommitteePositionResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static string $positionType = 'committee';
-
-    use CustomizedUrl;
 
     public static function getModelLabel(): string
     {
