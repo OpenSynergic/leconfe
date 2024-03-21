@@ -7,8 +7,8 @@
             <x-filament::tabs.item alpine-active="activeTab === 'participant-table'" x-on:click="activeTab = 'participant-table'">
                 Committees
             </x-filament::tabs.item>
-            <x-filament::tabs.item alpine-active="activeTab === 'position-table'"
-                x-on:click="activeTab = 'position-table'">
+            <x-filament::tabs.item alpine-active="activeTab === 'role-table'"
+                x-on:click="activeTab = 'role-table'">
                 Committee Positions
             </x-filament::tabs.item>
 
@@ -41,8 +41,8 @@
 
             {{ \Filament\Support\Facades\FilamentView::renderHook('panels::resource.pages.list-records.table.after', scopes: $this->getRenderHookScopes()) }}
         </div>
-        <div x-show="activeTab === 'position-table'" style="display: none">
-            @livewire(App\Panel\Conference\Livewire\Tables\CommiteePositionTable::class, ['lazy' => true])
+        <div x-show="activeTab === 'role-table'" style="display: none">
+            @livewire(App\Panel\Conference\Livewire\Tables\CommiteeRoleTable::class, ['lazy' => true])
         </div>
     </div>
 </x-filament-panels::page>
