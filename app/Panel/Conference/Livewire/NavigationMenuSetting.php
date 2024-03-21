@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Panel\Conference\Pages;
+namespace App\Panel\Conference\Livewire;
 
+use Livewire\Component;
 use App\Actions\NavigationMenu\CreateNavigationMenuAction;
 use App\Actions\NavigationMenu\CreateNavigationMenuItemAction;
 use App\Actions\NavigationMenu\UpdateNavigationMenuAction;
@@ -10,30 +11,29 @@ use App\Models\NavigationMenu;
 use App\Models\NavigationMenuItem;
 use Closure;
 use Filament\Actions\Action;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Illuminate\Support\Str;
 
-class NavigationMenuPage extends BasePage
+class NavigationMenuSetting extends Component implements HasActions, HasForms
 {
-    protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
-
-    protected static string $view = 'panel.conference.pages.navigation-menu';
-
-    protected static ?string $title = 'Navigation';
-
-    protected static ?int $navigationSort = 99;
-
-    protected static bool $shouldRegisterNavigation = true;
-
-    protected static ?string $navigationGroup = 'Settings';
+    use InteractsWithActions, InteractsWithForms;
 
     public function mount()
     {
+    }
+
+    public function render()
+    {
+        return view('panel.conference.livewire.navigation-menu', $this->getViewData());
     }
 
     /**

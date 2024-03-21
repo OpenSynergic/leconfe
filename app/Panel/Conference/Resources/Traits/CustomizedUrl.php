@@ -9,13 +9,10 @@ trait CustomizedUrl
 {
     public static function getUrl(string $name = 'index', array $parameters = [], bool $isAbsolute = true, ?string $panel = null, ?Model $tenant = null): string
     {
-        if (blank($panel) || Filament::getPanel($panel)->hasTenancy()) {
-            $parameters['tenant'] ??= ($tenant ?? Filament::getTenant());
+        if($conference = app()->getCurrentConference()){
+            $parameters['conference'] ??= $conference->path;
         }
 
-        $routeBaseName = static::getRouteBaseName(panel: $panel);
-        $parameters['conference'] ??= app()->getCurrentConference()->path;
-
-        return route("{$routeBaseName}.{$name}", $parameters, $isAbsolute);
+        return parent::getUrl($name, $parameters, $isAbsolute, $panel, $tenant);
     }
 }
