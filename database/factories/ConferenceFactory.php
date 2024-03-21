@@ -32,7 +32,7 @@ class ConferenceFactory extends Factory
         $year = fake()->year();
 
         return [
-            'name' => $name.' '.$city.' '.$year,
+            'name' => "$name $city $year",
             'path' => Str::slug($city),
             'status' => fake()->boolean(80) ? ConferenceStatus::Upcoming : ConferenceStatus::Archived,
         ];
