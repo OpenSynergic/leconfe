@@ -139,6 +139,7 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
     public function scopeUpcoming(Builder $query)
     {
         return $query
+            ->with(['meta'])
             ->orderBy('date_start', 'asc')
             ->where('status', ConferenceStatus::Upcoming);
     }
