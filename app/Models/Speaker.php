@@ -28,6 +28,7 @@ class Speaker extends Model implements HasAvatar, HasMedia, Sortable
     protected $table = 'speakers';
 
     protected $fillable = [
+        'speaker_role_id',
         'email',
         'given_name',
         'family_name',
@@ -86,8 +87,8 @@ class Speaker extends Model implements HasAvatar, HasMedia, Sortable
         return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=FFFFFF&background=111827&font-size=0.33';
     }
 
-    public function speakerRole(): BelongsTo
+    public function role(): BelongsTo
     {
-        return $this->belongsTo(SpeakerRole::class);
+        return $this->belongsTo(SpeakerRole::class, 'speaker_role_id', 'id');
     }
 }

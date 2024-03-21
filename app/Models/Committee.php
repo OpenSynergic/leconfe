@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToConference;
 use Plank\Metable\Metable;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
@@ -23,7 +24,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Committee extends Model implements HasAvatar, HasMedia, Sortable
 {
-    use HasFactory, HasShortflakePrimary, Metable, Notifiable, SortableTrait, InteractsWithMedia;
+    use HasFactory, BelongsToConference, HasShortflakePrimary, Metable, Notifiable, SortableTrait, InteractsWithMedia;
 
     protected $table = 'committees';
 
@@ -87,8 +88,8 @@ class Committee extends Model implements HasAvatar, HasMedia, Sortable
         return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=FFFFFF&background=111827&font-size=0.33';
     }
 
-    public function committeeRole(): BelongsTo
+    public function role(): BelongsTo
     {
-        return $this->belongsTo(CommitteeRole::class);
+        return $this->belongsTo(CommitteeRole::class, 'committee_role_id', 'id');
     }
 }
