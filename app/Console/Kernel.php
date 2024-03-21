@@ -40,11 +40,6 @@ class Kernel extends ConsoleKernel
                 config('cleaner.day_interval')
             )
         )->name('Remove deleted discussions');
-
-        // Change conference status to archive when end date is reached
-        $schedule->call(function () {
-            ConferenceSetToArchived::run();
-        })->daily()->name('Conference Check Date End');
     }
 
     /**
