@@ -62,7 +62,6 @@ class SponsorSetting extends Component implements HasForms, HasTable
                         ->height(50),
                     Stack::make([
                         TextColumn::make('name')
-                            ->weight(FontWeight::Medium)
                     ])
                 ])
             ])
