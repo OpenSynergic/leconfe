@@ -15,6 +15,7 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rules\Unique;
 use Squire\Models\Country;
 
 class ParticipantResource extends Resource
@@ -45,7 +46,12 @@ class ParticipantResource extends Resource
             Forms\Components\TextInput::make('family_name'),
             Forms\Components\TextInput::make('email')
                 ->required()
-                ->unique(ignoreRecord: true)
+                ->unique(
+                    ignoreRecord: true,
+                    modifyRuleUsing: function (Unique $rule) {
+                        return $rule->where('conference_id', app()->getCurrentConference()->getKey());
+                    }
+                )
                 ->columnSpan([
                     'lg' => 2,
                 ]),
@@ -123,28 +129,27 @@ class ParticipantResource extends Resource
                         ->orWhere('family_name', 'LIKE', "%{$search}%")
                 )
                 ->toggleable(),
-            TextColumn::make('positions.name')
+            TextColumn::make('role.name')
                 ->badge()
                 ->limitList(3)
                 ->listWithLineBreaks(),
         ];
     }
 
-    public static function tableActions($positionType): array
+    public static function tableActions($positionType, $updateAction, $deleteAction): array
     {
         return [
             ActionGroup::make([
                 EditAction::make()
-                    ->modalWidth('2xl')
-                    ->mutateRecordDataUsing(function (array $data, Participant $record) {
+                    ->modalWidth('3xl')
+                    ->mutateRecordDataUsing(function (array $data, Model $record) {
                         $data['meta'] = $record->getAllMeta();
-
                         return $data;
                     })
-                    ->using(fn (array $data, Model $record) => ParticipantUpdateAction::run($record, $data)),
+                    ->using(fn (array $data, Model $record) => $updateAction::run($record, $data)),
                 DeleteAction::make()
                     ->using(
-                        fn (Participant $record) => DetachParticipantPositionByType::run($record, $positionType)
+                        fn (Model $record) => $deleteAction::run($record)
                     ),
             ]),
         ];
