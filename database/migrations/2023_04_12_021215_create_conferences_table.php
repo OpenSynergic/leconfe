@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Conference;
 use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ConferenceType;
 use Illuminate\Database\Migrations\Migration;
@@ -34,6 +35,13 @@ return new class extends Migration
 
             $table->unique(['metable_type', 'metable_id', 'key']);
             $table->index(['key', 'metable_type']);
+        });
+
+        Schema::create('conference_sponsors', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('conference_id')->constrained()->cascadeOnDelete();
+            $table->string('name');
+            $table->timestamps();
         });
     }
 

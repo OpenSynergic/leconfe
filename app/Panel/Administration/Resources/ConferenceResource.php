@@ -55,8 +55,8 @@ class ConferenceResource extends Resource
                                 TextInput::make('name')
                                     ->required()
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('path', Str::slug($state)))
-                                    ->columnSpanFull(),
+                                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('path', Str::slug($state))),
+                                TextInput::make('meta.acronym'),
                                 TextInput::make('path')
                                     ->rule('alpha_dash')
                                     ->required(),
@@ -64,6 +64,9 @@ class ConferenceResource extends Resource
                                 DatePicker::make('date_start'),
                                 DatePicker::make('date_end')
                                     ->after('date_start'),
+                                TextInput::make('meta.theme')
+                                    ->helperText("The theme of the conference. This will be used in the conference's branding.")
+                                    ->columnSpanFull(),
                                 Textarea::make('meta.description')
                                     ->rows(5)
                                     ->autosize()
@@ -73,8 +76,8 @@ class ConferenceResource extends Resource
                             ->columns(2)
                             ->schema([
                                 TextInput::make('meta.publisher_name'),
+                                TextInput::make('meta.publisher_location'),
                                 TextInput::make('meta.affiliation'),
-                                TextInput::make('meta.abbreviation'),
                                 Select::make('meta.country')
                                     ->searchable()
                                     ->options(Country::pluck('name', 'id'))
@@ -109,11 +112,13 @@ class ConferenceResource extends Resource
                                     'type' => $getDataConference?->type,
                                     'date_start' => $getDataConference?->date_start->format(setting('format.date')),
                                     'date_end' => $getDataConference?->date_end->format(setting('format.date')),
+                                    'meta.theme' => $getDataConference?->getMeta('theme'),
                                     'meta.location' => $getDataConference?->getMeta('location'),
                                     'meta.description' => $getDataConference?->getMeta('description'),
                                     'meta.publisher_name' => $getDataConference?->getMeta('publisher_name'),
+                                    'meta.publisher_location' => $getDataConference?->getMeta('publisher_location'),
                                     'meta.affiliation' => $getDataConference?->getMeta('affiliation'),
-                                    'meta.abbreviation' => $getDataConference?->getMeta('abbreviation'),
+                                    'meta.acronym' => $getDataConference?->getMeta('acronym'),
                                     'meta.country' => $getDataConference?->getMeta('country'),
                                 ];
 

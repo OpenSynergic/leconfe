@@ -54,6 +54,7 @@ class InformationSetting extends Component implements HasForms
                                         'xl' => 1,
                                         'sm' => 2,
                                     ]),
+                                TextInput::make('meta.acronym'),
                                 TextInput::make('path')
                                     ->rule('alpha_dash')
                                     ->required()
@@ -66,14 +67,13 @@ class InformationSetting extends Component implements HasForms
                                         'xl' => 1,
                                         'sm' => 2,
                                     ]),
-                                Flatpickr::make('date_start')
-                                    ->rule('date')
+                                DatePicker::make('date_start')
                                     ->columnSpan([
                                         'xl' => 1,
                                         'sm' => 2,
                                     ]),
-                                Flatpickr::make('date_end')
-                                    ->rule('after:date_start')
+                                DatePicker::make('date_end')
+                                    ->after('date_start')
                                     ->columnSpan([
                                         'xl' => 1,
                                         'sm' => 2,
@@ -96,7 +96,9 @@ class InformationSetting extends Component implements HasForms
                                         'xl' => 1,
                                         'sm' => 2,
                                     ]),
-
+                                TextInput::make('meta.theme')
+                                    ->helperText('The theme of the conference')
+                                    ->columnSpanFull(),
                                 Textarea::make('meta.description')
                                     ->rows(5)
                                     ->autosize()
