@@ -2,6 +2,7 @@
 
 namespace Database\Seeders\Developments;
 
+use App\Models\Conference;
 use App\Models\Serie;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -13,6 +14,8 @@ class SerieSeeder extends Seeder
      */
     public function run(): void
     {
-        Serie::factory()->count(10)->create();
+        Conference::lazy()->each(function (Conference $conference) {
+            Serie::factory()->count(10)->for($conference)->create();
+        });
     }
 }

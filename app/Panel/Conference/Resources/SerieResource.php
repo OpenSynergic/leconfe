@@ -62,7 +62,9 @@ class SerieResource extends BaseResource
         return $table
             ->columns([
                 TextColumn::make('title')
-                    ->description(fn(Serie $record) => $record->description),
+                    ->description(fn(Serie $record) => Str::limit($record->description))
+                    ->wrap()
+                    ->wrapHeader(),
                 TextColumn::make('path'),
             ])
             ->filters([

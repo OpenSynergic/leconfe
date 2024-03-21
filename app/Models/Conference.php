@@ -83,12 +83,17 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
 
     public function navigations(): HasMany
     {
-        return $this->hasMany(Navigation::class);
+        return $this->hasMany(NavigationMenu::class);
     }
 
     public function getNavigationItems(string $handle): array
     {
         return $this->navigations->firstWhere('handle', $handle)?->items ?? [];
+    }
+
+    public function series() : HasMany
+    {
+        return $this->hasMany(Serie::class);
     }
 
     public function getFilamentName(): string

@@ -10,6 +10,7 @@ use App\Models\NavigationMenu;
 use App\Models\ParticipantPosition;
 use App\Models\PaymentItem;
 use App\Models\Scopes\ConferenceScope;
+use App\Models\Serie;
 use App\Models\Site;
 use App\Models\StaticPage;
 use App\Models\Submission;
@@ -85,7 +86,7 @@ class Application extends LaravelApplication
 
     public function scopeCurrentConference(): void
     {
-        foreach ([
+        $models = [
             Submission::class,
             Topic::class,
             Venue::class,
@@ -96,7 +97,10 @@ class Application extends LaravelApplication
             StaticPage::class,
             Timeline::class,
             PaymentItem::class,
-        ] as $model) {
+            Serie::class,  
+        ];
+
+        foreach ($models as $model) {
             $model::addGlobalScope(new ConferenceScope);
         }
     }

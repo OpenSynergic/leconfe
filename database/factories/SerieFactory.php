@@ -25,6 +25,7 @@ class SerieFactory extends Factory
         return [
             'title' => "$name $city $year",
             'path' => Str::slug($city),
+            'description' => fake()->paragraphs(3, true),
         ];
     }
 
