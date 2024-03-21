@@ -2,10 +2,8 @@
 
 namespace App\Panel\Administration\Resources;
 
-use App\Actions\Conferences\ConferenceSetActiveAction;
 use App\Panel\Administration\Resources\ConferenceResource\Pages;
 use App\Models\Conference;
-use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ConferenceType;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\DatePicker;
@@ -92,8 +90,7 @@ class ConferenceResource extends Resource
                         Select::make('conference_id')
                             ->label('Previous Conference')
                             ->options(function () {
-                                return Conference::query()
-                                    ->where('status', ConferenceStatus::Archived)
+                                return Conference::archived()
                                     ->latest('created_at')
                                     ->take(5)
                                     ->pluck('name', 'id')
@@ -127,7 +124,7 @@ class ConferenceResource extends Resource
                                     empty($fieldUserValue) ? $set($key, $previousConferenceValue) : $set($key, $fieldUserValue);
                                 }
                             })
-                            ->hidden(fn () => Conference::where('status', ConferenceStatus::Archived->value)->doesntExist()),
+                            ->hidden(fn () => Conference::archived()->doesntExist()),
 
                         SpatieMediaLibraryFileUpload::make('logo')
                             ->collection('logo')
@@ -180,32 +177,14 @@ class ConferenceResource extends Resource
                 TextColumn::make('status')
                     ->badge(),
             ])
-            ->filters([
-                SelectFilter::make('status')
-                    ->searchable()
-                    ->options(ConferenceStatus::array())
-                    ->default(ConferenceStatus::Active->value),
-            ])
+            // ->filters([
+            //     SelectFilter::make('status')
+            //         ->searchable()
+            //         ->options(ConferenceStatus::array())
+            //         ->default(ConferenceStatus::Active->value),
+            // ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
-                    Tables\Actions\Action::make('set_as_active')
-                        ->color('success')
-                        ->icon('heroicon-o-check')
-                        ->requiresConfirmation()
-                        ->hidden(fn (Conference $record) => $record->isActive())
-                        ->successNotificationTitle(fn () => 'Active conference is changed')
-                        ->visible(fn (Conference $record) => auth()->user()->can('setAsActive', $record))
-                        ->action(function ($record, Tables\Actions\Action $action) {
-                            try {
-                                ConferenceSetActiveAction::run($record);
-                            } catch (\Throwable $th) {
-                                $action->failure();
-
-                                return;
-                            }
-
-                            $action->success();
-                        }),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
                 ]),

@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Conference;
-use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ConferenceType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -20,7 +18,6 @@ return new class extends Migration
             $table->date('date_start')->nullable();
             $table->date('date_end')->nullable();
             $table->string('path')->unique();
-            $table->enum('status', ConferenceStatus::array())->default(ConferenceStatus::Upcoming->value);
             $table->enum('type', ConferenceType::array())->default(ConferenceType::Offline->value);
             $table->timestamps();
         });

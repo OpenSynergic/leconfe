@@ -1,6 +1,6 @@
 <x-website::layouts.main class="">
     <div class="space-y-2">
-        <section id="highlight-conference" class="p-5">
+        {{-- <section id="highlight-conference" class="p-5">
             <h1 class="text-heading">Highlight Conference</h1>
             <div @class([
                 'space-y-4 sm:space-y-0',
@@ -43,7 +43,7 @@
                     @endif
                 </div>
             </div>
-        </section>
+        </section> --}}
         @if ($upcomingConferences->isNotEmpty())
             <section id="upcoming-conferences" class="p-5">
                 <h2 class="text-heading">Upcoming Conferences</h2>

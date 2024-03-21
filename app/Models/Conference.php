@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ConferenceType;
 use App\Models\Meta\ConferenceMeta;
 use Filament\Models\Contracts\HasAvatar;
@@ -44,7 +43,6 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
      * @var array
      */
     protected $casts = [
-        'status' => ConferenceStatus::class,
         'type' => ConferenceType::class,
         'date_start' => 'date',
         'date_end' => 'date',
@@ -131,32 +129,78 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
             ->skipGenerateWhen(fn () => $this->path !== null);
     }
 
-    public static function active(): ?self
+    public function getStatusBadgeColor()
     {
-        return static::where('status', ConferenceStatus::Active)->first();
+        if ($this->isUpcoming()) {
+            return 'info';
+        }
+
+        if ($this->isActive()) {
+            return 'primary';
+        }
+
+        if ($this->isArchived()) {
+            return 'secondary';
+        }
+    }
+
+    public function getStatusLabel()
+    {
+        if ($this->isUpcoming()) {
+            return __('Upcoming');
+        }
+
+        if ($this->isActive()) {
+            return __('Active');
+        }
+
+        if ($this->isArchived()) {
+            return __('Archived');
+        }
+    }
+
+    public function scopeActive(Builder $query)
+    {
+        return $query
+            ->with(['meta'])
+            ->where('date_start', '<=', now())
+            ->where('date_end', '>=', now())
+            ->orderBy('date_start', 'asc');
+    }
+
+    public function scopeArchived(Builder $query)
+    {
+        return $query
+            ->with(['meta'])
+            ->where('date_end', '<', now())
+            ->orderBy('date_end', 'desc');
     }
 
     public function scopeUpcoming(Builder $query)
     {
         return $query
             ->with(['meta'])
-            ->orderBy('date_start', 'asc')
-            ->where('status', ConferenceStatus::Upcoming);
+            ->where('date_start', '>', now())
+            ->orderBy('date_start', 'asc');
     }
 
     public function isUpcoming(): bool
     {
-        return $this->status == ConferenceStatus::Upcoming;
+        return $this->date_start > now();
+    }
+
+    public function isArchived(): bool
+    {
+        return $this->date_end < now();
     }
 
     public function isActive(): bool
     {
-        return $this->status == ConferenceStatus::Active;
+        return $this->date_start <= now() && $this->date_end >= now();
     }
 
     public function getPanelUrl(): string
     {
-        
         return route('filament.conference.pages.dashboard', ['conference' => $this->path]);
     }
 
