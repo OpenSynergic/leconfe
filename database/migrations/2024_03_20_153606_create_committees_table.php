@@ -38,13 +38,16 @@ return new class extends Migration
 
         Schema::create('committees', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(Conference::class)->constrained();
             $table->foreignIdFor(CommitteeRole::class)->constrained();
-            $table->string('email')->nullable()->unique();
+            $table->string('email')->nullable();
             $table->string('given_name');
             $table->string('family_name')->nullable();
             $table->string('public_name')->nullable();
             $table->unsignedInteger('order_column')->nullable();
             $table->timestamps();
+
+            $table->unique(['email', 'conference_id']);
         });
     }
 
