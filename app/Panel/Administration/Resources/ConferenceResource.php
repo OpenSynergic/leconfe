@@ -5,6 +5,7 @@ namespace App\Panel\Administration\Resources;
 use App\Panel\Administration\Resources\ConferenceResource\Pages;
 use App\Models\Conference;
 use App\Models\Enums\ConferenceType;
+use App\Models\Meta\ConferenceMeta;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
@@ -25,6 +26,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Unique;
 use Squire\Models\Country;
 use Wallo\FilamentSelectify\Components\ButtonGroup;
 use Wallo\FilamentSelectify\Components\ToggleButton;
@@ -54,13 +56,13 @@ class ConferenceResource extends Resource
                                     ->required(),
                                 TextInput::make('meta.acronym')
                                     ->live(onBlur: true)
+                                    ->unique(column: 'path')
                                     ->rule('alpha_dash')
                                     ->afterStateUpdated(function (Set $set, string $state): void {
-                                        $state = Str::slug($state);
                                         $set('path', $state);
-                                        $set('meta.acronym', $state);
                                     }),
                                 TextInput::make('path')
+                                    ->unique()
                                     ->prefix(function (): string {
                                         $url = config('app.url') . '/';
                                         return preg_replace('/^https?:\/\//', '', $url);
