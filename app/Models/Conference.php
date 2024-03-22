@@ -129,36 +129,6 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
             ->skipGenerateWhen(fn () => $this->path !== null);
     }
 
-    public function getStatusBadgeColor()
-    {
-        if ($this->isUpcoming()) {
-            return 'info';
-        }
-
-        if ($this->isActive()) {
-            return 'primary';
-        }
-
-        if ($this->isArchived()) {
-            return 'secondary';
-        }
-    }
-
-    public function getStatusLabel()
-    {
-        if ($this->isUpcoming()) {
-            return __('Upcoming');
-        }
-
-        if ($this->isActive()) {
-            return __('Active');
-        }
-
-        if ($this->isArchived()) {
-            return __('Archived');
-        }
-    }
-
     public function scopeActive(Builder $query)
     {
         return $query

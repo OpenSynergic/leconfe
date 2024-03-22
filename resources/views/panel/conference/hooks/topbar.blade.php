@@ -35,11 +35,6 @@
                 <span class="text-gray-950 dark:text-white text-lg">
                     {{ $currentConference->name }}
                 </span>
-
-                <x-filament::badge size="sm" class="text-[10px]" :color="$currentConference->getStatusBadgeColor()">
-                    {{ $currentConference->getStatusLabel() }}
-                </x-filament::badge>                
-                 
             </span>
 
              <x-filament::icon
@@ -61,16 +56,12 @@
 
         @foreach (Conference::where('path', '!=', app()->getCurrentConference()->path)->get() as $conference)
             <x-filament::dropdown.list.item
-                {{-- :color="$conference->getStatusBadgeColor()" --}}
                 :href="$conference->getPanelUrl()"
                 :icon="filament()->getTenantAvatarUrl($conference)"
                 tag="a"
             >
             <div class="flex-col justify-start">
                 {{ $conference->name }}
-                <x-filament::badge size="sm" class="text-[10px] w-1/2 mt-1" :color="$conference->getStatusBadgeColor()">
-                    {{ $conference->getStatusLabel() }}
-                </x-filament::badge>           
             </div>
             </x-filament::dropdown.list.item>
         @endforeach
