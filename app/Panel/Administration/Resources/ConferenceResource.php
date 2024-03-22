@@ -174,15 +174,7 @@ class ConferenceResource extends Resource
                     ->searchable(),
                 TextColumn::make('type')
                     ->badge(),
-                TextColumn::make('status')
-                    ->badge(),
             ])
-            // ->filters([
-            //     SelectFilter::make('status')
-            //         ->searchable()
-            //         ->options(ConferenceStatus::array())
-            //         ->default(ConferenceStatus::Active->value),
-            // ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\EditAction::make(),
