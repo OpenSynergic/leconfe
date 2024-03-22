@@ -4,6 +4,7 @@ namespace App;
 
 use App\Actions\Site\SiteCreateAction;
 use App\Models\Announcement;
+use App\Models\AuthorRole;
 use App\Models\Block;
 use App\Models\CommitteeRole;
 use App\Models\Conference;
@@ -21,6 +22,7 @@ use App\Models\Venue;
 use App\Models\Version;
 use Illuminate\Foundation\Application as LaravelApplication;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class Application extends LaravelApplication
 {
@@ -96,6 +98,7 @@ class Application extends LaravelApplication
             ParticipantPosition::class,
             CommitteeRole::class,
             SpeakerRole::class,
+            AuthorRole::class,
             Announcement::class,
             StaticPage::class,
             Timeline::class,
