@@ -19,6 +19,13 @@ class SpeakerRole extends Model implements Sortable
 
     protected $table = 'speaker_roles';
 
+    protected $fillable = [
+        'conference_id',
+        'parent_id',
+        'type',
+        'name',
+    ];
+
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
@@ -28,7 +35,7 @@ class SpeakerRole extends Model implements Sortable
 
     public function speakers(): HasMany
     {
-        return $this->hasMany(Participant::class);
+        return $this->hasMany(Speaker::class);
     }
 
     public function scopeOfType(Builder $query, string $type): void
