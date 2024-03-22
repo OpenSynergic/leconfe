@@ -52,15 +52,22 @@ class ConferenceResource extends Resource
                             ->schema([
                                 TextInput::make('name')
                                     ->required(),
-                                TextInput::make('meta.acronym'),
+                                TextInput::make('meta.acronym')
+                                    ->live(onBlur: true)
+                                    ->rule('alpha_dash')
+                                    ->afterStateUpdated(function (Set $set, string $state): void {
+                                        $state = Str::slug($state);
+                                        $set('path', $state);
+                                        $set('meta.acronym', $state);
+                                    }),
                                 TextInput::make('path')
                                     ->prefix(function (): string {
                                         $url = config('app.url') . '/';
                                         return preg_replace('/^https?:\/\//', '', $url);
                                     })
+                                    ->readOnly()
                                     ->rule('alpha_dash')
-                                    ->helperText('The URL path for the conference. This will be used to generate the conference\'s URL.')
-                                    ->required(),
+                                    ->helperText('Taken from the conference acronym, it will be used in the URL of the conference.'),
                                 TextInput::make('meta.location'),
                                 DatePicker::make('date_start'),
                                 DatePicker::make('date_end')
