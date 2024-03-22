@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Conference;
 use App\Models\SpeakerRole;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,8 +18,10 @@ class SpeakerFactory extends Factory
      */
     public function definition(): array
     {
+        $randomConference = Conference::pluck('id')->random();
         return [
-            'speaker_role_id' => SpeakerRole::pluck('id')->random(),
+            'conference_id' => $randomConference,
+            'speaker_role_id' => SpeakerRole::withoutGlobalScopes()->whereConferenceId($randomConference)->pluck('id')->random(),
             'given_name' => fake()->firstName(),
             'family_name' => fake()->lastName(),
             'public_name' => fake()->name(),

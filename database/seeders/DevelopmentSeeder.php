@@ -25,6 +25,6 @@ class DevelopmentSeeder extends Seeder
         $this->call(SubmissionSeeder::class);
         $this->call(ParticipantSeeder::class);
         $this->call(CommitteeSeeder::class);
-        // $this->call(SpeakerSeeder::class);
+        $this->call(SpeakerSeeder::class);
     }
 }

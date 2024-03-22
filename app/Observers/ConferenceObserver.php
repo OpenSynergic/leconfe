@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Actions\Committees\CommitteeRolePopulateDefaultDataAction;
 use App\Actions\Participants\ParticipantPositionPopulateDefaultDataAction;
+use App\Actions\Speakers\SpeakerRolePopulateDefaultDataAction;
 use App\Models\Conference;
 use App\Models\NavigationMenu;
 use App\Models\NavigationMenuItem;
@@ -23,7 +24,9 @@ class ConferenceObserver
     public function created(Conference $conference): void
     {
         ParticipantPositionPopulateDefaultDataAction::run($conference);
+        
         CommitteeRolePopulateDefaultDataAction::run($conference);
+        SpeakerRolePopulateDefaultDataAction::run($conference);
 
         $primaryNavigationMenu = NavigationMenu::create([
             'name' => 'Primary Navigation Menu',
