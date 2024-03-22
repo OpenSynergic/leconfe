@@ -51,12 +51,15 @@ class ConferenceResource extends Resource
                             ])
                             ->schema([
                                 TextInput::make('name')
-                                    ->required()
-                                    ->live(onBlur: true)
-                                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('path', Str::slug($state))),
+                                    ->required(),
                                 TextInput::make('meta.acronym'),
                                 TextInput::make('path')
+                                    ->prefix(function (): string {
+                                        $url = config('app.url') . '/';
+                                        return preg_replace('/^https?:\/\//', '', $url);
+                                    })
                                     ->rule('alpha_dash')
+                                    ->helperText('The URL path for the conference. This will be used to generate the conference\'s URL.')
                                     ->required(),
                                 TextInput::make('meta.location'),
                                 DatePicker::make('date_start'),
