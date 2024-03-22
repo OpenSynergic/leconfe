@@ -12,6 +12,7 @@ use App\Models\ParticipantPosition;
 use App\Models\PaymentItem;
 use App\Models\Scopes\ConferenceScope;
 use App\Models\Site;
+use App\Models\SpeakerRole;
 use App\Models\StaticPage;
 use App\Models\Submission;
 use App\Models\Timeline;
@@ -94,6 +95,7 @@ class Application extends LaravelApplication
             Block::class,
             ParticipantPosition::class,
             CommitteeRole::class,
+            SpeakerRole::class,
             Announcement::class,
             StaticPage::class,
             Timeline::class,
