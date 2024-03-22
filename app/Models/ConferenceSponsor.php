@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToConference;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
@@ -10,18 +11,11 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class ConferenceSponsor extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia;
+    use HasFactory, InteractsWithMedia, BelongsToConference;
 
     protected $fillable = [
         'name',
     ];
-
-    public static function booted()
-    {
-        static::creating(function ($model) {
-            $model->conference_id = app()->getCurrentConferenceId();
-        });
-    }
 
     // SpatieMediaLibraryImageColumn isn't working if this method is not exist
     public function registerMediaCollections(): void
