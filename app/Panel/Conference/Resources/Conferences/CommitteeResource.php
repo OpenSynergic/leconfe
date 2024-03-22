@@ -140,7 +140,7 @@ class CommitteeResource extends Resource
                                             ->toArray();
                                     }
                                 ),
-                            Select::make('committee_role')
+                            Select::make('committee_role_id')
                                 ->required()
                                 ->searchable()
                                 ->options(
@@ -152,14 +152,14 @@ class CommitteeResource extends Resource
                         ->action(function ($data) {
                             $committee = static::getModel()::find($data['committee_id']);
 
-                            $newCommitte = Committee::create([
+                            $newCommittee = Committee::create([
                                 ...$committee->only(['given_name', 'family_name', 'email']),
-                                'committee_role_id' => $data['committee_role'],
+                                'committee_role_id' => $data['committee_role_id'],
                             ]);
 
                             if ($meta = $committee->getAllMeta()->toArray()) {
-                                $newCommitte->setManyMeta($meta);
-                            }                            
+                                $newCommittee->setManyMeta($meta);
+                            }           
                         }),
                 ])->button(),
             ])

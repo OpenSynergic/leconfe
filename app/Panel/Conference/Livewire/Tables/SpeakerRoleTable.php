@@ -2,7 +2,7 @@
 
 namespace App\Panel\Conference\Livewire\Tables;
 
-use App\Panel\Conference\Resources\Conferences\SpeakerPositionResource;
+use App\Panel\Conference\Resources\Conferences\SpeakerRoleResource;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -16,11 +16,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Livewire\Component;
 
-class SpeakerPositionTable extends Component implements HasForms, HasTable
+class SpeakerRoleTable extends Component implements HasForms, HasTable
 {
     use InteractsWithForms, InteractsWithTable;
 
-    protected static string $resource = SpeakerPositionResource::class;
+    protected static string $resource = SpeakerRoleResource::class;
 
     public function render()
     {

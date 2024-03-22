@@ -7,9 +7,9 @@
             <x-filament::tabs.item alpine-active="activeTab === 'speaker-table'" x-on:click="activeTab = 'speaker-table'">
                 Speakers
             </x-filament::tabs.item>
-            <x-filament::tabs.item alpine-active="activeTab === 'speaker-position'"
-                x-on:click="activeTab = 'speaker-position'">
-                Speaker Positions
+            <x-filament::tabs.item alpine-active="activeTab === 'speaker-role'"
+                x-on:click="activeTab = 'speaker-role'">
+                Speaker Roles
             </x-filament::tabs.item>
 
         </x-filament::tabs>
@@ -25,7 +25,7 @@
                             $tabKey = strval($tabKey);
                         @endphp
 
-                        <x-filament::tabs.item :active="$activeTab === $tabKey" :badge="$tab->getBadge()" :icon="$tab->getIcon()" :icon-position="$tab->getIconPosition()"
+                        <x-filament::tabs.item :active="$activeTab === $tabKey" :badge="$tab->getBadge()" :icon="$tab->getIcon()" :icon-role="$tab->getIconRole()"
                             :wire:click="'$set(\'activeTab\', ' . (filled($tabKey) ? ('\'' . $tabKey . '\'') : 'null') . ')'">
                             {{ $tab->getLabel() ?? $this->generateTabLabel($tabKey) }}
                         </x-filament::tabs.item>
@@ -41,8 +41,8 @@
 
             {{ \Filament\Support\Facades\FilamentView::renderHook('panels::resource.pages.list-records.table.after', scopes: $this->getRenderHookScopes()) }}
         </div>
-        <div x-show="activeTab === 'speaker-position'" style="display: none">
-            @livewire(App\Panel\Conference\Livewire\Tables\SpeakerPositionTable::class, ['lazy' => true])
+        <div x-show="activeTab === 'speaker-role'" style="display: none">
+            @livewire(App\Panel\Conference\Livewire\Tables\SpeakerRoleTable::class, ['lazy' => true])
         </div>
     </div>
 </x-filament-panels::page>

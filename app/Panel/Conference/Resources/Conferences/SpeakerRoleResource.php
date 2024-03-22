@@ -2,7 +2,8 @@
 
 namespace App\Panel\Conference\Resources\Conferences;
 
-use App\Models\ParticipantPosition;
+use App\Models\ParticipantRole;
+use App\Models\SpeakerRole;
 use App\Panel\Conference\Resources\Traits\CustomizedUrl;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\TextInput;
@@ -13,22 +14,22 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\Rules\Unique;
 
-class SpeakerPositionResource extends Resource
+class SpeakerRoleResource extends Resource
 {
     protected static bool $isDiscovered = false;
 
-    protected static ?string $model = ParticipantPosition::class;
+    protected static ?string $model = SpeakerRole::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static string $positionType = 'speaker';
+    public static string $roleType = 'speaker';
 
     use CustomizedUrl;
 
     public static function getEloquentQuery(): Builder
     {
         return static::getModel()::query()
-            ->ofType(static::$positionType)
+            ->ofType(static::$roleType)
             ->orderBy('order_column');
     }
 
@@ -40,7 +41,7 @@ class SpeakerPositionResource extends Resource
                     ->required()
                     ->unique(modifyRuleUsing: function (Unique $rule) {
                         return $rule
-                            ->where('type', static::$positionType)
+                            ->where('type', static::$roleType)
                             ->where('conference_id', app()->getCurrentConference()->getKey());
                     }),
             ]);
@@ -55,9 +56,9 @@ class SpeakerPositionResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('participants_count')
+                Tables\Columns\TextColumn::make('speakers_count')
                     ->label('Speakers')
-                    ->counts('participants')
+                    ->counts('speakers')
                     ->badge()
                     ->color(fn (int $state) => $state > 0 ? 'primary' : 'gray'),
 
@@ -68,11 +69,11 @@ class SpeakerPositionResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
-                    ->using(function (ParticipantPosition $record, Tables\Actions\DeleteAction $action) {
+                    ->using(function (SpeakerRole $record, Tables\Actions\DeleteAction $action) {
                         try {
-                            $speakerCount = $record->participants()->count();
+                            $speakerCount = $record->speakers()->count();
                             if ($speakerCount > 0) {
-                                throw new \Exception('Cannot delete '.$record->name.', there are speakers who are still associated with this position');
+                                throw new \Exception('Cannot delete '.$record->name.', there are speakers who are still associated with this role');
                             }
 
                             return $record->delete();
@@ -91,16 +92,16 @@ class SpeakerPositionResource extends Resource
             ->emptyStateActions([
                 // Tables\Actions\CreateAction::make(),
             ])
-            ->heading('Speaker Positions Table')
+            ->heading('Speaker Roles Table')
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->mutateFormDataUsing(function (array $data): array {
-                        $data['type'] = static::$positionType;
+                        $data['type'] = static::$roleType;
 
                         return $data;
                     })
-                    ->label('New Speaker Position')
-                    ->modalHeading('New Speaker Position'),
+                    ->label('New Speaker Role')
+                    ->modalHeading('New Speaker Role'),
             ]);
     }
 
