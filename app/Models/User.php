@@ -243,6 +243,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
         return Participant::email($this->email)->first();
     }
 
+    public function asAuthor()
+    {
+        return Author::email($this->email)->first();
+    }
+
     /**
      * Send the email verification notification.
      *

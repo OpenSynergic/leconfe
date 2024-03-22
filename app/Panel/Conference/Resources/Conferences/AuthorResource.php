@@ -3,6 +3,7 @@
 namespace App\Panel\Conference\Resources\Conferences;
 
 use App\Actions\Participants\ParticipantCreateAction;
+use App\Models\Author;
 use App\Models\Participant;
 use App\Panel\Conference\Resources\Conferences\AuthorResource\Pages;
 use App\Panel\Conference\Resources\Traits\CustomizedUrl;
@@ -19,7 +20,7 @@ class AuthorResource extends Resource
 {
     protected static ?string $navigationGroup = 'Conferences';
 
-    protected static ?string $model = Participant::class;
+    protected static ?string $model = Author::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
@@ -40,15 +41,11 @@ class AuthorResource extends Resource
         return static::getModel()::query()
             ->orderBy('order_column')
             ->with([
-                'positions' => fn ($query) => $query
-                    ->whereType(AuthorPositionResource::$positionType),
+                'role',
                 'media',
                 'meta',
             ])
-            ->whereHas(
-                'positions',
-                fn (Builder $query) => $query->whereType(AuthorPositionResource::$positionType)
-            );
+            ->whereHas('role');
     }
 
     public static function form(Form $form): Form
@@ -60,9 +57,6 @@ class AuthorResource extends Resource
                     ->relationship(
                         name: 'positions',
                         titleAttribute: 'name',
-                        modifyQueryUsing: fn (Builder $query) => $query->whereType(
-                            AuthorPositionResource::$positionType
-                        )
                     )
                     ->preload()
                     ->saveRelationshipsUsing(function (Select $component, Participant $participant, $state) {
@@ -148,7 +142,7 @@ class AuthorResource extends Resource
 
             ])
             ->actions([
-                ...ParticipantResource::tableActions(AuthorPositionResource::$positionType),
+                // ...ParticipantResource::tableActions(AuthorRoleResource::$positionType),
             ]);
     }
 

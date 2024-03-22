@@ -1,20 +1,20 @@
 <div class="space-y-6">
-    <div class="filament-forms-card-component p-6 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800">
-        <div class="grid grid-cols-1 filament-forms-component-container gap-6">
+    <div class="p-6 bg-white border border-gray-200 filament-forms-card-component dark:bg-gray-900 rounded-xl dark:border-gray-800">
+        <div class="grid grid-cols-1 gap-6 filament-forms-component-container">
             <div class="col-span-full">
-                <div id="upload-files" class="filament-forms-section-component grid grid-cols-1 md:grid-cols-2">
+                <div id="upload-files" class="grid grid-cols-1 filament-forms-section-component md:grid-cols-2">
                     <div
                         class="filament-forms-section-header-wrapper flex rtl:space-x-reverse overflow-hidden rounded-t-xl min-h-[56px] pr-6 pb-4">
-                        <div class="filament-forms-section-header flex-1 space-y-1">
-                            <h3 class="font-bold tracking-tight pointer-events-none flex flex-row items-center text-xl">
+                        <div class="flex-1 space-y-1 filament-forms-section-header">
+                            <h3 class="flex flex-row items-center text-xl font-bold tracking-tight pointer-events-none">
                                 Review and Submit
                             </h3>
                             <div class="space-y-4">
-                                <p class="text-gray-500 text-base">
+                                <p class="text-base text-gray-500">
                                     Before submitting, please check the information you have entered and make any
                                     necessary changes by clicking the edit button at the top of each section.
                                 </p>
-                                <p class="text-gray-500 text-base">
+                                <p class="text-base text-gray-500">
                                     After you submit, one of our editorial team members will be assigned to review your
                                     submission. It is important that you enter the details as accurately as possible.
                                 </p>
@@ -22,9 +22,9 @@
                         </div>
                     </div>
 
-                    <div class="filament-forms-section-content-wrapper space-y-6">
+                    <div class="space-y-6 filament-forms-section-content-wrapper">
                         @error('errors')
-                            <div class="flex p-4 mb-4 text-sm text-danger-800 border border-danger-300 rounded-xl bg-danger-50 dark:bg-gray-800 dark:text-danger-400 dark:border-danger-800"
+                            <div class="flex p-4 mb-4 text-sm border text-danger-800 border-danger-300 rounded-xl bg-danger-50 dark:bg-gray-800 dark:text-danger-400 dark:border-danger-800"
                                 role="alert">
                                 <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
                                     viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -47,14 +47,14 @@
                             <ul
                                 class="w-full text-sm text-gray-900 bg-white border border-gray-200 rounded-xl dark:bg-gray-900 dark:border-gray-800 dark:text-white">
                                 <li
-                                    class="w-full p-4 sm:px-6 border-b border-gray-200 rounded-t-lg dark:border-gray-800 justify-between flex items-center">
+                                    class="flex items-center justify-between w-full p-4 border-b border-gray-200 rounded-t-lg sm:px-6 dark:border-gray-800">
                                     <div class="text-base font-bold">Details</div>
                                 </li>
-                                <li class="w-full p-4 sm:px-6 border-b border-gray-200 dark:border-gray-800">
+                                <li class="w-full p-4 border-b border-gray-200 sm:px-6 dark:border-gray-800">
                                     <div class="font-medium">Title</div>
                                     <div class="text-gray-500">{{ $this->record->getMeta('title') }}</div>
                                 </li>
-                                <li class="w-full p-4 sm:px-6 border-b border-gray-200 dark:border-gray-800 space-y-2">
+                                <li class="w-full p-4 space-y-2 border-b border-gray-200 sm:px-6 dark:border-gray-800">
                                     <div class="font-medium">Keywords</div>
                                     <div class="flex flex-wrap items-center gap-1 text-gray-700">
                                         @forelse ($this->record->tagsWithType('submissionKeywords')->pluck('name')->toArray() as $tag)
@@ -69,7 +69,7 @@
                                         @endforelse
                                     </div>
                                 </li>
-                                <li class="w-full p-4 sm:px-6 border-gray-800 dark:border-gray-800">
+                                <li class="w-full p-4 border-gray-800 sm:px-6 dark:border-gray-800">
                                     <div class="font-medium">Abstract</div>
                                     <div class="dark:text-gray-500">
                                         {!! $this->record->getMeta('abstract') !!}
@@ -124,7 +124,7 @@
         to proceed with this submission?
         <x-slot name="footer" class="test">
             <div
-                class="filament-modal-actions flex flex-wrap items-center gap-4 rtl:space-x-reverse flex-row-reverse space-x-reverse">
+                class="flex flex-row-reverse flex-wrap items-center gap-4 space-x-reverse filament-modal-actions rtl:space-x-reverse">
                 <x-filament::button x-cloak wire:loading.class.delay="opacity-70 cursor-wait" size="sm"
                     wire:click="submit">
                     Yes, Submit

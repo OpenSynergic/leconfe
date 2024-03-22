@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Actions\Authors\AuthorRolePopulateDefaultDataAction;
 use App\Actions\Committees\CommitteeRolePopulateDefaultDataAction;
 use App\Actions\Participants\ParticipantPositionPopulateDefaultDataAction;
 use App\Actions\Speakers\SpeakerRolePopulateDefaultDataAction;
@@ -27,6 +28,7 @@ class ConferenceObserver
         
         CommitteeRolePopulateDefaultDataAction::run($conference);
         SpeakerRolePopulateDefaultDataAction::run($conference);
+        AuthorRolePopulateDefaultDataAction::run($conference);
 
         $primaryNavigationMenu = NavigationMenu::create([
             'name' => 'Primary Navigation Menu',

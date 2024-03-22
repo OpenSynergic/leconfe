@@ -112,6 +112,12 @@ class Submission extends Model implements HasMedia, HasPayment
                 'participant_id' => $userAsParticipant->getKey(),
                 'participant_position_id' => ParticipantPosition::where('name', UserRole::Author->value)->first()->getKey(),
             ]);
+
+            // Current user as a author
+            $submission->authors()->create([
+                'author_role_id' => AuthorRole::where('name', UserRole::Author->value)->first()->getKey(),
+                ...$submission->user->only(['email', 'given_name', 'family_name', 'public_name']),
+            ]);
         });
     }
 
@@ -153,6 +159,11 @@ class Submission extends Model implements HasMedia, HasPayment
     public function participants()
     {
         return $this->hasMany(SubmissionParticipant::class);
+    }
+
+    public function authors()
+    {
+        return $this->hasMany(Author::class);
     }
 
     public function contributors()

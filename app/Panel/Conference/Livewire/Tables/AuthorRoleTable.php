@@ -3,7 +3,7 @@
 namespace App\Panel\Conference\Livewire\Tables;
 
 // use App\Panel\Conference\Livewire\Traits\PlaceholderTrait;
-use App\Panel\Conference\Resources\Conferences\AuthorPositionResource;
+use App\Panel\Conference\Resources\Conferences\AuthorRoleResource;
 use Filament\Actions\CreateAction;
 use Filament\Facades\Filament;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -18,11 +18,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Livewire\Component;
 
-class AuthorPositionTable extends Component implements HasForms, HasTable
+class AuthorRoleTable extends Component implements HasForms, HasTable
 {
     use InteractsWithForms, InteractsWithTable;
 
-    protected static string $resource = AuthorPositionResource::class;
+    protected static string $resource = AuthorRoleResource::class;
 
     public function render()
     {

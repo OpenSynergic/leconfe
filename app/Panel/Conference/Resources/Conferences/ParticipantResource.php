@@ -136,7 +136,7 @@ class ParticipantResource extends Resource
         ];
     }
 
-    public static function tableActions($positionType, $updateAction, $deleteAction): array
+    public static function tableActions($updateAction, $deleteAction): array
     {
         return [
             ActionGroup::make([

@@ -2,7 +2,7 @@
 
 namespace App\Panel\Conference\Resources\Conferences;
 
-use App\Models\ParticipantPosition;
+use App\Models\AuthorRole;
 use App\Panel\Conference\Resources\Traits\CustomizedUrl;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\TextInput;
@@ -13,22 +13,21 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\Rules\Unique;
 
-class AuthorPositionResource extends Resource
+class AuthorRoleResource extends Resource
 {
     protected static bool $isDiscovered = false;
 
-    protected static ?string $model = ParticipantPosition::class;
+    protected static ?string $model = AuthorRole::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static string $positionType = 'author';
+    public static string $roleType = 'author';
 
     use CustomizedUrl;
 
     public static function getEloquentQuery(): Builder
     {
         return static::getModel()::query()
-            ->ofType(static::$positionType)
             ->orderBy('order_column');
     }
 
@@ -40,7 +39,6 @@ class AuthorPositionResource extends Resource
                     ->required()
                     ->unique(modifyRuleUsing: function (Unique $rule) {
                         return $rule
-                            ->where('type', static::$positionType)
                             ->where('conference_id', app()->getCurrentConference()->getKey());
                     }),
             ]);
@@ -55,9 +53,9 @@ class AuthorPositionResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('participants_count')
+                Tables\Columns\TextColumn::make('authors_count')
                     ->label('Authors')
-                    ->counts('participants')
+                    ->counts('authors')
                     ->badge()
                     ->color(fn (int $state) => $state > 0 ? 'primary' : 'gray'),
 
@@ -68,11 +66,11 @@ class AuthorPositionResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
-                    ->using(function (ParticipantPosition $record, Tables\Actions\DeleteAction $action) {
+                    ->using(function (AuthorRole $record, Tables\Actions\DeleteAction $action) {
                         try {
-                            $authorCount = $record->participants()->count();
+                            $authorCount = $record->authors()->count();
                             if ($authorCount > 0) {
-                                throw new \Exception('Cannot delete '.$record->name.', there are authors who are still associated with this position');
+                                throw new \Exception('Cannot delete '.$record->name.', there are authors who are still associated with this role');
                             }
 
                             return $record->delete();
@@ -89,16 +87,14 @@ class AuthorPositionResource extends Resource
             ->emptyStateActions([
                 // Tables\Actions\CreateAction::make(),
             ])
-            ->heading('Author Positions Table')
+            ->heading('Author Roles Table')
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->mutateFormDataUsing(function (array $data): array {
-                        $data['type'] = static::$positionType;
-
                         return $data;
                     })
-                    ->label('New Author Position')
-                    ->modalHeading('New Author Position'),
+                    ->label('New Author Role')
+                    ->modalHeading('New Author Role'),
             ]);
     }
 
