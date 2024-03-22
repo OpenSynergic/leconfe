@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Actions\Committees;
+namespace App\Actions\Authors;
 
-use App\Models\CommitteeRole;
+use App\Models\AuthorRole;
 use App\Models\Conference;
+use App\Models\Enums\UserRole;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class CommitteeRolePopulateDefaultDataAction
+class AuthorRolePopulateDefaultDataAction
 {
     use AsAction;
 
@@ -17,11 +18,11 @@ class CommitteeRolePopulateDefaultDataAction
             DB::beginTransaction();
 
             foreach ([
-                'Chair',
-                'Member',
-            ] as $committeeRole) {
-                CommitteeRole::firstOrCreate([
-                    'name' => $committeeRole,
+                UserRole::Author->value,
+                'Co Author',
+            ] as $authorRole) {
+                AuthorRole::firstOrCreate([
+                    'name' => $authorRole,
                     'conference_id' => $conference->getKey(),
                 ]);
             }

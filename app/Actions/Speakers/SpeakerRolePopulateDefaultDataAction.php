@@ -22,7 +22,6 @@ class SpeakerRolePopulateDefaultDataAction
             ] as $speakerRole) {
                 SpeakerRole::firstOrCreate([
                     'name' => $speakerRole,
-                    'type' => 'speaker',
                     'conference_id' => $conference->getKey(),
                 ]);
             }
