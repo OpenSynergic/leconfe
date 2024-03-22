@@ -18,6 +18,7 @@ use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -42,15 +43,12 @@ class CommitteeResource extends Resource
         return static::getModel()::query()
             ->orderBy('order_column')
             ->with([
-                'role' => fn ($query) => $query
-                    ->where('type', CommitteeRoleResource::$roleType),
+                'role',
                 'media',
                 'meta',
             ])
             ->whereHas(
-                'role',
-                fn (Builder $query) => $query
-                    ->where('type', CommitteeRoleResource::$roleType)
+                'role'
             );
     }
 
@@ -71,8 +69,6 @@ class CommitteeResource extends Resource
                     ->relationship(
                         name: 'role',
                         titleAttribute: 'name',
-                        modifyQueryUsing: fn (Builder $query) => $query
-                            ->where('type', CommitteeRoleResource::$roleType),
                     )
                     ->preload()
                     ->createOptionForm(fn ($form) => CommitteeRoleResource::form($form))
@@ -80,11 +76,6 @@ class CommitteeResource extends Resource
                         fn (FormAction $action) => $action->color('primary')
                             ->modalWidth('xl')
                             ->modalHeading('Create Committee Role')
-                            ->mutateFormDataUsing(function (array $data): array {
-                                $data['type'] = CommitteeRoleResource::$roleType;
-
-                                return $data;
-                            })
                     )
                     ->columnSpan([
                         'lg' => 2,
@@ -167,7 +158,7 @@ class CommitteeResource extends Resource
                 ...ParticipantResource::generalTableColumns(),
             ])
             ->actions([
-                ...ParticipantResource::tableActions(CommitteeRoleResource::$roleType, CommitteeUpdateAction::class, CommitteeDeleteAction::class),
+                ...ParticipantResource::tableActions(CommitteeUpdateAction::class, CommitteeDeleteAction::class),
             ])
             ->filters([
                 // SelectFilter::make('role')

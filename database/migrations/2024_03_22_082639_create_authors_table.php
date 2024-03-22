@@ -1,7 +1,8 @@
 <?php
 
+use App\Models\AuthorRole;
 use App\Models\Conference;
-use App\Models\SpeakerRole;
+use App\Models\Submission;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,7 +14,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('speaker_roles', function (Blueprint $table) {
+        Schema::create('author_roles', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Conference::class)->constrained();
             $table->unsignedBigInteger('parent_id')->nullable();
@@ -24,7 +25,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('speaker_meta', function (Blueprint $table) {
+        Schema::create('author_meta', function (Blueprint $table) {
             $table->id();
             $table->string('metable_type');
             $table->unsignedBigInteger('metable_id');
@@ -36,10 +37,10 @@ return new class extends Migration
             $table->index(['key', 'metable_type']);
         });
 
-        Schema::create('speakers', function (Blueprint $table) {
+        Schema::create('authors', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Conference::class)->constrained();
-            $table->foreignIdFor(SpeakerRole::class)->constrained();
+            $table->foreignIdFor(Submission::class)->constrained();
+            $table->foreignIdFor(AuthorRole::class)->constrained();
             $table->string('email')->nullable();
             $table->string('given_name');
             $table->string('family_name')->nullable();
@@ -47,7 +48,7 @@ return new class extends Migration
             $table->unsignedInteger('order_column')->nullable();
             $table->timestamps();
 
-            $table->unique(['email', 'conference_id']);
+            $table->unique(['email', 'submission_id']);
         });
     }
 
@@ -56,6 +57,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('speakers');
+        Schema::dropIfExists('authors');
     }
 };

@@ -34,7 +34,6 @@ class CommitteeRoleResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return static::getModel()::query()
-            ->ofType(static::$roleType)
             ->orderBy('order_column');
     }
 
@@ -46,13 +45,11 @@ class CommitteeRoleResource extends Resource
                     ->required()
                     ->unique(modifyRuleUsing: function (Unique $rule) {
                         return $rule
-                            ->where('type', static::$roleType)
                             ->where('conference_id', app()->getCurrentConference()->getKey());
                     }),
                 Select::make('parent_id')
                     ->relationship('parent', 'name', fn ($query, ?CommitteeRole $record) => $query
-                        ->when($record, fn ($query) => $query->whereNot('id', $record->getKey()))
-                        ->ofType(static::$roleType)),
+                        ->when($record, fn ($query) => $query->whereNot('id', $record->getKey()))),
             ]);
     }
 
@@ -105,8 +102,6 @@ class CommitteeRoleResource extends Resource
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->mutateFormDataUsing(function (array $data): array {
-                        $data['type'] = static::$roleType;
-
                         return $data;
                     })
                     ->label('New Committee Role')

@@ -43,16 +43,11 @@ class SpeakerResource extends Resource
         return static::getModel()::query()
             ->orderBy('order_column')
             ->with([
-                'role' => fn ($query) => $query
-                    ->ofType(SpeakerRoleResource::$roleType),
+                'role',
                 'media',
                 'meta',
             ])
-            ->whereHas(
-                'role',
-                fn (Builder $query) => $query
-                    ->ofType(SpeakerRoleResource::$roleType)
-            );
+            ->whereHas('role');
     }
 
     public static function getModelLabel(): string
@@ -72,8 +67,6 @@ class SpeakerResource extends Resource
                     ->relationship(
                         name: 'role',
                         titleAttribute: 'name',
-                        modifyQueryUsing: fn (Builder $query) => $query
-                            ->ofType(SpeakerRoleResource::$roleType),
                     )
                     ->preload()
                     ->createOptionForm([
@@ -85,8 +78,6 @@ class SpeakerResource extends Resource
                             ->modalWidth('xl')
                             ->modalHeading('Create Speaker Position')
                             ->mutateFormDataUsing(function (array $data): array {
-                                $data['type'] = SpeakerRoleResource::$roleType;
-
                                 return $data;
                             })
                             ->form(function (Select $component, Form $form): array|Form|null {
@@ -150,7 +141,6 @@ class SpeakerResource extends Resource
                                 ->required()
                                 ->searchable()
                                 ->options(fn () => SpeakerRole::query()
-                                    ->where('type', SpeakerRoleResource::$roleType)
                                     ->pluck('name', 'id')
                                     ->toArray()),
                         ])
@@ -172,7 +162,7 @@ class SpeakerResource extends Resource
                 ...ParticipantResource::generalTableColumns(),
             ])
             ->actions([
-                ...ParticipantResource::tableActions(SpeakerRoleResource::$roleType, SpeakerUpdateAction::class, SpeakerDeleteAction::class),
+                ...ParticipantResource::tableActions(SpeakerUpdateAction::class, SpeakerDeleteAction::class),
             ])
             ->filters([
                 // SelectFilter::make('position')

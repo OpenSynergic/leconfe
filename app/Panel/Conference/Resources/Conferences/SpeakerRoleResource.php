@@ -29,7 +29,6 @@ class SpeakerRoleResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return static::getModel()::query()
-            ->ofType(static::$roleType)
             ->orderBy('order_column');
     }
 
@@ -41,7 +40,6 @@ class SpeakerRoleResource extends Resource
                     ->required()
                     ->unique(modifyRuleUsing: function (Unique $rule) {
                         return $rule
-                            ->where('type', static::$roleType)
                             ->where('conference_id', app()->getCurrentConference()->getKey());
                     }),
             ]);
@@ -96,8 +94,6 @@ class SpeakerRoleResource extends Resource
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->mutateFormDataUsing(function (array $data): array {
-                        $data['type'] = static::$roleType;
-
                         return $data;
                     })
                     ->label('New Speaker Role')
