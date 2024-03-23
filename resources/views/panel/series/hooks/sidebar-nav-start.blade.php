@@ -27,17 +27,21 @@
                 x-tooltip.html="tooltip"
             @endif
             type="button"
-            class="fi-tenant-menu-trigger group flex w-full items-center justify-center gap-x-3 rounded-lg p-2 text-sm font-medium outline-none transition duration-75 hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-white/5 dark:focus:bg-white/5"
+            class="fi-tenant-menu-trigger group flex w-full items-center justify-between gap-x-3 rounded-lg p-2 text-sm font-medium outline-none transition duration-75 hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-white/5 dark:focus:bg-white/5"
         >
             <span
                 @if (filament()->isSidebarCollapsibleOnDesktop())
                     x-show="$store.sidebar.isOpen"
                 @endif
-                class="grid justify-items-start text-start me-auto truncate"
+                class="flex items-center justify-between text-start truncate grow"
             >
                 <span class="text-gray-950 dark:text-white">
                     {{ $currentSerie->title }}
                 </span>
+
+                <x-filament::badge size="sm" class="ms-auto" :color="$currentSerie->active ? 'info' : 'gray'">
+                    {{ $currentSerie->active ? 'Active' : 'Archived'}}
+                </x-filament::badge>
             </span>
 
              <x-filament::icon
@@ -70,16 +74,21 @@
         >
             Back to Conference
         </x-filament::dropdown.list.item>
-
-        @foreach (Serie::where('path', '!=', $currentSerie->path)->latest()->get() as $serie)
-            <x-filament::dropdown.list.item
-                :href="$serie->getPanelUrl()"
-                :icon="filament()->getTenantAvatarUrl($serie)"
-                tag="a"
-            >
-                {{ $serie->title }}
-            </x-filament::dropdown.list.item>
-        @endforeach
+        <div class="max-h-64 overflow-y-scroll border-t">
+            @foreach (Serie::where('path', '!=', $currentSerie->path)->latest()->get() as $serie)
+                <x-filament::dropdown.list.item
+                    :href="$serie->getPanelUrl()"
+                    :icon="filament()->getTenantAvatarUrl($serie)"
+                    tag="a"
+                    :badge-color="$serie->active ? 'info' : 'gray'"
+                >
+                    {{ $serie->title }}
+                    <x-slot name="badge">
+                        {{ $serie->active ? 'Active' : 'Archived'}}
+                    </x-slot>
+                </x-filament::dropdown.list.item>
+            @endforeach
+        </div>
     </x-filament::dropdown.list>
 
 </x-filament::dropdown>
