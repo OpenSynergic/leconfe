@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ConferenceType;
 use App\Models\Meta\ConferenceMeta;
 use Filament\Models\Contracts\HasAvatar;
@@ -34,6 +33,8 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
         'type',
         'status',
         'path',
+        'date_start',
+        'date_end',
     ];
 
     /**
@@ -42,8 +43,9 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
      * @var array
      */
     protected $casts = [
-        'status' => ConferenceStatus::class,
         'type' => ConferenceType::class,
+        'date_start' => 'date',
+        'date_end' => 'date',
     ];
 
     protected function getMetaClassName(): string
@@ -132,32 +134,49 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
             ->skipGenerateWhen(fn () => $this->path !== null);
     }
 
-    public static function active(): ?self
+    public function scopeActive(Builder $query)
     {
-        return static::where('status', ConferenceStatus::Active)->first();
+        return $query
+            ->with(['meta'])
+            ->where('date_start', '<=', now())
+            ->where('date_end', '>=', now())
+            ->orderBy('date_start', 'asc');
+    }
+
+    public function scopeArchived(Builder $query)
+    {
+        return $query
+            ->with(['meta'])
+            ->where('date_end', '<', now())
+            ->orderBy('date_end', 'desc');
     }
 
     public function scopeUpcoming(Builder $query)
     {
         return $query
             ->with(['meta'])
-            ->orderByMetaNumeric('date_held', 'asc')
-            ->where('status', ConferenceStatus::Upcoming);
+            ->where('date_start', '>', now())
+            ->orderBy('date_start', 'asc');
     }
 
     public function isUpcoming(): bool
     {
-        return $this->status == ConferenceStatus::Upcoming;
+        return $this->date_start > now();
+    }
+
+    public function isArchived(): bool
+    {
+        return $this->date_end < now();
     }
 
     public function isActive(): bool
     {
-        return $this->status == ConferenceStatus::Active;
+        return $this->date_start <= now() && $this->date_end >= now();
     }
 
     public function getPanelUrl(): string
     {
-
+        
         return route('filament.conference.pages.dashboard', ['conference' => $this->path]);
     }
 

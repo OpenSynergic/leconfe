@@ -47,7 +47,6 @@ class ConferenceCloneAction
         ])->findOrFail($clonedConferenceId)->replicate();
 
         $clonedDataConference->fill($data);
-        $clonedDataConference->status = ConferenceStatus::Upcoming;
         $clonedDataConference->path = $this->generateUniquePath($clonedDataConference->path);
         $clonedDataConference->save();
 
@@ -95,7 +94,7 @@ class ConferenceCloneAction
 
         while (Conference::where('path', $uniquePath)->exists()) {
             $counter++;
-            $uniquePath = $basePath.$counter;
+            $uniquePath = $basePath . $counter;
         }
 
         return $uniquePath;
