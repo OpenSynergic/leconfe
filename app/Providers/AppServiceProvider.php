@@ -149,14 +149,14 @@ class AppServiceProvider extends ServiceProvider
 
     protected function detectConference()
     {
-        if (!$this->app->isInstalled()) {
+        if ($this->app->runningInConsole() || !$this->app->isInstalled()) {
             return;
         }
+
 
         $this->app->scopeCurrentConference();
 
         $pathInfos = explode('/', request()->getPathInfo());
-
         // Detect conference from URL path
         if (isset($pathInfos[1]) && !blank($pathInfos[1])) {
             $conference = Conference::where('path', $pathInfos[1])->first();
