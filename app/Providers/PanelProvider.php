@@ -108,8 +108,8 @@ class PanelProvider extends ServiceProvider
             ->discoverWidgets(in: app_path('Panel/Administration/Widgets'), for: 'App\\Panel\\Administration\\Widgets')
             ->discoverLivewireComponents(in: app_path('Panel/Administration/Livewire'), for: 'App\\Panel\\Administration\\Livewire')
             ->renderHook(
-                'panels::topbar.start',
-                fn () => view('panel.administration.hooks.topbar'),
+                PanelsRenderHook::SIDEBAR_NAV_START,
+                fn () => view('panel.administration.hooks.sidebar-nav-start'),
             )
             ->middleware(static::getMiddleware(), true)
             ->authMiddleware(static::getAuthMiddleware(), true);
@@ -164,6 +164,7 @@ class PanelProvider extends ServiceProvider
     {
         Blade::anonymousComponentPath(resource_path('views/panel/conference/components'), 'panel');
         Blade::anonymousComponentPath(resource_path('views/panel/administration/components'), 'administration');
+        Blade::anonymousComponentPath(resource_path('views/panel/series/components'), 'series');
     }
 
     public static function getPages(): array

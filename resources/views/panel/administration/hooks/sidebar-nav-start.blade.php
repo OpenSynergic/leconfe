@@ -1,9 +1,3 @@
-@use('\App\Models\Conference')
-
-@php
-    $currentConference = app()->getCurrentConference();
-@endphp
-
 <x-filament::dropdown
     placement="bottom-start"
     teleport
@@ -18,7 +12,7 @@
                     tooltip = $store.sidebar.isOpen
                         ? false
                         : {
-                              content: @js($currentConference->name),
+                              content: 'Administration',
                               placement: document.dir === 'rtl' ? 'left' : 'right',
                               theme: $store.theme,
                           }
@@ -32,17 +26,17 @@
                 @if (filament()->isSidebarCollapsibleOnDesktop())
                     x-show="$store.sidebar.isOpen"
                 @endif
-                class="grid justify-items-start text-start"
+                class="grid justify-items-start text-start me-auto"
             >
                 <span class="text-gray-950 dark:text-white">
-                    {{ $currentConference->name }}
+                   Administration
                 </span>
             </span>
 
              <x-filament::icon
                 icon="heroicon-m-chevron-down"
                 icon-alias="panels::tenant-menu.toggle-button"
-                class="hidden md:block ms-auto h-5 w-5 shrink-0 text-gray-400 transition duration-75 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400 dark:group-focus:text-gray-400"
+                class="hidden md:block h-5 w-5 shrink-0 text-gray-400 transition duration-75 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400 dark:group-focus:text-gray-400"
             />
         </button>
     </x-slot>
@@ -51,18 +45,7 @@
         <div class="flex w-full items-center gap-2 whitespace-nowrap p-2 text-sm transition-colors duration-75 outline-none font-medium border-b">
             Switch Conference
         </div>
-        
-        @can('Administration:view')
-        <x-filament::dropdown.list.item
-            :href="route('filament.administration.home')"
-            icon="heroicon-s-cog"
-            tag="a"
-        >
-            {{ __('Administration') }}
-        </x-filament::dropdown.list.item>
-        @endcan
-
-        @foreach (Conference::where('path', '!=', app()->getCurrentConference()->path)->latest()->get() as $conference)
+        @foreach (App\Models\Conference::latest()->get() as $conference)
             <x-filament::dropdown.list.item
                 :href="$conference->getPanelUrl()"
                 :icon="filament()->getTenantAvatarUrl($conference)"
