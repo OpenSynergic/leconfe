@@ -166,6 +166,11 @@ class Submission extends Model implements HasMedia, HasPayment
         return $this->hasMany(Author::class);
     }
 
+    public function presenters()
+    {
+        return $this->hasMany(Presenter::class);
+    }
+
     public function contributors()
     {
         return $this->hasMany(SubmissionContributor::class);
