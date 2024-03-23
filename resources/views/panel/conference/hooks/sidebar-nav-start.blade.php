@@ -32,7 +32,7 @@
                 @if (filament()->isSidebarCollapsibleOnDesktop())
                     x-show="$store.sidebar.isOpen"
                 @endif
-                class="grid justify-items-start text-start"
+                class="grid justify-items-start text-start me-auto truncate"
             >
                 <span class="text-gray-950 dark:text-white">
                     {{ $currentConference->name }}

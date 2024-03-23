@@ -33,7 +33,7 @@
                 @if (filament()->isSidebarCollapsibleOnDesktop())
                     x-show="$store.sidebar.isOpen"
                 @endif
-                class="grid justify-items-start text-start"
+                class="grid justify-items-start text-start me-auto truncate"
             >
                 <span class="text-gray-950 dark:text-white">
                     {{ $currentSerie->title }}
@@ -43,7 +43,7 @@
              <x-filament::icon
                 icon="heroicon-m-chevron-down"
                 icon-alias="panels::tenant-menu.toggle-button"
-                class="hidden md:block ms-auto h-5 w-5 shrink-0 text-gray-400 transition duration-75 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400 dark:group-focus:text-gray-400"
+                class="hidden md:block h-5 w-5 shrink-0 text-gray-400 transition duration-75 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400 dark:group-focus:text-gray-400"
             />
         </button>
     </x-slot>
@@ -65,10 +65,10 @@
 
         <x-filament::dropdown.list.item
             :href="$currentConference->getPanelUrl()"
-            :icon="filament()->getTenantAvatarUrl($currentConference)"
+            icon="heroicon-m-arrow-uturn-left"
             tag="a"
         >
-            {{ $currentConference->name }}
+            Back to Conference
         </x-filament::dropdown.list.item>
 
         @foreach (Serie::where('path', '!=', $currentSerie->path)->latest()->get() as $serie)
