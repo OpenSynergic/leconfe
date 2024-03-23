@@ -1,6 +1,7 @@
-@use('\App\Models\Conference')
+@use('\App\Models\Serie')
 
 @php
+    $currentSerie = app()->getCurrentSerie();
     $currentConference = app()->getCurrentConference();
 @endphp
 
@@ -8,7 +9,7 @@
     placement="bottom-start"
     teleport
     class="-mx-2"
-    id="switch-conference"
+    id="switch-series"
 >
     <x-slot name="trigger">
         <button
@@ -18,7 +19,7 @@
                     tooltip = $store.sidebar.isOpen
                         ? false
                         : {
-                              content: @js($currentConference->name),
+                              content: @js($currentSerie->title),
                               placement: document.dir === 'rtl' ? 'left' : 'right',
                               theme: $store.theme,
                           }
@@ -35,7 +36,7 @@
                 class="grid justify-items-start text-start"
             >
                 <span class="text-gray-950 dark:text-white">
-                    {{ $currentConference->name }}
+                    {{ $currentSerie->title }}
                 </span>
             </span>
 
@@ -48,6 +49,11 @@
     </x-slot>
 
     <x-filament::dropdown.list>
+        <div class="flex w-full items-center gap-2 whitespace-nowrap p-2 text-sm transition-colors duration-75 outline-none font-medium border-b">
+            Switch Series
+        </div>
+        
+        @can('Administration:view')
         <x-filament::dropdown.list.item
             :href="route('filament.administration.home')"
             icon="heroicon-s-cog"
@@ -55,15 +61,23 @@
         >
             {{ __('Administration') }}
         </x-filament::dropdown.list.item>
+        @endcan
 
-        @foreach (Conference::where('path', '!=', app()->getCurrentConference()->path)->get() as $conference)
+        <x-filament::dropdown.list.item
+            :href="$currentConference->getPanelUrl()"
+            :icon="filament()->getTenantAvatarUrl($currentConference)"
+            tag="a"
+        >
+            {{ $currentConference->name }}
+        </x-filament::dropdown.list.item>
+
+        @foreach (Serie::where('path', '!=', $currentSerie->path)->latest()->get() as $serie)
             <x-filament::dropdown.list.item
-                :color="$conference->status->getColor()"
-                :href="$conference->getPanelUrl()"
-                :icon="filament()->getTenantAvatarUrl($conference)"
+                :href="$serie->getPanelUrl()"
+                :icon="filament()->getTenantAvatarUrl($serie)"
                 tag="a"
             >
-                {{ $conference->name }}
+                {{ $serie->title }}
             </x-filament::dropdown.list.item>
         @endforeach
     </x-filament::dropdown.list>

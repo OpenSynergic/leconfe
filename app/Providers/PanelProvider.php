@@ -44,6 +44,10 @@ class PanelProvider extends ServiceProvider
                 PanelsRenderHook::TOPBAR_START,
                 fn () => view('panel.series.hooks.topbar'),
             )
+            ->renderHook(
+                PanelsRenderHook::SIDEBAR_NAV_START,
+                fn () => view('panel.series.hooks.sidebar-nav-start'),
+            )
             ->middleware([
                 IdentifyConference::class,
                 IdentifySeries::class,
