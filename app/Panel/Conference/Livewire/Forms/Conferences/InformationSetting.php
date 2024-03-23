@@ -8,6 +8,7 @@ use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
@@ -15,6 +16,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Illuminate\Support\HtmlString;
 use Livewire\Component;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
@@ -49,24 +52,18 @@ class InformationSetting extends Component implements HasForms
                         Grid::make(2)
                             ->schema([
                                 TextInput::make('name')
-                                    ->required()
-                                    ->columnSpan([
-                                        'xl' => 1,
-                                        'sm' => 2,
-                                    ]),
-                                TextInput::make('meta.acronym'),
-                                TextInput::make('path')
+                                    ->columnSpanFull()
+                                    ->required(),
+                                TextInput::make('meta.acronym')
+                                    ->unique(column: 'path')
                                     ->rule('alpha_dash')
-                                    ->required()
-                                    ->columnSpan([
-                                        'xl' => 1,
-                                        'sm' => 2,
-                                    ]),
-                                TextInput::make('meta.location')
-                                    ->columnSpan([
-                                        'xl' => 1,
-                                        'sm' => 2,
-                                    ]),
+                                    ->live(onBlur: true),
+                                Placeholder::make('path')
+                                    ->content(function (Get $get) {
+                                        $baseUrl = config('app.url') . '/';
+                                        $acronym = $get('meta.acronym') ?? '{acronym}';
+                                        return new HtmlString("<span class='text-gray-500'>{$baseUrl}</span>{$acronym}");
+                                    }),
                                 DatePicker::make('date_start')
                                     ->columnSpan([
                                         'xl' => 1,
@@ -97,7 +94,8 @@ class InformationSetting extends Component implements HasForms
                                         'sm' => 2,
                                     ]),
                                 TextInput::make('meta.theme')
-                                    ->helperText('The theme of the conference')
+                                    ->placeholder('e.g. Creating a better future with us')
+                                    ->helperText("The theme of the conference. This will be used in the conference's branding.")
                                     ->columnSpanFull(),
                                 Textarea::make('meta.description')
                                     ->rows(5)

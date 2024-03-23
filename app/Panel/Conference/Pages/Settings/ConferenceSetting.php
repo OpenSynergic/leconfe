@@ -91,9 +91,7 @@ class ConferenceSetting extends BasePage implements HasForms, HasInfolists
                                             ->icon("lineawesome-users-solid")
                                             ->schema([
                                                 LivewireEntry::make('sponsors-setting')
-                                                    ->livewire(SponsorSetting::class, [
-                                                        'conference' => App::getCurrentConference(),
-                                                    ]),
+                                                    ->livewire(SponsorSetting::class),
                                             ])
                                     ]),
                             ]),

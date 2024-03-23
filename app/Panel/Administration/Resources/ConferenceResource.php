@@ -5,16 +5,14 @@ namespace App\Panel\Administration\Resources;
 use App\Panel\Administration\Resources\ConferenceResource\Pages;
 use App\Models\Conference;
 use App\Models\Enums\ConferenceType;
-use App\Models\Meta\ConferenceMeta;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -23,13 +21,9 @@ use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rules\Unique;
+use Illuminate\Support\HtmlString;
 use Squire\Models\Country;
-use Wallo\FilamentSelectify\Components\ButtonGroup;
-use Wallo\FilamentSelectify\Components\ToggleButton;
 
 class ConferenceResource extends Resource
 {
@@ -53,28 +47,33 @@ class ConferenceResource extends Resource
                             ])
                             ->schema([
                                 TextInput::make('name')
+                                    ->columnSpanFull()
                                     ->required(),
                                 TextInput::make('meta.acronym')
-                                    ->live(onBlur: true)
                                     ->unique(column: 'path')
                                     ->rule('alpha_dash')
-                                    ->afterStateUpdated(function (Set $set, string $state): void {
-                                        $set('path', $state);
+                                    ->live(onBlur: true),
+                                Placeholder::make('path')
+                                    ->content(function (Get $get) {
+                                        $baseUrl = config('app.url') . '/';
+                                        $acronym = $get('meta.acronym') ?? '{acronym}';
+                                        return new HtmlString("<span class='text-gray-500'>{$baseUrl}</span>{$acronym}");
                                     }),
-                                TextInput::make('path')
-                                    ->unique()
-                                    ->prefix(function (): string {
-                                        $url = config('app.url') . '/';
-                                        return preg_replace('/^https?:\/\//', '', $url);
-                                    })
-                                    ->readOnly()
-                                    ->rule('alpha_dash')
-                                    ->helperText('Taken from the conference acronym, it will be used in the URL of the conference.'),
-                                TextInput::make('meta.location'),
+                                // TextInput::make('path')
+                                //     ->unique()
+                                //     ->columnSpan(3)
+                                //     ->prefix(function (): string {
+                                //         $url = config('app.url') . '/';
+                                //         return preg_replace('/^https?:\/\//', '', $url);
+                                //     })
+                                //     ->readOnly()
+                                //     ->rule('alpha_dash')
+                                //     ->helperText('Based on the conference acronym, it will be used in the URL.'),
                                 DatePicker::make('date_start'),
                                 DatePicker::make('date_end')
                                     ->after('date_start'),
                                 TextInput::make('meta.theme')
+                                    ->placeholder('e.g. Creating a better future with us')
                                     ->helperText("The theme of the conference. This will be used in the conference's branding.")
                                     ->columnSpanFull(),
                                 Textarea::make('meta.description')
@@ -122,7 +121,6 @@ class ConferenceResource extends Resource
                                     'date_start' => $getDataConference?->date_start->format(setting('format.date')),
                                     'date_end' => $getDataConference?->date_end->format(setting('format.date')),
                                     'meta.theme' => $getDataConference?->getMeta('theme'),
-                                    'meta.location' => $getDataConference?->getMeta('location'),
                                     'meta.description' => $getDataConference?->getMeta('description'),
                                     'meta.publisher_name' => $getDataConference?->getMeta('publisher_name'),
                                     'meta.publisher_location' => $getDataConference?->getMeta('publisher_location'),
