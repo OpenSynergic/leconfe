@@ -6,6 +6,7 @@ use App\Actions\Site\SiteCreateAction;
 use App\Models\Announcement;
 use App\Models\Block;
 use App\Models\Conference;
+use App\Models\ConferenceSponsor;
 use App\Models\NavigationMenu;
 use App\Models\ParticipantPosition;
 use App\Models\PaymentItem;
@@ -87,6 +88,7 @@ class Application extends LaravelApplication
     {
         foreach ([
             Submission::class,
+            ConferenceSponsor::class,
             Topic::class,
             Venue::class,
             NavigationMenu::class,

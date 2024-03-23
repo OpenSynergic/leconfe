@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Actions;
+use App\Actions\Conferences\ConferenceSetToArchived;
 use App\Actions\Submissions\RemoveDeletedDiscussion;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -33,12 +34,12 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         $schedule->call(function () {
             RemoveDeletedDiscussion::run();
-        })->name('remove-deleted-discussion')->cron(
+        })->cron(
             sprintf(
                 '*/0 */0 */%d * *',
                 config('cleaner.day_interval')
             )
-        );
+        )->name('Remove deleted discussions');
     }
 
     /**
@@ -46,7 +47,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands(): void
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

@@ -7,8 +7,8 @@
                     <a href="{{ route('livewirePageGroup.conference.pages.home', ['conference' => $archive->path]) }}"
                         class="text-sm block hover:text-primary-focus">{{ $archive->name }}</a>
                     <div class="inline-flex gap-x-1 text-sm items-center">
-                        @if ($archive->hasMeta('date_held'))
-                            <time>{{ date('Y', strtotime($archive->getMeta('date_held'))) }}</time>
+                        @if ($archive->date_start)
+                            <time>{{ date('Y', strtotime($archive->date_start)) }}</time>
                         @endif
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="w-4 h-4 text-primary">
