@@ -15,6 +15,12 @@ class SerieSeeder extends Seeder
     {
         Conference::lazy()->each(function (Conference $conference) {
             Serie::factory()->count(10)->for($conference)->create();
+
+            Serie::where('conference_id', $conference->id)
+                ->first()
+                ->update([
+                    'active' => 1,
+                ]);
         });
     }
 }

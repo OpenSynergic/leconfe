@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Serie;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -18,14 +19,14 @@ class SerieFactory extends Factory
      */
     public function definition(): array
     {
-        $name = 'Conference';
-        $city = fake()->city();
-        $year = fake()->year();
-
+        $date = Carbon::parse(fake()->date());
         return [
-            'title' => "$name $city $year",
-            'path' => Str::slug($city),
+            'title' => $date->year,
+            'path' => Str::slug($date->year),
             'description' => fake()->paragraphs(3, true),
+            'issn' => fake()->isbn13(),
+            'date_start' => $date,
+            'date_end' => $date->copy()->addDays(3),
         ];
     }
 
