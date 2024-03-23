@@ -70,3 +70,7 @@ body {
 #switch-conference .fi-dropdown-panel {
     @apply max-w-sm !w-max;
 }
+
+.fi-sidebar-nav {
+    @apply !gap-y-4
+}

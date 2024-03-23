@@ -19,6 +19,7 @@ use Filament\Navigation\MenuItem;
 use Filament\Panel;
 use Filament\Support\Colors\Color;
 use Filament\Tables\Table;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
@@ -39,6 +40,10 @@ class PanelProvider extends ServiceProvider
                 'logout' => MenuItem::make()
                     ->url(fn (): string => route('filament.series.auth.logout', ['conference' => app()->getCurrentConference(), 'serie' => app()->getCurrentSerie()])),
             ])
+            ->renderHook(
+                PanelsRenderHook::TOPBAR_START,
+                fn () => view('panel.series.hooks.topbar'),
+            )
             ->middleware([
                 IdentifyConference::class,
                 IdentifySeries::class,
@@ -69,8 +74,12 @@ class PanelProvider extends ServiceProvider
                     ->url(fn (): string => UserResource::getUrl('profile')),
             ])
             ->renderHook(
-                'panels::topbar.start',
+                PanelsRenderHook::TOPBAR_START,
                 fn () => view('panel.conference.hooks.topbar'),
+            )
+            ->renderHook(
+                PanelsRenderHook::SIDEBAR_NAV_START,
+                fn () => view('panel.conference.hooks.sidebar-nav-start'),
             )
             ->middleware([
                 IdentifyConference::class,
@@ -129,7 +138,8 @@ class PanelProvider extends ServiceProvider
                 'primary' => Color::hex('#09b8ed'),
             ])
             ->darkMode(false)
-            ->databaseNotifications();
+            ->databaseNotifications()
+            ->databaseNotificationsPolling(null);
     }
 
     public function register(): void
