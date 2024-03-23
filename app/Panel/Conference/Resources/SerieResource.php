@@ -4,6 +4,7 @@ namespace App\Panel\Conference\Resources;
 
 use App\Models\Serie;
 use App\Panel\Conference\Resources\SerieResource\Pages;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -13,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
 class SerieResource extends Resource
@@ -50,28 +52,51 @@ class SerieResource extends Resource
                 TextInput::make('issn')
                     ->label('ISSN')
                     ->placeholder('Enter the ISSN of the serie'),
+                Grid::make()
+                    ->schema([
+                        DatePicker::make('date_start')
+                            ->label('Start Date')
+                            ->placeholder('Enter the start date of the serie')
+                            ->requiredWith('date_end'),
+                        DatePicker::make('date_end')
+                            ->label('End Date')
+                            ->afterOrEqual('date_start')
+                            ->requiredWith('date_start')
+                            ->placeholder('Enter the end date of the serie'),
+                    ]),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(fn (Serie $record) => route('filament.series.pages.dashboard', ['serie' => $record]))
+            ->modifyQueryUsing(fn (Builder $query) => $query->latest())
             ->columns([
                 TextColumn::make('title')
                     ->searchable()
-                    ->description(fn (Serie $record) => Str::limit($record->description))
-                    ->url(fn(Serie $record) => route('filament.series.pages.dashboard', ['serie' => $record]))
                     ->wrap()
                     ->wrapHeader(),
-                TextColumn::make('path')
-                    ->searchable(),
+                TextColumn::make('date_start')
+                    ->date(setting('format.date')),
+                TextColumn::make('date_end')
+                    ->date(setting('format.date')),
+                
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make()
+                        ->hidden(fn (Serie $record) => $record->trashed()),
+                    Tables\Actions\DeleteAction::make()
+                        ->label('Move To Trash')
+                        ->modalHeading('Move To Trash')
+                        ->hidden(fn (Serie $record) => $record->active || $record->trashed() )
+                        ->successNotificationTitle('Serie moved to trash'),
+                ]),
+                Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
