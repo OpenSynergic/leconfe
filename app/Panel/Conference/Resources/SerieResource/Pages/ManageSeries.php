@@ -15,8 +15,7 @@ class ManageSeries extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
-                ->modalWidth('xl'),
+            Actions\CreateAction::make(),
         ];
     }
 
