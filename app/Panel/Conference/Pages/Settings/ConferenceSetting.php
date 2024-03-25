@@ -10,6 +10,7 @@ use App\Panel\Conference\Livewire\Forms\Conferences\PrivacySetting;
 use App\Panel\Conference\Livewire\Forms\Conferences\SearchEngineSetting;
 use App\Panel\Conference\Livewire\Forms\Conferences\SetupSetting;
 use App\Panel\Conference\Livewire\Forms\Conferences\SidebarSetting;
+use App\Panel\Conference\Livewire\Forms\Conferences\SponsorSetting;
 use App\Panel\Conference\Livewire\NavigationMenuSetting;
 use App\Panel\Conference\Pages\BasePage;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -86,6 +87,12 @@ class ConferenceSetting extends BasePage implements HasForms, HasInfolists
                                                         'conference' => App::getCurrentConference(),
                                                     ]),
                                             ]),
+                                        InfolistsVerticalTabs\Tab::make('Sponsors')
+                                            ->icon("lineawesome-users-solid")
+                                            ->schema([
+                                                LivewireEntry::make('sponsors-setting')
+                                                    ->livewire(SponsorSetting::class),
+                                            ])
                                     ]),
                             ]),
                         Tabs\Tab::make('Appearance')

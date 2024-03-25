@@ -41,7 +41,6 @@
 
         @foreach (Conference::all() as $conference)
             <x-filament::dropdown.list.item
-                :color="$conference->status->getColor()"
                 :href="$conference->getPanelUrl()"
                 :icon="filament()->getTenantAvatarUrl($conference)"
                 tag="a"

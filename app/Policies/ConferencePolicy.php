@@ -3,18 +3,17 @@
 namespace App\Policies;
 
 use App\Models\Conference;
-use App\Models\Enums\ConferenceStatus;
 use App\Models\User;
 
 class ConferencePolicy
 {
     public function view(User $user, Conference $conference)
     {
-        if ($conference->status == ConferenceStatus::Archived) {
+        if ($conference->isArchived()) {
             return $user->can('Conference:viewArchived');
         }
 
-        if ($conference->status == ConferenceStatus::Upcoming) {
+        if ($conference->isUpcoming()) {
             return $user->can('Conference:viewUpcoming');
         }
 
@@ -38,7 +37,7 @@ class ConferencePolicy
      */
     public function update(User $user, Conference $conference)
     {
-        if (! in_array($conference->status, [ConferenceStatus::Active, ConferenceStatus::Upcoming])) {
+        if ($conference->isArchived()) {
             return false;
         }
 
@@ -52,7 +51,7 @@ class ConferencePolicy
      */
     public function delete(User $user, Conference $conference)
     {
-        if (in_array($conference->status, [ConferenceStatus::Active, ConferenceStatus::Archived])) {
+        if ($conference->isActive() || $conference->isArchived()) {
             return false;
         }
 
@@ -63,7 +62,7 @@ class ConferencePolicy
 
     public function setAsActive(User $user, Conference $conference)
     {
-        if ($conference->status != ConferenceStatus::Upcoming) {
+        if (!$conference->isUpcoming()) {
             return false;
         }
 

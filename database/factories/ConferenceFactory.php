@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\Conference;
-use App\Models\Enums\ConferenceStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Squire\Models\Country;
@@ -32,9 +31,10 @@ class ConferenceFactory extends Factory
         $year = fake()->year();
 
         return [
-            'name' => $name.' '.$city.' '.$year,
+            'name' => $name . ' ' . $city . ' ' . $year,
             'path' => Str::slug($city),
-            'status' => fake()->boolean(80) ? ConferenceStatus::Upcoming : ConferenceStatus::Archived,
+            'date_start' => fake()->dateTimeBetween('-1 year', '+1 year'),
+            'date_end' => fake()->dateTimeBetween('+1 year', '+2 year'),
         ];
     }
 
@@ -46,10 +46,12 @@ class ConferenceFactory extends Factory
         return $this->afterCreating(function (Conference $conference) {
             $conference->setManyMeta([
                 'publisher_name' => fake()->company(),
+                'publisher_place' => fake()->city(),
+                'acronym' => $conference->path,
+                'theme' => fake()->sentence(),
                 'affiliation' => fake()->company(),
                 'country' => Country::inRandomOrder()->first()->id,
                 'location' => fake()->city(),
-                'date_held' => fake()->dateTimeThisDecade(),
                 'description' => fake()->paragraphs(3, true),
                 'about' => fake()->paragraphs(4, true),
                 'page_footer' => view('frontend.examples.footer')->render(),

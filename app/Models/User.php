@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Mail\Templates\VerifyUserEmail;
-use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\UserRole;
 use App\Models\Meta\UserMeta;
 use Filament\Models\Contracts\FilamentUser;
@@ -34,7 +33,7 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Traits\HasRoles;
 use Squire\Models\Country;
 
-class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaultTenant, HasMedia, HasName, HasTenants, MustVerifyEmail
+class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia, HasName, MustVerifyEmail
 {
     use Bannable,
         HasApiTokens,
@@ -90,7 +89,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
     protected function fullName(): Attribute
     {
         return Attribute::make(
-            get: fn () => Str::squish($this->given_name.' '.$this->family_name),
+            get: fn () => Str::squish($this->given_name . ' ' . $this->family_name),
         );
     }
 
@@ -142,24 +141,6 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
         return true;
     }
 
-    /**
-     * @return array<Model> | Collection
-     */
-    public function getTenants(Panel $panel): array|Collection
-    {
-        return Conference::query()
-            ->with('media')
-            ->when(! $this->can('Conference:viewUpcoming'), fn ($query) => $query->where('status', '!=', ConferenceStatus::Upcoming))
-            ->when(! $this->can('Conference:viewArchived'), fn ($query) => $query->where('status', '!=', ConferenceStatus::Archived))
-            // ->where('status', '!=', ConferenceStatus::Archived)
-            ->get();
-    }
-
-    public function getDefaultTenant(Panel $panel): ?Model
-    {
-        return Conference::active();
-    }
-
     public function submissions()
     {
         return $this->hasMany(Submission::class);
@@ -191,11 +172,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
         }]);
 
         foreach ($this->roles as $role) {
-            if (! $role->parent_id) {
+            if (!$role->parent_id) {
                 continue;
             }
 
-            if (! $role->ancestors->pluck('id')->intersect($permission->roles->pluck('id')->toArray())->isEmpty()) {
+            if (!$role->ancestors->pluck('id')->intersect($permission->roles->pluck('id')->toArray())->isEmpty()) {
                 return true;
             }
         }
@@ -215,7 +196,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
             ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
             ->join(' ');
 
-        return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=FFFFFF&background=111827&font-size=0.33';
+        return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=111827&font-size=0.33';
     }
 
     public function registerMediaConversions(?Media $media = null): void
@@ -235,7 +216,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasDefaul
 
     public function hasVerifiedEmail()
     {
-        return ! is_null($this->email_verified_at);
+        return !is_null($this->email_verified_at);
     }
 
     public function asParticipant()

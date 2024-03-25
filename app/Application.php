@@ -8,6 +8,7 @@ use App\Models\AuthorRole;
 use App\Models\Block;
 use App\Models\CommitteeRole;
 use App\Models\Conference;
+use App\Models\ConferenceSponsor;
 use App\Models\NavigationMenu;
 use App\Models\ParticipantPosition;
 use App\Models\PaymentItem;
@@ -91,6 +92,7 @@ class Application extends LaravelApplication
     {
         foreach ([
             Submission::class,
+            ConferenceSponsor::class,
             Topic::class,
             Venue::class,
             NavigationMenu::class,
