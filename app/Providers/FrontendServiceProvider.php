@@ -2,12 +2,9 @@
 
 namespace App\Providers;
 
-use App\Facades\Block;
 use App\Http\Middleware\SetupDefaultData;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Livewire\Livewire;
 use Rahmanramsi\LivewirePageGroup\Facades\LivewirePageGroup;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 
@@ -36,7 +33,6 @@ class FrontendServiceProvider extends ServiceProvider
         Blade::anonymousComponentPath(resource_path('views/frontend/website/components'), 'website');
     }
 
-
     public function websitePageGroup(PageGroup $pageGroup): PageGroup
     {
         return $pageGroup
@@ -44,7 +40,7 @@ class FrontendServiceProvider extends ServiceProvider
             ->path('')
             ->layout('frontend.website.components.layouts.app')
             ->bootUsing(function () {
-               
+
             })
             ->middleware([
                 'web',
@@ -64,7 +60,7 @@ class FrontendServiceProvider extends ServiceProvider
             ], true)
             ->layout('frontend.website.components.layouts.app')
             ->bootUsing(function () {
-                
+
             })
             ->middleware([
                 'web',

@@ -18,8 +18,6 @@ class Home extends BaseNavigationItemType
 
     public static function getUrl(NavigationMenuItem $navigationMenuItem): string
     {
-        $conference = app()->getCurrentConference();
-
-        return $conference ? route('livewirePageGroup.conference.pages.home', ['conference' => $conference]) : route('livewirePageGroup.website.pages.home');
+        return app()->getCurrentConferenceId() ? route('livewirePageGroup.conference.pages.home') : route('livewirePageGroup.website.pages.home');
     }
 }

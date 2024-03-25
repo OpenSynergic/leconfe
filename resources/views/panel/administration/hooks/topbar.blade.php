@@ -31,14 +31,6 @@
         </button>
     </x-slot>
     <x-filament::dropdown.list>
-        <x-filament::dropdown.list.item
-            :href="route('filament.administration.pages.dashboard')"
-            icon="heroicon-s-cog"
-            tag="a"
-        >
-            {{ __('Administration') }}
-        </x-filament::dropdown.list.item>
-
         @foreach (Conference::all() as $conference)
             <x-filament::dropdown.list.item
                 :href="$conference->getPanelUrl()"

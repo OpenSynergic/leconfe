@@ -8,7 +8,6 @@ use App\Actions\User\UserUpdateAction;
 use App\Models\Enums\UserRole;
 use App\Models\User;
 use App\Panel\Conference\Resources\Conferences\ParticipantResource;
-use App\Panel\Conference\Resources\Traits\CustomizedUrl;
 use App\Panel\Conference\Resources\UserResource\Pages;
 use Filament\Facades\Filament;
 use Filament\Forms;
@@ -47,8 +46,6 @@ class UserResource extends Resource
     protected static ?string $navigationGroup = 'Settings';
 
     protected static ?int $navigationSort = 5;
-
-    use CustomizedUrl;
 
     public static function getEloquentQuery(): Builder
     {

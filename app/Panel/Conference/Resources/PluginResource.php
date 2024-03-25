@@ -6,6 +6,7 @@ use App\Facades\Plugin as FacadesPlugin;
 use App\Models\Plugin;
 use App\Panel\Conference\Resources\PluginResource\Pages;
 use App\Tables\Columns\IndexColumn;
+use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -13,7 +14,7 @@ use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class PluginResource extends BaseResource
+class PluginResource extends Resource
 {
     protected static ?string $model = Plugin::class;
 

@@ -11,6 +11,7 @@ use App\Models\NavigationMenu;
 use App\Models\ParticipantPosition;
 use App\Models\PaymentItem;
 use App\Models\Scopes\ConferenceScope;
+use App\Models\Serie;
 use App\Models\Site;
 use App\Models\StaticPage;
 use App\Models\Submission;
@@ -29,11 +30,15 @@ class Application extends LaravelApplication
 
     public const CONTEXT_WEBSITE = 0;
 
-    protected int $currentConferenceId;
+    protected ?int $currentConferenceId = null;
 
-    protected ?Conference $currentConference;
+    protected ?Conference $currentConference = null;
 
     protected string $currentConferencePath;
+
+    protected ?int $currentSerieId = null;
+
+    protected ?Serie $currentSerie = null;
 
     public function isInstalled()
     {
@@ -67,7 +72,7 @@ class Application extends LaravelApplication
 
     public function getCurrentConference(): ?Conference
     {
-        if (! isset($this->currentConference)) {
+        if ($this->currentConferenceId && !$this->currentConference) {
             $this->currentConference = Conference::find($this->getCurrentConferenceId());
         }
 
@@ -84,9 +89,28 @@ class Application extends LaravelApplication
         $this->currentConferenceId = $conferenceId;
     }
 
+    public function getCurrentSerieId(): ?int
+    {
+        return $this->currentSerieId;
+    }
+
+    public function setCurrentSerieId(int $serieId)
+    {
+        $this->currentSerieId = $serieId;
+    }
+
+    public function getCurrentSerie(): ?Serie
+    {
+        if ($this->currentSerieId && !$this->currentSerie) {
+            $this->currentSerie = Serie::find($this->getCurrentSerieId());
+        }
+
+        return $this->currentSerie;
+    }   
+
     public function scopeCurrentConference(): void
     {
-        foreach ([
+        $models = [
             Submission::class,
             ConferenceSponsor::class,
             Topic::class,
@@ -98,7 +122,10 @@ class Application extends LaravelApplication
             StaticPage::class,
             Timeline::class,
             PaymentItem::class,
-        ] as $model) {
+            Serie::class,
+        ];
+
+        foreach ($models as $model) {
             $model::addGlobalScope(new ConferenceScope);
         }
     }

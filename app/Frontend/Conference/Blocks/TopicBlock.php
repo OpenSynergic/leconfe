@@ -18,7 +18,7 @@ class TopicBlock extends Block
     public function getViewData(): array
     {
         return [
-            'topics' => Topic::where('conference_id', app()->getCurrentConference()?->getKey())->get(),
+            'topics' => Topic::query()->get(),
         ];
     }
 }
