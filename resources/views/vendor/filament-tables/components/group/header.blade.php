@@ -12,7 +12,7 @@
     @endif
     {{
         $attributes->class([
-            'fi-ta-group-header flex w-full items-center gap-x-3 bg-white px-3 py-2 dark:bg-white/5',
+            'fi-ta-group-header flex w-full items-center gap-x-3 bg-white px-3 py-3 dark:bg-white/5',
             'cursor-pointer' => $collapsible,
         ])
     }}
@@ -20,7 +20,7 @@
     {{ $start }}
 
     <div class="grid">
-        <h4 class="text-sm font-medium text-gray-950 dark:text-white">
+        <h4 class="py-2 text-sm font-medium text-gray-950 dark:text-white">
             @if (filled($label))
                 {{ $label }}:
             @endif
