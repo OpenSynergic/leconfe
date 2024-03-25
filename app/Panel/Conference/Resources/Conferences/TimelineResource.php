@@ -5,7 +5,6 @@ namespace App\Panel\Conference\Resources\Conferences;
 use App\Models\Role;
 use App\Models\Timeline;
 use App\Panel\Conference\Resources\Conferences\TimelineResource\Pages;
-use App\Panel\Conference\Resources\Traits\CustomizedUrl;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
@@ -25,8 +24,6 @@ class TimelineResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-clock';
 
     protected static ?string $navigationGroup = 'Conferences';
-
-    use CustomizedUrl;
 
     public static function form(Form $form): Form
     {

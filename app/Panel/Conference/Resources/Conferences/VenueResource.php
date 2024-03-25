@@ -4,7 +4,6 @@ namespace App\Panel\Conference\Resources\Conferences;
 
 use App\Models\Venue;
 use App\Panel\Conference\Resources\Conferences\VenueResource\Pages;
-use App\Panel\Conference\Resources\Traits\CustomizedUrl;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
@@ -30,8 +29,6 @@ class VenueResource extends Resource
     protected static ?string $model = Venue::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-home-modern';
-
-    use CustomizedUrl;
 
     public static function form(Form $form): Form
     {

@@ -86,7 +86,7 @@ class Submission extends Model implements HasMedia, HasPayment
 
         static::creating(function (Submission $submission) {
             $submission->user_id ??= Auth::id();
-            $submission->conference_id ??= app()->getCurrentConference()?->getKey();
+            $submission->conference_id ??= app()->getCurrentConferenceId();
         });
 
         static::deleting(function (Submission $submission) {

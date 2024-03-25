@@ -67,6 +67,11 @@ body {
     @apply !rounded-lg;
 }
 
-#switch-conference .fi-dropdown-panel {
-    @apply max-w-sm !w-max;
+#switch-conference .fi-dropdown-panel,
+#switch-series .fi-dropdown-panel {
+    @apply w-full max-w-[18rem];
+}
+
+.fi-sidebar-nav {
+    @apply !gap-y-4
 }

@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use App\Facades\MetaTag;
-use App\Models\Conference;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;

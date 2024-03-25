@@ -9,7 +9,6 @@ use App\Panel\Conference\Resources\Conferences\ParticipantResource;
 use App\Models\Committee;
 use App\Models\CommitteeRole;
 use App\Panel\Conference\Resources\Conferences\CommitteeResource\Pages;
-use App\Panel\Conference\Resources\Traits\CustomizedUrl;
 use Filament\Forms;
 use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Forms\Components\Select;
@@ -30,8 +29,6 @@ class CommitteeResource extends Resource
     protected static ?string $model = Committee::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-
-    use CustomizedUrl;
 
     public static function getNavigationLabel(): string
     {
