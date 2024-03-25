@@ -141,7 +141,7 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
                             fn (Model $record): bool => $record->email == auth()->user()->email
                         ),
                 ])
-                    ->hidden($this->viewOnly),
+                ->hidden($this->viewOnly),
             ])
             ->headerActions([
                 ActionGroup::make([

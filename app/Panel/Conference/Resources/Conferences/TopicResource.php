@@ -58,8 +58,8 @@ class TopicResource extends Resource
                     ]),
                 ActionGroup::make([
                     EditAction::make()
-                        ->modalWidth('2xl')
-                        ->form(fn () => static::formSchemas()),
+                        ->modalWidth('2xl'),
+                        // ->form(fn () => static::formSchemas()),
                     DeleteAction::make(),
                 ]),
             ]);
