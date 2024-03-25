@@ -60,7 +60,9 @@
                         x-model="group"
                         x-on:change="resetCollapsedGroups()"
                     >
-                        <option value="">-</option>
+                        <option value="">
+                            {{ __('filament-tables::table.grouping.fields.group.placeholder') }}
+                        </option>
 
                         @foreach ($groups as $group)
                             <option value="{{ $group->getId() }}">
