@@ -24,8 +24,6 @@ class CommitteeRoleResource extends Resource
 
     public static string $roleType = 'committee';
 
-    use CustomizedUrl;
-
     public static function getModelLabel(): string
     {
         return 'Committee Role';

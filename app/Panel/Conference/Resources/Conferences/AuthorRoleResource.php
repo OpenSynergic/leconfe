@@ -23,8 +23,6 @@ class AuthorRoleResource extends Resource
 
     public static string $roleType = 'author';
 
-    use CustomizedUrl;
-
     public static function getEloquentQuery(): Builder
     {
         return static::getModel()::query()
