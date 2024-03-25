@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Conference;
+use App\Models\Enums\PresenterStatus;
 use App\Models\Submission;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -32,6 +33,7 @@ return new class extends Migration
             $table->string('given_name');
             $table->string('family_name')->nullable();
             $table->string('public_name')->nullable();
+            $table->string('status')->default(PresenterStatus::Unchecked);
             $table->unsignedInteger('order_column')->nullable();
             $table->timestamps();
 
