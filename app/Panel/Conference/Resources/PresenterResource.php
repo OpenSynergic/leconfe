@@ -2,26 +2,28 @@
 
 namespace App\Panel\Conference\Resources;
 
-use App\Panel\Conference\Resources\PresenterResource\Pages;
-use App\Panel\Conference\Resources\PresenterResource\RelationManagers;
-use App\Models\Presenter;
-use App\Tables\Columns\IndexColumn;
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
+use App\Models\Presenter;
+use Filament\Tables\Table;
+use Squire\Models\Country;
+use Filament\Resources\Resource;
+use Filament\Tables\Grouping\Group;
+use App\Models\Enums\PresenterStatus;
+use App\Models\Timeline;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Grouping\Group;
-use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Squire\Models\Country;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use App\Panel\Conference\Resources\PresenterResource\Pages;
+use Filament\Forms\Components\Select;
+use Illuminate\Support\Facades\Mail;
 
-class PresenterResource extends BaseResource
+class PresenterResource extends Resource
 {
     protected static ?string $model = Presenter::class;
 
@@ -47,6 +49,7 @@ class PresenterResource extends BaseResource
     {
         return $table
             ->defaultGroup('submission.id')
+            ->groupingSettingsHidden()
             ->groups([
                 Group::make('submission.id')
                     ->label('Group by Submission')
@@ -82,13 +85,23 @@ class PresenterResource extends BaseResource
                                 }
 
                                 return $record->fullName;
-                            }),
+                            })
+                            ->searchable(
+                                query: fn ($query, $search) => $query
+                                    ->whereMeta('country', 'LIKE', "%{$search}%")
+                                    ->orWhere('given_name', 'LIKE', "%{$search}%")
+                                    ->orWhere('family_name', 'LIKE', "%{$search}%")
+                            ),
                         TextColumn::make('affiliation')
                             ->size('xs')
                             ->getStateUsing(
                                 fn (Model $record) => $record->getMeta('affiliation')
                             )
                             ->icon('heroicon-o-building-library')
+                            ->searchable(
+                                query: fn ($query, $search) => $query
+                                    ->whereMeta('affiliation', 'LIKE', "%{$search}%")
+                            )
                             ->extraAttributes([
                                 'class' => 'text-xs',
                             ])
@@ -98,25 +111,97 @@ class PresenterResource extends BaseResource
                             ->extraAttributes([
                                 'class' => 'text-xs',
                             ])
+                            ->searchable()
                             ->color('gray')
                             ->icon('heroicon-o-envelope')
                             ->alignStart(),
-                    ])->space(1),
-                    TextColumn::make('role.name')
+                    ])
+                    ->space(1),
+                    TextColumn::make('status')
+                        ->label('Status')
                         ->badge()
-                        ->alignEnd(),
+                        ->color(function (Model $record) {
+                            return $record->status->getColor();
+                        })
+                        ->searchable()
+                        ->alignCenter(),
                 ]),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('approve')
+                    ->label('Approve')
+                    ->modalHeading('Approve Presenter')
+                    ->icon('heroicon-o-check')
+                    ->iconSize('md')
+                    ->color('primary')
+                    ->form([
+                        Select::make('timeline')
+                            ->label('Timeline')
+                            ->required()
+                            ->searchable()
+                            ->options(function () {
+                                return Timeline::query()
+                                    ->get()
+                                    ->pluck('title', 'id')
+                                    ->toArray();
+                            }),
+                        Textarea::make('note')
+                            ->label('Note')
+                            ->required()
+                            ->placeholder('Enter your note here...')
+                            ->helperText('This note will be sent to and seen by the presenter.')
+                            ->rows(3),
+                        Checkbox::make('do-not-notify-presenter')
+                            ->label("Don't Send Notification to Presenter"),
+                    ])
+                    ->action(fn (Presenter $presenter) => $presenter->update(['status' => PresenterStatus::Approve])),
+                Tables\Actions\Action::make('reject')
+                    ->label('Reject')
+                    ->modalHeading('Reject Presenter')
+                    ->icon('heroicon-o-x-mark')
+                    ->iconSize('md')
+                    ->color('danger')
+                    ->form([
+                        Textarea::make('recommendation')
+                            ->label('Recommendation')
+                            ->required()
+                            ->placeholder('Enter your recommendation here...')
+                            ->helperText('This note will be sent to and seen by the presenter.')
+                            ->rows(3),
+                        Checkbox::make('do-not-notify-presenter')
+                            ->label("Don't Send Notification to Presenter"),
+                    ])
+                    ->successNotificationTitle('The presenter has been rejected.')
+                    ->action(function (Tables\Actions\Action $action, array $data, Presenter $record) {
+                        $presenter = Presenter::find($action->getRecordId());
+
+                        $presenter->update([
+                            'status' => PresenterStatus::Reject,
+                        ]);
+
+                        if (! $data['do-not-notify-presenter']) {
+                            try {
+                                // Mail::to($record->email)
+                                //     ->send(
+                                //         (new RevisionRequestMail($this->submission))
+                                //             ->subjectUsing($data['subject'])
+                                //             ->contentUsing($data['message'])
+                                //     );
+                            } catch (\Exception $e) {
+                                $action->failureNotificationTitle('The email notification was not delivered.');
+                                $action->failure();
+                            }
+                        }
+
+                        $action->success();
+                    })
+                
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                //
             ]);
     }
 
