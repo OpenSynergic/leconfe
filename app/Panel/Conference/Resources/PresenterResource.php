@@ -10,6 +10,8 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\Layout\Split;
+use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Grouping\Group;
@@ -17,6 +19,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Squire\Models\Country;
 
 class PresenterResource extends BaseResource
 {
@@ -52,29 +55,57 @@ class PresenterResource extends BaseResource
                     ->collapsible(),
             ])
             ->columns([
-                IndexColumn::make('no')
-                ->toggleable(),
-                SpatieMediaLibraryImageColumn::make('profile')
-                    ->collection('profile')
-                    ->conversion('avatar')
-                    ->width(50)
-                    ->height(50)
-                    ->extraCellAttributes([
-                        'style' => 'width: 1px',
-                    ])
-                    ->circular()
-                    ->defaultImageUrl(fn (Model $record): string => $record->getFilamentAvatarUrl())
-                    ->toggleable(),
-                TextColumn::make('full_name')
-                    ->searchable(
-                        query: fn ($query, $search) => $query
-                            ->where('given_name', 'LIKE', "%{$search}%")
-                            ->orWhere('family_name', 'LIKE', "%{$search}%")
-                    )
-                    ->toggleable(),
-                TextColumn::make('email')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Split::make([
+                    SpatieMediaLibraryImageColumn::make('profile')
+                        ->grow(false)
+                        ->collection('profile')
+                        ->conversion('avatar')
+                        ->width(50)
+                        ->height(50)
+                        ->defaultImageUrl(
+                            fn (Model $record): string => $record->getFilamentAvatarUrl()
+                        )
+                        ->extraCellAttributes([
+                            'style' => 'width: 1px',
+                        ])
+                        ->circular(),
+                    Stack::make([
+                        TextColumn::make('fullName')
+                            ->suffix(function (Model $record) {
+                                $country = Country::find($record->getMeta('country'));
+
+                                return ' '.$country?->flag;
+                            })
+                            ->formatStateUsing(function (Model $record) {
+                                if ($record->email == auth()->user()->email) {
+                                    return $record->fullName.' (You)';
+                                }
+
+                                return $record->fullName;
+                            }),
+                        TextColumn::make('affiliation')
+                            ->size('xs')
+                            ->getStateUsing(
+                                fn (Model $record) => $record->getMeta('affiliation')
+                            )
+                            ->icon('heroicon-o-building-library')
+                            ->extraAttributes([
+                                'class' => 'text-xs',
+                            ])
+                            ->color('gray'),
+                        TextColumn::make('email')
+                            ->size('xs')
+                            ->extraAttributes([
+                                'class' => 'text-xs',
+                            ])
+                            ->color('gray')
+                            ->icon('heroicon-o-envelope')
+                            ->alignStart(),
+                    ])->space(1),
+                    TextColumn::make('role.name')
+                        ->badge()
+                        ->alignEnd(),
+                ]),
             ])
             ->filters([
                 //
@@ -99,9 +130,7 @@ class PresenterResource extends BaseResource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPresenters::route('/'),
-            'create' => Pages\CreatePresenter::route('/create'),
-            'edit' => Pages\EditPresenter::route('/{record}/edit'),
+            'index' => Pages\ManagePresenters::route('/'),
         ];
     }
 }
