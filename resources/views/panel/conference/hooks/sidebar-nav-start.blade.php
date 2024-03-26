@@ -62,6 +62,7 @@
         </x-filament::dropdown.list.item>
         @endcan
 
+        <div class="max-h-64 overflow-y-scroll border-t">
         @foreach (Conference::where('path', '!=', app()->getCurrentConference()->path)->latest()->get() as $conference)
             <x-filament::dropdown.list.item
                 :href="$conference->getPanelUrl()"
@@ -71,6 +72,7 @@
                 {{ $conference->name }}
             </x-filament::dropdown.list.item>
         @endforeach
+        </div>
     </x-filament::dropdown.list>
 
 </x-filament::dropdown>

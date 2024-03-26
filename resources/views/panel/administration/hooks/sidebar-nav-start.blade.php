@@ -45,6 +45,7 @@
         <div class="flex w-full items-center gap-2 whitespace-nowrap p-2 text-sm transition-colors duration-75 outline-none font-medium border-b">
             Switch Conference
         </div>
+        <div class="max-h-64 overflow-y-scroll">
         @foreach (App\Models\Conference::latest()->get() as $conference)
             <x-filament::dropdown.list.item
                 :href="$conference->getPanelUrl()"
@@ -54,6 +55,7 @@
                 {{ $conference->name }}
             </x-filament::dropdown.list.item>
         @endforeach
+        </div>
     </x-filament::dropdown.list>
 
 </x-filament::dropdown>
