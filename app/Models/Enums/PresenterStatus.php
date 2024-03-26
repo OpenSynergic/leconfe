@@ -28,4 +28,34 @@ enum PresenterStatus: string implements HasColor, HasLabel
             default => 'gray'
         };
     }
+
+    public function getActionColor(): string
+    {
+        return match ($this) {
+            self::Reject => 'danger',
+            self::Approve => 'primary',
+            self::Unchecked => 'primary',
+            default => 'gray'
+        };
+    }
+
+    public function getActionIcon(): string
+    {
+        return match ($this) {
+            self::Reject => 'heroicon-o-x-mark',
+            self::Approve => 'check-circle',
+            self::Unchecked => 'heroicon-o-chevron-up-down',
+            default => 'heroicon-o-chevron-up-down'
+        };
+    }
+
+    public function getActionText(): string
+    {
+        return match ($this) {
+            self::Reject => 'Rejected',
+            self::Approve => 'Approved',
+            self::Unchecked => 'Unchecked',
+            default => 'Unchecked'
+        };
+    }
 }
