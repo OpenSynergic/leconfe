@@ -7,6 +7,8 @@ use App\Http\Middleware\IdentifyConference;
 use App\Http\Middleware\IdentifySeries;
 use App\Http\Middleware\MustVerifyEmail;
 use App\Http\Middleware\PanelAuthenticate;
+use App\Http\Middleware\PanelPermission;
+use App\Http\Responses\Auth\LogoutResponse;
 use App\Panel\Conference\Pages\Dashboard;
 use App\Panel\Conference\Resources\UserResource;
 use Filament\Facades\Filament;
@@ -23,6 +25,8 @@ use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
+use Filament\Http\Responses\Auth\Contracts\LogoutResponse as LogoutResponseContract;
+
 
 class PanelProvider extends ServiceProvider
 {
@@ -72,10 +76,10 @@ class PanelProvider extends ServiceProvider
             ->discoverLivewireComponents(in: app_path('Panel/Conference/Livewire'), for: 'App\\Panel\\Conference\\Livewire')
             ->pages(static::getPages())
             ->userMenuItems([
-                'logout' => MenuItem::make()
-                    ->url(fn (): string => route('filament.conference.auth.logout', ['conference' => app()->getCurrentConference()])),
-                'profile' => MenuItem::make()
-                    ->url(fn (): string => UserResource::getUrl('profile')),
+                // 'logout' => MenuItem::make()
+                //     ->url(fn (): string => route('filament.conference.auth.logout', ['conference' => app()->getCurrentConference()])),
+                // 'profile' => MenuItem::make()
+                //     ->url(fn (): string => UserResource::getUrl('profile')),
             ])
             ->renderHook(
                 PanelsRenderHook::TOPBAR_START,
@@ -159,6 +163,8 @@ class PanelProvider extends ServiceProvider
         Filament::registerPanel(
             fn (): Panel => $this->administrationPanel(Panel::make()),
         );
+
+        // $this->app->bind(LogoutResponseContract::class, LogoutResponse::class);
     }
 
     /**
@@ -187,6 +193,7 @@ class PanelProvider extends ServiceProvider
     {
         return [
             'web',
+            // PanelPermission::class,
             DisableBladeIconComponents::class,
             DispatchServingFilamentEvent::class,
             'logout.banned',

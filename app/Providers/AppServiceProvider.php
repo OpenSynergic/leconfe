@@ -171,10 +171,10 @@ class AppServiceProvider extends ServiceProvider
         }
 
         // Scope livewire update path to current conference
-        $currentConference = app()->getCurrentConference();
+        $currentConference = $this->app->getCurrentConference();
         if ($currentConference) {
             // Scope livewire update path to current serie
-            $currentSerie = app()->getCurrentSerie();
+            $currentSerie = $this->app->getCurrentSerie();
             if ($currentSerie) {
                 Livewire::setUpdateRoute(
                     fn ($handle) => Route::post($currentConference->path . '/series/' . $currentSerie->path . '/livewire/update', $handle)->middleware('web')
@@ -184,5 +184,7 @@ class AppServiceProvider extends ServiceProvider
 
             Livewire::setUpdateRoute(fn ($handle) => Route::post($currentConference->path . '/livewire/update', $handle)->middleware('web'));
         }
+
+        setPermissionsTeamId($this->app->getCurrentConferenceId());
     }
 }

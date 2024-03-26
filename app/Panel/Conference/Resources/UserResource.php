@@ -136,12 +136,16 @@ class UserResource extends Resource
                                         name: 'roles',
                                         titleAttribute: 'name',
                                         modifyQueryUsing: fn (Builder $query) => $query
+                                            ->where('roles.conference_id', app()->getCurrentConferenceId())
                                             // Only let users that have assignRoles permission that can assign all roles, otherwise only self assigned roles are allowed
                                             ->when(
                                                 value: ! auth()->user()->can('assignRoles', static::getModel()),
                                                 callback: fn (Builder $query) => $query->whereIn('name', UserRole::selfAssignedRoleValues())
                                             )
-                                    ),
+                                    )
+                                    ->saveRelationshipsUsing(function (Forms\Components\CheckboxList $component, ?array $state) {
+                                        $component->getModelInstance()->assignRole($state);
+                                    }),
                             ]),
                     ])
                     ->columnSpan(['lg' => 1]),
@@ -259,7 +263,7 @@ class UserResource extends Resource
                         ->label(fn (User $record) => "Login as {$record->given_name}")
                         ->icon('heroicon-m-key')
                         ->color('primary')
-                        ->redirectTo('panel'),
+                        ->redirectTo(fn () => route('filament.conference.pages.dashboard')),
                     Action::make('enable')
                         ->visible(fn (User $record) => auth()->user()->can('enable', $record))
                         ->label(fn (User $record) => 'Enable User')

@@ -11,6 +11,7 @@ enum UserRole: string implements HasLabel
 
     case Admin = 'Admin';
     case ConferenceManager = 'Conference Manager';
+    case SeriesManager = 'Series Manager';
     case Editor = 'Editor';
     case Reviewer = 'Reviewer';
     case Author = 'Author';
@@ -36,5 +37,16 @@ enum UserRole: string implements HasLabel
     public static function selfAssignedRoleValues(): array
     {
         return array_column(self::selfAssignedRoles(), 'value');
+    }
+
+    public static function conferenceRoles(): array
+    {
+        return [
+            static::ConferenceManager,
+            static::SeriesManager,
+            static::Editor,
+            static::Reviewer,
+            static::Author,
+        ];
     }
 }

@@ -4,6 +4,8 @@ namespace Database\Seeders\Developments;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Application;
+use App\Models\Conference;
 use App\Models\Enums\UserRole;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -22,10 +24,18 @@ class UserSeeder extends Seeder
             'password' => Hash::make('admin'),
         ]);
 
+        $conferences = Conference::all();
+
+        setPermissionsTeamId(Application::CONTEXT_WEBSITE);
         $user->assignRole(UserRole::Admin->value);
+        foreach ($conferences as $key => $conference) {
+            setPermissionsTeamId($conference->getKey());
 
-        $users = \App\Models\User::factory(100)->create();
+            $user->assignRole(UserRole::Admin->value);
+            
+            $users = \App\Models\User::factory(10)->create();
+            $users->each(fn ($user) => $user->assignRole(UserRole::random()->value));
+        }
 
-        $users->each(fn ($user) => $user->assignRole(UserRole::random()->value));
     }
 }

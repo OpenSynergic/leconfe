@@ -3,9 +3,12 @@
 namespace App\Observers;
 
 use App\Actions\Participants\ParticipantPositionPopulateDefaultDataAction;
+use App\Actions\Roles\RolePopulateAction;
+use App\Actions\Roles\RolePopulateConferenceAction;
 use App\Models\Conference;
 use App\Models\NavigationMenu;
 use App\Models\NavigationMenuItem;
+use App\Models\Role;
 
 class ConferenceObserver
 {
@@ -129,6 +132,8 @@ class ConferenceObserver
                 'updated_at' => now(),
             ],
         ]);
+
+        RolePopulateConferenceAction::run($conference);
 
         $conference->setMeta('page_footer', view('frontend.examples.footer')->render());
         $conference->setMeta('workflow.payment.supported_currencies', ['usd']);

@@ -15,8 +15,9 @@ class RoleCreateAction
         try {
             DB::beginTransaction();
 
-            $role = Role::create($data);
+            $data['conference_id'] ??= app()->getCurrentConferenceId();
 
+            $role = Role::create($data);
             if (isset($data['permissions'])) {
                 $role->syncPermissions($data['permissions']);
             }
