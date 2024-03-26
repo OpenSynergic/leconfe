@@ -42,7 +42,7 @@ class PanelProvider extends ServiceProvider
             ->discoverLivewireComponents(in: app_path('Panel/Series/Livewire'), for: 'App\\Panel\\Series\\Livewire')
             ->userMenuItems([
                 'logout' => MenuItem::make()
-                    ->url(fn (): string => route('filament.series.auth.logout', ['conference' => app()->getCurrentConference(), 'serie' => app()->getCurrentSerie()])),
+                    ->url(fn (): string => route('conference.logout')),
             ])
             ->renderHook(
                 PanelsRenderHook::TOPBAR_START,
@@ -76,10 +76,10 @@ class PanelProvider extends ServiceProvider
             ->discoverLivewireComponents(in: app_path('Panel/Conference/Livewire'), for: 'App\\Panel\\Conference\\Livewire')
             ->pages(static::getPages())
             ->userMenuItems([
-                // 'logout' => MenuItem::make()
-                //     ->url(fn (): string => route('filament.conference.auth.logout', ['conference' => app()->getCurrentConference()])),
-                // 'profile' => MenuItem::make()
-                //     ->url(fn (): string => UserResource::getUrl('profile')),
+                'logout' => MenuItem::make()
+                    ->url(fn (): string => route('conference.logout')),
+                'profile' => MenuItem::make()
+                    ->url(fn (): string => UserResource::getUrl('profile')),
             ])
             ->renderHook(
                 PanelsRenderHook::TOPBAR_START,
@@ -119,6 +119,10 @@ class PanelProvider extends ServiceProvider
                 PanelsRenderHook::SIDEBAR_NAV_START,
                 fn () => view('panel.administration.hooks.sidebar-nav-start'),
             )
+            ->userMenuItems([
+                'logout' => MenuItem::make()
+                    ->url(fn (): string => route('logout')),
+            ])
             ->middleware(static::getMiddleware(), true)
             ->authMiddleware(static::getAuthMiddleware(), true);
 
@@ -193,7 +197,7 @@ class PanelProvider extends ServiceProvider
     {
         return [
             'web',
-            // PanelPermission::class,
+            PanelPermission::class,
             DisableBladeIconComponents::class,
             DispatchServingFilamentEvent::class,
             'logout.banned',
