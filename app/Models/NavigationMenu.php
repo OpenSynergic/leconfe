@@ -15,6 +15,7 @@ class NavigationMenu extends Model
     protected $fillable = [
         'name',
         'handle',
+        'conference_id'
     ];
 
     public function items(): HasMany
