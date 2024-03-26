@@ -34,7 +34,9 @@ class ProfileUser extends Page
     {
         $this->record = $user_id ? $this->resolveRecord($user_id) : auth()->user();
 
-        abort_unless(static::getResource()::canEdit($this->getRecord()), 403);
+        if($this->record->getKey() !== auth()->user()->getKey()){
+            abort_unless(static::getResource()::canEdit($this->getRecord()), 403);
+        }
 
         $this->informationForm->fill([
             ...$this->getRecord()->attributesToArray(),
@@ -45,6 +47,11 @@ class ProfileUser extends Page
             // ...$this->getRecord()->attributesToArray(),
             'meta' => $this->getRecord()->getAllMeta()->toArray(),
         ]);
+    }
+
+    public static function authorizeResourceAccess(): void
+    {
+        
     }
 
     public function infolist(Infolist $infolist): Infolist
