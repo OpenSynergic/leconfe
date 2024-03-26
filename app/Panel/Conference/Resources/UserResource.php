@@ -50,6 +50,7 @@ class UserResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return static::getModel()::query()
+            ->whereHas('roles')
             ->with(['meta', 'media', 'bans']);
     }
 
