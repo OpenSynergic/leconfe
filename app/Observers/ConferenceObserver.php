@@ -6,6 +6,7 @@ use App\Actions\Participants\ParticipantPositionPopulateDefaultDataAction;
 use App\Actions\Roles\RolePopulateAction;
 use App\Actions\Roles\RolePopulateConferenceAction;
 use App\Models\Conference;
+use App\Models\Enums\UserRole;
 use App\Models\NavigationMenu;
 use App\Models\NavigationMenuItem;
 use App\Models\Role;
@@ -31,6 +32,7 @@ class ConferenceObserver
             'handle' => 'primary-navigation-menu',
             'conference_id' => $conference->getKey(),
         ]);
+
         $userNavigationMenu = NavigationMenu::create([
             'name' => 'User Navigation Menu',
             'handle' => 'user-navigation-menu',
@@ -138,6 +140,17 @@ class ConferenceObserver
         $conference->setMeta('page_footer', view('frontend.examples.footer')->render());
         $conference->setMeta('workflow.payment.supported_currencies', ['usd']);
         $conference->save();
+
+        if(auth()->user()){
+           $session_team_id = getPermissionsTeamId();
+           // set actual new team_id to package instance
+           setPermissionsTeamId($conference);
+           // get the admin user and assign roles/permissions on new conference
+           auth()->user()->assignRole(UserRole::Admin->name);
+           // restore session team_id to package instance using temporary value stored above
+           setPermissionsTeamId($session_team_id);
+        }
+
     }
 
     /**
