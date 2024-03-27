@@ -7,7 +7,6 @@ use App\Http\Middleware\IdentifyConference;
 use App\Http\Middleware\IdentifySeries;
 use App\Http\Middleware\MustVerifyEmail;
 use App\Http\Middleware\PanelAuthenticate;
-use App\Http\Middleware\PanelPermission;
 use App\Http\Responses\Auth\LogoutResponse;
 use App\Panel\Administration\Pages\Profile as AdministrationProfile;
 use App\Panel\Conference\Pages\Dashboard;
@@ -201,7 +200,6 @@ class PanelProvider extends ServiceProvider
     {
         return [
             'web',
-            PanelPermission::class,
             DisableBladeIconComponents::class,
             DispatchServingFilamentEvent::class,
             'logout.banned',
