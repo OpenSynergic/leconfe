@@ -133,7 +133,7 @@ class ContributorForm extends Component
         return [
             ActionGroup::make([
                 EditAction::make()
-                    ->modalWidth('3xl')
+                    ->modalWidth('2xl')
                     ->mutateRecordDataUsing(function (array $data, Model $record) {
                         $data['meta'] = $record->getAllMeta();
                         return $data;

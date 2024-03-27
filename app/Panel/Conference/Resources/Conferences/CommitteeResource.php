@@ -88,6 +88,7 @@ class CommitteeResource extends Resource
                 ActionGroup::make([
                     CreateAction::make()
                         ->icon('heroicon-o-user-plus')
+                        ->modalWidth('2xl')
                         ->using(fn (array $data) => CommitteeCreateAction::run($data)),
                     Action::make('add_existing_speaker')
                         ->label('Add Existing')
