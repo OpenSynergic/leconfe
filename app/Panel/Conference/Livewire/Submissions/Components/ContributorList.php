@@ -120,7 +120,6 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
                         ->modalWidth('2xl')
                         ->modalHeading('Add Contributor')
                         ->successNotificationTitle('Contributor added')
-                        ->record($this->submission)
                         ->form($this->getContributorFormSchema())
                         ->using(function (array $data) {
                             $author = Author::whereSubmissionId($this->submission->getKey())->email($data['email'])->first();

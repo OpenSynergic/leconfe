@@ -106,7 +106,6 @@ class PresenterList extends Component implements HasForms, HasTable
                         ->modalWidth('2xl')
                         ->modalHeading('Add Presenter')
                         ->successNotificationTitle('Presenter added')
-                        ->record($this->submission)
                         ->form($this->getPresenterFormSchema())
                         ->using(function (array $data, Action $action) {
                             $presenter = Presenter::whereSubmissionId($this->submission->getKey())->email($data['email'])->first();
