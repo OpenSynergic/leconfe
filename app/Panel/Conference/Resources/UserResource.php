@@ -135,12 +135,10 @@ class UserResource extends Resource
                                     ->label('')
                                     ->relationship(
                                         name: 'roles',
-                                        titleAttribute: 'name',
-                                        modifyQueryUsing: fn (Builder $query) => $query
-                                            ->whereIn('name', UserRole::selfAssignedRoleValues())
+                                        titleAttribute: 'name'
                                     )
                                     ->saveRelationshipsUsing(function (Forms\Components\CheckboxList $component, ?array $state) {
-                                        $component->getModelInstance()->assignRole($state);
+                                        $component->getModelInstance()->syncRoles($state);
                                     }),
                             ]),
                     ])
