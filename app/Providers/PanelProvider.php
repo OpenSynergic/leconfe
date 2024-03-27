@@ -9,7 +9,9 @@ use App\Http\Middleware\MustVerifyEmail;
 use App\Http\Middleware\PanelAuthenticate;
 use App\Http\Middleware\PanelPermission;
 use App\Http\Responses\Auth\LogoutResponse;
+use App\Panel\Administration\Pages\Profile as AdministrationProfile;
 use App\Panel\Conference\Pages\Dashboard;
+use App\Panel\Conference\Pages\Profile;
 use App\Panel\Conference\Resources\UserResource;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
@@ -79,7 +81,7 @@ class PanelProvider extends ServiceProvider
                 'logout' => MenuItem::make()
                     ->url(fn (): string => route('conference.logout')),
                 'profile' => MenuItem::make()
-                    ->url(fn (): string => UserResource::getUrl('profile')),
+                    ->url(fn (): string => Profile::getUrl()),
             ])
             ->renderHook(
                 PanelsRenderHook::TOPBAR_START,
@@ -122,6 +124,8 @@ class PanelProvider extends ServiceProvider
             ->userMenuItems([
                 'logout' => MenuItem::make()
                     ->url(fn (): string => route('logout')),
+                'profile' => MenuItem::make()
+                    ->url(fn (): string => Profile::getUrl(panel: 'administration')),
             ])
             ->middleware(static::getMiddleware(), true)
             ->authMiddleware(static::getAuthMiddleware(), true);
