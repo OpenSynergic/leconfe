@@ -28,12 +28,18 @@
             type="button"
             class="fi-tenant-menu-trigger group flex w-full items-center justify-center gap-x-3 rounded-lg p-2 text-sm font-medium outline-none transition duration-75 hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-white/5 dark:focus:bg-white/5"
         >
+            <x-filament::avatar
+                    :circular="false"
+                    :src="filament()->getTenantAvatarUrl($currentConference)"
+                />
             <span
                 @if (filament()->isSidebarCollapsibleOnDesktop())
                     x-show="$store.sidebar.isOpen"
                 @endif
                 class="grid justify-items-start text-start me-auto truncate"
             >
+                
+
                 <span class="text-gray-950 dark:text-white">
                     {{ $currentConference->name }}
                 </span>
