@@ -8,6 +8,7 @@ use App\Actions\Speakers\SpeakerUpdateAction;
 use App\Models\Speaker;
 use App\Models\SpeakerPosition;
 use App\Models\SpeakerRole;
+use App\Panel\Conference\Livewire\Forms\Conferences\ContributorForm;
 use App\Panel\Conference\Resources\Conferences\SpeakerResource\Pages;
 use Filament\Forms;
 use Filament\Forms\Components\Actions\Action as FormAction;
@@ -56,7 +57,7 @@ class SpeakerResource extends Resource
     {
         return $form
             ->schema([
-                ...ParticipantResource::generalFormField(),
+                ...ContributorForm::generalFormField(app()->getCurrentConference()),
                 Forms\Components\Select::make('speaker_role_id')
                     ->label('Role')
                     ->required()
@@ -84,7 +85,7 @@ class SpeakerResource extends Resource
                     ->columnSpan([
                         'lg' => 2,
                     ]),
-                ...ParticipantResource::additionalFormField(),
+                ...ContributorForm::additionalFormField(app()->getCurrentConference()),
             ]);
     }
 
@@ -156,10 +157,10 @@ class SpeakerResource extends Resource
                 ])->button(),
             ])
             ->columns([
-                ...ParticipantResource::generalTableColumns(),
+                ...ContributorForm::generalTableColumns(),
             ])
             ->actions([
-                ...ParticipantResource::tableActions(SpeakerUpdateAction::class, SpeakerDeleteAction::class),
+                ...ContributorForm::tableActions(SpeakerUpdateAction::class, SpeakerDeleteAction::class),
             ])
             ->filters([
                 // SelectFilter::make('position')

@@ -5,9 +5,8 @@ namespace App\Panel\Conference\Resources\Conferences;
 use App\Actions\Committees\CommitteeCreateAction;
 use App\Actions\Committees\CommitteeDeleteAction;
 use App\Actions\Committees\CommitteeUpdateAction;
-use App\Panel\Conference\Resources\Conferences\ParticipantResource;
 use App\Models\Committee;
-use App\Models\CommitteeRole;
+use App\Panel\Conference\Livewire\Forms\Conferences\ContributorForm;
 use App\Panel\Conference\Resources\Conferences\CommitteeResource\Pages;
 use Filament\Forms;
 use Filament\Forms\Components\Actions\Action as FormAction;
@@ -17,10 +16,8 @@ use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 
 class CommitteeResource extends Resource
 {
@@ -58,7 +55,7 @@ class CommitteeResource extends Resource
     {
         return $form
             ->schema([
-                ...ParticipantResource::generalFormField(),
+                ...ContributorForm::generalFormField(app()->getCurrentConference()),
                 Forms\Components\Select::make('committee_role_id')
                     ->label('Role')
                     ->required()
@@ -77,7 +74,7 @@ class CommitteeResource extends Resource
                     ->columnSpan([
                         'lg' => 2,
                     ]),
-                ...ParticipantResource::additionalFormField(),
+                ...ContributorForm::additionalFormField(app()->getCurrentConference()),
 
             ]);
     }
@@ -130,6 +127,7 @@ class CommitteeResource extends Resource
                                 ),
                             Select::make('committee_role_id')
                                 ->required()
+                                ->label('Role')
                                 ->searchable()
                                 ->options(
                                     fn () => CommitteeRoleResource::getEloquentQuery()
@@ -152,10 +150,10 @@ class CommitteeResource extends Resource
                 ])->button(),
             ])
             ->columns([
-                ...ParticipantResource::generalTableColumns(),
+                ...ContributorForm::generalTableColumns(),
             ])
             ->actions([
-                ...ParticipantResource::tableActions(CommitteeUpdateAction::class, CommitteeDeleteAction::class),
+                ...ContributorForm::tableActions(CommitteeUpdateAction::class, CommitteeDeleteAction::class),
             ])
             ->filters([
                 // SelectFilter::make('role')

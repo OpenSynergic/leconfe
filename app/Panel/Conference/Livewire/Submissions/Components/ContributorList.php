@@ -23,6 +23,7 @@ use Filament\Tables\Columns\Layout\Stack;
 use App\Actions\Authors\AuthorCreateAction;
 use App\Actions\Authors\AuthorDeleteAction;
 use App\Actions\Authors\AuthorUpdateAction;
+use App\Panel\Conference\Livewire\Forms\Conferences\ContributorForm;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Illuminate\Contracts\Database\Eloquent\Builder;
@@ -49,14 +50,6 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
                 'media',
                 'meta',
             ])
-            // ->when(
-            //     $submissionRelated,
-            //     fn (Builder $query) => $query->whereIn('id', $this->submission->contributors()->pluck('participant_id'))
-            // )
-            // ->when(
-            //     ! $submissionRelated,
-            //     fn (Builder $query) => $query->whereNotIn('id', $this->submission->contributors()->pluck('participant_id'))
-            // )
             ->orderBy('order_column');
     }
 
@@ -65,30 +58,7 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
         return [
             Grid::make()
                 ->schema([
-                    SpatieMediaLibraryFileUpload::make('profile')
-                        ->label('Profile Picture')
-                        ->image()
-                        ->key('profile')
-                        ->collection('profile')
-                        ->conversion('thumb')
-                        ->alignCenter()
-                        ->columnSpan([
-                            'lg' => 2,
-                        ]),
-                    TextInput::make('given_name')
-                        ->required(),
-                    TextInput::make('family_name'),
-                    TextInput::make('email')
-                        ->required()
-                        ->unique(
-                            ignoreRecord: true,
-                            modifyRuleUsing: function (Unique $rule) {
-                                return $rule->where('submission_id', $this->submission->getKey());
-                            }
-                        )
-                        ->columnSpan([
-                            'lg' => 2,
-                        ]),
+                    ...ContributorForm::generalFormField($this->submission),
                     Select::make('author_role_id')
                         ->relationship(
                             name: 'role',
@@ -104,7 +74,7 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
                         ->required()
                         ->columnSpanFull()
                         ->searchable(),
-                    ...ParticipantResource::additionalFormField(),
+                    ...ContributorForm::additionalFormField($this->submission),
                 ])
                 ->columnSpan([
                     'lg' => 2,

@@ -12,6 +12,7 @@ use App\Models\MailTemplate;
 use App\Models\Presenter;
 use App\Models\Submission;
 use App\Models\Timeline;
+use App\Panel\Conference\Livewire\Forms\Conferences\ContributorForm;
 use App\Panel\Conference\Resources\Conferences\ParticipantResource;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
@@ -58,31 +59,8 @@ class PresenterList extends Component implements HasForms, HasTable
         return [
             Grid::make()
                 ->schema([
-                    SpatieMediaLibraryFileUpload::make('profile')
-                        ->label('Profile Picture')
-                        ->image()
-                        ->key('profile')
-                        ->collection('profile')
-                        ->conversion('thumb')
-                        ->alignCenter()
-                        ->columnSpan([
-                            'lg' => 2,
-                        ]),
-                    TextInput::make('given_name')
-                        ->required(),
-                    TextInput::make('family_name'),
-                    TextInput::make('email')
-                        ->required()
-                        ->unique(
-                            ignoreRecord: true,
-                            modifyRuleUsing: function (Unique $rule) {
-                                return $rule->where('submission_id', $this->submission->getKey());
-                            }
-                        )
-                        ->columnSpan([
-                            'lg' => 2,
-                        ]),
-                    ...ParticipantResource::additionalFormField(),
+                    ...ContributorForm::generalFormField($this->submission),
+                    ...ContributorForm::additionalFormField($this->submission),
                 ])
                 ->columnSpan([
                     'lg' => 2,
@@ -158,7 +136,6 @@ class PresenterList extends Component implements HasForms, HasTable
                                 }
                             }
                             
-                            $action->success();
                             return $presenter;
                         }),
                     Action::make('add_existing')

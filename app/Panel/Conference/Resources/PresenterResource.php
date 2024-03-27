@@ -41,7 +41,11 @@ class PresenterResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return static::getModel()::query()
-            ->with(['media', 'meta']);
+            ->with(['media', 'meta', 'submission'])
+            ->whereHas(
+                'submission',
+                fn ($query) => $query->where('conference_id', app()->getCurrentConference()->getKey())
+            );
     }
 
     public static function form(Form $form): Form
@@ -60,7 +64,7 @@ class PresenterResource extends Resource
                 Group::make('submission.id')
                     ->label('Group by Submission')
                     ->titlePrefixedWithLabel(false)
-                    ->getTitleFromRecordUsing(fn (Presenter $record): string => 'Submission : '.ucfirst($record->submission->getMeta('title')))
+                    ->getTitleFromRecordUsing(fn (Presenter $record): string => 'Submission : '.ucfirst($record->submission?->getMeta('title')))
                     ->collapsible(),
             ])
             ->columns([
@@ -83,9 +87,9 @@ class PresenterResource extends Resource
                             ->suffix(function (Model $record) {
                                 $country = Country::find($record->getMeta('country'));
 
-                                return new HtmlString(<<<HTML
+                                return $country ? new HtmlString(<<<HTML
                                     <span x-tooltip.raw="{$country->name}"> {$country->flag}</span>
-                                HTML);
+                                HTML) : null;
                             })
                             ->formatStateUsing(function (Model $record) {
                                 if ($record->email == auth()->user()->email) {
