@@ -109,30 +109,9 @@ class PresenterList extends Component implements HasForms, HasTable
                         ->form($this->getPresenterFormSchema())
                         ->using(function (array $data, Action $action) {
                             $presenter = Presenter::whereSubmissionId($this->submission->getKey())->email($data['email'])->first();
-                            $data['status'] = auth()->user()->hasRole([UserRole::Admin->value]) ? PresenterStatus::Approve : PresenterStatus::Unchecked;
+                            
                             if (! $presenter) {
                                 $presenter = PresenterCreateAction::run($this->submission, $data);
-
-                                if ($presenter->status == PresenterStatus::Approve) {
-                                    $mailTemplate = MailTemplate::where('mailable', ApprovedPresenterMail::class)->first();
-                                    $getTemplateMail = (new ApprovedPresenterMail($presenter))
-                                        ->subjectUsing($mailTemplate->subject)
-                                        ->contentUsing($mailTemplate->getHtmlTemplate());
-    
-                                    $presenter->setManyMeta([
-                                        'notes' => $getTemplateMail->message,
-                                        'approved_by' => auth()->user()->id,
-                                        'approved_at' => now()->toDateTimeString(),
-                                    ]);
-    
-                                    try {
-                                        Mail::to($presenter->email)
-                                            ->send($getTemplateMail);
-                                    } catch (\Exception $e) {
-                                        $action->failureNotificationTitle('The email notification was not delivered.');
-                                        $action->failure();
-                                    }
-                                }
                             }
                             
                             return $presenter;
@@ -183,29 +162,7 @@ class PresenterList extends Component implements HasForms, HasTable
 
                             $newPresenter = $this->submission->presenters()->create([
                                 ...$presenter->only(['given_name', 'family_name', 'email']),
-                                'status' => auth()->user()->hasRole([UserRole::Admin->value]) ? PresenterStatus::Approve : PresenterStatus::Unchecked,
                             ]);
-
-                            if ($newPresenter->status == PresenterStatus::Approve) {
-                                $mailTemplate = MailTemplate::where('mailable', ApprovedPresenterMail::class)->first();
-                                $getTemplateMail = (new ApprovedPresenterMail($newPresenter))
-                                    ->subjectUsing($mailTemplate->subject)
-                                    ->contentUsing($mailTemplate->getHtmlTemplate());
-
-                                $newPresenter->setManyMeta([
-                                    'notes' => $getTemplateMail->message,
-                                    'approved_by' => auth()->user()->id,
-                                    'approved_at' => now()->toDateTimeString(),
-                                ]);
-
-                                try {
-                                    Mail::to($newPresenter->email)
-                                        ->send($getTemplateMail);
-                                } catch (\Exception $e) {
-                                    $action->failureNotificationTitle('The email notification was not delivered.');
-                                    $action->failure();
-                                }
-                            }
 
                             if ($meta = $presenter->getAllMeta()->except(['notes', 'approved_by', 'approved_at'])->toArray()) {
                                 $newPresenter->setManyMeta($meta);
