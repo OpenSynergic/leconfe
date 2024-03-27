@@ -9,7 +9,9 @@ use App\Models\Presenter;
 use Filament\Tables\Table;
 use Squire\Models\Country;
 use App\Models\MailTemplate;
+use App\Models\Enums\UserRole;
 use Filament\Resources\Resource;
+use Illuminate\Support\HtmlString;
 use Filament\Tables\Grouping\Group;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Enums\PresenterStatus;
@@ -22,13 +24,12 @@ use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Illuminate\Database\Eloquent\Builder;
 use App\Mail\Templates\ApprovedPresenterMail;
+use App\Mail\Templates\RejectedPresenterMail;
 use App\Actions\Presenters\PresenterApprovedAction;
-use App\Models\Enums\UserRole;
+use App\Actions\Presenters\PresenterRejectedAction;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use App\Panel\Conference\Resources\PresenterResource\Pages;
-use Illuminate\Support\HtmlString;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
-use Ramsey\Uuid\Type\Time;
 
 class PresenterResource extends Resource
 {
@@ -230,7 +231,7 @@ class PresenterResource extends Resource
                         ->color('danger')
                         ->hidden(fn (Presenter $record) => $record->status == PresenterStatus::Reject)
                         ->mountUsing(function (Form $form): void {
-                            $mailTemplate = MailTemplate::where('mailable', ApprovedPresenterMail::class)->first();
+                            $mailTemplate = MailTemplate::where('mailable', RejectedPresenterMail::class)->first();
                             $form->fill([
                                 'notes' => $mailTemplate ? $mailTemplate->html_template : '',
                             ]);
@@ -247,16 +248,16 @@ class PresenterResource extends Resource
                         ])
                         ->successNotificationTitle('The presenter has been approved.')
                         ->action(function (Tables\Actions\Action $action, array $data, Presenter $record) {
-                            $approvedPresenter = PresenterApprovedAction::run($record);
+                            $rejectedPresenter = PresenterRejectedAction::run($record);
                             
-                            $mailTemplate = MailTemplate::where('mailable', ApprovedPresenterMail::class)->first();
-                            $getTemplateMail = (new ApprovedPresenterMail($approvedPresenter))
+                            $mailTemplate = MailTemplate::where('mailable', RejectedPresenterMail::class)->first();
+                            $getTemplateMail = (new RejectedPresenterMail($rejectedPresenter))
                                 ->subjectUsing($mailTemplate->subject)
                                 ->contentUsing($data['notes']);
 
-                            $approvedPresenter->setManyMeta([
+                            $rejectedPresenter->setManyMeta([
                                 'notes' => $getTemplateMail->message,
-                                'approved_by' => auth()->user()->id,
+                                'rejected_by' => auth()->user()->id,
                             ]);
 
                             if (! $data['do-not-notify-presenter']) {
