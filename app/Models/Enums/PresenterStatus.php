@@ -43,7 +43,7 @@ enum PresenterStatus: string implements HasColor, HasLabel
     {
         return match ($this) {
             self::Reject => 'heroicon-o-x-mark',
-            self::Approve => 'check-circle',
+            self::Approve => 'heroicon-o-check',
             self::Unchecked => 'heroicon-o-chevron-up-down',
             default => 'heroicon-o-chevron-up-down'
         };
