@@ -86,7 +86,7 @@ class PresenterResource extends Resource
                         TextColumn::make('fullName')
                             ->suffix(function (Model $record) {
                                 $country = Country::find($record->getMeta('country'));
-
+                                
                                 return $country ? new HtmlString(<<<HTML
                                     <span x-tooltip.raw="{$country->name}"> {$country->flag}</span>
                                 HTML) : null;

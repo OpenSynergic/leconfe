@@ -208,7 +208,7 @@ class PresenterList extends Component implements HasForms, HasTable
                                 }
                             }
 
-                            if ($meta = $presenter->getAllMeta()->toArray()) {
+                            if ($meta = $presenter->getAllMeta()->except(['notes', 'approved_by', 'approved_at'])->toArray()) {
                                 $newPresenter->setManyMeta($meta);
                             }
 

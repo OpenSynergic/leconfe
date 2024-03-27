@@ -174,6 +174,7 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
                                                 ->pluck('name', 'id')
                                                 ->toArray()
                                         )
+                                        ->label('Role')
                                         ->searchable()
                                         ->preload()
                                         ->required()
