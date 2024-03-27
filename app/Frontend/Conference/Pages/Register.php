@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Frontend\Website\Pages;
+namespace App\Frontend\Conference\Pages;
 
 use App\Actions\User\UserCreateAction;
 use App\Models\Enums\UserRole;
@@ -17,7 +17,7 @@ class Register extends Page
 {
     use WithRateLimiting;
 
-    protected static string $view = 'frontend.website.pages.register';
+    protected static string $view = 'frontend.conference.pages.register';
 
     #[Rule('required')]
     public $given_name = null;
@@ -40,15 +40,15 @@ class Register extends Page
     #[Rule('required')]
     public $password_confirmation = null;
 
-    #[Rule('required')]
+    #[Rule('required|accepted')]
     public $privacy_statement_agree = false;
 
-    #[Rule('required')]
+    #[Rule('required', message: 'Please select at least one role.')]
     public $selfAssignRole = [];
 
     public function mount()
     {
-        if (Filament::auth()->check()) {
+        if (auth()->check()) {
             $this->redirect(Filament::getUrl(), navigate: false);
         }
     }
@@ -66,7 +66,7 @@ class Register extends Page
         return [
             'countries' => Country::all(),
             'roles' => UserRole::selfAssignedRoleNames(),
-            'privacyStatementUrl' => '#',
+            'privacyStatementUrl' => route('livewirePageGroup.conference.pages.privacy-statement'),
         ];
     }
 

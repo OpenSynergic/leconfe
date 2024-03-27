@@ -15,6 +15,7 @@ enum UserRole: string implements HasLabel
     case Editor = 'Editor';
     case Reviewer = 'Reviewer';
     case Author = 'Author';
+    case Reader = 'Reader';
 
     public function getLabel(): ?string
     {
@@ -24,19 +25,20 @@ enum UserRole: string implements HasLabel
     public static function selfAssignedRoles(): array
     {
         return [
-            UserRole::Reviewer,
-            UserRole::Author,
+            static::Reader,
+            static::Author,
+            static::Reviewer,
         ];
     }
 
     public static function selfAssignedRoleNames(): array
     {
-        return array_column(self::selfAssignedRoles(), 'name');
+        return array_column(self::selfAssignedRoles(), 'name', 'value');
     }
 
     public static function selfAssignedRoleValues(): array
     {
-        return array_column(self::selfAssignedRoles(), 'value');
+        return array_column(self::selfAssignedRoles(), 'value', 'name');
     }
 
     public static function conferenceRoles(): array
@@ -47,6 +49,7 @@ enum UserRole: string implements HasLabel
             static::Editor,
             static::Reviewer,
             static::Author,
+            static::Reader,
         ];
     }
 }
