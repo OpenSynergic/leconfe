@@ -20,16 +20,23 @@ class ManagePresenters extends ManageRecords
         return [
             'unchecked' => Tab::make()
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', PresenterStatus::Unchecked))
-                ->badge(Presenter::where('status', PresenterStatus::Unchecked)->count())
-                ->badgeColor(Presenter::where('status', PresenterStatus::Unchecked)->count() > 0 ? 'primary' : 'gray'),
+                ->badge(static::presenterTabQuery(PresenterStatus::Unchecked)->count())
+                ->badgeColor(static::presenterTabQuery(PresenterStatus::Unchecked)->count() > 0 ? 'primary' : 'gray'),
             'approved' => Tab::make()
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', PresenterStatus::Approve))
-                ->badge(Presenter::where('status', PresenterStatus::Approve)->count())
-                ->badgeColor(Presenter::where('status', PresenterStatus::Approve)->count() > 0 ? 'primary' : 'gray'),
+                ->badge(static::presenterTabQuery(PresenterStatus::Approve)->count())
+                ->badgeColor(static::presenterTabQuery(PresenterStatus::Approve)->count() > 0 ? 'primary' : 'gray'),
             'rejected' => Tab::make()
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', PresenterStatus::Reject))
-                ->badge(Presenter::where('status', PresenterStatus::Reject)->count())
-                ->badgeColor(Presenter::where('status', PresenterStatus::Reject)->count() > 0 ? 'primary' : 'gray'),
+                ->badge(static::presenterTabQuery(PresenterStatus::Reject)->count())
+                ->badgeColor(static::presenterTabQuery(PresenterStatus::Reject)->count() > 0 ? 'primary' : 'gray'),
         ];
+    }
+
+    public static function presenterTabQuery(PresenterStatus $status): Builder
+    {
+        return Presenter::whereStatus($status)->whereHas('submission', function ($query) {
+            $query->where('conference_id', app()->getCurrentConference()->getKey());
+        });
     }
 }
