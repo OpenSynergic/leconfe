@@ -5,8 +5,13 @@ namespace App\Panel\Conference\Livewire\Submissions\Components;
 use App\Actions\Presenters\PresenterCreateAction;
 use App\Actions\Presenters\PresenterDeleteAction;
 use App\Actions\Presenters\PresenterUpdateAction;
+use App\Mail\Templates\ApprovedPresenterMail;
+use App\Models\Enums\PresenterStatus;
+use App\Models\Enums\UserRole;
+use App\Models\MailTemplate;
 use App\Models\Presenter;
 use App\Models\Submission;
+use App\Models\Timeline;
 use App\Panel\Conference\Resources\Conferences\ParticipantResource;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
@@ -28,6 +33,7 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules\Unique;
 use Livewire\Component;
 
@@ -124,12 +130,35 @@ class PresenterList extends Component implements HasForms, HasTable
                         ->successNotificationTitle('Presenter added')
                         ->record($this->submission)
                         ->form($this->getPresenterFormSchema())
-                        ->using(function (array $data) {
+                        ->using(function (array $data, Action $action) {
                             $presenter = Presenter::whereSubmissionId($this->submission->getKey())->email($data['email'])->first();
+                            $data['status'] = auth()->user()->hasRole([UserRole::Admin->value]) ? PresenterStatus::Approve : PresenterStatus::Unchecked;
                             if (! $presenter) {
                                 $presenter = PresenterCreateAction::run($this->submission, $data);
+
+                                if ($presenter->status == PresenterStatus::Approve) {
+                                    $mailTemplate = MailTemplate::where('mailable', ApprovedPresenterMail::class)->first();
+                                    $getTemplateMail = (new ApprovedPresenterMail($presenter))
+                                        ->subjectUsing($mailTemplate->subject)
+                                        ->contentUsing($mailTemplate->getHtmlTemplate());
+    
+                                    $presenter->setManyMeta([
+                                        'notes' => $getTemplateMail->message,
+                                        'approved_by' => auth()->user()->id,
+                                        'approved_at' => now()->toDateTimeString(),
+                                    ]);
+    
+                                    try {
+                                        Mail::to($presenter->email)
+                                            ->send($getTemplateMail);
+                                    } catch (\Exception $e) {
+                                        $action->failureNotificationTitle('The email notification was not delivered.');
+                                        $action->failure();
+                                    }
+                                }
                             }
                             
+                            $action->success();
                             return $presenter;
                         }),
                     Action::make('add_existing')
@@ -147,6 +176,7 @@ class PresenterList extends Component implements HasForms, HasTable
                                                 ->limit(10)
                                                 ->whereNotIn('email', $presenters)
                                                 ->get()
+                                                ->unique('email')
                                                 ->mapWithKeys(fn (Presenter $presenter) => [$presenter->getKey() => static::renderSelectPresenter($presenter)])
                                                 ->toArray();
                                         })
@@ -172,16 +202,40 @@ class PresenterList extends Component implements HasForms, HasTable
                                         ->columnSpanFull(),
                                 ]),
                         ])
-                        ->action(function (array $data) {
+                        ->action(function (array $data, Action $action) {
                             $presenter = Presenter::find($data['presenter_id']);
 
                             $newPresenter = $this->submission->presenters()->create([
                                 ...$presenter->only(['given_name', 'family_name', 'email']),
+                                'status' => auth()->user()->hasRole([UserRole::Admin->value]) ? PresenterStatus::Approve : PresenterStatus::Unchecked,
                             ]);
+
+                            if ($newPresenter->status == PresenterStatus::Approve) {
+                                $mailTemplate = MailTemplate::where('mailable', ApprovedPresenterMail::class)->first();
+                                $getTemplateMail = (new ApprovedPresenterMail($newPresenter))
+                                    ->subjectUsing($mailTemplate->subject)
+                                    ->contentUsing($mailTemplate->getHtmlTemplate());
+
+                                $newPresenter->setManyMeta([
+                                    'notes' => $getTemplateMail->message,
+                                    'approved_by' => auth()->user()->id,
+                                    'approved_at' => now()->toDateTimeString(),
+                                ]);
+
+                                try {
+                                    Mail::to($newPresenter->email)
+                                        ->send($getTemplateMail);
+                                } catch (\Exception $e) {
+                                    $action->failureNotificationTitle('The email notification was not delivered.');
+                                    $action->failure();
+                                }
+                            }
 
                             if ($meta = $presenter->getAllMeta()->toArray()) {
                                 $newPresenter->setManyMeta($meta);
-                            }    
+                            }
+
+                            $action->success();
                         }),
                 ])
                     ->button()

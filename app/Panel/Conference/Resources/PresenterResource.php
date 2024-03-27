@@ -15,19 +15,20 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\Enums\PresenterStatus;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Tables\Columns\Layout\Panel;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Illuminate\Database\Eloquent\Builder;
-use App\Mail\Templates\RejectedPresenterMail;
-use App\Actions\Presenters\PresenterRejectedAction;
+use App\Mail\Templates\ApprovedPresenterMail;
+use App\Actions\Presenters\PresenterApprovedAction;
+use App\Models\Enums\UserRole;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use App\Panel\Conference\Resources\PresenterResource\Pages;
 use Illuminate\Support\HtmlString;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
+use Ramsey\Uuid\Type\Time;
 
 class PresenterResource extends Resource
 {
@@ -55,7 +56,6 @@ class PresenterResource extends Resource
     {
         return $table
             ->defaultGroup('submission.id')
-            // ->groupingSettingsHidden()
             ->groups([
                 Group::make('submission.id')
                     ->label('Group by Submission')
@@ -83,7 +83,9 @@ class PresenterResource extends Resource
                             ->suffix(function (Model $record) {
                                 $country = Country::find($record->getMeta('country'));
 
-                                return ' '.$country?->flag;
+                                return new HtmlString(<<<HTML
+                                    <span x-tooltip.raw="{$country->name}"> {$country->flag}</span>
+                                HTML);
                             })
                             ->formatStateUsing(function (Model $record) {
                                 if ($record->email == auth()->user()->email) {
@@ -147,14 +149,6 @@ class PresenterResource extends Resource
                         ]),
                     ])
                     ->space(1),
-                    // TextColumn::make('status')
-                    //     ->label('Status')
-                    //     ->badge()
-                    //     ->color(function (Model $record) {
-                    //         return $record->status->getColor();
-                    //     })
-                    //     ->searchable()
-                    //     ->alignCenter(),
                 ]),
             ])
             ->filters([
@@ -168,27 +162,62 @@ class PresenterResource extends Resource
                         ->icon('heroicon-o-check')
                         ->iconSize('md')
                         ->color('primary')
+                        ->hidden(fn (Presenter $record) => $record->status == PresenterStatus::Approve)
+                        ->mountUsing(function (Form $form): void {
+                            $mailTemplate = MailTemplate::where('mailable', ApprovedPresenterMail::class)->first();
+                            $form->fill([
+                                'notes' => $mailTemplate ? $mailTemplate->html_template : '',
+                            ]);
+                        })
                         ->form([
-                            Select::make('timeline')
-                                ->label('Timeline')
+                            Select::make('set_date')
+                                ->label('Set Date')
                                 ->required()
+                                ->preload()
                                 ->searchable()
                                 ->options(function () {
                                     return Timeline::query()
+                                        ->whereJsonContains('roles', UserRole::Presenter)
                                         ->get()
-                                        ->pluck('title', 'id')
+                                        ->mapWithKeys(fn (Timeline $timeline) => [$timeline->id => $timeline->date->isoFormat('D MMM Y').' - '.$timeline->title])
                                         ->toArray();
                                 }),
-                            Textarea::make('note')
-                                ->label('Note')
+                            TinyEditor::make('notes')
+                                ->label('Notes')
                                 ->required()
-                                ->placeholder('Enter your note here...')
+                                ->placeholder('Enter your notes here...')
                                 ->helperText('This note will be sent to and seen by the presenter.')
-                                ->rows(3),
+                                ->profile('email'),
                             Checkbox::make('do-not-notify-presenter')
                                 ->label("Don't Send Notification to Presenter"),
                         ])
-                        ->action(fn (Presenter $presenter) => $presenter->update(['status' => PresenterStatus::Approve])),
+                        ->action(function (Tables\Actions\Action $action, array $data, Presenter $record) {
+                            $approvedPresenter = PresenterApprovedAction::run($record);
+                            
+                            $mailTemplate = MailTemplate::where('mailable', ApprovedPresenterMail::class)->first();
+                            $getTemplateMail = (new ApprovedPresenterMail($approvedPresenter))
+                                ->subjectUsing($mailTemplate->subject)
+                                ->contentUsing($data['notes']);
+
+                            $approvedPresenter->setManyMeta([
+                                'notes' => $getTemplateMail->message,
+                                'approved_by' => auth()->user()->id,
+                                'approved_at' => now()->toDateTimeString(),
+                                'timeline_date' => Timeline::find($data['set_date'])->date,
+                            ]);
+
+                            if (! $data['do-not-notify-presenter']) {
+                                try {
+                                    Mail::to($record->email)
+                                        ->send($getTemplateMail);
+                                } catch (\Exception $e) {
+                                    $action->failureNotificationTitle('The email notification was not delivered.');
+                                    $action->failure();
+                                }
+                            }
+
+                            $action->success();
+                        }),
                     Tables\Actions\Action::make('reject')
                         ->label('Reject')
                         ->modalHeading('Reject Presenter')
@@ -197,7 +226,7 @@ class PresenterResource extends Resource
                         ->color('danger')
                         ->hidden(fn (Presenter $record) => $record->status == PresenterStatus::Reject)
                         ->mountUsing(function (Form $form): void {
-                            $mailTemplate = MailTemplate::where('mailable', RejectedPresenterMail::class)->first();
+                            $mailTemplate = MailTemplate::where('mailable', ApprovedPresenterMail::class)->first();
                             $form->fill([
                                 'notes' => $mailTemplate ? $mailTemplate->html_template : '',
                             ]);
@@ -212,18 +241,18 @@ class PresenterResource extends Resource
                             Checkbox::make('do-not-notify-presenter')
                                 ->label("Don't Send Notification to Presenter"),
                         ])
-                        ->successNotificationTitle('The presenter has been rejected.')
+                        ->successNotificationTitle('The presenter has been approved.')
                         ->action(function (Tables\Actions\Action $action, array $data, Presenter $record) {
-                            $rejectedPresenter = PresenterRejectedAction::run($record);
+                            $approvedPresenter = PresenterApprovedAction::run($record);
                             
-                            $mailTemplate = MailTemplate::where('mailable', RejectedPresenterMail::class)->first();
-                            $getTemplateMail = (new RejectedPresenterMail($rejectedPresenter))
+                            $mailTemplate = MailTemplate::where('mailable', ApprovedPresenterMail::class)->first();
+                            $getTemplateMail = (new ApprovedPresenterMail($approvedPresenter))
                                 ->subjectUsing($mailTemplate->subject)
                                 ->contentUsing($data['notes']);
 
-                            $rejectedPresenter->setManyMeta([
+                            $approvedPresenter->setManyMeta([
                                 'notes' => $getTemplateMail->message,
-                                'rejected_by' => auth()->user()->id,
+                                'approved_by' => auth()->user()->id,
                             ]);
 
                             if (! $data['do-not-notify-presenter']) {
