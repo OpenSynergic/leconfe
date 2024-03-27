@@ -79,8 +79,6 @@
 - 'Topic:delete'
 - 'Topic:update'
 - 'Topic:view'
-- 'User:assignPermissions'
-- 'User:assignRoles'
 - 'User:create'
 - 'User:delete'
 - 'User:disable'

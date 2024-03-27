@@ -137,12 +137,7 @@ class UserResource extends Resource
                                         name: 'roles',
                                         titleAttribute: 'name',
                                         modifyQueryUsing: fn (Builder $query) => $query
-                                            ->where('roles.conference_id', app()->getCurrentConferenceId())
-                                            // Only let users that have assignRoles permission that can assign all roles, otherwise only self assigned roles are allowed
-                                            ->when(
-                                                value: ! auth()->user()->can('assignRoles', static::getModel()),
-                                                callback: fn (Builder $query) => $query->whereIn('name', UserRole::selfAssignedRoleValues())
-                                            )
+                                            ->whereIn('name', UserRole::selfAssignedRoleValues())
                                     )
                                     ->saveRelationshipsUsing(function (Forms\Components\CheckboxList $component, ?array $state) {
                                         $component->getModelInstance()->assignRole($state);
