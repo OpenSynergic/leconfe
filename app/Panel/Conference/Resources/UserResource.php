@@ -35,6 +35,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
+use PhpParser\Node\Expr\AssignOp\Mod;
 use STS\FilamentImpersonate\Tables\Actions\Impersonate;
 
 class UserResource extends Resource
@@ -135,7 +136,8 @@ class UserResource extends Resource
                                     ->label('')
                                     ->relationship(
                                         name: 'roles',
-                                        titleAttribute: 'name'
+                                        titleAttribute: 'name',
+                                        modifyQueryUsing: fn ($query) => $query->where('name', '!=', UserRole::Admin)
                                     )
                                     ->saveRelationshipsUsing(function (Forms\Components\CheckboxList $component, ?array $state) {
                                         $component->getModelInstance()->syncRoles($state);
