@@ -53,10 +53,66 @@ class SpeakerResource extends Resource
         return 'Speaker';
     }
 
+    public static function selectSpeakerField($form): Select
+    {
+        return Select::make('speaker_id')
+            ->label('Select Existing Speaker')
+            ->placeholder('Select Speaker')
+            ->preload()
+            ->native(false)
+            ->searchable()
+            ->allowHtml()
+            ->options(function () {
+                $speakers = static::getEloquentQuery()->pluck('email')->toArray();
+
+                return Speaker::query()
+                    ->whereNotIn('email', $speakers)
+                    ->get()
+                    ->mapWithKeys(fn (Speaker $speaker) => [$speaker->getKey() => static::renderSelectSpeaker($speaker)])
+                    ->toArray();
+            })
+            ->optionsLimit(10)
+            ->getSearchResultsUsing(
+                function (string $search) {
+                    $speakers = static::getEloquentQuery()->pluck('email')->toArray();
+
+                    return Speaker::query()
+                        ->with(['media', 'meta'])
+                        ->whereNotIn('email', $speakers)
+                        ->where(fn ($query) => $query->where('given_name', 'LIKE', "%{$search}%")
+                            ->orWhere('family_name', 'LIKE', "%{$search}%")
+                            ->orWhere('email', 'LIKE', "%{$search}%"))
+                        ->get()
+                        ->mapWithKeys(fn (Speaker $speaker) => [$speaker->getKey() => static::renderSelectSpeaker($speaker)])
+                        ->toArray();
+                }
+            )
+            ->live()
+            ->afterStateUpdated(function ($state) use ($form) {
+                if (! $state) {
+                    return;
+                }
+                $speaker = Speaker::with(['meta', 'role' => fn ($query) => $query->withoutGlobalScopes()])->findOrFail($state);
+                $role = SpeakerRoleResource::getEloquentQuery()->whereName($speaker?->role?->name)->first();
+
+                $formData = [ 
+                    'speaker_id' => $state,
+                    'given_name' => $speaker->given_name,
+                    'family_name' => $speaker->family_name,
+                    'email' => $speaker->email,
+                    'speaker_role_id' => $role->id ?? null,
+                    'meta' => $speaker->getAllMeta()
+                ];
+                return static::form($form)->fill($formData);
+            })
+            ->columnSpanFull();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                static::selectSpeakerField($form),
                 ...ContributorForm::generalFormField(app()->getCurrentConference()),
                 Forms\Components\Select::make('speaker_role_id')
                     ->label('Role')
@@ -95,67 +151,10 @@ class SpeakerResource extends Resource
             ->reorderable('order_column')
             ->heading('Speakers Table')
             ->headerActions([
-                ActionGroup::make([
-                    CreateAction::make()
-                        ->icon('heroicon-o-user-plus')
-                        ->modalWidth('2xl')
-                        ->using(fn (array $data) => SpeakerCreateAction::run($data)),
-                    Action::make('add_existing_speaker')
-                        ->label('Add Existing')
-                        ->icon('heroicon-o-plus')
-                        ->modalWidth('xl')
-                        ->form([
-                            Select::make('speaker_id')
-                                ->label('Speaker')
-                                ->required()
-                                ->preload()
-                                ->searchable()
-                                ->allowHtml()
-                                ->options(function () {
-                                    $speakers = static::getEloquentQuery()->pluck('email')->toArray();
-
-                                    return Speaker::query()
-                                        ->limit(10)
-                                        ->whereNotIn('email', $speakers)
-                                        ->get()
-                                        ->mapWithKeys(fn (Speaker $speaker) => [$speaker->getKey() => static::renderSelectSpeaker($speaker)])
-                                        ->toArray();
-                                })
-                                ->getSearchResultsUsing(
-                                    function (string $search) {
-                                        $speakers = static::getEloquentQuery()->pluck('email')->toArray();
-
-                                        return Speaker::query()
-                                            ->with(['media', 'meta'])
-                                            ->whereNotIn('email', $speakers)
-                                            ->where(fn ($query) => $query->where('given_name', 'LIKE', "%{$search}%")
-                                                ->orWhere('family_name', 'LIKE', "%{$search}%")
-                                                ->orWhere('email', 'LIKE', "%{$search}%"))
-                                            ->get()
-                                            ->mapWithKeys(fn (Speaker $speaker) => [$speaker->getKey() => static::renderSelectSpeaker($speaker)])
-                                            ->toArray();
-                                    }
-                                ),
-                            Select::make('speaker_role_id')
-                                ->required()
-                                ->searchable()
-                                ->options(fn () => SpeakerRole::query()
-                                    ->pluck('name', 'id')
-                                    ->toArray()),
-                        ])
-                        ->action(function ($data) {
-                            $speaker = static::getModel()::find($data['speaker_id']);
-
-                            $newSpeaker = Speaker::create([
-                                ...$speaker->only(['given_name', 'family_name', 'email']),
-                                'speaker_role_id' => $data['speaker_role_id'],
-                            ]);
-
-                            if ($meta = $speaker->getAllMeta()->toArray()) {
-                                $newSpeaker->setManyMeta($meta);
-                            }         
-                        }),
-                ])->button(),
+                CreateAction::make()
+                    ->icon('heroicon-o-user-plus')
+                    ->modalWidth('2xl')
+                    ->using(fn (array $data) => SpeakerCreateAction::run($data)),
             ])
             ->columns([
                 ...ContributorForm::generalTableColumns(),
@@ -171,7 +170,8 @@ class SpeakerResource extends Resource
 
     public static function renderSelectSpeaker(Speaker $speaker): string
     {
-        return view('forms.select-participant', ['participant' => $speaker])->render();
+        $speaker->load('conference');
+        return view('forms.select-contributor-conference', ['contributor' => $speaker])->render();
     }
 
     public static function getPages(): array
