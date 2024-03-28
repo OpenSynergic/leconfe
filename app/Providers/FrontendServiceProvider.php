@@ -6,6 +6,7 @@ use App\Http\Middleware\IdentifyConference;
 use App\Http\Middleware\SetupDefaultData;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 use Rahmanramsi\LivewirePageGroup\Facades\LivewirePageGroup;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 
@@ -23,6 +24,12 @@ class FrontendServiceProvider extends ServiceProvider
             LivewirePageGroup::registerPageGroup(
                 $this->conferencePageGroup(PageGroup::make()),
             );
+
+            Livewire::addPersistentMiddleware([
+                'web',
+                IdentifyConference::class,
+                SetupDefaultData::class,
+            ]);
         });
     }
 
