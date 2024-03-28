@@ -54,11 +54,65 @@ class PresenterList extends Component implements HasForms, HasTable
             ->orderBy('order_column');
     }
 
+    public function selectPresenterField(): Select
+    {
+        return Select::make('presenter_id')
+            ->label('Select Existing Presenter')
+            ->placeholder('Select Presenter')
+            ->preload()
+            ->native(false)
+            ->searchable()
+            ->allowHtml()
+            ->options(function () {
+                $presenters = $this->getQuery()->pluck('email')->toArray();
+
+                return Presenter::query()
+                    ->whereNotIn('email', $presenters)
+                    ->get()
+                    ->mapWithKeys(fn (Presenter $presenter) => [$presenter->getKey() => static::renderSelectPresenter($presenter)])
+                    ->toArray();
+            })
+            ->optionsLimit(10)
+            ->getSearchResultsUsing(
+                function (string $search) {
+                    $presenters = $this->getQuery()->pluck('email')->toArray();
+
+                    return Presenter::query()
+                        ->with(['media', 'meta'])
+                        ->whereNotIn('email', $presenters)
+                        ->where(fn ($query) => $query->where('given_name', 'LIKE', "%{$search}%")
+                            ->orWhere('family_name', 'LIKE', "%{$search}%")
+                            ->orWhere('email', 'LIKE', "%{$search}%"))
+                        ->get()
+                        ->mapWithKeys(fn (Presenter $presenter) => [$presenter->getKey() => static::renderSelectPresenter($presenter)])
+                        ->toArray();
+                }
+            )
+            ->live()
+            ->afterStateUpdated(function ($state, $livewire) {
+                if (! $state) {
+                    return;
+                }
+                $presenter = Presenter::with(['meta'])->findOrFail($state);
+
+                $formData = [ 
+                    'presenter_id' => $state,
+                    'given_name' => $presenter->given_name,
+                    'family_name' => $presenter->family_name,
+                    'email' => $presenter->email,
+                    'meta' => $presenter->getAllMeta()
+                ];
+                return $livewire->mountedTableActionsData[0] = $formData;
+            })
+            ->columnSpanFull();
+    }
+
     public function getPresenterFormSchema(): array
     {
         return [
             Grid::make()
                 ->schema([
+                    $this->selectPresenterField(),
                     ...ContributorForm::generalFormField($this->submission),
                     ...ContributorForm::additionalFormField($this->submission),
                 ])
@@ -100,79 +154,22 @@ class PresenterList extends Component implements HasForms, HasTable
                     ->hidden($this->viewOnly),
             ])
             ->headerActions([
-                ActionGroup::make([
-                    CreateAction::make()
-                        ->label('Create new')
-                        ->modalWidth('2xl')
-                        ->modalHeading('Add Presenter')
-                        ->successNotificationTitle('Presenter added')
-                        ->form($this->getPresenterFormSchema())
-                        ->using(function (array $data, Action $action) {
-                            $presenter = Presenter::whereSubmissionId($this->submission->getKey())->email($data['email'])->first();
-                            
-                            if (! $presenter) {
-                                $presenter = PresenterCreateAction::run($this->submission, $data);
-                            }
-                            
-                            return $presenter;
-                        }),
-                    Action::make('add_existing')
-                        ->label('Add from existing')
-                        ->modalWidth('lg')
-                        ->form([
-                            Grid::make()
-                                ->schema([
-                                    Select::make('presenter_id')
-                                        ->label('Name')
-                                        ->options(function () {
-                                            $presenters = $this->getQuery()->pluck('email')->toArray();
-
-                                            return Presenter::query()
-                                                ->limit(10)
-                                                ->whereNotIn('email', $presenters)
-                                                ->get()
-                                                ->unique('email')
-                                                ->mapWithKeys(fn (Presenter $presenter) => [$presenter->getKey() => static::renderSelectPresenter($presenter)])
-                                                ->toArray();
-                                        })
-                                        ->getSearchResultsUsing(
-                                            function (string $search) {
-                                                $presenters = $this->getQuery()->pluck('email')->toArray();
-        
-                                                return Presenter::query()
-                                                    ->with(['media', 'meta'])
-                                                    ->whereNotIn('email', $presenters)
-                                                    ->where(fn ($query) => $query->where('given_name', 'LIKE', "%{$search}%")
-                                                        ->orWhere('family_name', 'LIKE', "%{$search}%")
-                                                        ->orWhere('email', 'LIKE', "%{$search}%"))
-                                                    ->get()
-                                                    ->mapWithKeys(fn (Presenter $presenter) => [$presenter->getKey() => static::renderSelectPresenter($presenter)])
-                                                    ->toArray();
-                                            }
-                                        )
-                                        ->searchable()
-                                        ->preload()
-                                        ->allowHtml()
-                                        ->required()
-                                        ->columnSpanFull(),
-                                ]),
-                        ])
-                        ->action(function (array $data, Action $action) {
-                            $presenter = Presenter::find($data['presenter_id']);
-
-                            $newPresenter = $this->submission->presenters()->create([
-                                ...$presenter->only(['given_name', 'family_name', 'email']),
-                            ]);
-
-                            if ($meta = $presenter->getAllMeta()->except(['notes', 'approved_by', 'approved_at'])->toArray()) {
-                                $newPresenter->setManyMeta($meta);
-                            }
-
-                            $action->success();
-                        }),
-                ])
-                    ->button()
-                    ->label('Add Presenter')
+                CreateAction::make()
+                    ->label('New Presenter')
+                    ->modalWidth('2xl')
+                    ->icon('heroicon-o-user-plus')
+                    ->modalHeading('Add Presenter')
+                    ->successNotificationTitle('Presenter added')
+                    ->form($this->getPresenterFormSchema())
+                    ->using(function (array $data, Action $action) {
+                        $presenter = Presenter::whereSubmissionId($this->submission->getKey())->email($data['email'])->first();
+                        
+                        if (! $presenter) {
+                            $presenter = PresenterCreateAction::run($this->submission, $data);
+                        }
+                        
+                        return $presenter;
+                    })
                     ->hidden($this->viewOnly),
             ])
             ->columns([
@@ -228,7 +225,8 @@ class PresenterList extends Component implements HasForms, HasTable
 
     public static function renderSelectPresenter(Presenter $presenter): string
     {
-        return view('forms.select-participant', ['participant' => $presenter])->render();
+        $presenter->load('submission');
+        return view('forms.select-contributor-submission', ['contributor' => $presenter])->render();
     }
 
     public function render()
