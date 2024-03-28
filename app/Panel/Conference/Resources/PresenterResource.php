@@ -147,7 +147,7 @@ class PresenterResource extends Resource
                                     HTML);
                                 })
                         ])
-                        ->visible(fn (Model $record) => $record->getMeta('notes'))
+                        ->visible(fn (Model $record) => $record->getMeta('notes') && $record->status != PresenterStatus::Unchecked)
                         ->collapsible()
                         ->extraAttributes([
                             'class' => 'w-1/2',
