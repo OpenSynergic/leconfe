@@ -1,5 +1,4 @@
 @use('\App\Models\Conference')
-
 @php
     $currentConference = app()->getCurrentConference();
 @endphp
@@ -63,12 +62,13 @@
             :href="route('filament.administration.home')"
             icon="heroicon-s-cog"
             tag="a"
+            class="border-b"
         >
             {{ __('Administration') }}
         </x-filament::dropdown.list.item>
         @endcan
 
-        <div class="max-h-64 overflow-y-scroll border-t">
+        <div class="max-h-64 overflow-y-scroll">
         @foreach (Conference::where('path', '!=', app()->getCurrentConference()->path)->latest()->get() as $conference)
             <x-filament::dropdown.list.item
                 :href="$conference->getPanelUrl()"
