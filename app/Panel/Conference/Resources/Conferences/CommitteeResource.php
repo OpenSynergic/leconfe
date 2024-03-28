@@ -51,10 +51,72 @@ class CommitteeResource extends Resource
         return 'Committee';
     }
 
+    public static function selectCommitteeField($form): Select
+    {
+        return Select::make('committee_id')
+            ->label('Select Existing Committee')
+            ->placeholder('Select Committee')
+            ->preload()
+            ->native(false)
+            ->searchable()
+            ->allowHtml()
+            ->options(function () {
+                $committees = static::getEloquentQuery()->pluck('email')->toArray();
+
+                return Committee::query()
+                    ->limit(10)
+                    ->whereNotIn('email', $committees)
+                    ->get()
+                    ->mapWithKeys(fn (Committee $committee) => [$committee->getKey() => static::renderSelectCommittee($committee)])
+                    ->toArray();
+            })
+            ->getSearchResultsUsing(
+                function (string $search) {
+                    $committees = static::getEloquentQuery()->pluck('email')->toArray();
+
+                    return Committee::query()
+                        ->with(['media', 'meta'])
+                        ->whereNotIn('email', $committees)
+                        ->where(fn ($query) => $query->where('given_name', 'LIKE', "%{$search}%")
+                            ->orWhere('family_name', 'LIKE', "%{$search}%")
+                            ->orWhere('email', 'LIKE', "%{$search}%"))
+                        ->get()
+                        ->mapWithKeys(fn (Committee $committee) => [$committee->getKey() => static::renderSelectCommittee($committee)])
+                        ->toArray();
+                }
+            )
+            ->live()
+            ->afterStateUpdated(function ($state, Select $component) use ($form) {
+                $committee = Committee::with(['meta', 'role' => fn ($query) => $query->withoutGlobalScopes()])->findOrFail($state);
+                $role = CommitteeRoleResource::getEloquentQuery()->whereName($committee->role->name)->first();
+                // dd($form->getComponents(), $component);
+
+                $profileComponents = array_values(array_filter($form->getComponents(), function ($component) {
+                    return $component->getKey() === 'profile';
+                }));
+
+                $formData = [ 
+                    'committee_id' => $state,
+                    'profile' => [
+                        $committee->getFirstMedia('profile')?->uuid => $committee->getFirstMedia('profile')?->uuid
+                    ],
+                    'given_name' => $committee->given_name,
+                    'family_name' => $committee->family_name,
+                    'email' => $committee->email,
+                    'committee_role_id' => $role->id ?? null,
+                    'meta' => $committee->getAllMeta()
+                ];
+
+                return static::form($form)->fill($formData);
+            })
+            ->columnSpanFull();
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                static::selectCommitteeField($form),
                 ...ContributorForm::generalFormField(app()->getCurrentConference()),
                 Forms\Components\Select::make('committee_role_id')
                     ->label('Role')
