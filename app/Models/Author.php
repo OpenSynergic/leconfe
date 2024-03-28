@@ -83,4 +83,9 @@ class Author extends Model implements HasAvatar, HasMedia, Sortable
     {
         return $this->belongsTo(AuthorRole::class, 'author_role_id', 'id');
     }
+
+    public function submission(): BelongsTo
+    {
+        return $this->belongsTo(Submission::class, 'submission_id', 'id');
+    }
 }
