@@ -24,7 +24,7 @@ class ApprovedPresenterMail extends TemplateMailable
     {
         $this->presenter = $presenterModel->fullName;
         $this->title = $presenterModel->submission->getMeta('title');
-        $this->loginLink = route('livewirePageGroup.website.pages.login');
+        $this->loginLink = route('filament.conference.pages.dashboard', $presenterModel->submission->conference);
 
         $this->log = Log::make(
             name: 'email',
@@ -48,7 +48,10 @@ class ApprovedPresenterMail extends TemplateMailable
     public static function getDefaultHtmlTemplate(): string
     {
         return <<<'HTML'
-            <p>This is a automatic notification to let you know that {{ presenter }} has been approved from the submission titled "{{ title }}".</p>
+            <p>
+                This is a automatic notification to let you know that {{ presenter }} has been approved from the submission titled "{{ title }}".
+                You can <a href="{{ loginLink }}">log in</a> to the system to see the details of the submission.
+            </p>
         HTML;
     }
 }

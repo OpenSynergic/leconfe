@@ -25,7 +25,7 @@ class RejectedPresenterMail extends TemplateMailable
     {
         $this->presenter = $presenterModel->fullName;
         $this->title = $presenterModel->submission->getMeta('title');
-        $this->loginLink = route('livewirePageGroup.website.pages.login');
+        $this->loginLink = route('filament.conference.pages.dashboard', $presenterModel->submission->conference);
 
         $this->log = Log::make(
             name: 'email',
@@ -49,7 +49,7 @@ class RejectedPresenterMail extends TemplateMailable
     public static function getDefaultHtmlTemplate(): string
     {
         return <<<'HTML'
-            <p>This is a automatic notification to let you know that {{ presenter }} has been rejected from the submission titled "{{ title }}".</p>
+            <p>This is a automatic notification to let you know that {{ presenter }} has been rejected from the submission titled "{{ title }}". Please <a href="{{ loginLink }}">log in</a> to see the details.</p>
         HTML;
     }
 }
