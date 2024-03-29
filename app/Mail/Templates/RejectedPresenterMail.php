@@ -49,7 +49,10 @@ class RejectedPresenterMail extends TemplateMailable
     public static function getDefaultHtmlTemplate(): string
     {
         return <<<'HTML'
-            <p>This is a automatic notification to let you know that {{ presenter }} has been rejected from the submission titled "{{ title }}". Please <a href="{{ loginLink }}">log in</a> to see the details.</p>
+            <p>
+                This is a automatic notification to let you know that {{ presenter }} has been rejected from the submission titled "{{ title }}".
+                You can <a href="{{ loginLink }}">log in</a> to the system to see the details.
+            </p>
         HTML;
     }
 }

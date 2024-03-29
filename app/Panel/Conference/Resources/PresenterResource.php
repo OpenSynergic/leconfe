@@ -196,6 +196,7 @@ class PresenterResource extends Resource
                             Checkbox::make('do-not-notify-presenter')
                                 ->label("Don't Send Notification to Presenter"),
                         ])
+                        ->successNotificationTitle('The presenter has been approved.')
                         ->action(function (Tables\Actions\Action $action, array $data, Presenter $record) {
                             $approvedPresenter = PresenterApprovedAction::run($record);
                             
@@ -246,7 +247,7 @@ class PresenterResource extends Resource
                             Checkbox::make('do-not-notify-presenter')
                                 ->label("Don't Send Notification to Presenter"),
                         ])
-                        ->successNotificationTitle('The presenter has been approved.')
+                        ->successNotificationTitle('The presenter has been rejected.')
                         ->action(function (Tables\Actions\Action $action, array $data, Presenter $record) {
                             $rejectedPresenter = PresenterRejectedAction::run($record);
                             
