@@ -35,23 +35,23 @@ body {
 }
 
 .fi-breadcrumbs {
-    @apply animate-in slide-in-from-right-5 fade-in duration-500;
+    @apply duration-500 animate-in slide-in-from-right-5 fade-in;
 }
 
 .fi-header-heading {
-    @apply animate-in slide-in-from-right-5 fade-in duration-500;
+    @apply duration-500 animate-in slide-in-from-right-5 fade-in;
 }
 
 .fi-global-search-field {
-    @apply animate-in fade-in duration-500;
+    @apply duration-500 animate-in fade-in;
 }
 
 .fi-section-content > div {
-    @apply animate-in fade-in duration-1000;
+    @apply duration-1000 animate-in fade-in;
 }
 
 .fi-in-tabs-tab > dl {
-    @apply animate-in fade-in duration-500;
+    @apply duration-500 animate-in fade-in;
 }
 
 .fi-sidebar{
@@ -74,4 +74,16 @@ body {
 
 .fi-sidebar-nav {
     @apply !gap-y-4
+}
+
+.fi-ta-group-selection-cell {
+    @apply !bg-white;
+}
+
+.fi-ta-group-header {
+    @apply !bg-white !py-3;
+}
+
+.fi-ta-group-header .grid h4 {
+    @apply !py-2;
 }
