@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use Database\Seeders\Developments\ConferenceSeeder;
 use Database\Seeders\Developments\ParticipantSeeder;
+use Database\Seeders\Developments\ProceedingSeeder;
 use Database\Seeders\Developments\SerieSeeder;
 use Database\Seeders\Developments\SubmissionSeeder;
 use Database\Seeders\Developments\UserSeeder;
@@ -21,6 +22,7 @@ class DevelopmentSeeder extends Seeder
         $this->call(ProductionSeeder::class);
         $this->call(ConferenceSeeder::class);
         $this->call(SerieSeeder::class);
+        $this->call(ProceedingSeeder::class);
         $this->call(SubmissionSeeder::class);
         $this->call(ParticipantSeeder::class);
         $this->call(UserSeeder::class);
