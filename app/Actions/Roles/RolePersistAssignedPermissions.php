@@ -14,33 +14,18 @@ class RolePersistAssignedPermissions
 {
     use AsAction;
 
-    public string $commandSignature = 'role:persist-assigned-permissions';
-
-    public function handle()
+    public function handle(Role $role)
     {
-        $data = [];
+        $file = base_path('data' . DIRECTORY_SEPARATOR . 'roleAssignedPermissions.yaml');
 
-        foreach (UserRole::array() as $roleName) {
-            $role = Role::query()
-                ->with('permissions', fn ($query) => $query->orderBy('name', 'asc'))
-                ->where('name', $roleName)
-                ->first();
-
-            $data[$roleName] = ($roleName !== UserRole::Admin) ? $role->permissions->pluck('name')->toArray() : Permission::query()->pluck('name')->toArray();
+        if (!file_exists($file)) {
+            File::put($file, '');
         }
 
-        File::put(base_path('data'.DIRECTORY_SEPARATOR.'roleAssignedPermissions.yaml'), Yaml::dump($data));
-    }
+        $roleAssignedPermissions = Yaml::parseFile($file) ?? [];
+        $roleAssignedPermissions[$role->name] = ($role->name !== UserRole::Admin) ? $role->permissions->pluck('name')->toArray() : Permission::query()->pluck('name')->toArray();
 
-    public function asCommand(Command $command): void
-    {
-        try {
-            $this->handle();
 
-            $command->info('Success persist assigned permissions for roles');
-
-        } catch (\Throwable $th) {
-            $command->error($th->getMessage());
-        }
+        File::put($file, Yaml::dump($roleAssignedPermissions));
     }
 }

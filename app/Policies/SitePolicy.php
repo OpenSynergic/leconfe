@@ -29,6 +29,8 @@ class SitePolicy
      */
     public function delete(User $user, Site $site)
     {
-        return false;
+        if ($user->can('Administration:delete')) {
+            return true;
+        }
     }
 }

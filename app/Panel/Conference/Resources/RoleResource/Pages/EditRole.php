@@ -28,7 +28,7 @@ class EditRole extends EditRecord
     {
         $data['permissions'] = app(PermissionRegistrar::class)
             ->getPermissions()
-            ->mapWithKeys(fn ($permission) => [$permission->name => ! $this->getRecord()->ancestorsAndSelf->pluck('id')->intersect($permission->roles->pluck('id')->toArray())->isEmpty()])
+            ->mapWithKeys(fn ($permission) => [$permission->name => $this->getRecord()->hasPermissionTo($permission->name)])
             ->toArray();
 
         return $data;

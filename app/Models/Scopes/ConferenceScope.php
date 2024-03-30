@@ -14,6 +14,6 @@ class ConferenceScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        $builder->where('conference_id', App::getCurrentConferenceId());
+        $builder->where($model->getTable() . '.conference_id', App::getCurrentConferenceId());
     }
 }

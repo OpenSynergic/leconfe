@@ -21,12 +21,13 @@ class DevelopmentSeeder extends Seeder
     public function run(): void
     {
         $this->call(ProductionSeeder::class);
-        $this->call(UserSeeder::class);
         $this->call(ConferenceSeeder::class);
+        $this->call(SerieSeeder::class);
         $this->call(SubmissionSeeder::class);
         $this->call(ParticipantSeeder::class);
         $this->call(CommitteeSeeder::class);
         $this->call(SpeakerSeeder::class);
         $this->call(SerieSeeder::class);
+        $this->call(UserSeeder::class);
     }
 }

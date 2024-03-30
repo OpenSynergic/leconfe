@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LogoutController;
 use App\Models\Media;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
@@ -67,3 +68,8 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 Route::get('phpmyinfo', function () {
     phpinfo();
 })->middleware('admin')->name('phpmyinfo');
+
+Route::get('{conference:path}/logout', LogoutController::class)->name('conference.logout');
+Route::post('{conference:path}/logout', LogoutController::class)->name('conference.logout');
+Route::get('logout', LogoutController::class)->name('logout');
+Route::post('logout', LogoutController::class)->name('logout');

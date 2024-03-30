@@ -12,6 +12,7 @@ use App\Models\ConferenceSponsor;
 use App\Models\NavigationMenu;
 use App\Models\ParticipantPosition;
 use App\Models\PaymentItem;
+use App\Models\Role;
 use App\Models\Scopes\ConferenceScope;
 use App\Models\Serie;
 use App\Models\Site;
