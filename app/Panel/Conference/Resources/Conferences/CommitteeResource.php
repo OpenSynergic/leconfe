@@ -2,22 +2,20 @@
 
 namespace App\Panel\Conference\Resources\Conferences;
 
+use Filament\Forms;
+use Filament\Forms\Form;
+use App\Models\Committee;
+use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Actions\CreateAction;
+use Illuminate\Database\Eloquent\Builder;
 use App\Actions\Committees\CommitteeCreateAction;
 use App\Actions\Committees\CommitteeDeleteAction;
 use App\Actions\Committees\CommitteeUpdateAction;
-use App\Models\Committee;
+use Filament\Forms\Components\Actions\Action as FormAction;
 use App\Panel\Conference\Livewire\Forms\Conferences\ContributorForm;
 use App\Panel\Conference\Resources\Conferences\CommitteeResource\Pages;
-use Filament\Forms;
-use Filament\Forms\Components\Actions\Action as FormAction;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 
 class CommitteeResource extends Resource
 {
@@ -149,9 +147,7 @@ class CommitteeResource extends Resource
             ->actions([
                 ...ContributorForm::tableActions(CommitteeUpdateAction::class, CommitteeDeleteAction::class),
             ])
-            ->filters([
-                
-            ]);
+            ->filters([]);
     }
 
     public static function renderSelectCommittee(Committee $committee): string

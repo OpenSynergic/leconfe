@@ -1,18 +1,16 @@
 <?php
 
 namespace App\Panel\Conference\Resources\Conferences;
-use App\Models\ParticipantRole;
-use App\Models\SpeakerRole;
-use App\Panel\Conference\Resources\Traits\CustomizedUrl;
-use App\Models\ParticipantPosition;
-use App\Tables\Columns\IndexColumn;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
+
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
+use App\Models\SpeakerRole;
+use Filament\Resources\Resource;
+use App\Tables\Columns\IndexColumn;
 use Illuminate\Validation\Rules\Unique;
+use Filament\Forms\Components\TextInput;
+use Illuminate\Database\Eloquent\Builder;
 
 class SpeakerRoleResource extends Resource
 {
@@ -75,8 +73,6 @@ class SpeakerRoleResource extends Resource
                             return $record->delete();
                         } catch (\Throwable $th) {
                             $action->failureNotificationTitle($th->getMessage());
-                            // throw $th;
-
                         }
                     }),
             ])
@@ -84,9 +80,6 @@ class SpeakerRoleResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ])
-            ->emptyStateActions([
-                // Tables\Actions\CreateAction::make(),
             ])
             ->heading('Speaker Roles Table')
             ->headerActions([

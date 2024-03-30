@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Conference::class)->constrained();
             $table->unsignedBigInteger('parent_id')->nullable();
-            // $table->string('type');
             $table->string('name');
             $table->string('slug')->unique();
             $table->unsignedInteger('order_column')->nullable();
@@ -57,5 +56,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('committees');
+        Schema::dropIfExists('committee_meta');
+        Schema::dropIfExists('committee_roles');
     }
 };

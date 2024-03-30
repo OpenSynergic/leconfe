@@ -43,19 +43,10 @@ class TopicResource extends Resource
                 TextColumn::make('name'),
             ])
             ->actions([
-                ViewAction::make()
-                    ->form([
-                        Grid::make()
-                            ->columns(1)
-                            ->schema([
-                                TextInput::make('name')
-                                    ->required(),
-                            ]),
-                    ]),
+                ViewAction::make(),
                 ActionGroup::make([
                     EditAction::make()
                         ->modalWidth('2xl'),
-                        // ->form(fn () => static::formSchemas()),
                     DeleteAction::make(),
                 ]),
             ]);

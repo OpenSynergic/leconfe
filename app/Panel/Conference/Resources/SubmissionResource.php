@@ -212,9 +212,4 @@ class SubmissionResource extends Resource
             'reviewer-invitation' => Pages\ReviewerInvitationPage::route('/{record}/reviewer-invitation'),
         ];
     }
-
-    // public static function getNavigationBadge(): ?string
-    // {
-    //     return static::getModel()::where('status', '!=', SubmissionStatus::Declined)->count();
-    // }
 }

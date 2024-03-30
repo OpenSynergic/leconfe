@@ -40,9 +40,6 @@ return new class extends Migration
         Schema::create('participants', function (Blueprint $table) {
             $table->id();
             $table->string('email')->nullable()->unique();
-            // $table->foreignIdFor(Conference::class)->constrained();
-            // $table->foreignIdFor(ParticipantPosition::class)->constrained();
-            // $table->string('type');
             $table->string('given_name');
             $table->string('family_name')->nullable();
             $table->string('public_name')->nullable();

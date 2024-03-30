@@ -2,8 +2,6 @@
 
 namespace App\Panel\Conference\Resources\Conferences;
 
-use App\Actions\Participants\DetachParticipantPositionByType;
-use App\Actions\Participants\ParticipantUpdateAction;
 use App\Models\Participant;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms;

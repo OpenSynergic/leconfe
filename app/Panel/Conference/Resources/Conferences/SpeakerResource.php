@@ -2,26 +2,21 @@
 
 namespace App\Panel\Conference\Resources\Conferences;
 
+use Filament\Forms;
+use App\Models\Speaker;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Actions\CreateAction;
+use Illuminate\Database\Eloquent\Builder;
 use App\Actions\Speakers\SpeakerCreateAction;
 use App\Actions\Speakers\SpeakerDeleteAction;
 use App\Actions\Speakers\SpeakerUpdateAction;
-use App\Models\Speaker;
-use App\Models\SpeakerPosition;
-use App\Models\SpeakerRole;
+use Filament\Forms\Components\Actions\Action as FormAction;
 use App\Panel\Conference\Livewire\Forms\Conferences\ContributorForm;
 use App\Panel\Conference\Resources\Conferences\SpeakerResource\Pages;
-use Filament\Forms;
-use Filament\Forms\Components\Actions\Action as FormAction;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 
 class SpeakerResource extends Resource
 {
@@ -163,8 +158,7 @@ class SpeakerResource extends Resource
                 ...ContributorForm::tableActions(SpeakerUpdateAction::class, SpeakerDeleteAction::class),
             ])
             ->filters([
-                // SelectFilter::make('position')
-                //     ->relationship('position', 'name'),
+                //
             ]);
     }
 
@@ -184,7 +178,7 @@ class SpeakerResource extends Resource
     public static function getWidgets(): array
     {
         return [
-            // Widgets\SpeakerOverview::make(),
+            //
         ];
     }
 }

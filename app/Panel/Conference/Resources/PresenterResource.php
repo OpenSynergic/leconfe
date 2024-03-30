@@ -279,9 +279,6 @@ class PresenterResource extends Resource
                 ->color(fn (Presenter $record) => $record->status->getActionColor())
                 ->button()
                 ->outlined()
-            ])
-            ->bulkActions([
-                //
             ]);
     }
 

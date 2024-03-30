@@ -3,7 +3,6 @@
 namespace App\Panel\Conference\Resources\Conferences;
 
 use App\Models\AuthorRole;
-use App\Panel\Conference\Resources\Traits\CustomizedUrl;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -81,9 +80,6 @@ class AuthorRoleResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ])
-            ->emptyStateActions([
-                // Tables\Actions\CreateAction::make(),
             ])
             ->heading('Author Roles Table')
             ->headerActions([

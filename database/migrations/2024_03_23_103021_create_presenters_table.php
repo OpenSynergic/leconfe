@@ -47,5 +47,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('presenters');
+        Schema::dropIfExists('presenter_meta');
     }
 };

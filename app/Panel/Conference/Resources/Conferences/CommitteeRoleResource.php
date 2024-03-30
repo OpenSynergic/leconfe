@@ -3,7 +3,6 @@
 namespace App\Panel\Conference\Resources\Conferences;
 
 use App\Models\CommitteeRole;
-use App\Panel\Conference\Resources\Traits\CustomizedUrl;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
