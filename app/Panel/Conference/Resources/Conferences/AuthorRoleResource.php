@@ -11,14 +11,22 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\Rules\Unique;
+use App\Panel\Conference\Resources\Conferences\AuthorRoleResource\Pages;
 
 class AuthorRoleResource extends Resource
 {
-    protected static bool $isDiscovered = false;
+    // protected static bool $isDiscovered = false;
 
     protected static ?string $model = AuthorRole::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Conferences';
+
+    protected static ?string $navigationIcon = 'heroicon-o-users';
+
+    public static function getNavigationLabel(): string
+    {
+        return 'Author';
+    }
 
     public static string $roleType = 'author';
 
@@ -94,6 +102,8 @@ class AuthorRoleResource extends Resource
 
     public static function getPages(): array
     {
-        return [];
+        return [
+            'index' => Pages\ManageAuthorRoles::route('/'),
+        ];
     }
 }

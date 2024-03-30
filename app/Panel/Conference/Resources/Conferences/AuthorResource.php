@@ -19,6 +19,8 @@ class AuthorResource extends Resource
 {
     protected static ?string $navigationGroup = 'Conferences';
 
+    protected static bool $isDiscovered = false;
+
     protected static ?string $model = Author::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
