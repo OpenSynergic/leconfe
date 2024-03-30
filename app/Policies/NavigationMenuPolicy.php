@@ -2,14 +2,14 @@
 
 namespace App\Policies;
 
-use App\Models\Navigation;
+use App\Models\NavigationMenu;
 use App\Models\User;
 
-class NavigationPolicy
+class NavigationMenuPolicy
 {
     public function viewAny(User $user)
     {
-        if ($user->can('Navigation:viewAny')) {
+        if ($user->can('NavigationMenu:viewAny')) {
             return true;
         }
     }
@@ -19,7 +19,7 @@ class NavigationPolicy
      */
     public function create(User $user)
     {
-        if ($user->can('Navigation:create')) {
+        if ($user->can('NavigationMenu:create')) {
             return true;
         }
     }
@@ -27,9 +27,9 @@ class NavigationPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Navigation $navigation)
+    public function update(User $user, NavigationMenu $navigation)
     {
-        if ($user->can('Navigation:update')) {
+        if ($user->can('NavigationMenu:update')) {
             return true;
         }
     }
@@ -37,13 +37,9 @@ class NavigationPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Navigation $navigation)
+    public function delete(User $user, NavigationMenu $navigation)
     {
-        if ($navigation->handle == 'primary-navigation-menu') {
-            return false;
-        }
-
-        if ($user->can('Navigation:delete')) {
+        if ($user->can('NavigationMenu:delete')) {
             return true;
         }
     }

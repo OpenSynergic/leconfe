@@ -7,7 +7,10 @@ use App\Http\Middleware\IdentifyConference;
 use App\Http\Middleware\IdentifySeries;
 use App\Http\Middleware\MustVerifyEmail;
 use App\Http\Middleware\PanelAuthenticate;
+use App\Http\Responses\Auth\LogoutResponse;
+use App\Panel\Administration\Pages\Profile as AdministrationProfile;
 use App\Panel\Conference\Pages\Dashboard;
+use App\Panel\Conference\Pages\Profile;
 use App\Panel\Conference\Resources\UserResource;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
@@ -23,6 +26,8 @@ use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
+use Filament\Http\Responses\Auth\Contracts\LogoutResponse as LogoutResponseContract;
+
 
 class PanelProvider extends ServiceProvider
 {
@@ -38,7 +43,7 @@ class PanelProvider extends ServiceProvider
             ->discoverLivewireComponents(in: app_path('Panel/Series/Livewire'), for: 'App\\Panel\\Series\\Livewire')
             ->userMenuItems([
                 'logout' => MenuItem::make()
-                    ->url(fn (): string => route('filament.series.auth.logout', ['conference' => app()->getCurrentConference(), 'serie' => app()->getCurrentSerie()])),
+                    ->url(fn (): string => route('conference.logout')),
             ])
             ->renderHook(
                 PanelsRenderHook::TOPBAR_START,
@@ -73,9 +78,9 @@ class PanelProvider extends ServiceProvider
             ->pages(static::getPages())
             ->userMenuItems([
                 'logout' => MenuItem::make()
-                    ->url(fn (): string => route('filament.conference.auth.logout', ['conference' => app()->getCurrentConference()])),
+                    ->url(fn (): string => route('conference.logout')),
                 'profile' => MenuItem::make()
-                    ->url(fn (): string => UserResource::getUrl('profile')),
+                    ->url(fn (): string => Profile::getUrl()),
             ])
             ->renderHook(
                 PanelsRenderHook::TOPBAR_START,
@@ -115,6 +120,12 @@ class PanelProvider extends ServiceProvider
                 PanelsRenderHook::SIDEBAR_NAV_START,
                 fn () => view('panel.administration.hooks.sidebar-nav-start'),
             )
+            ->userMenuItems([
+                'logout' => MenuItem::make()
+                    ->url(fn (): string => route('logout')),
+                'profile' => MenuItem::make()
+                    ->url(fn (): string => Profile::getUrl(panel: 'administration')),
+            ])
             ->middleware(static::getMiddleware(), true)
             ->authMiddleware(static::getAuthMiddleware(), true);
 
@@ -159,6 +170,8 @@ class PanelProvider extends ServiceProvider
         Filament::registerPanel(
             fn (): Panel => $this->administrationPanel(Panel::make()),
         );
+
+        // $this->app->bind(LogoutResponseContract::class, LogoutResponse::class);
     }
 
     /**

@@ -26,7 +26,8 @@ class SetupDefaultData
             $this->setupSite();
         }
 
-        View::share('homeUrl', $currentConference?->getHomeUrl() ?? route('livewirePageGroup.website.pages.home'));
+        View::share('currentConference', $currentConference);
+        View::share('homeUrl', $currentConference ? route('livewirePageGroup.conference.pages.home') : route('livewirePageGroup.website.pages.home'));
 
         return $next($request);
     }
@@ -57,7 +58,6 @@ class SetupDefaultData
     {
         View::share('headerLogo', $currentConference->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl']));
         View::share('headerLogoAltText', $currentConference->name);
-        View::share('currentConference', $currentConference);
         View::share('contextName', $currentConference->name);
         View::share('footer', $currentConference->getMeta('page_footer'));
         View::share('favicon', $currentConference->getFirstMediaUrl('favicon'));

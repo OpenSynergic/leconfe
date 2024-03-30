@@ -16,10 +16,10 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        foreach (UserRole::array() as $role) {
-            Role::updateOrCreate(['name' => $role]);
-        }
+        // foreach (UserRole::array() as $role) {
+        //     Role::updateOrCreate(['name' => $role, 'conference_id' => null]);
+        // }
 
-        RoleAssignDefaultPermissions::run();
+        // RoleAssignDefaultPermissions::run();
     }
 }

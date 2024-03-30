@@ -102,13 +102,6 @@ class UserPolicy
         }
     }
 
-    public function assignRoles(User $user)
-    {
-        if ($user->can('User:assignRoles')) {
-            return true;
-        }
-    }
-
     public function disable(User $user, User $model)
     {
         if ($model->isBanned()) {
@@ -140,17 +133,6 @@ class UserPolicy
         }
 
         if ($user->can('User:enable')) {
-            return true;
-        }
-    }
-
-    public function viewProfile(User $user, User $model)
-    {
-        if ($user->is($model)) {
-            return true;
-        }
-
-        if ($user->can('User:viewProfile')) {
             return true;
         }
     }

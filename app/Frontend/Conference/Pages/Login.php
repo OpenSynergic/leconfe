@@ -31,6 +31,13 @@ class Login extends Page
         }
     }
 
+    public function getViewData() : array 
+    {
+        return [
+            'registerUrl' => route('livewirePageGroup.conference.pages.register'),
+        ];
+    }
+
     public function getBreadcrumbs(): array
     {
         return [
