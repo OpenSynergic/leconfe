@@ -2,41 +2,31 @@
 
 namespace App\Panel\Conference\Livewire\Submissions\Components;
 
-use App\Actions\Presenters\PresenterCreateAction;
-use App\Actions\Presenters\PresenterDeleteAction;
-use App\Actions\Presenters\PresenterUpdateAction;
-use App\Mail\Templates\ApprovedPresenterMail;
-use App\Models\Enums\PresenterStatus;
-use App\Models\Enums\UserRole;
-use App\Models\MailTemplate;
+use Livewire\Component;
 use App\Models\Presenter;
 use App\Models\Submission;
-use App\Models\Timeline;
-use App\Panel\Conference\Livewire\Forms\Conferences\ContributorForm;
-use App\Panel\Conference\Resources\Conferences\ParticipantResource;
+use Filament\Tables\Table;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Actions\Action;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Contracts\HasTable;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Validation\Rules\Unique;
-use Livewire\Component;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Tables\Concerns\InteractsWithTable;
+use App\Actions\Presenters\PresenterCreateAction;
+use App\Actions\Presenters\PresenterDeleteAction;
+use App\Actions\Presenters\PresenterUpdateAction;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use App\Panel\Conference\Livewire\Forms\Conferences\ContributorForm;
 
 class PresenterList extends Component implements HasForms, HasTable
 {
@@ -216,8 +206,9 @@ class PresenterList extends Component implements HasForms, HasTable
                             ->icon('heroicon-o-envelope')
                             ->alignStart(),
                     ])->space(1),
-                    TextColumn::make('role.name')
+                    TextColumn::make('status')
                         ->badge()
+                        ->color(fn (Model $record) => $record->status->getColor())
                         ->alignEnd(),
                 ]),
             ]);
