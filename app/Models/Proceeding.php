@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Concerns\BelongsToConference;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -58,6 +59,8 @@ class Proceeding extends Model implements HasMedia
         $this->published_at = $published ? now() : null;
         $this->save();
 
+        $this->setAsCurrent();
+
         return $this;
     }
 
@@ -75,5 +78,10 @@ class Proceeding extends Model implements HasMedia
         $this->save();
 
         return $this;
+    }
+
+    public function submissions() : HasMany
+    {
+        return $this->hasMany(Submission::class);
     }
 }

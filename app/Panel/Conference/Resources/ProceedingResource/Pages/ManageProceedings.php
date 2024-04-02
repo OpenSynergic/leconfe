@@ -6,6 +6,7 @@ use App\Panel\Conference\Resources\ProceedingResource;
 use Filament\Actions;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ManageRecords;
+use Filament\Support\Enums\MaxWidth;
 use Illuminate\Database\Eloquent\Builder;
 
 class ManageProceedings extends ManageRecords
@@ -16,7 +17,7 @@ class ManageProceedings extends ManageRecords
     {
         return [
             Actions\CreateAction::make()
-                ->modalWidth('xl'),
+                ->modalWidth(MaxWidth::ExtraLarge),
         ];
     }
 

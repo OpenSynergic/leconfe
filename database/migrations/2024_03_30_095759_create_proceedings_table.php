@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Conference::class)->constrained();
             $table->string('title');
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->integer('volume')->nullable();
             $table->integer('number')->nullable();
             $table->integer('year')->nullable();

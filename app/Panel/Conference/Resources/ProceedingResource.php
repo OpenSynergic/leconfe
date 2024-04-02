@@ -5,6 +5,7 @@ namespace App\Panel\Conference\Resources;
 use App\Panel\Conference\Resources\ProceedingResource\Pages;
 use App\Panel\Conference\Resources\ProceedingResource\RelationManagers;
 use App\Models\Proceeding;
+use App\Tables\Columns\IndexColumn;
 use Filament\Forms;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Section;
@@ -13,6 +14,8 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\Alignment;
+use Filament\Support\Enums\MaxWidth;
 use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\Layout\Split;
@@ -21,6 +24,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Livewire\Component;
 
 class ProceedingResource extends Resource
 {
@@ -64,17 +68,21 @@ class ProceedingResource extends Resource
     {
         return $table
             ->columns([
-                Split::make([
-                    SpatieMediaLibraryImageColumn::make('cover')
-                        ->collection('cover')
-                        ->conversion('avatar')
-                        ->grow(false),
-                    TextColumn::make('title'),
-                    TextColumn::make('current')
-                        ->state(fn(Proceeding $record) => $record->published && $record->current ? 'Current' : '')
-                        ->badge(),
-                ]),
-                
+                IndexColumn::make('no'),
+                TextColumn::make('title')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('submissions_count')
+                    ->label('Submissions')
+                    ->counts('submissions'),
+                TextColumn::make('current')
+                    ->hidden(fn(Component $livewire) => $livewire->activeTab === 'future')
+                    ->state(fn(Proceeding $record) => $record->published && $record->current ? 'Current' : '')
+                    ->badge(),
+                TextColumn::make('published_at')
+                    ->sortable()
+                    ->hidden(fn(Component $livewire) => $livewire->activeTab === 'future')
+                    ->date(setting('format.date'))
             ])
             ->filters([
                 //
@@ -101,11 +109,6 @@ class ProceedingResource extends Resource
                         ->action(fn (Proceeding $record) => $record->setAsCurrent()),
                     Tables\Actions\DeleteAction::make(),
                 ]),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
     }
 
@@ -113,6 +116,7 @@ class ProceedingResource extends Resource
     {
         return [
             'index' => Pages\ManageProceedings::route('/'),
+            'view' => Pages\ViewProceeding::route('/{record}'),
         ];
     }
 }
