@@ -68,6 +68,18 @@ class ViewProceeding extends Page implements HasForms, HasTable
             ->statePath('data');
     }
 
+
+    public function submit()
+    {
+        abort_unless($this->can('update', $this->record), 403);
+
+        $data = $this->form->getState();
+
+        $this->record->update($data);
+
+        $this->form->saveRelationships();
+    }
+
     public function table(Table $table): Table
     {
         return $table
