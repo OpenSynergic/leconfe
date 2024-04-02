@@ -25,7 +25,6 @@ class ManagePermissions extends ManageRecords
                     ->label('Persist Permissions')
                     ->action(function () {
                         PermissionPersistAction::run();
-                        RolePersistAssignedPermissions::run();
                     }),
             ]),
 

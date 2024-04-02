@@ -2,9 +2,12 @@
 
 namespace App\Observers;
 
+use App\Actions\Roles\RoleAssignDefaultPermissions;
 use App\Application;
+use App\Models\Enums\UserRole;
 use App\Models\NavigationMenu;
 use App\Models\NavigationMenuItem;
+use App\Models\Role;
 use App\Models\Site;
 
 class SiteObserver
@@ -128,6 +131,10 @@ class SiteObserver
             ],
         ]);
 
+
+        $role = Role::firstOrCreate(['name' => UserRole::Admin->value]);
+
+        RoleAssignDefaultPermissions::run($role);
     }
 
     /**

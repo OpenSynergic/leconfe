@@ -35,7 +35,7 @@
                     <span class="loading loading-spinner loading-xs" wire:loading></span>
                     Login
                 </button>
-                <x-website::link class="btn btn-outline btn-sm" :href="url('register')">
+                <x-website::link class="btn btn-outline btn-sm" :href="$registerUrl">
                     Register
                 </x-website::link>
             </div>

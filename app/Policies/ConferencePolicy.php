@@ -7,6 +7,12 @@ use App\Models\User;
 
 class ConferencePolicy
 {
+    public function accessPanel(User $user)
+    {
+        return true;
+        dd($user->roles);
+    }
+
     public function view(User $user, Conference $conference)
     {
         if ($conference->isArchived()) {
