@@ -21,6 +21,8 @@ class SerieResource extends Resource
 {
     protected static ?string $model = Serie::class;
 
+    protected static ?int $navigationSort = 3;
+
     protected static ?string $navigationIcon = 'heroicon-o-server-stack';
 
     public static function form(Form $form): Form

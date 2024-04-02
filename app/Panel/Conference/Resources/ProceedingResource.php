@@ -30,6 +30,8 @@ class ProceedingResource extends Resource
 {
     protected static ?string $model = Proceeding::class;
 
+    protected static ?int $navigationSort = 2;
+
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
 
     public static function form(Form $form): Form
