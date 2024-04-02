@@ -20,9 +20,11 @@
                     {{ $this->form }}
                 </div>
 
+                @can('update', $this->getRecord())
                 <x-filament::button type="submit" icon="iconpark-save-o">
-                        Save
+                    Save
                 </x-filament::button>
+                @endcan
             </form>
         </div>
         <div x-show="activeTab === 'Articles'">

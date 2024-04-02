@@ -15,6 +15,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Model;
 
 class ViewProceeding extends Page implements HasForms, HasTable
 {
@@ -42,6 +43,11 @@ class ViewProceeding extends Page implements HasForms, HasTable
         abort_unless(static::getResource()::canView($this->getRecord()), 403);
     }
 
+    public function can(string $action, Model | null $record = null)
+    {
+        return static::getResource()::can($action, $record);
+    }
+
     public function getBreadcrumb(): string
     {
         return __('filament-panels::resources/pages/view-record.breadcrumb');
@@ -55,6 +61,7 @@ class ViewProceeding extends Page implements HasForms, HasTable
     public function form(Form $form): Form
     {
         $form
+            ->disabled(fn() => !$this->can('update', $this->record))
             ->model($this->record);
 
         return static::getResource()::form($form)
