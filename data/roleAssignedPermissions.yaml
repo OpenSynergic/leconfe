@@ -95,6 +95,11 @@ Admin:
     - 'Venue:view'
     - 'Venue:viewAny'
     - 'Workflow:update'
+    - 'Proceeding:view'
+    - 'Proceeding:viewAny'
+    - 'Proceeding:update'
+    - 'Proceeding:create'
+    - 'Proceeding:delete'
 'Conference Manager':
     - 'Announcement:create'
     - 'Announcement:delete'
@@ -235,3 +240,4 @@ Author:
     - 'Submission:view'
     - 'Submission:viewAny'
     - 'Submission:withdraw'
+Reader: {  }
