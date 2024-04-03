@@ -5,6 +5,7 @@ namespace App\Panel\Conference\Livewire\Wizards\SubmissionWizard\Steps;
 use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Models\Submission;
 use App\Panel\Conference\Livewire\Wizards\SubmissionWizard\Contracts\HasWizardStep;
+use App\Repositories\Repository;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -91,7 +92,7 @@ class DetailStep extends Component implements HasActions, HasForms, HasWizardSte
             ->label('Next')
             ->successNotificationTitle('Saved')
             ->action(function (Action $action) {
-                $this->record = SubmissionUpdateAction::run($this->form->getState(), $this->record);
+                $this->record = Repository::submission()->update($this->record, $this->form->toArray());
                 $this->dispatch('next-wizard-step');
                 $action->success();
             });

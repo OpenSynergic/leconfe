@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Notifications\NewSubmission;
 use App\Panel\Conference\Livewire\Wizards\SubmissionWizard\Contracts\HasWizardStep;
 use App\Panel\Conference\Resources\SubmissionResource;
+use App\Repositories\Repository;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -46,7 +47,7 @@ class ReviewStep extends Component implements HasActions, HasForms, HasWizardSte
             ->successRedirectUrl(fn (): string => SubmissionResource::getUrl('complete', ['record' => $this->record]))
             ->action(function (Action $action) {
                 try {
-                    $this->record->state()->fulfill();
+                    Repository::submission()->getState($this->record)->fulfill();
 
                     Mail::to($this->record->user)->send(
                         new ThankAuthorMail($this->record)
