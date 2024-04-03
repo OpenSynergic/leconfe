@@ -6,7 +6,7 @@ use App\Actions\Site\SiteCreateAction;
 use App\Models\Announcement;
 use App\Models\Block;
 use App\Models\Conference;
-use App\Models\ConferenceSponsor;
+use App\Models\Sponsor;
 use App\Models\NavigationMenu;
 use App\Models\ParticipantPosition;
 use App\Models\PaymentItem;
@@ -113,7 +113,7 @@ class Application extends LaravelApplication
     {
         $models = [
             Submission::class,
-            ConferenceSponsor::class,
+            Sponsor::class,
             Topic::class,
             Venue::class,
             NavigationMenu::class,
