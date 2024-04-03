@@ -36,6 +36,7 @@ class SetupDefaultData
     {
         $site = app()->getSite();
 
+        View::share('site', $site);
         View::share('headerLogo', $site->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl']));
         View::share('headerLogoAltText', $site->getMeta('name'));
         View::share('contextName', $site->getMeta('name'));
