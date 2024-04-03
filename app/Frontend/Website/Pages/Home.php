@@ -3,6 +3,7 @@
 namespace App\Frontend\Website\Pages;
 
 use App\Models\Conference;
+use App\Models\Sponsor;
 use App\Models\Topic;
 use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
@@ -15,9 +16,7 @@ class Home extends Page
     protected function getViewData(): array
     {
         return [
-            // 'topics' => Topic::withoutGlobalScopes()->where('conference_id', $activeConference->getKey())->get(),
-            'upcomingConferences' => Conference::upcoming()->get(),
-            // 'activeConference' => $activeConference,
+            'sponsors' => Sponsor::query()->with('media')->get(),
         ];
     }
 
