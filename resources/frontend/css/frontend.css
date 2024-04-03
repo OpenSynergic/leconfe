@@ -32,11 +32,16 @@
     @apply border-red-500 border-2;
 }
 
-.page-content {
-    @apply order-first lg:order-none col-span-12 lg:col-span-6 card card-compact bg-white border rounded-none lg:rounded-lg h-fit;
+.page-main {
+    @apply 
+        mx-auto max-w-7xl flex flex-col w-full
+        lg:grid lg:grid-cols-12 lg:gap-3
 }
 
-.page-leftbar,
+.page-content {
+    @apply card card-compact p-5 bg-white border rounded-none lg:rounded-lg;
+}
+
 .page-rightbar{
     @apply lg:col-span-3;
 }
@@ -45,9 +50,12 @@
     @apply 
         prose prose-sm 
         prose-a:text-primary prose-a:underline hover:prose-a:text-primary 
-        prose-h2:mt-0 
+        /* prose-h2:mt-0  */
         prose-h3:mt-0
         prose-p:my-2
+        max-w-none
+        prose-img:my-0
+        first:*:mt-0 last:*:mb-0
 }
 
 .text-heading {
