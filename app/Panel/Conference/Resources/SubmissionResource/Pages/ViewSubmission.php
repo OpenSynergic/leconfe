@@ -28,6 +28,7 @@ use App\Panel\Conference\Livewire\Submissions\CallforAbstract;
 use App\Panel\Conference\Livewire\Submissions\Components\ActivityLogList;
 use App\Panel\Conference\Livewire\Submissions\Components\ContributorList;
 use App\Panel\Conference\Livewire\Submissions\Components\Files\PresenterFiles;
+use App\Panel\Conference\Livewire\Submissions\Components\SubmissionProceeding;
 use App\Panel\Conference\Livewire\Submissions\Components\PresenterList;
 use App\Panel\Conference\Livewire\Submissions\Editing;
 use App\Panel\Conference\Livewire\Submissions\Forms\Detail;
@@ -648,6 +649,14 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                                     ->livewire(PresenterList::class, [
                                                         'submission' => $this->record,
                                                         'viewOnly' => ! auth()->user()->can('editing', $this->record),
+                                                    ]),
+                                            ]),
+                                        Tab::make('Proceeding')
+                                            ->icon('heroicon-o-book-open')
+                                            ->schema([
+                                                LivewireEntry::make('proceeding')
+                                                    ->livewire(SubmissionProceeding::class, [
+                                                        'submission' => $this->record,
                                                     ]),
                                             ]),
                                         Tab::make('References')

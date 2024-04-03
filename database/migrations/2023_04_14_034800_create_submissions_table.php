@@ -3,6 +3,7 @@
 use App\Models\Conference;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
+use App\Models\Proceeding;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -19,6 +20,8 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class)->constrained();
             $table->foreignIdFor(Conference::class)->constrained();
+            $table->foreignIdFor(Proceeding::class)->nullable();
+            $table->integer('proceeding_order_column')->nullable();
             $table->boolean('revision_required')->default(false);
             $table->boolean('skipped_review')->default(false);
             $table->enum('stage', SubmissionStage::array())->default(SubmissionStage::Wizard->value);
