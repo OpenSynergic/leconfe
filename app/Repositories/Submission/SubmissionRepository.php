@@ -12,11 +12,16 @@ use App\Models\States\Submission\PublishedSubmissionState;
 use App\Models\States\Submission\QueuedSubmissionState;
 use App\Models\States\Submission\WithdrawnSubmissionState;
 use App\Models\Submission;
+use App\Repositories\BaseRepository;
 
-class SubmissionRepository extends BaseSubmissionRepository
+class SubmissionRepository extends BaseRepository
 {
 
-    // Repository::submission()->getState()->accept();
+    public function getModel(): Submission
+    {
+        return new Submission();
+    }
+
     public function getState(Submission $submission): BaseSubmissionState
     {
         return match ($submission->status) {
