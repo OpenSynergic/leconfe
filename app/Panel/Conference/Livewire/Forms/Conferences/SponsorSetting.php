@@ -57,10 +57,8 @@ class SponsorSetting extends Component implements HasForms, HasTable
                     SpatieMediaLibraryImageColumn::make('logo')
                         ->collection('logo')
                         ->conversion('small')
-                        ->circular()
-                        ->grow(false)
-                        ->width(50)
-                        ->height(50),
+                        ->height('3rem')
+                        ->grow(false),
                     Stack::make([
                         TextColumn::make('name')
                     ])
