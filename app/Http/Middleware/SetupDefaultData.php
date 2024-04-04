@@ -46,7 +46,7 @@ class SetupDefaultData
 
         if ($appearanceColor = $site->getMeta('appearance_color')) {
             $primaryColor = ColorFactory::new($appearanceColor)->to(ColorSpace::OkLch);
-            $primaryColorContent = $primaryColor->change(lightness: 97);
+            $primaryColorContent = ($primaryColor->lightness < 75) ? $primaryColor->change(lightness: 97) : $primaryColor->change(lightness: 30);
             $css = new CSSGenerator();
             $css->root_variable('p', "{$primaryColor->lightness}% {$primaryColor->chroma} {$primaryColor->hue}");
             $css->root_variable('pc', "{$primaryColorContent->lightness}% {$primaryColorContent->chroma} {$primaryColorContent->hue}");
