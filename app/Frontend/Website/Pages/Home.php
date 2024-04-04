@@ -16,7 +16,7 @@ class Home extends Page
     protected function getViewData(): array
     {
         return [
-            'sponsors' => Sponsor::query()->with('media')->get(),
+            'sponsors' => Sponsor::ordered()->with('media')->get(),
         ];
     }
 

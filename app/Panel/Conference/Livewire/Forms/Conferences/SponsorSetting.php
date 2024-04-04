@@ -42,6 +42,7 @@ class SponsorSetting extends Component implements HasForms, HasTable
     {
         return $table
             ->heading("Sponsors")
+            ->reorderable('order_column')
             ->headerActions([
                 CreateAction::make('create')
                     ->label("Add Sponsor")
@@ -49,7 +50,7 @@ class SponsorSetting extends Component implements HasForms, HasTable
                     ->model(Sponsor::class)
                     ->form(static::sponsorFormSchema())
             ])
-            ->query(fn (): Builder => Sponsor::query()->with('media'))
+            ->query(fn (): Builder => Sponsor::ordered()->with('media'))
             ->emptyStateHeading(__("No sponsors found"))
             ->columns([
                 Split::make([

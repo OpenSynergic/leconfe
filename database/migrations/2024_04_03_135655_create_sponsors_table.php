@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Conference::class);
             $table->string('name');
+            $table->unsignedInteger('order_column')->nullable();
             $table->timestamps();
         });
     }

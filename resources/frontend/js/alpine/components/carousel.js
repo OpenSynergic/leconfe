@@ -1,11 +1,11 @@
 document.addEventListener('alpine:init', () => {
     Alpine.data('carousel', () => ({
-        index: 3,
+        scroll: 6,
         toRight() {
-            this.to((current, offset) => current + offset * this.index)
+            this.to((current, offset) => current + offset * this.scroll)
         },
         toLeft() {
-            this.to((current, offset) => current - offset * this.index)
+            this.to((current, offset) => current - offset * this.scroll)
         },
         to(strategy) {
             let slider = this.$refs.slider
