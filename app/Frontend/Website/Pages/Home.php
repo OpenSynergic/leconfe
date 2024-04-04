@@ -17,6 +17,9 @@ class Home extends Page
     {
         return [
             'sponsors' => Sponsor::ordered()->with('media')->get(),
+            'currentConferences' => Conference::active()->with('media')->get(),
+            'upcomingConferences' => Conference::upcoming()->with('media')->get(),
+            'allConferences' => Conference::with('media')->get(),
         ];
     }
 
