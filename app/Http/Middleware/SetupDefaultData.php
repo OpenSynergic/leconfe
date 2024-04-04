@@ -45,9 +45,11 @@ class SetupDefaultData
         View::share('styleSheet', $site->getFirstMediaUrl('styleSheet'));
 
         if ($appearanceColor = $site->getMeta('appearance_color')) {
-            $oklch = ColorFactory::new($appearanceColor)->to(ColorSpace::OkLch);
+            $primaryColor = ColorFactory::new($appearanceColor)->to(ColorSpace::OkLch);
+            $primaryColorContent = $primaryColor->change(lightness: 97);
             $css = new CSSGenerator();
-            $css->root_variable('p', "{$oklch->lightness}% {$oklch->chroma} {$oklch->hue}");
+            $css->root_variable('p', "{$primaryColor->lightness}% {$primaryColor->chroma} {$primaryColor->hue}");
+            $css->root_variable('pc', "{$primaryColorContent->lightness}% {$primaryColorContent->chroma} {$primaryColorContent->hue}");
 
             View::share('appearanceColor', $css->get_output());
         }
