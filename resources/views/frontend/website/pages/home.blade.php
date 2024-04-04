@@ -5,10 +5,10 @@
         </div>
         @if(!$sponsors->isEmpty())
         <div class="sponsors space-y-4" x-data="carousel">
-            <h2 class="text-xl font-medium">Our Partners</h2>
+            <h2 class="text-xl font-bold">Our Partners</h2>
             <div class="sponsors-carousel flex items-center w-full gap-4" x-bind="carousel">
                 <button x-on:click="toLeft"
-                    class="bg-gray-400 hover:bg-gray-500 h-10 w-10 rounded-full flex items-center justify-center">
+                    class="hidden bg-gray-400 hover:bg-gray-500 h-10 w-10 rounded-full md:flex items-center justify-center">
                     <x-heroicon-m-chevron-left class="h-6 w-fit text-white" />
                 </button>
                 <ul x-ref="slider" class="flex-1 flex w-full snap-x snap-mandatory overflow-x-scroll gap-3 pb-4">
@@ -24,7 +24,7 @@
                     @endforeach
                 </ul>
                 <button x-on:click="toRight"
-                    class="bg-gray-400 hover:bg-gray-500 h-10 w-10 rounded-full flex items-center justify-center">
+                    class="hidden bg-gray-400 hover:bg-gray-500 h-10 w-10 rounded-full md:flex items-center justify-center">
                     <x-heroicon-m-chevron-right class="h-6 w-fit text-white" />
                 </button>
             </div>
