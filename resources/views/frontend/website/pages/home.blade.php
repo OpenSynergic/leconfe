@@ -77,7 +77,9 @@
                         <x-website::conference-summary :conference="$conference" />
                     @endforeach
                 </div>
-                {{ $currentConferences->links('livewire.simple-pagination') }}
+                @if($currentConferences->hasPages())
+                    {{ $currentConferences->links('livewire.simple-pagination') }}
+                @endif
             </div>
             <div class="conference-current space-y-4" x-show="tab === 'upcoming'">
                 <div class="grid sm:grid-cols-2 gap-6">
@@ -85,7 +87,9 @@
                         <x-website::conference-summary :conference="$conference" />
                     @endforeach
                 </div>
-                {{ $upcomingConferences->links('livewire.simple-pagination') }}
+                @if($upcomingConferences->hasPages())
+                    {{ $upcomingConferences->links('livewire.simple-pagination') }}
+                @endif
             </div>
             <div class="conference-current space-y-4" x-show="tab === 'allconferences'">
                 <div class="grid sm:grid-cols-2 gap-6">
@@ -93,7 +97,9 @@
                         <x-website::conference-summary :conference="$conference" />
                     @endforeach
                 </div>
-                {{ $allConferences->links('livewire.simple-pagination') }}
+                @if($allConferences->hasPages())
+                    {{ $allConferences->links('livewire.simple-pagination') }}
+                @endif
             </div>
         </div>
     </div>
