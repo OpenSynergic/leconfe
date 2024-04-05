@@ -64,7 +64,7 @@
                         All Conferences
                     </button>
                     <a 
-                        href="#"  
+                        href="{{ route('livewirePageGroup.website.pages.search') }}"  
                         class="w-40 p-2 border border-l-0 border-primary text-primary first:rounded-l last:rounded-r flex items-center justify-center gap-2">
                         <x-heroicon-s-magnifying-glass class="h-4 w-4"/>
                         Search
