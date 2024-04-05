@@ -10,6 +10,7 @@ use App\Models\MailTemplate;
 use App\Models\Submission;
 use App\Panel\Conference\Livewire\Workflows\Classes\StageManager;
 use App\Panel\Conference\Resources\SubmissionResource;
+use App\Repositories\Repository;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -72,9 +73,9 @@ class PeerReview extends Component implements HasActions, HasForms
                     ]),
             ])
             ->action(function (Action $action, array $data) {
-                $this->submission->state()->decline();
+                Repository::submission()->getState($this->submission)->decline();
 
-                if (! $data['do-not-notify-author']) {
+                if (!$data['do-not-notify-author']) {
                     try {
                         Mail::to($this->submission->user->email)
                             ->send(
@@ -132,9 +133,9 @@ class PeerReview extends Component implements HasActions, HasForms
                     ]),
             ])
             ->action(function (Action $action, array $data) {
-                $this->submission->state()->accept();
+                Repository::submission()->getState($this->submission)->accept();
 
-                if (! $data['do-not-notify-author']) {
+                if (!$data['do-not-notify-author']) {
                     try {
                         Mail::to($this->submission->user->email)
                             ->send(
@@ -194,11 +195,11 @@ class PeerReview extends Component implements HasActions, HasForms
             ])
             ->successNotificationTitle('Revision Requested')
             ->action(function (Action $action, array $data) {
-                SubmissionUpdateAction::run([
+                Repository::submission()->update($this->submission, [
                     'revision_required' => true,
-                ], $this->submission);
+                ]);
 
-                if (! $data['do-not-notify-author']) {
+                if (!$data['do-not-notify-author']) {
                     try {
                         Mail::to($this->submission->user->email)
                             ->send(
@@ -231,7 +232,7 @@ class PeerReview extends Component implements HasActions, HasForms
             ->outlined()
             ->successNotificationTitle('Review Skipped')
             ->action(function (Action $action) {
-                $this->submission->state()->skipReview();
+                Repository::submission()->getState($this->submission)->skipReview();
 
                 $action->successRedirectUrl(
                     SubmissionResource::getUrl('view', [

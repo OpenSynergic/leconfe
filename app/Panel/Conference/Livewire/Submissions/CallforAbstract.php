@@ -11,6 +11,7 @@ use App\Notifications\AbstractDeclined;
 use App\Panel\Conference\Livewire\Workflows\Classes\StageManager;
 use App\Panel\Conference\Livewire\Workflows\Concerns\InteractWithTenant;
 use App\Panel\Conference\Resources\SubmissionResource;
+use App\Repositories\Repository;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -67,9 +68,9 @@ class CallforAbstract extends Component implements HasActions, HasForms
             ->successNotificationTitle('Submission declined')
             ->successRedirectUrl(fn (): string => SubmissionResource::getUrl('view', ['record' => $this->submission]))
             ->action(function (Action $action, array $data) {
-                $this->submission->state()->decline();
+                Repository::submission()->getState($this->submission)->decline();
 
-                if (! $data['no-notification']) {
+                if (!$data['no-notification']) {
                     try {
                         $this->submission->user->notify(
                             new AbstractDeclined(
@@ -144,9 +145,9 @@ class CallforAbstract extends Component implements HasActions, HasForms
             ->action(
                 function (Action $action, array $data) {
                     try {
-                        $this->submission->state()->acceptAbstract();
+                        Repository::submission()->getState($this->submission)->acceptAbstract();
 
-                        if (! $data['no-notification']) {
+                        if (!$data['no-notification']) {
                             try {
                                 $this->submission->user
                                     ->notify(

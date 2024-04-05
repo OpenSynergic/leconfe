@@ -3,6 +3,7 @@
 namespace App\Frontend\Conference\Pages;
 
 use App\Models\Submission;
+use App\Repositories\Repository;
 use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
@@ -15,8 +16,8 @@ class SubmissionDetail extends Page
 
     public function mount(int $submissionId)
     {
-        $this->submission = Submission::find($submissionId);
-        abort_if(! $this->submission, 404);
+        $this->submission = Repository::submission()->find($submissionId);
+        abort_if(!$this->submission, 404);
     }
 
     public static function routes(PageGroup $pageGroup): void
