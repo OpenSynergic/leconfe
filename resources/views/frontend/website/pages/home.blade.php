@@ -35,78 +35,66 @@
 
         <div class="conferences space-y-4" x-data="{tab: 'current'}" x-cloak>
             <div class="flex items-center justify-center text-sm flex-wrap">
-                <div class="btn-group flex items-center shadow-sm rounded-lg">
+                <div class="btn-group flex items-center shadow-sm overflow-x-scroll">
                     <button 
                         :class="{
                             'bg-primary text-primary-content' : tab === 'current',
-                            'bg-white text-primary' : tab !== 'current',
+                            'text-primary' : tab !== 'current',
                         }"
                         x-on:click="tab = 'current'"
-                        class="w-40 py-2 border border-primary first:rounded-l-lg last:rounded-r-lg">
+                        class="w-40 p-2 border border-primary first:rounded-l last:rounded-r">
                         Current
                     </button>
                     <button 
                         :class="{
-                            'bg-primary text-white' : tab === 'upcoming',
-                            'bg-white text-primary' : tab !== 'upcoming',
+                            'bg-primary text-primary-content' : tab === 'upcoming',
+                            'text-primary' : tab !== 'upcoming',
                         }"
                         x-on:click="tab = 'upcoming'"
-                        class="w-40 py-2 border-y border-primary first:rounded-l-lg last:rounded-r-lg">
+                        class="w-40 p-2 border-y border-primary first:rounded-l last:rounded-r">
                         Upcoming
                     </button>
                     <button 
                         :class="{
-                            'bg-primary text-white' : tab === 'allconferences',
-                            'bg-white text-primary' : tab !== 'allconferences',
+                            'bg-primary text-primary-content' : tab === 'allconferences',
+                            'text-primary' : tab !== 'allconferences',
                         }"
                         x-on:click="tab = 'allconferences'"
-                        class="w-40 py-2 border border-primary first:rounded-l-lg last:rounded-r-lg">
+                        class="w-40 p-2 border border-primary first:rounded-l last:rounded-r text-nowrap">
                         All Conferences
                     </button>
                     <a 
                         href="#"  
-                        class="w-40 py-2 border border-l-0 border-primary text-primary first:rounded-l-lg last:rounded-r-lg flex items-center justify-center gap-2">
+                        class="w-40 p-2 border border-l-0 border-primary text-primary first:rounded-l last:rounded-r flex items-center justify-center gap-2">
                         <x-heroicon-s-magnifying-glass class="h-4 w-4"/>
                         Search
                     </a>
                 </div>
             </div>
-            <div class="conference-current sm:grid sm:grid-cols-2 gap-4" x-show="tab === 'current'">
-                @foreach ($currentConferences as $conference)
-                   <x-website::conference-summary :conference="$conference" />
-                @endforeach
+            <div class="conference-current space-y-4" x-show="tab === 'current'">
+                <div class="grid sm:grid-cols-2 gap-6">
+                    @foreach ($currentConferences as $conference)
+                        <x-website::conference-summary :conference="$conference" />
+                    @endforeach
+                </div>
+                {{ $currentConferences->links('livewire.simple-pagination') }}
             </div>
-            <div class="conference-current sm:grid sm:grid-cols-2 gap-4" x-show="tab === 'upcoming'">
-                @foreach ($upcomingConferences as $conference)
-                   <x-website::conference-summary :conference="$conference" />
-                @endforeach
+            <div class="conference-current space-y-4" x-show="tab === 'upcoming'">
+                <div class="grid sm:grid-cols-2 gap-6">
+                    @foreach ($upcomingConferences as $conference)
+                        <x-website::conference-summary :conference="$conference" />
+                    @endforeach
+                </div>
+                {{ $upcomingConferences->links('livewire.simple-pagination') }}
             </div>
-            <div class="conference-current sm:grid sm:grid-cols-2 gap-4" x-show="tab === 'allconferences'">
-                @foreach ($allConferences as $conference)
-                   <x-website::conference-summary :conference="$conference" />
-                @endforeach
+            <div class="conference-current space-y-4" x-show="tab === 'allconferences'">
+                <div class="grid sm:grid-cols-2 gap-6">
+                    @foreach ($allConferences as $conference)
+                        <x-website::conference-summary :conference="$conference" />
+                    @endforeach
+                </div>
+                {{ $allConferences->links('livewire.simple-pagination') }}
             </div>
         </div>
-        {{-- <div class="conferences space-y-4" x-data="{tab: 'current'}">
-            <div class="button-group flex items-center justify-center text-sm flex-wrap">
-                <button class="w-40 py-2 bg-primary border border-primary text-white first:rounded-l-lg last:rounded-r-lg">
-                    Current
-                </button>
-                <button class="w-40 py-2 bg-white border-y border-primary text-primary first:rounded-l-lg last:rounded-r-lg">
-                    Upcoming
-                </button>
-                <button class="w-40 py-2 bg-white border border-primary text-primary first:rounded-l-lg last:rounded-r-lg">
-                    All Conferences
-                </button>
-                <button class="w-40 py-2 bg-white border border-l-0 border-primary text-primary first:rounded-l-lg last:rounded-r-lg">
-                    Subject
-                </button>
-            </div>
-            <div class="conference-list sm:grid sm:grid-cols-2 gap-4">
-                @foreach ($currentConferences as $conference)
-                   <x-website::conference-summary :conference="$conference" />
-                @endforeach
-            </div>
-        </div> --}}
     </div>
 </x-website::layouts.main>
