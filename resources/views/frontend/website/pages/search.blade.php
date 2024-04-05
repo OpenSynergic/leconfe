@@ -19,7 +19,7 @@
                     </button>
                 </div>
             </div>
-            <div class="buttons flex items-center justify-end">
+            {{-- <div class="buttons flex items-center justify-end">
                 <button type="button" class="text-sm flex items-center gap-2 text-primary">Advanced Search <x-heroicon-c-chevron-down class="h-4 w-4"/></button>
             </div>
             <div>
@@ -28,7 +28,7 @@
                         <option selected>Topics</option>
                     </select>
                 </div> 
-            </div>
+            </div> --}}
         </form>
 
         @if($searchResults->isNotEmpty())
@@ -37,9 +37,11 @@
                 <x-website::conference-summary :conference="$conference" />
             @endforeach 
         </div>
-        <div>
-            {{ $searchResults->links('livewire.simple-pagination') }}
-        </div>
+        @if($searchResults->hasPages())
+            <div>
+                {{ $searchResults->links('livewire.simple-pagination') }}
+            </div>
+        @endif
         @else 
         <div class="flex items-center justify-center w-full">
             <p class="text-gray-500">No conference found</p>
