@@ -39,7 +39,7 @@
 }
 
 .page-content {
-    @apply card card-compact p-5 bg-white border rounded-none lg:rounded-lg;
+    @apply card card-compact p-5 bg-white border rounded-none;
 }
 
 .page-rightbar{
