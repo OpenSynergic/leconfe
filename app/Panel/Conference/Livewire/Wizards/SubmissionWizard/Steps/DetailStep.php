@@ -92,7 +92,7 @@ class DetailStep extends Component implements HasActions, HasForms, HasWizardSte
             ->label('Next')
             ->successNotificationTitle('Saved')
             ->action(function (Action $action) {
-                $this->record = Repository::submission()->update($this->record, $this->form->toArray());
+                $this->record = Repository::submission()->update($this->record, $this->form->getState());
                 $this->dispatch('next-wizard-step');
                 $action->success();
             });

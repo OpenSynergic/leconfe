@@ -21,7 +21,7 @@ class BaseSubmissionState implements SubmissionStateInterface
         throw new \Exception('Cannot accept abstract');
     }
 
-    public function acceptAbstractaccept(): void
+    public function accept(): void
     {
         throw new \Exception('Cannot accept');
     }
