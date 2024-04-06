@@ -3,6 +3,7 @@
 namespace App\Models\NavigationItemType;
 
 use App\Models\NavigationMenuItem;
+use App\Panel\Conference\Pages\Profile as ConferenceProfile;
 
 class Profile extends BaseNavigationItemType
 {
@@ -18,10 +19,6 @@ class Profile extends BaseNavigationItemType
 
     public static function getUrl(NavigationMenuItem $navigationMenuItem): string
     {
-        $conference = app()->getCurrentConference();
-
-        return $conference ? route('filament.conference.resources.users.profile', [
-            'conference' => app()->getCurrentConference(),
-        ]) : '#';
+        return app()->getCurrentConferenceId() ? route('filament.conference.pages.profile') : route('filament.administration.pages.profile');
     }
 }

@@ -8,7 +8,6 @@ use App\Actions\User\UserUpdateAction;
 use App\Models\Enums\UserRole;
 use App\Models\User;
 use App\Panel\Conference\Resources\Conferences\ParticipantResource;
-use App\Panel\Conference\Resources\Traits\CustomizedUrl;
 use App\Panel\Conference\Resources\UserResource\Pages;
 use Filament\Facades\Filament;
 use Filament\Forms;
@@ -36,6 +35,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
+use PhpParser\Node\Expr\AssignOp\Mod;
 use STS\FilamentImpersonate\Tables\Actions\Impersonate;
 
 class UserResource extends Resource
@@ -48,11 +48,10 @@ class UserResource extends Resource
 
     protected static ?int $navigationSort = 5;
 
-    use CustomizedUrl;
-
     public static function getEloquentQuery(): Builder
     {
         return static::getModel()::query()
+            ->whereHas('roles')
             ->with(['meta', 'media', 'bans']);
     }
 
@@ -138,13 +137,11 @@ class UserResource extends Resource
                                     ->relationship(
                                         name: 'roles',
                                         titleAttribute: 'name',
-                                        modifyQueryUsing: fn (Builder $query) => $query
-                                            // Only let users that have assignRoles permission that can assign all roles, otherwise only self assigned roles are allowed
-                                            ->when(
-                                                value: ! auth()->user()->can('assignRoles', static::getModel()),
-                                                callback: fn (Builder $query) => $query->whereIn('name', UserRole::selfAssignedRoleValues())
-                                            )
-                                    ),
+                                        modifyQueryUsing: fn ($query) => $query->where('name', '!=', UserRole::Admin)
+                                    )
+                                    ->saveRelationshipsUsing(function (Forms\Components\CheckboxList $component, ?array $state) {
+                                        $component->getModelInstance()->syncRoles($state);
+                                    }),
                             ]),
                     ])
                     ->columnSpan(['lg' => 1]),
@@ -262,7 +259,7 @@ class UserResource extends Resource
                         ->label(fn (User $record) => "Login as {$record->given_name}")
                         ->icon('heroicon-m-key')
                         ->color('primary')
-                        ->redirectTo('panel'),
+                        ->redirectTo(fn () => route('filament.conference.pages.dashboard')),
                     Action::make('enable')
                         ->visible(fn (User $record) => auth()->user()->can('enable', $record))
                         ->label(fn (User $record) => 'Enable User')
@@ -341,7 +338,6 @@ class UserResource extends Resource
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
-            'profile' => Pages\ProfileUser::route('/profile/{user_id?}'),
         ];
     }
 }

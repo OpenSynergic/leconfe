@@ -20,4 +20,9 @@ class Logout extends BaseNavigationItemType
     {
         return auth()->check();
     }
+
+    public static function getUrl(NavigationMenuItem $navigationMenuItem): string
+    {
+        return app()->getCurrentConference() ? route('conference.logout') : route('logout');
+    }
 }

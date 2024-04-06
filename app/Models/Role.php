@@ -2,33 +2,30 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToConference;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role as Model;
-use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
 class Role extends Model
 {
-    use HasRecursiveRelationships;
-
     protected $fillable = [
-        'parent_id',
         'name',
+        'conference_id',
         'guard_name',
     ];
 
-    public function parent(): BelongsTo
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
     {
-        return $this->belongsTo(Role::class, 'parent_id');
-    }
-
-    public function hasPermissionOnAncestors(Permission $permission)
-    {
-        return $this->ancestors->pluck('id')->intersect($permission->roles->pluck('id')->toArray())->isNotEmpty();
-    }
-
-    public function hasPermissionOnAncestorsAndSelf(Permission $permission)
-    {
-        return $this->ancestorsAndSelf->pluck('id')->intersect($permission->roles->pluck('id')->toArray())->isNotEmpty();
+        static::addGlobalScope('conferences', function (Builder $builder) {
+            if(app()->getCurrentConferenceId()){
+                $scopeColumn =  config('permission.table_names.roles', 'roles') . '.conference_id';
+                $builder->where($scopeColumn, null)->orWhere($scopeColumn, app()->getCurrentConferenceId());
+            }
+        });
     }
 }

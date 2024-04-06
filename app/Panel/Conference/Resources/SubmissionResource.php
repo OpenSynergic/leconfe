@@ -9,6 +9,7 @@ use App\Models\Enums\UserRole;
 use App\Models\Submission;
 use App\Panel\Conference\Resources\SubmissionResource\Pages;
 use Filament\GlobalSearch\GlobalSearchResult;
+use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
@@ -19,8 +20,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
-class SubmissionResource extends BaseResource
+class SubmissionResource extends Resource
 {
+    protected static ?int $navigationSort = 1;
+
+
     protected static ?string $model = Submission::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';

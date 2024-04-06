@@ -3,7 +3,6 @@
 namespace App\Panel\Conference\Resources\Conferences;
 
 use App\Models\ParticipantPosition;
-use App\Panel\Conference\Resources\Traits\CustomizedUrl;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -22,8 +21,6 @@ class AuthorPositionResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static string $positionType = 'author';
-
-    use CustomizedUrl;
 
     public static function getEloquentQuery(): Builder
     {

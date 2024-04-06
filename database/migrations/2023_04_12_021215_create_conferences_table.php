@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ConferenceType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -16,8 +15,9 @@ return new class extends Migration
         Schema::create('conferences', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->date('date_start')->nullable();
+            $table->date('date_end')->nullable();
             $table->string('path')->unique();
-            $table->enum('status', ConferenceStatus::array())->default(ConferenceStatus::Upcoming->value);
             $table->enum('type', ConferenceType::array())->default(ConferenceType::Offline->value);
             $table->timestamps();
         });
@@ -32,6 +32,13 @@ return new class extends Migration
 
             $table->unique(['metable_type', 'metable_id', 'key']);
             $table->index(['key', 'metable_type']);
+        });
+
+        Schema::create('conference_sponsors', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('conference_id')->constrained()->cascadeOnDelete();
+            $table->string('name');
+            $table->timestamps();
         });
     }
 

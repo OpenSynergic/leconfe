@@ -23,10 +23,6 @@ class ConferenceCreateAction
                 $conferenceData->setManyMeta($data['meta']);
             }
 
-            if (data_get($data, 'active')) {
-                ConferenceSetActiveAction::run($conferenceData);
-            }
-
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();

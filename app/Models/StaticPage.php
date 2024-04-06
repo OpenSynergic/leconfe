@@ -19,14 +19,15 @@ class StaticPage extends UserContent
 
     public function getUrl(): string
     {
-        return match ($this->conference?->status) {
-            ConferenceStatus::Active, ConferenceStatus::Archived, ConferenceStatus::Upcoming => route('livewirePageGroup.conference.pages.static-page', [
-                'conference' => $this->conference->path,
+        if (!$this->conference) {
+            return route('livewirePageGroup.website.pages.static-page', [
                 'staticPage' => $this->slug,
-            ]),
-            default => route('livewirePageGroup.website.pages.static-page', [
-                'staticPage' => $this->slug,
-            ]),
-        };
+            ]);
+        }
+
+        return route('livewirePageGroup.conference.pages.static-page', [
+            'conference' => $this->conference->path,
+            'staticPage' => $this->slug,
+        ]);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Panel\Conference\Livewire;
 
-use Livewire\Component;
 use App\Actions\NavigationMenu\CreateNavigationMenuAction;
 use App\Actions\NavigationMenu\CreateNavigationMenuItemAction;
 use App\Actions\NavigationMenu\UpdateNavigationMenuAction;
@@ -22,6 +21,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Illuminate\Support\Str;
+use Livewire\Component;
 
 class NavigationMenuSetting extends Component implements HasActions, HasForms
 {

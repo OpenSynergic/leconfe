@@ -2,6 +2,8 @@
 
 namespace App\Panel\Conference\Resources;
 
+use App\Actions\Roles\RolePersistAssignedPermissions;
+use App\Models\Enums\UserRole;
 use App\Models\Role;
 use App\Models\User;
 use App\Panel\Conference\Resources\RoleResource\Pages;
@@ -14,6 +16,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -21,8 +24,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
+use Livewire\Component as Livewire;
 
-class RoleResource extends BaseResource
+class RoleResource extends Resource
 {
     protected static ?string $model = Role::class;
 
@@ -46,9 +50,11 @@ class RoleResource extends BaseResource
                 Section::make()
                     ->schema([
                         TextInput::make('name'),
-                        Select::make('parent_id')
-                            ->label('Permission Level')
-                            ->relationship('parent', 'name', fn ($query) => $query->whereNull('parent_id'))
+                        Select::make('copy_permissions_from')
+                            ->dehydrated(false)
+                            ->label('Copy permissions from')
+                            ->hidden(fn(string $operation) => $operation === 'view')
+                            ->options(fn() => static::getEloquentQuery()->pluck('name', 'id')->toArray())
                             ->live()
                             ->afterStateUpdated(function (Set $set, ?string $state) {
                                 if (! $state) {
@@ -62,7 +68,7 @@ class RoleResource extends BaseResource
                                     ->getPermissions()
                                     ->each(function (Permission $permission) use ($set, $newParent) {
 
-                                        $condition = $newParent->hasPermissionOnAncestorsAndSelf($permission);
+                                        $condition = $newParent->hasPermissionTo($permission);
 
                                         $set('permissions.'.$permission->name, $condition);
                                     });
@@ -89,9 +95,6 @@ class RoleResource extends BaseResource
                 IndexColumn::make('no'),
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('parent.name')
-                    ->label('Permission Level')
-                    ->badge(),
             ])
             ->filters([
                 //
@@ -100,6 +103,13 @@ class RoleResource extends BaseResource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                Tables\Actions\Action::make('persistRolePermissions')
+                    ->requiresConfirmation()
+                    ->icon('heroicon-o-shield-check')
+                    ->label('Persist Permissions')
+                    ->hidden(fn(Role $record) => !in_array($record->name, UserRole::values()) || app()->isProduction())
+                    ->action(fn(Role $record) => RolePersistAssignedPermissions::run($record))
+                    ->successNotificationTitle('Permissions persisted successfully.')
             ])
             ->bulkActions([
                 // Tables\Actions\BulkActionGroup::make([
@@ -131,7 +141,6 @@ class RoleResource extends BaseResource
     public static function getPermissionEntitySchema(): array
     {
         $permissions = app(PermissionRegistrar::class)->getPermissions();
-
         $permissionsGroupedByEntity = $permissions->groupBy(function ($permission) {
             // Split the permission name by the first colon
             // Example : "User:update" become ["User", "update"]
@@ -140,46 +149,25 @@ class RoleResource extends BaseResource
             return $context;
         })->map(function ($permissions, $key) {
             return Fieldset::make($key)
+                ->label(Str::headline($key))
                 ->columns(1)
                 ->extraAttributes([
                     'class' => 'h-full',
                 ])
-                ->disabled(fn ($record) => auth()->user()->can('assignPermissions', User::class))
+                ->hidden(fn() => $permissions->filter(fn($permission) => auth()->user()->can('assign', $permission))->isEmpty())
                 ->columnSpan([
                     'lg' => 2,
                     'xl' => 1,
+                    // 'xl' => fn($component) => count($component->getChildComponents()) > 5 ? 2 : 1,
                 ])
                 ->schema($permissions->map(function ($permission) {
-                    [, $action] = explode(':', $permission->name);
-
+                    [$context, $action] = explode(':', $permission->name);
                     return Checkbox::make('permissions.'.$permission->name)
-                        ->disabled(function (Get $get) use ($permission) {
-                            $parentId = $get('parent_id');
-                            if (! $parentId) {
-                                return false;
-                            }
-
-                            $parent = static::getParentRole($parentId);
-
-                            if ($parent->hasPermissionOnAncestorsAndSelf($permission)) {
-                                return true;
-                            }
-
-                            return false;
-                        })
+                        ->hidden(fn() => !auth()->user()->can('assign', $permission))
                         ->label(Str::headline($action));
                 })->toArray());
         })->toArray();
 
         return $permissionsGroupedByEntity;
-    }
-
-    public static function getParentRole(string $parentId)
-    {
-        if (static::$parentRole?->getKey() != $parentId) {
-            static::$parentRole = Role::find($parentId);
-        }
-
-        return static::$parentRole;
     }
 }

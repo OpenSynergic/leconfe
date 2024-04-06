@@ -10,4 +10,12 @@ class Login extends PagesLogin
     {
         return route('filament.administration.home');
     }
+
+
+    public function getViewData() : array 
+    {
+        return [
+            'registerUrl' => route('livewirePageGroup.website.pages.register'),
+        ];
+    }
 }

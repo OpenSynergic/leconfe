@@ -2,14 +2,13 @@
 
 namespace App\Panel\Administration\Resources;
 
-use App\Actions\Conferences\ConferenceSetActiveAction;
-use App\Panel\Administration\Resources\ConferenceResource\Pages;
 use App\Models\Conference;
-use App\Models\Enums\ConferenceStatus;
 use App\Models\Enums\ConferenceType;
+use App\Panel\Administration\Resources\ConferenceResource\Pages;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
@@ -22,9 +21,8 @@ use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
+use Illuminate\Support\HtmlString;
 use Squire\Models\Country;
 
 class ConferenceResource extends Resource
@@ -49,14 +47,35 @@ class ConferenceResource extends Resource
                             ])
                             ->schema([
                                 TextInput::make('name')
-                                    ->required()
-                                    ->live(onBlur: true)
-                                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('path', Str::slug($state))),
-                                TextInput::make('path')
-                                    ->rule('alpha_dash')
+                                    ->columnSpanFull()
                                     ->required(),
-                                TextInput::make('meta.location'),
-                                DatePicker::make('meta.date_held'),
+                                TextInput::make('meta.acronym')
+                                    ->unique(column: 'path')
+                                    ->rule('alpha_dash')
+                                    ->live(onBlur: true),
+                                Placeholder::make('path')
+                                    ->content(function (Get $get) {
+                                        $baseUrl = config('app.url') . '/';
+                                        $acronym = $get('meta.acronym') ?? '{acronym}';
+                                        return new HtmlString("<span class='text-gray-500'>{$baseUrl}</span>{$acronym}");
+                                    }),
+                                // TextInput::make('path')
+                                //     ->unique()
+                                //     ->columnSpan(3)
+                                //     ->prefix(function (): string {
+                                //         $url = config('app.url') . '/';
+                                //         return preg_replace('/^https?:\/\//', '', $url);
+                                //     })
+                                //     ->readOnly()
+                                //     ->rule('alpha_dash')
+                                //     ->helperText('Based on the conference acronym, it will be used in the URL.'),
+                                DatePicker::make('date_start'),
+                                DatePicker::make('date_end')
+                                    ->after('date_start'),
+                                TextInput::make('meta.theme')
+                                    ->placeholder('e.g. Creating a better future with us')
+                                    ->helperText("The theme of the conference. This will be used in the conference's branding.")
+                                    ->columnSpanFull(),
                                 Textarea::make('meta.description')
                                     ->rows(5)
                                     ->autosize()
@@ -66,8 +85,8 @@ class ConferenceResource extends Resource
                             ->columns(2)
                             ->schema([
                                 TextInput::make('meta.publisher_name'),
+                                TextInput::make('meta.publisher_location'),
                                 TextInput::make('meta.affiliation'),
-                                TextInput::make('meta.abbreviation'),
                                 Select::make('meta.country')
                                     ->searchable()
                                     ->options(Country::pluck('name', 'id'))
@@ -82,8 +101,7 @@ class ConferenceResource extends Resource
                         Select::make('conference_id')
                             ->label('Previous Conference')
                             ->options(function () {
-                                return Conference::query()
-                                    ->where('status', ConferenceStatus::Archived)
+                                return Conference::archived()
                                     ->latest('created_at')
                                     ->take(5)
                                     ->pluck('name', 'id')
@@ -100,12 +118,14 @@ class ConferenceResource extends Resource
                                     'name' => $getDataConference?->name,
                                     'path' => $getDataConference?->path,
                                     'type' => $getDataConference?->type,
-                                    'meta.location' => $getDataConference?->getMeta('location'),
-                                    'meta.date_held' => $getDataConference?->getMeta('date_held'),
+                                    'date_start' => $getDataConference?->date_start->format(setting('format.date')),
+                                    'date_end' => $getDataConference?->date_end->format(setting('format.date')),
+                                    'meta.theme' => $getDataConference?->getMeta('theme'),
                                     'meta.description' => $getDataConference?->getMeta('description'),
                                     'meta.publisher_name' => $getDataConference?->getMeta('publisher_name'),
+                                    'meta.publisher_location' => $getDataConference?->getMeta('publisher_location'),
                                     'meta.affiliation' => $getDataConference?->getMeta('affiliation'),
-                                    'meta.abbreviation' => $getDataConference?->getMeta('abbreviation'),
+                                    'meta.acronym' => $getDataConference?->getMeta('acronym'),
                                     'meta.country' => $getDataConference?->getMeta('country'),
                                 ];
 
@@ -114,7 +134,7 @@ class ConferenceResource extends Resource
                                     empty($fieldUserValue) ? $set($key, $previousConferenceValue) : $set($key, $fieldUserValue);
                                 }
                             })
-                            ->hidden(fn () => Conference::where('status', ConferenceStatus::Archived->value)->doesntExist()),
+                            ->hidden(fn () => Conference::archived()->doesntExist()),
 
                         SpatieMediaLibraryFileUpload::make('logo')
                             ->collection('logo')
@@ -164,35 +184,9 @@ class ConferenceResource extends Resource
                     ->searchable(),
                 TextColumn::make('type')
                     ->badge(),
-                TextColumn::make('status')
-                    ->badge(),
-            ])
-            ->filters([
-                SelectFilter::make('status')
-                    ->searchable()
-                    ->options(ConferenceStatus::array())
-                    ->default(ConferenceStatus::Active->value),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
-                    Tables\Actions\Action::make('set_as_active')
-                        ->color('success')
-                        ->icon('heroicon-o-check')
-                        ->requiresConfirmation()
-                        ->hidden(fn (Conference $record) => $record->isActive())
-                        ->successNotificationTitle(fn () => 'Active conference is changed')
-                        ->visible(fn (Conference $record) => auth()->user()->can('setAsActive', $record))
-                        ->action(function ($record, Tables\Actions\Action $action) {
-                            try {
-                                ConferenceSetActiveAction::run($record);
-                            } catch (\Throwable $th) {
-                                $action->failure();
-
-                                return;
-                            }
-
-                            $action->success();
-                        }),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
                 ]),

@@ -17,7 +17,7 @@ class AnnouncementBroadcastMail
         // Filter by user subsribe to announcement
         $users = User::query()
             ->with('meta')
-            ->whereMeta('receive_email_new_announcement', true)
+            ->whereMeta('notification.enable_new_announcement_email', true)
             ->notBanned()
             ->limit(1)
             ->lazy();

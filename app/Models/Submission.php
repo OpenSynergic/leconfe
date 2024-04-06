@@ -22,19 +22,22 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Kra8\Snowflake\HasShortflakePrimary;
 use Plank\Metable\Metable;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\EloquentSortable\Sortable;
+use Spatie\EloquentSortable\SortableTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Tags\HasTags;
 
-class Submission extends Model implements HasMedia, HasPayment
+class Submission extends Model implements HasMedia, HasPayment, Sortable
 {
-    use Cachable, HasFactory, HasShortflakePrimary, HasTags, HasTopics, InteractsWithMedia, InteractsWithPayment, Metable;
+    use Cachable, HasFactory, HasShortflakePrimary, HasTags, HasTopics, InteractsWithMedia, InteractsWithPayment, Metable, SortableTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -49,6 +52,7 @@ class Submission extends Model implements HasMedia, HasPayment
         'withdrawn_reason',
         'withdrawn_at',
         'published_at',
+        'proceeding_order_column',
     ];
 
     /**
@@ -62,6 +66,11 @@ class Submission extends Model implements HasMedia, HasPayment
         'published_at' => 'datetime',
         'skipped_review' => 'boolean',
         'revision_required' => 'boolean',
+    ];
+
+    public $sortable = [
+        'order_column_name' => 'proceeding_order_column',
+        'sort_when_creating' => true,
     ];
 
     protected function getMetaClassName(): string
@@ -86,7 +95,7 @@ class Submission extends Model implements HasMedia, HasPayment
 
         static::creating(function (Submission $submission) {
             $submission->user_id ??= Auth::id();
-            $submission->conference_id ??= app()->getCurrentConference()?->getKey();
+            $submission->conference_id ??= app()->getCurrentConferenceId();
         });
 
         static::deleting(function (Submission $submission) {
@@ -113,6 +122,27 @@ class Submission extends Model implements HasMedia, HasPayment
                 'participant_position_id' => ParticipantPosition::where('name', UserRole::Author->value)->first()->getKey(),
             ]);
         });
+    }
+
+    public function proceeding() : BelongsTo
+    {
+        return $this->belongsTo(Proceeding::class);
+    }
+
+    public function assignProceeding(Proceeding|int $proceeding)
+    {
+        if(is_int($proceeding)) {
+            $proceeding = Proceeding::find($proceeding);
+        }
+
+        $this->proceeding()->associate($proceeding);
+        $this->save();
+    }
+
+    public function unassignProceeding()
+    {
+        $this->proceeding()->dissociate();
+        $this->save();
     }
 
     public function activities()
@@ -225,5 +255,10 @@ class Submission extends Model implements HasMedia, HasPayment
             SubmissionStatus::Incomplete, SubmissionStatus::Queued, SubmissionStatus::Withdrawn, SubmissionStatus::Declined => false,
             default => false,
         };
+    }
+
+    public function buildSortQuery()
+    {
+        return static::query()->where('proceeding_order_column', $this->proceeding_id);
     }
 }

@@ -6,7 +6,6 @@ use App\Models\Announcement;
 use App\Models\ParticipantPosition;
 use App\Models\Topic;
 use App\Models\Venue;
-use Illuminate\Routing\Route as RoutingRoute;
 use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;

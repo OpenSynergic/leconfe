@@ -7,7 +7,6 @@ use App\Models\Announcement;
 use App\Models\AnnouncementTag;
 use App\Models\Enums\ContentType;
 use App\Panel\Conference\Resources\Conferences\AnnouncementResource\Pages;
-use App\Panel\Conference\Resources\Traits\CustomizedUrl;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
@@ -35,8 +34,6 @@ class AnnouncementResource extends Resource
     protected static ?string $navigationGroup = 'Conferences';
 
     protected static ?string $navigationIcon = 'heroicon-o-speaker-wave';
-
-    use CustomizedUrl;
 
     public static function getEloquentQuery(): Builder
     {

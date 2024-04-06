@@ -3,11 +3,11 @@
 namespace App\Providers;
 
 use App\Application;
-use App\Facades\Payment;
 use App\Managers\BlockManager;
 use App\Managers\MetaTagManager;
 use App\Models\Conference;
-use App\Services\Payments\PaypalPayment;
+use App\Models\Serie;
+use App\Routing\CustomUrlGenerator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
@@ -32,6 +32,28 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->scoped('metatag', function () {
             return new MetaTagManager;
+        });
+
+        // Use a custom URL generator to accomodate multi context.
+        // This implementation is copied from Illuminate\Routing\RoutingServiceProvider::registerUrlGenerator
+        $this->app->singleton('url', function ($app) {
+            $routes = $app['router']->getRoutes();
+
+            // The URL generator needs the route collection that exists on the router.
+            // Keep in mind this is an object, so we're passing by references here
+            // and all the registered routes will be available to the generator.
+            $app->instance('routes', $routes);
+
+            return new CustomUrlGenerator(
+                $routes,
+                $app->rebinding(
+                    'request',
+                    function ($app, $request) {
+                        $app['url']->setRequest($request);
+                    }
+                ),
+                $app['config']['app.asset_url']
+            );
         });
     }
 
@@ -69,7 +91,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Since this is a performance concern only, don’t halt
         // production for violations.
-        Model::preventLazyLoading(! $this->app->isProduction());
+        Model::preventLazyLoading(!$this->app->isProduction());
     }
 
     protected function setupMorph()
@@ -127,28 +149,41 @@ class AppServiceProvider extends ServiceProvider
 
     protected function detectConference()
     {
-        if (! $this->app->isInstalled()) {
+        if ($this->app->runningInConsole() || !$this->app->isInstalled()) {
             return;
         }
+
 
         $this->app->scopeCurrentConference();
 
         $pathInfos = explode('/', request()->getPathInfo());
+        // Detect conference from URL path
+        if (isset($pathInfos[1]) && !blank($pathInfos[1])) {
+            $conference = Conference::where('path', $pathInfos[1])->first();
 
-        // Special case for `current` path
-        if (isset($pathInfos[1]) && ! blank($pathInfos[1])) {
-            $conferenceId = Conference::where('path', $pathInfos[1])->value('id');
-            
-            $conferenceId ? $this->app->setCurrentConferenceId($conferenceId) : $this->app->setCurrentConferenceId(Application::CONTEXT_WEBSITE);
+            $conference ? $this->app->setCurrentConferenceId($conference->getKey()) : $this->app->setCurrentConferenceId(Application::CONTEXT_WEBSITE);
+
+            // Detect serie from URL path
+            if (isset($pathInfos[3]) && !blank($pathInfos[3])) {
+                $serie = Serie::where('path', $pathInfos[3])->first();
+                $serie && $this->app->setCurrentSerieId($serie->getKey());
+            }
         }
-        
+
         // Scope livewire update path to current conference
-        $currentConference = app()->getCurrentConference();
+        $currentConference = $this->app->getCurrentConference();
         if ($currentConference) {
-            Livewire::setUpdateRoute(function ($handle) use ($currentConference) {
-                return Route::post($currentConference->path.'/livewire/update', $handle)
-                    ->middleware('web');
-            });
+            // Scope livewire update path to current serie
+            $currentSerie = $this->app->getCurrentSerie();
+            if ($currentSerie) {
+                Livewire::setUpdateRoute(
+                    fn ($handle) => Route::post($currentConference->path . '/series/' . $currentSerie->path . '/livewire/update', $handle)->middleware('web')
+                );
+                return;
+            }
+
+            Livewire::setUpdateRoute(fn ($handle) => Route::post($currentConference->path . '/livewire/update', $handle)->middleware('web'));
+            setPermissionsTeamId($this->app->getCurrentConferenceId());
         }
 
     }

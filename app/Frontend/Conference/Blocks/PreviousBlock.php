@@ -20,7 +20,7 @@ class PreviousBlock extends Block
     {
         return [
             ...parent::getViewData(),
-            'archives' => Conference::where('status', ConferenceStatus::Archived)->get(),
+            'archives' => Conference::archived()->get(),
         ];
     }
 }

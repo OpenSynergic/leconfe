@@ -56,4 +56,22 @@ class PermissionPolicy
             return true;
         }
     }
+
+    /**
+     * Determine whether the user can assign the permissions.
+     */
+    public function assign(User $user, Permission $permission)
+    {
+
+
+    $onlyAllowedPermissionsByAdmin = ['Administration', 'Conference'];
+        if(in_array($permission->context, $onlyAllowedPermissionsByAdmin) && !$user->hasRole('Admin')){
+            return false;
+        }
+
+
+        if ($user->can('Permission:assign')) {
+            return true;
+        }
+    }
 }
