@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('venues', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Conference::class)->constrained();
+            // $table->foreignIdFor(Conference::class)->constrained();
             $table->string('name');
             $table->string('location');
             $table->text('description')->nullable();
