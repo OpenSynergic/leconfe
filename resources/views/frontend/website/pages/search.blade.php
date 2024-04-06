@@ -3,7 +3,7 @@
         <div class="grid justify-items-center">
             <h1 class="text-xl font-medium">Search Conference</h1>
         </div>
-        <form class="max-w-xl w-full mx-auto space-y-2">
+        <form class="max-w-xl w-full mx-auto space-y-2" x-data="{ advancedSearch: @js($isAdvancedSearch) }" wire:ignore.self>
             <div class="flex">
                 <div class="relative w-full block">
                     <input 
@@ -19,16 +19,38 @@
                     </button>
                 </div>
             </div>
-            {{-- <div class="buttons flex items-center justify-end">
-                <button type="button" class="text-sm flex items-center gap-2 text-primary">Advanced Search <x-heroicon-c-chevron-down class="h-4 w-4"/></button>
+            <div class="buttons flex items-center">
+                <div class="flex items-center gap-2" wire:loading.flex>
+                    <span class="text-primary sr-only">Searching</span>
+                    <span class="loading loading-spinner loading-sm text-primary"></span>
+                </div>
+                <button 
+                    type="button" 
+                    class="text-sm flex items-center gap-2 text-primary ml-auto"
+                    x-on:click="advancedSearch = !advancedSearch"
+                    >
+                        Advanced Search <x-heroicon-c-chevron-down class="h-4 w-4 transition-transform" ::class="advancedSearch && 'rotate-180'"/>
+                    </button>
             </div>
-            <div>
-                <div class="mb-6">
-                    <select id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        <option selected>Topics</option>
-                    </select>
-                </div> 
-            </div> --}}
+            <div class="space-y-4" x-show="advancedSearch" x-collapse x-cloak>
+                <select 
+                    id="topic" 
+                    wire:model.live='topic'
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                    >
+                    <option value selected>Topics</option>
+                    @foreach ($topics as $topic)
+                        <option value="{{ $topic->name }}">{{ $topic->name }}</option>
+                    @endforeach
+                </select>
+                <div class="flex items-center gap-4">
+                    <button 
+                        wire:click='clearAllSearch'
+                        type="button" 
+                        class="btn btn-primary btn-sm btn-outline">Clear All</button>
+                    {{-- <button class="btn btn-primary btn-sm">Apply Filters</button> --}}
+                </div>
+            </div>
         </form>
 
         @if($searchResults->isNotEmpty())
