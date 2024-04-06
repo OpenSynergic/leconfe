@@ -12,13 +12,13 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Venue extends Model implements HasMedia
 {
-    use BelongsToConference, Cachable, HasFactory, InteractsWithMedia;
+    use Cachable, HasFactory, InteractsWithMedia;
 
     protected $fillable = ['name', 'location', 'description'];
 
-    public function conference()
+    public function series()
     {
-        return $this->belongsTo(Conference::class);
+        return $this->belongsTo(Serie::class);
     }
 
     public function registerMediaConversions(?Media $media = null): void
