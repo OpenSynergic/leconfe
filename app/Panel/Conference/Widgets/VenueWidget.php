@@ -5,7 +5,7 @@ namespace App\Panel\Conference\Widgets;
 use App\Models\Venue;
 use Filament\Widgets\Widget;
 
-class VenueWidget extends Widget
+class VenueWidgets extends Widget
 {
     protected static string $view = 'panel.conference.widgets.venue-widget';
 

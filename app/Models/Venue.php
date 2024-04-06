@@ -14,7 +14,7 @@ class Venue extends Model implements HasMedia
 {
     use Cachable, HasFactory, InteractsWithMedia;
 
-    protected $fillable = ['name', 'location', 'description'];
+    protected $fillable = ['name', 'location', 'description', 'serie_id'];
 
     public function series()
     {

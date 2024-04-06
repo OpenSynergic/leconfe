@@ -108,7 +108,7 @@ class Application extends LaravelApplication
         }
 
         return $this->currentSerie;
-    }   
+    }
 
     public function scopeCurrentConference(): void
     {
@@ -116,7 +116,7 @@ class Application extends LaravelApplication
             Submission::class,
             ConferenceSponsor::class,
             Topic::class,
-            Venue::class,
+            // Venue::class,
             NavigationMenu::class,
             Block::class,
             ParticipantPosition::class,

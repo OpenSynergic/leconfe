@@ -3,28 +3,29 @@
 namespace App\Panel\Series\Resources;
 
 use App\Models\Venue;
-use App\Panel\Series\Resources\VenueResource\Pages;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Components\TextEntry\TextEntrySize;
+use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Hidden;
 use Filament\Support\Enums\FontWeight;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\DeleteAction;
+use Filament\Forms\Components\Textarea;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Infolists\Components\TextEntry;
+use App\Panel\Series\Resources\VenueResource\Pages;
+use Filament\Infolists\Components\TextEntry\TextEntrySize;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 class VenueResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Conferences';
 
     protected static ?string $model = Venue::class;
 
@@ -46,6 +47,8 @@ class VenueResource extends Resource
                             ->multiple(false)
                             ->required(),
                         Textarea::make('description'),
+                        Hidden::make('serie_id')
+                            ->default(fn () => app()->getCurrentSerieId()),
                     ]),
             ]);
     }
@@ -88,6 +91,11 @@ class VenueResource extends Resource
                     DeleteAction::make(),
                 ]),
             ]);
+    }
+
+    public static function getEloquentQuery(): EloquentBuilder
+    {
+        return Venue::query()->where('serie_id', app()->getCurrentSerieId());
     }
 
     public static function getPages(): array
