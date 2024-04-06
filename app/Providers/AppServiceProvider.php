@@ -155,6 +155,7 @@ class AppServiceProvider extends ServiceProvider
 
 
         $this->app->scopeCurrentConference();
+        $this->app->scopeCurrentSerie();
 
         $pathInfos = explode('/', request()->getPathInfo());
         // Detect conference from URL path

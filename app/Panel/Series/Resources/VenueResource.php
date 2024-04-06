@@ -93,11 +93,6 @@ class VenueResource extends Resource
             ]);
     }
 
-    public static function getEloquentQuery(): EloquentBuilder
-    {
-        return Venue::query()->where('serie_id', app()->getCurrentSerieId());
-    }
-
     public static function getPages(): array
     {
         return [
