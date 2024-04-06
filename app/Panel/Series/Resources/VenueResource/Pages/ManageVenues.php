@@ -13,7 +13,12 @@ class ManageVenues extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+            ->mutateFormDataUsing(function (array $data) {
+                dd($data);
+
+                return $data;
+            })
         ];
     }
 }
