@@ -3,21 +3,22 @@
 namespace App\Providers;
 
 use App\Application;
+use App\Models\Serie;
+use Livewire\Livewire;
+use App\Models\Conference;
+use Illuminate\Support\Str;
 use App\Managers\BlockManager;
 use App\Managers\MetaTagManager;
-use App\Models\Conference;
-use App\Models\Serie;
-use App\Routing\CustomUrlGenerator;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
+use App\Routing\CustomUrlGenerator;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
-use Livewire\Livewire;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -153,13 +154,10 @@ class AppServiceProvider extends ServiceProvider
             return;
         }
 
-
-        $this->app->scopeCurrentConference();
-        $this->app->scopeCurrentSerie();
-
         $pathInfos = explode('/', request()->getPathInfo());
         // Detect conference from URL path
         if (isset($pathInfos[1]) && !blank($pathInfos[1])) {
+
             $conference = Conference::where('path', $pathInfos[1])->first();
 
             $conference ? $this->app->setCurrentConferenceId($conference->getKey()) : $this->app->setCurrentConferenceId(Application::CONTEXT_WEBSITE);
@@ -169,14 +167,17 @@ class AppServiceProvider extends ServiceProvider
                 $serie = Serie::where('path', $pathInfos[3])->first();
                 $serie && $this->app->setCurrentSerieId($serie->getKey());
             }
+
         }
 
         // Scope livewire update path to current conference
         $currentConference = $this->app->getCurrentConference();
         if ($currentConference) {
+            $this->app->scopeCurrentConference();
             // Scope livewire update path to current serie
             $currentSerie = $this->app->getCurrentSerie();
             if ($currentSerie) {
+                $this->app->scopeCurrentSerie();
                 Livewire::setUpdateRoute(
                     fn ($handle) => Route::post($currentConference->path . '/series/' . $currentSerie->path . '/livewire/update', $handle)->middleware('web')
                 );
