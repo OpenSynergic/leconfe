@@ -21,6 +21,14 @@ class SiteUpdateAction
                 $site->setManyMeta($meta);
             }
 
+            if ($settings = data_get($data, 'settings')) {
+                $prefixedMeta = [];
+                foreach ($settings as $key => $value) {
+                    $prefixedMeta['settings.' . $key] = $value; // Prefixing each key
+                }
+                $site->setManyMeta($prefixedMeta);
+            }
+
             $site->touch();
 
             DB::commit();

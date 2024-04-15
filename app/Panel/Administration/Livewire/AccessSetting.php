@@ -3,6 +3,8 @@
 namespace App\Panel\Administration\Livewire;
 
 use App\Actions\Settings\SettingUpdateAction;
+use App\Actions\Site\SiteUpdateAction;
+use App\Models\Conference;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Checkbox;
@@ -18,9 +20,28 @@ class AccessSetting extends Component implements HasForms
 
     public ?array $formData = [];
 
+    public Conference $conference;
+
     public function mount()
     {
-        $this->form->fill(setting()->all());
+        $parsed_url = parse_url(url()->current());
+        $path_segments = explode('/', $parsed_url['path']);
+        $path_segments = array_values(array_filter($path_segments));
+        if (app()->getCurrentConference() == null) {
+            $this->form->fill([
+                'settings' => [
+                    'allow_registration' => app()->getSite()->getMeta('settings.allow_registration'),
+                    'must_verify_email' => app()->getSite()->getMeta('settings.must_verify_email'),
+                ]
+            ]);
+            return;
+        }
+        if (app()->getCurrentConference()->getOriginal('path') === $path_segments[0]) {
+            $this->form->fill([
+                'settings' => $this->conference->getAllMeta(),
+            ]);
+            return;
+        }
     }
 
     public function render()
@@ -34,10 +55,10 @@ class AccessSetting extends Component implements HasForms
             ->schema([
                 Section::make()
                     ->schema([
-                        Checkbox::make('allow_registration')
+                        Checkbox::make('settings.allow_registration')
                             ->label('Allow Registration')
                             ->helperText('Allow public to register on the site.'),
-                        Checkbox::make('must_verify_email')
+                        Checkbox::make('settings.must_verify_email')
                             ->label('Must Verify Email')
                             ->helperText('Require users to verify their email address before they can log in.'),
                     ])
@@ -50,11 +71,10 @@ class AccessSetting extends Component implements HasForms
                         ->action(function (Action $action) {
                             $formData = $this->form->getState();
                             try {
-                                SettingUpdateAction::run($formData);
+                                SiteUpdateAction::run($formData);
                                 $action->sendSuccessNotification();
                             } catch (\Throwable $th) {
                                 $action->failure();
-                                // $action->sendFailureNotification();
                             }
                         }),
                 ])->alignLeft(),
