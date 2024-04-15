@@ -47,8 +47,8 @@ class VenueResource extends Resource
                             ->multiple(false)
                             ->required(),
                         Textarea::make('description'),
-                        Hidden::make('serie_id')
-                            ->default(fn () => app()->getCurrentSerieId()),
+                        // Hidden::make('serie_id')
+                        //     ->default(fn () => app()->getCurrentSerieId()),
                     ]),
             ]);
     }

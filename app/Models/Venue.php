@@ -2,24 +2,20 @@
 
 namespace App\Models;
 
-use App\Models\Concerns\BelongsToConference;
+use Spatie\MediaLibrary\HasMedia;
+use App\Models\Concerns\BelongsToSerie;
+use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Venue extends Model implements HasMedia
 {
-    use Cachable, HasFactory, InteractsWithMedia;
+    use BelongsToSerie, Cachable, HasFactory, InteractsWithMedia;
 
     protected $fillable = ['name', 'location', 'description', 'serie_id'];
 
-    public function series()
-    {
-        return $this->belongsTo(Serie::class);
-    }
 
     public function registerMediaConversions(?Media $media = null): void
     {

@@ -14,11 +14,6 @@ class ManageVenues extends ManageRecords
     {
         return [
             Actions\CreateAction::make()
-            ->mutateFormDataUsing(function (array $data) {
-                dd($data);
-
-                return $data;
-            })
         ];
     }
 }
