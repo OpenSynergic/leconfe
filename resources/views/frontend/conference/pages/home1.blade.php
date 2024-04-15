@@ -1,24 +1,18 @@
 <x-website::layouts.main>
     <div class="space-y-2">
         <section id="highlight-conference" class="p-5 space-y-4">
-            {{-- <h1 class="cf-name text-lg">{{ $currentConference->name }}</h1> --}}
+            <h1 class="cf-name text-lg">{{ $currentConference->name }}</h1>
+
             <div class="flex flex-col sm:flex-row flex-wrap space-y-4 sm:space-y-0 gap-4">
-                <div class="flex flex-col gap-2 flex-1">
-                    @if ($currentConference->hasMedia('thumbnail'))
-                        <div class="cf-thumbnail mb-5">
-                            <img class="w-full rounded "
-                                src="{{ $currentConference->getFirstMedia('thumbnail')->getUrl() }}"
-                                alt="{{ $currentConference->name }}" />
-                        </div>
-                    @endif
-                    {{-- <h1 class="cf-name text-xl">{{ $currentConference->name }}</h1> --}}
-                    <div class="inline-flex items-center space-x-2">
-                        <h1 class="cf-name text-2xl">International Conference of MATHEMATICS AND ITS Application Artificial Intelligent on ChatGPT and the Effect</h1>
-                        <div class="badge bg-purple-300 rounded-full px-3 text-xs flex items-center justify-center" style="height: 2rem;">{{ $currentConference->type }}</div>
+                @if ($currentConference->hasMedia('thumbnail'))
+                    <div class="cf-thumbnail">
+                        <img class="w-full rounded max-w-[200px]"
+                            src="{{ $currentConference->getFirstMedia('thumbnail')->getAvailableUrl(['thumb', 'thumb-xl']) }}"
+                            alt="{{ $currentConference->name }}" />
                     </div>
-
-
-                    {{-- @if ($currentConference->date_start)
+                @endif
+                <div class="flex flex-col gap-2 flex-1">
+                    @if ($currentConference->date_start)
                         <div class="inline-flex items-center space-x-2">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -28,22 +22,13 @@
                             <time
                                 class="text-xs text-secondary">{{ date(setting('format.date'), strtotime($currentConference->date_start)) }}</time>
                         </div>
-                    @endif --}}
+                    @endif
                     @if ($currentConference->getMeta('description'))
                         <div class="user-content">
                             {{ $currentConference->getMeta('description') }}
                         </div>
                     @endif
-                    {{-- SERIES DESCRIPTION --}}
-                    @if ($currentConference->series->where('active', true)->first()->description)
-                        <h2 class="text-base font-medium">Series Description :</h2>
-                        <div class="user-content">
-                            {{ $currentConference->series->where('active', true)->first()->description }}
-                        </div>
-                        @endif
-                        {{-- TOPICS --}}
                     @if ($topics->isNotEmpty())
-                        <h2 class="text-base font-medium">Topics :</h2>
                         <div class="flex flex-wrap w-full gap-2">
                             @foreach ($topics as $topic)
                                 <span
@@ -51,7 +36,6 @@
                             @endforeach
                         </div>
                     @endif
-                    {{-- SUBMIT --}}
                 </div>
             </div>
         </section>
@@ -137,7 +121,7 @@
             <section class="venues p-5">
                 <h2 class="text-heading">Venues</h2>
                 <div class="venue-list space-y-3">
-                    @foreach ($venues as $venue)
+                    @foreach ($venues as $venue)                        
                     <div class="venue flex gap-3">
                         @if ($venue->hasMedia('thumbnail'))
                             <img class="max-w-[100px]" src="{{ $venue->getFirstMedia('thumbnail')->getAvailableUrl(['thumb', 'thumb-xl']) }}">
