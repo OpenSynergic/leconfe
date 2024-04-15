@@ -7,12 +7,14 @@ use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Livewire\Component;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
+use Stevebauman\Purify\Facades\Purify;
 
 class InformationSetting extends Component implements HasForms
 {
@@ -50,8 +52,20 @@ class InformationSetting extends Component implements HasForms
                             ->columnSpan([
                                 'sm' => 2,
                             ]),
+                        Textarea::make('meta.description')
+                            ->rows(3)
+                            ->autosize()
+                            ->columnSpanFull(),
+                        TinyEditor::make('meta.about')
+                            ->label('About Site')
+                            ->minHeight(300)
+                            ->dehydrateStateUsing(fn(string $state) => Purify::clean($state))
+                            ->columnSpan([
+                                'sm' => 2,
+                            ]),
                         TinyEditor::make('meta.page_footer')
                             ->minHeight(300)
+                            ->dehydrateStateUsing(fn(string $state) => Purify::clean($state))
                             ->columnSpan([
                                 'sm' => 2,
                             ]),

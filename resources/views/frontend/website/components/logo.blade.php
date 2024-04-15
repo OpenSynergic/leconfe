@@ -9,7 +9,7 @@
 @else
     <x-website::link 
         :href="$homeUrl" 
-        {{ $attributes->merge(['class' => 'text-lg sm:text-lg']) }}
+        {{ $attributes->merge(['class' => 'text-lg sm:text-lg text-primary-content']) }}
     >
         {{ $headerLogoAltText }}
     </x-website::link>

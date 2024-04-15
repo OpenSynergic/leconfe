@@ -5,13 +5,15 @@ namespace App\Models;
 use App\Models\Concerns\BelongsToConference;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\EloquentSortable\Sortable;
+use Spatie\EloquentSortable\SortableTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class ConferenceSponsor extends Model implements HasMedia
+class Sponsor extends Model implements HasMedia, Sortable
 {
-    use HasFactory, InteractsWithMedia, BelongsToConference;
+    use HasFactory, InteractsWithMedia, BelongsToConference, SortableTrait;
 
     protected $fillable = [
         'name',
@@ -38,7 +40,7 @@ class ConferenceSponsor extends Model implements HasMedia
         $this->addMediaConversion('small')
             ->performOnCollections('logo')
             ->keepOriginalImageFormat()
-            ->width(50);
+            ->height(50);
 
         $this->addMediaConversion('thumb')
             ->performOnCollections('logo')
@@ -50,4 +52,11 @@ class ConferenceSponsor extends Model implements HasMedia
             ->keepOriginalImageFormat()
             ->width(800);
     }
+
+    public function buildSortQuery()
+    {
+        return static::query()
+            ->where('conference_id', app()->getCurrentConferenceId());
+    }
+
 }

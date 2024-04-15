@@ -28,10 +28,9 @@ class ConferenceFactory extends Factory
     {
         $name = 'Conference';
         $city = fake()->city();
-        $year = fake()->year();
 
         return [
-            'name' => "$name $city $year",
+            'name' => "$name $city",
             'path' => Str::slug($city),
             'date_start' => fake()->dateTimeBetween('-1 year', '+1 year'),
             'date_end' => fake()->dateTimeBetween('+1 year', '+2 year'),
