@@ -37,46 +37,6 @@ class SiteObserver
 
         NavigationMenuItem::insert([
             [
-                'navigation_menu_id' => $primaryNavigationMenu->getKey(),
-                'label' => 'Home',
-                'type' => 'home',
-                'order_column' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'navigation_menu_id' => $primaryNavigationMenu->getKey(),
-                'label' => 'About',
-                'type' => 'about',
-                'order_column' => 2,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'navigation_menu_id' => $primaryNavigationMenu->getKey(),
-                'label' => 'Announcements',
-                'type' => 'announcements',
-                'order_column' => 3,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'navigation_menu_id' => $primaryNavigationMenu->getKey(),
-                'label' => 'Contact Us',
-                'type' => 'contact-us',
-                'order_column' => 4,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'navigation_menu_id' => $primaryNavigationMenu->getKey(),
-                'label' => 'Proceedings',
-                'type' => 'proceedings',
-                'order_column' => 5,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
                 'navigation_menu_id' => $userNavigationMenu->getKey(),
                 'label' => 'Login',
                 'type' => 'login',

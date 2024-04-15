@@ -2,9 +2,9 @@
 
 namespace App\Frontend\Website\Pages;
 
-use App\Frontend\Conference\Pages\Login as PagesLogin;
+use App\Frontend\Conference\Pages\Login as ConferenceLogin;
 
-class Login extends PagesLogin
+class Login extends ConferenceLogin
 {
     public function getRedirectUrl(): string
     {
