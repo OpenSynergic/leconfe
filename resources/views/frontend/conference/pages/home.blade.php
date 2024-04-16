@@ -159,42 +159,48 @@
                 </div>
 
                 <div x-show="activeTab === 'registration-info'" class="p-4 border border-t-0 border-gray-300 ">
-                    <article id="registration-info" class="overflow-x-auto">
+                    <article id="registration-info">
                         <h1>Fee</h1>
-                        <table class="table w-full border-collapse border border-gray-300 my-2">
-                            <thead class="bg-gray-100">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                        Jenis Peserta</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                        Mahasiswa S1</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                        Mahasiswa S2, S3, dan Guru</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                        Umum</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200">
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap">Peserta Biasa</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">Rp50.000</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">Rp100.000</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">Rp150.000</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap">Poster</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">Rp100.000</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">Rp150.000</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">Rp200.000</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap">Pemakalah Oral</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">Rp100.000</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">Rp150.000</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">Rp200.000</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="overflow-x-auto max-w-full">
+                            <table class="table w-full border-collapse border border-gray-300 my-2 ">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                            Jenis Peserta</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                            Mahasiswa S1</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                            Mahasiswa S2, S3, dan Guru</th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                            Umum</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">Peserta Biasa</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">Rp50.000</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">Rp100.000</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">Rp150.000</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">Poster</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">Rp100.000</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">Rp150.000</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">Rp200.000</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">Pemakalah Oral</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">Rp100.000</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">Rp150.000</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">Rp200.000</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                         <div class="flex flex-row-reverse">
                             <a href="#"
                                 class="bg-green-500 hover:bg-green-600 py-1 px-3 rounded-md text-sm text-white cursor-pointer">Register</a>
@@ -235,41 +241,50 @@
                         <h1>Editorial</h1>
                         <div class="flex flex-col flex-start gap-y-4 my-2">
                             <div class="flex flex-row text-sm w-fit">
-                                <img  src="https://placeholder.co/64x64" alt="editor-thumbnail"
+                                <img src="https://placeholder.co/64x64" alt="editor-thumbnail"
                                     class="rounded-full w-16 h-16 m-auto block">
                                 <div class="pl-4">
                                     <h3>Prof. David Bramhiers, Ph.D.</h3>
                                     <p class="text-blue-500">Lead Editor</p>
                                     <p class="text-secondary">Oxford University</p>
                                     <div class="flex flex-row items-center">
-                                        <img class="w-4 h-4 mr-2" src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Google_Scholar_logo.svg" alt="">
-                                        <a href="#" class="text-cyan-500 underline underline-offset-2">123847742</a>
+                                        <img class="w-4 h-4 mr-2"
+                                        src="{{ Vite::asset('resources/assets/images/google-scholar-logo.svg') }}"
+                                            alt="">
+                                        <a href="#"
+                                            class="text-cyan-500 underline underline-offset-2">123847742</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="flex flex-row text-sm w-fit">
-                                <img  src="https://placeholder.co/64x64" alt="editor-thumbnail"
+                                <img src="https://placeholder.co/64x64" alt="editor-thumbnail"
                                     class="rounded-full w-16 h-16 m-auto block">
                                 <div class="pl-4">
                                     <h3>Prof. David Bramhiers, Ph.D.</h3>
                                     <p class="text-blue-500">Lead Editor</p>
                                     <p class="text-secondary">Oxford University</p>
                                     <div class="flex flex-row items-center">
-                                        <img class="w-4 h-4 mr-2" src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Google_Scholar_logo.svg" alt="">
-                                        <a href="#" class="text-cyan-500 underline underline-offset-2">123847742</a>
+                                        <img class="w-4 h-4 mr-2"
+                                        src="{{ Vite::asset('resources/assets/images/google-scholar-logo.svg') }}"
+                                            alt="">
+                                        <a href="#"
+                                            class="text-cyan-500 underline underline-offset-2">123847742</a>
                                     </div>
                                 </div>
                             </div>
                             <div class="flex flex-row text-sm w-fit">
-                                <img  src="https://placeholder.co/64x64" alt="editor-thumbnail"
+                                <img src="https://placeholder.co/64x64" alt="editor-thumbnail"
                                     class="rounded-full w-16 h-16 m-auto block">
                                 <div class="pl-4">
                                     <h3>Prof. David Bramhiers, Ph.D.</h3>
                                     <p class="text-blue-500">Lead Editor</p>
                                     <p class="text-secondary">Oxford University</p>
                                     <div class="flex flex-row items-center">
-                                        <img class="w-4 h-4 mr-2" src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Google_Scholar_logo.svg" alt="">
-                                        <a href="#" class="text-cyan-500 underline underline-offset-2">123847742</a>
+                                        <img class="w-4 h-4 mr-2"
+                                        src="{{ Vite::asset('resources/assets/images/google-scholar-logo.svg') }}"
+                                            alt="">
+                                        <a href="#"
+                                            class="text-cyan-500 underline underline-offset-2">123847742</a>
                                     </div>
                                 </div>
                             </div>
@@ -281,7 +296,10 @@
 
         @if ($participantPosition->isNotEmpty())
             <section id="conference-speakers" class="p-5 flex flex-col gap-2">
-                <h2 class="text-heading">Speakers</h2>
+                <div class="flex items-center">
+                    <img class="w-" src="{{ Vite::asset('resources/assets/images/game-icons_public-speaker.svg') }}" alt="">
+                    <h2 class="pl-3">Speakers</h2>
+                </div>
                 <div class="cf-speakers space-y-6">
                     @foreach ($participantPosition as $position)
                         @if ($position->participants->isNotEmpty())
@@ -318,6 +336,10 @@
                 </div>
             </section>
         @endif
+
+        <section id="conference-accepted-papers">
+
+        </section>
 
 
         @if ($currentConference->getMeta('additional_content'))
