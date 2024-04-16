@@ -9,8 +9,8 @@
                     <div class="inline-flex items-center space-x-2">
                         <h1 class="cf-name text-2xl">International Conference of MATHEMATICS AND ITS Application
                             Artificial Intelligent on ChatGPT and the Effect</h1>
-                        <div class="badge bg-purple-300 rounded-full px-3 text-xs flex items-center justify-center"
-                            style="height: 2rem;">{{ $currentConference->type }}</div>
+                        <span
+                            class="badge bg-purple-400 text-white rounded-full px-3 text-xs flex items-center justify-center h-8">{{ $currentConference->type }}</span>
                     </div>
                     @if ($currentConference->getMeta('description'))
                         <div class="user-content">
@@ -82,55 +82,139 @@
             <div x-data="{ activeTab: 'information' }" class=" bg-white">
                 <div class="border border-t-0 border-x-0 border-gray-300">
                     <button @click="activeTab = 'information'"
-                        :class="{ 'text-blue-400 ': activeTab === 'information' }"
-                        class="px-4 py-2 text-sm hover:text-blue-400 border border-b-white  border-gray-300" style="margin-bottom: -1px">Information</button>
+                        :class="{ 'text-blue-400 bg-white': activeTab === 'information', 'bg-gray-100': activeTab !== 'information' }"
+                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300"
+                        style="margin-bottom: -1px">Information</button>
                     <button @click="activeTab = 'participant-info'"
-                        :class="{ 'text-blue-400 ': activeTab === 'participant-info' }"
-                        class="px-4 py-2 text-sm hover:text-blue-400 border border-b-white border-gray-300" style="margin-bottom: -1px">Participant Info</button>
+                        :class="{ 'text-primary bg-white': activeTab === 'participant-info', 'bg-gray-100': activeTab !== 'participant-info' }"
+                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300"
+                        style="margin-bottom: -1px">Participant Info</button>
                     <button @click="activeTab = 'registration-info'"
-                        :class="{ 'text-blue-400 ': activeTab === 'registration-info' }"
-                        class="px-4 py-2 text-sm hover:text-blue-400 border border-b-white border-gray-300" style="margin-bottom: -1px">Registration Info</button>
+                        :class="{ 'text-primary bg-white': activeTab === 'registration-info', 'bg-gray-100': activeTab !== 'registration-info' }"
+                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300"
+                        style="margin-bottom: -1px">Registration Info</button>
+                    <button @click="activeTab = 'contact-info'"
+                        :class="{ 'text-primary bg-white': activeTab === 'contact-info', 'bg-gray-100': activeTab !== 'contact-info' }"
+                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300"
+                        style="margin-bottom: -1px">Contact Info</button>
+                    <button @click="activeTab = 'editorial-committee'"
+                        :class="{ 'text-primary bg-white': activeTab === 'editorial-committee', 'bg-gray-100': activeTab !== 'editorial-committee' }"
+                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300"
+                        style="margin-bottom: -1px">Editorial Committee</button>
                 </div>
-                <div class="">
-
-                    <div x-show="activeTab === 'information'" class="p-4 border border-t-0 border-gray-300 ">
-                        <div class="text-content">
-                            <table>
-                                <tr>
-                                    <td>Type</td>
-                                    <td class="pl-5 pr-2">:</td>
-                                    <td>{{ $currentConference->type }}</td>
-                                </tr>
+                <div x-show="activeTab === 'information'" class="p-4 border border-t-0 border-gray-300 ">
+                    <article id="conference-information" class="flex flex-col gap-2">
+                        <table class="w-full text-sm" cellpadding="4">
+                            <tr>
+                                <td width="80">Type</td>
+                                <td width="20">:</td>
+                                <td>{{ $currentConference->type }}</td>
+                            </tr>
+                            @if ($currentConference->hasMeta('location'))
                                 <tr>
                                     <td>Place</td>
-                                    <td class="pl-5 pr-2">:</td>
-                                    <td>{{ $currentConference->type }}</td>
+                                    <td>:</td>
+                                    <td>{{ $currentConference->getMeta('location') }}</td>
                                 </tr>
+                            @endif
+                            @if ($currentConference->date_start)
                                 <tr>
                                     <td>Date</td>
-                                    <td class="pl-5 pr-2">:</td>
-                                    <td>{{ $currentConference->type }}</td>
+                                    <td>:</td>
+                                    <td>
+                                        {{ date(setting('format.date'), strtotime($currentConference->date_start)) }} -
+                                        {{ date(setting('format.date'), strtotime($currentConference->date_end)) }}
+                                    </td>
+                                </tr>
+                            @endif
+                        </table>
+                    </article>
+                </div>
+
+                <div x-show="activeTab === 'participant-info'" class="p-4 border border-t-0 border-gray-300 ">
+                    <article id="participant-info">
+                        <h1>Quota</h1>
+                        <table class="text-sm border-separate border-spacing-2">
+                            <tr>
+                                <td>Paper</td>
+                                <td>:</td>
+                                <td>400 Papers</td>
+                                <td>
+                                    <span class="badge badge-primary text-xs h-6">355 Accepted</span>
+                                </td>
+                                <td><span class="badge badge-outline text-xs border h-6 text-primary">45
+                                        Available</span></td>
+                            </tr>
+                            <tr>
+                                <td>Participant</td>
+                                <td>:</td>
+                                <td>60 Seats</td>
+                                <td>
+                                    <span class="badge badge-primary text-xs h-6">30 Reserved</span>
+                                </td>
+                                <td><span class="badge badge-outline text-xs border h-6 text-primary">30
+                                        Available</span></td>
+                            </tr>
+                        </table>
+                    </article>
+                </div>
+
+                <div x-show="activeTab === 'registration-info'" class="p-4 border border-t-0 border-gray-300 ">
+                    <article id="registration-info" class="overflow-x-auto">
+                        <h1>Fee</h1>
+                        <table class="table w-full border-collapse border border-gray-300 my-2">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                        Jenis Peserta</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                        Mahasiswa S1</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                        Mahasiswa S2, S3, dan Guru</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                        Umum</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">Peserta Biasa</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">Rp50.000</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">Rp100.000</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">Rp150.000</td>
                                 </tr>
                                 <tr>
-                                    <td>Organized by</td>
-                                    <td class="pl-5 pr-2">:</td>
-                                    <td>{{ $currentConference->type }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">Poster</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">Rp100.000</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">Rp150.000</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">Rp200.000</td>
                                 </tr>
-                            </table>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">Pemakalah Oral</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">Rp100.000</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">Rp150.000</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">Rp200.000</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="flex flex-row-reverse">
+                            <a href="#" class="bg-green-500 hover:bg-green-600 py-1 px-3 rounded-md text-sm text-white cursor-pointer">Register</a>
                         </div>
-                    </div>
-                    <div x-show="activeTab === 'participant-info'" class="p-4 border border-t-0 border-gray-300 ">
-                        <p>Content for second tab.</p>
-                    </div>
-                    <div x-show="activeTab === 'registration-info'" class="p-4 border border-t-0 border-gray-300 ">
-                        <p>Content for third tab.</p>
-                    </div>
-                    <div x-show="activeTab === 'contact-info'" class="p-4 border border-t-0 border-gray-300 ">
-                        <p>Content for fifth tab.</p>
-                    </div>
-                    <div x-show="activeTab === 'editorial-comittee'" class="p-4 border border-t-0 border-gray-300 ">
-                        <p>Content for sixth tab.</p>
-                    </div>
+                        <div class="text-sm">
+                            <h2>Payment Via Bank</h2>
+                            <p>Bank Negara Indonesia (BNI), <span class="font-bold">No Rekening 1234567890 (Siminar Bersama 2023)</span></p>
+                            <p class="text-red-500">Setelah mebayar silakan konfirmasi ke contact info, konfirmasi pembayaran paling lambat 21 Maret 2024.</p>
+                        </div>
+                    </article>
+                </div>
+                <div x-show="activeTab === 'contact-info'" class="p-4 border border-t-0 border-gray-300 ">
+
+                </div>
+                <div x-show="activeTab === 'editorial-committee'" class="p-4 border border-t-0 border-gray-300 ">
+                    <p>Content for sixth tab.</p>
                 </div>
             </div>
 
