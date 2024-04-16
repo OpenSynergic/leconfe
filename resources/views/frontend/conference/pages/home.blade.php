@@ -7,8 +7,7 @@
                         <img src="https://placehold.co/960x200" class="w-full" alt="">
                     </div>
                     <div class="inline-flex items-center space-x-2">
-                        <h1 class="cf-name text-2xl">International Conference of MATHEMATICS AND ITS Application
-                            Artificial Intelligent on ChatGPT and the Effect</h1>
+                        <h1 class="cf-name text-2xl">{{ $currentConference->name }}</h1>
                         <span
                             class="badge bg-purple-400 text-white rounded-full px-3 text-xs flex items-center justify-center h-8">{{ $currentConference->type }}</span>
                     </div>
@@ -78,7 +77,7 @@
                 </div>
             @endif
         </section>
-        <section id="conference-detail-tab" class="p-5 space-y-4">
+        <section id="conference-detail-tabs" class="p-5 space-y-4">
             <div x-data="{ activeTab: 'information' }" class=" bg-white">
                 <div class="border border-t-0 border-x-0 border-gray-300">
                     <button @click="activeTab = 'information'"
@@ -279,42 +278,6 @@
                 </div>
             </div>
         </section>
-
-
-
-
-
-
-        @if ($currentConference->date_start || $currentConference->hasMeta('location'))
-            <section id="conference-information" class="p-5 flex flex-col gap-2">
-                <h2 class="text-heading">Information</h2>
-                <table class="w-full text-sm" cellpadding="4">
-                    <tr>
-                        <td width="80">Type</td>
-                        <td width="20">:</td>
-                        <td>{{ $currentConference->type }}</td>
-                    </tr>
-                    @if ($currentConference->hasMeta('location'))
-                        <tr>
-                            <td>Place</td>
-                            <td>:</td>
-                            <td>{{ $currentConference->getMeta('location') }}</td>
-                        </tr>
-                    @endif
-
-                    @if ($currentConference->date_start)
-                        <tr>
-                            <td>Date</td>
-                            <td>:</td>
-                            <td>
-                                {{ date(setting('format.date'), strtotime($currentConference->date_start)) }} -
-                                {{ date(setting('format.date'), strtotime($currentConference->date_end)) }}
-                            </td>
-                        </tr>
-                    @endif
-                </table>
-            </section>
-        @endif
 
         @if ($participantPosition->isNotEmpty())
             <section id="conference-speakers" class="p-5 flex flex-col gap-2">
