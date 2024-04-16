@@ -3,6 +3,7 @@
 namespace App\Panel\Administration\Livewire;
 
 use App\Actions\Settings\SettingUpdateAction;
+use App\Actions\Site\SiteUpdateAction;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Radio;
@@ -21,7 +22,9 @@ class DateAndTimeSetting extends Component implements HasForms
 
     public function mount()
     {
-        $this->form->fill(setting()->all());
+        $this->form->fill([
+            'settings' => getSettings(['date', 'time'])
+        ]);
     }
 
     public function render()
@@ -43,14 +46,14 @@ class DateAndTimeSetting extends Component implements HasForms
                                         class="filament-link inline-flex items-center justify-center gap-0.5 font-medium outline-none hover:underline focus:underline text-sm text-primary-600 hover:text-primary-500 filament-tables-link-action">format characters</a>.
                                     HTML))
                     ->schema([
-                        Radio::make('format.date')
+                        Radio::make('settings.date')
                             ->options(fn () => collect([
                                 'F j, Y',
                                 'F j Y',
                                 'j F Y',
                                 'Y F j',
                             ])->mapWithKeys(fn ($format) => [$format => $now->format($format)])),
-                        Radio::make('format.time')
+                        Radio::make('settings.time')
                             ->options(fn () => collect([
                                 'h:i A',
                                 'g:ia',
@@ -63,7 +66,7 @@ class DateAndTimeSetting extends Component implements HasForms
                         ->action(function (Action $action) {
                             $formData = $this->form->getState();
                             try {
-                                SettingUpdateAction::run($formData);
+                                SiteUpdateAction::run($formData);
 
                                 $action->sendSuccessNotification();
                             } catch (\Throwable $th) {

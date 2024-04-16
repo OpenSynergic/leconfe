@@ -2,17 +2,18 @@
 
 namespace App\Panel\Administration\Livewire;
 
-use App\Actions\Settings\SettingUpdateAction;
-use App\Actions\Site\SiteUpdateAction;
-use App\Models\Conference;
-use Filament\Forms\Components\Actions;
-use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
+use App\Models\Site;
 use Livewire\Component;
+use Filament\Forms\Form;
+use App\Actions\Site\SiteUpdateAction;
+use Filament\Forms\Components\Actions;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Components\Checkbox;
+use App\Actions\Settings\SettingUpdateAction;
+use App\Classes\Settings;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Concerns\InteractsWithForms;
 
 class AccessSetting extends Component implements HasForms
 {
@@ -20,28 +21,11 @@ class AccessSetting extends Component implements HasForms
 
     public ?array $formData = [];
 
-    public Conference $conference;
-
     public function mount()
     {
-        $parsed_url = parse_url(url()->current());
-        $path_segments = explode('/', $parsed_url['path']);
-        $path_segments = array_values(array_filter($path_segments));
-        if (app()->getCurrentConference() == null) {
-            $this->form->fill([
-                'settings' => [
-                    'allow_registration' => app()->getSite()->getMeta('settings.allow_registration'),
-                    'must_verify_email' => app()->getSite()->getMeta('settings.must_verify_email'),
-                ]
-            ]);
-            return;
-        }
-        if (app()->getCurrentConference()->getOriginal('path') === $path_segments[0]) {
-            $this->form->fill([
-                'settings' => $this->conference->getAllMeta(),
-            ]);
-            return;
-        }
+        $this->form->fill([
+            'settings' => Settings::get()
+        ]);
     }
 
     public function render()

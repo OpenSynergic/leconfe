@@ -24,7 +24,7 @@ class SiteUpdateAction
             if ($settings = data_get($data, 'settings')) {
                 $prefixedMeta = [];
                 foreach ($settings as $key => $value) {
-                    $prefixedMeta['settings.' . $key] = $value; // Prefixing each key
+                    $prefixedMeta['settings.' . $key] = $value;
                 }
                 $site->setManyMeta($prefixedMeta);
             }
