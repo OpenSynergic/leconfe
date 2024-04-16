@@ -2,7 +2,7 @@
 
 namespace App\Panel\Conference\Livewire\Forms\Conferences;
 
-use App\Models\ConferenceSponsor;
+use App\Models\Sponsor;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -42,24 +42,23 @@ class SponsorSetting extends Component implements HasForms, HasTable
     {
         return $table
             ->heading("Sponsors")
+            ->reorderable('order_column')
             ->headerActions([
                 CreateAction::make('create')
                     ->label("Add Sponsor")
                     ->modalWidth('xl')
-                    ->model(ConferenceSponsor::class)
+                    ->model(Sponsor::class)
                     ->form(static::sponsorFormSchema())
             ])
-            ->query(fn (): Builder => ConferenceSponsor::query()->with('media'))
+            ->query(fn (): Builder => Sponsor::ordered()->with('media'))
             ->emptyStateHeading(__("No sponsors found"))
             ->columns([
                 Split::make([
                     SpatieMediaLibraryImageColumn::make('logo')
                         ->collection('logo')
                         ->conversion('small')
-                        ->circular()
-                        ->grow(false)
-                        ->width(50)
-                        ->height(50),
+                        ->height('3rem')
+                        ->grow(false),
                     Stack::make([
                         TextColumn::make('name')
                     ])

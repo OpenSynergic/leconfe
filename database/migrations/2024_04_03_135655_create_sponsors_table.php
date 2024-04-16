@@ -12,12 +12,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('venues', function (Blueprint $table) {
+        Schema::create('sponsors', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Conference::class)->constrained();
+            $table->foreignIdFor(Conference::class);
             $table->string('name');
-            $table->string('location');
-            $table->text('description')->nullable();
+            $table->unsignedInteger('order_column')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('venues');
+        Schema::dropIfExists('sponsors');
     }
 };

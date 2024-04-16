@@ -12,7 +12,7 @@
             @if ($item->children->isEmpty())
                 <li>
                     <x-website::link
-                        class="navigation-menu-item btn btn-ghost btn-sm rounded-full inline-flex items-center justify-center px-4 transition-colors  focus:outline-none disabled:opacity-50 disabled:pointer-events-none group w-max gap-0 ease-out duration-300"
+                        class="navigation-menu-item btn btn-ghost btn-sm text-primary-content rounded-full inline-flex items-center justify-center px-4 transition-colors  focus:outline-none disabled:opacity-50 disabled:pointer-events-none group w-max gap-0 ease-out duration-300"
                         :href="$item->getUrl()">
                         <span>{{ $item->getLabel() }}</span>
                     </x-website::link>
@@ -22,7 +22,7 @@
                     <button 
                         x-ref="button"
                         @@click="open = !open"
-                        class="navigation-menu-item btn btn-ghost btn-sm rounded-full inline-flex items-center justify-center px-4 transition-colors focus:outline-none disabled:opacity-50 disabled:pointer-events-none group w-max gap-0 ease-out duration-300"
+                        class="navigation-menu-item btn btn-ghost btn-sm text-primary-content rounded-full inline-flex items-center justify-center px-4 transition-colors focus:outline-none disabled:opacity-50 disabled:pointer-events-none group w-max gap-0 ease-out duration-300"
                         >
                         <span>{{ $item->getLabel() }}</span>
                         <svg :class="{ '-rotate-180': open}"

@@ -14,12 +14,11 @@ return new class extends Migration
     {
         Schema::create('topics', function (Blueprint $table) {
             $table->id();
-
+            $table->foreignIdFor(Conference::class)->nullable();
             $table->text('name');
             $table->text('slug');
             $table->string('type')->nullable();
             $table->integer('order_column')->nullable();
-            $table->foreignIdFor(Conference::class)->constrained();
 
             $table->timestamps();
         });
