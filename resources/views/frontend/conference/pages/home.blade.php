@@ -165,17 +165,13 @@
                         <table class="table w-full border-collapse border border-gray-300 my-2">
                             <thead class="bg-gray-100">
                                 <tr>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                                         Jenis Peserta</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                                         Mahasiswa S1</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                                         Mahasiswa S2, S3, dan Guru</th>
-                                    <th
-                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
                                         Umum</th>
                                 </tr>
                             </thead>
@@ -201,12 +197,15 @@
                             </tbody>
                         </table>
                         <div class="flex flex-row-reverse">
-                            <a href="#" class="bg-green-500 hover:bg-green-600 py-1 px-3 rounded-md text-sm text-white cursor-pointer">Register</a>
+                            <a href="#"
+                                class="bg-green-500 hover:bg-green-600 py-1 px-3 rounded-md text-sm text-white cursor-pointer">Register</a>
                         </div>
                         <div class="text-sm">
                             <h2>Payment Via Bank</h2>
-                            <p>Bank Negara Indonesia (BNI), <span class="font-bold">No Rekening 1234567890 (Siminar Bersama 2023)</span></p>
-                            <p class="text-red-500">Setelah mebayar silakan konfirmasi ke contact info, konfirmasi pembayaran paling lambat 21 Maret 2024.</p>
+                            <p>Bank Negara Indonesia (BNI), <span class="font-bold">No Rekening 1234567890 (Siminar
+                                    Bersama 2023)</span></p>
+                            <p class="text-red-500">Setelah mebayar silakan konfirmasi ke contact info, konfirmasi
+                                pembayaran paling lambat 21 Maret 2024.</p>
                         </div>
                     </article>
                 </div>
@@ -233,10 +232,52 @@
                     </article>
                 </div>
                 <div x-show="activeTab === 'editorial-committee'" class="p-4 border border-t-0 border-gray-300 ">
-
+                    <article id="editorial-committee">
+                        <h1>Editorial</h1>
+                        <div class="flex flex-col flex-start gap-y-4 my-2">
+                            <div class="flex flex-row text-sm w-fit">
+                                <img  src="https://placeholder.co/64x64" alt="editor-thumbnail"
+                                    class="rounded-full w-16 h-16 m-auto block">
+                                <div class="pl-4">
+                                    <h3>Prof. David Bramhiers, Ph.D.</h3>
+                                    <p class="text-blue-500">Lead Editor</p>
+                                    <p class="text-secondary">Oxford University</p>
+                                    <div class="flex flex-row items-center">
+                                        <img class="w-4 h-4 mr-2" src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Google_Scholar_logo.svg" alt="">
+                                        <a href="#" class="text-cyan-500 underline underline-offset-2">123847742</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex flex-row text-sm w-fit">
+                                <img  src="https://placeholder.co/64x64" alt="editor-thumbnail"
+                                    class="rounded-full w-16 h-16 m-auto block">
+                                <div class="pl-4">
+                                    <h3>Prof. David Bramhiers, Ph.D.</h3>
+                                    <p class="text-blue-500">Lead Editor</p>
+                                    <p class="text-secondary">Oxford University</p>
+                                    <div class="flex flex-row items-center">
+                                        <img class="w-4 h-4 mr-2" src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Google_Scholar_logo.svg" alt="">
+                                        <a href="#" class="text-cyan-500 underline underline-offset-2">123847742</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex flex-row text-sm w-fit">
+                                <img  src="https://placeholder.co/64x64" alt="editor-thumbnail"
+                                    class="rounded-full w-16 h-16 m-auto block">
+                                <div class="pl-4">
+                                    <h3>Prof. David Bramhiers, Ph.D.</h3>
+                                    <p class="text-blue-500">Lead Editor</p>
+                                    <p class="text-secondary">Oxford University</p>
+                                    <div class="flex flex-row items-center">
+                                        <img class="w-4 h-4 mr-2" src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Google_Scholar_logo.svg" alt="">
+                                        <a href="#" class="text-cyan-500 underline underline-offset-2">123847742</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
                 </div>
             </div>
-
         </section>
 
 
