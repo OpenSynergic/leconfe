@@ -84,6 +84,11 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
         return $this->hasMany(NavigationMenu::class);
     }
 
+    public function sponsors(): HasMany
+    {
+        return $this->hasMany(Sponsor::class);
+    }
+
     public function getNavigationItems(string $handle): array
     {
         return $this->navigations->firstWhere('handle', $handle)?->items ?? [];
@@ -184,7 +189,7 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
     {
         return $this->getMeta('payment.supported_currencies') ?? ['usd'];
     }
-    
+
     public function getThumbnailUrl() : string
     {
         return $this->getFirstMedia('thumbnail')?->getAvailableUrl(['thumb', 'thumb-xl']) ?? Vite::asset('resources/assets/images/placeholder-vertical.jpg');
