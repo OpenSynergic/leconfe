@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Panel\Conference\Resources\Conferences\TimelineResource\Pages;
+namespace App\Panel\Series\Resources\TimelineResource\Pages;
 
-use App\Panel\Conference\Resources\Conferences\TimelineResource;
+use App\Panel\Series\Resources\TimelineResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
 

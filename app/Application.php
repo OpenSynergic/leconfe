@@ -122,7 +122,6 @@ class Application extends LaravelApplication
             ParticipantPosition::class,
             Announcement::class,
             StaticPage::class,
-            Timeline::class,
             PaymentItem::class,
             Serie::class,
             Proceeding::class,
@@ -137,6 +136,7 @@ class Application extends LaravelApplication
     {
         $models = [
             Venue::class,
+            Timeline::class,
         ];
 
         foreach ($models as $model){
