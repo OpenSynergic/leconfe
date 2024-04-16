@@ -77,8 +77,68 @@
                     </div>
                 </div>
             @endif
+        </section>
+        <section id="conference-detail-tab" class="p-5 space-y-4">
+            <div x-data="{ activeTab: 'information' }" class=" bg-white">
+                <div class="border border-t-0 border-x-0 border-gray-300">
+                    <button @click="activeTab = 'information'"
+                        :class="{ 'text-blue-400 ': activeTab === 'information' }"
+                        class="px-4 py-2 text-sm hover:text-blue-400 border border-b-white  border-gray-300" style="margin-bottom: -1px">Information</button>
+                    <button @click="activeTab = 'participant-info'"
+                        :class="{ 'text-blue-400 ': activeTab === 'participant-info' }"
+                        class="px-4 py-2 text-sm hover:text-blue-400 border border-b-white border-gray-300" style="margin-bottom: -1px">Participant Info</button>
+                    <button @click="activeTab = 'registration-info'"
+                        :class="{ 'text-blue-400 ': activeTab === 'registration-info' }"
+                        class="px-4 py-2 text-sm hover:text-blue-400 border border-b-white border-gray-300" style="margin-bottom: -1px">Registration Info</button>
+                </div>
+                <div class="">
+
+                    <div x-show="activeTab === 'information'" class="p-4 border border-t-0 border-gray-300 ">
+                        <div class="text-content">
+                            <table>
+                                <tr>
+                                    <td>Type</td>
+                                    <td class="pl-5 pr-2">:</td>
+                                    <td>{{ $currentConference->type }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Place</td>
+                                    <td class="pl-5 pr-2">:</td>
+                                    <td>{{ $currentConference->type }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Date</td>
+                                    <td class="pl-5 pr-2">:</td>
+                                    <td>{{ $currentConference->type }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Organized by</td>
+                                    <td class="pl-5 pr-2">:</td>
+                                    <td>{{ $currentConference->type }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div x-show="activeTab === 'participant-info'" class="p-4 border border-t-0 border-gray-300 ">
+                        <p>Content for second tab.</p>
+                    </div>
+                    <div x-show="activeTab === 'registration-info'" class="p-4 border border-t-0 border-gray-300 ">
+                        <p>Content for third tab.</p>
+                    </div>
+                    <div x-show="activeTab === 'contact-info'" class="p-4 border border-t-0 border-gray-300 ">
+                        <p>Content for fifth tab.</p>
+                    </div>
+                    <div x-show="activeTab === 'editorial-comittee'" class="p-4 border border-t-0 border-gray-300 ">
+                        <p>Content for sixth tab.</p>
+                    </div>
+                </div>
+            </div>
 
         </section>
+
+
+
+
 
 
         @if ($currentConference->date_start || $currentConference->hasMeta('location'))
