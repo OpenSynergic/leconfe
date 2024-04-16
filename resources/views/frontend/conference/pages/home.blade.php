@@ -211,10 +211,29 @@
                     </article>
                 </div>
                 <div x-show="activeTab === 'contact-info'" class="p-4 border border-t-0 border-gray-300 ">
-
+                    <article id="contact-info">
+                        <h1>Contact Person</h1>
+                        <table class="text-sm">
+                            <tr>
+                                <td class="font-bold">Nama</td>
+                                <td class="px-3">:</td>
+                                <td>Ana</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold">No HP/WhatsApp</td>
+                                <td class="px-3">:</td>
+                                <td>0812-3456-6122</td>
+                            </tr>
+                            <tr>
+                                <td class="font-bold">Email</td>
+                                <td class="px-3">:</td>
+                                <td>seminarbersama2023@gmail.com</td>
+                            </tr>
+                        </table>
+                    </article>
                 </div>
                 <div x-show="activeTab === 'editorial-committee'" class="p-4 border border-t-0 border-gray-300 ">
-                    <p>Content for sixth tab.</p>
+
                 </div>
             </div>
 
