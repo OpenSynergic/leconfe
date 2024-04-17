@@ -21,8 +21,12 @@ class ConferenceUpdateAction
                 $conference->setManyMeta(data_get($data, 'meta'));
             }
 
-            if (data_get($data, 'settings')) {
-                $conference->setManyMeta(data_get($data, 'settings'));
+            if ($settings = data_get($data, 'settings')) {
+                $prefixedMeta = [];
+                foreach ($settings as $key => $value) {
+                    $prefixedMeta['settings.' . $key] = $value;
+                }
+                $conference->setManyMeta($prefixedMeta);
             }
 
             DB::commit();

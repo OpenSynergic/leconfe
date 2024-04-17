@@ -4,51 +4,40 @@ namespace App\Classes;
 
 class Settings
 {
-    protected $parsed_url;
-    protected $path_segments;
-    protected $getConference;
-    protected $settings = [];
     protected $metaKeys = [];
-
-    public function __construct()
-    {
-        $this->parsed_url = parse_url(url()->current());
-        $this->path_segments = array_values(array_filter(explode('/', $this->parsed_url['path'])));
-        $this->getConference = app()->getCurrentConference();
-    }
 
     public function set($key, $value)
     {
-        if ($this->getConference === null) {
+        if (app()->getCurrentConference() === null) {
             return app()->getSite()->setMeta($key, $value);
         }
-        if ($this->getConference->hasMeta($key) && $this->getConference) {
-            return $this->getConference->setMeta($key, $value);
+        if (app()->getCurrentConference()->hasMeta($key) && app()->getCurrentConference()) {
+            return app()->getCurrentConference()->setMeta($key, $value);
         }
     }
 
     public function setMany($key)
     {
         if (is_array($key)) {
-            if ($this->getConference === null) {
+            if (app()->getCurrentConference() === null) {
                 return app()->getSite()->setManyMeta($key);
             }
-            if ($this->getConference->hasMeta($key) && $this->getConference) {
-                return $this->getConference->setManyMeta($key);
+            if (app()->getCurrentConference()->hasMeta($key) && app()->getCurrentConference()) {
+                return app()->getCurrentConference()->setManyMeta($key);
             }
         }
     }
 
     public function get($key)
     {
-        if ($this->getConference === null) {
+        if (app()->getCurrentConference() === null) {
             return [
                 $key => app()->getSite()->getMeta($key)
             ];
         }
-        if ($this->getConference->hasMeta($key) && $this->getConference) {
+        if (app()->getCurrentConference()->hasMeta($key) && app()->getCurrentConference()) {
             return [
-                $key => $this->getConference->getMeta($key)
+                $key => app()->getCurrentConference()->getMeta($key)
             ];
         }
         return [
@@ -58,10 +47,10 @@ class Settings
 
     public function all()
     {
-        if ($this->getConference === null) {
+        if (app()->getCurrentConference() === null) {
             $meta = app()->getSite()->getAllMeta();
-        } elseif ($this->getConference) {
-            $meta = $this->getConference->getAllMeta();
+        } elseif (app()->getCurrentConference()) {
+            $meta = app()->getCurrentConference()->getAllMeta();
         }
 
         if (isset($meta)) {
