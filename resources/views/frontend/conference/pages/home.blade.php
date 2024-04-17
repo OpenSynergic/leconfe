@@ -240,7 +240,7 @@
                     <article id="editorial-committee">
                         <h1>Editorial</h1>
                         <div class="flex flex-col flex-start gap-y-4 my-2">
-                            <div class="flex flex-row text-sm w-fit">
+                            <div class="flex flex-row text-xs w-fit">
                                 <img src="https://placeholder.co/64x64" alt="editor-thumbnail"
                                     class="rounded-full w-16 h-16 m-auto block">
                                 <div class="pl-4">
@@ -256,7 +256,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="flex flex-row text-sm w-fit">
+                            <div class="flex flex-row text-xs w-fit">
                                 <img src="https://placeholder.co/64x64" alt="editor-thumbnail"
                                     class="rounded-full w-16 h-16 m-auto block">
                                 <div class="pl-4">
@@ -272,7 +272,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="flex flex-row text-sm w-fit">
+                            <div class="flex flex-row text-xs w-fit">
                                 <img src="https://placeholder.co/64x64" alt="editor-thumbnail"
                                     class="rounded-full w-16 h-16 m-auto block">
                                 <div class="pl-4">
@@ -297,7 +297,7 @@
         @if ($participantPosition->isNotEmpty())
             <section id="conference-speakers" class="p-5 flex flex-col gap-2">
                 <div class="flex items-center">
-                    <img class="w-" src="{{ Vite::asset('resources/assets/images/game-icons_public-speaker.svg') }}" alt="">
+                    <img src="{{ Vite::asset('resources/assets/images/game-icons_public-speaker.svg') }}" alt="">
                     <h2 class="pl-3">Speakers</h2>
                 </div>
                 <div class="cf-speakers space-y-6">
@@ -337,8 +337,68 @@
             </section>
         @endif
 
-        <section id="conference-accepted-papers">
+        <section id="conference-accepted-papers" class="p-5 flex flex-col gap-2">
+            <div class="flex items-center">
+                <img src="{{ Vite::asset('resources/assets/images/mingcute_paper-line.svg') }}" alt="">
+                <h2 class="pl-3">Accepted Paper List</h2>
+            </div>
+            <div class="flex w-full flex-col gap-y-5">
+                <div class="flex">
+                    <h2 class="w-10 p-2">1</h2>
+                    <img class="w-32" src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}" alt="">
+                    <div class="text-sm p-2 flex flex-col">
+                        <a href="#" class="text-primary">The Impact of Climate Change on Biodiversity: A Global Ecological Perspective</a>
+                        <a href="#" class="underline">https://doi.org/10.2121/jon.v1i01</a>
+                        <div class="flex items-center">
+                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}" alt="">
+                            <p class="pl-2">Prof. David Johnson</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex">
+                    <h2 class="w-10 p-2">1</h2>
+                    <img class="w-32" src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}" alt="">
+                    <div class="text-sm p-2 flex flex-col">
+                        <a href="#" class="text-primary">The Impact of Climate Change on Biodiversity: A Global Ecological Perspective</a>
+                        <a href="#" class="underline">https://doi.org/10.2121/jon.v1i01</a>
+                        <div class="flex items-center">
+                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}" alt="">
+                            <p class="pl-2">Prof. David Johnson</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
+        <section id="conference-accepted-papers-list" class="p-5 flex flex-col gap-2">
+            <div class="flex items-center">
+                <img src="{{ Vite::asset('resources/assets/images/mingcute_paper-line.svg') }}" alt="">
+                <h2 class="pl-3">Accepted Paper List</h2>
+            </div>
+            <div class="flex w-full flex-col gap-y-0">
+                <div class="flex">
+                    <h2 class="w-10 p-2">1</h2>
+                    <div class="text-sm p-2 flex flex-col">
+                        <a href="#" class="text-primary">The Impact of Climate Change on Biodiversity: A Global Ecological Perspective</a>
+                        <a href="#" class="underline">https://doi.org/10.2121/jon.v1i01</a>
+                        <div class="flex items-center">
+                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}" alt="">
+                            <p class="pl-2">Prof. David Johnson</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex">
+                    <h2 class="w-10 p-2">1</h2>
+                    <div class="text-sm p-2 flex flex-col">
+                        <a href="#" class="text-primary">The Impact of Climate Change on Biodiversity: A Global Ecological Perspective  A Global Ecological Perspective  A Global Ecological Perspective</a>
+                        <a href="#" class="underline">https://doi.org/10.2121/jon.v1i01</a>
+                        <div class="flex items-center">
+                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}" alt="">
+                            <p class="pl-2">Prof. David Johnson</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
 
 
