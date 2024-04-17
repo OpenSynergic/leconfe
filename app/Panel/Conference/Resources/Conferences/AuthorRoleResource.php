@@ -15,7 +15,7 @@ use App\Panel\Conference\Resources\Conferences\AuthorRoleResource\Pages;
 
 class AuthorRoleResource extends Resource
 {
-    // protected static bool $isDiscovered = false;
+    protected static bool $isDiscovered = false;
 
     protected static ?string $model = AuthorRole::class;
 
