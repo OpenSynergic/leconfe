@@ -126,7 +126,7 @@ class CommitteeResource extends Resource
                     ->columnSpan([
                         'lg' => 2,
                     ]),
-                ...ContributorForm::additionalFormField(app()->getCurrentConference()),
+                ...ContributorForm::additionalFormField(),
             ]);
     }
 

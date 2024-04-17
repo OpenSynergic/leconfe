@@ -50,7 +50,7 @@ class ContributorForm extends Component
         ];
     }
 
-    public static function additionalFormField(Model $modelType): array
+    public static function additionalFormField(): array
     {
         return [
             Forms\Components\TagsInput::make('meta.expertise')

@@ -5,7 +5,7 @@ namespace App\Panel\Conference\Pages;
 use App\Actions\User\UserUpdateAction;
 use App\Models\Enums\UserRole;
 use App\Models\User;
-use App\Panel\Conference\Resources\Conferences\ParticipantResource;
+use App\Panel\Conference\Livewire\Forms\Conferences\ContributorForm;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
@@ -18,7 +18,6 @@ use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
-use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Hash;
 
 class Profile extends Page implements HasForms
@@ -93,7 +92,7 @@ class Profile extends Page implements HasForms
                             ->requiredWith('password')
                             ->password()
                             ->dehydrated(false),
-                        ...ParticipantResource::additionalFormField(),
+                        ...ContributorForm::additionalFormField(),
                     ])
                     ->columns(2),
             ])
@@ -156,11 +155,11 @@ class Profile extends Page implements HasForms
                 ->title('Saved!')
                 ->send();
         } catch (\Throwable $th) {
-            throw $th;
             Notification::make()
                 ->danger()
                 ->title('Failed to save.')
                 ->send();
+            throw $th;
         }
     }
 
@@ -194,11 +193,11 @@ class Profile extends Page implements HasForms
                 ->title('Saved!')
                 ->send();
         } catch (\Throwable $th) {
-            throw $th;
             Notification::make()
                 ->danger()
                 ->title('Failed to save.')
-                ->send();
+                ->send();   
+            throw $th;
         }
     }
 

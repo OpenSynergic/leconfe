@@ -121,7 +121,7 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
                         ->required()
                         ->columnSpanFull()
                         ->searchable(),
-                    ...ContributorForm::additionalFormField($this->submission),
+                    ...ContributorForm::additionalFormField(),
                 ])
                 ->columnSpan([
                     'lg' => 2,

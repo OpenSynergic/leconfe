@@ -104,7 +104,7 @@ class PresenterList extends Component implements HasForms, HasTable
                 ->schema([
                     $this->selectPresenterField(),
                     ...ContributorForm::generalFormField($this->submission),
-                    ...ContributorForm::additionalFormField($this->submission),
+                    ...ContributorForm::additionalFormField(),
                 ])
                 ->columnSpan([
                     'lg' => 2,
