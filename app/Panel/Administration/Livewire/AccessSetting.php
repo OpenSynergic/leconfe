@@ -11,7 +11,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Components\Checkbox;
 use App\Actions\Settings\SettingUpdateAction;
-use App\Classes\Settings;
+use App\Facades\Settings;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Concerns\InteractsWithForms;
 
@@ -24,7 +24,7 @@ class AccessSetting extends Component implements HasForms
     public function mount()
     {
         $this->form->fill([
-            'settings' => Settings::get()
+            'settings' => Settings::get('must_verify_email')
         ]);
     }
 

@@ -2,17 +2,18 @@
 
 namespace App\Panel\Administration\Livewire;
 
-use App\Actions\Settings\SettingUpdateAction;
-use App\Actions\Site\SiteUpdateAction;
-use Filament\Forms\Components\Actions;
-use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
+use Livewire\Component;
 use Filament\Forms\Form;
 use Illuminate\Support\HtmlString;
-use Livewire\Component;
+use Filament\Forms\Components\Radio;
+use App\Actions\Site\SiteUpdateAction;
+use Filament\Forms\Components\Actions;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Contracts\HasForms;
+use App\Actions\Settings\SettingUpdateAction;
+use App\Facades\Settings;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Concerns\InteractsWithForms;
 
 class DateAndTimeSetting extends Component implements HasForms
 {
@@ -23,7 +24,7 @@ class DateAndTimeSetting extends Component implements HasForms
     public function mount()
     {
         $this->form->fill([
-            'settings' => getSettings(['date', 'time'])
+            'settings' => Settings::all()
         ]);
     }
 
@@ -35,7 +36,6 @@ class DateAndTimeSetting extends Component implements HasForms
     public function form(Form $form): Form
     {
         $now = now()->hours(16);
-
         return $form
             ->statePath('formData')
             ->schema([
@@ -67,7 +67,6 @@ class DateAndTimeSetting extends Component implements HasForms
                             $formData = $this->form->getState();
                             try {
                                 SiteUpdateAction::run($formData);
-
                                 $action->sendSuccessNotification();
                             } catch (\Throwable $th) {
                                 $action->sendFailureNotification();

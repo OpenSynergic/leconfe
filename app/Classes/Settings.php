@@ -6,32 +6,53 @@ use App\Models\Conference;
 
 class Settings
 {
-    protected static $parsed_url;
-    protected static $path_segments;
-    protected static $getConference;
+    protected $parsed_url;
+    protected $path_segments;
+    protected $getConference;
+    protected $metaKeys = [];
 
     public function __construct()
     {
-        self::$parsed_url = parse_url(url()->current());
-        self::$path_segments = explode('/', self::$parsed_url['path']);
-        self::$path_segments = array_values(array_filter(self::$path_segments));
-        self::$getConference = Conference::find(app()->getCurrentConferenceId());
+        $this->parsed_url = parse_url(url()->current());
+        $this->path_segments = array_values(array_filter(explode('/', $this->parsed_url['path'])));
+        $this->getConference = app()->getCurrentConference();
     }
 
-    public static function get($key = null)
+    public function set($key, $value)
     {
-        if ($key !== null) {
-            if (self::$getConference === null || (self::$getConference->hasMeta('settings.' . $key) && app()->getCurrentConference()->getOriginal('path') === self::$path_segments[0])) {
-                return [
-                    $key => self::$getConference ? self::$getConference->getMeta('settings.' . $key) : app()->getSite()->getMeta('settings.' . $key)
-                ];
-            }
+        if ($this->getConference === null) {
+            return app()->getSite()->setMeta($key, $value);
+        }
+        if ($this->getConference->hasMeta($key) && app()->getCurrentConference()->getOriginal('path') === $this->path_segments[0]) {
+            return $this->getConference->setMeta($key, $value);
+        }
+    }
+
+    public function get($key)
+    {
+        if ($this->getConference === null) {
             return [
-                $key => app()->getSite()->getMeta('settings.' . $key)
+                $key => app()->getSite()->getMeta($key)
+            ];
+        }
+        if ($this->getConference->hasMeta($key) && app()->getCurrentConference()->getOriginal('path') === $this->path_segments[0]) {
+            return [
+                $key => $this->getConference->getMeta($key)
             ];
         }
         return [
-            $key => app()->getSite()->getAllMeta()->toArray()
+            $key => app()->getSite()->getMeta($key)
         ];
+    }
+
+    public function all()
+    {
+        if ($this->getConference === null) {
+            $allMeta = app()->getSite()->getAllMeta();
+            foreach ($allMeta->keys() as $key) {
+                $metaKeys[$key] = $allMeta->get($key);
+            }
+            return $metaKeys;
+        }
     }
 }
