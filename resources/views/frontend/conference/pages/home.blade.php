@@ -96,7 +96,7 @@
                 </div>
             @endif
         </section>
-        <section id="conference-detail-tabs" class="p-5 space-y-4">
+        {{-- <section id="conference-detail-tabs" class="p-5 space-y-4">
             <div x-data="{ activeTab: 'information' }" class=" bg-white">
                 <div class="border border-t-0 border-x-0 border-gray-300">
                     <button @click="activeTab = 'information'"
@@ -311,7 +311,88 @@
                     </article>
                 </div>
             </div>
-        </section>
+        </section> --}}
+        <div x-data="{ activeTab: 'information', dropdownOpen: false }" class="bg-white">
+            <div class="border border-t-0 border-x-0 border-gray-300 flex flex-row justify-between">
+                <div style="width: fit-content; background:yellow" class="flex space-x-1 sm:space-x-2">
+                    <button @click="activeTab = 'information'"
+                        :class="{ 'text-primary bg-white': activeTab === 'information', 'bg-gray-100': activeTab !== 'information' }"
+                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap"
+                        style="margin-bottom: -1px">Information</button>
+                    <button @click="activeTab = 'participant-info'"
+                        :class="{ 'text-primary bg-white': activeTab === 'participant-info', 'bg-gray-100': activeTab !== 'participant-info' }"
+                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap"
+                        style="margin-bottom: -1px">Participant Info</button>
+                    <button @click="activeTab = 'registration-info'"
+                        :class="{ 'text-primary bg-white': activeTab === 'registration-info', 'bg-gray-100': activeTab !== 'registration-info' }"
+                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap"
+                        style="margin-bottom: -1px">Registration Info</button>
+                    <button @click="activeTab = 'contact-info'"
+                        :class="{ 'text-primary bg-white': activeTab === 'contact-info', 'bg-gray-100': activeTab !== 'contact-info' }"
+                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap"
+                        style="margin-bottom: -1px">Contact Info</button>
+                    <button @click="activeTab = 'editorial-committee'"
+                        :class="{ 'text-primary bg-white': activeTab === 'editorial-committee', 'bg-gray-100': activeTab !== 'editorial-committee' }"
+                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap"
+                        style="margin-bottom: -1px">Editorial Committee</button>
+                </div>
+                <!-- Dropdown button -->
+                <div class="relative inline-block text-left">
+                    <div>
+                        <button @click="dropdownOpen = !dropdownOpen"
+                            class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 6h16M4 12h16m-7 6h7"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div x-show="dropdownOpen" @click.away="dropdownOpen = false"
+                        class="absolute right-10 z-10 w-40 mt-2 origin-top-right bg-white border border-gray-200 rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
+                        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                            <button @click="activeTab = 'information'"
+                                :class="{ 'text-primary bg-white': activeTab === 'information', 'bg-gray-100': activeTab !== 'information' }"
+                                class="block w-full px-4 py-2 text-sm text-left hover:text-primary hover:bg-gray-100"
+                                role="menuitem">Information</button>
+                            <button @click="activeTab = 'participant-info'"
+                                :class="{ 'text-primary bg-white': activeTab === 'participant-info', 'bg-gray-100': activeTab !== 'participant-info' }"
+                                class="block w-full px-4 py-2 text-sm text-left hover:text-primary hover:bg-gray-100"
+                                role="menuitem">Participant Info</button>
+                            <button @click="activeTab = 'registration-info'"
+                                :class="{ 'text-primary bg-white': activeTab === 'registration-info', 'bg-gray-100': activeTab !== 'registration-info' }"
+                                class="block w-full px-4 py-2 text-sm text-left hover:text-primary hover:bg-gray-100"
+                                role="menuitem">Registration Info</button>
+                            <button @click="activeTab = 'contact-info'"
+                                :class="{ 'text-primary bg-white': activeTab === 'contact-info', 'bg-gray-100': activeTab !== 'contact-info' }"
+                                class="block w-full px-4 py-2 text-sm text-left hover:text-primary hover:bg-gray-100"
+                                role="menuitem">Contact Info</button>
+                            <button @click="activeTab = 'editorial-committee'"
+                                :class="{ 'text-primary bg-white': activeTab === 'editorial-committee', 'bg-gray-100': activeTab !== 'editorial-committee' }"
+                                class="block w-full px-4 py-2 text-sm text-left hover:text-primary hover:bg-gray-100"
+                                role="menuitem">Editorial Committee</button>
+                        </div>
+                    </div>
+            <div x-show="activeTab === 'information'" class="p-4 border z-0 border-t-0 border-gray-300">
+                <p>information</p>
+            </div>
+            <div x-show="activeTab === 'participant-info'" class="p-4 border z-0 border-t-0 border-gray-300">
+                <p>participant</p>
+            </div>
+            <div x-show="activeTab === 'registration-info'" class="p-4 border z-0 border-t-0 border-gray-300">
+                <p>registration</p>
+            </div>
+            <div x-show="activeTab === 'contact-info'" class="p-4 border border-t-0 z-0  border-gray-300">
+                <p>contact</p>
+            </div>
+            <div x-show="activeTab === 'editorial-committee'" class="p-4 border z-0  border-t-0 border-gray-300">
+                <p>editorial</p>
+            </div>
+        </div>
+
+
 
         @if ($participantPosition->isNotEmpty())
             <section id="conference-speakers" class="p-5 flex flex-col gap-2">
@@ -430,5 +511,5 @@
                 </div>
             </div>
         </section>
-    </div>
+    </>
 </x-website::layouts.main>
