@@ -1,7 +1,6 @@
-
 <x-website::layouts.main>
     <div class="space-y-2">
-        <section id="highlight-conference" class="p-5 space-y-4">
+        <section id="highlight-conference" class="p-0 space-y-4">
             <div class="flex flex-col sm:flex-row flex-wrap space-y-4 sm:space-y-0 gap-4">
                 <div class="flex flex-col gap-4 flex-1">
                     <div>
@@ -65,7 +64,7 @@
             </div>
         </section>
 
-        <section id="conference-partner" class="p-5 space-y-4">
+        <section id="conference-partner" class="p-0 space-y-4">
             @if ($currentConference->sponsors)
                 <div class="sponsors space-y-4" x-data="carousel">
                     <h2 class="text-xl text-center">Conference Partner</h2>
@@ -96,30 +95,25 @@
                 </div>
             @endif
         </section>
-        {{-- <section id="conference-detail-tabs" class="p-5 space-y-4">
+        <section id="conference-detail-tabs" class="p-0 space-y-4">
             <div x-data="{ activeTab: 'information' }" class=" bg-white">
-                <div class="border border-t-0 border-x-0 border-gray-300">
-                    <button @click="activeTab = 'information'"
-                        :class="{ 'text-primary bg-white': activeTab === 'information', 'bg-gray-100': activeTab !== 'information' }"
-                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300"
-                        style="margin-bottom: -1px">Information</button>
-                    <button @click="activeTab = 'participant-info'"
-                        :class="{ 'text-primary bg-white': activeTab === 'participant-info', 'bg-gray-100': activeTab !== 'participant-info' }"
-                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300"
-                        style="margin-bottom: -1px">Participant Info</button>
-                    <button @click="activeTab = 'registration-info'"
-                        :class="{ 'text-primary bg-white': activeTab === 'registration-info', 'bg-gray-100': activeTab !== 'registration-info' }"
-                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300"
-                        style="margin-bottom: -1px">Registration Info</button>
-                    <button @click="activeTab = 'contact-info'"
-                        :class="{ 'text-primary bg-white': activeTab === 'contact-info', 'bg-gray-100': activeTab !== 'contact-info' }"
-                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300"
-                        style="margin-bottom: -1px">Contact Info</button>
-                    <button @click="activeTab = 'editorial-committee'"
-                        :class="{ 'text-primary bg-white': activeTab === 'editorial-committee', 'bg-gray-100': activeTab !== 'editorial-committee' }"
-                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300"
-                        style="margin-bottom: -1px">Editorial Committee</button>
-                </div>
+                <div class="border border-t-0 border-x-0 border-gray-300 flex space-x-1 sm:space-x-2 overflow-x-auto overflow-y-hidden" >
+                <button @click="activeTab = 'information'"
+                    :class="{ 'text-primary bg-white': activeTab === 'information', 'bg-gray-100': activeTab !== 'information' }"
+                    class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Information</button>
+                <button @click="activeTab = 'participant-info'"
+                    :class="{ 'text-primary bg-white': activeTab === 'participant-info', 'bg-gray-100': activeTab !== 'participant-info' }"
+                    class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Participant Info</button>
+                <button @click="activeTab = 'registration-info'"
+                    :class="{ 'text-primary bg-white': activeTab === 'registration-info', 'bg-gray-100': activeTab !== 'registration-info' }"
+                    class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Registration Info</button>
+                <button @click="activeTab = 'contact-info'"
+                    :class="{ 'text-primary bg-white': activeTab === 'contact-info', 'bg-gray-100': activeTab !== 'contact-info' }"
+                    class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Contact Info</button>
+                <button @click="activeTab = 'editorial-committee'"
+                    :class="{ 'text-primary bg-white': activeTab === 'editorial-committee', 'bg-gray-100': activeTab !== 'editorial-committee' }"
+                    class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Editorial Committee</button>
+            </div>
                 <div x-show="activeTab === 'information'" class="p-4 border border-t-0 border-gray-300 ">
                     <article id="conference-information" class="flex flex-col gap-2">
                         <table class="w-full text-sm" cellpadding="4">
@@ -152,28 +146,30 @@
                 <div x-show="activeTab === 'participant-info'" class="p-4 border border-t-0 border-gray-300 ">
                     <article id="participant-info">
                         <h2>Quota</h2>
-                        <table class="text-sm border-separate border-spacing-2">
-                            <tr>
-                                <td>Paper</td>
-                                <td>:</td>
-                                <td>400 Papers</td>
-                                <td>
-                                    <span class="badge badge-primary text-xs h-6">355 Accepted</span>
-                                </td>
-                                <td><span class="badge badge-outline text-xs border h-6 text-primary">45
-                                        Available</span></td>
-                            </tr>
-                            <tr>
-                                <td>Participant</td>
-                                <td>:</td>
-                                <td>60 Seats</td>
-                                <td>
-                                    <span class="badge badge-primary text-xs h-6">30 Reserved</span>
-                                </td>
-                                <td><span class="badge badge-outline text-xs border h-6 text-primary">30
-                                        Available</span></td>
-                            </tr>
-                        </table>
+                        <div class="overflow-x-auto py-2">
+                            <table class="text-sm border-separate border-spacing-1 sm:border-spacing-2 text-nowrap">
+                                <tr>
+                                    <td>Paper</td>
+                                    <td>:</td>
+                                    <td>400 Papers</td>
+                                    <td>
+                                        <span class="badge badge-primary text-xs h-6 ">355 Accepted</span>
+                                    </td>
+                                    <td><span class="badge badge-outline text-xs border h-6 text-primary">45
+                                            Available</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Participant</td>
+                                    <td>:</td>
+                                    <td>60 Seats</td>
+                                    <td>
+                                        <span class="badge badge-primary text-xs h-6">30 Reserved</span>
+                                    </td>
+                                    <td><span class="badge badge-outline text-xs border h-6 text-primary">30
+                                            Available</span></td>
+                                </tr>
+                            </table>
+                        </div>
                     </article>
                 </div>
 
@@ -236,23 +232,25 @@
                 <div x-show="activeTab === 'contact-info'" class="p-4 border border-t-0 border-gray-300 ">
                     <article id="contact-info">
                         <h2>Contact Person</h2>
-                        <table class="text-sm">
-                            <tr>
-                                <td class="font-bold">Nama</td>
-                                <td class="px-3">:</td>
-                                <td>Ana</td>
-                            </tr>
-                            <tr>
-                                <td class="font-bold">No HP/WhatsApp</td>
-                                <td class="px-3">:</td>
-                                <td>0812-3456-6122</td>
-                            </tr>
-                            <tr>
-                                <td class="font-bold">Email</td>
-                                <td class="px-3">:</td>
-                                <td>seminarbersama2023@gmail.com</td>
-                            </tr>
-                        </table>
+                        <div class="overflow-x-auto text-xs">
+                            <table class="text-xs">
+                                <tr>
+                                    <td class="font-bold">Nama</td>
+                                    <td class="px-3">:</td>
+                                    <td>Ana</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-bold">No HP/WhatsApp</td>
+                                    <td class="px-3">:</td>
+                                    <td>0812-3456-6122</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-bold">Email</td>
+                                    <td class="px-3">:</td>
+                                    <td>seminarbersama2023@gmail.com</td>
+                                </tr>
+                            </table>
+                        </div>
                     </article>
                 </div>
                 <div x-show="activeTab === 'editorial-committee'" class="p-4 border border-t-0 border-gray-300 ">
@@ -311,91 +309,13 @@
                     </article>
                 </div>
             </div>
-        </section> --}}
-        <div x-data="{ activeTab: 'information', dropdownOpen: false }" class="bg-white">
-            <div class="border border-t-0 border-x-0 border-gray-300 flex flex-row justify-between">
-                <div style="width: fit-content; background:yellow" class="flex space-x-1 sm:space-x-2">
-                    <button @click="activeTab = 'information'"
-                        :class="{ 'text-primary bg-white': activeTab === 'information', 'bg-gray-100': activeTab !== 'information' }"
-                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap"
-                        style="margin-bottom: -1px">Information</button>
-                    <button @click="activeTab = 'participant-info'"
-                        :class="{ 'text-primary bg-white': activeTab === 'participant-info', 'bg-gray-100': activeTab !== 'participant-info' }"
-                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap"
-                        style="margin-bottom: -1px">Participant Info</button>
-                    <button @click="activeTab = 'registration-info'"
-                        :class="{ 'text-primary bg-white': activeTab === 'registration-info', 'bg-gray-100': activeTab !== 'registration-info' }"
-                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap"
-                        style="margin-bottom: -1px">Registration Info</button>
-                    <button @click="activeTab = 'contact-info'"
-                        :class="{ 'text-primary bg-white': activeTab === 'contact-info', 'bg-gray-100': activeTab !== 'contact-info' }"
-                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap"
-                        style="margin-bottom: -1px">Contact Info</button>
-                    <button @click="activeTab = 'editorial-committee'"
-                        :class="{ 'text-primary bg-white': activeTab === 'editorial-committee', 'bg-gray-100': activeTab !== 'editorial-committee' }"
-                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap"
-                        style="margin-bottom: -1px">Editorial Committee</button>
-                </div>
-                <!-- Dropdown button -->
-                <div class="relative inline-block text-left">
-                    <div>
-                        <button @click="dropdownOpen = !dropdownOpen"
-                            class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 6h16M4 12h16m-7 6h7"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div x-show="dropdownOpen" @click.away="dropdownOpen = false"
-                        class="absolute right-10 z-10 w-40 mt-2 origin-top-right bg-white border border-gray-200 rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
-                        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                            <button @click="activeTab = 'information'"
-                                :class="{ 'text-primary bg-white': activeTab === 'information', 'bg-gray-100': activeTab !== 'information' }"
-                                class="block w-full px-4 py-2 text-sm text-left hover:text-primary hover:bg-gray-100"
-                                role="menuitem">Information</button>
-                            <button @click="activeTab = 'participant-info'"
-                                :class="{ 'text-primary bg-white': activeTab === 'participant-info', 'bg-gray-100': activeTab !== 'participant-info' }"
-                                class="block w-full px-4 py-2 text-sm text-left hover:text-primary hover:bg-gray-100"
-                                role="menuitem">Participant Info</button>
-                            <button @click="activeTab = 'registration-info'"
-                                :class="{ 'text-primary bg-white': activeTab === 'registration-info', 'bg-gray-100': activeTab !== 'registration-info' }"
-                                class="block w-full px-4 py-2 text-sm text-left hover:text-primary hover:bg-gray-100"
-                                role="menuitem">Registration Info</button>
-                            <button @click="activeTab = 'contact-info'"
-                                :class="{ 'text-primary bg-white': activeTab === 'contact-info', 'bg-gray-100': activeTab !== 'contact-info' }"
-                                class="block w-full px-4 py-2 text-sm text-left hover:text-primary hover:bg-gray-100"
-                                role="menuitem">Contact Info</button>
-                            <button @click="activeTab = 'editorial-committee'"
-                                :class="{ 'text-primary bg-white': activeTab === 'editorial-committee', 'bg-gray-100': activeTab !== 'editorial-committee' }"
-                                class="block w-full px-4 py-2 text-sm text-left hover:text-primary hover:bg-gray-100"
-                                role="menuitem">Editorial Committee</button>
-                        </div>
-                    </div>
-            <div x-show="activeTab === 'information'" class="p-4 border z-0 border-t-0 border-gray-300">
-                <p>information</p>
-            </div>
-            <div x-show="activeTab === 'participant-info'" class="p-4 border z-0 border-t-0 border-gray-300">
-                <p>participant</p>
-            </div>
-            <div x-show="activeTab === 'registration-info'" class="p-4 border z-0 border-t-0 border-gray-300">
-                <p>registration</p>
-            </div>
-            <div x-show="activeTab === 'contact-info'" class="p-4 border border-t-0 z-0  border-gray-300">
-                <p>contact</p>
-            </div>
-            <div x-show="activeTab === 'editorial-committee'" class="p-4 border z-0  border-t-0 border-gray-300">
-                <p>editorial</p>
-            </div>
-        </div>
+        </section>
+
 
 
 
         @if ($participantPosition->isNotEmpty())
-            <section id="conference-speakers" class="p-5 flex flex-col gap-2">
+            <section id="conference-speakers" class="p-0 flex flex-col gap-2">
                 <div class="flex items-center">
                     <img src="{{ Vite::asset('resources/assets/images/game-icons_public-speaker.svg') }}"
                         alt="">
@@ -438,7 +358,7 @@
             </section>
         @endif
 
-        <section id="conference-accepted-papers" class="p-5 flex flex-col gap-y-3">
+        <section id="conference-accepted-papers" class="p-0 flex flex-col gap-y-3">
             <div class="flex items-center">
                 <img src="{{ Vite::asset('resources/assets/images/mingcute_paper-line.svg') }}" alt="">
                 <h2 class="pl-3 font-medium">Accepted Paper List</h2>
@@ -477,39 +397,5 @@
             </div>
         </section>
 
-        <section id="conference-accepted-papers-list" class="p-5 flex flex-col gap-2">
-            <div class="flex items-center">
-                <img src="{{ Vite::asset('resources/assets/images/mingcute_paper-line.svg') }}" alt="">
-                <h2 class="pl-3 font-medium">Accepted Paper List</h2>
-            </div>
-            <div class="flex w-full flex-col gap-y-0">
-                <div class="flex">
-                    <p class="w-10 p-2">1</p>
-                    <div class="text-sm p-2 flex flex-col">
-                        <a href="#" class="text-primary">The Impact of Climate Change on Biodiversity: A Global
-                            Ecological Perspective</a>
-                        <a href="#" class="underline">https://doi.org/10.2121/jon.v1i01</a>
-                        <div class="flex items-center">
-                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}"
-                                alt="">
-                            <p class="pl-2">Prof. David Johnson</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex">
-                    <p class="w-10 p-2">2</p>
-                    <div class="text-sm p-2 flex flex-col">
-                        <a href="#" class="text-primary">The Impact of Climate Change on Biodiversity: A Global
-                            Ecological Perspective A Global Ecological Perspective A Global Ecological Perspective</a>
-                        <a href="#" class="underline">https://doi.org/10.2121/jon.v1i01</a>
-                        <div class="flex items-center">
-                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}"
-                                alt="">
-                            <p class="pl-2">Prof. David Johnson</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </>
+    </div>
 </x-website::layouts.main>
