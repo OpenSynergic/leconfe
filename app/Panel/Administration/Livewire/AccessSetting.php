@@ -2,7 +2,6 @@
 
 namespace App\Panel\Administration\Livewire;
 
-use App\Models\Site;
 use Livewire\Component;
 use Filament\Forms\Form;
 use App\Actions\Site\SiteUpdateAction;
@@ -10,7 +9,6 @@ use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Components\Checkbox;
-use App\Actions\Settings\SettingUpdateAction;
 use App\Facades\Settings;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -24,7 +22,7 @@ class AccessSetting extends Component implements HasForms
     public function mount()
     {
         $this->form->fill([
-            'settings' => Settings::get('must_verify_email')
+            'settings' => Settings::all()
         ]);
     }
 

@@ -2,14 +2,14 @@
 
 namespace App\Classes;
 
-use App\Models\Conference;
-
 class Settings
 {
     protected $parsed_url;
     protected $path_segments;
     protected $getConference;
-    protected $metaKeys = [];
+    protected $settings = [];
+    protected $metaSiteKeys = [];
+    protected $metaConferenceKeys = [];
 
     public function __construct()
     {
@@ -23,8 +23,20 @@ class Settings
         if ($this->getConference === null) {
             return app()->getSite()->setMeta($key, $value);
         }
-        if ($this->getConference->hasMeta($key) && app()->getCurrentConference()->getOriginal('path') === $this->path_segments[0]) {
+        if ($this->getConference->hasMeta($key) && $this->getConference->getOriginal('path') === $this->path_segments[0]) {
             return $this->getConference->setMeta($key, $value);
+        }
+    }
+
+    public function setMany($key)
+    {
+        if (is_array($key)) {
+            if ($this->getConference === null) {
+                return app()->getSite()->setManyMeta($key);
+            }
+            if ($this->getConference->hasMeta($key) && $this->getConference->getOriginal('path') === $this->path_segments[0]) {
+                return $this->getConference->setManyMeta($key);
+            }
         }
     }
 
@@ -35,7 +47,7 @@ class Settings
                 $key => app()->getSite()->getMeta($key)
             ];
         }
-        if ($this->getConference->hasMeta($key) && app()->getCurrentConference()->getOriginal('path') === $this->path_segments[0]) {
+        if ($this->getConference->hasMeta($key) && $this->getConference->getOriginal('path') === $this->path_segments[0]) {
             return [
                 $key => $this->getConference->getMeta($key)
             ];
@@ -50,9 +62,16 @@ class Settings
         if ($this->getConference === null) {
             $allMeta = app()->getSite()->getAllMeta();
             foreach ($allMeta->keys() as $key) {
-                $metaKeys[$key] = $allMeta->get($key);
+                $this->metaSiteKeys[$key] = $allMeta->get($key);
             }
-            return $metaKeys;
+            return $this->metaSiteKeys;
+        }
+        if ($this->getConference !== null && $this->getConference->getOriginal('path') === $this->path_segments[0]) {
+            $allMeta = $this->getConference->getAllMeta();
+            foreach ($allMeta->keys() as $key) {
+                $this->metaConferenceKeys[$key] = $allMeta->get($key);
+            }
+            return $this->metaConferenceKeys;
         }
     }
 }
