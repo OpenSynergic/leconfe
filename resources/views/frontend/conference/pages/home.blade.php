@@ -1,3 +1,4 @@
+
 <x-website::layouts.main>
     <div class="space-y-2">
         <section id="highlight-conference" class="p-5 space-y-4">
@@ -8,8 +9,26 @@
                     </div>
                     <div class="inline-flex items-center space-x-2">
                         <h1 class="cf-name text-2xl">{{ $currentConference->name }}</h1>
+                        @php
+                            $badgeClass = '';
+                            switch ($currentConference->type) {
+                                case \App\Models\Enums\ConferenceType::Offline:
+                                    $badgeClass = 'bg-gray-500';
+                                    break;
+                                case \App\Models\Enums\ConferenceType::Hybrid:
+                                    $badgeClass = 'bg-purple-400';
+                                    break;
+                                case \App\Models\Enums\ConferenceType::Online:
+                                    $badgeClass = 'bg-primary';
+                                    break;
+                            }
+                        @endphp
+
                         <span
-                            class="badge bg-purple-400 text-white rounded-full px-3 text-xs flex items-center justify-center h-8">{{ $currentConference->type }}</span>
+                            class="badge {{ $badgeClass }} text-white rounded-full px-3 text-xs flex items-center justify-center h-8">{{ $currentConference->type }}</span>
+
+                        {{-- <span
+                            class="badge {{ $currentConference->type == 'Offline' ? 'bg-secondary' : ($currentConference->type == 'Hybrid ' ? 'bg-purple-400 text-white' : 'bg-primary text-white') }}  rounded-full px-3 text-xs flex items-center justify-center h-8">{{ $currentConference->type }}</span> --}}
                     </div>
                     @if ($currentConference->getMeta('description'))
                         <div class="user-content">
@@ -37,7 +56,7 @@
                     @endif
                     <div>
                         <a href="#"
-                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 w-fit">
+                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary focus:outline-none focus:ring-2 focus:ring-blue-400 w-fit">
                             <x-heroicon-o-document-arrow-up class="h-5 w-5 mr-2" />
                             Submit Now
                         </a>
@@ -81,7 +100,7 @@
             <div x-data="{ activeTab: 'information' }" class=" bg-white">
                 <div class="border border-t-0 border-x-0 border-gray-300">
                     <button @click="activeTab = 'information'"
-                        :class="{ 'text-blue-400 bg-white': activeTab === 'information', 'bg-gray-100': activeTab !== 'information' }"
+                        :class="{ 'text-primary bg-white': activeTab === 'information', 'bg-gray-100': activeTab !== 'information' }"
                         class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300"
                         style="margin-bottom: -1px">Information</button>
                     <button @click="activeTab = 'participant-info'"
@@ -132,7 +151,7 @@
 
                 <div x-show="activeTab === 'participant-info'" class="p-4 border border-t-0 border-gray-300 ">
                     <article id="participant-info">
-                        <h1>Quota</h1>
+                        <h2>Quota</h2>
                         <table class="text-sm border-separate border-spacing-2">
                             <tr>
                                 <td>Paper</td>
@@ -160,8 +179,8 @@
 
                 <div x-show="activeTab === 'registration-info'" class="p-4 border border-t-0 border-gray-300 ">
                     <article id="registration-info">
-                        <h1>Fee</h1>
-                        <div class="overflow-x-auto max-w-full">
+                        <h2>Fee</h2>
+                        <div class="w-full snap-x snap-mandatory overflow-x-auto">
                             <table class="table w-full border-collapse border border-gray-300 my-2 ">
                                 <thead class="bg-gray-100">
                                     <tr>
@@ -216,7 +235,7 @@
                 </div>
                 <div x-show="activeTab === 'contact-info'" class="p-4 border border-t-0 border-gray-300 ">
                     <article id="contact-info">
-                        <h1>Contact Person</h1>
+                        <h2>Contact Person</h2>
                         <table class="text-sm">
                             <tr>
                                 <td class="font-bold">Nama</td>
@@ -238,18 +257,18 @@
                 </div>
                 <div x-show="activeTab === 'editorial-committee'" class="p-4 border border-t-0 border-gray-300 ">
                     <article id="editorial-committee">
-                        <h1>Editorial</h1>
+                        <h2>Editorial</h2>
                         <div class="flex flex-col flex-start gap-y-4 my-2">
                             <div class="flex flex-row text-xs w-fit">
                                 <img src="https://placeholder.co/64x64" alt="editor-thumbnail"
                                     class="rounded-full w-16 h-16 m-auto block">
                                 <div class="pl-4">
                                     <h3>Prof. David Bramhiers, Ph.D.</h3>
-                                    <p class="text-blue-500">Lead Editor</p>
+                                    <p class="text-primary text-primary-600">Lead Editor</p>
                                     <p class="text-secondary">Oxford University</p>
                                     <div class="flex flex-row items-center">
                                         <img class="w-4 h-4 mr-2"
-                                        src="{{ Vite::asset('resources/assets/images/google-scholar-logo.svg') }}"
+                                            src="{{ Vite::asset('resources/assets/images/google-scholar-logo.svg') }}"
                                             alt="">
                                         <a href="#"
                                             class="text-cyan-500 underline underline-offset-2">123847742</a>
@@ -261,11 +280,11 @@
                                     class="rounded-full w-16 h-16 m-auto block">
                                 <div class="pl-4">
                                     <h3>Prof. David Bramhiers, Ph.D.</h3>
-                                    <p class="text-blue-500">Lead Editor</p>
+                                    <p class="text-primary text-primary-600">Lead Editor</p>
                                     <p class="text-secondary">Oxford University</p>
                                     <div class="flex flex-row items-center">
                                         <img class="w-4 h-4 mr-2"
-                                        src="{{ Vite::asset('resources/assets/images/google-scholar-logo.svg') }}"
+                                            src="{{ Vite::asset('resources/assets/images/google-scholar-logo.svg') }}"
                                             alt="">
                                         <a href="#"
                                             class="text-cyan-500 underline underline-offset-2">123847742</a>
@@ -277,11 +296,11 @@
                                     class="rounded-full w-16 h-16 m-auto block">
                                 <div class="pl-4">
                                     <h3>Prof. David Bramhiers, Ph.D.</h3>
-                                    <p class="text-blue-500">Lead Editor</p>
+                                    <p class="text-primary text-primary-600">Lead Editor</p>
                                     <p class="text-secondary">Oxford University</p>
                                     <div class="flex flex-row items-center">
                                         <img class="w-4 h-4 mr-2"
-                                        src="{{ Vite::asset('resources/assets/images/google-scholar-logo.svg') }}"
+                                            src="{{ Vite::asset('resources/assets/images/google-scholar-logo.svg') }}"
                                             alt="">
                                         <a href="#"
                                             class="text-cyan-500 underline underline-offset-2">123847742</a>
@@ -297,8 +316,9 @@
         @if ($participantPosition->isNotEmpty())
             <section id="conference-speakers" class="p-5 flex flex-col gap-2">
                 <div class="flex items-center">
-                    <img src="{{ Vite::asset('resources/assets/images/game-icons_public-speaker.svg') }}" alt="">
-                    <h2 class="pl-3">Speakers</h2>
+                    <img src="{{ Vite::asset('resources/assets/images/game-icons_public-speaker.svg') }}"
+                        alt="">
+                    <h2 class="pl-3 font-medium">Speakers</h2>
                 </div>
                 <div class="cf-speakers space-y-6">
                     @foreach ($participantPosition as $position)
@@ -337,32 +357,38 @@
             </section>
         @endif
 
-        <section id="conference-accepted-papers" class="p-5 flex flex-col gap-2">
+        <section id="conference-accepted-papers" class="p-5 flex flex-col gap-y-3">
             <div class="flex items-center">
                 <img src="{{ Vite::asset('resources/assets/images/mingcute_paper-line.svg') }}" alt="">
-                <h2 class="pl-3">Accepted Paper List</h2>
+                <h2 class="pl-3 font-medium">Accepted Paper List</h2>
             </div>
             <div class="flex w-full flex-col gap-y-5">
                 <div class="flex">
-                    <h2 class="w-10 p-2">1</h2>
-                    <img class="w-32" src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}" alt="">
+                    <p class="w-10 p-2">1</p>
+                    <img class="w-32" src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}"
+                        alt="">
                     <div class="text-sm p-2 flex flex-col">
-                        <a href="#" class="text-primary">The Impact of Climate Change on Biodiversity: A Global Ecological Perspective</a>
+                        <a href="#" class="text-primary">The Impact of Climate Change on Biodiversity: A Global
+                            Ecological Perspective</a>
                         <a href="#" class="underline">https://doi.org/10.2121/jon.v1i01</a>
                         <div class="flex items-center">
-                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}" alt="">
+                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}"
+                                alt="">
                             <p class="pl-2">Prof. David Johnson</p>
                         </div>
                     </div>
                 </div>
                 <div class="flex">
-                    <h2 class="w-10 p-2">1</h2>
-                    <img class="w-32" src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}" alt="">
+                    <p class="w-10 p-2">2</p>
+                    <img class="w-32" src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}"
+                        alt="">
                     <div class="text-sm p-2 flex flex-col">
-                        <a href="#" class="text-primary">The Impact of Climate Change on Biodiversity: A Global Ecological Perspective</a>
+                        <a href="#" class="text-primary">The Impact of Climate Change on Biodiversity: A Global
+                            Ecological Perspective</a>
                         <a href="#" class="underline">https://doi.org/10.2121/jon.v1i01</a>
                         <div class="flex items-center">
-                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}" alt="">
+                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}"
+                                alt="">
                             <p class="pl-2">Prof. David Johnson</p>
                         </div>
                     </div>
@@ -373,69 +399,36 @@
         <section id="conference-accepted-papers-list" class="p-5 flex flex-col gap-2">
             <div class="flex items-center">
                 <img src="{{ Vite::asset('resources/assets/images/mingcute_paper-line.svg') }}" alt="">
-                <h2 class="pl-3">Accepted Paper List</h2>
+                <h2 class="pl-3 font-medium">Accepted Paper List</h2>
             </div>
             <div class="flex w-full flex-col gap-y-0">
                 <div class="flex">
-                    <h2 class="w-10 p-2">1</h2>
+                    <p class="w-10 p-2">1</p>
                     <div class="text-sm p-2 flex flex-col">
-                        <a href="#" class="text-primary">The Impact of Climate Change on Biodiversity: A Global Ecological Perspective</a>
+                        <a href="#" class="text-primary">The Impact of Climate Change on Biodiversity: A Global
+                            Ecological Perspective</a>
                         <a href="#" class="underline">https://doi.org/10.2121/jon.v1i01</a>
                         <div class="flex items-center">
-                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}" alt="">
+                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}"
+                                alt="">
                             <p class="pl-2">Prof. David Johnson</p>
                         </div>
                     </div>
                 </div>
                 <div class="flex">
-                    <h2 class="w-10 p-2">1</h2>
+                    <p class="w-10 p-2">2</p>
                     <div class="text-sm p-2 flex flex-col">
-                        <a href="#" class="text-primary">The Impact of Climate Change on Biodiversity: A Global Ecological Perspective  A Global Ecological Perspective  A Global Ecological Perspective</a>
+                        <a href="#" class="text-primary">The Impact of Climate Change on Biodiversity: A Global
+                            Ecological Perspective A Global Ecological Perspective A Global Ecological Perspective</a>
                         <a href="#" class="underline">https://doi.org/10.2121/jon.v1i01</a>
                         <div class="flex items-center">
-                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}" alt="">
+                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}"
+                                alt="">
                             <p class="pl-2">Prof. David Johnson</p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-
-
-        @if ($currentConference->getMeta('additional_content'))
-            <section class="user-content px-5">
-                {!! $currentConference->getMeta('additional_content') !!}
-            </section>
-        @endif
-
-        @if ($venues->isNotEmpty())
-            <section class="venues p-5">
-                <h2 class="text-heading">Venues</h2>
-                <div class="venue-list space-y-3">
-                    @foreach ($venues as $venue)
-                        <div class="venue flex gap-3">
-                            @if ($venue->hasMedia('thumbnail'))
-                                <img class="max-w-[100px]"
-                                    src="{{ $venue->getFirstMedia('thumbnail')->getAvailableUrl(['thumb', 'thumb-xl']) }}">
-                            @endif
-                            <div class="space-y-2">
-                                <div>
-                                    <a
-                                        class="group/link relative inline-flex items-center justify-center outline-none gap-1 font-thin">
-                                        <span
-                                            class="font-semibold group-hover/link:underline group-focus-visible/link:underline text-base">
-                                            {{ $venue->name }}
-                                        </span>
-                                    </a>
-                                    <p class="text-gray-500 text-sm flex items-center gap-1"><x-heroicon-m-map-pin
-                                            class="size-4" /> {{ $venue->location }}</p>
-                                </div>
-                                <p class="text-gray-500 text-xs">{{ $venue->description }}</p>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </section>
-        @endif
     </div>
 </x-website::layouts.main>
