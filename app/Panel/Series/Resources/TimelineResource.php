@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Panel\Conference\Resources\Conferences;
+namespace App\Panel\Series\Resources;
 
 use App\Models\Role;
 use App\Models\Timeline;
-use App\Panel\Conference\Resources\Conferences\TimelineResource\Pages;
+use App\Panel\Series\Resources\TimelineResource\Pages;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
@@ -22,8 +22,6 @@ class TimelineResource extends Resource
     protected static ?string $model = Timeline::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clock';
-
-    protected static ?string $navigationGroup = 'Conferences';
 
     public static function form(Form $form): Form
     {
