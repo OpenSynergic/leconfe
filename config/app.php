@@ -224,7 +224,6 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
         'Setting' => Akaunting\Setting\Facade::class,
         'MetaTag' => App\Facades\MetaTag::class,
-        'Settings' => App\Facades\Settings::class,
     ])->toArray(),
 
     'filament' => [

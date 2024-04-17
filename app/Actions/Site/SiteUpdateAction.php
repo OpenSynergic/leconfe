@@ -22,7 +22,11 @@ class SiteUpdateAction
             }
 
             if ($settings = data_get($data, 'settings')) {
-                $site->setManyMeta($settings);
+                $prefixedMeta = [];
+                foreach ($settings as $key => $value) {
+                    $prefixedMeta['settings.' . $key] = $value;
+                }
+                $site->setManyMeta($prefixedMeta);
             }
 
             $site->touch();

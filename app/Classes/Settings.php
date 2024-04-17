@@ -8,8 +8,7 @@ class Settings
     protected $path_segments;
     protected $getConference;
     protected $settings = [];
-    protected $metaSiteKeys = [];
-    protected $metaConferenceKeys = [];
+    protected $metaKeys = [];
 
     public function __construct()
     {
@@ -23,7 +22,7 @@ class Settings
         if ($this->getConference === null) {
             return app()->getSite()->setMeta($key, $value);
         }
-        if ($this->getConference->hasMeta($key) && $this->getConference->getOriginal('path') === $this->path_segments[0]) {
+        if ($this->getConference->hasMeta($key) && $this->getConference) {
             return $this->getConference->setMeta($key, $value);
         }
     }
@@ -34,7 +33,7 @@ class Settings
             if ($this->getConference === null) {
                 return app()->getSite()->setManyMeta($key);
             }
-            if ($this->getConference->hasMeta($key) && $this->getConference->getOriginal('path') === $this->path_segments[0]) {
+            if ($this->getConference->hasMeta($key) && $this->getConference) {
                 return $this->getConference->setManyMeta($key);
             }
         }
@@ -47,7 +46,7 @@ class Settings
                 $key => app()->getSite()->getMeta($key)
             ];
         }
-        if ($this->getConference->hasMeta($key) && $this->getConference->getOriginal('path') === $this->path_segments[0]) {
+        if ($this->getConference->hasMeta($key) && $this->getConference) {
             return [
                 $key => $this->getConference->getMeta($key)
             ];
@@ -60,18 +59,25 @@ class Settings
     public function all()
     {
         if ($this->getConference === null) {
-            $allMeta = app()->getSite()->getAllMeta();
-            foreach ($allMeta->keys() as $key) {
-                $this->metaSiteKeys[$key] = $allMeta->get($key);
-            }
-            return $this->metaSiteKeys;
+            $meta = app()->getSite()->getAllMeta();
+        } elseif ($this->getConference) {
+            $meta = $this->getConference->getAllMeta();
         }
-        if ($this->getConference !== null && $this->getConference->getOriginal('path') === $this->path_segments[0]) {
-            $allMeta = $this->getConference->getAllMeta();
-            foreach ($allMeta->keys() as $key) {
-                $this->metaConferenceKeys[$key] = $allMeta->get($key);
+
+        if (isset($meta)) {
+            $modifiedMeta = $meta->map(function ($value, $key) {
+                if (strpos($key, 'settings.') === 0) {
+                    $newKey = substr($key, strlen('settings.'));
+                    return [$newKey => $value];
+                }
+                return [$key => $value];
+            })->collapse();
+
+            foreach ($modifiedMeta->keys() as $key) {
+                $this->metaKeys[$key] = $modifiedMeta->get($key);
             }
-            return $this->metaConferenceKeys;
+
+            return $this->metaKeys;
         }
     }
 }
