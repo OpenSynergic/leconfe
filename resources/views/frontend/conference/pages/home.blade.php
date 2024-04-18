@@ -364,13 +364,49 @@
             <div class="flex w-full flex-col gap-y-5">
                 <div class="flex flex-col sm:flex-row">
                     <div class="w-14 flex-none hidden sm:block p-2">
-                        <p class="text-lg font-bold">1</p>
+                        <p class="text-lg font-bold">1.</p>
                     </div>
-                    <div class="flex justify-center items-center sm:justify-start sm:items-start mt-4 sm:mt-0">
+                    <div class="flex justify-center items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
                         <img class="sm:w-32 w-24 h-auto" src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}" alt="Placeholder Image">
                     </div>
                     <div class="p-4 flex flex-col">
-                        <a href="#" class="text-md font-semibold text-primary mb-4">The Impact of Climate Change on Biodiversity: A Global Ecological Perspective</a>
+                        <a href="#" class="text-md font-medium text-primary mb-2">The Impact of Climate Change on Biodiversity: A Global Ecological Perspective</a>
+                        <a href="#" class="text-sm text-blue-500 underline mb-2">https://doi.org/10.2121/jon.v1i01</a>
+                        <div class="flex items-center">
+                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}" alt="People Icon" class="w-5 h-5 mr-2">
+                            <p class="text-sm text-gray-700">Prof. David Johnson</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex w-full flex-col gap-y-5">
+                <div class="flex flex-col sm:flex-row">
+                    <div class="w-14 flex-none hidden sm:block p-2">
+                        <p class="text-lg font-bold">2.</p>
+                    </div>
+                    <div class="flex justify-center items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
+                        <img class="sm:w-32 w-24 h-auto" src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}" alt="Placeholder Image">
+                    </div>
+                    <div class="p-4 flex flex-col">
+                        <a href="#" class="text-md font-medium text-primary mb-2">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cupiditate, veritatis sint dolorum vero sequi ad natus.</a>
+                        <a href="#" class="text-sm text-blue-500 underline mb-2">https://doi.org/10.2121/jon.v1i01</a>
+                        <div class="flex items-center">
+                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}" alt="People Icon" class="w-5 h-5 mr-2">
+                            <p class="text-sm text-gray-700">Prof. David Johnson</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex w-full flex-col gap-y-5">
+                <div class="flex flex-col sm:flex-row">
+                    <div class="w-14 flex-none hidden sm:block p-2">
+                        <p class="text-lg font-bold">3.</p>
+                    </div>
+                    <div class="flex justify-center items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
+                        <img class="sm:w-32 w-24 h-auto" src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}" alt="Placeholder Image">
+                    </div>
+                    <div class="p-4 flex flex-col">
+                        <a href="#" class="text-md font-medium text-primary mb-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex.</a>
                         <a href="#" class="text-sm text-blue-500 underline mb-2">https://doi.org/10.2121/jon.v1i01</a>
                         <div class="flex items-center">
                             <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}" alt="People Icon" class="w-5 h-5 mr-2">
