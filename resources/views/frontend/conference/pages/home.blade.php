@@ -98,23 +98,28 @@
 
         <section id="conference-detail-tabs" class="space-y-4">
             <div x-data="{ activeTab: 'information' }" class=" bg-white">
-                <div class="border border-t-0 border-x-0 border-gray-300 flex space-x-1 sm:space-x-2 overflow-x-auto overflow-y-hidden" >
-                <button @click="activeTab = 'information'"
-                    :class="{ 'text-primary bg-white': activeTab === 'information', 'bg-gray-100': activeTab !== 'information' }"
-                    class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Information</button>
-                <button @click="activeTab = 'participant-info'"
-                    :class="{ 'text-primary bg-white': activeTab === 'participant-info', 'bg-gray-100': activeTab !== 'participant-info' }"
-                    class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Participant Info</button>
-                <button @click="activeTab = 'registration-info'"
-                    :class="{ 'text-primary bg-white': activeTab === 'registration-info', 'bg-gray-100': activeTab !== 'registration-info' }"
-                    class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Registration Info</button>
-                <button @click="activeTab = 'contact-info'"
-                    :class="{ 'text-primary bg-white': activeTab === 'contact-info', 'bg-gray-100': activeTab !== 'contact-info' }"
-                    class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Contact Info</button>
-                <button @click="activeTab = 'editorial-committee'"
-                    :class="{ 'text-primary bg-white': activeTab === 'editorial-committee', 'bg-gray-100': activeTab !== 'editorial-committee' }"
-                    class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Editorial Committee</button>
-            </div>
+                <div
+                    class="border border-t-0 border-x-0 border-gray-300 flex space-x-1 sm:space-x-2 overflow-x-auto overflow-y-hidden">
+                    <button @click="activeTab = 'information'"
+                        :class="{ 'text-primary bg-white': activeTab === 'information', 'bg-gray-100': activeTab !== 'information' }"
+                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Information</button>
+                    <button @click="activeTab = 'participant-info'"
+                        :class="{ 'text-primary bg-white': activeTab === 'participant-info', 'bg-gray-100': activeTab !== 'participant-info' }"
+                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Participant
+                        Info</button>
+                    <button @click="activeTab = 'registration-info'"
+                        :class="{ 'text-primary bg-white': activeTab === 'registration-info', 'bg-gray-100': activeTab !== 'registration-info' }"
+                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Registration
+                        Info</button>
+                    <button @click="activeTab = 'contact-info'"
+                        :class="{ 'text-primary bg-white': activeTab === 'contact-info', 'bg-gray-100': activeTab !== 'contact-info' }"
+                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Contact
+                        Info</button>
+                    <button @click="activeTab = 'editorial-committee'"
+                        :class="{ 'text-primary bg-white': activeTab === 'editorial-committee', 'bg-gray-100': activeTab !== 'editorial-committee' }"
+                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Editorial
+                        Committee</button>
+                </div>
                 <div x-show="activeTab === 'information'" class="p-4 border border-t-0 border-gray-300 ">
                     <article id="conference-information" class="flex flex-col gap-2">
                         <table class="w-full text-sm" cellpadding="4">
@@ -173,86 +178,23 @@
                         </div>
                     </article>
                 </div>
+                @php
+                    dd($currentConference->getAll)
+                @endphp
 
                 <div x-show="activeTab === 'registration-info'" class="p-4 border border-t-0 border-gray-300 ">
-                    <article id="registration-info">
-                        <h2>Fee</h2>
-                        <div class="w-full snap-x snap-mandatory overflow-x-auto">
-                            <table class="table w-full border-collapse border border-gray-300 my-2 ">
-                                <thead class="bg-gray-100">
-                                    <tr>
-                                        <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                            Jenis Peserta</th>
-                                        <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                            Mahasiswa S1</th>
-                                        <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                            Mahasiswa S2, S3, dan Guru</th>
-                                        <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 tracking-wider">
-                                            Umum</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-200">
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap">Peserta Biasa</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">Rp50.000</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">Rp100.000</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">Rp150.000</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap">Poster</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">Rp100.000</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">Rp150.000</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">Rp200.000</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap">Pemakalah Oral</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">Rp100.000</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">Rp150.000</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">Rp200.000</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="flex flex-row-reverse">
-                            <a href="#"
-                                class="bg-green-500 hover:bg-green-600 py-1 px-3 rounded-md text-sm text-white cursor-pointer">Register</a>
-                        </div>
-                        <div class="text-sm">
-                            <h2>Payment Via Bank</h2>
-                            <p>Bank Negara Indonesia (BNI), <span class="font-bold">No Rekening 1234567890 (Siminar
-                                    Bersama 2023)</span></p>
-                            <p class="text-red-500">Setelah mebayar silakan konfirmasi ke contact info, konfirmasi
-                                pembayaran paling lambat 21 Maret 2024.</p>
-                        </div>
-                    </article>
+                    @if ($currentConference->getMeta('additional_content'))
+                            <article id="registration-info" class="user-content px-5 overflow-x-auto">
+                                {!! $currentConference->getMeta('additional_content') !!}
+                            </article>
+                    @endif
                 </div>
                 <div x-show="activeTab === 'contact-info'" class="p-4 border border-t-0 border-gray-300 ">
-                    <article id="contact-info">
-                        <h2>Contact Person</h2>
-                        <div class="overflow-x-auto text-xs">
-                            <table class="text-xs">
-                                <tr>
-                                    <td class="font-bold">Nama</td>
-                                    <td class="px-3">:</td>
-                                    <td>Ana</td>
-                                </tr>
-                                <tr>
-                                    <td class="font-bold">No HP/WhatsApp</td>
-                                    <td class="px-3">:</td>
-                                    <td>0812-3456-6122</td>
-                                </tr>
-                                <tr>
-                                    <td class="font-bold">Email</td>
-                                    <td class="px-3">:</td>
-                                    <td>seminarbersama2023@gmail.com</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </article>
+                    @if ($currentConference->getMeta('additional_content'))
+                            <article id="contact-info" class="user-content px-5 overflow-x-auto">
+                                {!! $currentConference->getMeta('additional_content') !!}
+                            </article>
+                    @endif
                 </div>
                 <div x-show="activeTab === 'editorial-committee'" class="p-4 border border-t-0 border-gray-300 ">
                     <article id="editorial-committee">
@@ -366,14 +308,19 @@
                     <div class="w-14 flex-none hidden sm:block p-2">
                         <p class="text-lg font-bold">1.</p>
                     </div>
-                    <div class="flex justify-center items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
-                        <img class="sm:w-32 w-24 h-auto" src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}" alt="Placeholder Image">
+                    <div
+                        class="flex justify-center items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
+                        <img class="sm:w-32 w-24 h-auto"
+                            src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}"
+                            alt="Placeholder Image">
                     </div>
-                    <div class="p-4 flex flex-col">
-                        <a href="#" class="text-md font-medium text-primary mb-2">The Impact of Climate Change on Biodiversity: A Global Ecological Perspective</a>
-                        <a href="#" class="text-sm text-blue-500 underline mb-2">https://doi.org/10.2121/jon.v1i01</a>
+                    <div class="px-4 py-2 flex flex-col">
+                        <a href="#" class="text-md font-medium text-primary mb-2">The Impact of Climate Change
+                            on Biodiversity: A Global Ecological Perspective</a>
+                        <a href="#" class="text-sm underline mb-2">https://doi.org/10.2121/jon.v1i01</a>
                         <div class="flex items-center">
-                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}" alt="People Icon" class="w-5 h-5 mr-2">
+                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}"
+                                alt="People Icon" class="w-5 h-5 mr-2">
                             <p class="text-sm text-gray-700">Prof. David Johnson</p>
                         </div>
                     </div>
@@ -384,14 +331,19 @@
                     <div class="w-14 flex-none hidden sm:block p-2">
                         <p class="text-lg font-bold">2.</p>
                     </div>
-                    <div class="flex justify-center items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
-                        <img class="sm:w-32 w-24 h-auto" src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}" alt="Placeholder Image">
+                    <div
+                        class="flex justify-center items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
+                        <img class="sm:w-32 w-24 h-auto"
+                            src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}"
+                            alt="Placeholder Image">
                     </div>
-                    <div class="p-4 flex flex-col">
-                        <a href="#" class="text-md font-medium text-primary mb-2">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cupiditate, veritatis sint dolorum vero sequi ad natus.</a>
-                        <a href="#" class="text-sm text-blue-500 underline mb-2">https://doi.org/10.2121/jon.v1i01</a>
+                    <div class="px-4 py-2 flex flex-col">
+                        <a href="#" class="text-md font-medium text-primary mb-2">Lorem ipsum, dolor sit amet
+                            consectetur adipisicing elit. Cupiditate, veritatis sint dolorum vero sequi ad natus.</a>
+                        <a href="#" class="text-sm underline mb-2">https://doi.org/10.2121/jon.v1i01</a>
                         <div class="flex items-center">
-                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}" alt="People Icon" class="w-5 h-5 mr-2">
+                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}"
+                                alt="People Icon" class="w-5 h-5 mr-2">
                             <p class="text-sm text-gray-700">Prof. David Johnson</p>
                         </div>
                     </div>
@@ -402,14 +354,19 @@
                     <div class="w-14 flex-none hidden sm:block p-2">
                         <p class="text-lg font-bold">3.</p>
                     </div>
-                    <div class="flex justify-center items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
-                        <img class="sm:w-32 w-24 h-auto" src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}" alt="Placeholder Image">
+                    <div
+                        class="flex justify-center items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
+                        <img class="sm:w-32 w-24 h-auto"
+                            src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}"
+                            alt="Placeholder Image">
                     </div>
-                    <div class="p-4 flex flex-col">
-                        <a href="#" class="text-md font-medium text-primary mb-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex.</a>
-                        <a href="#" class="text-sm text-blue-500 underline mb-2">https://doi.org/10.2121/jon.v1i01</a>
+                    <div class="px-4 py-2 flex flex-col">
+                        <a href="#" class="text-md font-medium text-primary text-primary-950 mb-2">Lorem ipsum
+                            dolor sit amet consectetur adipisicing elit. Ex.</a>
+                        <a href="#" class="text-sm underline mb-2">https://doi.org/10.2121/jon.v1i01</a>
                         <div class="flex items-center">
-                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}" alt="People Icon" class="w-5 h-5 mr-2">
+                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}"
+                                alt="People Icon" class="w-5 h-5 mr-2">
                             <p class="text-sm text-gray-700">Prof. David Johnson</p>
                         </div>
                     </div>
