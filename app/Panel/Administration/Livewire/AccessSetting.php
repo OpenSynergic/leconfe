@@ -22,7 +22,7 @@ class AccessSetting extends Component implements HasForms
     public function mount()
     {
         $this->form->fill([
-            'settings' => Settings::get('allow_registration')
+            'settings' => Settings::get('must_verify_email')
         ]);
     }
 

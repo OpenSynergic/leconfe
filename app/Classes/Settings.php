@@ -9,10 +9,10 @@ class Settings
     public function set($key, $value)
     {
         if (app()->getCurrentConference() === null) {
-            return app()->getSite()->setMeta($key, $value);
+            return app()->getSite()->setMeta('settings.' . $key, $value);
         }
-        if (app()->getCurrentConference()->hasMeta($key) && app()->getCurrentConference()) {
-            return app()->getCurrentConference()->setMeta($key, $value);
+        if (app()->getCurrentConference()->hasMeta('settings.' . $key) && app()->getCurrentConference()) {
+            return app()->getCurrentConference()->setMeta('settings.' . $key, $value);
         }
     }
 
@@ -22,7 +22,7 @@ class Settings
             if (app()->getCurrentConference() === null) {
                 return app()->getSite()->setManyMeta($key);
             }
-            if (app()->getCurrentConference()->hasMeta($key) && app()->getCurrentConference()) {
+            if (app()->getCurrentConference()->hasMeta('settings.' . $key) && app()->getCurrentConference()) {
                 return app()->getCurrentConference()->setManyMeta($key);
             }
         }
@@ -32,16 +32,16 @@ class Settings
     {
         if (app()->getCurrentConference() === null) {
             return [
-                $key => app()->getSite()->getMeta($key)
+                $key => app()->getSite()->getMeta('settings.' . $key)
             ];
         }
-        if (app()->getCurrentConference()->hasMeta($key) && app()->getCurrentConference()) {
+        if (app()->getCurrentConference()->hasMeta('settings.' . $key) && app()->getCurrentConference()) {
             return [
-                $key => app()->getCurrentConference()->getMeta($key)
+                $key => app()->getCurrentConference()->getMeta('settings.' . $key)
             ];
         }
         return [
-            $key => app()->getSite()->getMeta($key)
+            $key => app()->getSite()->getMeta('settings.' . $key)
         ];
     }
 
