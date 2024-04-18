@@ -317,7 +317,7 @@
                 <div class="flex items-center">
                     <img src="{{ Vite::asset('resources/assets/images/game-icons_public-speaker.svg') }}"
                         alt="">
-                    <h2 class="text-xl font-medium">Speakers</h2>
+                    <h2 class="text-xl font-medium pl-2">Speakers</h2>
                 </div>
                 <div class="cf-speakers space-y-6">
                     @foreach ($participantPosition as $position)
@@ -359,82 +359,25 @@
         <section id="conference-accepted-papers" class="flex flex-col gap-y-0 space-y-4">
             <div class="flex items-center">
                 <img src="{{ Vite::asset('resources/assets/images/mingcute_paper-line.svg') }}" alt="">
-                <h2 class="text-xl font-medium">Accepted Paper List</h2>
+                <h2 class="text-xl font-medium pl-2">Accepted Paper List</h2>
             </div>
             <div class="flex w-full flex-col gap-y-5">
-                <div class="flex flex-col sm:flex-row sm:w-fit">
-                    <p class="w-14 p-2 hidden sm:block">1</p>
-                    <img class="sm:w-32 m-auto w-3/4" src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}"
-                        alt="">
-                    <div class="text-sm p-2 flex flex-col">
-                        <a href="#" class="text-primary">The Impact of Climate Change on Biodiversity: A Global
-                            Ecological Perspective</a>
-                        <a href="#" class="underline">https://doi.org/10.2121/jon.v1i01</a>
+                <div class="flex flex-col sm:flex-row">
+                    <div class="w-14 flex-none hidden sm:block p-2">
+                        <p class="text-lg font-bold">1</p>
+                    </div>
+                    <div class="flex justify-center items-center sm:justify-start sm:items-start mt-4 sm:mt-0">
+                        <img class="sm:w-32 w-24 h-auto" src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}" alt="Placeholder Image">
+                    </div>
+                    <div class="p-4 flex flex-col">
+                        <a href="#" class="text-md font-semibold text-primary mb-4">The Impact of Climate Change on Biodiversity: A Global Ecological Perspective</a>
+                        <a href="#" class="text-sm text-blue-500 underline mb-2">https://doi.org/10.2121/jon.v1i01</a>
                         <div class="flex items-center">
-                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}"
-                                alt="">
-                            <p class="pl-2">Prof. David Johnson</p>
+                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}" alt="People Icon" class="w-5 h-5 mr-2">
+                            <p class="text-sm text-gray-700">Prof. David Johnson</p>
                         </div>
                     </div>
                 </div>
-                <div class="flex flex-col sm:flex-row sm:w-fit">
-                    <p class="w-14 p-2 hidden sm:block">2</p>
-                    <img class="sm:w-32 m-auto w-3/4" src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}"
-                        alt="">
-                    <div class="text-sm p-2 flex flex-col">
-                        <a href="#" class="text-primary">The Impact of Climate Change on Biodiversity: A Global
-                            Ecological Perspective</a>
-                        <a href="#" class="underline">https://doi.org/10.2121/jon.v1i01</a>
-                        <div class="flex items-center">
-                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}"
-                                alt="">
-                            <p class="pl-2">Prof. David Johnson</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex flex-col sm:flex-row sm:w-fit">
-                    <p class="w-14 p-2 hidden sm:block">2</p>
-                    <img class="sm:w-32 m-auto w-3/4" src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}"
-                        alt="">
-                    <div class="text-sm p-2 flex flex-col">
-                        <a href="#" class="text-primary">Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores blanditiis cupiditate soluta eligendi maxime odit earum ab, adipisci nam sapiente.</a>
-                        <a href="#" class="underline">https://doi.org/10.2121/jon.v1i01</a>
-                        <div class="flex items-center">
-                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}"
-                                alt="">
-                            <p class="pl-2">Prof. David Johnson</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex flex-col sm:flex-row sm:w-fit">
-                    <p class="w-14 p-2 hidden sm:block">100</p>
-                    <img class="sm:w-32 m-auto w-3/4" src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}"
-                        alt="">
-                    <div class="text-sm p-2 flex flex-col">
-                        <a href="#" class="text-primary">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Deserunt facilis soluta natus.</a>
-                        <a href="#" class="underline">https://doi.org/10.2121/jon.v1i01</a>
-                        <div class="flex items-center">
-                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}"
-                                alt="">
-                            <p class="pl-2">Prof. David Johnson</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex flex-col sm:flex-row sm:w-fit">
-                    <p class="w-14 p-2 hidden sm:block">1234</p>
-                    <img class="sm:w-32 m-auto w-3/4" src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}"
-                        alt="">
-                    <div class="text-sm p-2 flex flex-col">
-                        <a href="#" class="text-primary">Lorem ipsum dolor sit amet consectetur.</a>
-                        <a href="#" class="underline">https://doi.org/10.2121/jon.v1i01</a>
-                        <div class="flex items-center">
-                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}"
-                                alt="">
-                            <p class="pl-2">Prof. David Johnson</p>
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </section>
 
