@@ -10,10 +10,8 @@ use App\Models\CommitteeRole;
 use App\Models\Conference;
 use App\Models\Sponsor;
 use App\Models\NavigationMenu;
-use App\Models\ParticipantPosition;
 use App\Models\PaymentItem;
 use App\Models\Proceeding;
-use App\Models\Role;
 use App\Models\Scopes\ConferenceScope;
 use App\Models\Scopes\SerieScope;
 use App\Models\Serie;
@@ -27,7 +25,6 @@ use App\Models\Venue;
 use App\Models\Version;
 use Illuminate\Foundation\Application as LaravelApplication;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 
 class Application extends LaravelApplication
 {
@@ -123,7 +120,6 @@ class Application extends LaravelApplication
             Topic::class,
             NavigationMenu::class,
             Block::class,
-            ParticipantPosition::class,
             CommitteeRole::class,
             SpeakerRole::class,
             AuthorRole::class,

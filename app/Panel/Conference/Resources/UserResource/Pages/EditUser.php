@@ -15,7 +15,7 @@ class EditUser extends EditRecord
 
     public function afterSave(): void
     {
-        CreateParticipantFromUserAction::run($this->getRecord());
+        // CreateParticipantFromUserAction::run($this->getRecord());
     }
 
     protected function getHeaderActions(): array

@@ -4,7 +4,6 @@ namespace App\Observers;
 
 use App\Actions\Authors\AuthorRolePopulateDefaultDataAction;
 use App\Actions\Committees\CommitteeRolePopulateDefaultDataAction;
-use App\Actions\Participants\ParticipantPositionPopulateDefaultDataAction;
 use App\Actions\Speakers\SpeakerRolePopulateDefaultDataAction;
 use App\Actions\Roles\RolePopulateAction;
 use App\Actions\Roles\RolePopulateConferenceAction;
@@ -28,8 +27,6 @@ class ConferenceObserver
      */
     public function created(Conference $conference): void
     {
-        ParticipantPositionPopulateDefaultDataAction::run($conference);
-        
         CommitteeRolePopulateDefaultDataAction::run($conference);
         SpeakerRolePopulateDefaultDataAction::run($conference);
         AuthorRolePopulateDefaultDataAction::run($conference);

@@ -94,6 +94,11 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
         return $this->hasMany(Serie::class);
     }
 
+    public function roles(): HasMany
+    {
+        return $this->hasMany(Role::class);
+    }
+
     public function getFilamentName(): string
     {
         return $this->name;

@@ -2,8 +2,8 @@
 
 namespace App\Panel\Conference\Widgets;
 
-use App\Models\Participant;
-use App\Models\ParticipantPosition;
+use App\Models\Speaker;
+use App\Models\SpeakerRole;
 use Filament\Widgets\Widget;
 
 class SpeakerWidget extends Widget
@@ -14,14 +14,14 @@ class SpeakerWidget extends Widget
 
     protected function getViewData(): array
     {
-        $participants_position = ParticipantPosition::where('type', 'speaker')->pluck('id');
+        $speakerRoles = SpeakerRole::query()->pluck('id');
 
-        $participants = Participant::whereHas('positions', function ($query) use ($participants_position) {
-            $query->whereIn('id', $participants_position);
-        })->whereHas('meta', function ($query) {
-            $query->where('key', 'confirmed')->where('value', true);
-        })->get();
+        $speakers = Speaker::whereIn('speaker_role_id', $speakerRoles)
+            ->whereHas('meta', function ($query) {
+                $query->where('key', 'confirmed')->where('value', true);
+            })
+            ->get();
 
-        return ['participants' => $participants];
+        return ['speakers' => $speakers];
     }
 }

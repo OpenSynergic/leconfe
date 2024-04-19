@@ -3,7 +3,7 @@
 namespace App\Frontend\Conference\Pages;
 
 use App\Models\Announcement;
-use App\Models\ParticipantPosition;
+use App\Models\SpeakerRole;
 use App\Models\Topic;
 use App\Models\Venue;
 use Illuminate\Support\Facades\Route;
@@ -22,10 +22,9 @@ class Home extends Page
     {
         return [
             'announcements' => Announcement::query()->get(),
-            'participantPosition' => ParticipantPosition::query()
-                ->where('type', 'speaker')
-                ->whereHas('participants')
-                ->with(['participants' => ['media', 'meta']])
+            'participantPosition' => SpeakerRole::query()
+                ->whereHas('speakers')
+                ->with(['speakers' => ['media', 'meta']])
                 ->get(),
             'topics' => Topic::query()->get(),
             'venues' => Venue::query()->get(),
