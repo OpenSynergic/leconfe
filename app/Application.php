@@ -6,13 +6,14 @@ use App\Actions\Site\SiteCreateAction;
 use App\Models\Announcement;
 use App\Models\Block;
 use App\Models\Conference;
-use App\Models\ConferenceSponsor;
+use App\Models\Sponsor;
 use App\Models\NavigationMenu;
 use App\Models\ParticipantPosition;
 use App\Models\PaymentItem;
 use App\Models\Proceeding;
 use App\Models\Role;
 use App\Models\Scopes\ConferenceScope;
+use App\Models\Scopes\SerieScope;
 use App\Models\Serie;
 use App\Models\Site;
 use App\Models\StaticPage;
@@ -108,21 +109,19 @@ class Application extends LaravelApplication
         }
 
         return $this->currentSerie;
-    }   
+    }
 
     public function scopeCurrentConference(): void
     {
         $models = [
             Submission::class,
-            ConferenceSponsor::class,
+            Sponsor::class,
             Topic::class,
-            Venue::class,
             NavigationMenu::class,
             Block::class,
             ParticipantPosition::class,
             Announcement::class,
             StaticPage::class,
-            Timeline::class,
             PaymentItem::class,
             Serie::class,
             Proceeding::class,
@@ -130,6 +129,18 @@ class Application extends LaravelApplication
 
         foreach ($models as $model) {
             $model::addGlobalScope(new ConferenceScope);
+        }
+    }
+
+    public function scopeCurrentSerie(): void
+    {
+        $models = [
+            Venue::class,
+            Timeline::class,
+        ];
+
+        foreach ($models as $model){
+            $model::addGlobalScope(new SerieScope);
         }
     }
 

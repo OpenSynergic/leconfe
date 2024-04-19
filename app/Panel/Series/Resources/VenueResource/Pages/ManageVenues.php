@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Panel\Conference\Resources\Conferences\VenueResource\Pages;
+namespace App\Panel\Series\Resources\VenueResource\Pages;
 
-use App\Panel\Conference\Resources\Conferences\VenueResource;
+use App\Panel\Series\Resources\VenueResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
 
@@ -13,7 +13,7 @@ class ManageVenues extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
         ];
     }
 }

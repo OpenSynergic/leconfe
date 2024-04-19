@@ -5,13 +5,18 @@ namespace App\Frontend\Website\Pages;
 use App\Classes\CustomBlock;
 use App\Facades\Block as BlockFacade;
 use App\Models\Conference;
+use App\Models\Sponsor;
 use App\Models\Topic;
 use Illuminate\Support\Facades\Route;
+use Livewire\WithoutUrlPagination;
+use Livewire\WithPagination;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 
 class Home extends Page
 {
+    use WithPagination, WithoutUrlPagination;
+
     protected static string $view = 'frontend.website.pages.home';
 
     public function mount()
@@ -37,9 +42,10 @@ class Home extends Page
     protected function getViewData(): array
     {
         return [
-            // 'topics' => Topic::withoutGlobalScopes()->where('conference_id', $activeConference->getKey())->get(),
-            'upcomingConferences' => Conference::upcoming()->get(),
-            // 'activeConference' => $activeConference,
+            'sponsors' => Sponsor::ordered()->with('media')->get(),
+            'currentConferences' => Conference::active()->with('media')->paginate(6, pageName:'currentConferencesPage'),
+            'upcomingConferences' => Conference::upcoming()->with('media')->paginate(6, pageName:'upcomingConferencesPage'),
+            'allConferences' => Conference::with('media')->paginate(6, pageName:'allConferencesPage'),
         ];
     }
 
