@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Panel\Conference\Resources\Conferences;
+namespace App\Panel\Series\Resources;
 
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -13,13 +13,14 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Actions\Committees\CommitteeCreateAction;
 use App\Actions\Committees\CommitteeDeleteAction;
 use App\Actions\Committees\CommitteeUpdateAction;
+use App\Models\Scopes\ConferenceScope;
 use Filament\Forms\Components\Actions\Action as FormAction;
 use App\Panel\Conference\Livewire\Forms\Conferences\ContributorForm;
-use App\Panel\Conference\Resources\Conferences\CommitteeResource\Pages;
+use App\Panel\Series\Resources\CommitteeResource\Pages;
 
 class CommitteeResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Conferences';
+    // protected static ?string $navigationGroup = 'Conferences';
 
     protected static ?string $model = Committee::class;
 
@@ -107,7 +108,7 @@ class CommitteeResource extends Resource
         return $form
             ->schema([
                 static::selectCommitteeField($form),
-                ...ContributorForm::generalFormField(app()->getCurrentConference()),
+                ...ContributorForm::generalFormField(app()->getCurrentSerie()),
                 Forms\Components\Select::make('committee_role_id')
                     ->label('Role')
                     ->required()
@@ -152,8 +153,8 @@ class CommitteeResource extends Resource
 
     public static function renderSelectCommittee(Committee $committee): string
     {
-        $committee->load('conference');
-        return view('forms.select-contributor-conference', ['contributor' => $committee])->render();
+        $committee->load(['serie' => fn ($query) => $query->withoutGlobalScopes([ConferenceScope::class])]);
+        return view('forms.select-contributor-serie', ['contributor' => $committee])->render();
     }
 
     public static function getPages(): array

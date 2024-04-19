@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Panel\Conference\Livewire\Tables;
+namespace App\Panel\Series\Livewire\Tables;
 
-use App\Panel\Conference\Resources\Conferences\CommitteeRoleResource;
+use App\Panel\Series\Resources\CommitteeRoleResource;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Livewire\Component;
 
-class CommiteeRoleTable extends Component implements HasForms, HasTable
+class CommitteeRoleTable extends Component implements HasForms, HasTable
 {
     use InteractsWithForms, InteractsWithTable;
 

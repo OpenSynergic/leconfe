@@ -42,7 +42,7 @@
             {{ \Filament\Support\Facades\FilamentView::renderHook('panels::resource.pages.list-records.table.after', scopes: $this->getRenderHookScopes()) }}
         </div>
         <div x-show="activeTab === 'role-table'" style="display: none">
-            @livewire(App\Panel\Conference\Livewire\Tables\CommiteeRoleTable::class, ['lazy' => true])
+            @livewire(App\Panel\Series\Livewire\Tables\CommitteeRoleTable::class, ['lazy' => true])
         </div>
     </div>
 </x-filament-panels::page>

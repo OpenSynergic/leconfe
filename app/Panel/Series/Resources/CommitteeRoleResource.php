@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Panel\Conference\Resources\Conferences;
+namespace App\Panel\Series\Resources;
 
 use App\Models\CommitteeRole;
 use App\Tables\Columns\IndexColumn;
@@ -42,7 +42,7 @@ class CommitteeRoleResource extends Resource
                     ->required()
                     ->unique(modifyRuleUsing: function (Unique $rule) {
                         return $rule
-                            ->where('conference_id', app()->getCurrentConference()->getKey());
+                            ->where('serie_id', app()->getCurrentSerie()->getKey());
                     }),
                 Select::make('parent_id')
                     ->relationship('parent', 'name', fn ($query, ?CommitteeRole $record) => $query
