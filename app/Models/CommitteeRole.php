@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Concerns\BelongsToConference;
+use App\Models\Concerns\BelongsToSerie;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,12 +15,12 @@ use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
 class CommitteeRole extends Model implements Sortable
 {
-    use BelongsToConference, HasFactory, HasRecursiveRelationships, HasSlug, SortableTrait;
+    use BelongsToSerie, HasFactory, HasRecursiveRelationships, HasSlug, SortableTrait;
 
     protected $table = 'committee_roles';
 
     protected $fillable = [
-        'conference_id',
+        'serie_id',
         'parent_id',
         'name',
     ];

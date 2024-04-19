@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Concerns\BelongsToConference;
+use App\Models\Concerns\BelongsToSerie;
 use Plank\Metable\Metable;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
@@ -24,7 +24,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Committee extends Model implements HasAvatar, HasMedia, Sortable
 {
-    use HasFactory, BelongsToConference, HasShortflakePrimary, Metable, Notifiable, SortableTrait, InteractsWithMedia;
+    use HasFactory, BelongsToSerie, HasShortflakePrimary, Metable, Notifiable, SortableTrait, InteractsWithMedia;
 
     protected $table = 'committees';
 
