@@ -27,7 +27,6 @@ class ConferenceObserver
      */
     public function created(Conference $conference): void
     {
-        CommitteeRolePopulateDefaultDataAction::run($conference);
         SpeakerRolePopulateDefaultDataAction::run($conference);
         AuthorRolePopulateDefaultDataAction::run($conference);
 
