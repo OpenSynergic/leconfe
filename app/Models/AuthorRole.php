@@ -22,7 +22,6 @@ class AuthorRole extends Model implements Sortable
     protected $fillable = [
         'conference_id',
         'parent_id',
-        // 'type',
         'name',
     ];
 

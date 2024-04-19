@@ -71,7 +71,6 @@ class Profile extends Page implements HasForms
                         SpatieMediaLibraryFileUpload::make('profile')
                             ->label('Profile Photo')
                             ->collection('profile')
-                            // ->alignCenter()
                             ->avatar()
                             ->columnSpan(['lg' => 2]),
                         TextInput::make('given_name')
