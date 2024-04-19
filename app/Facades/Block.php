@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static void registerBlocks(array $blocks)
- * @method static \Illuminate\Support\Collection getBlocks(string $position, bool $includeInactive = false)
+ * @method static \Illuminate\Support\Collection getBlocks(bool $onlyActive = true)
  */
 class Block extends Facade
 {
