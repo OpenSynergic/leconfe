@@ -16,6 +16,7 @@ use App\Models\Scopes\ConferenceScope;
 use App\Models\Scopes\SerieScope;
 use App\Models\Serie;
 use App\Models\Site;
+use App\Models\SiteSetting;
 use App\Models\StaticPage;
 use App\Models\Submission;
 use App\Models\Timeline;
@@ -139,7 +140,7 @@ class Application extends LaravelApplication
             Timeline::class,
         ];
 
-        foreach ($models as $model){
+        foreach ($models as $model) {
             $model::addGlobalScope(new SerieScope);
         }
     }
@@ -169,7 +170,7 @@ class Application extends LaravelApplication
     public function isReportingErrors(): bool
     {
         try {
-            if ($this->isProduction() && ! $this->hasDebugModeEnabled() && setting('send-error-report', true)) {
+            if ($this->isProduction() && !$this->hasDebugModeEnabled() && setting('send-error-report', true)) {
                 return true;
             }
         } catch (\Throwable $th) {

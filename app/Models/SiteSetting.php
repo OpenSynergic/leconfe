@@ -15,4 +15,18 @@ class SiteSetting extends Model
         'key',
         'value',
     ];
+
+    public function setValueAttribute($value)
+    {
+        if (is_bool($value)) {
+            $this->attributes['value'] = $value ? 1 : 0;
+            return;
+        }
+        $this->attributes['value'] = $value;
+    }
+
+    public function getValueAttribute($value)
+    {
+        return (bool) $value;
+    }
 }

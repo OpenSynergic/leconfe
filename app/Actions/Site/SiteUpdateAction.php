@@ -2,6 +2,7 @@
 
 namespace App\Actions\Site;
 
+use App\Facades\Settings;
 use App\Models\Site;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -22,11 +23,9 @@ class SiteUpdateAction
             }
 
             if ($settings = data_get($data, 'settings')) {
-                $prefixedMeta = [];
                 foreach ($settings as $key => $value) {
-                    $prefixedMeta['settings.' . $key] = $value;
+                    Settings::set($key, $value);
                 }
-                $site->setManyMeta($prefixedMeta);
             }
 
             $site->touch();
