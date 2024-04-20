@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Conference;
+use App\Models\Serie;
 use App\Models\SpeakerRole;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('speaker_roles', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Conference::class)->constrained();
+            $table->foreignIdFor(Serie::class)->constrained();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->string('name');
             $table->string('slug')->unique();
@@ -37,7 +37,7 @@ return new class extends Migration
 
         Schema::create('speakers', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Conference::class)->constrained();
+            $table->foreignIdFor(Serie::class)->constrained();
             $table->foreignIdFor(SpeakerRole::class)->constrained();
             $table->string('email')->nullable();
             $table->string('given_name');
@@ -46,7 +46,7 @@ return new class extends Migration
             $table->unsignedInteger('order_column')->nullable();
             $table->timestamps();
 
-            $table->unique(['email', 'conference_id']);
+            $table->unique(['email', 'serie_id']);
         });
     }
 
