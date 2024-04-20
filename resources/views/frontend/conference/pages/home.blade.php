@@ -176,74 +176,52 @@
                     </article>
                 </div>
                 <div x-show="activeTab === 'registration-info'" class="p-4 border border-t-0 border-gray-300 ">
-                    @if ($currentConference->getMeta('additional_content'))
-                            <article id="registration-info" class="user-content px-5 overflow-x-auto">
-                                {!! $currentConference->getMeta('additional_content') !!}
-                            </article>
+                    @if ($currentConference->getMeta('registration_info'))
+                        <article id="registration-info" class="user-content px-2 sm:px-5 overflow-x-auto">
+                            {!! $currentConference->getMeta('registration_info') !!}
+                        </article>
                     @endif
                 </div>
                 <div x-show="activeTab === 'contact-info'" class="p-4 border border-t-0 border-gray-300 ">
                     @if ($currentConference->getMeta('additional_content'))
-                            <article id="contact-info" class="user-content px-5 overflow-x-auto">
-                                {!! $currentConference->getMeta('additional_content') !!}
-                            </article>
+                        <article id="contact-info" class="user-content px-2 sm:px-5 overflow-x-auto">
+                            {!! $currentConference->getMeta('contact_info') !!}
+                        </article>
                     @endif
                 </div>
                 <div x-show="activeTab === 'editorial-committee'" class="p-4 border border-t-0 border-gray-300 ">
                     <article id="editorial-committee">
-                        {{-- @php
-                        dd($participantPosition)
-                    @endphp --}}
                         <h2>Editorial</h2>
                         <div class="flex flex-col flex-start gap-y-4 my-2">
-                            <div class="flex flex-row text-xs w-fit">
-                                <img src="https://placeholder.co/64x64" alt="editor-thumbnail"
-                                    class="rounded-full w-16 h-16 m-auto block">
-                                <div class="pl-4">
-                                    <h3>Prof. David Bramhiers, Ph.D.</h3>
-                                    <p class="text-primary text-primary-600">Lead Editor</p>
-                                    <p class="text-secondary">Oxford University</p>
-                                    <div class="flex flex-row items-center">
-                                        <img class="w-4 h-4 mr-2"
-                                            src="{{ Vite::asset('resources/assets/images/google-scholar-logo.svg') }}"
-                                            alt="">
-                                        <a href="#"
-                                            class="text-cyan-500 underline underline-offset-2">123847742</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex flex-row text-xs w-fit">
-                                <img src="https://placeholder.co/64x64" alt="editor-thumbnail"
-                                    class="rounded-full w-16 h-16 m-auto block">
-                                <div class="pl-4">
-                                    <h3>Prof. David Bramhiers, Ph.D.</h3>
-                                    <p class="text-primary text-primary-600">Lead Editor</p>
-                                    <p class="text-secondary">Oxford University</p>
-                                    <div class="flex flex-row items-center">
-                                        <img class="w-4 h-4 mr-2"
-                                            src="{{ Vite::asset('resources/assets/images/google-scholar-logo.svg') }}"
-                                            alt="">
-                                        <a href="#"
-                                            class="text-cyan-500 underline underline-offset-2">123847742</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex flex-row text-xs w-fit">
-                                <img src="https://placeholder.co/64x64" alt="editor-thumbnail"
-                                    class="rounded-full w-16 h-16 m-auto block">
-                                <div class="pl-4">
-                                    <h3>Prof. David Bramhiers, Ph.D.</h3>
-                                    <p class="text-primary text-primary-600">Lead Editor</p>
-                                    <p class="text-secondary">Oxford University</p>
-                                    <div class="flex flex-row items-center">
-                                        <img class="w-4 h-4 mr-2"
-                                            src="{{ Vite::asset('resources/assets/images/google-scholar-logo.svg') }}"
-                                            alt="">
-                                        <a href="#"
-                                            class="text-cyan-500 underline underline-offset-2">123847742</a>
-                                    </div>
-                                </div>
-                            </div>
+                            @foreach ($committeePosition as $position)
+                                @if ($position->participants->isNotEmpty())
+                                    @foreach ($position->participants as $participant)
+                                        <div class="flex flex-row text-xs w-fit items-center">
+                                            <img src="{{ $participant->getFilamentAvatarUrl() }}"
+                                            alt="{{ $participant->fullName }}"
+                                                class="rounded-full w-16 h-16 m-auto block">
+                                            <div class="pl-4">
+                                                <h3>{{ $participant->fullName }}</h3>
+                                                <p class="text-primary text-primary-600">{{ $position->name }}</p>
+                                                <p class="text-secondary">{{ $participant->getMeta('affiliation') }}</p>
+                                                <div class="flex flex-row items-center py-1">
+                                                    @if ($participant->getMeta('google_scholar_id'))
+                                                    <img class="w-4 h-4 mr-2"
+                                                        src="{{ Vite::asset('resources/assets/images/google-scholar-logo.svg') }}"
+                                                        alt="">
+                                                        @php
+                                                        $googleScholarID = $participant->getMeta('google_scholar_id');
+                                                        $language = "en";
+                                                        $link = "https://scholar.google.com/citations?user=" . $googleScholarID . "&hl=" . $language . "&oi=ao";
+                                                        @endphp
+                                                        <a href="{{ $link }}" class="text-cyan-500 underline underline-offset-2">{{ strtoupper($googleScholarID) }}</a>
+                                                        @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @endif
+                            @endforeach
                         </div>
                     </article>
                 </div>
@@ -306,7 +284,7 @@
                         <p class="text-lg font-bold">1.</p>
                     </div>
                     <div
-                    class="flex justify-start px-4 sm:px-4 items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
+                        class="flex justify-start px-4 sm:px-4 items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
                         <img class="sm:w-32 w-24 h-auto"
                             src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}"
                             alt="Placeholder Image">
@@ -352,7 +330,7 @@
                         <p class="text-lg font-bold">3.</p>
                     </div>
                     <div
-                    class="flex justify-start px-4 sm:px-4 items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
+                        class="flex justify-start px-4 sm:px-4 items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
                         <img class="sm:w-32 w-24 h-auto"
                             src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}"
                             alt="Placeholder Image">
