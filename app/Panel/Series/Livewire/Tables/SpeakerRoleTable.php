@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Panel\Conference\Livewire\Tables;
+namespace App\Panel\Series\Livewire\Tables;
 
-use App\Panel\Conference\Resources\Conferences\SpeakerRoleResource;
+use App\Panel\Series\Resources\SpeakerRoleResource;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;

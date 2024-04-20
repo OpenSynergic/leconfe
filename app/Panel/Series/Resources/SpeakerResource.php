@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Panel\Conference\Resources\Conferences;
+namespace App\Panel\Series\Resources;
 
 use Filament\Forms;
 use App\Models\Speaker;
@@ -14,13 +14,14 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Actions\Speakers\SpeakerCreateAction;
 use App\Actions\Speakers\SpeakerDeleteAction;
 use App\Actions\Speakers\SpeakerUpdateAction;
+use App\Models\Scopes\ConferenceScope;
 use Filament\Forms\Components\Actions\Action as FormAction;
 use App\Panel\Conference\Livewire\Forms\Conferences\ContributorForm;
-use App\Panel\Conference\Resources\Conferences\SpeakerResource\Pages;
+use App\Panel\Series\Resources\SpeakerResource\Pages;
 
 class SpeakerResource extends Resource
 {
-    protected static ?string $navigationGroup = 'Conferences';
+    // protected static ?string $navigationGroup = 'Conferences';
 
     protected static ?string $model = Speaker::class;
 
@@ -164,8 +165,8 @@ class SpeakerResource extends Resource
 
     public static function renderSelectSpeaker(Speaker $speaker): string
     {
-        $speaker->load('conference');
-        return view('forms.select-contributor-conference', ['contributor' => $speaker])->render();
+        $speaker->load(['serie' => fn ($query) => $query->withoutGlobalScopes([ConferenceScope::class])]);
+        return view('forms.select-contributor-serie', ['contributor' => $speaker])->render();
     }
 
     public static function getPages(): array

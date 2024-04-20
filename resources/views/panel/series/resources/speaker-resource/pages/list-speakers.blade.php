@@ -42,7 +42,7 @@
             {{ \Filament\Support\Facades\FilamentView::renderHook('panels::resource.pages.list-records.table.after', scopes: $this->getRenderHookScopes()) }}
         </div>
         <div x-show="activeTab === 'speaker-role'" style="display: none">
-            @livewire(App\Panel\Conference\Livewire\Tables\SpeakerRoleTable::class, ['lazy' => true])
+            @livewire(App\Panel\Series\Livewire\Tables\SpeakerRoleTable::class, ['lazy' => true])
         </div>
     </div>
 </x-filament-panels::page>
