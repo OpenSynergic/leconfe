@@ -12,6 +12,6 @@ class CommitteeSeeder extends Seeder
      */
     public function run(): void
     {
-        Committee::factory(100)->create();
+        Committee::factory(300)->create();
     }
 }

@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Actions\Series;
+namespace App\Actions\Committees;
 
 use App\Models\CommitteeRole;
-use App\Models\Conference;
 use App\Models\Serie;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;

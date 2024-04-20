@@ -2,7 +2,8 @@
 
 namespace App\Observers;
 
-use App\Actions\Series\CommitteeRolePopulateDefaultDataAction;
+use App\Actions\Committees\CommitteeRolePopulateDefaultDataAction;
+use App\Actions\Speakers\SpeakerRolePopulateDefaultDataAction;
 use App\Models\Serie;
 
 class SerieObserver
@@ -15,6 +16,7 @@ class SerieObserver
     public function created(Serie $serie): void
     {
         CommitteeRolePopulateDefaultDataAction::run($serie);
+        SpeakerRolePopulateDefaultDataAction::run($serie);
     }
 
     /**
