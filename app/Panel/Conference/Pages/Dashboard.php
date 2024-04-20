@@ -9,6 +9,7 @@ class Dashboard extends PagesDashboard
 {
     public function mount()
     {
-        return Settings::get('allow_registration');
+        Settings::set('test', 'gdgdg');
+        return dd(Settings::get('test'));
     }
 }

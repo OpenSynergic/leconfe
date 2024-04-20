@@ -2,7 +2,8 @@
 
 namespace App\Classes;
 
-use App\Models\SiteSetting;
+use App\Models\Scopes\ConferenceScope;
+use App\Models\Setting;
 
 class Settings
 {
@@ -10,47 +11,27 @@ class Settings
 
     public function set($key, $value)
     {
-        if (is_array($key)) {
-            if (app()->getCurrentConference() === null) {
-                return SiteSetting::updateOrCreate(['conference_id' => 0, 'type' => gettype($value), 'key' => 'settings.' . $key], ['value' => $value]);
-            }
-            if (app()->getCurrentConference()) {
-                return SiteSetting::updateOrCreate(['conference_id' => app()->getCurrentConference()->getOriginal('id'), 'type' => gettype($value), 'key' => 'settings.' . $key], ['value' => $value]);
-            }
-        }
-        if (app()->getCurrentConference() === null) {
-            return SiteSetting::updateOrCreate(['conference_id' => 0, 'type' => gettype($value), 'key' => 'settings.' . $key], ['value' => $value]);
-        }
-        if (app()->getCurrentConference()) {
-            return SiteSetting::updateOrCreate(['conference_id' => app()->getCurrentConference()->getOriginal('id'), 'type' => gettype($value), 'key' => 'settings.' . $key], ['value' => $value]);
-        }
+        return Setting::updateOrCreate(['type' => gettype($value), 'key' => $key], ['value' => $value]);
     }
 
     public function get($key)
     {
-        if (app()->getCurrentConference() === null) {
+        if (app()->getCurrentConferenceId()) {
             return [
-                $key => SiteSetting::where('conference_id', 0)->where('key', 'settings.' . $key)->latest()->pluck('value')->first()
-            ];
-        }
-        if (SiteSetting::where('conference_id', app()->getCurrentConference()->getOriginal('id'))->where('key', 'settings.' . $key)->latest()->pluck('key')->first() && app()->getCurrentConference()) {
-            return [
-                $key => SiteSetting::where('conference_id', app()->getCurrentConference()->getOriginal('id'))->where('key', 'settings.' . $key)->latest()->pluck('value')->first()
+                $key => Setting::where('key', $key)->latest()->pluck('value')->first()
             ];
         }
         return [
-            $key => SiteSetting::where('conference_id', 0)->where('key', 'settings.' . $key)->latest()->pluck('value')->first()
+            $key => Setting::withoutGlobalScope(ConferenceScope::class)->where('key', $key)->latest()->pluck('value')->get()
         ];
     }
 
     public function all()
     {
-        if (app()->getCurrentConference() === null) {
-            $meta = SiteSetting::where('conference_id', 0)->pluck('value', 'key');
+        if (app()->getCurrentConferenceId()) {
+            $meta = Setting::pluck('value', 'key');
         }
-        if (app()->getCurrentConference()) {
-            $meta = SiteSetting::where('conference_id', app()->getCurrentConference()->getOriginal('id'))->pluck('value', 'key');
-        }
+        $meta = Setting::withoutGlobalScope(ConferenceScope::class)->pluck('value', 'key');
 
         if (isset($meta)) {
             $modifiedMeta = $meta->map(function ($value, $key) {

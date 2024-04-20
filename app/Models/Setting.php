@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Concerns\BelongsToConference;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class SiteSetting extends Model
+class Setting extends Model
 {
-    use HasFactory;
+    use HasFactory, BelongsToConference;
+
+    protected $table = 'setting';
 
     protected $fillable = [
-        'conference_id',
         'type',
         'key',
         'value',

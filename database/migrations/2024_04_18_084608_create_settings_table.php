@@ -12,15 +12,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('site_settings', function (Blueprint $table) {
+        Schema::create('setting', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Conference::class);
             $table->string('type');
             $table->string('key');
             $table->text('value')->nullable();
             $table->timestamps();
-
-            $table->unique(['conference_id', 'key']);
         });
     }
 
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('site_settings');
+        Schema::dropIfExists('setting');
     }
 };

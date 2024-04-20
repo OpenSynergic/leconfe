@@ -15,6 +15,7 @@ use App\Models\Role;
 use App\Models\Scopes\ConferenceScope;
 use App\Models\Scopes\SerieScope;
 use App\Models\Serie;
+use App\Models\Setting;
 use App\Models\Site;
 use App\Models\SiteSetting;
 use App\Models\StaticPage;
@@ -126,6 +127,7 @@ class Application extends LaravelApplication
             PaymentItem::class,
             Serie::class,
             Proceeding::class,
+            Setting::class,
         ];
 
         foreach ($models as $model) {
