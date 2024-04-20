@@ -24,7 +24,7 @@
                         @endphp
 
                         <span
-                            class="badge {{ $badgeClass }} text-white rounded-full px-3 text-xs flex items-center justify-center h-8">{{ $currentConference->type }}</span>
+                            class="badge {{ $badgeClass }} text-white rounded-full px-3 text-xs flex items-center justify-center h-8 outline-0">{{ $currentConference->type }}</span>
                     </div>
                     @if ($currentConference->getMeta('description'))
                         <div class="user-content">
@@ -51,7 +51,7 @@
                         </div>
                     @endif
                     <div>
-                        <a href="#"
+                        <a href=""
                             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary focus:outline-none focus:ring-2 focus:ring-sky-400 hover:bg-sky-600 w-fit">
                             <x-heroicon-o-document-arrow-up class="h-5 w-5 mr-2" />
                             Submit Now
@@ -61,8 +61,8 @@
             </div>
         </section>
 
-        <section id="conference-partner" class="space-y-4">
-            @if ($currentConference->sponsors)
+        @if ($currentConference->sponsors)
+            <section id="conference-partner" class="space-y-4">
                 <div class="sponsors space-y-4" x-data="carousel">
                     <h2 class="text-xl text-center">Conference Partner</h2>
                     <div class="sponsors-carousel flex items-center w-full gap-4" x-bind="carousel">
@@ -90,8 +90,8 @@
                         </button>
                     </div>
                 </div>
-            @endif
-        </section>
+            </section>
+        @endif
 
         <section id="conference-detail-tabs" class="space-y-4">
             <div x-data="{ activeTab: 'information' }" class=" bg-white">
@@ -177,52 +177,64 @@
                 </div>
                 <div x-show="activeTab === 'registration-info'" class="p-4 border border-t-0 border-gray-300 ">
                     @if ($currentConference->getMeta('registration_info'))
-                        <article id="registration-info" class="user-content px-2 sm:px-5 overflow-x-auto">
+                        <article id="registration-info" class="user-content overflow-x-auto">
                             {!! $currentConference->getMeta('registration_info') !!}
                         </article>
                     @endif
                 </div>
                 <div x-show="activeTab === 'contact-info'" class="p-4 border border-t-0 border-gray-300 ">
                     @if ($currentConference->getMeta('additional_content'))
-                        <article id="contact-info" class="user-content px-2 sm:px-5 overflow-x-auto">
+                        <article id="contact-info" class="user-content overflow-x-auto">
                             {!! $currentConference->getMeta('contact_info') !!}
                         </article>
                     @endif
                 </div>
                 <div x-show="activeTab === 'editorial-committee'" class="p-4 border border-t-0 border-gray-300 ">
                     <article id="editorial-committee">
-                        <h2>Editorial</h2>
-                        <div class="flex flex-col flex-start gap-y-4 my-2">
-                            @foreach ($committeePosition as $position)
-                                @if ($position->participants->isNotEmpty())
-                                    @foreach ($position->participants as $participant)
-                                        <div class="flex flex-row text-xs w-fit items-center">
-                                            <img src="{{ $participant->getFilamentAvatarUrl() }}"
-                                            alt="{{ $participant->fullName }}"
-                                                class="rounded-full w-16 h-16 m-auto block">
-                                            <div class="pl-4">
-                                                <h3>{{ $participant->fullName }}</h3>
-                                                <p class="text-primary text-primary-600">{{ $position->name }}</p>
-                                                <p class="text-secondary">{{ $participant->getMeta('affiliation') }}</p>
-                                                <div class="flex flex-row items-center py-1">
-                                                    @if ($participant->getMeta('google_scholar_id'))
-                                                    <img class="w-4 h-4 mr-2"
-                                                        src="{{ Vite::asset('resources/assets/images/google-scholar-logo.svg') }}"
-                                                        alt="">
-                                                        @php
-                                                        $googleScholarID = $participant->getMeta('google_scholar_id');
-                                                        $language = "en";
-                                                        $link = "https://scholar.google.com/citations?user=" . $googleScholarID . "&hl=" . $language . "&oi=ao";
-                                                        @endphp
-                                                        <a href="{{ $link }}" class="text-cyan-500 underline underline-offset-2">{{ strtoupper($googleScholarID) }}</a>
+                        @if ($committeePosition->isNotEmpty())
+                            <h2>Editorial</h2>
+                            <div class="flex flex-col flex-start gap-y-4 my-2">
+                                @foreach ($committeePosition as $position)
+                                    @if ($position->participants->isNotEmpty())
+                                        @foreach ($position->participants as $participant)
+                                            <div class="flex flex-row text-xs w-fit items-center">
+                                                <img src="{{ $participant->getFilamentAvatarUrl() }}"
+                                                    alt="{{ $participant->fullName }}"
+                                                    class="rounded-full w-16 h-16 m-auto block">
+                                                <div class="pl-4">
+                                                    <h3>{{ $participant->fullName }}</h3>
+                                                    <p class="text-primary text-primary-600">{{ $position->name }}</p>
+                                                    <p class="text-secondary">
+                                                        {{ $participant->getMeta('affiliation') }}
+                                                    </p>
+                                                    <div class="flex flex-row items-center py-1">
+                                                        @if ($participant->getMeta('google_scholar_id'))
+                                                            <img class="w-4 h-4 mr-2"
+                                                                src="{{ Vite::asset('resources/assets/images/google-scholar-logo.svg') }}"
+                                                                alt="">
+                                                            @php
+                                                                $googleScholarID = $participant->getMeta(
+                                                                    'google_scholar_id',
+                                                                );
+                                                                $language = 'en';
+                                                                $link =
+                                                                    'https://scholar.google.com/citations?user=' .
+                                                                    $googleScholarID .
+                                                                    '&hl=' .
+                                                                    $language .
+                                                                    '&oi=ao';
+                                                            @endphp
+                                                            <a href="{{ $link }}"
+                                                                class="text-cyan-500 underline underline-offset-2">{{ strtoupper($googleScholarID) }}</a>
                                                         @endif
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    @endforeach
-                                @endif
-                            @endforeach
-                        </div>
+                                        @endforeach
+                                    @endif
+                                @endforeach
+                            </div>
+                        @endif
                     </article>
                 </div>
             </div>
@@ -272,81 +284,41 @@
             </section>
         @endif
 
+        @if ($acceptedSubmission->isNotEmpty())
+            <section id="conference-accepted-papers" class="flex flex-col gap-y-0 space-y-4">
+                <div class="flex items-center">
+                    <img src="{{ Vite::asset('resources/assets/images/mingcute_paper-line.svg') }}" alt="">
+                    <h2 class="text-xl font-medium pl-2">Accepted Paper List</h2>
+                </div>
+                <div class="flex w-full flex-col gap-y-5">
+                    @foreach ($acceptedSubmission as $submission)
+                        <div class="flex flex-col sm:flex-row">
+                            <div class="w-8 flex-none hidden sm:block">
+                                <p class="text-lg font-bold">{{ $loop->index+1 }}.</p>
+                            </div>
+                            <div
+                                class="flex justify-start px-0 sm:px-4 items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
+                                <img class="sm:w-32 w-24 h-auto"
+                                    src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}"
+                                    alt="Placeholder Image">
+                            </div>
+                            <div class=" py-2 flex flex-col">
+                                <a href="#"
+                                    class="text-md font-medium text-primary mb-2">{{ $submission->getMeta('title') }}</a>
+                                <a href="#" class="text-sm underline mb-2">https://doi.org/10.2121/jon.v1i01</a>
+                                <div class="flex items-center">
+                                    <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}"
+                                        alt="People Icon" class="w-5 h-5 mr-2">
 
-        <section id="conference-accepted-papers" class="flex flex-col gap-y-0 space-y-4">
-            <div class="flex items-center">
-                <img src="{{ Vite::asset('resources/assets/images/mingcute_paper-line.svg') }}" alt="">
-                <h2 class="text-xl font-medium pl-2">Accepted Paper List</h2>
-            </div>
-            <div class="flex w-full flex-col gap-y-5">
-                <div class="flex flex-col sm:flex-row">
-                    <div class="w-14 flex-none hidden sm:block p-2">
-                        <p class="text-lg font-bold">1.</p>
-                    </div>
-                    <div
-                        class="flex justify-start px-4 sm:px-4 items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
-                        <img class="sm:w-32 w-24 h-auto"
-                            src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}"
-                            alt="Placeholder Image">
-                    </div>
-                    <div class="px-4 py-2 flex flex-col">
-                        <a href="#" class="text-md font-medium text-primary mb-2">The Impact of Climate Change
-                            on Biodiversity: A Global Ecological Perspective</a>
-                        <a href="#" class="text-sm underline mb-2">https://doi.org/10.2121/jon.v1i01</a>
-                        <div class="flex items-center">
-                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}"
-                                alt="People Icon" class="w-5 h-5 mr-2">
-                            <p class="text-sm text-gray-700">Prof. David Johnson</p>
+                                    <p class="text-sm text-gray-700">
+                                            Dr. Ghavin Reynara
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    @endforeach
                 </div>
-            </div>
-            <div class="flex w-full flex-col gap-y-5">
-                <div class="flex flex-col sm:flex-row">
-                    <div class="w-14 flex-none hidden sm:block p-2">
-                        <p class="text-lg font-bold">2.</p>
-                    </div>
-                    <div
-                        class="flex justify-start px-4 sm:px-4 items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
-                        <img class="sm:w-32 w-24 h-auto"
-                            src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}"
-                            alt="Placeholder Image">
-                    </div>
-                    <div class="px-4 py-2 flex flex-col">
-                        <a href="#" class="text-md font-medium text-primary mb-2">Lorem ipsum, dolor sit amet
-                            consectetur adipisicing elit. Cupiditate, veritatis sint dolorum vero sequi ad natus.</a>
-                        <a href="#" class="text-sm underline mb-2">https://doi.org/10.2121/jon.v1i01</a>
-                        <div class="flex items-center">
-                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}"
-                                alt="People Icon" class="w-5 h-5 mr-2">
-                            <p class="text-sm text-gray-700">Prof. David Johnson</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="flex w-full flex-col gap-y-5">
-                <div class="flex flex-col sm:flex-row">
-                    <div class="w-14 flex-none hidden sm:block p-2">
-                        <p class="text-lg font-bold">3.</p>
-                    </div>
-                    <div
-                        class="flex justify-start px-4 sm:px-4 items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
-                        <img class="sm:w-32 w-24 h-auto"
-                            src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}"
-                            alt="Placeholder Image">
-                    </div>
-                    <div class="px-4 py-2 flex flex-col">
-                        <a href="#" class="text-md font-medium text-primary text-primary-950 mb-2">Lorem ipsum
-                            dolor sit amet consectetur adipisicing elit. Ex.</a>
-                        <a href="#" class="text-sm underline mb-2">https://doi.org/10.2121/jon.v1i01</a>
-                        <div class="flex items-center">
-                            <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}"
-                                alt="People Icon" class="w-5 h-5 mr-2">
-                            <p class="text-sm text-gray-700">Prof. David Johnson</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+            </section>
+        @endif
     </div>
 </x-website::layouts.main>

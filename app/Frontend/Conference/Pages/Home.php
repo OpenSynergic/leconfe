@@ -4,6 +4,7 @@ namespace App\Frontend\Conference\Pages;
 
 use App\Models\Topic;
 use App\Models\Venue;
+use App\Models\Submission;
 use App\Models\Participant;
 use App\Models\Announcement;
 use App\Models\ParticipantPosition;
@@ -34,6 +35,9 @@ class Home extends Page
                 ->whereHas('participants')
                 ->with(['participants' => ['media', 'meta']])
                 ->get(),
+            'acceptedSubmission' => Submission::query()
+            ->where('status', 'published')
+            ->get(),
             'topics' => Topic::query()->get(),
             'venues' => Venue::query()->get(),
         ];
