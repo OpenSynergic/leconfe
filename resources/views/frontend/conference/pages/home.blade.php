@@ -25,9 +25,6 @@
 
                         <span
                             class="badge {{ $badgeClass }} text-white rounded-full px-3 text-xs flex items-center justify-center h-8">{{ $currentConference->type }}</span>
-
-                        {{-- <span
-                            class="badge {{ $currentConference->type == 'Offline' ? 'bg-secondary' : ($currentConference->type == 'Hybrid ' ? 'bg-purple-400 text-white' : 'bg-primary text-white') }}  rounded-full px-3 text-xs flex items-center justify-center h-8">{{ $currentConference->type }}</span> --}}
                     </div>
                     @if ($currentConference->getMeta('description'))
                         <div class="user-content">
@@ -55,7 +52,7 @@
                     @endif
                     <div>
                         <a href="#"
-                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary focus:outline-none focus:ring-2 focus:ring-blue-400 w-fit">
+                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary focus:outline-none focus:ring-2 focus:ring-sky-400 hover:bg-sky-600 w-fit">
                             <x-heroicon-o-document-arrow-up class="h-5 w-5 mr-2" />
                             Submit Now
                         </a>
@@ -178,10 +175,6 @@
                         </div>
                     </article>
                 </div>
-                @php
-                    dd($currentConference->getAll)
-                @endphp
-
                 <div x-show="activeTab === 'registration-info'" class="p-4 border border-t-0 border-gray-300 ">
                     @if ($currentConference->getMeta('additional_content'))
                             <article id="registration-info" class="user-content px-5 overflow-x-auto">
@@ -198,6 +191,9 @@
                 </div>
                 <div x-show="activeTab === 'editorial-committee'" class="p-4 border border-t-0 border-gray-300 ">
                     <article id="editorial-committee">
+                        {{-- @php
+                        dd($participantPosition)
+                    @endphp --}}
                         <h2>Editorial</h2>
                         <div class="flex flex-col flex-start gap-y-4 my-2">
                             <div class="flex flex-row text-xs w-fit">
@@ -298,6 +294,7 @@
             </section>
         @endif
 
+
         <section id="conference-accepted-papers" class="flex flex-col gap-y-0 space-y-4">
             <div class="flex items-center">
                 <img src="{{ Vite::asset('resources/assets/images/mingcute_paper-line.svg') }}" alt="">
@@ -309,7 +306,7 @@
                         <p class="text-lg font-bold">1.</p>
                     </div>
                     <div
-                        class="flex justify-center items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
+                    class="flex justify-start px-4 sm:px-4 items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
                         <img class="sm:w-32 w-24 h-auto"
                             src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}"
                             alt="Placeholder Image">
@@ -332,7 +329,7 @@
                         <p class="text-lg font-bold">2.</p>
                     </div>
                     <div
-                        class="flex justify-center items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
+                        class="flex justify-start px-4 sm:px-4 items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
                         <img class="sm:w-32 w-24 h-auto"
                             src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}"
                             alt="Placeholder Image">
@@ -355,7 +352,7 @@
                         <p class="text-lg font-bold">3.</p>
                     </div>
                     <div
-                        class="flex justify-center items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
+                    class="flex justify-start px-4 sm:px-4 items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
                         <img class="sm:w-32 w-24 h-auto"
                             src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}"
                             alt="Placeholder Image">
@@ -373,6 +370,5 @@
                 </div>
             </div>
         </section>
-
     </div>
 </x-website::layouts.main>
