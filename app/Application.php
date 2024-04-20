@@ -120,7 +120,6 @@ class Application extends LaravelApplication
             Topic::class,
             NavigationMenu::class,
             Block::class,
-            SpeakerRole::class,
             AuthorRole::class,
             Announcement::class,
             StaticPage::class,
@@ -140,6 +139,7 @@ class Application extends LaravelApplication
             Venue::class,
             Timeline::class,
             CommitteeRole::class,
+            SpeakerRole::class,
         ];
 
         foreach ($models as $model){

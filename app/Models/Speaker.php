@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Concerns\BelongsToConference;
+use App\Models\Concerns\BelongsToSerie;
 use Plank\Metable\Metable;
 use Illuminate\Support\Str;
 use App\Models\Meta\SpeakerMeta;
@@ -24,7 +24,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Speaker extends Model implements HasAvatar, HasMedia, Sortable
 {
-    use BelongsToConference, HasFactory, HasShortflakePrimary, Metable, Notifiable, SortableTrait, InteractsWithMedia;
+    use BelongsToSerie, HasFactory, HasShortflakePrimary, Metable, Notifiable, SortableTrait, InteractsWithMedia;
 
     protected $table = 'speakers';
 
