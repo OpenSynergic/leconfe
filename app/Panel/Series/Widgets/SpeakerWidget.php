@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Panel\Conference\Widgets;
+namespace App\Panel\Series\Widgets;
 
 use App\Models\Speaker;
 use App\Models\SpeakerRole;
@@ -8,7 +8,7 @@ use Filament\Widgets\Widget;
 
 class SpeakerWidget extends Widget
 {
-    protected static string $view = 'panel.conference.widgets.speaker-widget';
+    protected static string $view = 'panel.series.widgets.speaker-widget';
 
     protected static ?int $sort = 2;
 
