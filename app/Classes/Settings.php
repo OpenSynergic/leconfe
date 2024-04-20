@@ -11,18 +11,18 @@ class Settings
 
     public function set($key, $value)
     {
-        return Setting::updateOrCreate(['type' => gettype($value), 'key' => $key], ['value' => $value]);
+        return Setting::updateOrCreate(['type' => gettype($value), 'key' => 'settings.' . $key], ['value' => $value]);
     }
 
     public function get($key)
     {
-        if (app()->getCurrentConferenceId()) {
+        if (Setting::where('key', 'settings.' . $key)->first()) {
             return [
-                $key => Setting::where('key', $key)->latest()->pluck('value')->first()
+                $key => Setting::where('key', 'settings.' . $key)->latest()->pluck('value')->first()
             ];
         }
         return [
-            $key => Setting::withoutGlobalScope(ConferenceScope::class)->where('key', $key)->latest()->pluck('value')->get()
+            $key => Setting::withoutGlobalScope(ConferenceScope::class)->where('key', 'settings.' . $key)->latest()->pluck('value')->first()
         ];
     }
 
