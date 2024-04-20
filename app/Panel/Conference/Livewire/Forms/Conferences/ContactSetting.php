@@ -6,6 +6,7 @@ use App\Actions\Conferences\ConferenceUpdateAction;
 use App\Models\Conference;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -13,6 +14,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
+use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class ContactSetting extends Component implements HasForms
 {
@@ -43,47 +45,15 @@ class ContactSetting extends Component implements HasForms
                     ->schema([
                         Section::make('')
                             ->schema([
-                                TextInput::make('meta.email')
-                                    ->email()
-                                    ->placeholder('example@gmail.com')
-                                    ->required()
-                                    ->helperText(__('Primary contact email for the contact information')),
-                                TextInput::make('meta.address')
-                                    ->helperText(__('The physical location associated with the your company or organization')),
+                                TinyEditor::make('meta.contact_info')
+                                    ->label('Contact Information')
+                                    ->minHeight(300)
+                                    ->placeholder(__('Please provide your contact information here. Feel free to format it as you prefer.'))
+                                    ->columnSpan([
+                                        'sm' => 2,
+                                    ])
+                                    ->required(),
                             ])
-                            ->columns([
-                                'sm' => 1,
-                                'xl' => 2,
-                            ]),
-                        Section::make('')
-                            ->schema([
-                                TextInput::make('meta.phone')
-                                    ->rules([Rule::phone()->international()])
-                                    ->placeholder('International format, e.g. +6281234567890')
-                                    ->helperText(__('International phone number along with the country code')),
-                                TextInput::make('meta.bussines_hour')
-                                    ->label(__('Bussines Hour'))
-                                    ->placeholder(__('Mon-Fri from 8am to 5pm')),
-                            ])
-                            ->columns([
-                                'sm' => 1,
-                                'xl' => 2,
-                            ]),
-                        Section::make('')
-                            ->schema([
-                                TextInput::make('meta.whatsapp')
-                                    ->rules([Rule::phone()->international()])
-                                    ->placeholder('International format, e.g. +6281234567890')
-                                    ->helperText(__('Automaticly generate a clickable link to your whatsapp')),
-                                TextInput::make('meta.label_chat')
-                                    ->label(__('Chat label'))
-                                    ->placeholder('Start new chat')
-                                    ->helperText(__('This will be the clickable title of the link.')),
-                            ])
-                            ->columns([
-                                'sm' => 1,
-                                'xl' => 2,
-                            ]),
                     ]),
                 Actions::make([
                     Action::make('save')
