@@ -2,7 +2,6 @@
 
 namespace App\Classes;
 
-use App\Models\Scopes\ConferenceScope;
 use App\Models\Setting;
 
 class Settings
@@ -11,27 +10,25 @@ class Settings
 
     public function set($key, $value)
     {
-        return Setting::updateOrCreate(['type' => gettype($value), 'key' => 'settings.' . $key], ['value' => $value]);
+        return Setting::updateOrCreate(['type' => gettype($value), 'key' => $key], ['value' => $value]);
     }
 
     public function get($key)
     {
-        if (Setting::where('key', 'settings.' . $key)->first()) {
-            return [
-                $key => Setting::where('key', 'settings.' . $key)->latest()->pluck('value')->first()
-            ];
+        if ($setting = Setting::where('conference_id', app()->getCurrentConferenceId())->where('key', $key)->first()) {
+            return $setting?->value;
         }
-        return [
-            $key => Setting::withoutGlobalScope(ConferenceScope::class)->where('key', 'settings.' . $key)->latest()->pluck('value')->first()
-        ];
+        $settingGlobal = Setting::where('conference_id', 0)->where('key', $key)->first();
+        return $settingGlobal?->value;
     }
 
     public function all()
     {
-        if (app()->getCurrentConferenceId()) {
+        if (app()->getCurrentConferenceId() != 0) {
+            $meta = Setting::pluck('value', 'key');
+        } else {
             $meta = Setting::pluck('value', 'key');
         }
-        $meta = Setting::withoutGlobalScope(ConferenceScope::class)->pluck('value', 'key');
 
         if (isset($meta)) {
             $modifiedMeta = $meta->map(function ($value, $key) {

@@ -3,6 +3,7 @@
 namespace App\Panel\Administration\Livewire;
 
 use App\Actions\Site\SiteUpdateAction;
+use App\Facades\Settings;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Section;
@@ -25,7 +26,7 @@ class InformationSetting extends Component implements HasForms
     public function mount()
     {
         $this->form->fill([
-            'meta' => app()->getSite()->getAllMeta()->toArray(),
+            'settings' => Settings::all(),
         ]);
     }
 
@@ -40,7 +41,7 @@ class InformationSetting extends Component implements HasForms
             ->schema([
                 Section::make()
                     ->schema([
-                        TextInput::make('meta.name')
+                        TextInput::make('settings.name')
                             ->label('Website Name')
                             ->required(),
                         SpatieMediaLibraryFileUpload::make('logo')
@@ -52,20 +53,20 @@ class InformationSetting extends Component implements HasForms
                             ->columnSpan([
                                 'sm' => 2,
                             ]),
-                        Textarea::make('meta.description')
+                        Textarea::make('settings.description')
                             ->rows(3)
                             ->autosize()
                             ->columnSpanFull(),
-                        TinyEditor::make('meta.about')
+                        TinyEditor::make('settings.about')
                             ->label('About Site')
                             ->minHeight(300)
-                            ->dehydrateStateUsing(fn(string $state) => Purify::clean($state))
+                            ->dehydrateStateUsing(fn (string $state) => Purify::clean($state))
                             ->columnSpan([
                                 'sm' => 2,
                             ]),
-                        TinyEditor::make('meta.page_footer')
+                        TinyEditor::make('settings.page_footer')
                             ->minHeight(300)
-                            ->dehydrateStateUsing(fn(string $state) => Purify::clean($state))
+                            ->dehydrateStateUsing(fn (string $state) => Purify::clean($state))
                             ->columnSpan([
                                 'sm' => 2,
                             ]),

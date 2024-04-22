@@ -24,7 +24,7 @@ class SiteUpdateAction
 
             if ($settings = data_get($data, 'settings')) {
                 foreach ($settings as $key => $value) {
-                    Settings::set($key, $value);
+                    Settings::set('settings.' . $key, $value);
                 }
             }
 

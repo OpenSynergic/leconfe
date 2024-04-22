@@ -127,7 +127,6 @@ class Application extends LaravelApplication
             PaymentItem::class,
             Serie::class,
             Proceeding::class,
-            Setting::class,
         ];
 
         foreach ($models as $model) {

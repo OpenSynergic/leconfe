@@ -24,11 +24,32 @@ class Setting extends Model
             $this->attributes['value'] = $value ? 1 : 0;
             return;
         }
+        if (is_array($value)) {
+            $this->attributes['value'] = json_encode($value);
+            return;
+        }
         $this->attributes['value'] = $value;
     }
 
     public function getValueAttribute($value)
     {
-        return (bool) $value;
+        switch ($this->type) {
+            case 'integer':
+                return (int)$value;
+            case 'string':
+                return (string)$value;
+            case 'boolean':
+                return (bool)$value;
+            case 'float':
+                return (float)$value;
+            case 'array':
+                return json_decode($value, true);
+            case 'object':
+                return json_decode($value);
+            case 'date':
+                return $value instanceof \DateTimeInterface ? $value : new \DateTimeImmutable($value);
+            default:
+                return $value;
+        }
     }
 }
