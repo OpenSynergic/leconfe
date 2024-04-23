@@ -24,18 +24,13 @@ class Settings
 
     public function all()
     {
-        if (app()->getCurrentConferenceId() != 0) {
-            $conferenceSetting = Setting::where('conference_id', app()->getCurrentConferenceId())->pluck('value', 'key');
-            $globalSetting = Setting::where('conference_id', 0)->pluck('value', 'key');
-            $conferenceSetting = $globalSetting->merge($conferenceSetting);
-        } else {
-            $conferenceSetting = Setting::where('conference_id', 0)->pluck('value', 'key');
-        }
+        $conferenceSetting = Setting::where('conference_id', app()->getCurrentConferenceId())->pluck('value', 'key');
+        $globalSetting = Setting::where('conference_id', 0)->pluck('value', 'key');
+        $setting = $globalSetting->merge($conferenceSetting);
 
-        foreach ($conferenceSetting->keys() as $key) {
-            $this->metaKeys[$key] = $conferenceSetting->get($key);
+        foreach ($setting->keys() as $key) {
+            $this->metaKeys[$key] = $setting->get($key);
         }
-
         return $this->metaKeys;
     }
 }
