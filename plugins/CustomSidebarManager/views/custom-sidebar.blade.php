@@ -1,4 +1,4 @@
-<x-website::block :id="$id">
+<x-website::sidebar :id="$id">
     @if ($showName)
         <h2 class="text-heading px-2 mb-1">{{ $name }}</h2>
     @endif
@@ -9,4 +9,4 @@
             </div>
         </div>
     </div>
-</x-website::block>
+</x-website::sidebar>

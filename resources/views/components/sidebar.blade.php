@@ -6,10 +6,10 @@
 <div  
     {{ 
         $attributes->class([
-            'block',
+            'sidebar',
             $class,    
         ])->merge([
-            'id' => 'block_' . $id,
+            'id' => 'sidebar_' . $id,
         ])
     }}
     >
