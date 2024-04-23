@@ -27,7 +27,6 @@ class Settings
         $conferenceSetting = Setting::where('conference_id', app()->getCurrentConferenceId())->pluck('value', 'key');
         $globalSetting = Setting::where('conference_id', 0)->pluck('value', 'key');
         $setting = $globalSetting->merge($conferenceSetting);
-
         foreach ($setting->keys() as $key) {
             $this->settingKeys[$key] = $setting->get($key);
         }
