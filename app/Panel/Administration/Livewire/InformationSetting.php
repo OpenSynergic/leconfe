@@ -25,9 +25,7 @@ class InformationSetting extends Component implements HasForms
 
     public function mount()
     {
-        $this->form->fill([
-            'settings' => Settings::all(),
-        ]);
+        $this->form->fill(setting()->all());
     }
 
     public function render()
@@ -53,18 +51,18 @@ class InformationSetting extends Component implements HasForms
                             ->columnSpan([
                                 'sm' => 2,
                             ]),
-                        Textarea::make('settings.description')
+                        Textarea::make('meta.description')
                             ->rows(3)
                             ->autosize()
                             ->columnSpanFull(),
-                        TinyEditor::make('settings.about')
+                        TinyEditor::make('meta.about')
                             ->label('About Site')
                             ->minHeight(300)
                             ->dehydrateStateUsing(fn (string $state) => Purify::clean($state))
                             ->columnSpan([
                                 'sm' => 2,
                             ]),
-                        TinyEditor::make('settings.page_footer')
+                        TinyEditor::make('meta.page_footer')
                             ->minHeight(300)
                             ->dehydrateStateUsing(fn (string $state) => Purify::clean($state))
                             ->columnSpan([
