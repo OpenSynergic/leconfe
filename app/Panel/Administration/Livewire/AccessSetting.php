@@ -2,6 +2,7 @@
 
 namespace App\Panel\Administration\Livewire;
 
+use App\Actions\Settings\SettingUpdateAction;
 use Livewire\Component;
 use Filament\Forms\Form;
 use App\Actions\Site\SiteUpdateAction;
@@ -22,8 +23,7 @@ class AccessSetting extends Component implements HasForms
     public function mount()
     {
         $this->form->fill([
-            'settings' =>
-            Settings::all()
+            'settings' => Settings::all()
         ]);
     }
 
@@ -54,7 +54,7 @@ class AccessSetting extends Component implements HasForms
                         ->action(function (Action $action) {
                             $formData = $this->form->getState();
                             try {
-                                SiteUpdateAction::run($formData);
+                                SettingUpdateAction::run($formData);
                                 $action->sendSuccessNotification();
                             } catch (\Throwable $th) {
                                 $action->failure();

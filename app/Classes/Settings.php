@@ -10,7 +10,7 @@ class Settings
 
     public function set($key, $value)
     {
-        return Setting::updateOrCreate(['type' => gettype($value), 'key' => $key], ['value' => $value]);
+        return Setting::updateOrCreate(['conference_id' => app()->getCurrentConferenceId(), 'type' => gettype($value), 'key' => $key], ['value' => $value]);
     }
 
     public function get($key)
@@ -25,25 +25,17 @@ class Settings
     public function all()
     {
         if (app()->getCurrentConferenceId() != 0) {
-            $meta = Setting::pluck('value', 'key');
+            $conferenceSetting = Setting::where('conference_id', app()->getCurrentConferenceId())->pluck('value', 'key');
+            $globalSetting = Setting::where('conference_id', 0)->pluck('value', 'key');
+            $conferenceSetting = $globalSetting->merge($conferenceSetting);
         } else {
-            $meta = Setting::pluck('value', 'key');
+            $conferenceSetting = Setting::where('conference_id', 0)->pluck('value', 'key');
         }
 
-        if (isset($meta)) {
-            $modifiedMeta = $meta->map(function ($value, $key) {
-                if (strpos($key, 'settings.') === 0) {
-                    $newKey = substr($key, strlen('settings.'));
-                    return [$newKey => $value];
-                }
-                return [$key => $value];
-            })->collapse();
-
-            foreach ($modifiedMeta->keys() as $key) {
-                $this->metaKeys[$key] = $modifiedMeta->get($key);
-            }
-
-            return $this->metaKeys;
+        foreach ($conferenceSetting->keys() as $key) {
+            $this->metaKeys[$key] = $conferenceSetting->get($key);
         }
+
+        return $this->metaKeys;
     }
 }
