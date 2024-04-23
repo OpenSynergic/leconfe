@@ -6,7 +6,7 @@ use App\Models\Setting;
 
 class Settings
 {
-    protected $metaKeys = [];
+    protected $settingKeys = [];
 
     public function set($key, $value)
     {
@@ -29,8 +29,8 @@ class Settings
         $setting = $globalSetting->merge($conferenceSetting);
 
         foreach ($setting->keys() as $key) {
-            $this->metaKeys[$key] = $setting->get($key);
+            $this->settingKeys[$key] = $setting->get($key);
         }
-        return $this->metaKeys;
+        return $this->settingKeys;
     }
 }

@@ -22,9 +22,7 @@ class AccessSetting extends Component implements HasForms
 
     public function mount()
     {
-        $this->form->fill([
-            'settings' => Settings::all()
-        ]);
+        $this->form->fill(setting()->all());
     }
 
     public function render()

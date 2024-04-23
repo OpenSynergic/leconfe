@@ -7,8 +7,4 @@ use Filament\Pages\Dashboard as PagesDashboard;
 
 class Dashboard extends PagesDashboard
 {
-    public function mount()
-    {
-        return dd(Settings::all());
-    }
 }
