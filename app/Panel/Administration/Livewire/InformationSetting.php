@@ -25,7 +25,9 @@ class InformationSetting extends Component implements HasForms
 
     public function mount()
     {
-        $this->form->fill(setting()->all());
+        $this->form->fill([
+            'meta' => app()->getSite()->getAllMeta()->toArray(),
+        ]);
     }
 
     public function render()
@@ -39,7 +41,7 @@ class InformationSetting extends Component implements HasForms
             ->schema([
                 Section::make()
                     ->schema([
-                        TextInput::make('settings.name')
+                        TextInput::make('meta.name')
                             ->label('Website Name')
                             ->required(),
                         SpatieMediaLibraryFileUpload::make('logo')
