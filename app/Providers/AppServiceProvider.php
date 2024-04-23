@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Application;
-use App\Classes\CustomBlock;
 use App\Facades\SidebarFacade;
 use App\Models\Serie;
 use Livewire\Livewire;

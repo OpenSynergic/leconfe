@@ -2,7 +2,6 @@
 
 namespace App\Frontend\Website\Pages;
 
-use App\Classes\CustomBlock;
 use App\Facades\Block as BlockFacade;
 use App\Facades\SidebarFacade;
 use App\Models\Conference;
