@@ -1,6 +1,6 @@
 <x-website::block :id="$id">
-    @if($showName)
-    <h2 class="text-heading px-2 mb-1">{{ $name }}</h2>
+    @if ($showName)
+        <h2 class="text-heading px-2 mb-1">{{ $name }}</h2>
     @endif
     <div class="card card-compact bg-white border">
         <div class="card-body">
