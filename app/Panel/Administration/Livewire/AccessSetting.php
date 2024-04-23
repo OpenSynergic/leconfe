@@ -36,10 +36,10 @@ class AccessSetting extends Component implements HasForms
             ->schema([
                 Section::make()
                     ->schema([
-                        Checkbox::make('settings.allow_registration')
+                        Checkbox::make('meta.allow_registration')
                             ->label('Allow Registration')
                             ->helperText('Allow public to register on the site.'),
-                        Checkbox::make('settings.must_verify_email')
+                        Checkbox::make('meta.must_verify_email')
                             ->label('Must Verify Email')
                             ->helperText('Require users to verify their email address before they can log in.'),
                     ])
