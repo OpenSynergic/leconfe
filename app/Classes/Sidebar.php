@@ -24,11 +24,6 @@ abstract class Sidebar implements Htmlable
         return null;
     }
 
-    public function getDatabaseName(): string
-    {
-        return Str::of($this->getName())->lower()->snake();
-    }
-
     public function toHtml()
     {
         return $this->render()->render();
