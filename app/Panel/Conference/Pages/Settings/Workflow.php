@@ -60,20 +60,6 @@ class Workflow extends Page implements HasForms, HasInfolists
             Tabs::make()
                 ->persistTabInQueryString()
                 ->tabs([
-                    Tab::make('General')
-                        ->icon('heroicon-o-bookmark-square')
-                        ->schema([
-                            HorizontalTabs::make()
-                                ->tabs([
-                                    HorizontalTab::make('Author Roles')
-                                        ->icon('heroicon-o-users')
-                                        ->extraAttributes(['class' => '!p-0'])
-                                        ->schema([
-                                            LivewireEntry::make('author-roles')
-                                                ->livewire(AuthorRoleTable::class),
-                                        ]),
-                                ]),
-                        ]),
                     Tab::make('Call for Abstract')
                         ->icon('iconpark-documentfolder-o')
                         ->schema([
@@ -144,6 +130,20 @@ class Workflow extends Page implements HasForms, HasInfolists
                                             LivewireEntry::make('editing-setting')
                                                 ->livewire(EditingSetting::class)
                                                 ->lazy(),
+                                        ]),
+                                ]),
+                        ]),
+                    Tab::make('Advanced')
+                        ->icon('heroicon-o-bookmark-square')
+                        ->schema([
+                            HorizontalTabs::make()
+                                ->tabs([
+                                    HorizontalTab::make('Author Roles')
+                                        ->icon('heroicon-o-users')
+                                        ->extraAttributes(['class' => '!p-0'])
+                                        ->schema([
+                                            LivewireEntry::make('author-roles')
+                                                ->livewire(AuthorRoleTable::class),
                                         ]),
                                 ]),
                         ]),
