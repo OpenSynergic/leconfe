@@ -10,7 +10,7 @@
                 </p>
             </div>
         @else
-            <div class="space-y-4" x-data="sidebarsManager({{ Js::from($sidebars) }})">
+            <div class="space-y-4" x-data="sidebarsManager({{ Js::from($sidebars) }})" wire:ignore>
                 <div class="sidebar-items text-sm flex flex-col gap-2" x-ref="sortable">
                     <template x-for="sidebar in items" :key="sidebar.id">
                         <div class="sidebar-item" data-sortable-item :data-id="sidebar.id">
