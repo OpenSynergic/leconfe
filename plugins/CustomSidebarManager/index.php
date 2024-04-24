@@ -25,6 +25,13 @@ return new class extends Plugin
         ]);
     }
 
+    public function onAdministrationPanel(Panel $panel): void
+    {
+        $panel->pages([
+            CustomSidebarManagerPage::class,
+        ]);
+    }
+
     public function getPluginPage(): ?string
     {
         try {
