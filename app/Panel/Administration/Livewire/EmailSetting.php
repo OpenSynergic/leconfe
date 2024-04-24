@@ -4,6 +4,7 @@ namespace App\Panel\Administration\Livewire;
 
 use App\Actions\MailTemplates\MailTemplateRestoreDefaultData;
 use App\Actions\Settings\SettingUpdateAction;
+use App\Facades\Settings;
 use App\Infolists\Components\BladeEntry;
 use App\Infolists\Components\VerticalTabs;
 use App\Mail\Templates\TestMail;
@@ -48,8 +49,8 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
 
     public function mount()
     {
-        $this->mailSetupForm->fill(setting()->all());
-        $this->layoutTemplateForm->fill(setting()->all());
+        $this->mailSetupForm->fill(Settings::all());
+        $this->layoutTemplateForm->fill(Settings::all());
     }
 
     public function render()
@@ -206,7 +207,6 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
                                 $action->sendSuccessNotification();
                             } catch (\Throwable $th) {
                                 $action->failure();
-                                // $action->sendFailureNotification();
                             }
                         }),
                     Action::make('testEmail')

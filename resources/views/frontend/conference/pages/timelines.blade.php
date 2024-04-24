@@ -17,7 +17,7 @@
                                 <p class="text-sm font-semibold">{{ $timeline->title }}</p>
                             </div>
                             <p class="text-sm text-gray-500 ps-4">
-                                {{ date(setting('format.date'), strtotime($timeline->date)) }}
+                                {{ date(Settings::get('date'), strtotime($timeline->date)) }}
                             </p>
                             <time class="text-xs ps-4 text-gray-500">{{ $timeline->subtitle }}</time>
 

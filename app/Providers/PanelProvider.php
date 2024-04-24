@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Facades\Plugin;
+use App\Facades\Settings;
 use App\Http\Middleware\IdentifyConference;
 use App\Http\Middleware\IdentifySeries;
 use App\Http\Middleware\MustVerifyEmail;
@@ -233,11 +234,11 @@ class PanelProvider extends ServiceProvider
         DatePicker::configureUsing(function (DatePicker $datePicker): void {
             $datePicker
                 ->native(false)
-                ->displayFormat(setting('format.date'));
+                ->displayFormat(Settings::get('date'));
         });
 
         TimePicker::configureUsing(function (TimePicker $timePicker): void {
-            $timePicker->displayFormat(setting('format.time'));
+            $timePicker->displayFormat(Settings::get('time'));
         });
 
         Table::configureUsing(function (Table $table): void {

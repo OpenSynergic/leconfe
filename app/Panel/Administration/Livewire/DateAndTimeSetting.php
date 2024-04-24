@@ -7,7 +7,7 @@ use Livewire\Component;
 use Filament\Forms\Form;
 use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Radio;
-use App\Actions\Site\SiteUpdateAction;
+use App\Facades\Settings;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Contracts\HasForms;
@@ -22,7 +22,7 @@ class DateAndTimeSetting extends Component implements HasForms
 
     public function mount()
     {
-        $this->form->fill(setting()->all());
+        $this->form->fill(Settings::all());
     }
 
     public function render()
@@ -43,14 +43,14 @@ class DateAndTimeSetting extends Component implements HasForms
                                         class="filament-link inline-flex items-center justify-center gap-0.5 font-medium outline-none hover:underline focus:underline text-sm text-primary-600 hover:text-primary-500 filament-tables-link-action">format characters</a>.
                                     HTML))
                     ->schema([
-                        Radio::make('meta.date')
+                        Radio::make('date')
                             ->options(fn () => collect([
                                 'F j, Y',
                                 'F j Y',
                                 'j F Y',
                                 'Y F j',
                             ])->mapWithKeys(fn ($format) => [$format => $now->format($format)])),
-                        Radio::make('meta.time')
+                        Radio::make('time')
                             ->options(fn () => collect([
                                 'h:i A',
                                 'g:ia',

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Facades\Settings;
 use App\Models\Concerns\BelongsToConference;
 use App\Models\Meta\UserContentMeta;
 use DateTimeInterface;
@@ -64,7 +65,7 @@ class UserContent extends Model implements HasMedia
      */
     protected function serializeDate(DateTimeInterface $date): string
     {
-        return $date->format(setting('format.date'));
+        return $date->format(Settings::get('date'));
     }
 
     public function user()

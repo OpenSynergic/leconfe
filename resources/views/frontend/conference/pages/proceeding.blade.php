@@ -19,7 +19,7 @@
                     </div>
                     <div class="text-sm flex items-center text-slate-700">
                         <x-lineawesome-calendar-check-solid class="w-4 h-4 mr-0.5" />
-                        {{ __('Date Published') . ': ' . $submission->published_at->format(setting('format.date')) }}
+                        {{ __('Date Published') . ': ' . $submission->published_at->format(Settings::get('date')) }}
                     </div>
                     @if (($files = $submission->getMedia(SubmissionFileCategory::EDITED_FILES)) && $files->count())
                         <div class="flex flex-wrap gap-1.5 text-sm mt-2">

@@ -3,6 +3,7 @@
 namespace App\Panel\Conference\Resources\SubmissionResource\Pages;
 
 use App\Constants\ReviewerStatus;
+use App\Facades\Settings;
 use App\Infolists\Components\LivewireEntry;
 use App\Mail\Templates\ReviewerAcceptedInvitationMail;
 use App\Mail\Templates\ReviewerDeclinedInvitationMail;
@@ -171,7 +172,7 @@ class ReviewerInvitationPage extends Page implements HasActions, HasInfolists
                                             ->getCurrentConference()
                                             ->getMeta(
                                                 'workflow.peer-review.start_at',
-                                                $this->review->date_assigned->addDays(1)->format(setting('format.date'))
+                                                $this->review->date_assigned->addDays(1)->format(Settings::get('date'))
                                             )
                                     ),
                                 TextEntry::make('Review End at')
@@ -180,7 +181,7 @@ class ReviewerInvitationPage extends Page implements HasActions, HasInfolists
                                             ->getCurrentConference()
                                             ->getMeta(
                                                 'workflow.peer-review.end_at',
-                                                $this->review->date_assigned->addDays(14)->format(setting('format.date'))
+                                                $this->review->date_assigned->addDays(14)->format(Settings::get('date'))
                                             )
                                     ),
                             ]),

@@ -22,7 +22,7 @@ class AccessSetting extends Component implements HasForms
 
     public function mount()
     {
-        $this->form->fill(setting()->all());
+        $this->form->fill(Settings::all());
     }
 
     public function render()
@@ -36,10 +36,10 @@ class AccessSetting extends Component implements HasForms
             ->schema([
                 Section::make()
                     ->schema([
-                        Checkbox::make('meta.allow_registration')
+                        Checkbox::make('allow_registration')
                             ->label('Allow Registration')
                             ->helperText('Allow public to register on the site.'),
-                        Checkbox::make('meta.must_verify_email')
+                        Checkbox::make('must_verify_email')
                             ->label('Must Verify Email')
                             ->helperText('Require users to verify their email address before they can log in.'),
                     ])

@@ -30,6 +30,6 @@ class Settings
         foreach ($setting->keys() as $key) {
             $this->settingKeys[$key] = $setting->get($key);
         }
-        return $this->settingKeys;
+        return transformSettings(castArrayValues($this->settingKeys));
     }
 }

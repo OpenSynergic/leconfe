@@ -41,3 +41,51 @@ if (!function_exists('get_navigation_link_by_type')) {
         };
     }
 }
+
+if (!function_exists('castArrayValues')) {
+    function castArrayValues(array $array)
+    {
+        $result = [];
+
+        foreach ($array as $key => $value) {
+            if (is_null($value)) {
+                $result[$key] = null;
+            } else if ($value == 1 || $value == 0) {
+                $result[$key] = (bool)$value;
+            } else if (is_string($value) && $json = json_decode($value, true)) {
+                $result[$key] = $json !== null ? $json : $value;
+            } else if (is_numeric($value)) {
+                $result[$key] = is_float($value) ? (float)$value : (int)$value;
+            } else {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
+    }
+}
+
+if (!function_exists('transformSettings')) {
+    function transformSettings($settings)
+    {
+        $formattedSettings = [];
+
+        foreach ($settings as $key => $value) {
+            $currentArray = &$formattedSettings;
+            $keys = explode(".", $key);
+
+            foreach ($keys as $index => $keyPart) {
+                if ($index === count($keys) - 1) {
+                    $currentArray[$keyPart] = $value;
+                } else {
+                    if (!isset($currentArray[$keyPart])) {
+                        $currentArray[$keyPart] = [];
+                    }
+                    $currentArray = &$currentArray[$keyPart];
+                }
+            }
+        }
+
+        return $formattedSettings;
+    }
+}

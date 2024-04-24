@@ -5,6 +5,7 @@ namespace App\Panel\Conference\Resources;
 use App\Actions\User\UserDeleteAction;
 use App\Actions\User\UserMailAction;
 use App\Actions\User\UserUpdateAction;
+use App\Facades\Settings;
 use App\Models\Enums\UserRole;
 use App\Models\User;
 use App\Panel\Conference\Resources\Conferences\ParticipantResource;
@@ -81,10 +82,10 @@ class UserResource extends Resource
                                 Forms\Components\TextInput::make('email')
                                     ->columnSpan(['lg' => 2])
                                     ->disabled(fn (?User $record) => $record)
-                                    ->dehydrated(fn (?User $record) => ! $record)
+                                    ->dehydrated(fn (?User $record) => !$record)
                                     ->unique(ignoreRecord: true),
                                 Forms\Components\TextInput::make('password')
-                                    ->required(fn (?User $record) => ! $record)
+                                    ->required(fn (?User $record) => !$record)
                                     ->password()
                                     ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                                     ->dehydrated(fn ($state) => filled($state))
@@ -118,7 +119,7 @@ class UserResource extends Resource
                                     ->content(function (?User $record): ?string {
                                         $ban = $record?->bans->first();
 
-                                        return $ban?->created_at?->format(setting('format.date')) ?? '-';
+                                        return $ban?->created_at?->format(Settings::get('date')) ?? '-';
                                     }),
                                 Forms\Components\Placeholder::make('disabled_until')
                                     ->visible(fn (?User $record) => $record?->isBanned())
@@ -126,7 +127,7 @@ class UserResource extends Resource
                                     ->content(function (?User $record): ?string {
                                         $ban = $record?->bans->first();
 
-                                        return $ban?->expired_at?->format(setting('format.date')) ?? '-';
+                                        return $ban?->expired_at?->format(Settings::get('date')) ?? '-';
                                     }),
 
                             ]),
@@ -166,7 +167,7 @@ class UserResource extends Resource
                                 ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
                                 ->join(' ');
 
-                            return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=FFFFFF&background=111827&font-size=0.33';
+                            return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=FFFFFF&background=111827&font-size=0.33';
                         })
                         ->extraCellAttributes([
                             'style' => 'width: 1px',
@@ -201,7 +202,7 @@ class UserResource extends Resource
                             ->getStateUsing(fn (User $record) => $record->getMeta('affiliation')),
                         TextColumn::make('disabled')
                             ->getStateUsing(function (User $record) {
-                                if (! $record->isBanned()) {
+                                if (!$record->isBanned()) {
                                     return null;
                                 }
 
@@ -211,7 +212,7 @@ class UserResource extends Resource
 
                                 $bannedUntil = $ban->expired_at;
 
-                                return 'Disabled'.($bannedUntil ? " until {$bannedUntil->format(setting('format.date'))}" : '');
+                                return 'Disabled' . ($bannedUntil ? " until {$bannedUntil->format(Settings::get('date'))}" : '');
                             })
                             ->color('danger')
                             ->badge(),
@@ -255,7 +256,7 @@ class UserResource extends Resource
                 ActionGroup::make([
                     Impersonate::make()
                         ->grouped()
-                        ->hidden(fn ($record) => ! auth()->user()->can('loginAs', $record))
+                        ->hidden(fn ($record) => !auth()->user()->can('loginAs', $record))
                         ->label(fn (User $record) => "Login as {$record->given_name}")
                         ->icon('heroicon-m-key')
                         ->color('primary')

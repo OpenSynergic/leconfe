@@ -7,7 +7,7 @@
         @else
             <div class="flex flex-col sm:flex-row justify-between gap-2 flex-wrap">
                 <div class="flex-1">
-                    <p class="text-sm text-gray-500">{{ $announcement->created_at?->format(setting('format.date')) }}</p>
+                    <p class="text-sm text-gray-500">{{ $announcement->created_at?->format(Settings::get('date')) }}</p>
                     <div class="prose max-w-none">
                         <h2 class="">
                             {{ $announcement->title }}</h2>

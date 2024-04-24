@@ -8,7 +8,7 @@
                             <div class="inline-flex items-center gap-2">
                                 <div class="upcoming-marker"></div>
                                 <time
-                                    class="text-xs">{{ date(setting('format.date'), strtotime($upcoming->date_start)) }}</time>
+                                    class="text-xs">{{ date(Settings::get('date'), strtotime($upcoming->date_start)) }}</time>
                             </div>
                         @endif
 
