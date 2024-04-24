@@ -5,6 +5,7 @@ namespace App\Panel\Conference\Pages\Settings;
 use App\Infolists\Components\LivewireEntry;
 use App\Infolists\Components\VerticalTabs\Tab;
 use App\Infolists\Components\VerticalTabs\Tabs;
+use App\Panel\Conference\Livewire\Tables\AuthorRoleTable;
 use App\Panel\Conference\Livewire\Workflows\AbstractSetting;
 use App\Panel\Conference\Livewire\Workflows\EditingSetting;
 use App\Panel\Conference\Livewire\Workflows\Payment\Tables\SubmissionPaymentItemTable;
@@ -35,7 +36,7 @@ class Workflow extends Page implements HasForms, HasInfolists
 
     public function mount()
     {
-        // dd(request()->route());
+        //
     }
 
     public function booted(): void
@@ -129,6 +130,20 @@ class Workflow extends Page implements HasForms, HasInfolists
                                             LivewireEntry::make('editing-setting')
                                                 ->livewire(EditingSetting::class)
                                                 ->lazy(),
+                                        ]),
+                                ]),
+                        ]),
+                    Tab::make('Advanced')
+                        ->icon('heroicon-o-bookmark-square')
+                        ->schema([
+                            HorizontalTabs::make()
+                                ->tabs([
+                                    HorizontalTab::make('Author Roles')
+                                        ->icon('heroicon-o-users')
+                                        ->extraAttributes(['class' => '!p-0'])
+                                        ->schema([
+                                            LivewireEntry::make('author-roles')
+                                                ->livewire(AuthorRoleTable::class),
                                         ]),
                                 ]),
                         ]),

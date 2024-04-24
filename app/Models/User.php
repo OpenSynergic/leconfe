@@ -7,9 +7,7 @@ use App\Models\Enums\UserRole;
 use App\Models\Meta\UserMeta;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
-use Filament\Models\Contracts\HasDefaultTenant;
 use Filament\Models\Contracts\HasName;
-use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -18,7 +16,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Kra8\Snowflake\HasShortflakePrimary;
@@ -219,9 +216,9 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia,
         return !is_null($this->email_verified_at);
     }
 
-    public function asParticipant()
+    public function asAuthor()
     {
-        return Participant::email($this->email)->first();
+        return Author::email($this->email)->first();
     }
 
     /**
