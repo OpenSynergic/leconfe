@@ -15,7 +15,7 @@ use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
 class SpeakerRole extends Model implements Sortable
 {
-    use BelongsToSerie, HasFactory, HasRecursiveRelationships, HasSlug, SortableTrait;
+    use BelongsToSerie, HasFactory, HasRecursiveRelationships, SortableTrait;
 
     protected $table = 'speaker_roles';
 
@@ -24,13 +24,6 @@ class SpeakerRole extends Model implements Sortable
         'parent_id',
         'name',
     ];
-
-    public function getSlugOptions(): SlugOptions
-    {
-        return SlugOptions::create()
-            ->generateSlugsFrom('name')
-            ->saveSlugsTo('slug');
-    }
 
     public function speakers(): HasMany
     {

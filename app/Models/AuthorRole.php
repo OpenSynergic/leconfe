@@ -15,7 +15,7 @@ use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
 class AuthorRole extends Model implements Sortable
 {
-    use BelongsToConference, HasFactory, HasRecursiveRelationships, HasSlug, SortableTrait;
+    use BelongsToConference, HasFactory, HasRecursiveRelationships, SortableTrait;
 
     protected $table = 'author_roles';
 
@@ -24,13 +24,6 @@ class AuthorRole extends Model implements Sortable
         'parent_id',
         'name',
     ];
-
-    public function getSlugOptions(): SlugOptions
-    {
-        return SlugOptions::create()
-            ->generateSlugsFrom('name')
-            ->saveSlugsTo('slug');
-    }
 
     public function authors(): HasMany
     {

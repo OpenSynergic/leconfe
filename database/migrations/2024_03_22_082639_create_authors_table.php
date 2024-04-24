@@ -19,7 +19,6 @@ return new class extends Migration
             $table->foreignIdFor(Conference::class)->constrained();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->string('name');
-            $table->string('slug')->unique();
             $table->unsignedInteger('order_column')->nullable();
             $table->timestamps();
         });
