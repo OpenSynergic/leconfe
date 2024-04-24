@@ -1,7 +1,7 @@
 <?php
 
 use App\Classes\Plugin;
-use App\Facades\Block;
+use App\Facades\SidebarFacade;
 use CustomSidebarManager\CustomSidebarBlock;
 use CustomSidebarManager\Pages\CustomSidebarManagerPage;
 use Filament\Panel;
@@ -12,10 +12,10 @@ return new class extends Plugin
 {
     public function boot()
     {
-        $customBlocks = collect($this->getSetting('blocks', []))
-            ->map(fn ($block) => new CustomSidebarBlock($block['name'], $block['content'], $block['show_name'] ?? false));
-
-        Block::registerBlocks($customBlocks->toArray());
+        $customBlocks = collect($this->getSetting('custom_sidebars', []))
+            ->map(fn ($sidebar) => new CustomSidebarBlock($sidebar['id'], $sidebar['name'], $sidebar['content'], $sidebar['show_name'] ?? false));
+    
+        SidebarFacade::register($customBlocks->toArray());
     }
 
     public function onConferencePanel(Panel $panel): void
@@ -27,8 +27,11 @@ return new class extends Plugin
 
     public function getPluginPage(): ?string
     {
-        $path = app()->getCurrentConference()->path;
+        try {
+            return CustomSidebarManagerPage::getUrl();
+        } catch (\Throwable $th) {
+            return null;
+        }
 
-        return url("panel/{$path}/custom-sidebar-manager-page");
     }
 };

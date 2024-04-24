@@ -3,12 +3,14 @@
 namespace App\Providers;
 
 use App\Application;
+use App\Facades\SidebarFacade;
 use App\Models\Serie;
 use Livewire\Livewire;
 use App\Models\Conference;
 use Illuminate\Support\Str;
 use App\Managers\BlockManager;
 use App\Managers\MetaTagManager;
+use App\Managers\SidebarManager;
 use Illuminate\Support\Facades\DB;
 use App\Routing\CustomUrlGenerator;
 use Illuminate\Support\Facades\App;
@@ -27,8 +29,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->scoped('block', function () {
-            return new BlockManager;
+        $this->app->scoped(SidebarManager::class, function () {
+            return new SidebarManager;
         });
 
         $this->app->scoped('metatag', function () {
@@ -153,6 +155,7 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole() || !$this->app->isInstalled()) {
             return;
         }
+        $this->app->scopeCurrentConference();
 
         $pathInfos = explode('/', request()->getPathInfo());
         // Detect conference from URL path
@@ -173,7 +176,6 @@ class AppServiceProvider extends ServiceProvider
         // Scope livewire update path to current conference
         $currentConference = $this->app->getCurrentConference();
         if ($currentConference) {
-            $this->app->scopeCurrentConference();
             // Scope livewire update path to current serie
             $currentSerie = $this->app->getCurrentSerie();
             if ($currentSerie) {
