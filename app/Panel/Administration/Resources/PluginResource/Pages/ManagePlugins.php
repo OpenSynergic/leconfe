@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Panel\Conference\Resources\PluginResource\Pages;
+namespace App\Panel\Administration\Resources\PluginResource\Pages;
 
 use App\Facades\Plugin;
 use App\Models\Plugin as ModelsPlugin;
-use App\Panel\Conference\Resources\PluginResource;
+use App\Panel\Administration\Resources\PluginResource;
 use Filament\Actions;
 use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
