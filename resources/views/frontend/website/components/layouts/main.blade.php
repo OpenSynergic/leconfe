@@ -1,14 +1,18 @@
 @props([
-    'sidebar' => true,
+    'sidebars' => \App\Facades\SidebarFacade::get(),
+    'sidebar' => null,
 ])
+
+@php
+    $sidebar ??= count($sidebars) > 0;
+@endphp
 
 <div @class(['page-main'])>
     <div @class(['page-content', 'lg:col-span-9' => $sidebar, 'lg:col-span-full' => !$sidebar])>
         {{ $slot }}
     </div>
 
-    {{-- TODO : change this implementation to check if there's sidebar enabled --}}
     @if ($sidebar)
-        <x-website::layouts.rightbar />
+        <x-website::layouts.sidebar :sidebars="$sidebars"/>
     @endif
 </div>

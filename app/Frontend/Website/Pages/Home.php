@@ -2,6 +2,8 @@
 
 namespace App\Frontend\Website\Pages;
 
+use App\Facades\Block as BlockFacade;
+use App\Facades\SidebarFacade;
 use App\Models\Conference;
 use App\Models\Sponsor;
 use App\Models\Topic;
@@ -16,6 +18,7 @@ class Home extends Page
     use WithPagination, WithoutUrlPagination;
 
     protected static string $view = 'frontend.website.pages.home';
+
 
     protected function getViewData(): array
     {
