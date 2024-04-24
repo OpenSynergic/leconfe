@@ -51,6 +51,7 @@ enum UserRole: string implements HasLabel
             static::Reviewer,
             static::Author,
             static::Reader,
+            static::Presenter,
         ];
     }
 }
