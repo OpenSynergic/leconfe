@@ -17,7 +17,7 @@ class SettingUpdateAction
         try {
             DB::beginTransaction();
             $setting = Setting::query()->first();
-            foreach ($data as $key => $value) {
+            foreach (Arr::dot($data) as $key => $value) {
                 Settings::set($key, $value);
             }
             $setting->touch();
