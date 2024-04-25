@@ -12,11 +12,6 @@ class CreateUser extends CreateRecord
 {
     protected static string $resource = UserResource::class;
 
-    public function afterCreate(): void
-    {
-        CreateParticipantFromUserAction::run($this->getRecord());
-    }
-
     /**
      * @param  array<string, mixed>  $data
      */

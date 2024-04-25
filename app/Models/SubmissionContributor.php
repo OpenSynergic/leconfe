@@ -15,18 +15,13 @@ class SubmissionContributor extends Model implements Sortable
 
     protected $fillable = [
         'submission_id',
-        'participant_id',
-        'participant_position_id',
+        'contributor_id',
+        'contributor_type',
     ];
 
-    public function participant()
+    public function contributor()
     {
-        return $this->belongsTo(Participant::class);
-    }
-
-    public function position()
-    {
-        return $this->belongsTo(ParticipantPosition::class, 'participant_position_id');
+        return $this->morphTo();
     }
 
     public function submission()

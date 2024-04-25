@@ -38,7 +38,7 @@ class CustomSidebarManagerPage extends Page implements HasForms, HasTable
     public function getBreadcrumbs(): array
     {
         return [
-            route('filament.conference.resources.plugins.index', ['tenant' => App::getCurrentConference()]) => 'Plugins',
+            CustomSidebarManagerPage::getUrl()  => 'Plugins',
         ];
     }
 
@@ -68,15 +68,15 @@ class CustomSidebarManagerPage extends Page implements HasForms, HasTable
                         $record->show_name = $data['show_name'] ?? false;
 
                         $plugin = Plugin::getPlugin('CustomSidebarManager');
-                        $blocks = $plugin->getSetting('blocks', []);
+                        $customSidebars = $plugin->getSetting('custom_sidebars', []);
 
-                        foreach ($blocks as $key => $block) {
-                            if ($block['id'] == $record->id) {
-                                $blocks[$key] = $record->toArray();
+                        foreach ($customSidebars as $key => $sidebar) {
+                            if ($sidebar['id'] == $record->id) {
+                                $customSidebars[$key] = $record->toArray();
                             }
                         }
 
-                        $plugin->updateSetting('blocks', $blocks);
+                        $plugin->updateSetting('custom_sidebars', $customSidebars);
                     }),
                 TableAction::make('delete')
                     ->label('Delete')
@@ -84,14 +84,14 @@ class CustomSidebarManagerPage extends Page implements HasForms, HasTable
                     ->requiresConfirmation()
                     ->action(function ($record) {
                         $plugin = Plugin::getPlugin('CustomSidebarManager');
-                        $blocks = $plugin->getSetting('blocks', []);
+                        $customSidebars = $plugin->getSetting('custom_sidebars', []);
 
-                        foreach ($blocks as $key => $block) {
-                            if ($block['id'] == $record->id) {
-                                unset($blocks[$key]);
+                        foreach ($customSidebars as $key => $sidebar) {
+                            if ($sidebar['id'] == $record->id) {
+                                unset($customSidebars[$key]);
                             }
                         }
-                        $plugin->updateSetting('blocks', array_values($blocks));
+                        $plugin->updateSetting('custom_sidebars', array_values($customSidebars));
                     }),
             ])
             ->bulkActions([
@@ -108,10 +108,10 @@ class CustomSidebarManagerPage extends Page implements HasForms, HasTable
                     $data['id'] = app(Snowflake::class)->short();
 
                     $plugin = Plugin::getPlugin('CustomSidebarManager');
-                    $blocks = $plugin->getSetting('blocks', []);
-                    $blocks[] = $data;
+                    $customSidebars = $plugin->getSetting('custom_sidebars', []);
+                    $customSidebars[] = $data;
 
-                    $plugin->updateSetting('blocks', $blocks);
+                    $plugin->updateSetting('custom_sidebars', $customSidebars);
                 })
                 ->modalWidth('3xl')
                 ->form($this->getFormSchemas()),

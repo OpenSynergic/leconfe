@@ -8,7 +8,7 @@ use App\Actions\User\UserUpdateAction;
 use App\Facades\Settings;
 use App\Models\Enums\UserRole;
 use App\Models\User;
-use App\Panel\Conference\Resources\Conferences\ParticipantResource;
+use App\Panel\Conference\Livewire\Forms\Conferences\ContributorForm;
 use App\Panel\Conference\Resources\UserResource\Pages;
 use Filament\Facades\Filament;
 use Filament\Forms;
@@ -36,7 +36,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
-use PhpParser\Node\Expr\AssignOp\Mod;
 use STS\FilamentImpersonate\Tables\Actions\Impersonate;
 
 class UserResource extends Resource
@@ -94,7 +93,7 @@ class UserResource extends Resource
                                     ->requiredWith('password')
                                     ->password()
                                     ->dehydrated(false),
-                                ...ParticipantResource::additionalFormField(),
+                                ...ContributorForm::additionalFormField(),
                             ])
                             ->columns(2),
 

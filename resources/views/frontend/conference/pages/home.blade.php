@@ -1,9 +1,9 @@
 <x-website::layouts.main>
     <div class="space-y-2">
         <section id="highlight-conference" class="p-5 space-y-4">
-            <h1 class="cf-name text-lg">{{ $currentConference->name }}</h1>
+            <h1 class="text-lg cf-name">{{ $currentConference->name }}</h1>
 
-            <div class="flex flex-col sm:flex-row flex-wrap space-y-4 sm:space-y-0 gap-4">
+            <div class="flex flex-col flex-wrap gap-4 space-y-4 sm:flex-row sm:space-y-0">
                 @if ($currentConference->hasMedia('thumbnail'))
                     <div class="cf-thumbnail">
                         <img class="w-full rounded max-w-[200px]"
@@ -11,7 +11,7 @@
                             alt="{{ $currentConference->name }}" />
                     </div>
                 @endif
-                <div class="flex flex-col gap-2 flex-1">
+                <div class="flex flex-col flex-1 gap-2">
                     @if ($currentConference->date_start)
                         <div class="inline-flex items-center space-x-2">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -32,7 +32,7 @@
                         <div class="flex flex-wrap w-full gap-2">
                             @foreach ($topics as $topic)
                                 <span
-                                    class="badge badge-outline text-xs border border-gray-300 h-6 text-secondary">{{ $topic->name }}</span>
+                                    class="h-6 text-xs border border-gray-300 badge badge-outline text-secondary">{{ $topic->name }}</span>
                             @endforeach
                         </div>
                     @endif
@@ -41,7 +41,7 @@
         </section>
 
         @if ($currentConference->date_start || $currentConference->hasMeta('location'))
-            <section id="conference-information" class="p-5 flex flex-col gap-2">
+            <section id="conference-information" class="flex flex-col gap-2 p-5">
                 <h2 class="text-heading">Information</h2>
                 <table class="w-full text-sm" cellpadding="4">
                     <tr>
@@ -71,21 +71,21 @@
         @endif
 
         @if ($participantPosition->isNotEmpty())
-            <section id="conference-speakers" class="p-5 flex flex-col gap-2">
+            <section id="conference-speakers" class="flex flex-col gap-2 p-5">
                 <h2 class="text-heading">Speakers</h2>
-                <div class="cf-speakers space-y-6">
+                <div class="space-y-6 cf-speakers">
                     @foreach ($participantPosition as $position)
-                        @if ($position->participants->isNotEmpty())
+                        @if ($position->speakers->isNotEmpty())
                             <div class="space-y-4">
                                 <h3 class="text-base">{{ $position->name }}</h3>
-                                <div class="cf-speaker-list grid sm:grid-cols-2 gap-2">
-                                    @foreach ($position->participants as $participant)
-                                        <div class="cf-speaker h-full flex gap-2">
-                                            <img class="w-16 h-16 object-cover aspect-square rounded-full"
+                                <div class="grid gap-2 cf-speaker-list sm:grid-cols-2">
+                                    @foreach ($position->speakers as $participant)
+                                        <div class="flex h-full gap-2 cf-speaker">
+                                            <img class="object-cover w-16 h-16 rounded-full aspect-square"
                                                 src="{{ $participant->getFilamentAvatarUrl() }}"
                                                 alt="{{ $participant->fullName }}" />
                                             <div>
-                                                <div class="speaker-name text-sm text-gray-900">
+                                                <div class="text-sm text-gray-900 speaker-name">
                                                     {{ $participant->fullName }}
                                                 </div>
                                                 <div class="speaker-meta">
@@ -112,31 +112,31 @@
 
 
         @if ($currentConference->getMeta('additional_content'))
-            <section class="user-content px-5">
+            <section class="px-5 user-content">
                 {!! $currentConference->getMeta('additional_content') !!}
             </section>
         @endif
 
         @if ($venues->isNotEmpty())
-            <section class="venues p-5">
+            <section class="p-5 venues">
                 <h2 class="text-heading">Venues</h2>
-                <div class="venue-list space-y-3">
+                <div class="space-y-3 venue-list">
                     @foreach ($venues as $venue)                        
-                    <div class="venue flex gap-3">
+                    <div class="flex gap-3 venue">
                         @if ($venue->hasMedia('thumbnail'))
                             <img class="max-w-[100px]" src="{{ $venue->getFirstMedia('thumbnail')->getAvailableUrl(['thumb', 'thumb-xl']) }}">
                         @endif
                         <div class="space-y-2">
                             <div>
-                                <a class="group/link relative inline-flex items-center justify-center outline-none gap-1 font-thin">
+                                <a class="relative inline-flex items-center justify-center gap-1 font-thin outline-none group/link">
                                     <span
-                                        class="font-semibold group-hover/link:underline group-focus-visible/link:underline text-base">
+                                        class="text-base font-semibold group-hover/link:underline group-focus-visible/link:underline">
                                         {{ $venue->name }}
                                     </span>
                                 </a>
-                                <p class="text-gray-500 text-sm flex items-center gap-1"><x-heroicon-m-map-pin class="size-4" /> {{ $venue->location }}</p>
+                                <p class="flex items-center gap-1 text-sm text-gray-500"><x-heroicon-m-map-pin class="size-4" /> {{ $venue->location }}</p>
                             </div>
-                            <p class="text-gray-500 text-xs">{{ $venue->description }}</p>
+                            <p class="text-xs text-gray-500">{{ $venue->description }}</p>
                         </div>
                     </div>
                     @endforeach

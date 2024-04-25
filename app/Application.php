@@ -5,20 +5,20 @@ namespace App;
 use App\Actions\Site\SiteCreateAction;
 use App\Facades\Settings;
 use App\Models\Announcement;
+use App\Models\AuthorRole;
 use App\Models\Block;
+use App\Models\CommitteeRole;
 use App\Models\Conference;
 use App\Models\Sponsor;
 use App\Models\NavigationMenu;
-use App\Models\ParticipantPosition;
 use App\Models\PaymentItem;
 use App\Models\Proceeding;
-use App\Models\Role;
 use App\Models\Scopes\ConferenceScope;
 use App\Models\Scopes\SerieScope;
 use App\Models\Serie;
 use App\Models\Setting;
 use App\Models\Site;
-use App\Models\SiteSetting;
+use App\Models\SpeakerRole;
 use App\Models\StaticPage;
 use App\Models\Submission;
 use App\Models\Timeline;
@@ -122,7 +122,7 @@ class Application extends LaravelApplication
             Topic::class,
             NavigationMenu::class,
             Block::class,
-            ParticipantPosition::class,
+            AuthorRole::class,
             Announcement::class,
             StaticPage::class,
             PaymentItem::class,
@@ -140,6 +140,8 @@ class Application extends LaravelApplication
         $models = [
             Venue::class,
             Timeline::class,
+            CommitteeRole::class,
+            SpeakerRole::class,
         ];
 
         foreach ($models as $model) {

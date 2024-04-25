@@ -16,7 +16,7 @@ trait BelongsToSerie
         });
     }
 
-    public function series(): BelongsTo
+    public function serie(): BelongsTo
     {
         return $this->belongsTo(Serie::class);
     }

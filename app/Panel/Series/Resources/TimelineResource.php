@@ -73,14 +73,12 @@ class TimelineResource extends Resource
             ->actions([
                 ActionGroup::make([
                     EditAction::make()
-                        // costumize date format before filling the form
                         ->mutateRecordDataUsing(function (array $data): array {
                             $dateFormat = date(Settings::get('date'), strtotime($data['date']));
                             $data['date'] = $dateFormat;
 
                             return $data;
                         })
-                        // costumize date format before saving to database
                         ->mutateFormDataUsing(function (array $data): array {
                             $dateFormat = date('Y-m-d', strtotime($data['date']));
                             $data['date'] = $dateFormat;
