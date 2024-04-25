@@ -30,7 +30,7 @@ class Settings
         foreach ($setting->keys() as $key) {
             $this->settingKeys[$key] = $setting->get($key);
         }
-        return $this->transformSettings($this->castArrayValues($this->settingKeys));
+        return $this->castArrayValues($this->settingKeys);
     }
 
     public function castArrayValues(array $array)
@@ -52,28 +52,5 @@ class Settings
         }
 
         return $result;
-    }
-
-    public function transformSettings($settings)
-    {
-        $formattedSettings = [];
-
-        foreach ($settings as $key => $value) {
-            $currentArray = &$formattedSettings;
-            $keys = explode(".", $key);
-
-            foreach ($keys as $index => $keyPart) {
-                if ($index === count($keys) - 1) {
-                    $currentArray[$keyPart] = $value;
-                } else {
-                    if (!isset($currentArray[$keyPart])) {
-                        $currentArray[$keyPart] = [];
-                    }
-                    $currentArray = &$currentArray[$keyPart];
-                }
-            }
-        }
-
-        return $formattedSettings;
     }
 }
