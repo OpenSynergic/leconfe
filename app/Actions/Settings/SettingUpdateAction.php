@@ -16,7 +16,6 @@ class SettingUpdateAction
     {
         try {
             DB::beginTransaction();
-            $setting = Setting::query()->first();
             foreach (Arr::dot($data) as $key => $value) {
                 Settings::set($key, $value);
             }
@@ -25,6 +24,6 @@ class SettingUpdateAction
             DB::rollBack();
             throw $th;
         }
-        return $setting;
+        return true;
     }
 }
