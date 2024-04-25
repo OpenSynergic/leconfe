@@ -7,7 +7,7 @@
         <div class="mb-4 text-sm text-slate-400">
             <span class="flex items-center">
                 <x-lineawesome-calendar-check-solid class="w-3 h-3 mr-0.5" />
-                {{ __('Date Published') . ': ' . $submission->published_at->format(Settings::get('date')) }}
+                {{ __('Date Published') . ': ' . $submission->published_at->format(Settings::get('format.date')) }}
             </span>
         </div>
         <div class="submission-detail space-y-7">

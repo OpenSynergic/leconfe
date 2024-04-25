@@ -43,14 +43,14 @@ class DateAndTimeSetting extends Component implements HasForms
                                         class="filament-link inline-flex items-center justify-center gap-0.5 font-medium outline-none hover:underline focus:underline text-sm text-primary-600 hover:text-primary-500 filament-tables-link-action">format characters</a>.
                                     HTML))
                     ->schema([
-                        Radio::make('date')
+                        Radio::make('format.date')
                             ->options(fn () => collect([
                                 'F j, Y',
                                 'F j Y',
                                 'j F Y',
                                 'Y F j',
                             ])->mapWithKeys(fn ($format) => [$format => $now->format($format)])),
-                        Radio::make('time')
+                        Radio::make('format.time')
                             ->options(fn () => collect([
                                 'h:i A',
                                 'g:ia',

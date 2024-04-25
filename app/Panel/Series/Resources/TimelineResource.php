@@ -58,7 +58,7 @@ class TimelineResource extends Resource
             ->columns([
                 TextColumn::make('title'),
                 TextColumn::make('date')
-                    ->dateTime(Settings::get('date'))
+                    ->dateTime(Settings::get('format.date'))
                     ->sortable(),
                 TextColumn::make('roles')
                     ->badge()
@@ -74,7 +74,7 @@ class TimelineResource extends Resource
                 ActionGroup::make([
                     EditAction::make()
                         ->mutateRecordDataUsing(function (array $data): array {
-                            $dateFormat = date(Settings::get('date'), strtotime($data['date']));
+                            $dateFormat = date(Settings::get('format.date'), strtotime($data['date']));
                             $data['date'] = $dateFormat;
 
                             return $data;

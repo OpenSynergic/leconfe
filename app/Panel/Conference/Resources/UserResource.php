@@ -118,7 +118,7 @@ class UserResource extends Resource
                                     ->content(function (?User $record): ?string {
                                         $ban = $record?->bans->first();
 
-                                        return $ban?->created_at?->format(Settings::get('date')) ?? '-';
+                                        return $ban?->created_at?->format(Settings::get('format.date')) ?? '-';
                                     }),
                                 Forms\Components\Placeholder::make('disabled_until')
                                     ->visible(fn (?User $record) => $record?->isBanned())
@@ -126,7 +126,7 @@ class UserResource extends Resource
                                     ->content(function (?User $record): ?string {
                                         $ban = $record?->bans->first();
 
-                                        return $ban?->expired_at?->format(Settings::get('date')) ?? '-';
+                                        return $ban?->expired_at?->format(Settings::get('format.date')) ?? '-';
                                     }),
 
                             ]),
@@ -211,7 +211,7 @@ class UserResource extends Resource
 
                                 $bannedUntil = $ban->expired_at;
 
-                                return 'Disabled' . ($bannedUntil ? " until {$bannedUntil->format(Settings::get('date'))}" : '');
+                                return 'Disabled' . ($bannedUntil ? " until {$bannedUntil->format(Settings::get('format.date'))}" : '');
                             })
                             ->color('danger')
                             ->badge(),
