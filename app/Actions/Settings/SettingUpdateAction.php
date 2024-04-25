@@ -20,7 +20,6 @@ class SettingUpdateAction
             foreach (Arr::dot($data) as $key => $value) {
                 Settings::set($key, $value);
             }
-            $setting->touch();
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
