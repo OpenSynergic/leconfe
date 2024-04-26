@@ -85,7 +85,7 @@ class ProceedingResource extends Resource
                 TextColumn::make('published_at')
                     ->sortable()
                     ->hidden(fn(Component $livewire) => $livewire->activeTab === 'future')
-                    ->date(Settings::get('format.date'))
+                    ->date(Settings::get('format_date'))
             ])
             ->filters([
                 //

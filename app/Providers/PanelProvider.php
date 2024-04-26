@@ -234,11 +234,11 @@ class PanelProvider extends ServiceProvider
         DatePicker::configureUsing(function (DatePicker $datePicker): void {
             $datePicker
                 ->native(false)
-                ->displayFormat(Settings::get('format.date'));
+                ->displayFormat(Settings::get('format_date'));
         });
 
         TimePicker::configureUsing(function (TimePicker $timePicker): void {
-            $timePicker->displayFormat(Settings::get('format.time'));
+            $timePicker->displayFormat(Settings::get('format_time'));
         });
 
         Table::configureUsing(function (Table $table): void {

@@ -13,8 +13,8 @@ class MailTemplate extends BaseMailTemplate
     {
         return view('mail.template', [
             'body' => '{{{ body }}}',
-            'header' => Settings::get('mail.header'),
-            'footer' => Settings::get('mail.footer'),
+            'header' => Settings::get('mail_header'),
+            'footer' => Settings::get('mail_footer'),
         ])->render();
     }
 

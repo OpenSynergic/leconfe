@@ -7,7 +7,7 @@
                     <div class="inline-flex items-center gap-2">
                         <div class="{{ $timeline['timelineMarker'] }}"></div>
                         <time class="text-xs">
-                            {{ date(Settings::get('format.date'), strtotime($timeline['timeline']->date)) }}
+                            {{ date(Settings::get('format_date'), strtotime($timeline['timeline']->date)) }}
                         </time>
                     </div>
                     <div class="flex flex-wrap gap-1">

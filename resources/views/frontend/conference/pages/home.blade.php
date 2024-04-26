@@ -62,7 +62,7 @@
                             <td>Date</td>
                             <td>:</td>
                             <td>
-                                {{ date(Settings::get('format.date'), strtotime($currentConference->date_start)) }} - {{ date(Settings::get('format.date'), strtotime($currentConference->date_end)) }}
+                                {{ date(Settings::get('format_date'), strtotime($currentConference->date_start)) }} - {{ date(Settings::get('format_date'), strtotime($currentConference->date_end)) }}
                             </td>
                         </tr>
                     @endif

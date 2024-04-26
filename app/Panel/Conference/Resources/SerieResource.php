@@ -81,9 +81,9 @@ class SerieResource extends Resource
                     ->wrap()
                     ->wrapHeader(),
                 TextColumn::make('date_start')
-                    ->date(Settings::get('format.date')),
+                    ->date(Settings::get('format_date')),
                 TextColumn::make('date_end')
-                    ->date(Settings::get('format.date')),
+                    ->date(Settings::get('format_date')),
                 
             ])
             ->filters([

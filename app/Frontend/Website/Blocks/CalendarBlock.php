@@ -24,7 +24,7 @@ class CalendarBlock extends Block
         $formattedUpcomings = [];
 
         foreach ($upcomings as $upcoming) {
-            $upcomingDate = $upcoming->date_start?->format(Settings::get('format.date'));
+            $upcomingDate = $upcoming->date_start?->format(Settings::get('format_date'));
 
             $formattedUpcomings[$upcomingDate] = [
                 'modifier' => 'upcoming_timeline',

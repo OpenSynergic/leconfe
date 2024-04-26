@@ -65,7 +65,7 @@ class UserContent extends Model implements HasMedia
      */
     protected function serializeDate(DateTimeInterface $date): string
     {
-        return $date->format(Settings::get('format.date'));
+        return $date->format(Settings::get('format_date'));
     }
 
     public function user()

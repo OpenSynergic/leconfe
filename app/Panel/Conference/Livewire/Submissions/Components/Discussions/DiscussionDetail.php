@@ -48,7 +48,7 @@ class DiscussionDetail extends \Livewire\Component implements HasForms, HasTable
                         ->height(50),
                     Stack::make([
                         TextColumn::make('user.fullName')
-                            ->description(fn ($record) => $record->created_at->format(Settings::get('format.date')))
+                            ->description(fn ($record) => $record->created_at->format(Settings::get('format_date')))
                             ->label('From'),
                     ]),
                 ]),

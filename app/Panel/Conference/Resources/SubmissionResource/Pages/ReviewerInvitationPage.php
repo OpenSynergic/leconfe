@@ -172,7 +172,7 @@ class ReviewerInvitationPage extends Page implements HasActions, HasInfolists
                                             ->getCurrentConference()
                                             ->getMeta(
                                                 'workflow.peer-review.start_at',
-                                                $this->review->date_assigned->addDays(1)->format(Settings::get('format.date'))
+                                                $this->review->date_assigned->addDays(1)->format(Settings::get('format_date'))
                                             )
                                     ),
                                 TextEntry::make('Review End at')
@@ -181,7 +181,7 @@ class ReviewerInvitationPage extends Page implements HasActions, HasInfolists
                                             ->getCurrentConference()
                                             ->getMeta(
                                                 'workflow.peer-review.end_at',
-                                                $this->review->date_assigned->addDays(14)->format(Settings::get('format.date'))
+                                                $this->review->date_assigned->addDays(14)->format(Settings::get('format_date'))
                                             )
                                     ),
                             ]),

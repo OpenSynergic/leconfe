@@ -35,7 +35,7 @@ class ActivityLogList extends \Livewire\Component implements HasForms, HasTable
                 TextColumn::make('created_at')
                     ->label('Date')
                     ->formatStateUsing(function ($state) {
-                        return $state->format(Settings::get('format.date')) . ' ' . $state->format(Settings::get('format.time'));
+                        return $state->format(Settings::get('format_date')) . ' ' . $state->format(Settings::get('format_time'));
                     })
                     ->description(function ($record) {
                         return $record->created_at->diffForHumans();

@@ -130,7 +130,7 @@ class AnnouncementResource extends Resource
                 TextColumn::make('title')
                     ->searchable(),
                 TextColumn::make('expires_at')
-                    ->date(Settings::get('format.date'))
+                    ->date(Settings::get('format_date'))
                     ->getStateUsing(fn (Announcement $record) => $record->getMeta('expires_at')),
             ])
             ->filters([

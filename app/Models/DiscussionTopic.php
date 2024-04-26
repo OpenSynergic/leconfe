@@ -55,7 +55,7 @@ class DiscussionTopic extends Model
             return null;
         }
 
-        return $discussions->updated_at->format(Settings::get('format.date') . ' ' . Settings::get('format.time'));
+        return $discussions->updated_at->format(Settings::get('format_date') . ' ' . Settings::get('format_time'));
     }
 
     public function user()
