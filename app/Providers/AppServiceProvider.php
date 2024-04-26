@@ -9,6 +9,7 @@ use Livewire\Livewire;
 use App\Models\Conference;
 use Illuminate\Support\Str;
 use App\Managers\BlockManager;
+use App\Managers\DOIManager;
 use App\Managers\MetaTagManager;
 use App\Managers\SidebarManager;
 use Illuminate\Support\Facades\DB;
@@ -35,6 +36,10 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->scoped('metatag', function () {
             return new MetaTagManager;
+        });
+
+        $this->app->scoped(DOIManager::class, function () {
+            return new DOIManager;
         });
 
         // Use a custom URL generator to accomodate multi context.
