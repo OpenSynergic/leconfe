@@ -10,7 +10,7 @@ class Settings
 
     public function set($key, $value)
     {
-        return Setting::updateOrCreate(['conference_id' => app()->getCurrentConferenceId(), 'type' => gettype($value), 'key' => $key], ['value' => $value]);
+        return Setting::updateOrCreate(['conference_id' => app()->getCurrentConferenceId(), 'key' => $key], ['value' => $value, 'type' => gettype($value)]);
     }
 
     public function get($key)
