@@ -2,7 +2,8 @@
 
 namespace App\Actions\Settings;
 
-use Illuminate\Support\Arr;
+use App\Facades\Settings;
+use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 class SettingUpdateAction
@@ -11,6 +12,16 @@ class SettingUpdateAction
 
     public function handle(array $data)
     {
-        return setting(Arr::dot($data));
+        try {
+            DB::beginTransaction();
+            foreach ($data as $key => $value) {
+                Settings::set($key, $value);
+            }
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+        return true;
     }
 }

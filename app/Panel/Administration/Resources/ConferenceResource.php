@@ -2,6 +2,7 @@
 
 namespace App\Panel\Administration\Resources;
 
+use App\Facades\Settings;
 use App\Models\Conference;
 use App\Models\Enums\ConferenceType;
 use App\Panel\Administration\Resources\ConferenceResource\Pages;
@@ -118,8 +119,8 @@ class ConferenceResource extends Resource
                                     'name' => $getDataConference?->name,
                                     'path' => $getDataConference?->path,
                                     'type' => $getDataConference?->type,
-                                    'date_start' => $getDataConference?->date_start->format(setting('format.date')),
-                                    'date_end' => $getDataConference?->date_end->format(setting('format.date')),
+                                    'date_start' => $getDataConference?->date_start->format(Settings::get('format_date')),
+                                    'date_end' => $getDataConference?->date_end->format(Settings::get('format_date')),
                                     'meta.theme' => $getDataConference?->getMeta('theme'),
                                     'meta.description' => $getDataConference?->getMeta('description'),
                                     'meta.publisher_name' => $getDataConference?->getMeta('publisher_name'),

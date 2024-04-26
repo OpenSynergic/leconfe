@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Actions\Site\SiteCreateAction;
+use App\Facades\Settings;
 use App\Models\Announcement;
 use App\Models\AuthorRole;
 use App\Models\Block;
@@ -15,6 +16,7 @@ use App\Models\Proceeding;
 use App\Models\Scopes\ConferenceScope;
 use App\Models\Scopes\SerieScope;
 use App\Models\Serie;
+use App\Models\Setting;
 use App\Models\Site;
 use App\Models\SpeakerRole;
 use App\Models\StaticPage;
@@ -142,7 +144,7 @@ class Application extends LaravelApplication
             SpeakerRole::class,
         ];
 
-        foreach ($models as $model){
+        foreach ($models as $model) {
             $model::addGlobalScope(new SerieScope);
         }
     }
@@ -172,7 +174,7 @@ class Application extends LaravelApplication
     public function isReportingErrors(): bool
     {
         try {
-            if ($this->isProduction() && ! $this->hasDebugModeEnabled() && setting('send-error-report', true)) {
+            if ($this->isProduction() && !$this->hasDebugModeEnabled() && Settings::set('send-error-report', true)) {
                 return true;
             }
         } catch (\Throwable $th) {

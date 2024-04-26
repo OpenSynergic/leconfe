@@ -2,6 +2,7 @@
 
 namespace App\Panel\Series\Resources;
 
+use App\Facades\Settings;
 use App\Models\Role;
 use App\Models\Timeline;
 use App\Panel\Series\Resources\TimelineResource\Pages;
@@ -57,7 +58,7 @@ class TimelineResource extends Resource
             ->columns([
                 TextColumn::make('title'),
                 TextColumn::make('date')
-                    ->dateTime(setting('format.date'))
+                    ->dateTime(Settings::get('format_date'))
                     ->sortable(),
                 TextColumn::make('roles')
                     ->badge()
@@ -73,7 +74,7 @@ class TimelineResource extends Resource
                 ActionGroup::make([
                     EditAction::make()
                         ->mutateRecordDataUsing(function (array $data): array {
-                            $dateFormat = date(setting('format.date'), strtotime($data['date']));
+                            $dateFormat = date(Settings::get('format_date'), strtotime($data['date']));
                             $data['date'] = $dateFormat;
 
                             return $data;
