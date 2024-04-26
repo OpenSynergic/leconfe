@@ -3,15 +3,16 @@
 namespace App\Panel\Administration\Livewire;
 
 use App\Actions\Settings\SettingUpdateAction;
-use Filament\Forms\Components\Actions;
-use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
+use Livewire\Component;
 use Filament\Forms\Form;
 use Illuminate\Support\HtmlString;
-use Livewire\Component;
+use Filament\Forms\Components\Radio;
+use App\Facades\Settings;
+use Filament\Forms\Components\Actions;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Concerns\InteractsWithForms;
 
 class DateAndTimeSetting extends Component implements HasForms
 {
@@ -21,7 +22,7 @@ class DateAndTimeSetting extends Component implements HasForms
 
     public function mount()
     {
-        $this->form->fill(setting()->all());
+        $this->form->fill(Settings::all());
     }
 
     public function render()
@@ -32,7 +33,6 @@ class DateAndTimeSetting extends Component implements HasForms
     public function form(Form $form): Form
     {
         $now = now()->hours(16);
-
         return $form
             ->statePath('formData')
             ->schema([
@@ -43,14 +43,16 @@ class DateAndTimeSetting extends Component implements HasForms
                                         class="filament-link inline-flex items-center justify-center gap-0.5 font-medium outline-none hover:underline focus:underline text-sm text-primary-600 hover:text-primary-500 filament-tables-link-action">format characters</a>.
                                     HTML))
                     ->schema([
-                        Radio::make('format.date')
+                        Radio::make('format_date')
+                            ->label('Date')
                             ->options(fn () => collect([
                                 'F j, Y',
                                 'F j Y',
                                 'j F Y',
                                 'Y F j',
                             ])->mapWithKeys(fn ($format) => [$format => $now->format($format)])),
-                        Radio::make('format.time')
+                        Radio::make('format_time')
+                            ->label('Time')
                             ->options(fn () => collect([
                                 'h:i A',
                                 'g:ia',
@@ -64,7 +66,6 @@ class DateAndTimeSetting extends Component implements HasForms
                             $formData = $this->form->getState();
                             try {
                                 SettingUpdateAction::run($formData);
-
                                 $action->sendSuccessNotification();
                             } catch (\Throwable $th) {
                                 $action->sendFailureNotification();

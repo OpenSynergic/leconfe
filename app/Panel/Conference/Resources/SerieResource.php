@@ -2,6 +2,7 @@
 
 namespace App\Panel\Conference\Resources;
 
+use App\Facades\Settings;
 use App\Models\Serie;
 use App\Panel\Conference\Resources\SerieResource\Pages;
 use Filament\Forms\Components\DatePicker;
@@ -80,9 +81,9 @@ class SerieResource extends Resource
                     ->wrap()
                     ->wrapHeader(),
                 TextColumn::make('date_start')
-                    ->date(setting('format.date')),
+                    ->date(Settings::get('format_date')),
                 TextColumn::make('date_end')
-                    ->date(setting('format.date')),
+                    ->date(Settings::get('format_date')),
                 
             ])
             ->filters([

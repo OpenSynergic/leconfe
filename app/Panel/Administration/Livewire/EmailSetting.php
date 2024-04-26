@@ -4,6 +4,7 @@ namespace App\Panel\Administration\Livewire;
 
 use App\Actions\MailTemplates\MailTemplateRestoreDefaultData;
 use App\Actions\Settings\SettingUpdateAction;
+use App\Facades\Settings;
 use App\Infolists\Components\BladeEntry;
 use App\Infolists\Components\VerticalTabs;
 use App\Mail\Templates\TestMail;
@@ -48,8 +49,8 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
 
     public function mount()
     {
-        $this->mailSetupForm->fill(setting()->all());
-        $this->layoutTemplateForm->fill(setting()->all());
+        $this->mailSetupForm->fill(Settings::all());
+        $this->layoutTemplateForm->fill(Settings::all());
     }
 
     public function render()
@@ -163,28 +164,35 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
             ->schema([
                 Section::make('Email from')
                     ->schema([
-                        TextInput::make('mail.from.name')
+                        TextInput::make('mail_from_name')
+                            ->label('Name')
                             ->required()
                             ->default(config('mail.from.name')),
-                        TextInput::make('mail.from.address')
+                        TextInput::make('mail_from_address')
+                            ->label('Address')
                             ->default(config('mail.from.address'))
                             ->required(),
                     ])
                     ->columns(2),
                 Section::make('Authorization')
                     ->schema([
-                        TextInput::make('mail.auth.host')
+                        TextInput::make('mail_auth_host')
+                            ->label('Host')
                             ->default(config('mail.mailers.smtp.host'))
                             ->required(),
-                        TextInput::make('mail.auth.port')
+                        TextInput::make('mail_auth_port')
+                            ->label('Port')
                             ->default(config('mail.mailers.smtp.port'))
                             ->required(),
-                        TextInput::make('mail.auth.username')
+                        TextInput::make('mail_auth_username')
+                            ->label('Username')
                             ->default(config('mail.mailers.smtp.username')),
-                        TextInput::make('mail.auth.password')
+                        TextInput::make('mail_auth_password')
+                            ->label('Password')
                             ->default(config('mail.mailers.smtp.password'))
                             ->password(),
-                        Select::make('mail.auth.encryption')
+                        Select::make('mail_auth_encryption')
+                            ->label('Encryption')
                             ->default(config('mail.mailers.smtp.encryption'))
                             ->options([
                                 null => 'None',
@@ -206,7 +214,6 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
                                 $action->sendSuccessNotification();
                             } catch (\Throwable $th) {
                                 $action->failure();
-                                // $action->sendFailureNotification();
                             }
                         }),
                     Action::make('testEmail')
@@ -236,9 +243,11 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
             ->schema([
                 Section::make('Layout Template')
                     ->schema([
-                        TinyEditor::make('mail.header')
+                        TinyEditor::make('mail_header')
+                            ->label('Header')
                             ->profile('email'),
-                        TinyEditor::make('mail.footer')
+                        TinyEditor::make('mail_footer')
+                            ->label('Footer')
                             ->profile('email'),
                     ]),
                 Actions::make([

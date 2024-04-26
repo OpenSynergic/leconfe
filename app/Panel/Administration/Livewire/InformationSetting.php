@@ -3,6 +3,7 @@
 namespace App\Panel\Administration\Livewire;
 
 use App\Actions\Site\SiteUpdateAction;
+use App\Facades\Settings;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Section;
@@ -59,13 +60,13 @@ class InformationSetting extends Component implements HasForms
                         TinyEditor::make('meta.about')
                             ->label('About Site')
                             ->minHeight(300)
-                            ->dehydrateStateUsing(fn(string $state) => Purify::clean($state))
+                            ->dehydrateStateUsing(fn (string $state) => Purify::clean($state))
                             ->columnSpan([
                                 'sm' => 2,
                             ]),
                         TinyEditor::make('meta.page_footer')
                             ->minHeight(300)
-                            ->dehydrateStateUsing(fn(string $state) => Purify::clean($state))
+                            ->dehydrateStateUsing(fn (string $state) => Purify::clean($state))
                             ->columnSpan([
                                 'sm' => 2,
                             ]),

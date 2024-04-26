@@ -6,6 +6,7 @@ use App\Application;
 use App\Facades\SidebarFacade;
 use App\Models\Serie;
 use Livewire\Livewire;
+use App\Classes\Settings;
 use App\Models\Conference;
 use Illuminate\Support\Str;
 use App\Managers\BlockManager;
@@ -62,6 +63,10 @@ class AppServiceProvider extends ServiceProvider
                 ),
                 $app['config']['app.asset_url']
             );
+        });
+
+        $this->app->bind('Settings', function ($app) {
+            return new Settings();
         });
     }
 
@@ -175,7 +180,6 @@ class AppServiceProvider extends ServiceProvider
                 $serie = Serie::where('path', $pathInfos[3])->first();
                 $serie && $this->app->setCurrentSerieId($serie->getKey());
             }
-
         }
 
         // Scope livewire update path to current conference
