@@ -79,4 +79,11 @@ class Login extends Page
 
         $this->redirect($this->getRedirectUrl(), navigate: false);
     }
+
+    protected function getLayoutData(): array
+    {
+        return [
+            'title' => $this->getTitle()
+        ];
+    }
 }

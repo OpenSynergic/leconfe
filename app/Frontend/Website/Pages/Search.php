@@ -56,4 +56,11 @@ class Search extends Page
     {
         $this->resetPage();
     }
+
+    protected function getLayoutData(): array
+    {
+        return [
+            'title' => $this->getTitle()
+        ];
+    }
 }

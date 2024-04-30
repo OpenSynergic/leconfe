@@ -1,6 +1,8 @@
-<x-website::layouts.base :livewire="$livewire">
-    <div class="flex flex-col h-full gap-3 min-h-screen">
-
+@props([
+    'title' => null,
+])
+<x-website::layouts.base :title="$title">
+    <div class="flex h-full min-h-screen flex-col gap-3">
         {{-- Load Header Layout --}}
         <x-website::layouts.header />
 

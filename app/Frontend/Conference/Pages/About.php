@@ -32,4 +32,11 @@ class About extends Page
     {
         return [];
     }
+
+    protected function getLayoutData(): array
+    {
+        return [
+            'title' => $this->getTitle()
+        ];
+    }
 }

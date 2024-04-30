@@ -27,4 +27,11 @@ class PrivacyStatement extends Page
 
         ];
     }
+
+    protected function getLayoutData(): array
+    {
+        return [
+            'title' => $this->getTitle()
+        ];
+    }
 }

@@ -88,4 +88,11 @@ class Installation extends Page
 
         return true;
     }
+
+    protected function getLayoutData(): array
+    {
+        return [
+            'title' => $this->getTitle()
+        ];
+    }
 }

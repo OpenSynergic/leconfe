@@ -29,4 +29,11 @@ class Committe extends Page
             'groupedCommittes' => $committeeRole,
         ];
     }
+
+    protected function getLayoutData(): array
+    {
+        return [
+            'title' => $this->getTitle()
+        ];
+    }
 }

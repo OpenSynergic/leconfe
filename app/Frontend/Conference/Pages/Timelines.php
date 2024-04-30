@@ -25,4 +25,11 @@ class Timelines extends Page
             'timelines' => Timeline::with('conference')->get(),
         ];
     }
+
+    protected function getLayoutData(): array
+    {
+        return [
+            'title' => $this->getTitle()
+        ];
+    }
 }

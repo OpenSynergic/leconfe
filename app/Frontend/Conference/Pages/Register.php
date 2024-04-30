@@ -144,4 +144,11 @@ class Register extends Page
 
         $this->registerComplete = true;
     }
+
+    protected function getLayoutData(): array
+    {
+        return [
+            'title' => $this->getTitle()
+        ];
+    }
 }

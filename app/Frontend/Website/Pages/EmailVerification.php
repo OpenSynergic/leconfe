@@ -53,4 +53,11 @@ class EmailVerification extends Page
 
         session()->flash('success', true);
     }
+
+    protected function getLayoutData(): array
+    {
+        return [
+            'title' => $this->getTitle()
+        ];
+    }
 }

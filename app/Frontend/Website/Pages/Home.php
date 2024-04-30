@@ -24,9 +24,9 @@ class Home extends Page
     {
         return [
             'sponsors' => Sponsor::ordered()->with('media')->get(),
-            'currentConferences' => Conference::active()->with('media')->paginate(6, pageName:'currentConferencesPage'),
-            'upcomingConferences' => Conference::upcoming()->with('media')->paginate(6, pageName:'upcomingConferencesPage'),
-            'allConferences' => Conference::with('media')->paginate(6, pageName:'allConferencesPage'),
+            'currentConferences' => Conference::active()->with('media')->paginate(6, pageName: 'currentConferencesPage'),
+            'upcomingConferences' => Conference::upcoming()->with('media')->paginate(6, pageName: 'upcomingConferencesPage'),
+            'allConferences' => Conference::with('media')->paginate(6, pageName: 'allConferencesPage'),
         ];
     }
 
@@ -37,5 +37,12 @@ class Home extends Page
             ->middleware(static::getRouteMiddleware($pageGroup))
             ->withoutMiddleware(static::getWithoutRouteMiddleware($pageGroup))
             ->name((string) str($slug)->replace('/', '.'));
+    }
+
+    protected function getLayoutData(): array
+    {
+        return [
+            'title' => $this->getTitle()
+        ];
     }
 }
