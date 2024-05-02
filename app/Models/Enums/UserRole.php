@@ -15,6 +15,7 @@ enum UserRole: string implements HasLabel
     case Editor = 'Editor';
     case Reviewer = 'Reviewer';
     case Author = 'Author';
+    case Presenter = 'Presenter';
     case Reader = 'Reader';
 
     public function getLabel(): ?string
@@ -50,6 +51,7 @@ enum UserRole: string implements HasLabel
             static::Reviewer,
             static::Author,
             static::Reader,
+            static::Presenter,
         ];
     }
 }

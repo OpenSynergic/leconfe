@@ -3,18 +3,22 @@
 namespace App;
 
 use App\Actions\Site\SiteCreateAction;
+use App\Facades\Settings;
 use App\Models\Announcement;
+use App\Models\AuthorRole;
 use App\Models\Block;
+use App\Models\CommitteeRole;
 use App\Models\Conference;
-use App\Models\ConferenceSponsor;
+use App\Models\Sponsor;
 use App\Models\NavigationMenu;
-use App\Models\ParticipantPosition;
 use App\Models\PaymentItem;
 use App\Models\Proceeding;
-use App\Models\Role;
 use App\Models\Scopes\ConferenceScope;
+use App\Models\Scopes\SerieScope;
 use App\Models\Serie;
+use App\Models\Setting;
 use App\Models\Site;
+use App\Models\SpeakerRole;
 use App\Models\StaticPage;
 use App\Models\Submission;
 use App\Models\Timeline;
@@ -108,21 +112,19 @@ class Application extends LaravelApplication
         }
 
         return $this->currentSerie;
-    }   
+    }
 
     public function scopeCurrentConference(): void
     {
         $models = [
             Submission::class,
-            ConferenceSponsor::class,
+            Sponsor::class,
             Topic::class,
-            Venue::class,
             NavigationMenu::class,
             Block::class,
-            ParticipantPosition::class,
+            AuthorRole::class,
             Announcement::class,
             StaticPage::class,
-            Timeline::class,
             PaymentItem::class,
             Serie::class,
             Proceeding::class,
@@ -130,6 +132,20 @@ class Application extends LaravelApplication
 
         foreach ($models as $model) {
             $model::addGlobalScope(new ConferenceScope);
+        }
+    }
+
+    public function scopeCurrentSerie(): void
+    {
+        $models = [
+            Venue::class,
+            Timeline::class,
+            CommitteeRole::class,
+            SpeakerRole::class,
+        ];
+
+        foreach ($models as $model) {
+            $model::addGlobalScope(new SerieScope);
         }
     }
 
@@ -158,7 +174,7 @@ class Application extends LaravelApplication
     public function isReportingErrors(): bool
     {
         try {
-            if ($this->isProduction() && ! $this->hasDebugModeEnabled() && setting('send-error-report', true)) {
+            if ($this->isProduction() && !$this->hasDebugModeEnabled() && Settings::set('send-error-report', true)) {
                 return true;
             }
         } catch (\Throwable $th) {

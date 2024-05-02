@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Actions\User\CreateParticipantFromUserAction;
 use App\Models\Concerns\HasTopics;
 use App\Models\Concerns\InteractsWithPayment;
 use App\Models\Enums\SubmissionStage;
@@ -111,15 +110,16 @@ class Submission extends Model implements HasMedia, HasPayment, Sortable
                 'role_id' => Role::where('name', UserRole::Author->value)->first()->getKey(),
             ]);
 
-            //If current user does not exists in participant
-            if (! $userAsParticipant = $submission->user->asParticipant()) {
-                $userAsParticipant = CreateParticipantFromUserAction::run($submission->user);
-            }
+             // Current user as a author
+            $author = $submission->authors()->create([
+                'author_role_id' => AuthorRole::where('name', UserRole::Author->value)->first()->getKey(),
+                ...$submission->user->only(['email', 'given_name', 'family_name', 'public_name']),
+            ]);
 
             // Current user as a contributors
             $submission->contributors()->create([
-                'participant_id' => $userAsParticipant->getKey(),
-                'participant_position_id' => ParticipantPosition::where('name', UserRole::Author->value)->first()->getKey(),
+                'contributor_id' => $author->id,
+                'contributor_type' => Author::class,
             ]);
         });
     }
@@ -183,6 +183,16 @@ class Submission extends Model implements HasMedia, HasPayment, Sortable
     public function participants()
     {
         return $this->hasMany(SubmissionParticipant::class);
+    }
+
+    public function authors()
+    {
+        return $this->hasMany(Author::class);
+    }
+
+    public function presenters()
+    {
+        return $this->hasMany(Presenter::class);
     }
 
     public function contributors()

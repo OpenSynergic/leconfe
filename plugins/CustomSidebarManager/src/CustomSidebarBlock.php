@@ -2,35 +2,49 @@
 
 namespace CustomSidebarManager;
 
-use App\Classes\Block;
+use App\Classes\Sidebar;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\HtmlString;
 
-class CustomSidebarBlock extends Block
+class CustomSidebarBlock extends Sidebar
 {
-    protected ?string $content;
-
     protected ?string $view = 'CustomSidebarManager::custom-sidebar';
 
-    protected bool $showName;
+    public function __construct(
+        public string $id,
+        public string $name,
+        public string $content,
+        public bool $showName = false, 
+    ) {
+    }
 
-    public function __construct(string $name, ?string $content, bool $showName = false)
+    public function getId(): string
     {
-        $this->name = $name;
-        $this->content = $content;
-        $this->showName = $showName;
+        return $this->id;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function render(): View
+    {
+        return view($this->view, $this->getViewData());
     }
 
     public function getViewData(): array
     {
         return [
-            'id' => $this->getDatabaseName(),
+            'id' => $this->id,
             'name' => $this->name,
-            'showName' => $this->showName,
             'content' => $this->content,
+            'showName' => $this->showName,
         ];
     }
 
     public function getSuffixName(): ?string
     {
-        return '<span class="text-gray-500">(Custom Sidebar)</span>';
+        return new HtmlString('<span class="text-gray-500">(Custom Sidebar)</span>');
     }
 }

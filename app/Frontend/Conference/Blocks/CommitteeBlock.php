@@ -3,7 +3,7 @@
 namespace App\Frontend\Conference\Blocks;
 
 use App\Classes\Block;
-use App\Models\Participant;
+use App\Models\Committee;
 
 class CommitteeBlock extends Block
 {
@@ -17,18 +17,14 @@ class CommitteeBlock extends Block
 
     public function getViewData(): array
     {
-        $participants = Participant::with('positions')
-            ->whereHas('positions', function ($query) {
-                // Filter participants to include only those with 'committee' type positions.
-                $query->where('type', 'committee');
-            })
-            ->orderBy('order_column') // Order the retrieved data by the 'order_column'.
-            ->take(3) // Limit the query to retrieve only 3 participants.
+        $committees = Committee::query()
+            ->orderBy('order_column')
+            ->take(3)
             ->get();
 
         return [
             ...parent::getViewData(),
-            'participants' => $participants,
+            'committees' => $committees,
         ];
     }
 }

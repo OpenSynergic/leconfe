@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Vite;
 use Kra8\Snowflake\HasShortflakePrimary;
 use Plank\Metable\Metable;
 use Spatie\MediaLibrary\HasMedia;
@@ -63,14 +64,14 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
         return $this->hasMany(Timeline::class);
     }
 
-    public function venues(): HasMany
-    {
-        return $this->hasMany(Venue::class);
-    }
-
     public function topics(): HasMany
     {
         return $this->hasMany(Topic::class);
+    }
+
+    public function settings(): HasMany
+    {
+        return $this->hasMany(Setting::class);
     }
 
     public function announcements(): HasMany
@@ -96,6 +97,11 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
     public function series(): HasMany
     {
         return $this->hasMany(Serie::class);
+    }
+
+    public function roles(): HasMany
+    {
+        return $this->hasMany(Role::class);
     }
 
     public function getFilamentName(): string
@@ -187,5 +193,10 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
     public function getSupportedCurrencies(): array
     {
         return $this->getMeta('payment.supported_currencies') ?? ['usd'];
+    }
+
+    public function getThumbnailUrl(): string
+    {
+        return $this->getFirstMedia('thumbnail')?->getAvailableUrl(['thumb', 'thumb-xl']) ?? Vite::asset('resources/assets/images/placeholder-vertical.jpg');
     }
 }

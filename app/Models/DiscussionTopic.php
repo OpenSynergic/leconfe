@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Facades\Settings;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -41,7 +42,7 @@ class DiscussionTopic extends Model
 
     public function getLastSender()
     {
-        if (! $discussions = $this->getLastDiscussions()) {
+        if (!$discussions = $this->getLastDiscussions()) {
             return null;
         }
 
@@ -50,11 +51,11 @@ class DiscussionTopic extends Model
 
     public function getLastUpdate(): ?string
     {
-        if (! $discussions = $this->getLastDiscussions()) {
+        if (!$discussions = $this->getLastDiscussions()) {
             return null;
         }
 
-        return $discussions->updated_at->format(setting('format.date').' '.setting('format.time'));
+        return $discussions->updated_at->format(Settings::get('format_date') . ' ' . Settings::get('format_time'));
     }
 
     public function user()

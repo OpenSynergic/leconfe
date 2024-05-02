@@ -1,8 +1,18 @@
-<div class="page-main mx-auto max-w-7xl flex flex-col lg:grid grid-cols-12 gap-3 grow w-full">
-    <x-website::layouts.leftbar />
-    <div class="page-content col-span-12 mx-2 sm:mx-none">
+@props([
+    'sidebars' => \App\Facades\SidebarFacade::get(),
+    'sidebar' => null,
+])
+
+@php
+    $sidebar ??= count($sidebars) > 0;
+@endphp
+
+<div @class(['page-main'])>
+    <div @class(['page-content', 'lg:col-span-9' => $sidebar, 'lg:col-span-full' => !$sidebar])>
         {{ $slot }}
     </div>
-    <x-website::layouts.rightbar />
-</div>
 
+    @if ($sidebar)
+        <x-website::layouts.sidebar :sidebars="$sidebars"/>
+    @endif
+</div>

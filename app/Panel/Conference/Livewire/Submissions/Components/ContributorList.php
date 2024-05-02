@@ -2,29 +2,31 @@
 
 namespace App\Panel\Conference\Livewire\Submissions\Components;
 
-use App\Actions\Participants\ParticipantCreateAction;
-use App\Actions\Participants\ParticipantUpdateAction;
-use App\Models\Participant;
-use App\Models\ParticipantPosition;
+use App\Models\Author;
 use App\Models\Submission;
-use App\Panel\Conference\Resources\Conferences\ParticipantResource;
+use Filament\Tables\Table;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Contracts\HasTable;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
-use Filament\Tables\Columns\TextColumn;
+use App\Actions\Authors\AuthorCreateAction;
+use App\Actions\Authors\AuthorDeleteAction;
+use App\Actions\Authors\AuthorUpdateAction;
+use App\Panel\Conference\Livewire\Forms\Conferences\ContributorForm;
+use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use Filament\Forms\Components\Actions\Action as FormAction;
+use App\Panel\Conference\Resources\Conferences\AuthorRoleResource;
 
 class ContributorList extends \Livewire\Component implements HasForms, HasTable
 {
@@ -36,40 +38,90 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
 
     public function getQuery(bool $submissionRelated = true): Builder
     {
-        return Participant::query()
-            ->orderBy('order_column')
-            ->with([
-                'positions' => fn ($query) => $query
-                    ->whereIn('type', ['author', 'speaker']),
-                'media',
-                'meta',
-            ])
-            ->when(
-                $submissionRelated,
-                fn (Builder $query) => $query->whereIn('id', $this->submission->contributors()->pluck('participant_id'))
-            )
-            ->when(
-                ! $submissionRelated,
-                fn (Builder $query) => $query->whereNotIn('id', $this->submission->contributors()->pluck('participant_id'))
-            )
+        return Author::query()
+            ->whereSubmissionId($this->submission->getKey())
+            ->with(['role', 'media', 'meta'])
             ->orderBy('order_column');
     }
 
-    public static function getContributorFormSchema(): array
+    public function selectAuthorField(): Select
+    {
+        return Select::make('author_id')
+            ->label('Select Existing Author')
+            ->placeholder('Select Author')
+            ->preload()
+            ->native(false)
+            ->searchable()
+            ->allowHtml()
+            ->options(function () {
+                $authors = $this->getQuery()->pluck('email')->toArray();
+
+                return Author::query()
+                    ->whereNotIn('email', $authors)
+                    ->get()
+                    ->mapWithKeys(fn (Author $author) => [$author->getKey() => static::renderSelectAuthor($author)])
+                    ->toArray();
+            })
+            ->optionsLimit(10)
+            ->getSearchResultsUsing(
+                function (string $search) {
+                    $authors = $this->getQuery()->pluck('email')->toArray();
+
+                    return Author::query()
+                        ->with(['media', 'meta'])
+                        ->whereNotIn('email', $authors)
+                        ->where(fn ($query) => $query->where('given_name', 'LIKE', "%{$search}%")
+                            ->orWhere('family_name', 'LIKE', "%{$search}%")
+                            ->orWhere('email', 'LIKE', "%{$search}%"))
+                        ->get()
+                        ->mapWithKeys(fn (Author $author) => [$author->getKey() => static::renderSelectAuthor($author)])
+                        ->toArray();
+                }
+            )
+            ->live()
+            ->afterStateUpdated(function ($state, $livewire) {
+                if (! $state) {
+                    return;
+                }
+                $author = Author::with(['meta', 'role' => fn ($query) => $query->withoutGlobalScopes()])->findOrFail($state);
+                $role = AuthorRoleResource::getEloquentQuery()->whereName($author?->role?->name)->first();
+
+                $formData = [ 
+                    'author_id' => $state,
+                    'given_name' => $author->given_name,
+                    'family_name' => $author->family_name,
+                    'email' => $author->email,
+                    'author_role_id' => $role->id ?? null,
+                    'meta' => $author->getAllMeta()
+                ];
+                return $livewire->mountedTableActionsData[0] = $formData;
+            })
+            ->columnSpanFull();
+    }
+
+    public function getContributorFormSchema(): array
     {
         return [
             Grid::make()
                 ->schema([
-                    ...ParticipantResource::generalFormField(),
-                    Select::make('position')
-                        ->options(
-                            fn () => ParticipantPosition::whereIn('type', ['speaker', 'author'])->pluck('name', 'id')->toArray()
+                    $this->selectAuthorField(),
+                    ...ContributorForm::generalFormField($this->submission),
+                    Select::make('author_role_id')
+                        ->relationship(
+                            name: 'role',
+                            titleAttribute: 'name',
+                        )
+                        ->createOptionForm(fn ($form) => AuthorRoleResource::form($form))
+                        ->createOptionAction(
+                            fn (FormAction $action) => $action->color('primary')
+                                ->modalWidth('xl')
+                                ->modalHeading('Create Author Role')
                         )
                         ->preload()
                         ->required()
                         ->columnSpanFull()
                         ->searchable(),
-                    ...ParticipantResource::additionalFormField(),
+                    ...ContributorForm::additionalFormField(),
                 ])
                 ->columnSpan([
                     'lg' => 2,
@@ -90,108 +142,40 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
             ->actions([
                 ActionGroup::make([
                     EditAction::make()
-                        ->modalWidth('2xl')
+                        ->modalWidth('3xl')
                         ->hidden(
-                            fn (Participant $record): bool => $record->email == auth()->user()->email
+                            fn (Model $record): bool => $record->email == auth()->user()->email
                         )
-                        ->mutateRecordDataUsing(function ($data, Participant $record) {
-                            $data['meta'] = $record->getAllMeta()->toArray();
-                            $contributor = $this->submission->contributors()->where('participant_id', $record->getKey())->first();
-                            $data['position'] = $contributor->position->getKey();
-
+                        ->mutateRecordDataUsing(function (array $data, Model $record) {
+                            $data['meta'] = $record->getAllMeta();
                             return $data;
                         })
-                        ->form(static::getContributorFormSchema())
-                        ->using(function (array $data, Participant $record) {
-                            $participant = ParticipantUpdateAction::run($record, $data);
-                            $this->submission
-                                ->contributors()
-                                ->updateOrCreate([
-                                    'participant_id' => $participant->getKey(),
-                                ], [
-                                    'participant_id' => $participant->getKey(),
-                                    'participant_position_id' => $data['position'],
-                                ]);
-
-                            return $participant;
-                        }),
+                        ->form($this->getContributorFormSchema())
+                        ->using(fn (array $data, Author $record) => AuthorUpdateAction::run($data, $record)),
                     DeleteAction::make()
-                        ->using(function (Participant $record) {
-                            $this->submission->contributors()->where('participant_id', $record->getKey())->delete();
-                        })
+                        ->using(fn (array $data, Model $record) => AuthorDeleteAction::run($record, $data))
                         ->hidden(
-                            fn (Participant $record): bool => $record->email == auth()->user()->email
+                            fn (Model $record): bool => $record->email == auth()->user()->email
                         ),
                 ])
-                    ->hidden($this->viewOnly),
+                ->hidden($this->viewOnly),
             ])
             ->headerActions([
-                ActionGroup::make([
-                    CreateAction::make()
-                        ->label('Create new')
-                        ->modalWidth('2xl')
-                        ->modalHeading('Add Contributor')
-                        ->successNotificationTitle('Contributor added')
-                        ->record($this->submission)
-                        ->form(static::getContributorFormSchema())
-                        ->using(function (array $data) {
-                            $participant = Participant::email($data['email'])->first();
-                            if (! $participant) {
-                                $participant = ParticipantCreateAction::run($data);
-                            }
-                            $this->submission
-                                ->contributors()
-                                ->updateOrCreate([
-                                    'participant_id' => $participant->getKey(),
-                                ], [
-                                    'participant_id' => $participant->getKey(),
-                                    'participant_position_id' => $data['position'],
-                                ]);
-
-                            return $participant;
-                        }),
-                    Action::make('add_existing')
-                        ->label('Add from existing')
-                        ->modalWidth('lg')
-                        ->form([
-                            Grid::make()
-                                ->schema([
-                                    Select::make('participant_id')
-                                        ->label('Name')
-                                        ->options(function () {
-                                            return $this->getQuery(submissionRelated: false)
-                                                ->get()
-                                                ->pluck('fullName', 'id')
-                                                ->toArray();
-                                        })
-                                        ->searchable()
-                                        ->preload()
-                                        ->required()
-                                        ->columnSpanFull(),
-                                    Select::make('type')
-                                        ->options(
-                                            fn () => ParticipantPosition::whereIn('type', ['speaker', 'author'])->pluck('name', 'id')->toArray()
-                                        )
-                                        ->searchable()
-                                        ->preload()
-                                        ->required()
-                                        ->columnSpanFull(),
-                                ]),
-                        ])
-                        ->action(function (array $data) {
-                            $participant = Participant::find($data['participant_id']);
-                            $this->submission->contributors()->updateOrCreate([
-                                'participant_id' => $participant->getKey(),
-                            ], [
-                                'participant_id' => $participant->getKey(),
-                                'participant_position_id' => $data['type'],
-                            ]);
-
-                            return $participant;
-                        }),
-                ])
-                    ->button()
-                    ->label('Add Contributor')
+                CreateAction::make()
+                    ->label('New Contributor')
+                    ->modalWidth('2xl')
+                    ->icon('heroicon-o-user-plus')
+                    ->modalHeading('Add Contributor')
+                    ->successNotificationTitle('Contributor added')
+                    ->form($this->getContributorFormSchema())
+                    ->using(function (array $data) {
+                        $author = Author::whereSubmissionId($this->submission->getKey())->email($data['email'])->first();
+                        if (! $author) {
+                            $author = AuthorCreateAction::run($this->submission, $data);
+                        }
+                        
+                        return $author;
+                    })
                     ->hidden($this->viewOnly),
             ])
             ->columns([
@@ -203,7 +187,7 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
                         ->width(50)
                         ->height(50)
                         ->defaultImageUrl(
-                            fn (Participant $record): string => $record->getFilamentAvatarUrl()
+                            fn (Model $record): string => $record->getFilamentAvatarUrl()
                         )
                         ->extraCellAttributes([
                             'style' => 'width: 1px',
@@ -212,7 +196,7 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
                         ->toggleable(! $this->viewOnly),
                     Stack::make([
                         TextColumn::make('fullName')
-                            ->formatStateUsing(function (Participant $record) {
+                            ->formatStateUsing(function (Model $record) {
                                 if ($record->email == auth()->user()->email) {
                                     return $record->fullName.' (You)';
                                 }
@@ -222,7 +206,7 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
                         TextColumn::make('affiliation')
                             ->size('xs')
                             ->getStateUsing(
-                                fn (Participant $record) => $record->getMeta('affiliation')
+                                fn (Model $record) => $record->getMeta('affiliation')
                             )
                             ->icon('heroicon-o-building-library')
                             ->extraAttributes([
@@ -238,22 +222,17 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
                             ->icon('heroicon-o-envelope')
                             ->alignStart(),
                     ])->space(1),
-                    TextColumn::make('position')
-                        ->getStateUsing(function (Participant $record) {
-                            /**
-                             * Questions:
-                             * 1. Is this good way ?
-                             */
-                            $contributor = $this->submission->contributors()
-                                ->where('participant_id', $record->getKey())
-                                ->first();
-
-                            return $contributor->position->name;
-                        })
+                    TextColumn::make('role.name')
                         ->badge()
                         ->alignEnd(),
                 ]),
             ]);
+    }
+
+    public static function renderSelectAuthor(Author $author): string
+    {
+        $author->load('submission');
+        return view('forms.select-contributor-submission', ['contributor' => $author])->render();
     }
 
     public function render()
