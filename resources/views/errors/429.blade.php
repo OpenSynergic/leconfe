@@ -1,7 +1,8 @@
 @extends('errors::minimal')
 
-@section('code', '429')
 @php
-    $message = 'Too Many Request';
+    $code = '429';
+    $title = 'Too Many Request';
+    $message = 'The request was rejected because too many requests were made';
 @endphp
 

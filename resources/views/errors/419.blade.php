@@ -1,7 +1,8 @@
 @extends('errors::minimal')
 
-@section('code', '419')
 @php
-    $message = 'Page Expired';
+    $code = '419';
+    $title = 'Page Expired';
+    $message = 'The session has expired, please log back in to continue';
 @endphp
 

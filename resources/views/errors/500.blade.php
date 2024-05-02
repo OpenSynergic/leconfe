@@ -1,6 +1,7 @@
 @extends('errors::minimal')
 
-@section('code', '500')
 @php
-    $message = 'Server Error';
+    $code = '500';
+    $title = 'Server Error';
+    $message = 'A server error occurred. Please try again later';
 @endphp

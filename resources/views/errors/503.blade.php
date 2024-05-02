@@ -1,6 +1,7 @@
 @extends('errors::minimal')
 
-@section('code', '503')
 @php
-    $message = 'Service Unavailable';
+    $code = '503';
+    $title = 'Service Unavailable';
+    $message = 'Service not available. Please try again later';
 @endphp

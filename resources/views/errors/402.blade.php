@@ -1,6 +1,7 @@
 @extends('errors::minimal')
 
-@section('code', '402')
 @php
-    $message = 'Payment Required';
+    $code = '402';
+    $title = 'Payment Required';
+    $message = 'Requests cannot be processed unless payment has been made';
 @endphp

@@ -1,6 +1,7 @@
 @extends('errors::minimal')
 
-@section('code', '403')
 @php
-    $message = $exception->getMessage() ?: 'Forbidden';
+    $code = '403';
+    $title = $exception->getMessage() ?: 'Forbidden';
+    $message = 'Access denied, you do not have permission to access this page';
 @endphp
