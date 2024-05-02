@@ -3,6 +3,7 @@
 namespace App\Frontend\Conference\Pages;
 
 use App\Models\Submission;
+use Livewire\Attributes\Title;
 use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
@@ -26,12 +27,5 @@ class SubmissionDetail extends Page
             ->middleware(static::getRouteMiddleware($pageGroup))
             ->withoutMiddleware(static::getWithoutRouteMiddleware($pageGroup))
             ->name((string) str($slug)->replace('/', '.'));
-    }
-
-    protected function getLayoutData(): array
-    {
-        return [
-            'title' => $this->getTitle()
-        ];
     }
 }

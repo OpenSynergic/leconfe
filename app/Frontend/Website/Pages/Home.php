@@ -16,7 +16,7 @@ use Rahmanramsi\LivewirePageGroup\Pages\Page;
 class Home extends Page
 {
     use WithPagination, WithoutUrlPagination;
-
+    
     protected static string $view = 'frontend.website.pages.home';
 
 
@@ -37,12 +37,5 @@ class Home extends Page
             ->middleware(static::getRouteMiddleware($pageGroup))
             ->withoutMiddleware(static::getWithoutRouteMiddleware($pageGroup))
             ->name((string) str($slug)->replace('/', '.'));
-    }
-
-    protected function getLayoutData(): array
-    {
-        return [
-            'title' => $this->getTitle()
-        ];
     }
 }

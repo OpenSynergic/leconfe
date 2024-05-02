@@ -2,6 +2,7 @@
 
 namespace App\Frontend\Conference\Pages;
 
+use Livewire\Attributes\Title;
 use Illuminate\Contracts\Support\Htmlable;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 
@@ -31,12 +32,5 @@ class About extends Page
     public function getBreadcrumbs(): array
     {
         return [];
-    }
-
-    protected function getLayoutData(): array
-    {
-        return [
-            'title' => $this->getTitle()
-        ];
     }
 }

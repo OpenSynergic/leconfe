@@ -2,10 +2,11 @@
 
 namespace App\Frontend\Conference\Pages;
 
-use App\Models\Announcement;
-use App\Models\SpeakerRole;
 use App\Models\Topic;
 use App\Models\Venue;
+use App\Models\SpeakerRole;
+use App\Models\Announcement;
+use Livewire\Attributes\Title;
 use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
@@ -38,12 +39,5 @@ class Home extends Page
             ->middleware(static::getRouteMiddleware($pageGroup))
             ->withoutMiddleware(static::getWithoutRouteMiddleware($pageGroup))
             ->name((string) str($slug)->replace('/', '.'));
-    }
-
-    protected function getLayoutData(): array
-    {
-        return [
-            'title' => $this->getTitle()
-        ];
     }
 }

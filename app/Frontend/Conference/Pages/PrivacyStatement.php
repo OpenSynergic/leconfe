@@ -2,6 +2,7 @@
 
 namespace App\Frontend\Conference\Pages;
 
+use Livewire\Attributes\Title;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 
 class PrivacyStatement extends Page
@@ -25,13 +26,6 @@ class PrivacyStatement extends Page
     {
         return [
 
-        ];
-    }
-
-    protected function getLayoutData(): array
-    {
-        return [
-            'title' => $this->getTitle()
         ];
     }
 }

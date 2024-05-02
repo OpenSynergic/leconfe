@@ -3,6 +3,7 @@
 namespace App\Frontend\Conference\Pages;
 
 use App\Models\CommitteeRole;
+use Livewire\Attributes\Title;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 
 class Committe extends Page
@@ -27,13 +28,6 @@ class Committe extends Page
 
         return [
             'groupedCommittes' => $committeeRole,
-        ];
-    }
-
-    protected function getLayoutData(): array
-    {
-        return [
-            'title' => $this->getTitle()
         ];
     }
 }

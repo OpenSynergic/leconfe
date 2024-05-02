@@ -2,18 +2,17 @@
 
 namespace App\Frontend\Website\Pages;
 
-use App\Models\Conference;
-use App\Models\Scopes\ConferenceScope;
 use App\Models\Topic;
+use App\Models\Conference;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
+use Livewire\Attributes\Title;
+use App\Models\Scopes\ConferenceScope;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 
 class Search extends Page
 {
     use WithPagination;
-
-    protected static ?string $title = 'Search Conferences';
 
     protected static string $view = 'frontend.website.pages.search';
 
@@ -55,12 +54,5 @@ class Search extends Page
     public function updatingQuery()
     {
         $this->resetPage();
-    }
-
-    protected function getLayoutData(): array
-    {
-        return [
-            'title' => $this->getTitle()
-        ];
     }
 }

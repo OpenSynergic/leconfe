@@ -3,6 +3,7 @@
 namespace App\Frontend\Conference\Pages;
 
 use App\Models\Timeline;
+use Livewire\Attributes\Title;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 
 class Timelines extends Page
@@ -23,13 +24,6 @@ class Timelines extends Page
     {
         return [
             'timelines' => Timeline::with('conference')->get(),
-        ];
-    }
-
-    protected function getLayoutData(): array
-    {
-        return [
-            'title' => $this->getTitle()
         ];
     }
 }
