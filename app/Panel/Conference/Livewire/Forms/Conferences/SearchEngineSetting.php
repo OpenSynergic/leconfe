@@ -17,15 +17,13 @@ class SearchEngineSetting extends Component implements HasForms
 {
     use InteractsWithForms;
 
-    public Conference $conference;
-
     public ?array $formData = [];
 
-    public function mount(Conference $conference): void
+    public function mount(): void
     {
         $this->form->fill([
-            ...$conference->attributesToArray(),
-            'meta' => $conference->getAllMeta(),
+            ...app()->getCurrentConference()->attributesToArray(),
+            'meta' => app()->getCurrentConference()->getAllMeta(),
         ]);
     }
 
@@ -37,14 +35,13 @@ class SearchEngineSetting extends Component implements HasForms
     public function form(Form $form): Form
     {
         return $form
-            ->model($this->conference)
+            ->model(app()->getCurrentConference())
             ->schema([
                 Section::make()
                     ->schema([
                         KeyValue::make('meta.meta_tags')
                             ->keyLabel('Name')
                             ->valueLabel('Content')
-
                             ->helperText('Add meta tags, to the head of every page on your conference. Before adding any tags, consult with a technical advisor to ensure that they are compatible with your website and will not cause any problems.'),
                     ]),
                 Actions::make([

@@ -9,6 +9,14 @@ class DOIManager
     // 32 by the factor of 6
     protected const UPPER_LIMIT = 1073741823;
 
+    public function generate(): string
+    {
+        $prefix = app()->getCurrentConference()->getMeta('doi_prefix');
+        $suffix = $this->encodeSuffix();
+
+        return $prefix . '/' . $suffix;
+    }
+
     /**
      * Constructs a DOI with an 8-character suffix, using a Crockford Base 32 algorithm
      * to generate the suffix.

@@ -15,6 +15,11 @@ class DOIPage extends Page
 
     protected static ?int $navigationSort = 2;
 
+    public static function canAccess(): bool
+    {
+        return app()->getCurrentConference()->getMeta('doi_enabled');
+    }
+
     public function mount()
     {
         // dd(DOIStatus::Unregistered->name);

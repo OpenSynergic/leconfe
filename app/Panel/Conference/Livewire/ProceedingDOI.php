@@ -32,7 +32,6 @@ class ProceedingDOI extends Component implements HasForms, HasTable
 
     public function mount()
     {
-
     }
 
     public function table(Table $table): Table
@@ -50,12 +49,12 @@ class ProceedingDOI extends Component implements HasForms, HasTable
                     ->badge()
                     ->label('Status'),
             ])
-            ->filters([ 
+            ->filters([
                 SelectFilter::make('status')
                     ->options(DOIStatus::options())
                     ->attribute('doi.status')
-                    ->modifyQueryUsing(function($data, $query){
-                        return !$data['value'] ? $query : $query->whereHas('doi', fn($query) => $query->where('status', $data['value']));
+                    ->modifyQueryUsing(function ($data, $query) {
+                        return !$data['value'] ? $query : $query->whereHas('doi', fn ($query) => $query->where('status', $data['value']));
                     }),
             ])
             ->actions([
@@ -63,22 +62,26 @@ class ProceedingDOI extends Component implements HasForms, HasTable
                     ->label('Edit')
                     ->icon('heroicon-o-pencil')
                     ->button()
-                    ->fillForm(function (Proceeding $record, Table $table){
+                    ->fillForm(function (Proceeding $record, Table $table) {
                         return [
                             'doi' => $record->doi?->doi,
                         ];
                     })
                     ->modalWidth(MaxWidth::ExtraLarge)
-                    ->modalHeading(fn($record) => $record->title)
+                    ->modalHeading(fn ($record) => $record->title)
                     ->form([
                         TextInput::make('doi')
                             ->label('DOI')
-                            ->suffixAction(FormAction::make('generate')
-                            ->label('Generate')
-                            ->button()
-                            ->action(fn(Set $set) => $set('doi', '10.1234/' . DOIFacade::encodeSuffix()))),
+                            ->suffixAction(
+                                FormAction::make('generate')
+                                    ->label('Generate')
+                                    ->button()
+                                    // ->outlined()
+                                    // ->color('secondary')
+                                    ->action(fn (Set $set) => $set('doi', DOIFacade::generate()))
+                            ),
                     ])
-                    ->action(fn(Proceeding $record, array $data) => $record->doi()->updateOrCreate(['id' => $record->doi?->id], ['doi' => $data['doi']]))
+                    ->action(fn (Proceeding $record, array $data) => $record->doi()->updateOrCreate(['id' => $record->doi?->id], ['doi' => $data['doi']]))
             ])
             ->bulkActions([
                 // ...
