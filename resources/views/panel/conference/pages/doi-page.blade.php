@@ -1,25 +1,34 @@
 <x-filament-panels::page x-data="{ activeTab: 'submissions' }">
     <x-filament::tabs>
-        <x-filament::tabs.item
-            alpine-active="activeTab === 'submissions'"
-            x-on:click="activeTab = 'submissions'"
-            >
-            Submissions
-        </x-filament::tabs.item>
+        @if($articlesDoiEnabled)
+            <x-filament::tabs.item
+                alpine-active="activeTab === 'submissions'"
+                x-on:click="activeTab = 'submissions'"
+                >
+                Submissions
+            </x-filament::tabs.item>
+        @endif
 
-        <x-filament::tabs.item
+        @if ($proceedingsDoiEnabled)
+            <x-filament::tabs.item
             alpine-active="activeTab === 'proceedings'"
             x-on:click="activeTab = 'proceedings'"
-        >
-            Proceedings
-        </x-filament::tabs.item>
+            >
+                Proceedings
+            </x-filament::tabs.item>
+        @endif
     </x-filament::tabs>
 
-    <div x-show="activeTab === 'submissions'">
-        @livewire(App\Panel\Conference\Livewire\SubmissionDOI::class)
-    </div>
-    <div x-show="activeTab === 'proceedings'">
-        @livewire(App\Panel\Conference\Livewire\ProceedingDOI::class)
-    </div>
+    @if($articlesDoiEnabled)
+        <div x-show="activeTab === 'submissions'">
+            @livewire(App\Panel\Conference\Livewire\SubmissionDOI::class)
+        </div>
+    @endif
+
+    @if ($proceedingsDoiEnabled)
+        <div x-show="activeTab === 'proceedings'">
+            @livewire(App\Panel\Conference\Livewire\ProceedingDOI::class)
+        </div>
+    @endif
 
 </x-filament-panels::page>
