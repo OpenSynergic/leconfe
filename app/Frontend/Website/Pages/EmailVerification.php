@@ -2,9 +2,11 @@
 
 namespace App\Frontend\Website\Pages;
 
-use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
-use DanHarrin\LivewireRateLimiting\WithRateLimiting;
+use App\Facades\Settings;
+use Livewire\Attributes\Title;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
+use DanHarrin\LivewireRateLimiting\WithRateLimiting;
+use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 
 class EmailVerification extends Page
 {
@@ -14,7 +16,7 @@ class EmailVerification extends Page
 
     public function mount()
     {
-        if (! setting('must_verify_email')) {
+        if (! Settings::get('must_verify_email')) {
             return redirect()->route('filament.panel.tenant');
         }
 

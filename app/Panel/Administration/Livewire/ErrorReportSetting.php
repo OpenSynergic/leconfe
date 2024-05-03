@@ -3,6 +3,7 @@
 namespace App\Panel\Administration\Livewire;
 
 use App\Actions\Settings\SettingUpdateAction;
+use App\Facades\Settings;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Section;
@@ -22,7 +23,7 @@ class ErrorReportSetting extends Component implements HasForms
     public function mount()
     {
         $this->form->fill([
-            'send-error-report' => setting('send-error-report'),
+            'send-error-report' => Settings::get('send-error-report'),
         ]);
     }
 

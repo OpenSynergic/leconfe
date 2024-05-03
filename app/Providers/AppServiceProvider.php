@@ -3,12 +3,15 @@
 namespace App\Providers;
 
 use App\Application;
+use App\Facades\SidebarFacade;
 use App\Models\Serie;
 use Livewire\Livewire;
+use App\Classes\Settings;
 use App\Models\Conference;
 use Illuminate\Support\Str;
 use App\Managers\BlockManager;
 use App\Managers\MetaTagManager;
+use App\Managers\SidebarManager;
 use Illuminate\Support\Facades\DB;
 use App\Routing\CustomUrlGenerator;
 use Illuminate\Support\Facades\App;
@@ -27,8 +30,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->scoped('block', function () {
-            return new BlockManager;
+        $this->app->scoped(SidebarManager::class, function () {
+            return new SidebarManager;
         });
 
         $this->app->scoped('metatag', function () {
@@ -55,6 +58,10 @@ class AppServiceProvider extends ServiceProvider
                 ),
                 $app['config']['app.asset_url']
             );
+        });
+
+        $this->app->bind('Settings', function ($app) {
+            return new Settings();
         });
     }
 
@@ -153,6 +160,7 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole() || !$this->app->isInstalled()) {
             return;
         }
+        $this->app->scopeCurrentConference();
 
         $pathInfos = explode('/', request()->getPathInfo());
         // Detect conference from URL path
@@ -167,13 +175,11 @@ class AppServiceProvider extends ServiceProvider
                 $serie = Serie::where('path', $pathInfos[3])->first();
                 $serie && $this->app->setCurrentSerieId($serie->getKey());
             }
-
         }
 
         // Scope livewire update path to current conference
         $currentConference = $this->app->getCurrentConference();
         if ($currentConference) {
-            $this->app->scopeCurrentConference();
             // Scope livewire update path to current serie
             $currentSerie = $this->app->getCurrentSerie();
             if ($currentSerie) {
@@ -184,7 +190,8 @@ class AppServiceProvider extends ServiceProvider
             } else {
                 Livewire::setUpdateRoute(fn ($handle) => Route::post($currentConference->path . '/livewire/update', $handle)->middleware('web'));
             }
-            setPermissionsTeamId($this->app->getCurrentConferenceId());
         }
+        
+        setPermissionsTeamId($this->app->getCurrentConferenceId());
     }
 }

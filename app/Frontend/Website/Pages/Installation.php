@@ -2,13 +2,14 @@
 
 namespace App\Frontend\Website\Pages;
 
-use App\Http\Middleware\SetupDefaultData;
-use App\Livewire\Forms\InstallationForm;
 use App\Utils\Installer;
+use Livewire\Attributes\Title;
 use App\Utils\PermissionChecker;
 use Illuminate\Support\Facades\App;
-use Jackiedo\Timezonelist\Facades\Timezonelist;
+use App\Livewire\Forms\InstallationForm;
+use App\Http\Middleware\SetupDefaultData;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
+use Jackiedo\Timezonelist\Facades\Timezonelist;
 
 class Installation extends Page
 {
@@ -40,7 +41,7 @@ class Installation extends Page
 
     public static function getLayout(): string
     {
-        return 'website.components.layouts.base';
+        return 'frontend.website.components.layouts.base';
     }
 
     public function checkPermission()

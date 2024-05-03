@@ -2,6 +2,7 @@
 
 namespace App\Panel\Administration\Pages;
 
+use App\Facades\Settings;
 use App\Infolists\Components\LivewireEntry;
 use App\Infolists\Components\VerticalTabs;
 use App\Panel\Administration\Livewire\AccessSetting;

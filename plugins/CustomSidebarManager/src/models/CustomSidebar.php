@@ -26,9 +26,8 @@ class CustomSidebar extends Model
     public function getRows()
     {
         $plugin = Plugin::getPlugin('CustomSidebarManager');
-        // dd($plugin->getSetting('blocks', []));
 
-        return $plugin->getSetting('blocks', []);
+        return $plugin->getSetting('custom_sidebars', []);
     }
 
     protected function sushiShouldCache()

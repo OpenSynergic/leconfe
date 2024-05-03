@@ -8,7 +8,7 @@
     <div class="navbar mx-auto max-w-7xl">
         <div class="navbar-start items-center w-auto sm:w-1/2 gap-2">
             <x-website::navigation-menu-mobile />
-            <x-website::logo/>
+            <x-website::logo :headerLogo="$headerLogo"/>
         </div>
         <div class="navbar-center hidden lg:flex relative z-10 w-auto">
             <x-website::navigation-menu :items="$primaryNavigationItems" />

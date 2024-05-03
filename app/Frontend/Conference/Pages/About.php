@@ -2,6 +2,7 @@
 
 namespace App\Frontend\Conference\Pages;
 
+use Livewire\Attributes\Title;
 use Illuminate\Contracts\Support\Htmlable;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 

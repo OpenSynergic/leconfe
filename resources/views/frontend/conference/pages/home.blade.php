@@ -249,17 +249,17 @@
                 </div>
                 <div class="cf-speakers space-y-6">
                     @foreach ($participantPosition as $position)
-                        @if ($position->participants->isNotEmpty())
+                        @if ($position->speakers->isNotEmpty())
                             <div class="space-y-4">
                                 <h3 class="text-base">{{ $position->name }}</h3>
-                                <div class="cf-speaker-list grid sm:grid-cols-2 gap-2">
-                                    @foreach ($position->participants as $participant)
-                                        <div class="cf-speaker h-full flex gap-2">
-                                            <img class="w-16 h-16 object-cover aspect-square rounded-full"
+                                <div class="grid gap-2 cf-speaker-list sm:grid-cols-2">
+                                    @foreach ($position->speakers as $participant)
+                                        <div class="flex h-full gap-2 cf-speaker">
+                                            <img class="object-cover w-16 h-16 rounded-full aspect-square"
                                                 src="{{ $participant->getFilamentAvatarUrl() }}"
                                                 alt="{{ $participant->fullName }}" />
                                             <div>
-                                                <div class="speaker-name text-sm text-gray-900">
+                                                <div class="text-sm text-gray-900 speaker-name">
                                                     {{ $participant->fullName }}
                                                 </div>
                                                 <div class="speaker-meta">

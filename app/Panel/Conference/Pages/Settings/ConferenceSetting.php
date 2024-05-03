@@ -4,13 +4,13 @@ namespace App\Panel\Conference\Pages\Settings;
 
 use App\Infolists\Components\LivewireEntry;
 use App\Infolists\Components\VerticalTabs as InfolistsVerticalTabs;
+use App\Panel\Administration\Livewire\SidebarSetting;
 use App\Panel\Conference\Livewire\Forms\Conferences\ContactSetting;
 use App\Panel\Conference\Livewire\Forms\Conferences\InformationSetting;
 use App\Panel\Conference\Livewire\Forms\Conferences\PrivacySetting;
 use App\Panel\Conference\Livewire\Forms\Conferences\RegistrationSetting;
 use App\Panel\Conference\Livewire\Forms\Conferences\SearchEngineSetting;
 use App\Panel\Conference\Livewire\Forms\Conferences\SetupSetting;
-use App\Panel\Conference\Livewire\Forms\Conferences\SidebarSetting;
 use App\Panel\Conference\Livewire\Forms\Conferences\SponsorSetting;
 use App\Panel\Conference\Livewire\NavigationMenuSetting;
 use Filament\Forms\Concerns\InteractsWithForms;

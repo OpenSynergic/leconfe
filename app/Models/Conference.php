@@ -69,6 +69,11 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
         return $this->hasMany(Topic::class);
     }
 
+    public function settings(): HasMany
+    {
+        return $this->hasMany(Setting::class);
+    }
+
     public function announcements(): HasMany
     {
         return $this->hasMany(Announcement::class);
@@ -97,6 +102,11 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
     public function series(): HasMany
     {
         return $this->hasMany(Serie::class);
+    }
+
+    public function roles(): HasMany
+    {
+        return $this->hasMany(Role::class);
     }
 
     public function getFilamentName(): string
@@ -190,7 +200,7 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
         return $this->getMeta('payment.supported_currencies') ?? ['usd'];
     }
 
-    public function getThumbnailUrl() : string
+    public function getThumbnailUrl(): string
     {
         return $this->getFirstMedia('thumbnail')?->getAvailableUrl(['thumb', 'thumb-xl']) ?? Vite::asset('resources/assets/images/placeholder-vertical.jpg');
     }

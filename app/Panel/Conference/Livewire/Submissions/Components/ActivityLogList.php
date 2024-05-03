@@ -2,6 +2,7 @@
 
 namespace App\Panel\Conference\Livewire\Submissions\Components;
 
+use App\Facades\Settings;
 use App\Models\Submission;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -34,14 +35,14 @@ class ActivityLogList extends \Livewire\Component implements HasForms, HasTable
                 TextColumn::make('created_at')
                     ->label('Date')
                     ->formatStateUsing(function ($state) {
-                        return $state->format(setting('format.date')).' '.$state->format(setting('format.time'));
+                        return $state->format(Settings::get('format_date')) . ' ' . $state->format(Settings::get('format_time'));
                     })
                     ->description(function ($record) {
                         return $record->created_at->diffForHumans();
                     }),
                 TextColumn::make('causer.fullName')
                     ->getStateUsing(function (Model $record) {
-                        if (! $record->causer_type) {
+                        if (!$record->causer_type) {
                             return 'System';
                         }
 

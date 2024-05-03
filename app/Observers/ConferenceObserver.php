@@ -2,14 +2,12 @@
 
 namespace App\Observers;
 
-use App\Actions\Participants\ParticipantPositionPopulateDefaultDataAction;
-use App\Actions\Roles\RolePopulateAction;
+use App\Actions\Authors\AuthorRolePopulateDefaultDataAction;
 use App\Actions\Roles\RolePopulateConferenceAction;
 use App\Models\Conference;
 use App\Models\Enums\UserRole;
 use App\Models\NavigationMenu;
 use App\Models\NavigationMenuItem;
-use App\Models\Role;
 
 class ConferenceObserver
 {
@@ -25,7 +23,7 @@ class ConferenceObserver
      */
     public function created(Conference $conference): void
     {
-        ParticipantPositionPopulateDefaultDataAction::run($conference);
+        AuthorRolePopulateDefaultDataAction::run($conference);
 
         $primaryNavigationMenu = NavigationMenu::create([
             'name' => 'Primary Navigation Menu',

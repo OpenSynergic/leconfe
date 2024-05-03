@@ -8,6 +8,8 @@ use App\Models\Submission;
 use App\Models\Participant;
 use App\Models\Announcement;
 use App\Models\ParticipantPosition;
+use App\Models\SpeakerRole;
+use Livewire\Attributes\Title;
 use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
@@ -25,10 +27,9 @@ class Home extends Page
     {
         return [
             'announcements' => Announcement::query()->get(),
-            'participantPosition' => ParticipantPosition::query()
-                ->where('type', 'speaker')
-                ->whereHas('participants')
-                ->with(['participants' => ['media', 'meta']])
+            'participantPosition' => SpeakerRole::query()
+                ->whereHas('speakers')
+                ->with(['speakers' => ['media', 'meta']])
                 ->get(),
             'committeePosition' => ParticipantPosition::query()
                 ->where('type', 'committee')

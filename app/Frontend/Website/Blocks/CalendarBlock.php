@@ -3,6 +3,7 @@
 namespace App\Frontend\Website\Blocks;
 
 use App\Classes\Block;
+use App\Facades\Settings;
 use App\Models\Conference;
 use Carbon\Carbon;
 
@@ -23,7 +24,7 @@ class CalendarBlock extends Block
         $formattedUpcomings = [];
 
         foreach ($upcomings as $upcoming) {
-            $upcomingDate = $upcoming->date_start?->format(setting('format.date'));
+            $upcomingDate = $upcoming->date_start?->format(Settings::get('format_date'));
 
             $formattedUpcomings[$upcomingDate] = [
                 'modifier' => 'upcoming_timeline',

@@ -2,6 +2,7 @@
 
 namespace App\Frontend\Conference\Pages;
 
+use Livewire\Attributes\Title;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 
 class PrivacyStatement extends Page

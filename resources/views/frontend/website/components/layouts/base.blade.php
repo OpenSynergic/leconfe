@@ -1,16 +1,13 @@
 @props([
-    'livewire'
+    'title' => null,
 ])
-
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <x-website::layouts.head :title="$title" />
 
-<x-website::layouts.head :livewire="$livewire"/>
+    <body class="page antialiased" x-data>
+        {{ $slot }}
 
-<body class="page page-{{ strtolower($livewire->getTitle()) }} antialiased" x-data>
-    {{ $slot }}
-
-    @livewireScriptConfig 
-</body>
-
+        @livewireScriptConfig
+    </body>
 </html>

@@ -2,6 +2,7 @@
 
 namespace App\Managers;
 
+use HTML5;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 
@@ -37,7 +38,9 @@ class MetaTagManager
     {
         return new HtmlString(
             $this->all()
-                ->map(fn ($content, $name) => "<meta name=\"{$name}\" content=\"{$content}\">")
+                ->map(fn ($content, $name) => <<<HTML
+                    <meta name="{$name}" content="{$content}">
+                HTML)
                 ->implode("\n")
         );
     }
