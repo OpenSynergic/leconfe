@@ -24,7 +24,7 @@
                         @endphp
 
                         <span
-                            class="badge {{ $badgeClass }} text-white rounded-full px-3 text-xs flex items-center justify-center h-8 outline-0">{{ $currentConference->type }}</span>
+                            class="badge {{ $badgeClass }} text-white rounded-full px-3 text-xs flex items-center justify-center h-8 outline-0 border-none">{{ $currentConference->type }}</span>
                     </div>
                     @if ($currentConference->getMeta('description'))
                         <div class="user-content">
@@ -192,28 +192,29 @@
                 <div x-show="activeTab === 'editorial-committee'" class="p-4 border border-t-0 border-gray-300 ">
                     <article id="editorial-committee">
                         @if ($committeePosition->isNotEmpty())
-                            <h2>Editorial</h2>
+                            {{-- <h2>Editorial</h2> --}}
                             <div class="flex flex-col flex-start gap-y-4 my-2">
-                                @foreach ($committeePosition as $position)
-                                    @if ($position->participants->isNotEmpty())
-                                        @foreach ($position->participants as $participant)
+                                @foreach ($committeePosition as $committeeRoles)
+                                    @if ($committeeRoles->committees)
+                                        <h1>{{ $committeeRoles->name }}</h1>
+                                        @foreach ($committeeRoles->committees as $committee)
                                             <div class="flex flex-row text-xs w-fit items-center">
-                                                <img src="{{ $participant->getFilamentAvatarUrl() }}"
-                                                    alt="{{ $participant->fullName }}"
+                                                <img src="{{ $committee->getFilamentAvatarUrl() }}"
+                                                    alt="{{ $committee->fullName }}"
                                                     class="rounded-full w-16 h-16 m-auto block">
                                                 <div class="pl-4">
-                                                    <h3>{{ $participant->fullName }}</h3>
-                                                    <p class="text-primary text-primary-600">{{ $position->name }}</p>
+                                                    <h3>{{ $committee->fullName }}</h3>
+                                                    <p class="text-primary text-primary-600">{{ $committee->name }}</p>
                                                     <p class="text-secondary">
-                                                        {{ $participant->getMeta('affiliation') }}
+                                                        {{ $committee->getMeta('affiliation') }}
                                                     </p>
                                                     <div class="flex flex-row items-center py-1">
-                                                        @if ($participant->getMeta('google_scholar_id'))
+                                                        @if ($committee->getMeta('google_scholar_id'))
                                                             <img class="w-4 h-4 mr-2"
                                                                 src="{{ Vite::asset('resources/assets/images/google-scholar-logo.svg') }}"
                                                                 alt="">
                                                             @php
-                                                                $googleScholarID = $participant->getMeta(
+                                                                $googleScholarID = $committee->getMeta(
                                                                     'google_scholar_id',
                                                                 );
                                                                 $language = 'en';
@@ -284,7 +285,7 @@
             </section>
         @endif
 
-        @if ($acceptedSubmission->isNotEmpty())
+        {{-- @if ($acceptedSubmission->isNotEmpty())
             <section id="conference-accepted-papers" class="flex flex-col gap-y-0 space-y-4">
                 <div class="flex items-center">
                     <img src="{{ Vite::asset('resources/assets/images/mingcute_paper-line.svg') }}" alt="">
@@ -319,6 +320,6 @@
                     @endforeach
                 </div>
             </section>
-        @endif
+        @endif --}}
     </div>
 </x-website::layouts.main>
