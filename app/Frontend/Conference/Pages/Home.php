@@ -35,7 +35,7 @@ class Home extends Page
             'announcements' => Announcement::query()->get(),
             'committeePosition' => $committeePosition,
             'participantPosition' => $participantPosition,
-            'acceptedSubmission' => app()->getCurrentConference()->submission()->published(),
+            'acceptedSubmission' => app()->getCurrentConference()->submission()->published()->get(),
             'topics' => Topic::query()->get(),
             'venues' => Venue::query()->get(),
         ];

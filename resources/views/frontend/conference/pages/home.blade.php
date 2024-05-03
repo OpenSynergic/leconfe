@@ -285,7 +285,7 @@
             </section>
         @endif
 
-        {{-- @if ($acceptedSubmission->isNotEmpty())
+        @if ($acceptedSubmission->isNotEmpty())
             <section id="conference-accepted-papers" class="flex flex-col gap-y-0 space-y-4">
                 <div class="flex items-center">
                     <img src="{{ Vite::asset('resources/assets/images/mingcute_paper-line.svg') }}" alt="">
@@ -320,6 +320,6 @@
                     @endforeach
                 </div>
             </section>
-        @endif --}}
+        @endif
     </div>
 </x-website::layouts.main>
