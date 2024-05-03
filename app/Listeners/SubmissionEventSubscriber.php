@@ -11,14 +11,16 @@ use Illuminate\Events\Dispatcher;
 
 class SubmissionEventSubscriber
 {
-
     public function generateDoiUponReachingEditingStage(Accepted $event)
     {
         $doiEnabled = app()->getCurrentConference()->getMeta('doi_enabled');
         $isAutomaticAssignmentUponReachingEditingStage = app()->getCurrentConference()->getMeta('doi_automatic_assignment') == 'edit_stage';
+        $doiFormat = app()->getCurrentConference()->getMeta('doi_format');
+
         if (!$doiEnabled) return;
         if (!$isAutomaticAssignmentUponReachingEditingStage) return;
-        
+        if ($doiFormat === 'none') return;
+
         if (!$event->submission->doi) {
             $event->submission
                 ->doi()
@@ -30,9 +32,12 @@ class SubmissionEventSubscriber
     {
         $doiEnabled = app()->getCurrentConference()->getMeta('doi_enabled');
         $isAutomaticAssignmentUponPublication = app()->getCurrentConference()->getMeta('doi_automatic_assignment') == 'published';
+        $doiFormat = app()->getCurrentConference()->getMeta('doi_format');
+
         if (!$doiEnabled) return;
         if (!$isAutomaticAssignmentUponPublication) return;
-        
+        if ($doiFormat === 'none') return;
+
         if (!$event->submission->doi) {
             $event->submission
                 ->doi()
