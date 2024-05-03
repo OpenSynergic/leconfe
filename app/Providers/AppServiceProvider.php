@@ -87,6 +87,9 @@ class AppServiceProvider extends ServiceProvider
 
     protected function extendStr()
     {
+        /**
+         * Add macro to Str class to mask email address.
+         */
         Str::macro('maskEmail', function ($email) {
             $mail_parts = explode('@', $email);
             $domain_parts = explode('.', $mail_parts[1]);
