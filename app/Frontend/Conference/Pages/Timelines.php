@@ -3,6 +3,7 @@
 namespace App\Frontend\Conference\Pages;
 
 use App\Models\Timeline;
+use Livewire\Attributes\Title;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 
 class Timelines extends Page

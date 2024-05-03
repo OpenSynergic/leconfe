@@ -3,8 +3,9 @@
 namespace App\Frontend\Conference\Pages;
 
 use App\Models\Topic;
-use Illuminate\Database\Eloquent\Collection;
+use Livewire\Attributes\Title;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Database\Eloquent\Collection;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 

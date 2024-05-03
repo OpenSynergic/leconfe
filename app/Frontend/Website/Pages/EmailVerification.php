@@ -3,9 +3,10 @@
 namespace App\Frontend\Website\Pages;
 
 use App\Facades\Settings;
-use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
-use DanHarrin\LivewireRateLimiting\WithRateLimiting;
+use Livewire\Attributes\Title;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
+use DanHarrin\LivewireRateLimiting\WithRateLimiting;
+use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 
 class EmailVerification extends Page
 {

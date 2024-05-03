@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Http\Middleware\IdentifyConference;
-use App\Http\Middleware\SetupDefaultData;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
@@ -28,7 +27,6 @@ class FrontendServiceProvider extends ServiceProvider
             Livewire::addPersistentMiddleware([
                 'web',
                 IdentifyConference::class,
-                SetupDefaultData::class,
             ]);
         });
     }
@@ -48,11 +46,9 @@ class FrontendServiceProvider extends ServiceProvider
             ->path('')
             ->layout('frontend.website.components.layouts.app')
             ->bootUsing(function () {
-
             })
             ->middleware([
                 'web',
-                SetupDefaultData::class,
             ], true)
             ->discoverPages(in: app_path('Frontend/Website/Pages'), for: 'App\\Frontend\\Website\\Pages');
     }
@@ -62,18 +58,12 @@ class FrontendServiceProvider extends ServiceProvider
         return $pageGroup
             ->id('conference')
             ->path('{conference:path}')
-            ->middleware([
-                'web',
-                SetupDefaultData::class,
-            ], true)
             ->layout('frontend.website.components.layouts.app')
             ->bootUsing(function () {
-
             })
             ->middleware([
                 'web',
                 IdentifyConference::class,
-                SetupDefaultData::class,
             ], true)
             ->discoverPages(in: app_path('Frontend/Conference/Pages'), for: 'App\\Frontend\\Conference\\Pages');
     }

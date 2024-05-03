@@ -2,18 +2,19 @@
 
 namespace App\Frontend\Conference\Pages;
 
-use App\Actions\User\UserCreateAction;
-use App\Models\Conference;
-use App\Models\Enums\UserRole;
 use App\Models\Role;
-use DanHarrin\LivewireRateLimiting\WithRateLimiting;
-use Filament\Facades\Filament;
-use Filament\Http\Responses\Auth\Contracts\RegistrationResponse;
-use Illuminate\Auth\Events\Registered;
+use App\Models\Conference;
+use Squire\Models\Country;
 use Illuminate\Support\Arr;
 use Livewire\Attributes\Rule;
+use App\Models\Enums\UserRole;
+use Filament\Facades\Filament;
+use Livewire\Attributes\Title;
+use App\Actions\User\UserCreateAction;
+use Illuminate\Auth\Events\Registered;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
-use Squire\Models\Country;
+use DanHarrin\LivewireRateLimiting\WithRateLimiting;
+use Filament\Http\Responses\Auth\Contracts\RegistrationResponse;
 
 class Register extends Page
 {

@@ -6,6 +6,7 @@ import defaultTheme from 'tailwindcss/defaultTheme'
 export default {
     content: [
         './resources/views/frontend/**/*.blade.php',
+        './resources/views/errors/**/*.blade.php',
     ],
     theme: {
         extend: {

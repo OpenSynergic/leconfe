@@ -16,7 +16,7 @@ use Rahmanramsi\LivewirePageGroup\Pages\Page;
 class Home extends Page
 {
     use WithPagination, WithoutUrlPagination;
-
+    
     protected static string $view = 'frontend.website.pages.home';
 
 
@@ -24,9 +24,9 @@ class Home extends Page
     {
         return [
             'sponsors' => Sponsor::ordered()->with('media')->get(),
-            'currentConferences' => Conference::active()->with('media')->paginate(6, pageName:'currentConferencesPage'),
-            'upcomingConferences' => Conference::upcoming()->with('media')->paginate(6, pageName:'upcomingConferencesPage'),
-            'allConferences' => Conference::with('media')->paginate(6, pageName:'allConferencesPage'),
+            'currentConferences' => Conference::active()->with('media')->paginate(6, pageName: 'currentConferencesPage'),
+            'upcomingConferences' => Conference::upcoming()->with('media')->paginate(6, pageName: 'upcomingConferencesPage'),
+            'allConferences' => Conference::with('media')->paginate(6, pageName: 'allConferencesPage'),
         ];
     }
 

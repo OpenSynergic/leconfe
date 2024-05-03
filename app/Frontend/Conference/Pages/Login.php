@@ -2,12 +2,13 @@
 
 namespace App\Frontend\Conference\Pages;
 
-use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
-use DanHarrin\LivewireRateLimiting\WithRateLimiting;
-use Filament\Facades\Filament;
-use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Rule;
+use Filament\Facades\Filament;
+use Livewire\Attributes\Title;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
+use Illuminate\Validation\ValidationException;
+use DanHarrin\LivewireRateLimiting\WithRateLimiting;
+use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 
 class Login extends Page
 {
