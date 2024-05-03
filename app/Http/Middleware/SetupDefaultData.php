@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Facades\MetaTag;
 use Closure;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use luizbills\CSS_Generator\Generator as CSSGenerator;
@@ -40,7 +41,7 @@ class SetupDefaultData
         View::share('headerLogo', $site->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl']));
         View::share('headerLogoAltText', $site->getMeta('name'));
         View::share('contextName', $site->getMeta('name'));
-        View::share('footer', $site->getMeta('page_footer'));
+        View::share('pageFooter', $site->getMeta('page_footer'));
         View::share('favicon', $site->getFirstMediaUrl('favicon'));
         View::share('styleSheet', $site->getFirstMediaUrl('styleSheet'));
 
@@ -62,7 +63,7 @@ class SetupDefaultData
         View::share('headerLogo', $currentConference->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl']));
         View::share('headerLogoAltText', $currentConference->name);
         View::share('contextName', $currentConference->name);
-        View::share('footer', $currentConference->getMeta('page_footer'));
+        View::share('pageFooter', $currentConference->getMeta('page_footer'));
         View::share('favicon', $currentConference->getFirstMediaUrl('favicon'));
         View::share('styleSheet', $currentConference->getFirstMediaUrl('styleSheet'));
 

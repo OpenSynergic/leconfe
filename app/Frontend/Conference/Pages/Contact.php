@@ -3,6 +3,7 @@
 namespace App\Frontend\Conference\Pages;
 
 use Livewire\Attributes\Rule;
+use Livewire\Attributes\Title;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 
 class Contact extends Page
