@@ -51,7 +51,7 @@
                         </div>
                     @endif
                     <div>
-                        <a href=""
+                        <a href="{{ route('filament.conference.resources.submissions.index', ['conference' => $currentConference]) }}"
                             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary focus:outline-none focus:ring-2 focus:ring-sky-400 hover:bg-sky-600 w-fit">
                             <x-heroicon-o-document-arrow-up class="h-5 w-5 mr-2" />
                             Submit Now
