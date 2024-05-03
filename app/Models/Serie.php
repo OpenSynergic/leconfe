@@ -35,6 +35,11 @@ class Serie extends Model implements HasMedia, HasAvatar, HasName
         'date_end' => 'date',
     ];
 
+    public function scopeActive($query)
+    {
+        return $query->where('active', true);
+    }
+
     public function conference() : BelongsTo
     {
         return $this->belongsTo(Conference::class);

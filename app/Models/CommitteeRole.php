@@ -34,4 +34,11 @@ class CommitteeRole extends Model implements Sortable
     {
         $query->where('type', $type);
     }
+
+    public function scopeByActiveSeries($query, $seriesId)
+    {
+        return $query->where('serie_id', $seriesId)
+            ->whereHas('committees')
+            ->with(['committees' => ['media', 'meta']]);
+    }
 }
