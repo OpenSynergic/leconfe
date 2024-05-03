@@ -16,7 +16,7 @@
     </x-filament::tabs>
 
     <div x-show="activeTab === 'submissions'">
-        Submission DOI Table
+        @livewire(App\Panel\Conference\Livewire\SubmissionDOI::class)
     </div>
     <div x-show="activeTab === 'proceedings'">
         @livewire(App\Panel\Conference\Livewire\ProceedingDOI::class)

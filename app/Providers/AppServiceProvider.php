@@ -7,6 +7,7 @@ use App\Facades\SidebarFacade;
 use App\Models\Serie;
 use Livewire\Livewire;
 use App\Classes\Settings;
+use App\Listeners\SubmissionEventSubscriber;
 use App\Models\Conference;
 use Illuminate\Support\Str;
 use App\Managers\BlockManager;
@@ -23,6 +24,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Event;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -79,6 +81,8 @@ class AppServiceProvider extends ServiceProvider
         $this->setupStorage();
         $this->extendStr();
         $this->detectConference();
+
+        Event::subscribe(SubmissionEventSubscriber::class);
     }
 
     protected function extendStr()

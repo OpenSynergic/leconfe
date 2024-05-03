@@ -29,7 +29,6 @@ class DOISetup extends Component implements HasForms
 
     public function mount(): void
     {
-        // dd(app()->getCurrentConference()->getAllMeta());
         $this->form->fill([
             'meta' => app()->getCurrentConference()->getAllMeta(),
         ]);
@@ -83,8 +82,8 @@ class DOISetup extends Component implements HasForms
                             ->helperText(new HtmlString('When should a submission be assigned a DOI?'))
                             ->placeholder('Never')
                             ->options([
-                                'on_copyediting' => 'Upon reaching copyediting stage',
-                                'on_publication' => 'Upon Publication',
+                                'edit_stage' => 'Upon reaching editing stage',
+                                'published' => 'Upon Publication',
                             ]),
                         Fieldset::make('DOI Format')
                             ->schema([

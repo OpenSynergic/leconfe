@@ -22,7 +22,6 @@ class DOIPage extends Page
 
     public function mount()
     {
-        // dd(DOIStatus::Unregistered->name);
     }
 
     public static function getRoutePath(): string

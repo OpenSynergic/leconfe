@@ -6,6 +6,7 @@ use App\Infolists\Components\LivewireEntry;
 use App\Panel\Conference\Livewire\Forms\Conferences\DOISetup;
 use App\Panel\Conference\Livewire\Forms\Conferences\SearchEngineSetting;
 use App\Infolists\Components\VerticalTabs as InfolistsVerticalTabs;
+use App\Panel\Conference\Livewire\Forms\Conferences\DOIRegistration;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Components\Tabs;
@@ -53,7 +54,7 @@ class DistributionSetting extends Page implements HasForms, HasInfolists
                                                 LivewireEntry::make('doi-setting')
                                                     ->livewire(DOISetup::class),
                                             ]),
-                                        ]),
+                                    ]),
                             ]),
                         Tabs\Tab::make('Search Indexing')
                             ->icon('heroicon-o-magnifying-glass')
