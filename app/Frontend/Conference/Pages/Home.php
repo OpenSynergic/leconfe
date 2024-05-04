@@ -25,29 +25,29 @@ class Home extends Page
     protected function getViewData(): array
     {
         $activeSeries = app()->getCurrentConference()->series()->active()->first();
+        $committeePosition = $participantPosition = [];
+
         if ($activeSeries) {
             $committeePosition = CommitteeRole::byActiveSeries($activeSeries->id)->get();
             $participantPosition = SpeakerRole::byActiveSeries($activeSeries->id)->get();
         }
 
-        $additional_tabs = app()->getCurrentConference()->getMeta('additional_information');
-        $filtered_tabs = array_filter($additional_tabs, function($tab) {
-            return $tab['is_shown'] === true;
-        });
-        $filtered_tabs = array_values($filtered_tabs);
-
-
+        $additional_tabs = array_filter(
+            app()->getCurrentConference()->getMeta('additional_information'),
+            fn ($tab) => $tab['is_shown'] ?? false
+        );
 
         return [
             'announcements' => Announcement::query()->get(),
             'committeePosition' => $committeePosition,
             'participantPosition' => $participantPosition,
             'acceptedSubmission' => app()->getCurrentConference()->submission()->published()->get(),
-            'additional_information' => $filtered_tabs,
+            'additional_information' => array_values($additional_tabs),
             'topics' => Topic::query()->get(),
             'venues' => Venue::query()->get(),
         ];
     }
+
 
     public static function routes(PageGroup $pageGroup): void
     {
