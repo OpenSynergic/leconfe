@@ -51,13 +51,13 @@ class AdditionalInformationSetting extends Component implements HasForms
                                     ->schema([
                                         TextInput::make('title')->required()->columns(1),
                                         Toggle::make('is_shown')
+                                            ->helperText('Toggle to display this at the conference landing page')
                                             ->onColor('success')
                                             ->offColor('gray')
                                             ->columns(1),
                                     ])->columns(1),
                                 TinyEditor::make('content')->required()->columns(2),
-                            ])->columns(2)
-                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? null),
+                            ])->columns(2),
                     ]),
 
                 Actions::make([
