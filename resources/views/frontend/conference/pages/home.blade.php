@@ -94,28 +94,20 @@
         @endif
 
         <section id="conference-detail-tabs" class="space-y-4">
-            <div x-data="{ activeTab: 'information' }" class=" bg-white">
-                <div
-                    class="border border-t-0 border-x-0 border-gray-300 flex space-x-1 sm:space-x-2 overflow-x-auto overflow-y-hidden">
+            <div x-data="{ activeTab: 'information' }" class="bg-white">
+                <div class="border border-t-0 border-x-0 border-gray-300 flex space-x-1 sm:space-x-2 overflow-x-auto overflow-y-hidden">
                     <button @click="activeTab = 'information'"
                         :class="{ 'text-primary bg-white': activeTab === 'information', 'bg-gray-100': activeTab !== 'information' }"
                         class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Information</button>
                     <button @click="activeTab = 'participant-info'"
                         :class="{ 'text-primary bg-white': activeTab === 'participant-info', 'bg-gray-100': activeTab !== 'participant-info' }"
-                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Participant
-                        Info</button>
-                    <button @click="activeTab = 'registration-info'"
-                        :class="{ 'text-primary bg-white': activeTab === 'registration-info', 'bg-gray-100': activeTab !== 'registration-info' }"
-                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Registration
-                        Info</button>
-                    <button @click="activeTab = 'contact-info'"
-                        :class="{ 'text-primary bg-white': activeTab === 'contact-info', 'bg-gray-100': activeTab !== 'contact-info' }"
-                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Contact
-                        Info</button>
-                    <button @click="activeTab = 'editorial-committee'"
-                        :class="{ 'text-primary bg-white': activeTab === 'editorial-committee', 'bg-gray-100': activeTab !== 'editorial-committee' }"
-                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Editorial
-                        Committee</button>
+                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Participant Info</button>
+
+                    @foreach ($additional_information as $info)
+                        <button @click="activeTab = '{{ strtolower(str_replace(' ', '_', $info['title'])) }}'"
+                            :class="{ 'text-primary bg-white': activeTab === '{{ strtolower(str_replace(' ', '_', $info['title'])) }}', 'bg-gray-100': activeTab !== '{{ strtolower(str_replace(' ', '_', $info['title'])) }}' }"
+                            class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">{{ $info['title'] }}</button>
+                    @endforeach
                 </div>
                 <div x-show="activeTab === 'information'" class="p-4 border border-t-0 border-gray-300 ">
                     <article id="conference-information" class="flex flex-col gap-2">
@@ -148,17 +140,17 @@
 
                 <div x-show="activeTab === 'participant-info'" class="p-4 border border-t-0 border-gray-300 ">
                     <article id="participant-info">
-                        <h2>Quota</h2>
+                        <p>Quota</p>
                         <div class="overflow-x-auto py-2">
-                            <table class="text-sm border-separate border-spacing-1 sm:border-spacing-2 text-nowrap">
-                                <tr>
-                                    <td>Paper</td>
-                                    <td>:</td>
-                                    <td>400 Papers</td>
-                                    <td>
+                            <table class="text-sm text-nowrap">
+                                <tr class="py-2">
+                                    <td class="pr-10">Paper</td>
+                                    <td class="pr-2">:</td>
+                                    <td class="pr-2">400 Papers</td>
+                                    <td class="pr-2">
                                         <span class="badge badge-primary text-xs h-6 ">355 Accepted</span>
                                     </td>
-                                    <td><span class="badge badge-outline text-xs border h-6 text-primary">45
+                                    <td class="pr-2"><span class="badge badge-outline text-xs border h-6 text-primary">45
                                             Available</span></td>
                                 </tr>
                                 <tr>
@@ -175,70 +167,18 @@
                         </div>
                     </article>
                 </div>
-                <div x-show="activeTab === 'registration-info'" class="p-4 border border-t-0 border-gray-300 ">
-                    @if ($currentConference->getMeta('registration_info'))
-                        <article id="registration-info" class="user-content overflow-x-auto">
-                            {!! $currentConference->getMeta('registration_info') !!}
+
+                @foreach ($additional_information as $info)
+                    <div x-show="activeTab === '{{ strtolower(str_replace(' ', '_', $info['title'])) }}'"
+                        class="p-4 border border-t-0 border-gray-300 ">
+                        <article id="{{ strtolower(str_replace(' ', '_', $info['title'])) }}"
+                            class="user-content overflow-x-auto">
+                            {!! $info['content'] !!}
                         </article>
-                    @endif
-                </div>
-                <div x-show="activeTab === 'contact-info'" class="p-4 border border-t-0 border-gray-300 ">
-                    @if ($currentConference->getMeta('additional_content'))
-                        <article id="contact-info" class="user-content overflow-x-auto">
-                            {!! $currentConference->getMeta('contact_info') !!}
-                        </article>
-                    @endif
-                </div>
-                <div x-show="activeTab === 'editorial-committee'" class="p-4 border border-t-0 border-gray-300 ">
-                    <article id="editorial-committee">
-                        @if ($committeePosition->isNotEmpty())
-                            {{-- <h2>Editorial</h2> --}}
-                            <div class="flex flex-col flex-start gap-y-4 my-2">
-                                @foreach ($committeePosition as $committeeRoles)
-                                    @if ($committeeRoles->committees)
-                                        <h1>{{ $committeeRoles->name }}</h1>
-                                        @foreach ($committeeRoles->committees as $committee)
-                                            <div class="flex flex-row text-xs w-fit items-center">
-                                                <img src="{{ $committee->getFilamentAvatarUrl() }}"
-                                                    alt="{{ $committee->fullName }}"
-                                                    class="rounded-full w-16 h-16 m-auto block">
-                                                <div class="pl-4">
-                                                    <h3>{{ $committee->fullName }}</h3>
-                                                    <p class="text-primary text-primary-600">{{ $committee->name }}</p>
-                                                    <p class="text-secondary">
-                                                        {{ $committee->getMeta('affiliation') }}
-                                                    </p>
-                                                    <div class="flex flex-row items-center py-1">
-                                                        @if ($committee->getMeta('google_scholar_id'))
-                                                            <img class="w-4 h-4 mr-2"
-                                                                src="{{ Vite::asset('resources/assets/images/google-scholar-logo.svg') }}"
-                                                                alt="">
-                                                            @php
-                                                                $googleScholarID = $committee->getMeta(
-                                                                    'google_scholar_id',
-                                                                );
-                                                                $language = 'en';
-                                                                $link =
-                                                                    'https://scholar.google.com/citations?user=' .
-                                                                    $googleScholarID .
-                                                                    '&hl=' .
-                                                                    $language .
-                                                                    '&oi=ao';
-                                                            @endphp
-                                                            <a href="{{ $link }}"
-                                                                class="text-cyan-500 underline underline-offset-2">{{ strtoupper($googleScholarID) }}</a>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    @endif
-                                @endforeach
-                            </div>
-                        @endif
-                    </article>
-                </div>
+                    </div>
+                @endforeach
             </div>
+
         </section>
 
         @if ($participantPosition->isNotEmpty())
@@ -295,7 +235,7 @@
                     @foreach ($acceptedSubmission as $submission)
                         <div class="flex flex-col sm:flex-row">
                             <div class="w-8 flex-none hidden sm:block">
-                                <p class="text-lg font-bold">{{ $loop->index+1 }}.</p>
+                                <p class="text-lg font-bold">{{ $loop->index + 1 }}.</p>
                             </div>
                             <div
                                 class="flex justify-start px-0 sm:px-4 items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
@@ -312,7 +252,7 @@
                                         alt="People Icon" class="w-5 h-5 mr-2">
 
                                     <p class="text-sm text-gray-700">
-                                            Dr. Ghavin Reynara
+                                        Dr. Ghavin Reynara
                                     </p>
                                 </div>
                             </div>

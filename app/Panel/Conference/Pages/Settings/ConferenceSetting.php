@@ -90,22 +90,6 @@ class ConferenceSetting extends Page implements HasForms, HasInfolists
                                                 'conference' => App::getCurrentConference(),
                                             ]),
                                         ]),
-                                        // InfolistsVerticalTabs\Tab::make('Registration')
-                                        // ->icon('heroicon-o-pencil-square')
-                                        // ->schema([
-                                        //     LivewireEntry::make('information-setting')
-                                        //     ->livewire(RegistrationSetting::class, [
-                                        //         'conference' => App::getCurrentConference(),
-                                        //     ]),
-                                        // ]),
-                                        // InfolistsVerticalTabs\Tab::make('Contact')
-                                        //     ->icon('heroicon-o-phone')
-                                        //     ->schema([
-                                        //         LivewireEntry::make('information-setting')
-                                        //             ->livewire(ContactSetting::class, [
-                                        //                 'conference' => App::getCurrentConference(),
-                                        //             ]),
-                                        //     ]),
                                         InfolistsVerticalTabs\Tab::make('Sponsors')
                                             ->icon("lineawesome-users-solid")
                                             ->schema([
