@@ -14,6 +14,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Concerns\InteractsWithForms;
 use App\Actions\Conferences\ConferenceUpdateAction;
+use Filament\Forms\Components\Group;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 
 class AdditionalInformationSetting extends Component implements HasForms
@@ -41,22 +42,24 @@ class AdditionalInformationSetting extends Component implements HasForms
         return $form
             ->model($this->conference)
             ->schema([
-                Section::make()
+                Section::make('')
                     ->schema([
-                        Section::make('')
+                        Repeater::make('meta.additional_information')
+                            ->helperText('Add your additional information here. Feel free to format it as you prefer.')
                             ->schema([
-                                Repeater::make('meta.additional_information')
-                                    ->helperText('aaa')
+                                Group::make()
                                     ->schema([
-                                        TextInput::make('title')->required(),
-                                        TinyEditor::make('content')->required(),
+                                        TextInput::make('title')->required()->columns(1),
                                         Toggle::make('is_shown')
                                             ->onColor('success')
                                             ->offColor('gray')
-                                    ])
-                                    ->itemLabel(fn (array $state): ?string => $state['title'] ?? null),
-                            ])
+                                            ->columns(1),
+                                    ])->columns(1),
+                                TinyEditor::make('content')->required()->columns(2),
+                            ])->columns(2)
+                            ->itemLabel(fn (array $state): ?string => $state['title'] ?? null),
                     ]),
+
                 Actions::make([
                     Action::make('save')
                         ->label('Save')
