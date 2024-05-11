@@ -16,6 +16,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Panel\Conference\Resources\ProceedingResource\Pages;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProceedingResource extends Resource
 {
@@ -24,6 +25,13 @@ class ProceedingResource extends Resource
     protected static ?int $navigationSort = 2;
 
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
+
+    public static function getEloquentQuery(): Builder
+    {
+        return static::getModel()::query()
+            ->orderBy('order_column')
+            ->withCount('submissions');
+    }
 
     public static function form(Form $form): Form
     {
@@ -60,6 +68,7 @@ class ProceedingResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->reorderable('order_column')
             ->columns([
                 IndexColumn::make('no'),
                 TextColumn::make('title')
@@ -98,6 +107,7 @@ class ProceedingResource extends Resource
                         ->action(fn (Proceeding $record) => $record->unpublish()),
                     Tables\Actions\Action::make('set_as_current')
                         ->requiresConfirmation()
+                        ->icon('heroicon-s-arrow-up-circle')
                         ->visible(fn (Proceeding $record) => $record->published && !$record->current)
                         ->action(fn (Proceeding $record) => $record->setAsCurrent()),
                     Tables\Actions\DeleteAction::make(),

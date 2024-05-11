@@ -42,6 +42,11 @@ class Proceeding extends Model implements HasMedia, Sortable
         return $query->where('published', $published);
     }
 
+    public function scopeCurrent($query, $current = true)
+    {
+        return $query->where('current', $current);
+    }
+
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('avatar')
