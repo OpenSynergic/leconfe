@@ -2,30 +2,20 @@
 
 namespace App\Panel\Conference\Resources;
 
-use App\Facades\Settings;
-use App\Panel\Conference\Resources\ProceedingResource\Pages;
-use App\Panel\Conference\Resources\ProceedingResource\RelationManagers;
-use App\Models\Proceeding;
-use App\Tables\Columns\IndexColumn;
-use Filament\Forms;
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Support\Enums\Alignment;
-use Filament\Support\Enums\MaxWidth;
 use Filament\Tables;
-use Filament\Tables\Columns\BadgeColumn;
-use Filament\Tables\Columns\Layout\Split;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Livewire\Component;
+use Filament\Forms\Form;
+use App\Facades\Settings;
+use App\Models\Proceeding;
+use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use App\Tables\Columns\IndexColumn;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use App\Panel\Conference\Resources\ProceedingResource\Pages;
 
 class ProceedingResource extends Resource
 {
