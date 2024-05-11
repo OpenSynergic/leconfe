@@ -6,13 +6,17 @@ use App\Models\Concerns\BelongsToConference;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\EloquentSortable\Sortable;
+use Spatie\EloquentSortable\SortableTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Proceeding extends Model implements HasMedia
+class Proceeding extends Model implements HasMedia, Sortable
 {
-    use HasFactory, InteractsWithMedia, BelongsToConference;
+    use HasFactory, InteractsWithMedia, BelongsToConference, SortableTrait;
+
+    protected $table = 'proceedings';
 
     protected $fillable = [
         'title',
