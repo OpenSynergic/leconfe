@@ -169,22 +169,21 @@ class ManageSubmissions extends ManageRecords
     public function getTabs(): array
     {
         return [
-            static::TAB_MYQUEUE => Tab::make('My Queue')
-                ->modifyQueryUsing(fn (): Builder => static::generateQueryByCurrentUser(static::TAB_MYQUEUE))
-                ->badge(fn (): int => static::generateQueryByCurrentUser(static::TAB_MYQUEUE)->count())
-                ->badgeColor(fn (): string => static::generateQueryByCurrentUser(static::TAB_MYQUEUE)->count() > 0 ? 'primary' : 'gray'),
-            static::TAB_ACTIVE => Tab::make('Active')
-                ->modifyQueryUsing(fn (): Builder => static::generateQueryByCurrentUser(static::TAB_ACTIVE))
-                ->badge(fn (): int => static::generateQueryByCurrentUser(static::TAB_ACTIVE)->count())
-                ->badgeColor(fn (): string => static::generateQueryByCurrentUser(static::TAB_ACTIVE)->count() > 0 ? 'primary' : 'gray'),
-            static::TAB_PUBLISHED => Tab::make('Published')
-                ->modifyQueryUsing(fn (): Builder => static::generateQueryByCurrentUser(static::TAB_PUBLISHED))
-                ->badge(fn (): int => static::generateQueryByCurrentUser(static::TAB_PUBLISHED)->count())
-                ->badgeColor(fn (): string => static::generateQueryByCurrentUser(static::TAB_PUBLISHED)->count() > 0 ? 'primary' : 'gray'),
-            static::TAB_ARCHIVED => Tab::make('Archived')
-                ->modifyQueryUsing(fn (): Builder => static::generateQueryByCurrentUser(static::TAB_ARCHIVED))
-                ->badge(fn (): int => static::generateQueryByCurrentUser(static::TAB_PUBLISHED)->count())
-                ->badgeColor(fn (): string => static::generateQueryByCurrentUser(static::TAB_PUBLISHED)->count() > 0 ? 'primary' : 'gray'),
+            static::TAB_MYQUEUE => $this->createTab('My Queue', static::TAB_MYQUEUE),
+            static::TAB_ACTIVE => $this->createTab('Active', static::TAB_ACTIVE),
+            static::TAB_PUBLISHED => $this->createTab('Published', static::TAB_PUBLISHED),
+            static::TAB_ARCHIVED => $this->createTab('Archived', static::TAB_ARCHIVED),
         ];
+    }
+
+    private function createTab(string $label, string $tabType): Tab
+    {
+        $query = static::generateQueryByCurrentUser($tabType);
+        $count = $query->count();
+
+        return Tab::make($label)
+            ->modifyQueryUsing(fn (): Builder => $query)
+            ->badge(fn (): int => $count)
+            ->badgeColor(fn (): string => $count > 0 ? 'primary' : 'gray');
     }
 }
