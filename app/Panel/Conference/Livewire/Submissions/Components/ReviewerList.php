@@ -40,6 +40,7 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\HtmlString;
 use Livewire\Component;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
 use STS\FilamentImpersonate\Tables\Actions\Impersonate;
@@ -131,12 +132,15 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ->get()
                         ->mapWithKeys(function (SubmissionFile $paper) {
                             return [
-                                $paper->getKey() => Action::make($paper->media->file_name)
-                                    ->label($paper->media->file_name)
-                                    ->url(function () use ($paper) {
-                                        return route('private.files', ['uuid' => $paper->media->uuid]);
-                                    })
-                                    ->link(),
+                                $paper->getKey() => new HtmlString(
+                                    Action::make($paper->media->file_name)
+                                        ->label($paper->media->file_name)
+                                        ->url(function () use ($paper) {
+                                            return route('private.files', ['uuid' => $paper->media->uuid]);
+                                        })
+                                        ->link()
+                                        ->toHtml()
+                                ),
                             ];
                         });
                 })
