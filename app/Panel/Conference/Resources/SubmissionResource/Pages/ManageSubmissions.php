@@ -168,16 +168,23 @@ class ManageSubmissions extends ManageRecords
     /** Need to be optimized */
     public function getTabs(): array
     {
-
         return [
             static::TAB_MYQUEUE => Tab::make('My Queue')
-                ->modifyQueryUsing(fn (): Builder => static::generateQueryByCurrentUser(static::TAB_MYQUEUE)),
+                ->modifyQueryUsing(fn (): Builder => static::generateQueryByCurrentUser(static::TAB_MYQUEUE))
+                ->badge(fn (): int => static::generateQueryByCurrentUser(static::TAB_MYQUEUE)->count())
+                ->badgeColor(fn (): string => static::generateQueryByCurrentUser(static::TAB_MYQUEUE)->count() > 0 ? 'primary' : 'gray'),
             static::TAB_ACTIVE => Tab::make('Active')
-                ->modifyQueryUsing(fn (): Builder => static::generateQueryByCurrentUser(static::TAB_ACTIVE)),
+                ->modifyQueryUsing(fn (): Builder => static::generateQueryByCurrentUser(static::TAB_ACTIVE))
+                ->badge(fn (): int => static::generateQueryByCurrentUser(static::TAB_ACTIVE)->count())
+                ->badgeColor(fn (): string => static::generateQueryByCurrentUser(static::TAB_ACTIVE)->count() > 0 ? 'primary' : 'gray'),
             static::TAB_PUBLISHED => Tab::make('Published')
-                ->modifyQueryUsing(fn (): Builder => static::generateQueryByCurrentUser(static::TAB_PUBLISHED)),
+                ->modifyQueryUsing(fn (): Builder => static::generateQueryByCurrentUser(static::TAB_PUBLISHED))
+                ->badge(fn (): int => static::generateQueryByCurrentUser(static::TAB_PUBLISHED)->count())
+                ->badgeColor(fn (): string => static::generateQueryByCurrentUser(static::TAB_PUBLISHED)->count() > 0 ? 'primary' : 'gray'),
             static::TAB_ARCHIVED => Tab::make('Archived')
-                ->modifyQueryUsing(fn (): Builder => static::generateQueryByCurrentUser(static::TAB_ARCHIVED)),
+                ->modifyQueryUsing(fn (): Builder => static::generateQueryByCurrentUser(static::TAB_ARCHIVED))
+                ->badge(fn (): int => static::generateQueryByCurrentUser(static::TAB_PUBLISHED)->count())
+                ->badgeColor(fn (): string => static::generateQueryByCurrentUser(static::TAB_PUBLISHED)->count() > 0 ? 'primary' : 'gray'),
         ];
     }
 }
