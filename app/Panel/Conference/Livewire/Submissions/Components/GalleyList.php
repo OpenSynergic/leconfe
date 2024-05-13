@@ -2,31 +2,39 @@
 
 namespace App\Panel\Conference\Livewire\Submissions\Components;
 
-use App\Constants\SubmissionFileCategory;
-use App\Models\Media;
-use App\Models\Review;
+use Filament\Forms\Get;
 use App\Models\Submission;
-use App\Models\SubmissionGalley;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Columns\Layout\Split;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use GuzzleHttp\Psr7\MimeType;
+use App\Models\SubmissionGalley;
+use App\Models\SubmissionFileType;
+use Illuminate\Support\HtmlString;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Forms\Components\TextInput;
+use App\Constants\SubmissionFileCategory;
+use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Columns\Layout\Split;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Tables\Concerns\InteractsWithTable;
 use Illuminate\Contracts\Database\Eloquent\Builder;
-use Spatie\MediaLibrary\Support\MediaStream;
+use Filament\Forms\Components\Actions\Action as FormAction;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use App\Actions\SubmissionGalleys\CreateSubmissionGalleyAction;
+use Filament\Forms\Components\Component;
+use Filament\Tables\Actions\Action;
 
 class GalleyList extends \Livewire\Component implements HasForms, HasTable
 {
     use InteractsWithForms, InteractsWithTable;
 
     public Submission $submission;
+
+    public const ACCEPTED_FILE_TYPES = ['pdf', 'docx', 'xls', 'png', 'jpg', 'jpeg'];
 
     public function render()
     {
@@ -36,7 +44,7 @@ class GalleyList extends \Livewire\Component implements HasForms, HasTable
     public function getQuery(): Builder
     {
         return $this->submission->galleys()
-            ->with(['media', 'file'])
+            ->with(['media', 'file.media'])
             ->orderBy('order_column')
             ->getQuery();
     }
@@ -46,7 +54,63 @@ class GalleyList extends \Livewire\Component implements HasForms, HasTable
         return [
             TextInput::make('label')
                 ->label('Label')
+                ->helperText(fn () => new HtmlString('
+                    <p class="text-sm italic text-gray-600">
+                        Typically used to identify the file format (e.g. PDF, HTML, etc.)
+                    </p>
+                '))
                 ->required(),
+            Toggle::make('is_remote_url')
+                ->label('This galley will be available at a separate website.')
+                ->live()
+                ->default(false),
+            TextInput::make('remote_url')
+                ->label('Remote URL')
+                ->visible(fn (Get $get) => $get('is_remote_url'))
+                ->required()
+                ->activeUrl()
+                ->placeholder('https://example.com/galley.pdf'),
+            Section::make('Upload File')
+                ->visible(fn (Get $get) => !$get('is_remote_url'))
+                ->schema([
+                    Select::make('media.type')
+                        ->required()
+                        ->options(
+                            fn () => SubmissionFileType::all()->pluck('name', 'id')->toArray()
+                        )
+                        ->searchable()
+                        ->createOptionForm([
+                            TextInput::make('name')
+                                ->required(),
+                        ])
+                        ->createOptionAction(function (FormAction $action) {
+                            $action->modalWidth('xl')
+                                ->color('primary')
+                                ->failureNotificationTitle('There was a problem creating the file type')
+                                ->successNotificationTitle('File type created successfully');
+                        })
+                        ->createOptionUsing(function (array $data) {
+                            SubmissionFileType::create($data);
+                        })
+                        ->live(),
+                    SpatieMediaLibraryFileUpload::make('media.files')
+                        ->required()
+                        ->previewable(false)
+                        ->downloadable()
+                        ->reorderable()
+                        ->disk('private-files')
+                        ->preserveFilenames()
+                        ->acceptedFileTypes(
+                            fn (): array => collect(static::ACCEPTED_FILE_TYPES)
+                                ->map(fn ($ext) => MimeType::fromExtension($ext))
+                                ->toArray()
+                        )
+                        ->collection(SubmissionFileCategory::GALLEY_FILES)
+                        ->visibility('private')
+                        // ->saveRelationshipsUsing(
+                        //     static fn (SpatieMediaLibraryFileUpload $component) => $component->saveUploadedFiles()
+                        // ),
+                ])
         ];
     }
 
@@ -60,7 +124,10 @@ class GalleyList extends \Livewire\Component implements HasForms, HasTable
                 Split::make([
                     TextColumn::make('label')
                         ->color('primary')
-                        ->url(fn (SubmissionGalley $galley) => $galley->file->media->getUrl())
+                        ->url(
+                            fn (SubmissionGalley $galley) => 
+                                $galley->file?->media ? route('submission-files.view', $galley->file->media->uuid) : $galley->remote_url
+                            )
                         ->openUrlInNewTab()
                 ]),
             ])
@@ -69,6 +136,23 @@ class GalleyList extends \Livewire\Component implements HasForms, HasTable
                     ->label('Add Galley')
                     ->modalWidth('2xl')
                     ->icon('heroicon-o-arrow-up-tray')
+                    ->createAnother(false)
+                    ->successNotificationTitle('Galley added successfully')
+                    ->failureNotificationTitle('There was a problem adding the galley')
+                    ->form(static::getGalleyFormSchema())
+                    ->using(function (array $data, \Livewire\Component $livewire) {
+                        try {
+                            $uploadMedia = $livewire->getMountedTableActionForm()->getComponent('mountedTableActionsData.0.media.files');
+
+                            $newGalley = CreateSubmissionGalleyAction::run($this->submission, $data, $uploadMedia);
+
+                            if ($newGalley instanceof SubmissionGalley) {
+                                return $newGalley;
+                            }
+                        } catch (\Throwable $th) {
+                            throw $th;
+                        }
+                    }),
             ]);
     }
 }
