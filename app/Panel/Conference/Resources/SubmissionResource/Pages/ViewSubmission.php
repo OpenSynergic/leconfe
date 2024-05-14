@@ -540,7 +540,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                         HorizontalTab::make('Workflow')
                             ->schema([
                                 Tabs::make()
-                                    ->spaceY('space-y-1.5')
+                                    ->verticalSpace('space-y-2')
                                     ->activeTab(function () {
                                         return match ($this->record->stage) {
                                             SubmissionStage::CallforAbstract => 1,
@@ -625,7 +625,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                     )
                                     ->content("You can't edit this submission because it is already published."),
                                 Tabs::make()
-                                    ->spaceY('space-y-1.5')
+                                    ->verticalSpace('space-y-2')
                                     // ->persistTabInQueryString('ptab') // ptab shorten of publication-tab
                                     ->tabs([
                                         Tab::make('Detail')

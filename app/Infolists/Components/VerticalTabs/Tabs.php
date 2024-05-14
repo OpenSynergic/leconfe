@@ -13,7 +13,7 @@ class Tabs extends ComponentsTabs
 
     protected string|Closure $position = 'left';
 
-    protected string|Closure $spaceY = '';
+    protected string|Closure $verticalSpace = '';
 
     public function position(string $position): static
     {
@@ -32,21 +32,21 @@ class Tabs extends ComponentsTabs
         return $this->position;
     }
 
-    public function spaceY(string $spaceY): static
+    public function verticalSpace(string $verticalSpace): static
     {
-        $spaceY = $this->evaluate($spaceY);
-        if (str_starts_with($spaceY, 'space-y-')){
-            $this->spaceY = $spaceY;
+        $verticalSpace = $this->evaluate($verticalSpace);
+        if (str_starts_with($verticalSpace, 'space-y-')){
+            $this->verticalSpace = $verticalSpace;
         } else {
-            throw new \Exception('Invalid spaceY provided. Only "space-y-" are allowed.');
+            throw new \Exception('Invalid verticalSpace provided. Only "space-y-" are allowed.');
         }
 
         return $this;
     }
 
-    public function getSpaceY(): string
+    public function getVerticalSpace(): string
     {
-        return $this->spaceY;
+        return $this->verticalSpace;
     }
 
     public function sticky(bool|Closure $sticky = true): static
