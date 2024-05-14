@@ -25,8 +25,14 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Actions\SubmissionGalleys\CreateSubmissionGalleyAction;
-use Filament\Forms\Components\Component;
-use Filament\Tables\Actions\Action;
+use App\Actions\SubmissionGalleys\UpdateMediaSubmissionGalleyFileAction;
+use App\Actions\SubmissionGalleys\UpdateSubmissionGalleyAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\DeleteAction;
+use Illuminate\Support\Collection;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class GalleyList extends \Livewire\Component implements HasForms, HasTable
 {
@@ -107,9 +113,36 @@ class GalleyList extends \Livewire\Component implements HasForms, HasTable
                         )
                         ->collection(SubmissionFileCategory::GALLEY_FILES)
                         ->visibility('private')
-                        // ->saveRelationshipsUsing(
-                        //     static fn (SpatieMediaLibraryFileUpload $component) => $component->saveUploadedFiles()
-                        // ),
+                        ->loadStateFromRelationshipsUsing(static function (SpatieMediaLibraryFileUpload $component, HasMedia $record): void {
+                            $media = $record->load('media')->getMedia($component->getCollection() ?? 'default')
+                                ->when(
+                                    $component->hasMediaFilter(),
+                                    fn (Collection $media) => $component->filterMedia($media)
+                                )
+                                ->when(
+                                    ! $component->isMultiple(),
+                                    fn (Collection $media): Collection => $media
+                                        ->when($record->file, fn ($query) => $query->where('id', $record->file->media_id))
+                                        ->take(1),
+                                )
+                                ->mapWithKeys(function (Media $media): array {
+                                    $uuid = $media->getAttributeValue('uuid');
+                
+                                    return [$uuid => $uuid];
+                                })
+                                ->toArray();
+                
+                            $component->state($media);
+                        })
+                        ->saveRelationshipsUsing(static function (SpatieMediaLibraryFileUpload $component, $context, $state, SubmissionGalley $record) {
+                            if ($context == 'edit') {
+                                $component->saveUploadedFiles();
+
+                                UpdateMediaSubmissionGalleyFileAction::run($record, $component->getState());
+
+                                // dd($component->getState(), $state, $livewire->getMountedTableActionForm()->getComponent('mountedTableActionsData.0.media.files')->getState());
+                            }
+                        }),
                 ])
         ];
     }
@@ -126,9 +159,9 @@ class GalleyList extends \Livewire\Component implements HasForms, HasTable
                         ->color('primary')
                         ->url(
                             fn (SubmissionGalley $galley) => 
-                                $galley->file?->media ? route('submission-files.view', $galley->file->media->uuid) : $galley->remote_url
-                            )
-                        ->openUrlInNewTab()
+                                $galley->file?->media ? route('submission-files.view', $galley->file->media->uuid) : $galley->remote_url,
+                            true
+                        )
                 ]),
             ])
             ->headerActions([
@@ -142,9 +175,11 @@ class GalleyList extends \Livewire\Component implements HasForms, HasTable
                     ->form(static::getGalleyFormSchema())
                     ->using(function (array $data, \Livewire\Component $livewire) {
                         try {
-                            $uploadMedia = $livewire->getMountedTableActionForm()->getComponent('mountedTableActionsData.0.media.files');
+                            $componentFile = ! $data['is_remote_url'] ?
+                                $livewire->getMountedTableActionForm()->getComponent('mountedTableActionsData.0.media.files') :
+                                null;
 
-                            $newGalley = CreateSubmissionGalleyAction::run($this->submission, $data, $uploadMedia);
+                            $newGalley = CreateSubmissionGalleyAction::run($this->submission, $data, $componentFile);
 
                             if ($newGalley instanceof SubmissionGalley) {
                                 return $newGalley;
@@ -153,6 +188,25 @@ class GalleyList extends \Livewire\Component implements HasForms, HasTable
                             throw $th;
                         }
                     }),
+            ])
+            ->actions([
+                EditAction::make()
+                    ->modalWidth('2xl')
+                    ->successNotificationTitle('Galley updated successfully')
+                    ->failureNotificationTitle('There was a problem updating the galley')
+                    ->mutateRecordDataUsing(function (array $data, SubmissionGalley $record) {
+                        $data['is_remote_url'] = (bool) $record->remote_url;
+                        if ($record->file) {
+                            $data['media']['type'] = $record->file->submission_file_type_id;
+                        }
+                        
+                        return $data;
+                    })
+                    ->using(function (array $data, SubmissionGalley $record, \Livewire\Component $livewire) {
+                        return UpdateSubmissionGalleyAction::run($record, $data);
+                    })
+                    ->form(static::getGalleyFormSchema()),
+                DeleteAction::make()
             ]);
     }
 }
