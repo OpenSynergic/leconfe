@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Constants\SubmissionFileCategory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Kra8\Snowflake\HasShortflakePrimary;
@@ -18,7 +19,7 @@ class Media extends Model
              * Question:
              * 1. Is this method effective?
              */
-            if ($deletedModel->submissionFiles()->exists()) {
+            if ($deletedModel->submissionFiles()->whereCategory(SubmissionFileCategory::REVIEWER_ASSIGNED_FILES)->exists()) {
                 $deletedModel->submissionFiles()->each(function ($record) {
                     $record->reviewerAssginedFiles()->delete();
                     $record->delete();

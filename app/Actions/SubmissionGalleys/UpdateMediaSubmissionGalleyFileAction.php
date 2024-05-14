@@ -17,9 +17,11 @@ class UpdateMediaSubmissionGalleyFileAction
 
             $media = $submissionGalley->media()->where('uuid', reset($fileUpload))->first();
 
-            $submissionGalley->file->update([
-                'media_id' => $media->id,
-            ]);
+            if ($media) {
+                $submissionGalley?->file?->update([
+                    'media_id' => $media->id,
+                ]);
+            }
 
             DB::commit();
         } catch (\Throwable $th) {

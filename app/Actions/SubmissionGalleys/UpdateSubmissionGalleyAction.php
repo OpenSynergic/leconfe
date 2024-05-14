@@ -20,11 +20,11 @@ class UpdateSubmissionGalleyAction
             DB::beginTransaction();
 
             $submissionGalley->update($data);
-
-            $submissionGalley->refresh();
             
             if ($media = data_get($data, 'media')) {
-                $submissionGalley->file->update([
+                $submissionFile = $submissionGalley->file;
+
+                $submissionFile->update([
                     'submission_file_type_id' => $media['type'],
                 ]);
             }
