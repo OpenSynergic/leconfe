@@ -4,7 +4,9 @@ namespace App\Actions\SubmissionGalleys;
 
 use App\Constants\SubmissionFileCategory;
 use App\Models\Submission;
+use App\Models\SubmissionFile;
 use App\Models\SubmissionGalley;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -13,7 +15,7 @@ class CreateSubmissionGalleyAction
 {
     use AsAction;
 
-    public function handle(Submission $submission, array $data, $componentMedia): SubmissionGalley
+    public function handle(Submission $submission, array $data, ?SpatieMediaLibraryFileUpload $componentMedia): SubmissionGalley
     {
         try {
             DB::beginTransaction();
@@ -24,13 +26,16 @@ class CreateSubmissionGalleyAction
                 $temporaryFileUpload = $componentMedia->getState();
                 $saveGalleyMedia = $this->saveUploadedMedia($submissionGalley, reset($temporaryFileUpload), $componentMedia);
 
-                $files = $submission->submissionFiles()->create([
+                $files = SubmissionFile::create([
+                    'submission_id' => $submission->id,
                     'media_id' => $saveGalleyMedia->id,
                     'submission_file_type_id' => $media['type'],
                     'category' => SubmissionFileCategory::GALLEY_FILES,
                 ]);
 
-                $submissionGalley->update(['submission_file_id' => $files->id]);
+                $submissionGalley->update([
+                    'submission_file_id' => $files->id,
+                ]);
             }
 
             DB::commit();
@@ -46,19 +51,19 @@ class CreateSubmissionGalleyAction
     {
         $mediaAdder = $record->addMediaFromString($file->get());
 
-            $filename = $component->getUploadedFileNameForStorage($file);
+        $filename = $component->getUploadedFileNameForStorage($file);
 
-            $media = $mediaAdder
-                ->addCustomHeaders($component->getCustomHeaders())
-                ->usingFileName($filename)
-                ->usingName($component->getMediaName($file) ?? pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))
-                ->storingConversionsOnDisk($component->getConversionsDisk() ?? '')
-                ->withCustomProperties($component->getCustomProperties())
-                ->withManipulations($component->getManipulations())
-                ->withResponsiveImagesIf($component->hasResponsiveImages())
-                ->withProperties($component->getProperties())
-                ->toMediaCollection($component->getCollection() ?? 'default', $component->getDiskName());
+        $media = $mediaAdder
+            ->addCustomHeaders($component->getCustomHeaders())
+            ->usingFileName($filename)
+            ->usingName($component->getMediaName($file) ?? pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))
+            ->storingConversionsOnDisk($component->getConversionsDisk() ?? '')
+            ->withCustomProperties($component->getCustomProperties())
+            ->withManipulations($component->getManipulations())
+            ->withResponsiveImagesIf($component->hasResponsiveImages())
+            ->withProperties($component->getProperties())
+            ->toMediaCollection($component->getCollection() ?? 'default', $component->getDiskName());
 
-            return $media;
+        return $media;
     }
 }
