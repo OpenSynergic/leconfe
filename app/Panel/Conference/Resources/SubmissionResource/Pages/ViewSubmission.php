@@ -660,6 +660,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                                 LivewireEntry::make('galleys')
                                                     ->livewire(GalleyList::class, [
                                                         'submission' => $this->record,
+                                                        'viewOnly' => ! auth()->user()->can('editing', $this->record),
                                                     ]),
                                             ]),
                                         Tab::make('Proceeding')
