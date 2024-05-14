@@ -13,11 +13,13 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\TextInput;
 use App\Constants\SubmissionFileCategory;
 use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -25,21 +27,15 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Actions\SubmissionGalleys\CreateSubmissionGalleyAction;
-use App\Actions\SubmissionGalleys\UpdateMediaSubmissionGalleyFileAction;
 use App\Actions\SubmissionGalleys\UpdateSubmissionGalleyAction;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
-use Illuminate\Support\Collection;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use App\Actions\SubmissionGalleys\UpdateMediaSubmissionGalleyFileAction;
 
 class GalleyList extends \Livewire\Component implements HasForms, HasTable
 {
     use InteractsWithForms, InteractsWithTable;
 
     public Submission $submission;
-
+    public bool $viewOnly = false;
     public const ACCEPTED_FILE_TYPES = ['pdf', 'docx', 'xls', 'png', 'jpg', 'jpeg'];
 
     public function render()
@@ -113,34 +109,11 @@ class GalleyList extends \Livewire\Component implements HasForms, HasTable
                         )
                         ->collection(SubmissionFileCategory::GALLEY_FILES)
                         ->visibility('private')
-                        ->loadStateFromRelationshipsUsing(static function (SpatieMediaLibraryFileUpload $component, HasMedia $record): void {
-                            $media = $record->load('media')->getMedia($component->getCollection() ?? 'default')
-                                ->when(
-                                    $component->hasMediaFilter(),
-                                    fn (Collection $media) => $component->filterMedia($media)
-                                )
-                                ->when(
-                                    ! $component->isMultiple(),
-                                    fn (Collection $media): Collection => $media
-                                        ->when($record->file, fn ($query) => $query->where('id', $record->file->media_id))
-                                        ->take(1),
-                                )
-                                ->mapWithKeys(function (Media $media): array {
-                                    $uuid = $media->getAttributeValue('uuid');
-                
-                                    return [$uuid => $uuid];
-                                })
-                                ->toArray();
-                
-                            $component->state($media);
-                        })
-                        ->saveRelationshipsUsing(static function (SpatieMediaLibraryFileUpload $component, $context, $state, SubmissionGalley $record) {
+                        ->saveRelationshipsUsing(static function (SpatieMediaLibraryFileUpload $component, $context, SubmissionGalley $record) {
                             if ($context == 'edit') {
                                 $component->saveUploadedFiles();
-
                                 UpdateMediaSubmissionGalleyFileAction::run($record, $component->getState());
-
-                                // dd($component->getState(), $state, $livewire->getMountedTableActionForm()->getComponent('mountedTableActionsData.0.media.files')->getState());
+                                $component->deleteAbandonedFiles();
                             }
                         }),
                 ])
@@ -151,7 +124,7 @@ class GalleyList extends \Livewire\Component implements HasForms, HasTable
     {
         return $table
             ->query($this->getQuery())
-            ->reorderable('order_column')
+            ->reorderable(fn () => $this->viewOnly ? false : 'order_column')
             ->heading('Galleys')
             ->columns([
                 Split::make([
@@ -169,7 +142,6 @@ class GalleyList extends \Livewire\Component implements HasForms, HasTable
                     ->label('Add Galley')
                     ->modalWidth('2xl')
                     ->icon('heroicon-o-arrow-up-tray')
-                    ->createAnother(false)
                     ->successNotificationTitle('Galley added successfully')
                     ->failureNotificationTitle('There was a problem adding the galley')
                     ->form(static::getGalleyFormSchema())
@@ -187,7 +159,8 @@ class GalleyList extends \Livewire\Component implements HasForms, HasTable
                         } catch (\Throwable $th) {
                             throw $th;
                         }
-                    }),
+                    })
+                    ->hidden($this->viewOnly),
             ])
             ->actions([
                 EditAction::make()
@@ -202,11 +175,13 @@ class GalleyList extends \Livewire\Component implements HasForms, HasTable
                         
                         return $data;
                     })
-                    ->using(function (array $data, SubmissionGalley $record, \Livewire\Component $livewire) {
-                        return UpdateSubmissionGalleyAction::run($record, $data);
+                    ->using(function (array $data, SubmissionGalley $record) {
+                        UpdateSubmissionGalleyAction::run($record, $data);
                     })
-                    ->form(static::getGalleyFormSchema()),
+                    ->form(static::getGalleyFormSchema())
+                    ->hidden($this->viewOnly),
                 DeleteAction::make()
+                    ->hidden($this->viewOnly),
             ]);
     }
 }
