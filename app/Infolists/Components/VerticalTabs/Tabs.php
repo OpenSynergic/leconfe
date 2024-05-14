@@ -13,6 +13,8 @@ class Tabs extends ComponentsTabs
 
     protected string|Closure $position = 'left';
 
+    protected string|Closure $spaceY = '';
+
     public function position(string $position): static
     {
         $position = $this->evaluate($position);
@@ -28,6 +30,23 @@ class Tabs extends ComponentsTabs
     public function getPosition(): string
     {
         return $this->position;
+    }
+
+    public function spaceY(string $spaceY): static
+    {
+        $spaceY = $this->evaluate($spaceY);
+        if (str_starts_with($spaceY, 'space-y-')){
+            $this->spaceY = $spaceY;
+        } else {
+            throw new \Exception('Invalid spaceY provided. Only "space-y-" are allowed.');
+        }
+
+        return $this;
+    }
+
+    public function getSpaceY(): string
+    {
+        return $this->spaceY;
     }
 
     public function sticky(bool|Closure $sticky = true): static

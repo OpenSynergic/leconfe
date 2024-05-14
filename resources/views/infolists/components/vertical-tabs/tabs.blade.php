@@ -41,7 +41,7 @@
             ])
     }}
 >
-    <x-panel::vertical-tabs :contained="$isContained" :label="$getLabel()" :is-sticky="$isSticky()">
+    <x-panel::vertical-tabs :contained="$isContained" :label="$getLabel()" :is-sticky="$isSticky()" :space-y="$getSpaceY()">
         @foreach ($getChildComponentContainer()->getComponents() as $tab)
             @php
                 $tabId = $tab->getId();
