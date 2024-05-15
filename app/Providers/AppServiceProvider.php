@@ -7,9 +7,11 @@ use App\Facades\SidebarFacade;
 use App\Models\Serie;
 use Livewire\Livewire;
 use App\Classes\Settings;
+use App\Listeners\SubmissionEventSubscriber;
 use App\Models\Conference;
 use Illuminate\Support\Str;
 use App\Managers\BlockManager;
+use App\Managers\DOIManager;
 use App\Managers\MetaTagManager;
 use App\Managers\SidebarManager;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +24,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Event;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -36,6 +39,10 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->scoped('metatag', function () {
             return new MetaTagManager;
+        });
+
+        $this->app->scoped(DOIManager::class, function () {
+            return new DOIManager;
         });
 
         // Use a custom URL generator to accomodate multi context.
@@ -74,10 +81,15 @@ class AppServiceProvider extends ServiceProvider
         $this->setupStorage();
         $this->extendStr();
         $this->detectConference();
+
+        Event::subscribe(SubmissionEventSubscriber::class);
     }
 
     protected function extendStr()
     {
+        /**
+         * Add macro to Str class to mask email address.
+         */
         Str::macro('maskEmail', function ($email) {
             $mail_parts = explode('@', $email);
             $domain_parts = explode('.', $mail_parts[1]);
