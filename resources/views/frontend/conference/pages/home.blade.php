@@ -141,7 +141,7 @@
                     </article>
                 </div>
 
-                <div x-show="activeTab === 'participant-info'" class="p-4 border border-t-0 border-gray-300 ">
+                <div x-show="activeTab === 'participant-info'" class="p-4 border border-t-0 border-gray-300 " x-cloak>
                     <article id="participant-info">
                         <p>Quota</p>
                         <div class="overflow-x-auto py-2">
@@ -173,7 +173,7 @@
 
                 @foreach ($additionalInformations as $info)
                     <div x-show="activeTab === '{{ strtolower(str_replace(' ', '_', $info['title'])) }}'"
-                        class="p-4 border border-t-0 border-gray-300 ">
+                        class="p-4 border border-t-0 border-gray-300 " x-cloak>
                         <article id="{{ strtolower(str_replace(' ', '_', $info['title'])) }}"
                             class="user-content overflow-x-auto">
                             {!! $info['content'] !!}
@@ -184,7 +184,7 @@
 
         </section>
 
-        @if ($currentSerie?->speakerRoles->isNotEmpty())
+        @if ($currentSerie?->speakers()->exists())
             <section id="conference-speakers" class="flex flex-col space-y-4 gap-y-0">
                 <div class="flex items-center">
                     <img src="{{ Vite::asset('resources/assets/images/game-icons_public-speaker.svg') }}"
