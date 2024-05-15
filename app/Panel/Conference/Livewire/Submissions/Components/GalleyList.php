@@ -109,10 +109,10 @@ class GalleyList extends \Livewire\Component implements HasForms, HasTable
                         )
                         ->collection(SubmissionFileCategory::GALLEY_FILES)
                         ->visibility('private')
-                        ->saveRelationshipsUsing(static function (SpatieMediaLibraryFileUpload $component, $context, SubmissionGalley $record) {
+                        ->saveRelationshipsUsing(static function (SpatieMediaLibraryFileUpload $component, $context, SubmissionGalley $record, Get $get) {
                             if ($context == 'edit') {
                                 $component->saveUploadedFiles();
-                                UpdateMediaSubmissionGalleyFileAction::run($record, $component->getState());
+                                UpdateMediaSubmissionGalleyFileAction::run($record, $component->getState(), $get('media.type'));
                                 $component->deleteAbandonedFiles();
                             }
                         }),

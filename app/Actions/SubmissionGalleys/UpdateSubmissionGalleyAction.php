@@ -19,10 +19,15 @@ class UpdateSubmissionGalleyAction
         try {
             DB::beginTransaction();
 
+            if (! $data['is_remote_url']) {
+                $data['remote_url'] = null;
+            }
+
             $submissionGalley->update($data);
             
             if ($media = data_get($data, 'media')) {
                 $submissionFile = $submissionGalley->file;
+                $submissionFile->refresh();
 
                 $submissionFile->update([
                     'submission_file_type_id' => $media['type'],
