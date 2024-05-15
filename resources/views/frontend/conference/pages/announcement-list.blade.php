@@ -1,5 +1,5 @@
 <x-website::layouts.main>
-    <div class="p-5 space-y-2">
+    <div class="space-y-2">
         <h2 class="text-heading">{{ 'Announcements' }}</h2>
         <div class="divide-y overflow-y-auto space-y-2">
             @forelse ($announcements as $announcement)
