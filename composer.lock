@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6c83006315852a22dc8dc45f644ff969",
+    "content-hash": "3683d4a80b20ba2ce7835e818e5e227b",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -1002,6 +1002,66 @@
                 }
             ],
             "time": "2024-01-21T14:53:34+00:00"
+        },
+        {
+            "name": "dflydev/base32-crockford",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dflydev/dflydev-base32-crockford.git",
+                "reference": "8e8f6cb86b130198cbaaeae298fe150094c26760"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dflydev/dflydev-base32-crockford/zipball/8e8f6cb86b130198cbaaeae298fe150094c26760",
+                "reference": "8e8f6cb86b130198cbaaeae298fe150094c26760",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Dflydev\\Base32\\Crockford": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dragonfly Development Inc.",
+                    "email": "info@dflydev.com",
+                    "homepage": "http://dflydev.com"
+                },
+                {
+                    "name": "Beau Simensen",
+                    "email": "beau@dflydev.com",
+                    "homepage": "http://beausimensen.com"
+                }
+            ],
+            "description": "Encode/decode numbers using Douglas Crockford's Base32 Encoding",
+            "homepage": "https://github.com/dflydev/dflydev-base32-crockford",
+            "keywords": [
+                "base32",
+                "crockford",
+                "decode",
+                "decoder",
+                "encode",
+                "encoder"
+            ],
+            "support": {
+                "issues": "https://github.com/dflydev/dflydev-base32-crockford/issues",
+                "source": "https://github.com/dflydev/dflydev-base32-crockford/tree/v1.0.0"
+            },
+            "time": "2012-07-14T18:36:41+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
@@ -4876,16 +4936,16 @@
         },
         {
             "name": "livewire/livewire",
-            "version": "v3.4.11",
+            "version": "v3.4.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/livewire/livewire.git",
-                "reference": "8a78d0c3ae9b4c96a2d8932ea4ac0dc782325de0"
+                "reference": "54dd265c17f7b5200627eb9690590e7cbbad1027"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/livewire/livewire/zipball/8a78d0c3ae9b4c96a2d8932ea4ac0dc782325de0",
-                "reference": "8a78d0c3ae9b4c96a2d8932ea4ac0dc782325de0",
+                "url": "https://api.github.com/repos/livewire/livewire/zipball/54dd265c17f7b5200627eb9690590e7cbbad1027",
+                "reference": "54dd265c17f7b5200627eb9690590e7cbbad1027",
                 "shasum": ""
             },
             "require": {
@@ -4900,7 +4960,7 @@
             },
             "require-dev": {
                 "calebporzio/sushi": "^2.1",
-                "laravel/framework": "^10.0|^11.0",
+                "laravel/framework": "^10.15.0|^11.0",
                 "laravel/prompts": "^0.1.6",
                 "mockery/mockery": "^1.3.1",
                 "orchestra/testbench": "^8.21.0|^9.0",
@@ -4940,7 +5000,7 @@
             "description": "A front-end framework for Laravel.",
             "support": {
                 "issues": "https://github.com/livewire/livewire/issues",
-                "source": "https://github.com/livewire/livewire/tree/v3.4.11"
+                "source": "https://github.com/livewire/livewire/tree/v3.4.12"
             },
             "funding": [
                 {
@@ -4948,7 +5008,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-04-24T12:14:15+00:00"
+            "time": "2024-05-02T17:10:37+00:00"
         },
         {
             "name": "lorisleiva/laravel-actions",
@@ -6992,20 +7052,20 @@
         },
         {
             "name": "rahmanramsi/livewire-page-group",
-            "version": "v0.0.4",
+            "version": "v0.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rahmanramsi/livewire-page-group.git",
-                "reference": "cbd0db715a63a9fa7dd97b6aca1e9599835b2a7c"
+                "reference": "c88db8378bb9e42ce898002d4e8e19130d0347be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rahmanramsi/livewire-page-group/zipball/cbd0db715a63a9fa7dd97b6aca1e9599835b2a7c",
-                "reference": "cbd0db715a63a9fa7dd97b6aca1e9599835b2a7c",
+                "url": "https://api.github.com/repos/rahmanramsi/livewire-page-group/zipball/c88db8378bb9e42ce898002d4e8e19130d0347be",
+                "reference": "c88db8378bb9e42ce898002d4e8e19130d0347be",
                 "shasum": ""
             },
             "require": {
-                "illuminate/contracts": "^10.0",
+                "illuminate/contracts": "^10.0 || ^11.0",
                 "php": "^8.1",
                 "spatie/laravel-package-tools": "^1.14.0"
             },
@@ -7045,7 +7105,7 @@
                     "role": "Developer"
                 }
             ],
-            "description": "a simple way to group your livewire pages",
+            "description": "a simple way to group your livewire full pages",
             "homepage": "https://github.com/rahmanramsi/livewire-page-group",
             "keywords": [
                 "laravel",
@@ -7054,9 +7114,9 @@
             ],
             "support": {
                 "issues": "https://github.com/rahmanramsi/livewire-page-group/issues",
-                "source": "https://github.com/rahmanramsi/livewire-page-group/tree/v0.0.4"
+                "source": "https://github.com/rahmanramsi/livewire-page-group/tree/v0.0.5"
             },
-            "time": "2023-08-16T03:08:11+00:00"
+            "time": "2024-05-03T01:14:38+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
@@ -7537,16 +7597,16 @@
         },
         {
             "name": "spatie/eloquent-sortable",
-            "version": "4.2.0",
+            "version": "4.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/eloquent-sortable.git",
-                "reference": "d7940cc59af939b27422a8e7a4020ac8c5d93a77"
+                "reference": "fb8a5d071eec525cd5a0ad1a011306c0a76b2a9f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/eloquent-sortable/zipball/d7940cc59af939b27422a8e7a4020ac8c5d93a77",
-                "reference": "d7940cc59af939b27422a8e7a4020ac8c5d93a77",
+                "url": "https://api.github.com/repos/spatie/eloquent-sortable/zipball/fb8a5d071eec525cd5a0ad1a011306c0a76b2a9f",
+                "reference": "fb8a5d071eec525cd5a0ad1a011306c0a76b2a9f",
                 "shasum": ""
             },
             "require": {
@@ -7595,7 +7655,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/eloquent-sortable/issues",
-                "source": "https://github.com/spatie/eloquent-sortable/tree/4.2.0"
+                "source": "https://github.com/spatie/eloquent-sortable/tree/4.3.0"
             },
             "funding": [
                 {
@@ -7607,20 +7667,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-02-26T11:54:22+00:00"
+            "time": "2024-05-02T09:49:34+00:00"
         },
         {
             "name": "spatie/flare-client-php",
-            "version": "1.4.4",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/flare-client-php.git",
-                "reference": "17082e780752d346c2db12ef5d6bee8e835e399c"
+                "reference": "9aa60f6ded35a774554e7a5256dca12b72693b78"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/flare-client-php/zipball/17082e780752d346c2db12ef5d6bee8e835e399c",
-                "reference": "17082e780752d346c2db12ef5d6bee8e835e399c",
+                "url": "https://api.github.com/repos/spatie/flare-client-php/zipball/9aa60f6ded35a774554e7a5256dca12b72693b78",
+                "reference": "9aa60f6ded35a774554e7a5256dca12b72693b78",
                 "shasum": ""
             },
             "require": {
@@ -7668,7 +7728,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/flare-client-php/issues",
-                "source": "https://github.com/spatie/flare-client-php/tree/1.4.4"
+                "source": "https://github.com/spatie/flare-client-php/tree/1.5.0"
             },
             "funding": [
                 {
@@ -7676,7 +7736,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-01-31T14:18:45+00:00"
+            "time": "2024-05-02T13:18:42+00:00"
         },
         {
             "name": "spatie/ignition",
@@ -8105,16 +8165,16 @@
         },
         {
             "name": "spatie/laravel-ignition",
-            "version": "2.6.2",
+            "version": "2.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-ignition.git",
-                "reference": "42d986f4ab9d667020264a7481190a4606ebbeb0"
+                "reference": "f52124d50122611e8a40f628cef5c19ff6cc5b57"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-ignition/zipball/42d986f4ab9d667020264a7481190a4606ebbeb0",
-                "reference": "42d986f4ab9d667020264a7481190a4606ebbeb0",
+                "url": "https://api.github.com/repos/spatie/laravel-ignition/zipball/f52124d50122611e8a40f628cef5c19ff6cc5b57",
+                "reference": "f52124d50122611e8a40f628cef5c19ff6cc5b57",
                 "shasum": ""
             },
             "require": {
@@ -8123,7 +8183,7 @@
                 "ext-mbstring": "*",
                 "illuminate/support": "^10.0|^11.0",
                 "php": "^8.1",
-                "spatie/flare-client-php": "^1.3.5",
+                "spatie/flare-client-php": "^1.5",
                 "spatie/ignition": "^1.14",
                 "symfony/console": "^6.2.3|^7.0",
                 "symfony/var-dumper": "^6.2.3|^7.0"
@@ -8193,7 +8253,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-04-30T13:56:21+00:00"
+            "time": "2024-05-02T13:42:49+00:00"
         },
         {
             "name": "spatie/laravel-medialibrary",
@@ -14406,5 +14466,5 @@
         "php": "^8.1"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.3.0"
 }
