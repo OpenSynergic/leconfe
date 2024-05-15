@@ -12,23 +12,13 @@
                     @endif
                     <div class="inline-flex items-center space-x-2">
                         <h1 class="cf-name text-2xl">{{ $currentConference->name }}</h1>
-                        @php
-                            $badgeClass = '';
-                            switch ($currentConference->type) {
-                                case \App\Models\Enums\ConferenceType::Offline:
-                                    $badgeClass = 'bg-gray-500';
-                                    break;
-                                case \App\Models\Enums\ConferenceType::Hybrid:
-                                    $badgeClass = 'bg-purple-400';
-                                    break;
-                                case \App\Models\Enums\ConferenceType::Online:
-                                    $badgeClass = 'bg-primary';
-                                    break;
-                            }
-                        @endphp
-
                         <span
-                            class="badge {{ $badgeClass }} text-white rounded-full px-3 text-xs flex items-center justify-center h-8 outline-0 border-none">{{ $currentConference->type }}</span>
+                            @class([
+                                'badge rounded-full px-3 text-xs flex items-center justify-center h-8 outline-0 border-none',
+                                'badge-info' => $currentConference->type === \App\Models\Enums\ConferenceType::Offline,
+                                'badge-warning' => $currentConference->type === \App\Models\Enums\ConferenceType::Hybrid,
+                                'badge-primary' => $currentConference->type === \App\Models\Enums\ConferenceType::Online,
+                            ])>{{ $currentConference->type }}</span>
                     </div>
                     @if ($currentConference->getMeta('description'))
                         <div class="user-content">
