@@ -123,20 +123,6 @@ class ConferenceSetting extends Page implements HasForms, HasInfolists
                                             ]),
                                     ]),
                             ]),
-                        Tabs\Tab::make('Distribution')
-                            ->schema([
-                                InfolistsVerticalTabs\Tabs::make()
-                                    ->schema([
-                                        InfolistsVerticalTabs\Tab::make('Search Indexing')
-                                            ->icon('heroicon-o-magnifying-glass')
-                                            ->schema([
-                                                LivewireEntry::make('sidebar-setting')
-                                                    ->livewire(SearchEngineSetting::class, [
-                                                        'conference' => App::getCurrentConference(),
-                                                    ]),
-                                            ]),
-                                    ]),
-                            ]),
                     ])
                     ->contained(false),
             ]);

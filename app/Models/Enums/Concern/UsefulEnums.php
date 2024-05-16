@@ -24,6 +24,10 @@ trait UsefulEnums
         return self::from(self::values()[array_rand(self::values())]);
     }
 
+    public static function options(): array
+    {
+        return array_combine(self::values(), self::names());
+    }
     public function isOneOf(mixed ...$values): bool
     {
         return in_array($this, $values);
