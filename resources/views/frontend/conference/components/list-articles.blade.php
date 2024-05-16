@@ -4,14 +4,14 @@
             ['name' => 'John Doe', 'url' => 'https://www.arcc-journal.org/index.php/arccjournal'],
             ['name' => 'Jane Doe', 'url' => 'https://www.arcc-journal.org/index.php/arccjournal'],
             ['name' => 'Juan Dela Cruz', 'url' => 'https://www.arcc-journal.org/index.php/arccjournal'],
-            // ['name' => 'Maria Dela Cruz', 'url' => 'https://www.arcc-journal.org/index.php/arccjournal'],
-            // ['name' => 'Pedro Dela Cruz', 'url' => 'https://www.arcc-journal.org/index.php/arccjournal'],
-            // ['name' => 'Juan Tamad', 'url' => 'https://www.arcc-journal.org/index.php/arccjournal'],
-            // ['name' => 'Maria Tamad', 'url' => 'https://www.arcc-journal.org/index.php/arccjournal'],
-            // ['name' => 'Pedro Tamad', 'url' => 'https://www.arcc-journal.org/index.php/arccjournal'],
-            // ['name' => 'Juan Dela Cruz', 'url' => 'https://www.arcc-journal.org/index.php/arccjournal'],
-            // ['name' => 'Maria Dela Cruz', 'url' => 'https://www.arcc-journal.org/index.php/arccjournal'],
-            // ['name' => 'Pedro Dela Cruz', 'url' => 'https://www.arcc-journal.org/index.php/arccjournal'],
+            ['name' => 'Maria Dela Cruz', 'url' => 'https://www.arcc-journal.org/index.php/arccjournal'],
+            ['name' => 'Pedro Dela Cruz', 'url' => 'https://www.arcc-journal.org/index.php/arccjournal'],
+            ['name' => 'Juan Tamad', 'url' => 'https://www.arcc-journal.org/index.php/arccjournal'],
+            ['name' => 'Maria Tamad', 'url' => 'https://www.arcc-journal.org/index.php/arccjournal'],
+            ['name' => 'Pedro Tamad', 'url' => 'https://www.arcc-journal.org/index.php/arccjournal'],
+            ['name' => 'Juan Dela Cruz', 'url' => 'https://www.arcc-journal.org/index.php/arccjournal'],
+            ['name' => 'Maria Dela Cruz', 'url' => 'https://www.arcc-journal.org/index.php/arccjournal'],
+            ['name' => 'Pedro Dela Cruz', 'url' => 'https://www.arcc-journal.org/index.php/arccjournal'],
         ];
     @endphp
     <div class="flex mb-5 space-x-4">
@@ -28,13 +28,10 @@
                     <a href="#" class="font-semibold text-gray-700 hover:text-primary">The Impact of COVID-19 on the Economy</a>
                     <div class="text-xs text-gray-500">Jama Network Article</div>
                 </div>
-                <div class="grid grid-cols-9 mb-3.5">
+                <div class="grid grid-cols-9 mb-3">
                     <div class="w-full col-span-8 text-xs">
                         @foreach ($authors as $author)
-                            <a href="{{ $author['url'] }}" class="text-gray-500 hover:text-primary">{{ $author['name'] }}</a>
-                            @if (!$loop->last)
-                                ,
-                            @endif
+                            <a href="{{ $author['url'] }}" class="text-gray-500 hover:text-primary">{{ $author['name'] }}</a>{{ !$loop->last ? ', ' : '' }}
                         @endforeach
                     </div>
                     <div class="col-span-1 text-xs text-right">
@@ -44,8 +41,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex justify-between mb-3.5 text-xs">
-                    <div class="flex space-x-6 text-gray-700">
+                <div class="flex justify-end text-xs">
+                    {{-- <div class="flex space-x-6 text-gray-700">
                         <div class="flex space-x-1">
                             <x-heroicon-o-arrow-trending-up class="w-4 h-4 my-auto text-gray-500" />
                             <span>Abstract Views : 123</span>
@@ -54,17 +51,17 @@
                             <x-heroicon-o-arrow-down-tray class="w-4 h-4 my-auto text-gray-500" />
                             <span>Download : 123</span>
                         </div>
-                    </div>
-                    <div class="flex space-x-1">
+                    </div> --}}
+                    <a href="#" class="flex space-x-1 text-gray-500 hover:text-primary">
                         <x-academicon-doi class="w-4 h-4 my-auto text-yellow-400" />
                         <span>DOI : 10.20473/ijosh.v13i1.2024.13-19</span>
-                    </div>
+                    </a>
                 </div>
                 <div class="flex space-x-1.5">
-                    <button type="button" class="px-3 py-1.5 mb-2 text-xs font-medium text-center text-primary border border-primary hover:text-white hover:bg-primary focus:ring-4 focus:outline-none focus:ring-primary me-2 dark:border-primary dark:text-primary dark:hover:text-white dark:hover:bg-primary dark:focus:ring-primary">
+                    <button class="h-8 px-3 text-xs rounded-none btn btn-outline btn-primary min-h-8">
                         PDF
                     </button>
-                    <button type="button" class="px-3 py-1.5 mb-2 text-xs font-medium text-center text-primary border border-primary hover:text-white hover:bg-primary focus:ring-4 focus:outline-none focus:ring-primary me-2 dark:border-primary dark:text-primary dark:hover:text-white dark:hover:bg-primary dark:focus:ring-primary">
+                    <button class="h-8 px-3 text-xs rounded-none btn btn-outline btn-primary min-h-8">
                         XML
                     </button>
                 </div>
@@ -79,11 +76,10 @@
                     <a href="#" class="font-semibold text-gray-700 hover:text-primary">Econometric Models for Industrial Organization</a>
                     <div class="text-xs text-gray-500">Jama Network Article</div>
                 </div>
-                <div class="grid grid-cols-9 mb-3.5">
+                <div class="grid grid-cols-9 mb-3">
                     <div class="w-full col-span-8 text-xs">
                         @foreach ($authors as $author)
-                            <a href="{{ $author['url'] }}" class="text-gray-500 hover:text-primary">{{ $author['name'] }}</a>
-                            {{ !$loop->last ? ', ' : '' }}
+                            <a href="{{ $author['url'] }}" class="text-gray-500 hover:text-primary">{{ $author['name'] }}</a>{{ !$loop->last ? ', ' : '' }}
                         @endforeach
                     </div>
                     <div class="col-span-1 text-xs text-right">
@@ -93,8 +89,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex justify-between mb-3.5 text-xs">
-                    <div class="flex space-x-6 text-gray-700">
+                <div class="flex justify-end text-xs">
+                    {{-- <div class="flex space-x-6 text-gray-700">
                         <div class="flex space-x-1">
                             <x-heroicon-o-arrow-trending-up class="w-4 h-4 my-auto text-gray-500" />
                             <span>Abstract Views : 123</span>
@@ -103,17 +99,17 @@
                             <x-heroicon-o-arrow-down-tray class="w-4 h-4 my-auto text-gray-500" />
                             <span>Download : 123</span>
                         </div>
-                    </div>
-                    <div class="flex space-x-1">
+                    </div> --}}
+                    <a href="#" class="flex space-x-1 text-gray-500 hover:text-primary">
                         <x-academicon-doi class="w-4 h-4 my-auto text-yellow-400" />
                         <span>DOI : 10.20473/ijosh.v13i1.2024.13-19</span>
-                    </div>
+                    </a>
                 </div>
                 <div class="flex space-x-1.5">
-                    <button type="button" class="px-3 py-1.5 mb-2 text-xs font-medium text-center text-primary border border-primary hover:text-white hover:bg-primary focus:ring-4 focus:outline-none focus:ring-primary me-2 dark:border-primary dark:text-primary dark:hover:text-white dark:hover:bg-primary dark:focus:ring-primary">
+                    <button class="h-8 px-3 text-xs rounded-none btn btn-outline btn-primary min-h-8">
                         PDF
                     </button>
-                    <button type="button" class="px-3 py-1.5 mb-2 text-xs font-medium text-center text-primary border border-primary hover:text-white hover:bg-primary focus:ring-4 focus:outline-none focus:ring-primary me-2 dark:border-primary dark:text-primary dark:hover:text-white dark:hover:bg-primary dark:focus:ring-primary">
+                    <button class="h-8 px-3 text-xs rounded-none btn btn-outline btn-primary min-h-8">
                         XML
                     </button>
                 </div>
@@ -128,13 +124,10 @@
                     <a href="#" class="font-semibold text-gray-700 hover:text-primary">Financial Mathematics for Actuaries</a>
                     <div class="text-xs text-gray-500">Jama Network Article</div>
                 </div>
-                <div class="grid grid-cols-9 mb-3.5">
+                <div class="grid grid-cols-9 mb-3">
                     <div class="w-full col-span-8 text-xs">
                         @foreach ($authors as $author)
-                            <a href="{{ $author['url'] }}" class="text-gray-500 hover:text-primary">{{ $author['name'] }}</a>
-                            @if (!$loop->last)
-                                ,
-                            @endif
+                            <a href="{{ $author['url'] }}" class="text-gray-500 hover:text-primary">{{ $author['name'] }}</a>{{ !$loop->last ? ', ' : '' }}
                         @endforeach
                     </div>
                     <div class="col-span-1 text-xs text-right">
@@ -144,8 +137,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex justify-between mb-3.5 text-xs">
-                    <div class="flex space-x-6 text-gray-700">
+                <div class="flex justify-end text-xs">
+                    {{-- <div class="flex space-x-6 text-gray-700">
                         <div class="flex space-x-1">
                             <x-heroicon-o-arrow-trending-up class="w-4 h-4 my-auto text-gray-500" />
                             <span>Abstract Views : 123</span>
@@ -154,17 +147,17 @@
                             <x-heroicon-o-arrow-down-tray class="w-4 h-4 my-auto text-gray-500" />
                             <span>Download : 123</span>
                         </div>
-                    </div>
-                    <div class="flex space-x-1">
+                    </div> --}}
+                    <a href="#" class="flex space-x-1 text-gray-500 hover:text-primary">
                         <x-academicon-doi class="w-4 h-4 my-auto text-yellow-400" />
                         <span>DOI : 10.20473/ijosh.v13i1.2024.13-19</span>
-                    </div>
+                    </a>
                 </div>
                 <div class="flex space-x-1.5">
-                    <button type="button" class="px-3 py-1.5 mb-2 text-xs font-medium text-center text-primary border border-primary hover:text-white hover:bg-primary focus:ring-4 focus:outline-none focus:ring-primary me-2 dark:border-primary dark:text-primary dark:hover:text-white dark:hover:bg-primary dark:focus:ring-primary">
+                    <button class="h-8 px-3 text-xs rounded-none btn btn-outline btn-primary min-h-8">
                         PDF
                     </button>
-                    <button type="button" class="btn btn-primary btn-outline btn-sm">
+                    <button class="h-8 px-3 text-xs rounded-none btn btn-outline btn-primary min-h-8">
                         XML
                     </button>
                 </div>
