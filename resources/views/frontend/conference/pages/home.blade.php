@@ -1,104 +1,210 @@
 <x-website::layouts.main>
-    <div class="space-y-2">
-        <section id="highlight-conference" class="p-5 space-y-4">
-            <h1 class="text-lg cf-name">{{ $currentConference->name }}</h1>
-
-            <div class="flex flex-col flex-wrap gap-4 space-y-4 sm:flex-row sm:space-y-0">
-                @if ($currentConference->hasMedia('thumbnail'))
-                    <div class="cf-thumbnail">
-                        <img class="w-full rounded max-w-[200px]"
-                            src="{{ $currentConference->getFirstMedia('thumbnail')->getAvailableUrl(['thumb', 'thumb-xl']) }}"
-                            alt="{{ $currentConference->name }}" />
-                    </div>
-                @endif
-                <div class="flex flex-col flex-1 gap-2">
-                    @if ($currentConference->date_start)
-                        <div class="inline-flex items-center space-x-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
-                            </svg>
-                            <time
-                                class="text-xs text-secondary">{{ date(Settings::get('format.date'), strtotime($currentConference->date_start)) }}</time>
+    <div class="space-y-10">
+        <section id="highlight-conference" class="space-y-4">
+            <div class="flex flex-col sm:flex-row flex-wrap space-y-4 sm:space-y-0 gap-4">
+                <div class="flex flex-col gap-4 flex-1">
+                    @if ($currentConference->hasMedia('cover'))
+                        <div class="cf-cover">
+                            <img class="w-full"
+                                src="{{ $currentConference->getFirstMedia('cover')->getAvailableUrl(['thumb', 'thumb-xl']) }}"
+                                alt="{{ $currentConference->name }}" />
                         </div>
                     @endif
+                    <div class="inline-flex items-center space-x-2">
+                        <h1 class="cf-name text-2xl">{{ $currentConference->name }}</h1>
+                        <span
+                            @class([
+                                'badge badge-sm',
+                                'badge-secondary' => $currentConference->type === \App\Models\Enums\ConferenceType::Offline,
+                                'badge-warning' => $currentConference->type === \App\Models\Enums\ConferenceType::Hybrid,
+                                'badge-primary' => $currentConference->type === \App\Models\Enums\ConferenceType::Online,
+                            ])>{{ $currentConference->type }}</span>
+                    </div>
                     @if ($currentConference->getMeta('description'))
                         <div class="user-content">
                             {{ $currentConference->getMeta('description') }}
                         </div>
                     @endif
-                    @if ($topics->isNotEmpty())
-                        <div class="flex flex-wrap w-full gap-2">
-                            @foreach ($topics as $topic)
-                                <span
-                                    class="h-6 text-xs border border-gray-300 badge badge-outline text-secondary">{{ $topic->name }}</span>
-                            @endforeach
+                    @if ($currentSerie)
+                        <div class="cf-current-serie">
+                            <h2 class="text-base font-medium">Series Description :</h2>
+                            <div class="user-content">
+                                {{ $currentSerie->description }}
+                            </div>
                         </div>
                     @endif
+                    @if ($topics->isNotEmpty())
+                        <div>
+                            <h2 class="cf-topics text-base font-medium mb-1">Topics :</h2>
+                            <div class="flex flex-wrap w-full gap-2">
+                                @foreach ($topics as $topic)
+                                    <span
+                                        class="badge badge-outline badge-sm">{{ $topic->name }}</span>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                    <div>
+                        <a href="{{ route('filament.conference.resources.submissions.index') }}"
+                            class="btn btn-primary btn-sm">
+                            <x-heroicon-o-document-arrow-up class="h-5 w-5" />
+                            Submit Now
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>
-
-        @if ($currentConference->date_start || $currentConference->hasMeta('location'))
-            <section id="conference-information" class="flex flex-col gap-2 p-5">
-                <h2 class="text-heading">Information</h2>
-                <table class="w-full text-sm" cellpadding="4">
-                    <tr>
-                        <td width="80">Type</td>
-                        <td width="20">:</td>
-                        <td>{{ $currentConference->type }}</td>
-                    </tr>
-                    @if ($currentConference->hasMeta('location'))
-                        <tr>
-                            <td>Place</td>
-                            <td>:</td>
-                            <td>{{ $currentConference->getMeta('location') }}</td>
-                        </tr>
-                    @endif
-
-                    @if ($currentConference->date_start)
-                        <tr>
-                            <td>Date</td>
-                            <td>:</td>
-                            <td>
-                                {{ date(Settings::get('format_date'), strtotime($currentConference->date_start)) }} - {{ date(Settings::get('format_date'), strtotime($currentConference->date_end)) }}
-                            </td>
-                        </tr>
-                    @endif
-                </table>
+        @if ($currentConference->sponsors->isNotEmpty())
+            <section id="conference-partner" class="space-y-4">
+                <div class="sponsors space-y-4" x-data="carousel">
+                    <h2 class="text-xl text-center">Conference Partner</h2>
+                    <div class="sponsors-carousel flex items-center w-full gap-4" x-bind="carousel">
+                        <button x-on:click="toLeft"
+                            class="hidden bg-gray-400 hover:bg-gray-500 h-10 w-10 rounded-full md:flex items-center justify-center">
+                            <x-heroicon-m-chevron-left class="h-6 w-fit text-white" />
+                        </button>
+                        <ul x-ref="slider"
+                            class="flex-1 flex w-full snap-x snap-mandatory overflow-x-scroll gap-3 py-4">
+                            @foreach ($currentConference->sponsors as $sponsor)
+                                <li @class([
+                                    'flex shrink-0 snap-start flex-col items-center justify-center',
+                                    'ml-auto' => $loop->first,
+                                    'mr-auto' => $loop->last,
+                                ])>
+                                    <img class="max-h-24 w-fit"
+                                        src="{{ $sponsor->getFirstMedia('logo')?->getAvailableUrl(['thumb']) }}"
+                                        alt="{{ $sponsor->name }}">
+                                </li>
+                            @endforeach
+                        </ul>
+                        <button x-on:click="toRight"
+                            class="hidden bg-gray-400 hover:bg-gray-500 h-10 w-10 rounded-full md:flex items-center justify-center">
+                            <x-heroicon-m-chevron-right class="h-6 w-fit text-white" />
+                        </button>
+                    </div>
+                </div>
             </section>
         @endif
 
-        @if ($participantPosition->isNotEmpty())
-            <section id="conference-speakers" class="flex flex-col gap-2 p-5">
-                <h2 class="text-heading">Speakers</h2>
-                <div class="space-y-6 cf-speakers">
-                    @foreach ($participantPosition as $position)
-                        @if ($position->speakers->isNotEmpty())
+        <section id="conference-detail-tabs" class="space-y-4">
+            <div x-data="{ activeTab: 'information' }" class="bg-white">
+                <div class="border border-t-0 border-x-0 border-gray-300 flex space-x-1 sm:space-x-2 overflow-x-auto overflow-y-hidden">
+                    <button x-on:click="activeTab = 'information'"
+                        :class="{ 'text-primary bg-white': activeTab === 'information', 'bg-gray-100': activeTab !== 'information' }"
+                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Information</button>
+                    <button x-on:click="activeTab = 'participant-info'"
+                        :class="{ 'text-primary bg-white': activeTab === 'participant-info', 'bg-gray-100': activeTab !== 'participant-info' }"
+                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Participant Info</button>
+
+                    @foreach ($additionalInformations as $info)
+                        <button x-on:click="activeTab = '{{ strtolower(str_replace(' ', '_', $info['title'])) }}'"
+                            :class="{ 'text-primary bg-white': activeTab === '{{ strtolower(str_replace(' ', '_', $info['title'])) }}', 'bg-gray-100': activeTab !== '{{ strtolower(str_replace(' ', '_', $info['title'])) }}' }"
+                            class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">{{ $info['title'] }}</button>
+                    @endforeach
+                </div>
+                <div x-show="activeTab === 'information'" class="p-4 border border-t-0 border-gray-300 ">
+                    <article id="conference-information" class="flex flex-col gap-2">
+                        <table class="w-full text-sm" cellpadding="4">
+                            <tr>
+                                <td width="80">Type</td>
+                                <td width="20">:</td>
+                                <td>{{ $currentConference->type }}</td>
+                            </tr>
+                            @if ($currentConference->hasMeta('location'))
+                                <tr>
+                                    <td>Place</td>
+                                    <td>:</td>
+                                    <td>{{ $currentConference->getMeta('location') }}</td>
+                                </tr>
+                            @endif
+                            @if ($currentConference->date_start)
+                                <tr>
+                                    <td>Date</td>
+                                    <td>:</td>
+                                    <td>
+                                        {{ date(Settings::get('format.date'), strtotime($currentConference->date_start)) }} -
+                                        {{ date(Settings::get('format.date'), strtotime($currentConference->date_end)) }}
+                                    </td>
+                                </tr>
+                            @endif
+                        </table>
+                    </article>
+                </div>
+
+                <div x-show="activeTab === 'participant-info'" class="p-4 border border-t-0 border-gray-300 " x-cloak>
+                    <article id="participant-info">
+                        <p>Quota</p>
+                        <div class="overflow-x-auto py-2">
+                            <table class="text-sm text-nowrap">
+                                <tr class="py-2">
+                                    <td class="pr-10">Paper</td>
+                                    <td class="pr-2">:</td>
+                                    <td class="pr-2">400 Papers</td>
+                                    <td class="pr-2">
+                                        <span class="badge badge-primary text-xs h-6 ">355 Accepted</span>
+                                    </td>
+                                    <td class="pr-2"><span class="badge badge-outline text-xs border h-6 text-primary">45
+                                            Available</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Participant</td>
+                                    <td>:</td>
+                                    <td>60 Seats</td>
+                                    <td>
+                                        <span class="badge badge-primary text-xs h-6">30 Reserved</span>
+                                    </td>
+                                    <td><span class="badge badge-outline text-xs border h-6 text-primary">30
+                                            Available</span></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </article>
+                </div>
+
+                @foreach ($additionalInformations as $info)
+                    <div x-show="activeTab === '{{ strtolower(str_replace(' ', '_', $info['title'])) }}'"
+                        class="p-4 border border-t-0 border-gray-300 " x-cloak>
+                        <article id="{{ strtolower(str_replace(' ', '_', $info['title'])) }}"
+                            class="user-content overflow-x-auto">
+                            {!! $info['content'] !!}
+                        </article>
+                    </div>
+                @endforeach
+            </div>
+
+        </section>
+
+        @if ($currentSerie?->speakers()->exists())
+            <section id="conference-speakers" class="flex flex-col space-y-4 gap-y-0">
+                <div class="flex items-center">
+                    <img src="{{ Vite::asset('resources/assets/images/game-icons_public-speaker.svg') }}"
+                        alt="">
+                    <h2 class="text-xl font-medium pl-2">Speakers</h2>
+                </div>
+                <div class="cf-speakers space-y-6">
+                    @foreach ($currentSerie->speakerRoles as $role)
+                        @if ($role->speakers->isNotEmpty())
                             <div class="space-y-4">
-                                <h3 class="text-base">{{ $position->name }}</h3>
-                                <div class="grid gap-2 cf-speaker-list sm:grid-cols-2">
-                                    @foreach ($position->speakers as $participant)
-                                        <div class="flex h-full gap-2 cf-speaker">
-                                            <img class="object-cover w-16 h-16 rounded-full aspect-square"
-                                                src="{{ $participant->getFilamentAvatarUrl() }}"
-                                                alt="{{ $participant->fullName }}" />
-                                            <div>
-                                                <div class="text-sm text-gray-900 speaker-name">
-                                                    {{ $participant->fullName }}
+                                <h3 class="text-base">{{ $role->name }}</h3>
+                                <div class="cf-speaker-list grid gap-2 sm:grid-cols-2">
+                                    @foreach ($role->speakers as $role)
+                                        <div class="cf-speaker flex items-center h-full gap-2">
+                                            <img class="cf-speaker-img object-cover w-16 h-16 rounded-full aspect-square"
+                                                src="{{ $role->getFilamentAvatarUrl() }}"
+                                                alt="{{ $role->fullName }}" />
+                                            <div class="cf-speaker-information">
+                                                <div class="cf-speaker-name text-sm text-gray-900">
+                                                    {{ $role->fullName }}
                                                 </div>
-                                                <div class="speaker-meta">
-                                                    @if ($participant->getMeta('expertise'))
-                                                        <div class="speaker-expertise text-2xs text-primary">
-                                                            {{ implode(', ', $participant->getMeta('expertise') ?? []) }}
-                                                        </div>
-                                                    @endif
-                                                    @if ($participant->getMeta('affiliation'))
-                                                        <div class="speaker-affiliation text-2xs text-secondary">
-                                                            {{ $participant->getMeta('affiliation') }}</div>
-                                                    @endif
-                                                </div>
+                                                @if ($role->getMeta('expertise'))
+                                                    <div class="cf-speaker-expertise text-2xs text-primary">
+                                                        {{ implode(', ', $role->getMeta('expertise') ?? []) }}
+                                                    </div>
+                                                @endif
+                                                @if ($role->getMeta('affiliation'))
+                                                    <div class="cf-speaker-affiliation text-2xs text-secondary">
+                                                        {{ $role->getMeta('affiliation') }}</div>
+                                                @endif
                                             </div>
                                         </div>
                                     @endforeach
@@ -111,34 +217,38 @@
         @endif
 
 
-        @if ($currentConference->getMeta('additional_content'))
-            <section class="px-5 user-content">
-                {!! $currentConference->getMeta('additional_content') !!}
-            </section>
-        @endif
-
-        @if ($venues->isNotEmpty())
-            <section class="p-5 venues">
-                <h2 class="text-heading">Venues</h2>
-                <div class="space-y-3 venue-list">
-                    @foreach ($venues as $venue)                        
-                    <div class="flex gap-3 venue">
-                        @if ($venue->hasMedia('thumbnail'))
-                            <img class="max-w-[100px]" src="{{ $venue->getFirstMedia('thumbnail')->getAvailableUrl(['thumb', 'thumb-xl']) }}">
-                        @endif
-                        <div class="space-y-2">
-                            <div>
-                                <a class="relative inline-flex items-center justify-center gap-1 font-thin outline-none group/link">
-                                    <span
-                                        class="text-base font-semibold group-hover/link:underline group-focus-visible/link:underline">
-                                        {{ $venue->name }}
-                                    </span>
-                                </a>
-                                <p class="flex items-center gap-1 text-sm text-gray-500"><x-heroicon-m-map-pin class="size-4" /> {{ $venue->location }}</p>
+        @if ($acceptedSubmission->isNotEmpty())
+            <section id="conference-accepted-papers" class="flex flex-col gap-y-0 space-y-4">
+                <div class="flex items-center">
+                    <img src="{{ Vite::asset('resources/assets/images/mingcute_paper-line.svg') }}" alt="">
+                    <h2 class="text-xl font-medium pl-2">Accepted Paper List</h2>
+                </div>
+                <div class="flex w-full flex-col gap-y-5">
+                    @foreach ($acceptedSubmission as $submission)
+                        <div class="flex flex-col sm:flex-row">
+                            <div class="w-8 flex-none hidden sm:block">
+                                <p class="text-lg font-bold">{{ $loop->index + 1 }}.</p>
                             </div>
-                            <p class="text-xs text-gray-500">{{ $venue->description }}</p>
+                            <div
+                                class="flex justify-start px-0 sm:px-4 items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
+                                <img class="sm:w-32 w-24 h-auto"
+                                    src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}"
+                                    alt="Placeholder Image">
+                            </div>
+                            <div class=" py-2 flex flex-col">
+                                <a href="#"
+                                    class="text-md font-medium text-primary mb-2">{{ $submission->getMeta('title') }}</a>
+                                <a href="#" class="text-sm underline mb-2">https://doi.org/10.2121/jon.v1i01</a>
+                                <div class="flex items-center">
+                                    <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}"
+                                        alt="People Icon" class="w-5 h-5 mr-2">
+
+                                    <p class="text-sm text-gray-700">
+                                        Dr. Ghavin Reynara
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
                     @endforeach
                 </div>
             </section>

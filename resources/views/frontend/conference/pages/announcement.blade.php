@@ -1,5 +1,5 @@
 <x-website::layouts.main>
-    <div class="p-5">
+    <div>
         @can('update', $announcement)
             <div class="flex">
                 <a class="ms-auto btn btn-primary btn-xs"

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Http\Middleware\IdentifyConference;
+use App\Http\Middleware\SetupConference;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
@@ -65,6 +66,7 @@ class FrontendServiceProvider extends ServiceProvider
             ->middleware([
                 'web',
                 IdentifyConference::class,
+                SetupConference::class,
             ], true)
             ->discoverPages(in: app_path('Frontend/Conference/Pages'), for: 'App\\Frontend\\Conference\\Pages');
     }
