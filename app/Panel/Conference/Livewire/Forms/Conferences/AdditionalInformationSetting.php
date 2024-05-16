@@ -47,14 +47,9 @@ class AdditionalInformationSetting extends Component implements HasForms
                         Repeater::make('meta.additional_information')
                             ->helperText('Add your additional information here. Feel free to format it as you prefer.')
                             ->schema([
-                                Group::make()
-                                    ->schema([
-                                        TextInput::make('title')->required(),
-                                        Toggle::make('is_shown')
-                                            ->helperText('Toggle to display this at the conference landing page')
-                                            ->onColor('success')
-                                            ->offColor('gray'),
-                                    ])->columns(2),
+                                TextInput::make('title')->required(),
+                                Toggle::make('is_shown')
+                                    ->label('Display this on the front page ?'),
                                 TinyEditor::make('content')->required(),
                             ]),
                     ]),
