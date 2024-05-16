@@ -39,18 +39,13 @@ export default {
         themes: [
             {
                 light: {
-                    ...require('daisyui/src/theming/themes')[
-                        '[data-theme=winter]'
-                    ],
-                    // primary: '#BA2823',
+                    ...require("daisyui/src/theming/themes")["winter"],
                     primary: '#38BDF8',
                     'primary-content': '#ffffff',
-                    secondary: '#4a4a5b',
                     'base-100': '#F1F6FA',
                     '--rounded-box': '0px',
                     "--rounded-btn": "0.25rem",
                     '--btn-text-case': 'none',
-                    // '--padding-card': '1rem',
                 },
             },
         ],

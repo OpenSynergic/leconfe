@@ -81,7 +81,7 @@
                     {{ $currentConferences->links('livewire.simple-pagination') }}
                 @endif
             </div>
-            <div class="conference-current space-y-4" x-show="tab === 'upcoming'">
+            <div class="conference-upcoming space-y-4" x-show="tab === 'upcoming'">
                 <div class="grid sm:grid-cols-2 gap-6">
                     @foreach ($upcomingConferences as $conference)
                         <x-website::conference-summary :conference="$conference" />
@@ -91,7 +91,7 @@
                     {{ $upcomingConferences->links('livewire.simple-pagination') }}
                 @endif
             </div>
-            <div class="conference-current space-y-4" x-show="tab === 'allconferences'">
+            <div class="conference-all space-y-4" x-show="tab === 'allconferences'">
                 <div class="grid sm:grid-cols-2 gap-6">
                     @foreach ($allConferences as $conference)
                         <x-website::conference-summary :conference="$conference" />

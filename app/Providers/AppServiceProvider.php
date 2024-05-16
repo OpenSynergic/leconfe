@@ -182,10 +182,20 @@ class AppServiceProvider extends ServiceProvider
 
             $conference ? $this->app->setCurrentConferenceId($conference->getKey()) : $this->app->setCurrentConferenceId(Application::CONTEXT_WEBSITE);
 
-            // Detect serie from URL path
-            if (isset($pathInfos[3]) && !blank($pathInfos[3])) {
-                $serie = Serie::where('path', $pathInfos[3])->first();
-                $serie && $this->app->setCurrentSerieId($serie->getKey());
+            // Detect serie from URL path when conference is set
+            if ($conference) {
+                if(isset($pathInfos[3]) && !blank($pathInfos[3])){
+                    if($serie = Serie::where('path', $pathInfos[3])->first()){
+                        $this->app->setCurrentSerieId($serie->getKey());
+                        $this->app->scopeCurrentSerie();
+                    }
+                } else {
+                    if($serie = $conference->series()->active()->first()){
+                        $this->app->setCurrentSerieId($serie->getKey());
+                        $this->app->scopeCurrentSerie();
+                    }
+                }
+
             }
         }
 
@@ -195,7 +205,6 @@ class AppServiceProvider extends ServiceProvider
             // Scope livewire update path to current serie
             $currentSerie = $this->app->getCurrentSerie();
             if ($currentSerie) {
-                $this->app->scopeCurrentSerie();
                 Livewire::setUpdateRoute(
                     fn ($handle) => Route::post($currentConference->path . '/series/' . $currentSerie->path . '/livewire/update', $handle)->middleware('web')
                 );

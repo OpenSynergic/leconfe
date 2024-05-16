@@ -35,6 +35,11 @@ class Serie extends Model implements HasMedia, HasAvatar, HasName
         'date_end' => 'date',
     ];
 
+    public function scopeActive($query)
+    {
+        return $query->where('active', true);
+    }
+
     public function conference() : BelongsTo
     {
         return $this->belongsTo(Conference::class);
@@ -43,6 +48,21 @@ class Serie extends Model implements HasMedia, HasAvatar, HasName
     public function venues(): HasMany
     {
         return $this->hasMany(Venue::class);
+    }
+
+    public function committees(): HasMany
+    {
+        return $this->hasMany(Committee::class);
+    }
+
+    public function speakers() : HasMany
+    {
+        return $this->hasMany(Speaker::class);
+    }
+
+    public function speakerRoles() : HasMany
+    {
+        return $this->hasMany(SpeakerRole::class);
     }
 
     public function getPanelUrl(): string
