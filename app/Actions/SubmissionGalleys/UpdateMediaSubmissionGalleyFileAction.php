@@ -25,11 +25,9 @@ class UpdateMediaSubmissionGalleyFileAction
                     'category' => SubmissionFileCategory::GALLEY_FILES,
                 ]);
 
-                if (! $checkSubmissionFile) {
-                    $submissionGalley->update([
-                        'submission_file_id' => $submissionGalley->file->id,
-                    ]);
-                }
+                $submissionGalley->update([
+                    'submission_file_id' => $submissionGalley->file->id ?? $checkSubmissionFile->id,
+                ]);
             }
 
             DB::commit();
