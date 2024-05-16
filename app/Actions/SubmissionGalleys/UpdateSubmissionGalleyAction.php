@@ -24,10 +24,19 @@ class UpdateSubmissionGalleyAction
             }
 
             $submissionGalley->update($data);
+            $submissionGalley->refresh();
             
             if ($media = data_get($data, 'media')) {
                 $submissionFile = $submissionGalley->file;
                 $submissionFile->refresh();
+
+                $fileMedia = $submissionFile->media;
+                if ($fileName = data_get($media, 'name')) {
+                    $fileMedia->update([
+                        'file_name' => $fileName.'.'.$fileMedia->extension,
+                        'name' => $fileName,
+                    ]);
+                }
 
                 $submissionFile->update([
                     'submission_file_type_id' => $media['type'],

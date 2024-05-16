@@ -7,7 +7,6 @@ use App\Models\Submission;
 use App\Models\SubmissionFile;
 use App\Models\SubmissionGalley;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Form;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -24,7 +23,8 @@ class CreateSubmissionGalleyAction
 
             if ($media = data_get($data, 'media')) {
                 $temporaryFileUpload = $componentMedia->getState();
-                $saveGalleyMedia = $this->saveUploadedMedia($submissionGalley, reset($temporaryFileUpload), $componentMedia);
+                $fileName = data_get($data, 'media.name') ?? null;
+                $saveGalleyMedia = $this->saveUploadedMedia($submissionGalley, reset($temporaryFileUpload), $componentMedia, $fileName);
 
                 $files = SubmissionFile::create([
                     'submission_id' => $submission->id,
@@ -47,16 +47,17 @@ class CreateSubmissionGalleyAction
         return $submissionGalley;
     }
 
-    private function saveUploadedMedia(SubmissionGalley $record, $file, $component)
+    private function saveUploadedMedia(SubmissionGalley $record, $file, ?SpatieMediaLibraryFileUpload $component, ?string $customFileName = null)
     {
         $mediaAdder = $record->addMediaFromString($file->get());
 
-        $filename = $component->getUploadedFileNameForStorage($file);
+        $fileExtension = $file->getClientOriginalExtension();
+        $filename = $customFileName ? $customFileName.'.'.$fileExtension : $component->getUploadedFileNameForStorage($file);
 
         $media = $mediaAdder
             ->addCustomHeaders($component->getCustomHeaders())
             ->usingFileName($filename)
-            ->usingName($component->getMediaName($file) ?? pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))
+            ->usingName($customFileName ?? pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))
             ->storingConversionsOnDisk($component->getConversionsDisk() ?? '')
             ->withCustomProperties($component->getCustomProperties())
             ->withManipulations($component->getManipulations())

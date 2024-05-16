@@ -3,6 +3,7 @@
 namespace App\Panel\Conference\Livewire\Submissions\Components;
 
 use Filament\Forms\Get;
+use Filament\Forms\Set;
 use App\Models\Submission;
 use Filament\Tables\Table;
 use GuzzleHttp\Psr7\MimeType;
@@ -11,8 +12,8 @@ use App\Models\SubmissionFileType;
 use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Components\Checkbox;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
@@ -29,6 +30,7 @@ use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Actions\SubmissionGalleys\CreateSubmissionGalleyAction;
 use App\Actions\SubmissionGalleys\UpdateSubmissionGalleyAction;
 use App\Actions\SubmissionGalleys\UpdateMediaSubmissionGalleyFileAction;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class GalleyList extends \Livewire\Component implements HasForms, HasTable
 {
@@ -72,51 +74,82 @@ class GalleyList extends \Livewire\Component implements HasForms, HasTable
                 ->required()
                 ->activeUrl()
                 ->placeholder('https://example.com/galley.pdf'),
-            Section::make('Upload File')
-                ->visible(fn (Get $get) => !$get('is_remote_url'))
-                ->schema([
-                    Select::make('media.type')
-                        ->required()
-                        ->options(
-                            fn () => SubmissionFileType::all()->pluck('name', 'id')->toArray()
-                        )
-                        ->searchable()
-                        ->createOptionForm([
-                            TextInput::make('name')
-                                ->required(),
-                        ])
-                        ->createOptionAction(function (FormAction $action) {
-                            $action->modalWidth('xl')
-                                ->color('primary')
-                                ->failureNotificationTitle('There was a problem creating the file type')
-                                ->successNotificationTitle('File type created successfully');
-                        })
-                        ->createOptionUsing(function (array $data) {
-                            SubmissionFileType::create($data);
-                        })
-                        ->live(),
-                    SpatieMediaLibraryFileUpload::make('media.files')
-                        ->required()
-                        ->previewable(false)
-                        ->downloadable()
-                        ->reorderable()
-                        ->disk('private-files')
-                        ->preserveFilenames()
-                        ->acceptedFileTypes(
-                            fn (): array => collect(static::ACCEPTED_FILE_TYPES)
-                                ->map(fn ($ext) => MimeType::fromExtension($ext))
-                                ->toArray()
-                        )
-                        ->collection(SubmissionFileCategory::GALLEY_FILES)
-                        ->visibility('private')
-                        ->saveRelationshipsUsing(static function (SpatieMediaLibraryFileUpload $component, $context, SubmissionGalley $record, Get $get) {
-                            if ($context == 'edit') {
-                                $component->saveUploadedFiles();
-                                UpdateMediaSubmissionGalleyFileAction::run($record, $component->getState(), $get('media.type'));
-                                $component->deleteAbandonedFiles();
-                            }
-                        }),
+            Select::make('media.type')
+                ->required()
+                ->options(
+                    fn () => SubmissionFileType::all()->pluck('name', 'id')->toArray()
+                )
+                ->searchable()
+                ->createOptionForm([
+                    TextInput::make('name')
+                        ->required(),
                 ])
+                ->createOptionAction(function (FormAction $action) {
+                    $action->modalWidth('xl')
+                        ->color('primary')
+                        ->failureNotificationTitle('There was a problem creating the file type')
+                        ->successNotificationTitle('File type created successfully');
+                })
+                ->createOptionUsing(function (array $data) {
+                    SubmissionFileType::create($data);
+                })
+                ->visible(fn (Get $get) => !$get('is_remote_url'))
+                ->live(),
+            SpatieMediaLibraryFileUpload::make('media.files')
+                ->required()
+                ->previewable(false)
+                ->downloadable()
+                ->reorderable()
+                ->disk('private-files')
+                ->acceptedFileTypes(
+                    fn (): array => collect(static::ACCEPTED_FILE_TYPES)
+                        ->map(fn ($ext) => MimeType::fromExtension($ext))
+                        ->toArray()
+                )
+                ->preserveFilenames()
+                ->live()
+                ->collection(SubmissionFileCategory::GALLEY_FILES)
+                ->visibility('private')
+                ->visible(fn (Get $get) => !$get('is_remote_url'))
+                ->saveRelationshipsUsing(static function (SpatieMediaLibraryFileUpload $component, $context, SubmissionGalley $record, Get $get) {
+                    if ($context == 'edit') {
+                        $component->saveUploadedFiles();
+                        UpdateMediaSubmissionGalleyFileAction::run($record, $component->getState(), $get('media.type'));
+                        $component->deleteAbandonedFiles();
+                    }
+                })
+                ->afterStateUpdated(function ($state, Set $set) {
+                    $set('media.name', pathinfo($state->getClientOriginalName(), PATHINFO_FILENAME));
+                }),
+            Checkbox::make('media.is_custom_name')
+                ->label('Manually set the file name')
+                ->visible(function (Get $get, $context) {
+                    return ! $get('is_remote_url') && $context == 'create';
+                })
+                ->live(),
+            TextInput::make('media.name')
+                ->label('File Name')
+                ->required()
+                ->visible(function (Get $get, $context) {
+                    $isRemoteUrl = $get('is_remote_url');
+                    $hasFiles = $get('media.files');
+                    $isCustomName = $get('media.is_custom_name', false);
+                
+                    return !$isRemoteUrl && $hasFiles && ($context === 'create' ? $isCustomName : true);
+                })
+                ->suffix(function (Get $get, $record) {
+                    $mediaFile = $get('media.files');
+
+                    if (!$mediaFile) {
+                        return null;
+                    }
+
+                    $mediaFile = reset($mediaFile) instanceof TemporaryUploadedFile
+                        ? reset($mediaFile)->getClientOriginalName()
+                        : $record->file?->media->file_name;
+
+                    return pathinfo($mediaFile, PATHINFO_EXTENSION) ?: null;
+                }),
         ];
     }
 
@@ -171,6 +204,7 @@ class GalleyList extends \Livewire\Component implements HasForms, HasTable
                         $data['is_remote_url'] = (bool) $record->remote_url;
                         if ($record->file) {
                             $data['media']['type'] = $record->file->submission_file_type_id;
+                            $data['media']['name'] = $record->file->media->name;
                         }
                         
                         return $data;
