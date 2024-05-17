@@ -1,37 +1,38 @@
 @use('App\Models\Enums\SubmissionStatus')
 @use('App\Constants\SubmissionFileCategory')
 <x-website::layouts.main>
-    <div class="submission-list">
-        <div class="mb-6 bg-gray-50 dark:bg-gray-800">
-            <div class="container flex items-center px-6 py-4 mx-auto overflow-x-auto text-sm whitespace-nowrap">
-                <a href="#" class="text-gray-600 dark:text-gray-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                    </svg>
-                </a>
-        
-                <span class="mx-5 text-gray-500 dark:text-gray-300 rtl:-scale-x-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                    </svg>
-                </span>
-        
-                <a href="#" class="text-gray-600 dark:text-gray-200 hover:underline">
-                    Proceedings
-                </a>
-        
-                <span class="mx-5 text-gray-500 dark:text-gray-300 rtl:-scale-x-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                    </svg>
-                </span>
-        
-                <a href="#" class="text-gray-600 dark:text-gray-200 hover:underline">
-                    Vol. 10 No. 2 (2022): December
-                </a>
+    <div>
+        <div class="mb-6">
+            <x-website::breadcrumbs :breadcrumbs="$this->getBreadcrumbs()" />
+        </div>
+        <div class="relative mb-4">
+            <div class="flex mb-5 space-x-4">
+                <div class="text-xl font-semibold min-w-fit">List Proceeding</div>
+                <hr class="w-full h-px my-auto bg-gray-200 border-0 dark:bg-gray-700">
+            </div>
+            <div class="grid grid-cols-2 gap-y-10">
+                @foreach ($proceedings as $proceeding)
+                    <div class="pb-10 space-y-5 border-b">
+                        <div class="flex space-x-5">
+                            @if($proceeding->getFirstMediaUrl('cover'))
+                                <a href="{{ route('livewirePageGroup.conference.pages.proceeding-detail', ['proceedingId' => $proceeding->id]) }}" class="w-full h-36 max-h-36 max-w-[6rem]">
+                                    <img class="w-full h-full" src="{{ $proceeding->getFirstMediaUrl('cover') }}" alt="">
+                                </a>
+                            @endif
+                            <div>
+                                <div class="mb-3 text-base space-y-0.5">
+                                    <a href="{{ route('livewirePageGroup.conference.pages.proceeding-detail', ['proceedingId' => $proceeding->id]) }}" class="font-semibold text-gray-700 hover:text-primary">{{ $proceeding->title }}</a>
+                                    <div class="text-sm text-gray-500">
+                                        {{ $proceeding->volume ? 'Vol. '.$proceeding->volume : '' }}
+                                        {{ $proceeding->number ? 'No. '.$proceeding->number : '' }}
+                                        {{ $proceeding->year ? '('.$proceeding->year.')' : '' }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
             </div>
         </div>
-        <x-conference::current-proceeding />
-        <x-conference::list-articles />
     </div>
 </x-website::layouts.main>
