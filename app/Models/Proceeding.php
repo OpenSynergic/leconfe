@@ -94,4 +94,13 @@ class Proceeding extends Model implements HasMedia, Sortable
     {
         return $this->hasMany(Submission::class);
     }
+
+    public function seriesTitle() : string
+    {
+        return 
+            ($this->volume ? "Vol. {$this->volume}" : '').
+            ($this->number ? " No. {$this->number}" : '').
+            ($this->year ? " ({$this->year})" : '').
+            ': '.$this->title;
+    }
 }
