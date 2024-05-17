@@ -165,7 +165,7 @@ class GalleyList extends \Livewire\Component implements HasForms, HasTable
                         ->color('primary')
                         ->url(
                             fn (SubmissionGalley $galley) => 
-                                $galley->file?->media ? route('submission-files.view', $galley->file->media->uuid) : $galley->remote_url,
+                                !$galley->remote_url ? route('submission-files.view', $galley->file->media->uuid) : $galley->remote_url,
                             true
                         )
                 ]),
