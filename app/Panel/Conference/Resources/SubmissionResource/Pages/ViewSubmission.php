@@ -284,13 +284,12 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                     fn (): bool => $this->record->isPublished() || (StageManager::editing()->isStageOpen() && auth()->user()->can('editing', $this->record))
                 ),
             Action::make('publish')
-                ->color('success')
-                ->outlined()
+                ->color('primary')
+                ->label('Publish Now')
                 ->disabled(
                     fn (): bool => ! StageManager::editing()->isStageOpen()
                 )
                 ->authorize('publish', $this->record)
-                ->icon('iconpark-check')
                 ->when(
                     fn () => $this->record->hasPaymentProcess() && ! $this->record->payment?->isCompleted(),
                     fn (Action $action): Action => $action

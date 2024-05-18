@@ -147,6 +147,7 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasFo
         return TableAction::make('upload')
             ->icon('iconpark-upload')
             ->label('Upload Files')
+            ->outlined()
             ->hidden(fn (): bool => $this->isViewOnly())
             ->modalWidth('xl')
             ->form(

@@ -87,6 +87,8 @@ class ParticipantList extends Component implements HasForms, HasTable
                     ->hidden($this->submission->isDeclined())
                     ->icon('lineawesome-user-plus-solid')
                     ->label('Assign')
+                    ->link()
+                    ->color('primary')
                     ->size('xs')
                     ->extraModalFooterActions(function (Action $action) {
                         return [$action->makeModalSubmitAction('assignAnother', ['another' => true])
