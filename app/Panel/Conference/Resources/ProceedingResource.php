@@ -94,7 +94,8 @@ class ProceedingResource extends Resource
                     Tables\Actions\EditAction::make()
                         ->modalWidth('xl'),
                     Tables\Actions\Action::make('preview')
-                        ->icon('heroicon-o-eye'),
+                        ->icon('heroicon-o-eye')
+                        ->url(fn (Proceeding $record) => route('livewirePageGroup.conference.pages.proceeding-detail', [$record->id]), true),
                     Tables\Actions\Action::make('publish')
                         ->requiresConfirmation()
                         ->icon('heroicon-o-arrow-up-tray')
