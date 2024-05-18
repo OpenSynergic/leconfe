@@ -10,9 +10,11 @@ use Illuminate\Database\Eloquent\Collection;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 
-class Proceeding extends Page
+class Proceedings extends Page
 {
-    protected static string $view = 'frontend.conference.pages.proceeding';
+    protected static string $view = 'frontend.conference.pages.proceedings';
+
+    protected static ?string $slug = 'proceedings';
 
     public Collection $topics, $proceedings;
 
@@ -22,14 +24,17 @@ class Proceeding extends Page
             ? Topic::whereSlug($topicSlug)->get()
             : Topic::whereHas('submissions')->get();
 
-        $this->proceedings = ModelsProceeding::query()->orderBy('order_column')->get();
+        $this->proceedings = ModelsProceeding::query()
+            ->published()
+            ->orderBy('order_column')
+            ->get();
     }
 
     public function getBreadcrumbs(): array
     {
         return [
             url('/') => 'Home',
-            'Proceeding',
+            'Proceedings',
         ];
     }
 
