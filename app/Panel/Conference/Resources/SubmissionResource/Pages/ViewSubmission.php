@@ -334,6 +334,22 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                             $action->success();
                         })
                 ),
+            Action::make('view')
+                ->icon('heroicon-o-eye')
+                ->color('primary')
+                ->url(route('livewirePageGroup.conference.pages.submission-detail', ['submissionId' => $this->record->id]), true)
+                ->label(function () {
+                    if ($this->record->isPublished()) {
+                        return 'View';
+                    }
+
+                    if (StageManager::editing()->isStageOpen() && auth()->user()->can('editing', $this->record)) {
+                        return 'Preview';
+                    }
+                })
+                ->visible(
+                    fn (): bool => $this->record->isPublished() || (StageManager::editing()->isStageOpen() && auth()->user()->can('editing', $this->record))
+                ),
             Action::make('unpublish')
                 ->icon('lineawesome-calendar-times-solid')
                 ->color('danger')
