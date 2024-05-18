@@ -68,6 +68,7 @@ class SubmissionProceeding extends \Livewire\Component implements HasForms, HasI
                         Action::make('assign_proceeding')
                             ->button()
                             ->label(fn(Submission $record) => $record->proceeding ? 'Change Proceeding' : 'Assign to Proceeding')
+                            ->visible(fn (Submission $record) => auth()->user()->can('editing', $record))
                             ->modalWidth(MaxWidth::ExtraLarge)
                             ->form([
                                 Select::make('proceeding_id')
@@ -98,6 +99,9 @@ class SubmissionProceeding extends \Livewire\Component implements HasForms, HasI
     public function form(Form $form): Form
     {
         return $form
+            ->disabled(function (): bool {
+                return ! auth()->user()->can('editing', $this->submission);
+            })
             ->schema([
                 SpatieMediaLibraryFileUpload::make('media.article-cover')
                     ->label('Cover Image')
