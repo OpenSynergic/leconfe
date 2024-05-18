@@ -1,7 +1,7 @@
 @use('App\Constants\SubmissionFileCategory')
 @use('App\Classes\Settings')
 <x-website::layouts.main>
-    <div class="p-5" id="submission-detail">
+    <div id="submission-detail">
         <div class="mb-6">
             <x-website::breadcrumbs :breadcrumbs="$this->getBreadcrumbs()" />
         </div>
@@ -19,6 +19,11 @@
                 {{ __('Date Published') . ': ' . $submission->published_at->format(Settings::get('format_date')) }}
             </span>
         </div>
+        @if($submission->getFirstMediaUrl('article_cover'))
+            <div class="mb-4 max-w-[48rem]">
+                <img class="w-full" src="{{ $submission->getFirstMediaUrl('article-cover') }}" alt="article-cover">
+            </div>
+        @endif
         <div class="submission-detail space-y-7">
             <section class="contributors">
                 <h2 class="pb-1 mb-3 text-xl font-medium border-b border-b-slate-200">
