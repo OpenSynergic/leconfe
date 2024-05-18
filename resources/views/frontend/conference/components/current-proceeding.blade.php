@@ -1,3 +1,4 @@
+@use('App\Classes\Settings')
 @props([
     'proceeding',
 ])
@@ -22,7 +23,7 @@
                     {{ $proceeding->description }}
                 </div>
                 <div class="text-sm">
-                    <span class="font-semibold">Published: </span> 2024-01-01
+                    <span class="font-semibold">Published: </span> {{ $proceeding->published_at ? $proceeding->published_at->format(Settings::get('format_date')) : '-' }}
                 </div>
             </div>
         </div>
