@@ -1,9 +1,15 @@
 @use('App\Constants\SubmissionFileCategory')
+@use('App\Classes\Settings')
 <x-website::layouts.main>
     <div class="p-5" id="submission-detail">
         <div class="mb-6">
             <x-website::breadcrumbs :breadcrumbs="$this->getBreadcrumbs()" />
         </div>
+        @if($this->canPreview())
+            <div class="mb-6">
+                <x-website::preview-alert />
+            </div>
+        @endif
         <h1 class="text-2xl">
             {{ $submission->getMeta('title') }}
         </h1>

@@ -3,6 +3,7 @@
 namespace App\Frontend\Conference\Pages;
 
 use App\Models\Submission;
+use App\Panel\Conference\Livewire\Workflows\Classes\StageManager;
 use Livewire\Attributes\Title;
 use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
@@ -19,9 +20,19 @@ class SubmissionDetail extends Page
     {
         $this->submission = Submission::find($submissionId);
         
-        if (! $this->submission || ! $this->submission->isPublished()) {
+        if (!$this->canAccess()) {
             abort(404);
         }
+    }
+
+    public function canAccess(): bool
+    {
+        return (StageManager::editing()->isStageOpen() && auth()->user()->can('editing', $this->submission)) || $this->submission?->isPublished();
+    }
+
+    public function canPreview(): bool
+    {
+        return ! $this->submission->isPublished() && StageManager::editing()->isStageOpen() && auth()->user()->can('editing', $this->submission);
     }
 
     public function getBreadcrumbs(): array
