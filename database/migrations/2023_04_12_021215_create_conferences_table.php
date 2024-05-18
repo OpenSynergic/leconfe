@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Enums\ConferenceType;
+use App\Models\Enums\SerieType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

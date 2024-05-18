@@ -4,7 +4,7 @@ namespace App\Panel\Conference\Resources;
 
 use App\Actions\Series\SerieSetAsActiveAction;
 use App\Facades\Settings;
-use App\Models\Enums\ConferenceType;
+use App\Models\Enums\SerieType;
 use App\Models\Serie;
 use App\Panel\Conference\Resources\SerieResource\Pages;
 use Filament\Forms\Components\Checkbox;
@@ -69,7 +69,7 @@ class SerieResource extends Resource
                     ]),
                 Select::make('type')
                     ->required()
-                    ->options(ConferenceType::array()),
+                    ->options(SerieType::array()),
                 Checkbox::make('set_as_active')
                     ->label('Set as active serie'),
             ]);

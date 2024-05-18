@@ -6,7 +6,7 @@ use App\Models\Enums\Concern\UsefulEnums;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
-enum ConferenceType: string implements HasColor, HasLabel
+enum SerieType: string implements HasColor, HasLabel
 {
     use UsefulEnums;
 

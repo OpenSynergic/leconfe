@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Enums\ConferenceType;
+use App\Models\Enums\SerieType;
 use App\Models\Meta\ConferenceMeta;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasName;

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Filament\Models\Contracts\HasAvatar;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use App\Models\Concerns\BelongsToConference;
-use App\Models\Enums\ConferenceType;
+use App\Models\Enums\SerieType;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -35,7 +35,7 @@ class Serie extends Model implements HasMedia, HasAvatar, HasName
         'active' => 'boolean',
         'date_start' => 'date',
         'date_end' => 'date',
-        'type' => ConferenceType::class,
+        'type' => SerieType::class,
     ];
 
     public function scopeActive($query)

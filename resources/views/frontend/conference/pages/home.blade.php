@@ -16,9 +16,9 @@
                         <span
                             @class([
                                 'badge badge-sm',
-                                'badge-secondary' => $currentSerie->type === \App\Models\Enums\ConferenceType::Offline,
-                                'badge-warning' => $currentSerie->type === \App\Models\Enums\ConferenceType::Hybrid,
-                                'badge-primary' => $currentSerie->type === \App\Models\Enums\ConferenceType::Online,
+                                'badge-secondary' => $currentSerie->type === \App\Models\Enums\SerieType::Offline,
+                                'badge-warning' => $currentSerie->type === \App\Models\Enums\SerieType::Hybrid,
+                                'badge-primary' => $currentSerie->type === \App\Models\Enums\SerieType::Online,
                             ])>{{ $currentSerie->type }}</span>
                     </div>
                     @if ($currentSerie->getMeta('about'))

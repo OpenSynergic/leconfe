@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\Conference;
-use App\Models\Enums\ConferenceType;
+use App\Models\Enums\SerieType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('issn')->nullable();
             $table->date('date_start')->nullable();
             $table->date('date_end')->nullable();
-            $table->enum('type', ConferenceType::array())->default(ConferenceType::Offline->value);
+            $table->enum('type', SerieType::array())->default(SerieType::Offline->value);
             $table->boolean('active')->default(false);
             $table->timestamps();
             $table->softDeletes();

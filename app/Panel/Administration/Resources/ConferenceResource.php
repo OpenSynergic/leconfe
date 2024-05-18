@@ -5,7 +5,7 @@ namespace App\Panel\Administration\Resources;
 use App\Actions\Conferences\ConferenceUpdateAction;
 use App\Facades\Settings;
 use App\Models\Conference;
-use App\Models\Enums\ConferenceType;
+use App\Models\Enums\SerieType;
 use App\Panel\Administration\Resources\ConferenceResource\Pages;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\DatePicker;

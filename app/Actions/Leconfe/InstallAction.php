@@ -120,7 +120,7 @@ class InstallAction
 
         info('Create your first conference.');
         $data['conference_name'] = text('What is your conference name?', required: true);
-        $data['conference_type'] = select('What is your conference type?', \App\Models\Enums\ConferenceType::array(), default: 'Offline', required: true);
+        $data['conference_type'] = select('What is your conference type?', \App\Models\Enums\SerieType::array(), default: 'Offline', required: true);
         $data['conference_description'] = text('What is your conference description?', required: false);
 
         info('Please review your information before continue.');
