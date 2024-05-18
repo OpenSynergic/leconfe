@@ -8,9 +8,11 @@
         <hr class="w-full h-px my-auto bg-gray-200 border-0 dark:bg-gray-700">
     </div>
     <div class="grid grid-cols-9 gap-x-4">
-        <div class="col-span-2 max-w-64">
-            <img src="{{ $proceeding->getFirstMediaUrl('cover') }}" class="w-full" alt="150">
-        </div>
+        @if($proceeding->getFirstMediaUrl('cover'))
+            <div class="col-span-2 max-w-64">
+                <img src="{{ $proceeding->getFirstMediaUrl('cover') }}" class="w-full" alt="150">
+            </div>
+        @endif
         <div class="col-span-7">
             <div class="space-y-4">
                 <div class="text-sm font-semibold">
