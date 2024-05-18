@@ -12,13 +12,13 @@
             @endphp
             <div class="grid grid-cols-10 space-x-5">
                 @if($article->getFirstMediaUrl('article-cover'))
-                    <a href="#" class="col-span-2 max-h-36">
+                    <a href="{{ route('livewirePageGroup.conference.pages.submission-detail', ['submissionId' => $article->id]) }}" class="col-span-2 max-h-36">
                         <img class="w-full h-full" src="{{ $article->getFirstMediaUrl('article-cover') }}" alt="">
                     </a>
                 @endif
                 <div class="col-span-8">
                     <div class="mb-3 text-base">
-                        <a href="#" class="font-semibold text-gray-700 hover:text-primary">{{ $article->getMeta('title') }}</a>
+                        <a href="{{ route('livewirePageGroup.conference.pages.submission-detail', ['submissionId' => $article->id]) }}" class="font-semibold text-gray-700 hover:text-primary">{{ $article->getMeta('title') }}</a>
                         <div class="text-xs text-gray-500">{{ $article->getMeta('subtitle') }}</div>
                     </div>
                     <div class="grid grid-cols-9 mb-3">
