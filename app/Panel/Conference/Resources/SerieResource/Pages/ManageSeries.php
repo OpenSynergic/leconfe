@@ -2,6 +2,7 @@
 
 namespace App\Panel\Conference\Resources\SerieResource\Pages;
 
+use App\Actions\Series\SerieCreateAction;
 use App\Panel\Conference\Resources\SerieResource;
 use Filament\Actions;
 use Filament\Resources\Components\Tab;
@@ -15,7 +16,8 @@ class ManageSeries extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->using(fn(array $data) => SerieCreateAction::run($data)),
         ];
     }
 

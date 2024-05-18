@@ -5,6 +5,7 @@ namespace App\Panel\Administration\Resources\ConferenceResource\Pages;
 use App\Panel\Administration\Resources\ConferenceResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Support\Enums\MaxWidth;
 
 class ListConferences extends ListRecords
 {
@@ -22,7 +23,7 @@ class ListConferences extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
         ];
     }
 }

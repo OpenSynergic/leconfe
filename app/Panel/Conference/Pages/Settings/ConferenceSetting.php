@@ -9,8 +9,6 @@ use App\Panel\Conference\Livewire\Forms\Conferences\AdditionalInformationSetting
 use App\Panel\Conference\Livewire\Forms\Conferences\ContactSetting;
 use App\Panel\Conference\Livewire\Forms\Conferences\InformationSetting;
 use App\Panel\Conference\Livewire\Forms\Conferences\PrivacySetting;
-use App\Panel\Conference\Livewire\Forms\Conferences\RegistrationSetting;
-use App\Panel\Conference\Livewire\Forms\Conferences\SearchEngineSetting;
 use App\Panel\Conference\Livewire\Forms\Conferences\SetupSetting;
 use App\Panel\Conference\Livewire\Forms\Conferences\SponsorSetting;
 use App\Panel\Conference\Livewire\NavigationMenuSetting;
@@ -33,7 +31,7 @@ class ConferenceSetting extends Page implements HasForms, HasInfolists
 
     protected static ?string $navigationGroup = 'Settings';
 
-    protected static ?string $navigationIcon = 'heroicon-o-window';
+    protected static ?string $navigationIcon = 'heroicon-o-globe-alt';
 
     protected static string $view = 'panel.conference.pages.settings.conference';
 
@@ -46,11 +44,6 @@ class ConferenceSetting extends Page implements HasForms, HasInfolists
         $this->authorize('update', App::getCurrentConference());
     }
 
-    public static function getNavigationUrl(): string
-    {
-        return static::getUrl(['conference' => app()->getCurrentConference()->path]);
-    }
-
     public static function shouldRegisterNavigation(): bool
     {
         return Auth::user()->can('update', App::getCurrentConference());
@@ -60,7 +53,7 @@ class ConferenceSetting extends Page implements HasForms, HasInfolists
     {
         return $infolist
             ->schema([
-                Tabs::make('conference_settings')
+                Tabs::make('website_settings')
                     ->tabs([
                         Tabs\Tab::make('About')
                             ->schema([
@@ -83,13 +76,13 @@ class ConferenceSetting extends Page implements HasForms, HasInfolists
                                                     ])
                                             ]),
                                         InfolistsVerticalTabs\Tab::make('Privacy')
-                                        ->icon('heroicon-o-shield-check')
-                                        ->schema([
-                                            LivewireEntry::make('information-setting')
-                                            ->livewire(PrivacySetting::class, [
-                                                'conference' => App::getCurrentConference(),
+                                            ->icon('heroicon-o-shield-check')
+                                            ->schema([
+                                                LivewireEntry::make('information-setting')
+                                                    ->livewire(PrivacySetting::class, [
+                                                        'conference' => App::getCurrentConference(),
+                                                    ]),
                                             ]),
-                                        ]),
                                         InfolistsVerticalTabs\Tab::make('Sponsors')
                                             ->icon("lineawesome-users-solid")
                                             ->schema([

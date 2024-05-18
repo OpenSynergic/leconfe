@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Vite;
 use Kra8\Snowflake\HasShortflakePrimary;
 use Plank\Metable\Metable;
@@ -31,11 +32,8 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
      */
     protected $fillable = [
         'name',
-        'type',
         'status',
         'path',
-        'date_start',
-        'date_end',
     ];
 
     /**
@@ -44,9 +42,7 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
      * @var array
      */
     protected $casts = [
-        'type' => ConferenceType::class,
-        'date_start' => 'date',
-        'date_end' => 'date',
+
     ];
 
     protected function getMetaClassName(): string
@@ -104,6 +100,11 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
         return $this->hasMany(Serie::class);
     }
 
+    public function activeSerie() : HasOne
+    {
+        return $this->hasOne(Serie::class)->where('active', true);
+    }
+
     public function roles(): HasMany
     {
         return $this->hasMany(Role::class);
@@ -143,46 +144,6 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
             ->generateSlugsFrom('name')
             ->saveSlugsTo('path')
             ->skipGenerateWhen(fn () => $this->path !== null);
-    }
-
-    public function scopeActive(Builder $query)
-    {
-        return $query
-            ->with(['meta'])
-            ->where('date_start', '<=', now())
-            ->where('date_end', '>=', now())
-            ->orderBy('date_start', 'asc');
-    }
-
-    public function scopeArchived(Builder $query)
-    {
-        return $query
-            ->with(['meta'])
-            ->where('date_end', '<', now())
-            ->orderBy('date_end', 'desc');
-    }
-
-    public function scopeUpcoming(Builder $query)
-    {
-        return $query
-            ->with(['meta'])
-            ->where('date_start', '>', now())
-            ->orderBy('date_start', 'asc');
-    }
-
-    public function isUpcoming(): bool
-    {
-        return $this->date_start > now();
-    }
-
-    public function isArchived(): bool
-    {
-        return $this->date_end < now();
-    }
-
-    public function isActive(): bool
-    {
-        return $this->date_start <= now() && $this->date_end >= now();
     }
 
     public function getPanelUrl(): string

@@ -18,7 +18,6 @@ return new class extends Migration
             $table->date('date_start')->nullable();
             $table->date('date_end')->nullable();
             $table->string('path')->unique();
-            $table->enum('type', ConferenceType::array())->default(ConferenceType::Offline->value);
             $table->timestamps();
         });
 

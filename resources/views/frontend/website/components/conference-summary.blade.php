@@ -5,19 +5,19 @@
         <img src="{{ $conference->getThumbnailUrl() }}" alt="{{ $conference->name }}">
     </div>
     <div class="information flex-1 space-y-2">
-        @if ($conference->date_start)
+        @if ($conference?->activeSerie?->date_start)
             <div class="flex items-center text-sm gap-2 text-gray-600">
                 <x-heroicon-c-calendar-days class="h-5 w-5" />
                 <span>
-                    {{ $conference->date_start?->format(Settings::get('format_date')) }}
+                    {{ $conference?->activeSerie?->date_start?->format(Settings::get('format_date')) }}
                 </span>
             </div>
         @endif
 
-        <{{ $header }} class="inline-block">
+        <{{ $header }} class="">
             <a href="{{ $conference->getHomeUrl() }}"
                 class="conference-name link link-primary link-hover font-bold">{{ $conference->name }}</a>
-            <span class="badge badge-sm">{{ $conference->type }}</span>
+            {{-- <span class="badge badge-sm">{{ $conference->type }}</span> --}}
         </{{ $header }}>
 
         @if ($conference->getMeta('description'))

@@ -38,6 +38,7 @@ class PanelProvider extends ServiceProvider
             ->id('series')
             ->path('{conference:path}/series/{serie:path}/panel')
             ->bootUsing(fn () => static::setupFilamentComponent())
+            ->homeUrl(fn () => route('livewirePageGroup.conference.pages.home'))
             ->discoverResources(in: app_path('Panel/Series/Resources'), for: 'App\\Panel\\Series\\Resources')
             ->discoverPages(in: app_path('Panel/Series/Pages'), for: 'App\\Panel\\Series\\Pages')
             ->discoverWidgets(in: app_path('Panel/Series/Widgets'), for: 'App\\Panel\\Series\\Widgets')

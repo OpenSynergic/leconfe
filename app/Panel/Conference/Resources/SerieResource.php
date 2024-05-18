@@ -2,11 +2,16 @@
 
 namespace App\Panel\Conference\Resources;
 
+use App\Actions\Series\SerieSetAsActiveAction;
 use App\Facades\Settings;
+use App\Models\Enums\ConferenceType;
 use App\Models\Serie;
 use App\Panel\Conference\Resources\SerieResource\Pages;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -47,11 +52,6 @@ class SerieResource extends Resource
                             ->required()
                             ->placeholder('Enter the path of the serie'),
                     ]),
-                Textarea::make('description')
-                    ->label('Description')
-                    ->placeholder('Enter the description of the serie')
-                    ->rows(5)
-                    ->autosize(),
                 TextInput::make('issn')
                     ->label('ISSN')
                     ->placeholder('Enter the ISSN of the serie'),
@@ -67,6 +67,11 @@ class SerieResource extends Resource
                             ->requiredWith('date_start')
                             ->placeholder('Enter the end date of the serie'),
                     ]),
+                Select::make('type')
+                    ->required()
+                    ->options(ConferenceType::array()),
+                Checkbox::make('set_as_active')
+                    ->label('Set as active serie'),
             ]);
     }
 
@@ -91,6 +96,14 @@ class SerieResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
+                    Tables\Actions\Action::make('set_as_active')
+                        ->label('Set As Active')
+                        ->requiresConfirmation()
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->hidden(fn (Serie $record) => $record->active || $record->trashed())
+                        ->action(fn (Serie $record, Tables\Actions\Action $action) => SerieSetAsActiveAction::run($record) && $action->success())
+                        ->successNotificationTitle(fn(Serie $serie) => $serie->title . ' is set as active'),
                     Tables\Actions\EditAction::make()
                         ->hidden(fn (Serie $record) => $record->trashed()),
                     Tables\Actions\DeleteAction::make()

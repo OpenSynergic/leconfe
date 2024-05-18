@@ -33,13 +33,13 @@
                 @if (filament()->isSidebarCollapsibleOnDesktop())
                     x-show="$store.sidebar.isOpen"
                 @endif
-                class="flex items-center justify-between text-start truncate grow"
+                class="flex flex-wrap items-center justify-between text-start truncate grow"
             >
                 <span class="text-gray-950 dark:text-white">
                     {{ $currentSerie->title }}
                 </span>
 
-                <x-filament::badge size="sm" class="ms-auto" :color="$currentSerie->active ? 'info' : 'gray'">
+                <x-filament::badge size="sm" class="" :color="$currentSerie->active ? 'info' : 'gray'">
                     {{ $currentSerie->active ? 'Active' : 'Archived'}}
                 </x-filament::badge>
             </span>

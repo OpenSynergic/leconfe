@@ -5,6 +5,7 @@ namespace App\Frontend\Website\Pages;
 use App\Facades\Block as BlockFacade;
 use App\Facades\SidebarFacade;
 use App\Models\Conference;
+use App\Models\Serie;
 use App\Models\Sponsor;
 use App\Models\Topic;
 use Illuminate\Support\Facades\Route;
@@ -16,17 +17,28 @@ use Rahmanramsi\LivewirePageGroup\Pages\Page;
 class Home extends Page
 {
     use WithPagination, WithoutUrlPagination;
-    
+
     protected static string $view = 'frontend.website.pages.home';
 
 
     protected function getViewData(): array
     {
+
+        $conferencesQuery = Conference::with([
+            'media', 
+            'activeSerie' => fn($query) => $query->withoutGlobalScopes(),
+        ]);
+
+        // filter current year
+        $currentConferences = (clone $conferencesQuery)->whereHas('activeSerie', fn($query) => $query->whereYear('date_start', now()->year));
+        $upcomingConferences = (clone $conferencesQuery)->whereHas('activeSerie', fn($query) => $query->where('date_start', '>', now()));
+
+
         return [
             'sponsors' => Sponsor::ordered()->with('media')->get(),
-            'currentConferences' => Conference::active()->with('media')->paginate(6, pageName: 'currentConferencesPage'),
-            'upcomingConferences' => Conference::upcoming()->with('media')->paginate(6, pageName: 'upcomingConferencesPage'),
-            'allConferences' => Conference::with('media')->paginate(6, pageName: 'allConferencesPage'),
+            'currentConferences' => $currentConferences->paginate(6, pageName: 'currentConferencesPage'),
+            'upcomingConferences' => $upcomingConferences->paginate(6, pageName: 'upcomingConferencesPage'),
+            'allConferences' => $conferencesQuery->paginate(6, pageName: 'allConferencesPage'),
         ];
     }
 

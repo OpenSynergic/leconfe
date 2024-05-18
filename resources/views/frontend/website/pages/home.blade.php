@@ -72,33 +72,51 @@
                 </div>
             </div>
             <div class="conference-current space-y-4" x-show="tab === 'current'">
-                <div class="grid sm:grid-cols-2 gap-6">
-                    @foreach ($currentConferences as $conference)
-                        <x-website::conference-summary :conference="$conference" />
-                    @endforeach
+                @if($currentConferences->isNotEmpty())
+                    <div class="grid sm:grid-cols-2 gap-6">
+                        @foreach ($currentConferences as $conference)
+                            <x-website::conference-summary :conference="$conference" />
+                        @endforeach
+                    </div>
+                    @if($currentConferences->hasPages())
+                        {{ $currentConferences->links('livewire.simple-pagination') }}
+                    @endif
+                @else
+                <div class="text-center my-12">
+                    <p class="text-lg font-bold">There are no conferences taking place at this time</p>
                 </div>
-                @if($currentConferences->hasPages())
-                    {{ $currentConferences->links('livewire.simple-pagination') }}
                 @endif
             </div>
             <div class="conference-upcoming space-y-4" x-show="tab === 'upcoming'">
-                <div class="grid sm:grid-cols-2 gap-6">
-                    @foreach ($upcomingConferences as $conference)
-                        <x-website::conference-summary :conference="$conference" />
-                    @endforeach
-                </div>
-                @if($upcomingConferences->hasPages())
-                    {{ $upcomingConferences->links('livewire.simple-pagination') }}
+                @if($upcomingConferences->isNotEmpty())
+                    <div class="grid sm:grid-cols-2 gap-6">
+                        @foreach ($upcomingConferences as $conference)
+                            <x-website::conference-summary :conference="$conference" />
+                        @endforeach
+                    </div>
+                    @if($upcomingConferences->hasPages())
+                        {{ $upcomingConferences->links('livewire.simple-pagination') }}
+                    @endif
+                @else
+                    <div class="text-center my-12">
+                        <p class="text-lg font-bold">There are no upcoming conferences</p>
+                    </div>
                 @endif
             </div>
             <div class="conference-all space-y-4" x-show="tab === 'allconferences'">
-                <div class="grid sm:grid-cols-2 gap-6">
-                    @foreach ($allConferences as $conference)
-                        <x-website::conference-summary :conference="$conference" />
-                    @endforeach
-                </div>
-                @if($allConferences->hasPages())
-                    {{ $allConferences->links('livewire.simple-pagination') }}
+                @if($allConferences->isNotEmpty())
+                    <div class="grid sm:grid-cols-2 gap-6">
+                        @foreach ($allConferences as $conference)
+                            <x-website::conference-summary :conference="$conference" />
+                        @endforeach
+                    </div>
+                    @if($allConferences->hasPages())
+                        {{ $allConferences->links('livewire.simple-pagination') }}
+                    @endif
+                @else
+                    <div class="text-center my-12">
+                        <p class="text-lg font-bold">There are no conferences</p>
+                    </div>
                 @endif
             </div>
         </div>

@@ -172,9 +172,6 @@ class ConferenceObserver
      */
     public function deleting(Conference $conference): void
     {
-        if ($conference->getKey() == Conference::active()?->getKey()) {
-            throw new \Exception('Conference cannot be deleted because it is currently active');
-        }
     }
 
     /**

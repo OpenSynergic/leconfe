@@ -53,25 +53,10 @@ class InformationSetting extends Component implements HasForms
                         TextInput::make('name')
                             ->columnSpanFull()
                             ->required(),
-                        Grid::make(2)
-                            ->schema([
-                                TextInput::make('meta.acronym')
-                                    ->unique(column: 'path', ignorable: $this->conference)
-                                    ->rule('alpha_dash')
-                                    ->live(onBlur: true),
-                                Placeholder::make('path')
-                                    ->content(function (Get $get) {
-                                        $baseUrl = config('app.url') . '/';
-                                        $acronym = $get('meta.acronym') ?? '{acronym}';
-                                        return new HtmlString("<span class='text-gray-500'>{$baseUrl}</span>{$acronym}");
-                                    }),
-                            ]),
-                        Grid::make(2)
-                            ->schema([
-                                DatePicker::make('date_start'),
-                                DatePicker::make('date_end')
-                                    ->after('date_start'),
-                            ]),
+                        TextInput::make('meta.acronym')
+                            ->unique(column: 'path', ignorable: $this->conference)
+                            ->rule('alpha_dash')
+                            ->live(onBlur: true),
                         Grid::make([
                             'xl' => 3
                         ])
@@ -92,20 +77,16 @@ class InformationSetting extends Component implements HasForms
                                     ->image()
                                     ->conversion('thumb'),
                             ]),
-
                         TextInput::make('meta.theme')
                             ->placeholder('e.g. Creating a better future with us')
                             ->helperText("The theme of the conference. This will be used in the conference's branding.")
                             ->columnSpanFull(),
                         Textarea::make('meta.description')
-                            ->rows(5)
+                            ->hint('Recommended length: 50-160 characters')
+                            ->helperText('A short description of the conference. This will used to help search engines understand the conference.')
+                            ->maxLength(255)
                             ->autosize()
                             ->columnSpanFull(),
-                        TinyEditor::make('meta.about')
-                            ->label('About Conference')
-                            ->minHeight(300),
-                        TinyEditor::make('meta.additional_content')
-                            ->minHeight(300),
                         TinyEditor::make('meta.page_footer')
                             ->minHeight(300),
                     ]),

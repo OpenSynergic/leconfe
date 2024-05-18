@@ -2,6 +2,7 @@
 
 namespace App\Panel\Administration\Resources;
 
+use App\Actions\Conferences\ConferenceUpdateAction;
 use App\Facades\Settings;
 use App\Models\Conference;
 use App\Models\Enums\ConferenceType;
@@ -20,6 +21,7 @@ use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\MaxWidth;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -60,19 +62,6 @@ class ConferenceResource extends Resource
                                         $acronym = $get('meta.acronym') ?? '{acronym}';
                                         return new HtmlString("<span class='text-gray-500'>{$baseUrl}</span>{$acronym}");
                                     }),
-                                // TextInput::make('path')
-                                //     ->unique()
-                                //     ->columnSpan(3)
-                                //     ->prefix(function (): string {
-                                //         $url = config('app.url') . '/';
-                                //         return preg_replace('/^https?:\/\//', '', $url);
-                                //     })
-                                //     ->readOnly()
-                                //     ->rule('alpha_dash')
-                                //     ->helperText('Based on the conference acronym, it will be used in the URL.'),
-                                DatePicker::make('date_start'),
-                                DatePicker::make('date_end')
-                                    ->after('date_start'),
                                 TextInput::make('meta.theme')
                                     ->placeholder('e.g. Creating a better future with us')
                                     ->helperText("The theme of the conference. This will be used in the conference's branding.")
@@ -101,8 +90,9 @@ class ConferenceResource extends Resource
                     ->schema([
                         Select::make('conference_id')
                             ->label('Previous Conference')
+                            ->hidden(fn($record) => $record)
                             ->options(function () {
-                                return Conference::archived()
+                                return Conference::query()
                                     ->latest('created_at')
                                     ->take(5)
                                     ->pluck('name', 'id')
@@ -118,9 +108,6 @@ class ConferenceResource extends Resource
                                 $defaults = [
                                     'name' => $getDataConference?->name,
                                     'path' => $getDataConference?->path,
-                                    'type' => $getDataConference?->type,
-                                    'date_start' => $getDataConference?->date_start->format(Settings::get('format_date')),
-                                    'date_end' => $getDataConference?->date_end->format(Settings::get('format_date')),
                                     'meta.theme' => $getDataConference?->getMeta('theme'),
                                     'meta.description' => $getDataConference?->getMeta('description'),
                                     'meta.publisher_name' => $getDataConference?->getMeta('publisher_name'),
@@ -134,8 +121,7 @@ class ConferenceResource extends Resource
                                     $fieldUserValue = $get($key);
                                     empty($fieldUserValue) ? $set($key, $previousConferenceValue) : $set($key, $fieldUserValue);
                                 }
-                            })
-                            ->hidden(fn () => Conference::archived()->doesntExist()),
+                            }),
 
                         SpatieMediaLibraryFileUpload::make('logo')
                             ->collection('logo')
@@ -146,9 +132,6 @@ class ConferenceResource extends Resource
                             ->collection('thumbnail')
                             ->image()
                             ->conversion('thumb'),
-                        Radio::make('type')
-                            ->required()
-                            ->options(ConferenceType::array()),
                     ]),
                 // Section::make('Banner')
                 //     ->columnSpan([
@@ -174,7 +157,6 @@ class ConferenceResource extends Resource
     {
         return $table
             ->defaultPaginationPageOption(5)
-            ->recordUrl(fn (Conference $record): ?string => route('filament.conference.pages.dashboard', $record))
             ->columns([
                 // SpatieMediaLibraryImageColumn::make('logo')
                 //     ->collection('logo')
@@ -183,14 +165,26 @@ class ConferenceResource extends Resource
                 IndexColumn::make('no'),
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('type')
-                    ->badge(),
             ])
             ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
-                ]),
+                Tables\Actions\Action::make('open-conference')
+                    ->icon('heroicon-o-link')
+                    ->button()
+                    ->color('gray')
+                    ->url(fn (Conference $record) => route('filament.conference.pages.dashboard', $record))
+                    ->openUrlInNewTab(),
+                Tables\Actions\EditAction::make()
+                    ->modalWidth(MaxWidth::FiveExtraLarge)
+                    ->button()
+                    ->mutateRecordDataUsing(function(Conference $record, array $data){
+                        $data['meta'] = $record->getAllMeta()->toArray();
+
+                        return $data;
+                    })
+                    ->using(fn(Conference $record, array $data) => ConferenceUpdateAction::run($record, $data)),
+                Tables\Actions\DeleteAction::make()
+                    ->button(),
+
             ])
             ->bulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),
@@ -208,8 +202,8 @@ class ConferenceResource extends Resource
     {
         return [
             'index' => Pages\ListConferences::route('/'),
-            'create' => Pages\CreateConference::route('/create'),
-            'edit' => Pages\EditConference::route('/{record}/edit'),
+            // 'create' => Pages\CreateConference::route('/create'),
+            // 'edit' => Pages\EditConference::route('/{record}/edit'),
         ];
     }
 }

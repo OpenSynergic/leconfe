@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\BelongsToConference;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\EloquentSortable\Sortable;
@@ -13,7 +14,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Sponsor extends Model implements HasMedia, Sortable
 {
-    use HasFactory, InteractsWithMedia, BelongsToConference, SortableTrait;
+    use HasFactory, InteractsWithMedia, BelongsToConference, SortableTrait, Cachable;
 
     protected $fillable = [
         'name',
