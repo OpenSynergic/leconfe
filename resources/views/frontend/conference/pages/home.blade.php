@@ -154,48 +154,4 @@
                 </div>
             </section>
         @endif
-
-
-        @if ($acceptedSubmission->isNotEmpty())
-            <section id="conference-accepted-papers" class="flex flex-col gap-y-0 space-y-4">
-                <div class="flex items-center">
-                    <img src="{{ Vite::asset('resources/assets/images/mingcute_paper-line.svg') }}" alt="">
-                    <h2 class="text-xl font-medium pl-2">Accepted Paper List</h2>
-                </div>
-                <div class="flex w-full flex-col gap-y-5">
-                    @foreach ($acceptedSubmission as $submission)
-                        <div class="flex flex-col sm:flex-row">
-                            <div class="w-8 flex-none hidden sm:block">
-                                <p class="text-lg font-bold">{{ $loop->index + 1 }}.</p>
-                            </div>
-                            <div
-                                class="flex justify-start px-0 sm:px-4 items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
-                                <img class="sm:w-32 w-24 h-auto"
-                                    src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}"
-                                    alt="Placeholder Image">
-                            </div>
-                            <div class=" py-2 flex flex-col">
-                                <a href="#"
-                                    class="text-md font-medium text-primary mb-2">{{ $submission->getMeta('title') }}</a>
-                                <a href="#" class="text-sm underline mb-2">https://doi.org/10.2121/jon.v1i01</a>
-                                <div class="flex items-center">
-                                    <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}"
-                                        alt="People Icon" class="w-5 h-5 mr-2">
-
-                                    <p class="text-sm text-gray-700">
-                                        Dr. Ghavin Reynara
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </section>
-        @endif
-    </div>
-    @else 
-    <div>
-        <p>Currently no active serie, please create a serie first.</p>
-    </div>
-    @endif
 </x-website::layouts.main>
