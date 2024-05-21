@@ -4,6 +4,7 @@ namespace Database\Seeders\Developments;
 
 use App\Models\Conference;
 use App\Models\Serie;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 
 class SerieSeeder extends Seeder
@@ -14,7 +15,14 @@ class SerieSeeder extends Seeder
     public function run(): void
     {
         Conference::lazy()->each(function (Conference $conference) {
-            Serie::factory()->count(10)->for($conference)->create();
+            $year = now()->year;
+            Serie::factory()
+                ->count(10)
+                ->for($conference)
+                ->state(new Sequence(
+                    fn(Sequence $sequence) => ['title' => $conference->name . ' ' . $year + $sequence->index],
+                ))
+                ->create();
 
             Serie::where('conference_id', $conference->id)
                 ->first()

@@ -49,7 +49,6 @@ class ConferenceFactory extends Factory
                 'affiliation' => fake()->company(),
                 'country' => Country::inRandomOrder()->first()->id,
                 'location' => fake()->city(),
-                'description' => fake()->paragraphs(3, true),
                 'page_footer' => view('frontend.examples.footer')->render(),
             ]);
         });

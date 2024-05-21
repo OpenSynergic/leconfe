@@ -15,6 +15,7 @@ use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Vite;
 
 class Serie extends Model implements HasMedia, HasAvatar, HasName
 {
@@ -87,5 +88,15 @@ class Serie extends Model implements HasMedia, HasAvatar, HasName
     public function getFilamentName(): string
     {
         return $this->title;
+    }
+
+    public function getThumbnailUrl(): string
+    {
+        return $this->getFirstMedia('thumbnail')?->getAvailableUrl(['thumb', 'thumb-xl']) ?? Vite::asset('resources/assets/images/placeholder-vertical.jpg');
+    }
+
+    public function getHomeUrl(): string
+    {
+        return $this->active ? route('livewirePageGroup.conference.pages.home', ['conference' => $this->conference]) : '#';
     }
 }

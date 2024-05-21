@@ -45,23 +45,23 @@
                 </div>
             </div>
             <div class="conference-current space-y-4" x-show="tab === 'current'">
-                @if($currentConferences->isNotEmpty())
+                @if($currentSeries->isNotEmpty())
                     <div class="grid sm:grid-cols-2 gap-6">
-                        @foreach ($currentConferences as $conference)
-                            <x-website::conference-summary :conference="$conference" />
+                        @foreach ($currentSeries as $serie)
+                            <x-website::serie-summary :serie="$serie" />
                         @endforeach
                     </div>
-                    @if($currentConferences->hasPages())
-                        {{ $currentConferences->links('livewire.simple-pagination') }}
+                    @if($currentSeries->hasPages())
+                        {{ $currentSeries->links('livewire.simple-pagination') }}
                     @endif
                 @else
-                <div class="text-center my-12">
-                    <p class="text-lg font-bold">There are no conferences taking place at this time</p>
-                </div>
+                    <div class="text-center my-12">
+                        <p class="text-lg font-bold">There are no conferences taking place at this time</p>
+                    </div>
                 @endif
             </div>
             <div class="conference-upcoming space-y-4" x-show="tab === 'upcoming'">
-                @if($upcomingConferences->isNotEmpty())
+                {{-- @if($upcomingConferences->isNotEmpty())
                     <div class="grid sm:grid-cols-2 gap-6">
                         @foreach ($upcomingConferences as $conference)
                             <x-website::conference-summary :conference="$conference" />
@@ -74,10 +74,10 @@
                     <div class="text-center my-12">
                         <p class="text-lg font-bold">There are no upcoming conferences</p>
                     </div>
-                @endif
+                @endif --}}
             </div>
             <div class="conference-all space-y-4" x-show="tab === 'allconferences'">
-                @if($allConferences->isNotEmpty())
+                {{-- @if($allConferences->isNotEmpty())
                     <div class="grid sm:grid-cols-2 gap-6">
                         @foreach ($allConferences as $conference)
                             <x-website::conference-summary :conference="$conference" />
@@ -90,7 +90,7 @@
                     <div class="text-center my-12">
                         <p class="text-lg font-bold">There are no conferences</p>
                     </div>
-                @endif
+                @endif --}}
             </div>
         </div>
     </div>

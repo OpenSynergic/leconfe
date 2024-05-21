@@ -23,21 +23,14 @@ class Home extends Page
 
     protected function getViewData(): array
     {
-
-        $conferencesQuery = Conference::with([
-            'media', 
-            'activeSerie' => fn($query) => $query->withoutGlobalScopes(),
-        ]);
-
-        // filter current year
-        $currentConferences = (clone $conferencesQuery)->whereHas('activeSerie', fn($query) => $query->whereYear('date_start', now()->year));
-        $upcomingConferences = (clone $conferencesQuery)->whereHas('activeSerie', fn($query) => $query->where('date_start', '>', now()));
-
+        $serieQuery = Serie::query()
+            ->withoutGlobalScopes()
+            ->with(['conference', 'media']);
+        
+        $currentSeries = (clone $serieQuery)->active()->paginate(6, pageName: 'currentSeriesPage');
 
         return [
-            'currentConferences' => $currentConferences->paginate(6, pageName: 'currentConferencesPage'),
-            'upcomingConferences' => $upcomingConferences->paginate(6, pageName: 'upcomingConferencesPage'),
-            'allConferences' => $conferencesQuery->paginate(6, pageName: 'allConferencesPage'),
+            'currentSeries' => $currentSeries,
         ];
     }
 
