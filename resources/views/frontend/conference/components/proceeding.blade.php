@@ -1,14 +1,12 @@
 @use('App\Classes\Settings')
 @props([
     'proceeding',
+    'title' => 'Current Proceeding'
 ])
 
 <div>
-    <div class="flex mb-5 space-x-4">
-        <div class="text-xl font-semibold min-w-fit">Current Proceeding</div>
-        <hr class="w-full h-px my-auto bg-gray-200 border-0 dark:bg-gray-700">
-    </div>
-    <div class="grid grid-cols-9 gap-x-4">
+    <x-website::heading-title :title="$title" />
+    <div class="grid grid-cols-9 mb-6 gap-x-4">
         @if($proceeding->getFirstMediaUrl('cover'))
             <div class="col-span-2 max-w-64">
                 <img src="{{ $proceeding->getFirstMediaUrl('cover') }}" class="w-full" alt="150">
@@ -28,4 +26,16 @@
             </div>
         </div>
     </div>
+    @if ($proceeding->submissions()->exists())
+        <div class="my-8">
+            <x-website::heading-title :title="'Articles'" />
+            <div class="space-y-5">
+                @forelse($proceeding?->submissions()->get() as $article)
+                    <x-conference::article-summary :article="$article"/>  
+                @empty
+                    
+                @endforelse
+            </div>
+        </div>
+    @endif
 </div>

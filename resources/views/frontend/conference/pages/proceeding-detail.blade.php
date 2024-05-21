@@ -4,9 +4,6 @@
         @if ($this->canPreview())
             <x-website::preview-alert />
         @endif
-        <x-conference::current-proceeding :proceeding="$proceeding" />
-        @if ($articles->exists())
-            <x-conference::list-articles :articles="$articles->get()"/>
-        @endif
+        <x-conference::proceeding :proceeding="$proceeding" />
     </div>
 </x-website::layouts.main>
