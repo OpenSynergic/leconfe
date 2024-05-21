@@ -10,6 +10,7 @@ use Filament\Infolists\Components\Tabs;
 use App\Infolists\Components\VerticalTabs as InfolistsVerticalTabs;
 use App\Infolists\Components\LivewireEntry;
 use App\Panel\Series\Livewire\InformationSetting;
+use App\Panel\Series\Livewire\SponsorSetting;
 
 class SerieSetting extends Page
 {
@@ -43,15 +44,13 @@ class SerieSetting extends Page
                                 LivewireEntry::make('information-setting')
                                     ->livewire(InformationSetting::class)
                             ]),
+                        InfolistsVerticalTabs\Tab::make('Sponsors')
+                            ->icon("lineawesome-users-solid")
+                            ->schema([
+                                LivewireEntry::make('sponsors-setting')
+                                    ->livewire(SponsorSetting::class),
+                            ])
                     ]),
-                // Tabs::make('conference_settings')
-                //     ->tabs([
-                //         Tabs\Tab::make('About')
-                //             ->schema([
-
-                //             ]),
-                //     ])
-                //     ->contained(false),
             ]);
     }
 }

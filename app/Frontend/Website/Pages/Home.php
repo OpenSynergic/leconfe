@@ -35,7 +35,6 @@ class Home extends Page
 
 
         return [
-            'sponsors' => Sponsor::ordered()->with('media')->get(),
             'currentConferences' => $currentConferences->paginate(6, pageName: 'currentConferencesPage'),
             'upcomingConferences' => $upcomingConferences->paginate(6, pageName: 'upcomingConferencesPage'),
             'allConferences' => $conferencesQuery->paginate(6, pageName: 'allConferencesPage'),

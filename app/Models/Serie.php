@@ -69,6 +69,11 @@ class Serie extends Model implements HasMedia, HasAvatar, HasName
         return $this->hasMany(SpeakerRole::class);
     }
 
+    public function sponsors(): HasMany
+    {
+        return $this->hasMany(Sponsor::class);
+    }
+
     public function getPanelUrl(): string
     {
         return route('filament.series.pages.dashboard', ['serie' => $this->path]);

@@ -14,10 +14,8 @@ class SponsorSeeder extends Seeder
      */
     public function run(): void
     {
-        Sponsor::factory()->count(10)->create();
-
-        Conference::lazy()->each(function (Conference $conference) {
-            Sponsor::factory()->count(10)->for($conference)->create();
-        });
+        // Serie::lazy()->each(function (Serie $serie) {
+        //     Sponsor::factory()->count(10)->for($serie)->create();
+        // });
     }
 }

@@ -36,31 +36,13 @@
                                 {{ new Illuminate\Support\HtmlString($currentSerie->getMeta('additional_content')) }}
                             </div>
                         @endif
-                        @if ($topics->isNotEmpty())
-                            <div>
-                                <h2 class="cf-topics text-base font-medium mb-1">Topics :</h2>
-                                <div class="flex flex-wrap w-full gap-2">
-                                    @foreach ($topics as $topic)
-                                        <span
-                                            class="badge badge-outline badge-sm">{{ $topic->name }}</span>
-                                    @endforeach
-                                </div>
-                            </div>
-                        @endif
-                        <div>
-                            <a href="{{ route('filament.conference.resources.submissions.index') }}"
-                                class="btn btn-primary btn-sm">
-                                <x-heroicon-o-document-arrow-up class="h-5 w-5" />
-                                Submit Now
-                            </a>
-                        </div>
                     </div>
                 </div>
             </section>
-            @if ($currentConference->sponsors->isNotEmpty())
+            @if ($currentSerie->sponsors->isNotEmpty())
                 <section id="conference-partner" class="space-y-4">
                     <div class="sponsors space-y-4" x-data="carousel">
-                        <h2 class="text-xl text-center">Conference Partner</h2>
+                        <h2 class="text-xl text-center font-semibold">Conference Partners</h2>
                         <div class="sponsors-carousel flex items-center w-full gap-4" x-bind="carousel">
                             <button x-on:click="toLeft"
                                 role="button"
@@ -70,7 +52,7 @@
                             </button>
                             <ul x-ref="slider"
                                 class="flex-1 flex w-full snap-x snap-mandatory overflow-x-scroll gap-3 py-4">
-                                @foreach ($currentConference->sponsors as $sponsor)
+                                @foreach ($currentSerie->sponsors as $sponsor)
                                     <li @class([
                                         'flex shrink-0 snap-start flex-col items-center justify-center',
                                         'ml-auto' => $loop->first,
