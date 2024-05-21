@@ -13,13 +13,18 @@
                         @endif
                         <div class="inline-flex items-center space-x-2">
                             <h1 class="cf-title text-2xl">{{ $currentSerie->title }}</h1>
+                            @if($currentSerie->type)
                             <span
                                 @class([
                                     'badge badge-sm',
                                     'badge-secondary' => $currentSerie->type === \App\Models\Enums\SerieType::Offline,
                                     'badge-warning' => $currentSerie->type === \App\Models\Enums\SerieType::Hybrid,
                                     'badge-primary' => $currentSerie->type === \App\Models\Enums\SerieType::Online,
-                                ])>{{ $currentSerie->type }}</span>
+                                ])
+                            >
+                                {{ $currentSerie->type }}
+                            </span>
+                            @endif
                         </div>
                         @if ($currentSerie->getMeta('about'))
                             <div class="user-content">

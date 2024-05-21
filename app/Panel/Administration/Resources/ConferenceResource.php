@@ -62,12 +62,36 @@ class ConferenceResource extends Resource
                                         $acronym = $get('meta.acronym') ?? '{acronym}';
                                         return new HtmlString("<span class='text-gray-500'>{$baseUrl}</span>{$acronym}");
                                     }),
+                                Section::make()
+                                    ->columns(2)
+                                    ->schema([
+                                        TextInput::make('serie.title')
+                                            ->label('Serie Title')
+                                            ->columnSpanFull()
+                                            ->required(),
+                                        DatePicker::make('serie.date_start')
+                                            ->label('Start Date')
+                                            ->placeholder('Enter the start date of the serie')
+                                            ->requiredWith('serie.date_end'),
+                                        DatePicker::make('serie.date_end')
+                                            ->label('End Date')
+                                            ->afterOrEqual('serie.date_start')
+                                            ->requiredWith('serie.date_start')
+                                            ->placeholder('Enter the end date of the serie'),
+                                        Select::make('serie.type')
+                                            ->required()
+                                            ->columnSpanFull()
+                                            ->options(SerieType::array()),
+                                    ])
+                                    ->hidden(fn($record) => $record),
                                 TextInput::make('meta.theme')
                                     ->placeholder('e.g. Creating a better future with us')
                                     ->helperText("The theme of the conference. This will be used in the conference's branding.")
                                     ->columnSpanFull(),
                                 Textarea::make('meta.description')
-                                    ->rows(5)
+                                    ->hint('Recommended length: 50-160 characters')
+                                    ->helperText('A short description of the conference. This will used to help search engines understand the conference.')
+                                    ->maxLength(255)
                                     ->autosize()
                                     ->columnSpanFull(),
                             ]),
@@ -88,40 +112,40 @@ class ConferenceResource extends Resource
                         'sm' => 1,
                     ])
                     ->schema([
-                        Select::make('conference_id')
-                            ->label('Previous Conference')
-                            ->hidden(fn($record) => $record)
-                            ->options(function () {
-                                return Conference::query()
-                                    ->latest('created_at')
-                                    ->take(5)
-                                    ->pluck('name', 'id')
-                                    ->toArray();
-                            })
-                            ->helperText('Fill the data from previous conference')
-                            ->searchable()
-                            ->preload()
-                            ->live()
-                            ->afterStateUpdated(function (Set $set, ?string $state, Get $get) {
-                                $getDataConference = Conference::find($state);
+                        // Select::make('conference_id')
+                        //     ->label('Previous Conference')
+                        //     ->hidden(fn($record) => $record)
+                        //     ->options(function () {
+                        //         return Conference::query()
+                        //             ->latest('created_at')
+                        //             ->take(5)
+                        //             ->pluck('name', 'id')
+                        //             ->toArray();
+                        //     })
+                        //     ->helperText('Fill the data from previous conference')
+                        //     ->searchable()
+                        //     ->preload()
+                        //     ->live()
+                        //     ->afterStateUpdated(function (Set $set, ?string $state, Get $get) {
+                        //         $getDataConference = Conference::find($state);
 
-                                $defaults = [
-                                    'name' => $getDataConference?->name,
-                                    'path' => $getDataConference?->path,
-                                    'meta.theme' => $getDataConference?->getMeta('theme'),
-                                    'meta.description' => $getDataConference?->getMeta('description'),
-                                    'meta.publisher_name' => $getDataConference?->getMeta('publisher_name'),
-                                    'meta.publisher_location' => $getDataConference?->getMeta('publisher_location'),
-                                    'meta.affiliation' => $getDataConference?->getMeta('affiliation'),
-                                    'meta.acronym' => $getDataConference?->getMeta('acronym'),
-                                    'meta.country' => $getDataConference?->getMeta('country'),
-                                ];
+                        //         $defaults = [
+                        //             'name' => $getDataConference?->name,
+                        //             'path' => $getDataConference?->path,
+                        //             'meta.theme' => $getDataConference?->getMeta('theme'),
+                        //             'meta.description' => $getDataConference?->getMeta('description'),
+                        //             'meta.publisher_name' => $getDataConference?->getMeta('publisher_name'),
+                        //             'meta.publisher_location' => $getDataConference?->getMeta('publisher_location'),
+                        //             'meta.affiliation' => $getDataConference?->getMeta('affiliation'),
+                        //             'meta.acronym' => $getDataConference?->getMeta('acronym'),
+                        //             'meta.country' => $getDataConference?->getMeta('country'),
+                        //         ];
 
-                                foreach ($defaults as $key => $previousConferenceValue) {
-                                    $fieldUserValue = $get($key);
-                                    empty($fieldUserValue) ? $set($key, $previousConferenceValue) : $set($key, $fieldUserValue);
-                                }
-                            }),
+                        //         foreach ($defaults as $key => $previousConferenceValue) {
+                        //             $fieldUserValue = $get($key);
+                        //             empty($fieldUserValue) ? $set($key, $previousConferenceValue) : $set($key, $fieldUserValue);
+                        //         }
+                        //     }),
 
                         SpatieMediaLibraryFileUpload::make('logo')
                             ->collection('logo')

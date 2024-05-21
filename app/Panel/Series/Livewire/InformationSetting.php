@@ -5,12 +5,14 @@ namespace App\Panel\Series\Livewire;
 
 use App\Actions\Conferences\ConferenceUpdateAction;
 use App\Actions\Series\SerieUpdateAction;
+use App\Models\Enums\SerieType;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -57,6 +59,21 @@ class InformationSetting extends Component implements HasForms
                         TextInput::make('issn')
                             ->label('ISSN')
                             ->placeholder('Enter the ISSN of the serie'),
+                        Grid::make([
+                            'xl' => 2
+                        ])
+                            ->schema([
+                                SpatieMediaLibraryFileUpload::make('thumbnail')
+                                    ->collection('thumbnail')
+                                    ->helperText('An image representation of the serie that will be used in the list of series.')
+                                    ->image()
+                                    ->conversion('thumb'),
+                                SpatieMediaLibraryFileUpload::make('cover')
+                                    ->collection('cover')
+                                    ->helperText('Cover image for the serie.')
+                                    ->image()
+                                    ->conversion('thumb'),
+                            ]),
                         Grid::make()
                             ->schema([
                                 DatePicker::make('date_start')
@@ -69,6 +86,9 @@ class InformationSetting extends Component implements HasForms
                                     ->requiredWith('date_start')
                                     ->placeholder('Enter the end date of the serie'),
                             ]),
+                        Select::make('type')
+                            ->required()
+                            ->options(SerieType::array()),
                         TinyEditor::make('meta.about')
                             ->label('About Serie')
                             ->minHeight(300),

@@ -21,6 +21,7 @@ class Serie extends Model implements HasMedia, HasAvatar, HasName
     use Cachable, BelongsToConference, HasFactory, InteractsWithMedia, Metable, SoftDeletes;
 
     protected $fillable = [
+        'conference_id',
         'path',
         'title',
         'description',

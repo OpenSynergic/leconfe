@@ -57,26 +57,11 @@ class InformationSetting extends Component implements HasForms
                             ->unique(column: 'path', ignorable: $this->conference)
                             ->rule('alpha_dash')
                             ->live(onBlur: true),
-                        Grid::make([
-                            'xl' => 3
-                        ])
-                            ->schema([
-                                SpatieMediaLibraryFileUpload::make('logo')
-                                    ->collection('logo')
-                                    ->image()
-                                    ->imageResizeUpscale(false)
-                                    ->conversion('thumb'),
-                                SpatieMediaLibraryFileUpload::make('thumbnail')
-                                    ->collection('thumbnail')
-                                    ->helperText('A image representation of the conference that can be used in lists of conferences.')
-                                    ->image()
-                                    ->conversion('thumb'),
-                                SpatieMediaLibraryFileUpload::make('cover')
-                                    ->collection('cover')
-                                    ->helperText('Cover image for the conference. This will be used in the conference\'s branding.')
-                                    ->image()
-                                    ->conversion('thumb'),
-                            ]),
+                        SpatieMediaLibraryFileUpload::make('logo')
+                            ->collection('logo')
+                            ->image()
+                            ->imageResizeUpscale(false)
+                            ->conversion('thumb'),
                         TextInput::make('meta.theme')
                             ->placeholder('e.g. Creating a better future with us')
                             ->helperText("The theme of the conference. This will be used in the conference's branding.")
@@ -85,8 +70,7 @@ class InformationSetting extends Component implements HasForms
                             ->hint('Recommended length: 50-160 characters')
                             ->helperText('A short description of the conference. This will used to help search engines understand the conference.')
                             ->maxLength(255)
-                            ->autosize()
-                            ->columnSpanFull(),
+                            ->autosize(),
                         TinyEditor::make('meta.page_footer')
                             ->minHeight(300),
                     ]),

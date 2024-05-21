@@ -17,7 +17,7 @@ class SerieCreateAction
             DB::beginTransaction();
 
             $serie = Serie::create($data);
-
+            
             if (data_get($data, 'meta')) {
                 $serie->setManyMeta($data['meta']);
             }
