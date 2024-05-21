@@ -281,7 +281,9 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                     }
                 })
                 ->visible(
-                    fn (): bool => $this->record->isPublished() || (StageManager::editing()->isStageOpen() && auth()->user()->can('editing', $this->record))
+                    fn (): bool => $this->record->isPublished() 
+                        || (StageManager::editing()->isStageOpen() && auth()->user()->can('editing', $this->record))
+                        && $this->record->proceeding 
                 ),
             Action::make('publish')
                 ->color('primary')

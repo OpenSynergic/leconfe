@@ -27,12 +27,17 @@ class SubmissionDetail extends Page
 
     public function canAccess(): bool
     {
-        return (StageManager::editing()->isStageOpen() && auth()->user()->can('editing', $this->submission)) || $this->submission?->isPublished();
+        return $this->submission->proceeding && 
+        (
+            (StageManager::editing()->isStageOpen() && auth()->user()->can('editing', $this->submission)) || 
+            ($this->submission?->isPublished())
+        );
     }
 
     public function canPreview(): bool
     {
-        return ! $this->submission->isPublished() && StageManager::editing()->isStageOpen() && auth()->user()->can('editing', $this->submission);
+        return ! $this->submission->proceeding?->isPublished() ||
+        (! $this->submission->isPublished() && StageManager::editing()->isStageOpen() && auth()->user()->can('editing', $this->submission));
     }
 
     public function getBreadcrumbs(): array
