@@ -39,7 +39,6 @@ class Home extends Page
         $currentSerie?->load(['speakerRoles.speakers']);
         return [
             'currentProceeding' => $currentProceeding,
-            'currentArticles' => $currentProceeding?->submissions()->get() ?? [],
             'currentSerie' => $currentSerie,
             'announcements' => Announcement::query()->get(),
             'acceptedSubmission' => app()->getCurrentConference()->submission()->published()->get(),

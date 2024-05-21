@@ -173,19 +173,6 @@
             </div>
         </section>
 
-        @if($currentProceeding)
-            <section id="current-proceeding">
-                <div class="mb-6">
-                    <x-conference::current-proceeding :proceeding="$currentProceeding" />
-                </div>
-                @if ($currentProceeding->submissions()->exists())
-                    <div class="my-8">
-                        <x-conference::list-articles :articles="$currentArticles"/>
-                    </div>
-                @endif
-            </section>
-        @endif
-
         @if ($currentSerie?->speakers()->exists())
             <section id="conference-speakers" class="flex flex-col space-y-4 gap-y-0">
                 <div class="flex items-center">
@@ -228,6 +215,13 @@
             </section>
         @endif
 
+        @if($currentProceeding)
+            <section id="current-proceeding">
+                <div class="mb-6">
+                    <x-conference::proceeding :proceeding="$currentProceeding" :title="'Current Proceeding'" />
+                </div>
+            </section>
+        @endif
 
         @if ($acceptedSubmission->isNotEmpty())
             <section id="conference-accepted-papers" class="flex flex-col space-y-4 gap-y-0">
