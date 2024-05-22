@@ -1,5 +1,6 @@
 @use('App\Constants\SubmissionFileCategory')
 @use('App\Classes\Settings')
+@use('App\Models\Enums\SubmissionStatus')
 <x-website::layouts.main>
     <div id="submission-detail">
         <div class="mb-6">
@@ -16,7 +17,7 @@
         <div class="mb-4 text-sm text-slate-400">
             <span class="flex items-center">
                 <x-lineawesome-calendar-check-solid class="w-3 h-3 mr-0.5" />
-                {{ __('Date Published') . ': ' . ($submission->published_at ? $submission->published_at->format(Settings::get('format_date')) : '-')  }}
+                {{ __('Date Published') . ': ' . ($submission->published_at && $submission->isPublished() ? $submission->published_at->format(Settings::get('format_date')) : '-')  }}
             </span>
         </div>
         @if($submission->getFirstMediaUrl('article_cover'))
