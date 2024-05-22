@@ -1,9 +1,14 @@
 @use('App\Classes\Settings')
+@use('App\Models\Enums\SubmissionStatus')
+
 @props([
     'proceeding',
     'title' => 'Current Proceeding'
 ])
 
+@php
+    $articles = $proceeding->submissions()->status(SubmissionStatus::Published)->get() ?? [];
+@endphp
 <div>
     <x-website::heading-title :title="$title" />
     <div class="grid grid-cols-9 mb-6 gap-x-4">
@@ -26,16 +31,16 @@
             </div>
         </div>
     </div>
-    @if ($proceeding->submissions()->exists())
-        <div class="my-8">
-            <x-website::heading-title :title="'Articles'" />
-            <div class="space-y-5">
-                @forelse($proceeding?->submissions()->get() as $article)
-                    <x-conference::article-summary :article="$article"/>  
-                @empty
-                    
-                @endforelse
-            </div>
+    <div class="my-8">
+        <x-website::heading-title :title="'Articles'" />
+        <div class="space-y-5">
+            @forelse($articles as $article)
+                <x-conference::article-summary :article="$article"/>  
+            @empty
+                <div class="text-center text-gray-500">
+                    No articles found.
+                </div>
+            @endforelse
         </div>
-    @endif
+    </div>
 </div>
