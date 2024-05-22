@@ -13,11 +13,11 @@
     <x-website::heading-title :title="$title" />
     <div class="grid grid-cols-9 mb-6 gap-x-4">
         @if($proceeding->getFirstMediaUrl('cover'))
-            <div class="col-span-2 max-w-64">
+            <div class="col-span-9 mb-5 md:max-w-64 max-w-[22rem] sm:col-span-2 sm:max-w-full sm:mb-0">
                 <img src="{{ $proceeding->getFirstMediaUrl('cover') }}" class="w-full" alt="150">
             </div>
         @endif
-        <div class="col-span-7">
+        <div class="col-span-9 sm:col-span-7">
             <div class="space-y-4">
                 <div class="text-sm font-semibold">
                     {{ $proceeding->seriesTitle() }}

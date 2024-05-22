@@ -34,7 +34,7 @@
                 <div
                     class="grid grid-cols-2 gap-4 p-5 mt-3 border rounded-md shadow-sm bg-slate-100 border-slate-200 text-slate-700">
                     @foreach ($submission->contributors()->with(['contributor.role'])->get() as $contributor)
-                        <div class="col-span-1">
+                        <div class="col-span-2 sm:col-span-1">
                             <div class="flex items-center">
                                 <x-lineawesome-user class="w-5 h-5 mr-1" />
                                 {{ $contributor->contributor->fullName }}
