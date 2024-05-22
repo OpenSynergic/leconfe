@@ -44,6 +44,11 @@ class Sponsor extends Model implements HasMedia, Sortable
             ->keepOriginalImageFormat()
             ->height(50);
 
+        $this->addMediaConversion('thumb-sm')
+            ->performOnCollections('logo')
+            ->keepOriginalImageFormat()
+            ->width(100);
+
         $this->addMediaConversion('thumb')
             ->performOnCollections('logo')
             ->keepOriginalImageFormat()

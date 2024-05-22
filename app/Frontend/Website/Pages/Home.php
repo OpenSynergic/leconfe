@@ -27,7 +27,9 @@ class Home extends Page
             ->withoutGlobalScopes()
             ->with(['conference', 'media']);
         
-        $currentSeries = (clone $serieQuery)->active()->paginate(6, pageName: 'currentSeriesPage');
+        $currentSeries = (clone $serieQuery)
+        ->where('current', true)
+        ->paginate(6, pageName: 'currentSeriesPage');
 
         return [
             'currentSeries' => $currentSeries,

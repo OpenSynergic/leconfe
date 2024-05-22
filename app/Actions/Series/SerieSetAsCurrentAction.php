@@ -7,7 +7,7 @@ use App\Models\Serie;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
-class SerieSetAsActiveAction
+class SerieSetAsCurrentAction
 {
     use AsAction;
 
@@ -16,9 +16,7 @@ class SerieSetAsActiveAction
         try {
             DB::beginTransaction();
 
-            Serie::where('active', true)->update(['active' => false]);
-
-            $serie->update(['active' => true]);
+            $serie->setAsCurrent();
 
             DB::commit();
         } catch (\Throwable $th) {

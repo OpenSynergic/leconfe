@@ -25,25 +25,23 @@ class Serie extends Model implements HasMedia, HasAvatar, HasName
         'conference_id',
         'path',
         'title',
-        'description',
         'issn',
         'date_start',
         'date_end',
-        'active',
+        'published',
+        'published_at',
+        'current',
         'type',
     ];
 
     protected $casts = [
-        'active' => 'boolean',
+        'published' => 'boolean',
+        'published_at' => 'datetime',
+        'current' => 'boolean',
         'date_start' => 'date',
         'date_end' => 'date',
         'type' => SerieType::class,
     ];
-
-    public function scopeActive($query)
-    {
-        return $query->where('active', true);
-    }
 
     public function conference() : BelongsTo
     {
@@ -98,5 +96,35 @@ class Serie extends Model implements HasMedia, HasAvatar, HasName
     public function getHomeUrl(): string
     {
         return $this->active ? route('livewirePageGroup.conference.pages.home', ['conference' => $this->conference]) : '#';
+    }
+
+    public function publish($published = true) : self
+    {
+        $this->published = $published;
+        $this->published_at = $published ? now() : null;
+        $this->save();
+
+        return $this;
+    }
+
+    public function unpublish() : self
+    {
+        return $this->publish(false);
+    }
+
+    public function setAsCurrent() : self
+    {
+        // Current only one for each conference
+        $this->newQuery()->where('conference_id', $this->conference_id)->update(['current' => false]);
+
+        $this->current = true;
+        $this->save();
+
+        return $this;
+    }
+
+    public function scopeCurrent($query)
+    {
+        return $query->where('current', true);
     }
 }

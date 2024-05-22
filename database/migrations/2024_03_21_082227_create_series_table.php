@@ -22,7 +22,9 @@ return new class extends Migration
             $table->date('date_start')->nullable();
             $table->date('date_end')->nullable();
             $table->enum('type', SerieType::array())->default(SerieType::Offline->value);
-            $table->boolean('active')->default(false);
+            $table->boolean('published')->default(false);
+            $table->timestamp('published_at')->nullable();
+            $table->boolean('current')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

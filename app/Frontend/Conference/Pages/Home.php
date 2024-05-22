@@ -41,7 +41,6 @@ class Home extends Page
             'announcements' => Announcement::query()->get(),
             'acceptedSubmission' => app()->getCurrentConference()->submission()->published()->get(),
             'additionalInformations' => $additionalInformations,
-            'topics' => Topic::query()->get(),
             'venues' => Venue::query()->get(),
         ];
     }

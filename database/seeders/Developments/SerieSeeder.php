@@ -15,20 +15,27 @@ class SerieSeeder extends Seeder
     public function run(): void
     {
         Conference::lazy()->each(function (Conference $conference) {
-            $year = now()->year;
-            Serie::factory()
+            $series = Serie::factory()
                 ->count(10)
                 ->for($conference)
                 ->state(new Sequence(
-                    fn(Sequence $sequence) => ['title' => $conference->name . ' ' . $year + $sequence->index],
+                    function(Sequence $sequence) use ($conference){
+                        $now = now();
+                        $now->addYear($sequence->index);
+                        
+                        return [
+                            'title' => $conference->name . ' ' . $now->year,
+                            'path' => $now->year,
+                            'date_start' => $now->copy(),
+                            'date_end' => $now->copy()->addDays(3),
+                        ];
+                    },
                 ))
                 ->create();
-
-            Serie::where('conference_id', $conference->id)
+            $series
                 ->first()
-                ->update([
-                    'active' => 1,
-                ]);
+                ->publish()
+                ->setAsCurrent();
         });
     }
 }

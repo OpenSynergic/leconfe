@@ -3,6 +3,7 @@
 namespace App\Panel\Conference\Resources;
 
 use App\Actions\Series\SerieSetAsActiveAction;
+use App\Actions\Series\SerieSetAsCurrentAction;
 use App\Facades\Settings;
 use App\Models\Enums\SerieType;
 use App\Models\Serie;
@@ -83,6 +84,8 @@ class SerieResource extends Resource
             ->columns([
                 TextColumn::make('title')
                     ->searchable()
+                    ->description(fn(Serie $record) => $record->current ? 'Current' : null)
+                    ->sortable()
                     ->wrap()
                     ->wrapHeader(),
                 TextColumn::make('date_start')
@@ -96,20 +99,39 @@ class SerieResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
-                    Tables\Actions\Action::make('set_as_active')
-                        ->label('Set As Active')
+                    Tables\Actions\Action::make('publish')
+                        ->label('Publish')
+                        ->requiresConfirmation()
+                        ->icon('heroicon-o-arrow-up-on-square')
+                        ->color('primary')
+                        ->form([
+                            Checkbox::make('set_as_current')
+                                ->label('Set as current serie'),
+                        ])
+                        ->hidden(fn (Serie $record) => $record->current || $record->published || $record->trashed())
+                        ->action(function (Serie $record, array $data, Tables\Actions\Action $action){
+                            $record->publish();
+
+                            if($data['set_as_current']){
+                                $record->setAsCurrent();
+                            }
+
+                            return $action->success();
+                        }),
+                    Tables\Actions\Action::make('set_as_current')
+                        ->label('Set As Current')
                         ->requiresConfirmation()
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
-                        ->hidden(fn (Serie $record) => $record->active || $record->trashed())
-                        ->action(fn (Serie $record, Tables\Actions\Action $action) => SerieSetAsActiveAction::run($record) && $action->success())
+                        ->hidden(fn (Serie $record) => $record->current || !$record->published || $record->trashed())
+                        ->action(fn (Serie $record, Tables\Actions\Action $action) => $record->setAsCurrent() && $action->success())
                         ->successNotificationTitle(fn(Serie $serie) => $serie->title . ' is set as active'),
                     Tables\Actions\EditAction::make()
                         ->hidden(fn (Serie $record) => $record->trashed()),
                     Tables\Actions\DeleteAction::make()
                         ->label('Move To Trash')
                         ->modalHeading('Move To Trash')
-                        ->hidden(fn (Serie $record) => $record->active || $record->trashed() )
+                        ->hidden(fn (Serie $record) => $record->current || $record->trashed())
                         ->successNotificationTitle('Serie moved to trash'),
                 ]),
                 Tables\Actions\RestoreAction::make(),

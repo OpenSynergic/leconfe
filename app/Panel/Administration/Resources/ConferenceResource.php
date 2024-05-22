@@ -157,19 +157,6 @@ class ConferenceResource extends Resource
                             ->image()
                             ->conversion('thumb'),
                     ]),
-                // Section::make('Banner')
-                //     ->columnSpan([
-                //         'sm' => 2,
-                //     ])
-                //     ->schema([
-                //         SpatieMediaLibraryFileUpload::make('banner')
-                //             ->collection('banner')
-                //             ->label('')
-                //             ->image()
-                //             ->reorderable()
-                //             ->multiple()
-                //             ->conversion('thumb'),
-                //     ]),
             ])
             ->columns([
                 'sm' => 3,
@@ -182,10 +169,6 @@ class ConferenceResource extends Resource
         return $table
             ->defaultPaginationPageOption(5)
             ->columns([
-                // SpatieMediaLibraryImageColumn::make('logo')
-                //     ->collection('logo')
-                //     ->conversion('thumb')
-                //     ->grow(false),
                 IndexColumn::make('no'),
                 TextColumn::make('name')
                     ->searchable(),

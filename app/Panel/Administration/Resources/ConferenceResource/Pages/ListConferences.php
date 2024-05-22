@@ -27,15 +27,16 @@ class ListConferences extends ListRecords
     {
         return [
             Actions\CreateAction::make()
-                ->using(function (Actions\Action $action, array $data) {
+                ->using(function (array $data) {
                     
                     $record = ConferenceCreateAction::run($data);
                     $serie = SerieCreateAction::run([
                         'conference_id' => $record->getKey(),
-                        ...$data['serie'],
-                        'set_as_active' => true,
                         'path' => Str::slug($data['serie']['title']),
+                        ...$data['serie'],
                     ]);
+
+                    $serie->publish()->setAsCurrent();
 
 
                     return $record;

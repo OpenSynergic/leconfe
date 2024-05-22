@@ -24,12 +24,14 @@ class ManageSeries extends ManageRecords
     public function getTabs(): array
     {
         return [
-            'active' => Tab::make()
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('active', true)),
-            'inactive' => Tab::make()
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('active', false)),
-            'trash' => Tab::make()
-                ->modifyQueryUsing(fn (Builder $query) => $query->onlyTrashed()),
+            'current' => Tab::make()
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('current', true)),
+            'future' => Tab::make()
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('published', false)),
+            'published' => Tab::make()
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('published', true)),
+            // 'trash' => Tab::make()
+            //     ->modifyQueryUsing(fn (Builder $query) => $query->onlyTrashed()),
         ];
     }
 }
