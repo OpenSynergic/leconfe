@@ -43,7 +43,7 @@ class SubmissionDetail extends Page
     public function getBreadcrumbs(): array
     {
         return [
-            url('/') => 'Home',
+            route(Home::getRouteName()) => 'Home',
             route(Proceedings::getRouteName()) => 'Proceedings',
             route(ProceedingDetail::getRouteName(), [$this->submission->proceeding->id]) => Str::limit(
                 $this->submission->proceeding->seriesTitle(), 70

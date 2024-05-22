@@ -33,7 +33,7 @@ class Proceedings extends Page
     public function getBreadcrumbs(): array
     {
         return [
-            url('/') => 'Home',
+            route(Home::getRouteName()) => 'Home',
             'Proceedings',
         ];
     }

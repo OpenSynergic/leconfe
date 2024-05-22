@@ -38,7 +38,7 @@ class ProceedingDetail extends Page
     public function getBreadcrumbs(): array
     {
         return [
-            url('/') => 'Home',
+            route(Home::getRouteName()) => 'Home',
             route(PagesProceedings::getRouteName()) => 'Proceedings',
             Str::limit($this->proceeding->seriesTitle(), 120),
         ];
