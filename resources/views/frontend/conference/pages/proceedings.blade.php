@@ -11,7 +11,7 @@
                 <hr class="w-full h-px my-auto bg-gray-200 border-0 dark:bg-gray-700">
             </div>
             <div class="grid grid-cols-2 gap-y-10">
-                @foreach ($proceedings as $proceeding)
+                @forelse ($proceedings as $proceeding)
                     <div class="pb-10 space-y-5 border-b">
                         <div class="flex space-x-5">
                             @if($proceeding->getFirstMediaUrl('cover'))
@@ -31,7 +31,11 @@
                             </div>
                         </div>
                     </div>
-                @endforeach
+                @empty
+                    <div class="col-span-2 text-center text-gray-500">
+                        No proceeding found.
+                    </div>
+                @endforelse
             </div>
         </div>
     </div>
