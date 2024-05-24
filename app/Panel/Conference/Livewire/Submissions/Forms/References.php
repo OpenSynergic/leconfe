@@ -17,6 +17,8 @@ class References extends \Livewire\Component implements HasForms
 
     public Submission $submission;
 
+    public array $meta = [];
+
     public function mount(Submission $submission)
     {
         $this->form->fill([
