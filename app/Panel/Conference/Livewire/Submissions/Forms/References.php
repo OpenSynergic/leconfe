@@ -17,8 +17,6 @@ class References extends \Livewire\Component implements HasForms
 
     public Submission $submission;
 
-    public array $meta = [];
-
     public function mount(Submission $submission)
     {
         $this->form->fill([
@@ -53,6 +51,7 @@ class References extends \Livewire\Component implements HasForms
             ->schema([
                 TinyEditor::make('meta.references')
                     ->label('References')
+                    ->hiddenLabel()
                     ->minHeight(300),
             ]);
     }
