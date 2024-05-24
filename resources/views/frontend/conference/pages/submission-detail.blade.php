@@ -1,6 +1,11 @@
 @use('App\Constants\SubmissionFileCategory')
 @use('App\Classes\Settings')
 @use('App\Models\Enums\SubmissionStatus')
+
+@php
+    $galleys = $submission->galleys()->with('file.media')->get();
+@endphp
+
 <x-website::layouts.main>
     <div id="submission-detail">
         <div class="mb-6">
@@ -88,15 +93,13 @@
                     <h2 class="text-xl">
                         {{ __('Downloads') }}
                     </h2>
-                    <div class="flex flex-wrap gap-1.5 mt-2">
-                        @foreach ($submission->getMedia(SubmissionFileCategory::EDITED_FILES) as $file)
-                            <a href="{{ route('submission-files.view', $file->uuid) }}" target="_blank"
-                                class="flex items-center px-3 py-1 break-all transition duration-200 ease-in-out border rounded-md shadow-sm bg-slate-100 border-slate-200 link-primary hover:bg-slate-200 hover:border-slate-300">
-                                {{ $file->file_name }}
-                                <x-lineawesome-external-link-square-alt-solid class="w-3 h-3 ml-0.5" />
-                            </a>
-                        @endforeach
-                    </div>
+                    @if($galleys->isNotEmpty())
+                        <div class="flex flex-wrap gap-1.5 mt-2">
+                            @foreach ($galleys as $galley)
+                                <x-conference::galley-summary :label="$galley->label" :url="$galley->remote_url ?? route('submission-files.view', $galley->file->media->uuid)"/>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
             </section>
         </div>
