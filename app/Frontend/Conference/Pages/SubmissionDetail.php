@@ -30,7 +30,7 @@ class SubmissionDetail extends Page
         return $this->submission->proceeding && 
         (
             (StageManager::editing()->isStageOpen() && auth()->user()?->can('editing', $this->submission)) || 
-            ($this->submission?->isPublished())
+            ($this->submission?->isPublished() && $this->submission->proceeding?->isPublished())
         );
     }
 
