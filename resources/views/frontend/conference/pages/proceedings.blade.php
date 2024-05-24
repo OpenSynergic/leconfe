@@ -15,13 +15,13 @@
                     <div class="pb-10 space-y-5 border-b">
                         <div class="flex space-x-5">
                             @if($proceeding->getFirstMediaUrl('cover'))
-                                <a href="{{ route('livewirePageGroup.conference.pages.proceeding-detail', ['proceedingId' => $proceeding->id]) }}" class="w-full h-36 max-h-36 max-w-[6rem]">
+                                <a href="{{ route('livewirePageGroup.conference.pages.proceeding-detail', ['proceeding' => $proceeding]) }}" class="w-full h-36 max-h-36 max-w-[6rem]">
                                     <img class="w-full h-full" src="{{ $proceeding->getFirstMediaUrl('cover') }}" alt="">
                                 </a>
                             @endif
                             <div>
                                 <div class="mb-3 text-base space-y-0.5">
-                                    <a href="{{ route('livewirePageGroup.conference.pages.proceeding-detail', ['proceedingId' => $proceeding->id]) }}" class="font-semibold text-gray-700 hover:text-primary">{{ $proceeding->title }}</a>
+                                    <a href="{{ route('livewirePageGroup.conference.pages.proceeding-detail', ['proceeding' => $proceeding]) }}" class="font-semibold text-gray-700 hover:text-primary">{{ $proceeding->title }}</a>
                                     <div class="text-sm text-gray-500">
                                         {{ $proceeding->volume ? 'Vol. '.$proceeding->volume : '' }}
                                         {{ $proceeding->number ? 'No. '.$proceeding->number : '' }}

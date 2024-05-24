@@ -2,7 +2,7 @@
 
 namespace App\Frontend\Conference\Pages;
 
-use App\Models\Proceeding as ModelsProceeding;
+use App\Models\Proceeding;
 use App\Models\Topic;
 use Livewire\Attributes\Title;
 use Illuminate\Support\Facades\Route;
@@ -16,15 +16,11 @@ class Proceedings extends Page
 
     protected static ?string $slug = 'proceedings';
 
-    public Collection $topics, $proceedings;
+    public Collection $proceedings;
 
-    public function mount(?string $topicSlug = null)
+    public function mount()
     {
-        $this->topics = filled($topicSlug)
-            ? Topic::whereSlug($topicSlug)->get()
-            : Topic::whereHas('submissions')->get();
-
-        $this->proceedings = ModelsProceeding::query()
+        $this->proceedings = Proceeding::query()
             ->published()
             ->orderBy('order_column')
             ->get();

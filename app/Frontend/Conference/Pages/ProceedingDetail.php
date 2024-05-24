@@ -16,13 +16,9 @@ class ProceedingDetail extends Page
 
     public Proceeding $proceeding;
 
-    public function mount(int $proceedingId)
+    public function mount(Proceeding $proceeding)
     {
-        $this->proceeding = Proceeding::find($proceedingId);
-
-        if (!$this->canAccess()) {
-            abort(404);
-        }
+        abort_unless($this->canAccess(), 404);
     }
 
     public function canAccess(): bool
@@ -47,7 +43,7 @@ class ProceedingDetail extends Page
     public static function routes(PageGroup $pageGroup): void
     {
         $slug = static::getSlug();
-        Route::get("/proceedings/view/{proceedingId}", static::class)
+        Route::get("/proceedings/view/{proceeding}", static::class)
             ->middleware(static::getRouteMiddleware($pageGroup))
             ->withoutMiddleware(static::getWithoutRouteMiddleware($pageGroup))
             ->name((string) str($slug)->replace('/', '.'));
