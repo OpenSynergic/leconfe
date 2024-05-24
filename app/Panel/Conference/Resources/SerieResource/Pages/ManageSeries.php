@@ -3,6 +3,7 @@
 namespace App\Panel\Conference\Resources\SerieResource\Pages;
 
 use App\Actions\Series\SerieCreateAction;
+use App\Models\Enums\SerieState;
 use App\Panel\Conference\Resources\SerieResource;
 use Filament\Actions;
 use Filament\Resources\Components\Tab;
@@ -25,13 +26,13 @@ class ManageSeries extends ManageRecords
     {
         return [
             'current' => Tab::make()
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('current', true)),
-            'future' => Tab::make()
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('published', false)),
-            'published' => Tab::make()
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('published', true)),
-            // 'trash' => Tab::make()
-            //     ->modifyQueryUsing(fn (Builder $query) => $query->onlyTrashed()),
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('state', SerieState::Current)),
+            'draft' => Tab::make()
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('state', SerieState::Draft)),
+            'upcoming' => Tab::make()
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('state', SerieState::Published)),
+            'archived' => Tab::make()
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('state', SerieState::Archived)),
         ];
     }
 }

@@ -5,6 +5,7 @@ namespace App\Frontend\Website\Pages;
 use App\Facades\Block as BlockFacade;
 use App\Facades\SidebarFacade;
 use App\Models\Conference;
+use App\Models\Enums\SerieState;
 use App\Models\Serie;
 use App\Models\Sponsor;
 use App\Models\Topic;
@@ -28,8 +29,11 @@ class Home extends Page
             ->with(['conference', 'media']);
         
         $currentSeries = (clone $serieQuery)
-        ->where('current', true)
         ->paginate(6, pageName: 'currentSeriesPage');
+
+        // $upcomingSeries = (clone $serieQuery)
+        //     ->where()
+        // dd(SerieState::array());
 
         return [
             'currentSeries' => $currentSeries,

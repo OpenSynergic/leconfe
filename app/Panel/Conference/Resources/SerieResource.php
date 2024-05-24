@@ -5,9 +5,11 @@ namespace App\Panel\Conference\Resources;
 use App\Actions\Series\SerieSetAsActiveAction;
 use App\Actions\Series\SerieSetAsCurrentAction;
 use App\Facades\Settings;
+use App\Models\Enums\SerieState;
 use App\Models\Enums\SerieType;
 use App\Models\Serie;
 use App\Panel\Conference\Resources\SerieResource\Pages;
+use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Grid;
@@ -71,8 +73,6 @@ class SerieResource extends Resource
                 Select::make('type')
                     ->required()
                     ->options(SerieType::array()),
-                Checkbox::make('set_as_active')
-                    ->label('Set as active serie'),
             ]);
     }
 
@@ -82,6 +82,7 @@ class SerieResource extends Resource
             ->recordUrl(fn (Serie $record) => route('filament.series.pages.dashboard', ['serie' => $record]))
             ->modifyQueryUsing(fn (Builder $query) => $query->latest())
             ->columns([
+                IndexColumn::make('no'),
                 TextColumn::make('title')
                     ->searchable()
                     ->description(fn(Serie $record) => $record->current ? 'Current' : null)
@@ -108,13 +109,9 @@ class SerieResource extends Resource
                             Checkbox::make('set_as_current')
                                 ->label('Set as current serie'),
                         ])
-                        ->hidden(fn (Serie $record) => $record->current || $record->published || $record->trashed())
+                        ->hidden(fn (Serie $record) => $record->isArchived() || $record->isCurrent() || $record->isPublished() || $record->trashed())
                         ->action(function (Serie $record, array $data, Tables\Actions\Action $action){
-                            $record->publish();
-
-                            if($data['set_as_current']){
-                                $record->setAsCurrent();
-                            }
+                            $data['set_as_current'] ? $record->update(['state' => SerieState::Current]) : $record->update(['state' => SerieState::Published]);
 
                             return $action->success();
                         }),
@@ -123,23 +120,23 @@ class SerieResource extends Resource
                         ->requiresConfirmation()
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
-                        ->hidden(fn (Serie $record) => $record->current || !$record->published || $record->trashed())
-                        ->action(fn (Serie $record, Tables\Actions\Action $action) => $record->setAsCurrent() && $action->success())
-                        ->successNotificationTitle(fn(Serie $serie) => $serie->title . ' is set as active'),
+                        ->hidden(fn (Serie $record) => $record->isArchived() || $record->isCurrent() || $record->isDraft() || $record->trashed())
+                        ->action(fn (Serie $record, Tables\Actions\Action $action) => $record->update(['state' => SerieState::Current]) && $action->success())
+                        ->successNotificationTitle(fn(Serie $serie) => $serie->title . ' is set as current'),
                     Tables\Actions\EditAction::make()
-                        ->hidden(fn (Serie $record) => $record->trashed()),
-                    Tables\Actions\DeleteAction::make()
-                        ->label('Move To Trash')
-                        ->modalHeading('Move To Trash')
-                        ->hidden(fn (Serie $record) => $record->current || $record->trashed())
-                        ->successNotificationTitle('Serie moved to trash'),
+                        ->hidden(fn (Serie $record) => $record->isArchived() || $record->trashed()),
+                    // Tables\Actions\DeleteAction::make()
+                    //     ->label('Move To Trash')
+                    //     ->modalHeading('Move To Trash')
+                    //     ->hidden(fn (Serie $record) => $record->current || $record->trashed())
+                    //     ->successNotificationTitle('Serie moved to trash'),
                 ]),
-                Tables\Actions\RestoreAction::make(),
+                // Tables\Actions\RestoreAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 

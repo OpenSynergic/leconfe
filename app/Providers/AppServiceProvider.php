@@ -188,7 +188,7 @@ class AppServiceProvider extends ServiceProvider
                     $serie = Serie::where('path', $pathInfos[3])->first();
                 }
 
-                $serie ??= $conference->series()->current()->first();
+                $serie ??= $conference->currentSerie;
                 if($serie){
                     $this->app->setCurrentSerieId($serie->getKey());
                     $this->app->scopeCurrentSerie();

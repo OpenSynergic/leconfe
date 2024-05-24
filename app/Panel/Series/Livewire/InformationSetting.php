@@ -34,6 +34,7 @@ class InformationSetting extends Component implements HasForms
     {
         $this->form->fill([
             ...app()->getCurrentSerie()->attributesToArray(),
+            'meta' => app()->getCurrentSerie()->getAllMeta(),
         ]);
     }
 

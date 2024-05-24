@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Enums\SerieState;
 use App\Models\Enums\SerieType;
 use App\Models\Meta\ConferenceMeta;
 use Filament\Models\Contracts\HasAvatar;
@@ -95,9 +96,9 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
         return $this->hasMany(Serie::class);
     }
 
-    public function activeSerie() : HasOne
+    public function currentSerie() : HasOne
     {
-        return $this->hasOne(Serie::class)->where('active', true);
+        return $this->hasOne(Serie::class)->where('state', SerieState::Current);
     }
 
     public function roles(): HasMany

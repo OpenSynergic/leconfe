@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Filament\Models\Contracts\HasAvatar;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use App\Models\Concerns\BelongsToConference;
+use App\Models\Enums\SerieState;
 use App\Models\Enums\SerieType;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
@@ -28,9 +29,7 @@ class Serie extends Model implements HasMedia, HasAvatar, HasName
         'issn',
         'date_start',
         'date_end',
-        'published',
-        'published_at',
-        'current',
+        'state',
         'type',
     ];
 
@@ -41,9 +40,26 @@ class Serie extends Model implements HasMedia, HasAvatar, HasName
         'date_start' => 'date',
         'date_end' => 'date',
         'type' => SerieType::class,
+        'state' => SerieState::class,
     ];
 
-    public function conference() : BelongsTo
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::updating(function (Serie $serie) {
+            if ($serie->isDirty('state') && $serie->state == SerieState::Current){
+                static::query()
+                    ->where('conference_id', $serie->conference_id)
+                    ->where('state', SerieState::Current->value)
+                    ->where('id', '!=', $serie->id)
+                    ->update(['state' => SerieState::Archived]);
+            }
+        });
+    }
+
+    public function conference(): BelongsTo
     {
         return $this->belongsTo(Conference::class);
     }
@@ -58,12 +74,12 @@ class Serie extends Model implements HasMedia, HasAvatar, HasName
         return $this->hasMany(Committee::class);
     }
 
-    public function speakers() : HasMany
+    public function speakers(): HasMany
     {
         return $this->hasMany(Speaker::class);
     }
 
-    public function speakerRoles() : HasMany
+    public function speakerRoles(): HasMany
     {
         return $this->hasMany(SpeakerRole::class);
     }
@@ -98,33 +114,23 @@ class Serie extends Model implements HasMedia, HasAvatar, HasName
         return $this->active ? route('livewirePageGroup.conference.pages.home', ['conference' => $this->conference]) : '#';
     }
 
-    public function publish($published = true) : self
+    public function isCurrent() : bool
     {
-        $this->published = $published;
-        $this->published_at = $published ? now() : null;
-        $this->save();
-
-        return $this;
+        return $this->state == SerieState::Current;
     }
 
-    public function unpublish() : self
+    public function isDraft() : bool
     {
-        return $this->publish(false);
+        return $this->state == SerieState::Draft;
     }
 
-    public function setAsCurrent() : self
+    public function isPublished() : bool
     {
-        // Current only one for each conference
-        $this->newQuery()->where('conference_id', $this->conference_id)->update(['current' => false]);
-
-        $this->current = true;
-        $this->save();
-
-        return $this;
+        return $this->state == SerieState::Published;
     }
 
-    public function scopeCurrent($query)
+    public function isArchived() : bool
     {
-        return $query->where('current', true);
+        return $this->state == SerieState::Archived;
     }
 }
