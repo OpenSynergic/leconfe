@@ -40,4 +40,11 @@ class Site extends Model implements HasMedia
     {
         return SiteMeta::class;
     }
+
+    protected function getAllDefaultMeta(): array
+    {
+        return [
+            'settings_send_error_report' => true
+        ];
+    }
 }

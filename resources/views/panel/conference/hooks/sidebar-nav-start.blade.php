@@ -69,7 +69,7 @@
         @endcan
 
         <div class="max-h-64 overflow-y-scroll">
-        @foreach (Conference::where('path', '!=', app()->getCurrentConference()->path)->latest()->get() as $conference)
+        @foreach (Conference::with(['media'])->where('path', '!=', app()->getCurrentConference()->path)->latest()->get() as $conference)
             <x-filament::dropdown.list.item
                 :href="$conference->getPanelUrl()"
                 :icon="filament()->getTenantAvatarUrl($conference)"

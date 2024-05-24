@@ -2,6 +2,7 @@
 
 namespace App\Frontend\Conference\Pages;
 
+use App\Actions\Conferences\ConferenceUpdateAction;
 use App\Models\Topic;
 use App\Models\Venue;
 use App\Models\Conference;
@@ -20,6 +21,7 @@ class Home extends Page
 
     public function mount()
     {
+
     }
 
     protected function getViewData(): array

@@ -135,10 +135,6 @@ class ConferenceObserver
 
         RolePopulateConferenceAction::run($conference);
 
-        $conference->setMeta('page_footer', view('frontend.examples.footer')->render());
-        $conference->setMeta('workflow.payment.supported_currencies', ['usd']);
-        $conference->save();
-
         if(auth()->user()){
            $session_team_id = getPermissionsTeamId();
            // set actual new team_id to package instance

@@ -3,7 +3,6 @@
 namespace App\Panel\Administration\Livewire;
 
 use App\Actions\Site\SiteUpdateAction;
-use App\Facades\Settings;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Section;

@@ -2,7 +2,7 @@
 
 namespace App\Panel\Conference\Resources\Conferences;
 
-use App\Facades\Settings;
+use App\Facades\Setting;
 use App\Forms\Components\TagSuggestions;
 use App\Models\Announcement;
 use App\Models\AnnouncementTag;
@@ -130,7 +130,7 @@ class AnnouncementResource extends Resource
                 TextColumn::make('title')
                     ->searchable(),
                 TextColumn::make('expires_at')
-                    ->date(Settings::get('format_date'))
+                    ->date(Setting::get('format_date'))
                     ->getStateUsing(fn (Announcement $record) => $record->getMeta('expires_at')),
             ])
             ->filters([

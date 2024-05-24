@@ -2,7 +2,7 @@
 
 namespace App\Panel\Conference\Resources;
 
-use App\Facades\Settings;
+use App\Facades\Setting;
 use App\Panel\Conference\Resources\ProceedingResource\Pages;
 use App\Panel\Conference\Resources\ProceedingResource\RelationManagers;
 use App\Models\Proceeding;
@@ -85,7 +85,7 @@ class ProceedingResource extends Resource
                 TextColumn::make('published_at')
                     ->sortable()
                     ->hidden(fn(Component $livewire) => $livewire->activeTab === 'future')
-                    ->date(Settings::get('format_date'))
+                    ->date(Setting::get('format_date'))
             ])
             ->filters([
                 //

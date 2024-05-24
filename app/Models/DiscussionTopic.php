@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Facades\Settings;
+use App\Facades\Setting;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -55,7 +55,7 @@ class DiscussionTopic extends Model
             return null;
         }
 
-        return $discussions->updated_at->format(Settings::get('format_date') . ' ' . Settings::get('format_time'));
+        return $discussions->updated_at->format(Setting::get('format_date') . ' ' . Setting::get('format_time'));
     }
 
     public function user()

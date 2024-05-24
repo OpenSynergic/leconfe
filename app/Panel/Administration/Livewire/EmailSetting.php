@@ -4,7 +4,7 @@ namespace App\Panel\Administration\Livewire;
 
 use App\Actions\MailTemplates\MailTemplateRestoreDefaultData;
 use App\Actions\Settings\SettingUpdateAction;
-use App\Facades\Settings;
+use App\Facades\Setting;
 use App\Infolists\Components\BladeEntry;
 use App\Infolists\Components\VerticalTabs;
 use App\Mail\Templates\TestMail;
@@ -49,8 +49,8 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
 
     public function mount()
     {
-        $this->mailSetupForm->fill(Settings::all());
-        $this->layoutTemplateForm->fill(Settings::all());
+        $this->mailSetupForm->fill(Setting::all());
+        $this->layoutTemplateForm->fill(Setting::all());
     }
 
     public function render()

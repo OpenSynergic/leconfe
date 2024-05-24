@@ -9,7 +9,7 @@
             <div class="flex items-center text-sm gap-2 text-gray-600">
                 <x-heroicon-c-calendar-days class="h-5 w-5" />
                 <span>
-                    {{ $conference->date_start?->format(Settings::get('format_date')) }}
+                    {{ $conference->date_start?->format(Setting::get('format_date')) }}
                 </span>
             </div>
         @endif

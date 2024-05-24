@@ -3,7 +3,7 @@
 namespace App\Panel\Administration\Livewire;
 
 use App\Actions\Settings\SettingUpdateAction;
-use App\Facades\Settings;
+use App\Facades\Setting;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Section;
@@ -23,7 +23,7 @@ class ErrorReportSetting extends Component implements HasForms
     public function mount()
     {
         $this->form->fill([
-            'send-error-report' => Settings::get('send-error-report'),
+            'send_error_report' => Setting::get('send_error_report'),
         ]);
     }
 
@@ -42,7 +42,7 @@ class ErrorReportSetting extends Component implements HasForms
                                         Sending report of technical problems helps us improve Leconfe.
                                     HTML))
                     ->schema([
-                        Toggle::make('send-error-report')
+                        Toggle::make('send_error_report')
                             ->label('Send error report to Leconfe'),
                     ]),
                 Actions::make([
