@@ -11,7 +11,7 @@
                         </div>
                     @endif
                     <div class="inline-flex items-center space-x-2">
-                        <h1 class="text-2xl cf-name">{{ $currentConference->name }}</h1>
+                        <h1 class="cf-name text-2xl">{{ $currentConference->name }}</h1>
                         <span
                             @class([
                                 'badge badge-sm',
@@ -35,7 +35,7 @@
                     @endif
                     @if ($topics->isNotEmpty())
                         <div>
-                            <h2 class="mb-1 text-base font-medium cf-topics">Topics :</h2>
+                            <h2 class="cf-topics mb-1 text-base font-medium">Topics :</h2>
                             <div class="flex flex-wrap w-full gap-2">
                                 @foreach ($topics as $topic)
                                     <span
@@ -180,19 +180,19 @@
                         alt="">
                     <h2 class="pl-2 text-xl font-medium">Speakers</h2>
                 </div>
-                <div class="space-y-6 cf-speakers">
+                <div class="cf-speakers space-y-6">
                     @foreach ($currentSerie->speakerRoles as $role)
                         @if ($role->speakers->isNotEmpty())
                             <div class="space-y-4">
                                 <h3 class="text-base">{{ $role->name }}</h3>
-                                <div class="grid gap-2 cf-speaker-list sm:grid-cols-2">
+                                <div class="cf-speaker-list grid gap-2 sm:grid-cols-2">
                                     @foreach ($role->speakers as $role)
-                                        <div class="flex items-center h-full gap-2 cf-speaker">
-                                            <img class="object-cover w-16 h-16 rounded-full cf-speaker-img aspect-square"
+                                        <div class="cf-speaker flex items-center h-full gap-2">
+                                            <img class="cf-speaker-img object-cover w-16 h-16 rounded-full aspect-square"
                                                 src="{{ $role->getFilamentAvatarUrl() }}"
                                                 alt="{{ $role->fullName }}" />
                                             <div class="cf-speaker-information">
-                                                <div class="text-sm text-gray-900 cf-speaker-name">
+                                                <div class="cf-speaker-name text-sm text-gray-900">
                                                     {{ $role->fullName }}
                                                 </div>
                                                 @if ($role->getMeta('expertise'))
