@@ -50,7 +50,7 @@
         @if($galleys->isNotEmpty())
             <div class="flex space-x-1.5">
                 @foreach ($galleys as $galley)
-                    <x-conference::galley-summary :label="$galley->label" :url="$galley->remote_url ?? route('submission-files.view', $galley->file->media->uuid)"/>
+                    <x-conference::galley-link :galley="$galley"/>
                 @endforeach
             </div>
         @endif

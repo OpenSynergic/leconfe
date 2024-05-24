@@ -96,7 +96,7 @@
                     @if($galleys->isNotEmpty())
                         <div class="flex flex-wrap gap-1.5 mt-2">
                             @foreach ($galleys as $galley)
-                                <x-conference::galley-summary :label="$galley->label" :url="$galley->remote_url ?? route('submission-files.view', $galley->file->media->uuid)"/>
+                                <x-conference::galley-link :galley="$galley"/>
                             @endforeach
                         </div>
                     @endif
