@@ -39,6 +39,12 @@ class Home extends Page
             ->current()
             ->first();
 
+        $currentProceeding = app()->getCurrentConference()
+            ->proceedings()
+            ->published()
+            ->current()
+            ->first();
+
         $currentSerie = app()->getCurrentSerie();
         $currentSerie?->load(['speakerRoles.speakers']);
         
