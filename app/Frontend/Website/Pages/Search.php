@@ -40,7 +40,7 @@ class Search extends Page
                     ->where('name', $this->topic)
                     ->pluck('conference_id')
                     ->toArray()))
-                ->with(['media', 'meta'])
+                ->with(['media', 'meta', 'activeSerie' => fn($query) => $query->withoutGlobalScopes()])
                 ->paginate(6),
         ];
     }

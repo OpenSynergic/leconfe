@@ -10,19 +10,10 @@ class ConferencePolicy
     public function accessPanel(User $user)
     {
         return true;
-        dd($user->roles);
     }
 
     public function view(User $user, Conference $conference)
     {
-        if ($conference->isArchived()) {
-            return $user->can('Conference:viewArchived');
-        }
-
-        if ($conference->isUpcoming()) {
-            return $user->can('Conference:viewUpcoming');
-        }
-
         if ($user->can('Conference:view')) {
             return true;
         }
@@ -43,10 +34,6 @@ class ConferencePolicy
      */
     public function update(User $user, Conference $conference)
     {
-        if ($conference->isArchived()) {
-            return false;
-        }
-
         if ($user->can('Conference:update')) {
             return true;
         }
@@ -57,22 +44,7 @@ class ConferencePolicy
      */
     public function delete(User $user, Conference $conference)
     {
-        if ($conference->isActive() || $conference->isArchived()) {
-            return false;
-        }
-
         if ($user->can('Conference:delete')) {
-            return true;
-        }
-    }
-
-    public function setAsActive(User $user, Conference $conference)
-    {
-        if (!$conference->isUpcoming()) {
-            return false;
-        }
-
-        if ($user->can('Conference:setAsActive')) {
             return true;
         }
     }

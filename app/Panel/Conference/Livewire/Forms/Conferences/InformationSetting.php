@@ -53,59 +53,24 @@ class InformationSetting extends Component implements HasForms
                         TextInput::make('name')
                             ->columnSpanFull()
                             ->required(),
-                        Grid::make(2)
-                            ->schema([
-                                TextInput::make('meta.acronym')
-                                    ->unique(column: 'path', ignorable: $this->conference)
-                                    ->rule('alpha_dash')
-                                    ->live(onBlur: true),
-                                Placeholder::make('path')
-                                    ->content(function (Get $get) {
-                                        $baseUrl = config('app.url') . '/';
-                                        $acronym = $get('meta.acronym') ?? '{acronym}';
-                                        return new HtmlString("<span class='text-gray-500'>{$baseUrl}</span>{$acronym}");
-                                    }),
-                            ]),
-                        Grid::make(2)
-                            ->schema([
-                                DatePicker::make('date_start'),
-                                DatePicker::make('date_end')
-                                    ->after('date_start'),
-                            ]),
-                        Grid::make([
-                            'xl' => 3
-                        ])
-                            ->schema([
-                                SpatieMediaLibraryFileUpload::make('logo')
-                                    ->collection('logo')
-                                    ->image()
-                                    ->imageResizeUpscale(false)
-                                    ->conversion('thumb'),
-                                SpatieMediaLibraryFileUpload::make('thumbnail')
-                                    ->collection('thumbnail')
-                                    ->helperText('A image representation of the conference that can be used in lists of conferences.')
-                                    ->image()
-                                    ->conversion('thumb'),
-                                SpatieMediaLibraryFileUpload::make('cover')
-                                    ->collection('cover')
-                                    ->helperText('Cover image for the conference. This will be used in the conference\'s branding.')
-                                    ->image()
-                                    ->conversion('thumb'),
-                            ]),
-
+                        TextInput::make('meta.acronym')
+                            ->unique(column: 'path', ignorable: $this->conference)
+                            ->rule('alpha_dash')
+                            ->live(onBlur: true),
+                        SpatieMediaLibraryFileUpload::make('logo')
+                            ->collection('logo')
+                            ->image()
+                            ->imageResizeUpscale(false)
+                            ->conversion('thumb'),
                         TextInput::make('meta.theme')
                             ->placeholder('e.g. Creating a better future with us')
                             ->helperText("The theme of the conference. This will be used in the conference's branding.")
                             ->columnSpanFull(),
                         Textarea::make('meta.description')
-                            ->rows(5)
-                            ->autosize()
-                            ->columnSpanFull(),
-                        TinyEditor::make('meta.about')
-                            ->label('About Conference')
-                            ->minHeight(300),
-                        TinyEditor::make('meta.additional_content')
-                            ->minHeight(300),
+                            ->hint('Recommended length: 50-160 characters')
+                            ->helperText('A short description of the conference. This will used to help search engines understand the conference.')
+                            ->maxLength(255)
+                            ->autosize(),
                         TinyEditor::make('meta.page_footer')
                             ->minHeight(300),
                     ]),

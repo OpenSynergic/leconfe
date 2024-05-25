@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\Concerns\BelongsToConference;
+use App\Models\Concerns\BelongsToSerie;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\EloquentSortable\Sortable;
@@ -13,7 +15,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Sponsor extends Model implements HasMedia, Sortable
 {
-    use HasFactory, InteractsWithMedia, BelongsToConference, SortableTrait;
+    use HasFactory, InteractsWithMedia, BelongsToSerie, SortableTrait, Cachable;
 
     protected $fillable = [
         'name',
@@ -42,6 +44,11 @@ class Sponsor extends Model implements HasMedia, Sortable
             ->keepOriginalImageFormat()
             ->height(50);
 
+        $this->addMediaConversion('thumb-sm')
+            ->performOnCollections('logo')
+            ->keepOriginalImageFormat()
+            ->width(100);
+
         $this->addMediaConversion('thumb')
             ->performOnCollections('logo')
             ->keepOriginalImageFormat()
@@ -56,7 +63,7 @@ class Sponsor extends Model implements HasMedia, Sortable
     public function buildSortQuery()
     {
         return static::query()
-            ->where('conference_id', app()->getCurrentConferenceId());
+            ->where('serie_id', app()->getCurrentSerieId());
     }
 
 }

@@ -324,7 +324,7 @@
                                     Conference Type <span class="text-red-500">*</span>
                                 </label>
                                 <select class="select select-sm select-bordered" wire:model="form.conference_type">
-                                    @foreach (\App\Models\Enums\ConferenceType::array() as $key => $type)
+                                    @foreach (\App\Models\Enums\SerieType::array() as $key => $type)
                                         <option value="{{ $key }}">{{ $type }}</option>
                                     @endforeach
                                 </select>

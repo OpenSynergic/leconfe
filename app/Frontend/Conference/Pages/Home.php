@@ -7,6 +7,7 @@ use App\Models\Venue;
 use App\Models\Conference;
 use App\Models\Submission;
 use App\Models\SpeakerRole;
+use Illuminate\Support\Str;
 use App\Models\Announcement;
 use App\Models\CommitteeRole;
 use Livewire\Attributes\Title;
@@ -24,10 +25,19 @@ class Home extends Page
 
     protected function getViewData(): array
     {
-        $additionalTabs = array_filter(
-            app()->getCurrentConference()->getMeta('additional_information') ?? [],
-            fn ($tab) => $tab['is_shown'] ?? false
-        );
+        $additionalInformations = collect(app()->getCurrentConference()->getMeta('additional_information') ?? [])
+            ->filter(fn ($tab) => $tab['is_shown'] ?? false)
+            ->map(function ($tab) {
+                $tab['slug'] = Str::slug($tab['title']);
+                return $tab;
+            })
+            ->values();
+
+        $currentProceeding = app()->getCurrentConference()
+            ->proceedings()
+            ->published()
+            ->current()
+            ->first();
 
         $currentProceeding = app()->getCurrentConference()
             ->proceedings()
@@ -37,13 +47,13 @@ class Home extends Page
 
         $currentSerie = app()->getCurrentSerie();
         $currentSerie?->load(['speakerRoles.speakers']);
+        
         return [
             'currentProceeding' => $currentProceeding,
             'currentSerie' => $currentSerie,
             'announcements' => Announcement::query()->get(),
             'acceptedSubmission' => app()->getCurrentConference()->submission()->published()->get(),
-            'additionalInformations' => array_values($additionalTabs),
-            'topics' => Topic::query()->get(),
+            'additionalInformations' => $additionalInformations,
             'venues' => Venue::query()->get(),
         ];
     }

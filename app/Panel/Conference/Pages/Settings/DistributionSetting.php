@@ -15,7 +15,7 @@ use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\App;
-
+use Illuminate\Support\Facades\Auth;
 
 class DistributionSetting extends Page implements HasForms, HasInfolists
 {
@@ -36,6 +36,11 @@ class DistributionSetting extends Page implements HasForms, HasInfolists
     public function mount(): void
     {
         $this->authorize('update', App::getCurrentConference());
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return Auth::user()->can('update', App::getCurrentConference());
     }
 
     public function infolist(Infolist $infolist): Infolist

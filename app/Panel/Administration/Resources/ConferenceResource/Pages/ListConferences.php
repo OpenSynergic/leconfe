@@ -2,9 +2,13 @@
 
 namespace App\Panel\Administration\Resources\ConferenceResource\Pages;
 
-use App\Panel\Administration\Resources\ConferenceResource;
 use Filament\Actions;
+use Illuminate\Support\Str;
+use Filament\Support\Enums\MaxWidth;
+use App\Actions\Series\SerieCreateAction;
 use Filament\Resources\Pages\ListRecords;
+use App\Actions\Conferences\ConferenceCreateAction;
+use App\Panel\Administration\Resources\ConferenceResource;
 
 class ListConferences extends ListRecords
 {
@@ -22,7 +26,21 @@ class ListConferences extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->using(function (array $data) {
+                    
+                    $record = ConferenceCreateAction::run($data);
+                    $serie = SerieCreateAction::run([
+                        'conference_id' => $record->getKey(),
+                        'path' => Str::slug($data['serie']['title']),
+                        ...$data['serie'],
+                    ]);
+
+                    $serie->publish()->setAsCurrent();
+
+
+                    return $record;
+                })
         ];
     }
 }

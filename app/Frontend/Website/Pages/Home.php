@@ -5,6 +5,8 @@ namespace App\Frontend\Website\Pages;
 use App\Facades\Block as BlockFacade;
 use App\Facades\SidebarFacade;
 use App\Models\Conference;
+use App\Models\Enums\SerieState;
+use App\Models\Serie;
 use App\Models\Sponsor;
 use App\Models\Topic;
 use Illuminate\Support\Facades\Route;
@@ -16,17 +18,25 @@ use Rahmanramsi\LivewirePageGroup\Pages\Page;
 class Home extends Page
 {
     use WithPagination, WithoutUrlPagination;
-    
+
     protected static string $view = 'frontend.website.pages.home';
 
 
     protected function getViewData(): array
     {
+        $serieQuery = Serie::query()
+            ->withoutGlobalScopes()
+            ->with(['conference', 'media']);
+        
+        $currentSeries = (clone $serieQuery)
+        ->paginate(6, pageName: 'currentSeriesPage');
+
+        // $upcomingSeries = (clone $serieQuery)
+        //     ->where()
+        // dd(SerieState::array());
+
         return [
-            'sponsors' => Sponsor::ordered()->with('media')->get(),
-            'currentConferences' => Conference::active()->with('media')->paginate(6, pageName: 'currentConferencesPage'),
-            'upcomingConferences' => Conference::upcoming()->with('media')->paginate(6, pageName: 'upcomingConferencesPage'),
-            'allConferences' => Conference::with('media')->paginate(6, pageName: 'allConferencesPage'),
+            'currentSeries' => $currentSeries,
         ];
     }
 

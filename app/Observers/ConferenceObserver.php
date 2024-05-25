@@ -64,17 +64,9 @@ class ConferenceObserver
             ],
             [
                 'navigation_menu_id' => $primaryNavigationMenu->getKey(),
-                'label' => 'Contact Us',
-                'type' => 'contact-us',
-                'order_column' => 4,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'navigation_menu_id' => $primaryNavigationMenu->getKey(),
                 'label' => 'Proceedings',
                 'type' => 'proceedings',
-                'order_column' => 5,
+                'order_column' => 4,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -172,9 +164,6 @@ class ConferenceObserver
      */
     public function deleting(Conference $conference): void
     {
-        if ($conference->getKey() == Conference::active()?->getKey()) {
-            throw new \Exception('Conference cannot be deleted because it is currently active');
-        }
     }
 
     /**

@@ -33,15 +33,17 @@
                 @if (filament()->isSidebarCollapsibleOnDesktop())
                     x-show="$store.sidebar.isOpen"
                 @endif
-                class="flex items-center justify-between text-start truncate grow"
+                class="flex flex-wrap items-center justify-between text-start truncate grow"
             >
                 <span class="text-gray-950 dark:text-white">
                     {{ $currentSerie->title }}
                 </span>
 
-                <x-filament::badge size="sm" class="ms-auto" :color="$currentSerie->active ? 'info' : 'gray'">
-                    {{ $currentSerie->active ? 'Active' : 'Archived'}}
+                @if($currentSerie->current)
+                <x-filament::badge size="sm" class="" color="primary">
+                    Current
                 </x-filament::badge>
+                @endif
             </span>
 
              <x-filament::icon
@@ -80,12 +82,14 @@
                     :href="$serie->getPanelUrl()"
                     :icon="filament()->getTenantAvatarUrl($serie)"
                     tag="a"
-                    :badge-color="$serie->active ? 'info' : 'gray'"
+                    badge-color="primary"
                 >
                     {{ $serie->title }}
+                    @if($serie->current)
                     <x-slot name="badge">
-                        {{ $serie->active ? 'Active' : 'Archived'}}
+                        Current
                     </x-slot>
+                    @endif
                 </x-filament::dropdown.list.item>
             @endforeach
         </div>

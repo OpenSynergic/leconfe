@@ -12,7 +12,6 @@ use App\Panel\Administration\Livewire\ErrorReportSetting;
 use App\Panel\Administration\Livewire\InformationSetting;
 use App\Panel\Administration\Livewire\SetupSetting;
 use App\Panel\Administration\Livewire\SidebarSetting;
-use App\Panel\Administration\Livewire\SponsorSetting;
 use App\Panel\Conference\Livewire\NavigationMenuSetting;
 use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
@@ -51,12 +50,6 @@ class SiteSettings extends Page implements HasInfolists
                                                     ->livewire(InformationSetting::class)
                                                     ->lazy(),
                                             ]),
-                                        VerticalTabs\Tab::make('Sponsors')
-                                            ->icon("lineawesome-users-solid")
-                                            ->schema([
-                                                LivewireEntry::make('sponsors-setting')
-                                                    ->livewire(SponsorSetting::class),
-                                            ])
                                     ]),
                             ]),
 
