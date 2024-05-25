@@ -26,8 +26,10 @@ class Setting
         $this->setData($key, $value);
     }
 
-    protected function getData($prefixedKey): mixed
+    protected function getData($key): mixed
     {
+        $prefixedKey = $this->prefix . $key;
+
         return app()->getCurrentConferenceId() ? app()->getCurrentConference()->getMeta($prefixedKey) : app()->getSite()->getMeta($prefixedKey);
     }
 
@@ -46,7 +48,8 @@ class Setting
     {
         $data = app()->getCurrentConferenceId() ? app()->getCurrentConference()->getAllMeta() : app()->getSite()->getAllMeta();
         $settings = [];
-
+        
+        
         foreach ($data as $key => $value) {
             if (strpos($key, $this->prefix) === 0) {
                 $settings[str_replace($this->prefix, '', $key)] = $value;

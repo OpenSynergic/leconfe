@@ -44,7 +44,13 @@ class Site extends Model implements HasMedia
     protected function getAllDefaultMeta(): array
     {
         return [
-            'settings_send_error_report' => true
+            'settings_allow_registration' => true,
+            'settings_must_verify_email' => false,
+            'settings_select_format_date' => 'j F Y',
+            'settings_format_date' => 'j F Y',
+            'settings_select_format_time' => 'H:i',
+            'settings_format_time' => 'H:i',
+            'page_footer' => view('frontend.examples.footer')->render(),
         ];
     }
 }
