@@ -53,6 +53,7 @@ class References extends \Livewire\Component implements HasForms
             ->schema([
                 TinyEditor::make('meta.references')
                     ->label('References')
+                    ->hiddenLabel()
                     ->minHeight(300),
             ]);
     }

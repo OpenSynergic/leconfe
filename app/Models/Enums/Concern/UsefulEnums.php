@@ -51,4 +51,9 @@ trait UsefulEnums
 
         return null;
     }
+
+    public function is($value): bool
+    {
+        return $this->value === $value;
+    }
 }

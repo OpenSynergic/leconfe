@@ -193,15 +193,13 @@ class AppServiceProvider extends ServiceProvider
 
 
                 if(isset($pathInfos[3]) && !blank($pathInfos[3])){
-                    if($serie = Serie::where('path', $pathInfos[3])->first()){
-                        $this->app->setCurrentSerieId($serie->getKey());
-                        $this->app->scopeCurrentSerie();
-                    }
-                } else {
-                    if($serie = $conference->series()->active()->first()){
-                        $this->app->setCurrentSerieId($serie->getKey());
-                        $this->app->scopeCurrentSerie();
-                    }
+                    $serie = Serie::where('path', $pathInfos[3])->first();
+                }
+
+                $serie ??= $conference->currentSerie;
+                if($serie){
+                    $this->app->setCurrentSerieId($serie->getKey());
+                    $this->app->scopeCurrentSerie();
                 }
 
             }

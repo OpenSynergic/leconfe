@@ -23,7 +23,6 @@ class SerieFactory extends Factory
         return [
             'title' => $date->year,
             'path' => Str::slug($date->year),
-            'description' => fake()->paragraphs(3, true),
             'issn' => fake()->isbn13(),
             'date_start' => $date,
             'date_end' => $date->copy()->addDays(3),
@@ -32,8 +31,10 @@ class SerieFactory extends Factory
 
     public function configure(): static
     {
-        return $this->afterCreating(function (Serie $series) {
-
+        return $this->afterCreating(function (Serie $serie) {
+            $serie->setManyMeta([
+                'description' => fake()->paragraphs(3, true),
+            ]);
         });
     }
 }

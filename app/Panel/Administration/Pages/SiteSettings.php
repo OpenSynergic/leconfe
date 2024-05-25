@@ -50,12 +50,6 @@ class SiteSettings extends Page implements HasInfolists
                                                     ->livewire(InformationSetting::class)
                                                     ->lazy(),
                                             ]),
-                                        VerticalTabs\Tab::make('Sponsors')
-                                            ->icon("lineawesome-users-solid")
-                                            ->schema([
-                                                LivewireEntry::make('sponsors-setting')
-                                                    ->livewire(SponsorSetting::class),
-                                            ])
                                     ]),
                             ]),
 

@@ -7,13 +7,17 @@ use App\Models\Concerns\HasDOI;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\EloquentSortable\Sortable;
+use Spatie\EloquentSortable\SortableTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Proceeding extends Model implements HasMedia
+class Proceeding extends Model implements HasMedia, Sortable
 {
-    use HasFactory, InteractsWithMedia, BelongsToConference, HasDOI;
+    use HasFactory, InteractsWithMedia, BelongsToConference, SortableTrait, HasDOI;
+
+    protected $table = 'proceedings';
 
     protected $fillable = [
         'title',
@@ -37,6 +41,16 @@ class Proceeding extends Model implements HasMedia
     public function scopePublished($query, $published = true)
     {
         return $query->where('published', $published);
+    }
+
+    public function scopeCurrent($query, $current = true)
+    {
+        return $query->where('current', $current);
+    }
+
+    public function isPublished() : bool
+    {
+        return $this->published && $this->published_at !== null;
     }
 
     public function registerMediaConversions(?Media $media = null): void
@@ -84,5 +98,14 @@ class Proceeding extends Model implements HasMedia
     public function submissions() : HasMany
     {
         return $this->hasMany(Submission::class);
+    }
+
+    public function seriesTitle() : string
+    {
+        return 
+            ($this->volume ? "Vol. {$this->volume}" : '').
+            ($this->number ? " No. {$this->number}" : '').
+            ($this->year ? " ({$this->year})" : '').
+            ': '.$this->title;
     }
 }

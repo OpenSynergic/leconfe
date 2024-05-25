@@ -32,8 +32,6 @@ class ConferenceFactory extends Factory
         return [
             'name' => "$name $city",
             'path' => Str::slug($city),
-            'date_start' => fake()->dateTimeBetween('-1 year', '+1 year'),
-            'date_end' => fake()->dateTimeBetween('+1 year', '+2 year'),
         ];
     }
 
@@ -51,8 +49,6 @@ class ConferenceFactory extends Factory
                 'affiliation' => fake()->company(),
                 'country' => Country::inRandomOrder()->first()->id,
                 'location' => fake()->city(),
-                'description' => fake()->paragraphs(3, true),
-                'about' => fake()->paragraphs(4, true),
                 'page_footer' => view('frontend.examples.footer')->render(),
             ]);
         });

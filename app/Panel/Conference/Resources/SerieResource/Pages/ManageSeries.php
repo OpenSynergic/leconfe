@@ -2,6 +2,8 @@
 
 namespace App\Panel\Conference\Resources\SerieResource\Pages;
 
+use App\Actions\Series\SerieCreateAction;
+use App\Models\Enums\SerieState;
 use App\Panel\Conference\Resources\SerieResource;
 use Filament\Actions;
 use Filament\Resources\Components\Tab;
@@ -15,19 +17,22 @@ class ManageSeries extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->using(fn(array $data) => SerieCreateAction::run($data)),
         ];
     }
 
     public function getTabs(): array
     {
         return [
-            'active' => Tab::make()
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('active', true)),
-            'inactive' => Tab::make()
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('active', false)),
-            'trash' => Tab::make()
-                ->modifyQueryUsing(fn (Builder $query) => $query->onlyTrashed()),
+            'current' => Tab::make()
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('state', SerieState::Current)),
+            'draft' => Tab::make()
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('state', SerieState::Draft)),
+            'upcoming' => Tab::make()
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('state', SerieState::Published)),
+            'archived' => Tab::make()
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('state', SerieState::Archived)),
         ];
     }
 }

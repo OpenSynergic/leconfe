@@ -41,6 +41,7 @@ class Detail extends \Livewire\Component implements HasForms
             ->model($this->submission)
             ->schema([
                 TextInput::make('meta.title'),
+                TextInput::make('meta.subtitle'),
                 Select::make('topics')
                     ->preload()
                     ->multiple()

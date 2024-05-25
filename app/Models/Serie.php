@@ -9,38 +9,57 @@ use Illuminate\Database\Eloquent\Model;
 use Filament\Models\Contracts\HasAvatar;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use App\Models\Concerns\BelongsToConference;
+use App\Models\Enums\SerieState;
+use App\Models\Enums\SerieType;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Vite;
 
 class Serie extends Model implements HasMedia, HasAvatar, HasName
 {
     use Cachable, BelongsToConference, HasFactory, InteractsWithMedia, Metable, SoftDeletes;
 
     protected $fillable = [
+        'conference_id',
         'path',
         'title',
-        'description',
         'issn',
         'date_start',
         'date_end',
-        'active',
+        'state',
+        'type',
     ];
 
     protected $casts = [
-        'active' => 'boolean',
+        'published' => 'boolean',
+        'published_at' => 'datetime',
+        'current' => 'boolean',
         'date_start' => 'date',
         'date_end' => 'date',
+        'type' => SerieType::class,
+        'state' => SerieState::class,
     ];
 
-    public function scopeActive($query)
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
     {
-        return $query->where('active', true);
+        static::updating(function (Serie $serie) {
+            if ($serie->isDirty('state') && $serie->state == SerieState::Current){
+                static::query()
+                    ->where('conference_id', $serie->conference_id)
+                    ->where('state', SerieState::Current->value)
+                    ->where('id', '!=', $serie->id)
+                    ->update(['state' => SerieState::Archived]);
+            }
+        });
     }
 
-    public function conference() : BelongsTo
+    public function conference(): BelongsTo
     {
         return $this->belongsTo(Conference::class);
     }
@@ -55,14 +74,19 @@ class Serie extends Model implements HasMedia, HasAvatar, HasName
         return $this->hasMany(Committee::class);
     }
 
-    public function speakers() : HasMany
+    public function speakers(): HasMany
     {
         return $this->hasMany(Speaker::class);
     }
 
-    public function speakerRoles() : HasMany
+    public function speakerRoles(): HasMany
     {
         return $this->hasMany(SpeakerRole::class);
+    }
+
+    public function sponsors(): HasMany
+    {
+        return $this->hasMany(Sponsor::class);
     }
 
     public function getPanelUrl(): string
@@ -78,5 +102,35 @@ class Serie extends Model implements HasMedia, HasAvatar, HasName
     public function getFilamentName(): string
     {
         return $this->title;
+    }
+
+    public function getThumbnailUrl(): string
+    {
+        return $this->getFirstMedia('thumbnail')?->getAvailableUrl(['thumb', 'thumb-xl']) ?? Vite::asset('resources/assets/images/placeholder-vertical.jpg');
+    }
+
+    public function getHomeUrl(): string
+    {
+        return $this->active ? route('livewirePageGroup.conference.pages.home', ['conference' => $this->conference]) : '#';
+    }
+
+    public function isCurrent() : bool
+    {
+        return $this->state == SerieState::Current;
+    }
+
+    public function isDraft() : bool
+    {
+        return $this->state == SerieState::Draft;
+    }
+
+    public function isPublished() : bool
+    {
+        return $this->state == SerieState::Published;
+    }
+
+    public function isArchived() : bool
+    {
+        return $this->state == SerieState::Archived;
     }
 }

@@ -31,7 +31,6 @@ class DevelopmentSeeder extends Seeder
         $this->call(SubmissionSeeder::class);
         $this->call(CommitteeSeeder::class);
         $this->call(SpeakerSeeder::class);
-        $this->call(SerieSeeder::class);
         $this->call(UserSeeder::class);
     }
 }

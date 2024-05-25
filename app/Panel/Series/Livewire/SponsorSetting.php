@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Panel\Conference\Livewire\Forms\Conferences;
+namespace App\Panel\Series\Livewire;
 
 use App\Models\Sponsor;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;

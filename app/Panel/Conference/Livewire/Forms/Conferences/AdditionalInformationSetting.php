@@ -49,9 +49,11 @@ class AdditionalInformationSetting extends Component implements HasForms
                             ->schema([
                                 TextInput::make('title')->required(),
                                 Toggle::make('is_shown')
-                                    ->label('Display this on the front page ?'),
+                                    ->label('Display this on the front page ?')
+                                    ->default(true),
                                 TinyEditor::make('content')->required(),
-                            ]),
+                            ])
+                            ->collapsible(),
                     ]),
 
                 Actions::make([

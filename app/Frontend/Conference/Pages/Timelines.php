@@ -23,7 +23,7 @@ class Timelines extends Page
     protected function getViewData(): array
     {
         return [
-            'timelines' => Timeline::with('conference')->get(),
+            'timelines' => Timeline::query()->get(),
         ];
     }
 }
