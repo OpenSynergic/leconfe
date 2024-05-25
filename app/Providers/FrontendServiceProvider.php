@@ -38,6 +38,7 @@ class FrontendServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Blade::anonymousComponentPath(resource_path('views/frontend/website/components'), 'website');
+        Blade::anonymousComponentPath(resource_path('views/frontend/conference/components'), 'conference'); 
     }
 
     public function websitePageGroup(PageGroup $pageGroup): PageGroup

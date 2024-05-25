@@ -1,8 +1,8 @@
 <x-website::layouts.main>
     <div class="space-y-10">
         <section id="highlight-conference" class="space-y-4">
-            <div class="flex flex-col sm:flex-row flex-wrap space-y-4 sm:space-y-0 gap-4">
-                <div class="flex flex-col gap-4 flex-1">
+            <div class="flex flex-col flex-wrap gap-4 space-y-4 sm:flex-row sm:space-y-0">
+                <div class="flex flex-col flex-1 gap-4">
                     @if ($currentConference->hasMedia('cover'))
                         <div class="cf-cover">
                             <img class="w-full"
@@ -35,7 +35,7 @@
                     @endif
                     @if ($topics->isNotEmpty())
                         <div>
-                            <h2 class="cf-topics text-base font-medium mb-1">Topics :</h2>
+                            <h2 class="cf-topics mb-1 text-base font-medium">Topics :</h2>
                             <div class="flex flex-wrap w-full gap-2">
                                 @foreach ($topics as $topic)
                                     <span
@@ -47,7 +47,7 @@
                     <div>
                         <a href="{{ route('filament.conference.resources.submissions.index') }}"
                             class="btn btn-primary btn-sm">
-                            <x-heroicon-o-document-arrow-up class="h-5 w-5" />
+                            <x-heroicon-o-document-arrow-up class="w-5 h-5" />
                             Submit Now
                         </a>
                     </div>
@@ -56,15 +56,15 @@
         </section>
         @if ($currentConference->sponsors->isNotEmpty())
             <section id="conference-partner" class="space-y-4">
-                <div class="sponsors space-y-4" x-data="carousel">
+                <div class="space-y-4 sponsors" x-data="carousel">
                     <h2 class="text-xl text-center">Conference Partner</h2>
-                    <div class="sponsors-carousel flex items-center w-full gap-4" x-bind="carousel">
+                    <div class="flex items-center w-full gap-4 sponsors-carousel" x-bind="carousel">
                         <button x-on:click="toLeft"
-                            class="hidden bg-gray-400 hover:bg-gray-500 h-10 w-10 rounded-full md:flex items-center justify-center">
-                            <x-heroicon-m-chevron-left class="h-6 w-fit text-white" />
+                            class="items-center justify-center hidden w-10 h-10 bg-gray-400 rounded-full hover:bg-gray-500 md:flex">
+                            <x-heroicon-m-chevron-left class="h-6 text-white w-fit" />
                         </button>
                         <ul x-ref="slider"
-                            class="flex-1 flex w-full snap-x snap-mandatory overflow-x-scroll gap-3 py-4">
+                            class="flex flex-1 w-full gap-3 py-4 overflow-x-scroll snap-x snap-mandatory">
                             @foreach ($currentConference->sponsors as $sponsor)
                                 <li @class([
                                     'flex shrink-0 snap-start flex-col items-center justify-center',
@@ -78,8 +78,8 @@
                             @endforeach
                         </ul>
                         <button x-on:click="toRight"
-                            class="hidden bg-gray-400 hover:bg-gray-500 h-10 w-10 rounded-full md:flex items-center justify-center">
-                            <x-heroicon-m-chevron-right class="h-6 w-fit text-white" />
+                            class="items-center justify-center hidden w-10 h-10 bg-gray-400 rounded-full hover:bg-gray-500 md:flex">
+                            <x-heroicon-m-chevron-right class="h-6 text-white w-fit" />
                         </button>
                     </div>
                 </div>
@@ -88,18 +88,18 @@
 
         <section id="conference-detail-tabs" class="space-y-4">
             <div x-data="{ activeTab: 'information' }" class="bg-white">
-                <div class="border border-t-0 border-x-0 border-gray-300 flex space-x-1 sm:space-x-2 overflow-x-auto overflow-y-hidden">
+                <div class="flex space-x-1 overflow-x-auto overflow-y-hidden border border-t-0 border-gray-300 border-x-0 sm:space-x-2">
                     <button x-on:click="activeTab = 'information'"
                         :class="{ 'text-primary bg-white': activeTab === 'information', 'bg-gray-100': activeTab !== 'information' }"
-                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Information</button>
+                        class="px-4 py-2 text-sm border border-gray-300 hover:text-primary border-b-white text-nowrap">Information</button>
                     <button x-on:click="activeTab = 'participant-info'"
                         :class="{ 'text-primary bg-white': activeTab === 'participant-info', 'bg-gray-100': activeTab !== 'participant-info' }"
-                        class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">Participant Info</button>
+                        class="px-4 py-2 text-sm border border-gray-300 hover:text-primary border-b-white text-nowrap">Participant Info</button>
 
                     @foreach ($additionalInformations as $info)
                         <button x-on:click="activeTab = '{{ strtolower(str_replace(' ', '_', $info['title'])) }}'"
                             :class="{ 'text-primary bg-white': activeTab === '{{ strtolower(str_replace(' ', '_', $info['title'])) }}', 'bg-gray-100': activeTab !== '{{ strtolower(str_replace(' ', '_', $info['title'])) }}' }"
-                            class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">{{ $info['title'] }}</button>
+                            class="px-4 py-2 text-sm border border-gray-300 hover:text-primary border-b-white text-nowrap">{{ $info['title'] }}</button>
                     @endforeach
                 </div>
                 <div x-show="activeTab === 'information'" class="p-4 border border-t-0 border-gray-300 ">
@@ -134,16 +134,16 @@
                 <div x-show="activeTab === 'participant-info'" class="p-4 border border-t-0 border-gray-300 " x-cloak>
                     <article id="participant-info">
                         <p>Quota</p>
-                        <div class="overflow-x-auto py-2">
+                        <div class="py-2 overflow-x-auto">
                             <table class="text-sm text-nowrap">
                                 <tr class="py-2">
                                     <td class="pr-10">Paper</td>
                                     <td class="pr-2">:</td>
                                     <td class="pr-2">400 Papers</td>
                                     <td class="pr-2">
-                                        <span class="badge badge-primary text-xs h-6 ">355 Accepted</span>
+                                        <span class="h-6 text-xs badge badge-primary ">355 Accepted</span>
                                     </td>
-                                    <td class="pr-2"><span class="badge badge-outline text-xs border h-6 text-primary">45
+                                    <td class="pr-2"><span class="h-6 text-xs border badge badge-outline text-primary">45
                                             Available</span></td>
                                 </tr>
                                 <tr>
@@ -151,9 +151,9 @@
                                     <td>:</td>
                                     <td>60 Seats</td>
                                     <td>
-                                        <span class="badge badge-primary text-xs h-6">30 Reserved</span>
+                                        <span class="h-6 text-xs badge badge-primary">30 Reserved</span>
                                     </td>
-                                    <td><span class="badge badge-outline text-xs border h-6 text-primary">30
+                                    <td><span class="h-6 text-xs border badge badge-outline text-primary">30
                                             Available</span></td>
                                 </tr>
                             </table>
@@ -165,13 +165,12 @@
                     <div x-show="activeTab === '{{ strtolower(str_replace(' ', '_', $info['title'])) }}'"
                         class="p-4 border border-t-0 border-gray-300 " x-cloak>
                         <article id="{{ strtolower(str_replace(' ', '_', $info['title'])) }}"
-                            class="user-content overflow-x-auto">
+                            class="overflow-x-auto user-content">
                             {!! $info['content'] !!}
                         </article>
                     </div>
                 @endforeach
             </div>
-
         </section>
 
         @if ($currentSerie?->speakers()->exists())
@@ -179,7 +178,7 @@
                 <div class="flex items-center">
                     <img src="{{ Vite::asset('resources/assets/images/game-icons_public-speaker.svg') }}"
                         alt="">
-                    <h2 class="text-xl font-medium pl-2">Speakers</h2>
+                    <h2 class="pl-2 text-xl font-medium">Speakers</h2>
                 </div>
                 <div class="cf-speakers space-y-6">
                     @foreach ($currentSerie->speakerRoles as $role)
@@ -216,29 +215,36 @@
             </section>
         @endif
 
+        @if($currentProceeding)
+            <section id="current-proceeding">
+                <div class="mb-6">
+                    <x-conference::proceeding :proceeding="$currentProceeding" :title="'Current Proceeding'" />
+                </div>
+            </section>
+        @endif
 
         @if ($acceptedSubmission->isNotEmpty())
-            <section id="conference-accepted-papers" class="flex flex-col gap-y-0 space-y-4">
+            <section id="conference-accepted-papers" class="flex flex-col space-y-4 gap-y-0">
                 <div class="flex items-center">
                     <img src="{{ Vite::asset('resources/assets/images/mingcute_paper-line.svg') }}" alt="">
-                    <h2 class="text-xl font-medium pl-2">Accepted Paper List</h2>
+                    <h2 class="pl-2 text-xl font-medium">Accepted Paper List</h2>
                 </div>
-                <div class="flex w-full flex-col gap-y-5">
+                <div class="flex flex-col w-full gap-y-5">
                     @foreach ($acceptedSubmission as $submission)
                         <div class="flex flex-col sm:flex-row">
-                            <div class="w-8 flex-none hidden sm:block">
+                            <div class="flex-none hidden w-8 sm:block">
                                 <p class="text-lg font-bold">{{ $loop->index + 1 }}.</p>
                             </div>
                             <div
-                                class="flex justify-start px-0 sm:px-4 items-center sm:justify-start sm:items-start mt-4 sm:mt-0 flex-none">
-                                <img class="sm:w-32 w-24 h-auto"
+                                class="flex items-center justify-start flex-none px-0 mt-4 sm:px-4 sm:justify-start sm:items-start sm:mt-0">
+                                <img class="w-24 h-auto sm:w-32"
                                     src="{{ Vite::asset('resources/assets/images/placeholder-vertical.jpg') }}"
                                     alt="Placeholder Image">
                             </div>
-                            <div class=" py-2 flex flex-col">
+                            <div class="flex flex-col py-2 ">
                                 <a href="#"
-                                    class="text-md font-medium text-primary mb-2">{{ $submission->getMeta('title') }}</a>
-                                <a href="#" class="text-sm underline mb-2">https://doi.org/10.2121/jon.v1i01</a>
+                                    class="mb-2 font-medium text-md text-primary">{{ $submission->getMeta('title') }}</a>
+                                <a href="#" class="mb-2 text-sm underline">https://doi.org/10.2121/jon.v1i01</a>
                                 <div class="flex items-center">
                                     <img src="{{ Vite::asset('resources/assets/images/ic_baseline-people.svg') }}"
                                         alt="People Icon" class="w-5 h-5 mr-2">

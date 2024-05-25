@@ -13,6 +13,8 @@ class Tabs extends ComponentsTabs
 
     protected string|Closure $position = 'left';
 
+    protected string|Closure $verticalSpace = '';
+
     public function position(string $position): static
     {
         $position = $this->evaluate($position);
@@ -28,6 +30,23 @@ class Tabs extends ComponentsTabs
     public function getPosition(): string
     {
         return $this->position;
+    }
+
+    public function verticalSpace(string $verticalSpace): static
+    {
+        $verticalSpace = $this->evaluate($verticalSpace);
+        if (str_starts_with($verticalSpace, 'space-y-')){
+            $this->verticalSpace = $verticalSpace;
+        } else {
+            throw new \Exception('Invalid verticalSpace provided. Only "space-y-" are allowed.');
+        }
+
+        return $this;
+    }
+
+    public function getVerticalSpace(): string
+    {
+        return $this->verticalSpace;
     }
 
     public function sticky(bool|Closure $sticky = true): static

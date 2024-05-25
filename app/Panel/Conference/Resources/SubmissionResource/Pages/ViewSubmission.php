@@ -2,70 +2,71 @@
 
 namespace App\Panel\Conference\Resources\SubmissionResource\Pages;
 
+use App\Classes\Log;
+use App\Models\User;
+use App\Models\Payment;
+use Filament\Forms\Get;
+use Filament\Forms\Form;
+use App\Models\PaymentItem;
+use Illuminate\Support\Arr;
+use Squire\Models\Currency;
+use App\Models\MailTemplate;
+use Filament\Actions\Action;
+use App\Models\Enums\UserRole;
+use Filament\Infolists\Infolist;
+use App\Notifications\NewPayment;
+use App\Models\Enums\PaymentState;
+use App\Notifications\PaymentSent;
+use Filament\Actions\StaticAction;
+use Filament\Resources\Pages\Page;
+use Illuminate\Support\HtmlString;
+use Filament\Forms\Components\Grid;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Mail;
+use App\Models\Enums\SubmissionStage;
+use Filament\Forms\Components\Select;
+use App\Models\Enums\SubmissionStatus;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Textarea;
+use Awcodes\Shout\Components\ShoutEntry;
+use Filament\Forms\Components\TextInput;
+use App\Facades\Payment as FacadesPayment;
+use App\Notifications\SubmissionWithdrawn;
+use Illuminate\Contracts\Support\Htmlable;
+use App\Infolists\Components\LivewireEntry;
+use App\Notifications\PaymentStatusUpdated;
+use Filament\Forms\Components\CheckboxList;
+use Illuminate\View\Compilers\BladeCompiler;
+use App\Mail\Templates\PublishSubmissionMail;
+use Filament\Infolists\Contracts\HasInfolists;
+use Filament\Forms\Concerns\InteractsWithForms;
+use App\Notifications\SubmissionWithdrawRequested;
 use App\Actions\Submissions\AcceptWithdrawalAction;
 use App\Actions\Submissions\CancelWithdrawalAction;
 use App\Actions\Submissions\RequestWithdrawalAction;
-use App\Classes\Log;
-use App\Facades\Payment as FacadesPayment;
-use App\Infolists\Components\LivewireEntry;
 use App\Infolists\Components\VerticalTabs\Tab as Tab;
+use App\Panel\Conference\Livewire\Submissions\Editing;
+use App\Panel\Conference\Resources\SubmissionResource;
 use App\Infolists\Components\VerticalTabs\Tabs as Tabs;
-use App\Mail\Templates\PublishSubmissionMail;
-use App\Models\Enums\PaymentState;
-use App\Models\Enums\SubmissionStage;
-use App\Models\Enums\SubmissionStatus;
-use App\Models\Enums\UserRole;
-use App\Models\MailTemplate;
-use App\Models\Payment;
-use App\Models\PaymentItem;
-use App\Models\User;
-use App\Notifications\NewPayment;
-use App\Notifications\PaymentSent;
-use App\Notifications\PaymentStatusUpdated;
-use App\Notifications\SubmissionWithdrawn;
-use App\Notifications\SubmissionWithdrawRequested;
+use Filament\Infolists\Concerns\InteractsWithInfolists;
+use App\Panel\Conference\Livewire\Submissions\PeerReview;
+use Filament\Infolists\Components\Tabs as HorizontalTabs;
+use Filament\Resources\Pages\Concerns\InteractsWithRecord;
+use App\Panel\Conference\Livewire\Submissions\Forms\Detail;
+use Filament\Infolists\Components\Tabs\Tab as HorizontalTab;
 use App\Panel\Conference\Livewire\Submissions\CallforAbstract;
+use App\Panel\Conference\Livewire\Submissions\Forms\References;
+use App\Panel\Conference\Livewire\Workflows\Classes\StageManager;
+use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
+use App\Panel\Conference\Livewire\Submissions\Components\GalleyList;
+use App\Panel\Conference\Livewire\Submissions\Components\PresenterList;
+use App\Panel\Conference\Livewire\Workflows\Concerns\InteractWithTenant;
 use App\Panel\Conference\Livewire\Submissions\Components\ActivityLogList;
 use App\Panel\Conference\Livewire\Submissions\Components\ContributorList;
 use App\Panel\Conference\Livewire\Submissions\Components\Files\PresenterFiles;
 use App\Panel\Conference\Livewire\Submissions\Components\SubmissionProceeding;
-use App\Panel\Conference\Livewire\Submissions\Components\PresenterList;
-use App\Panel\Conference\Livewire\Submissions\Editing;
-use App\Panel\Conference\Livewire\Submissions\Forms\Detail;
-use App\Panel\Conference\Livewire\Submissions\Forms\References;
-use App\Panel\Conference\Livewire\Submissions\PeerReview;
-use App\Panel\Conference\Livewire\Workflows\Classes\StageManager;
-use App\Panel\Conference\Livewire\Workflows\Concerns\InteractWithTenant;
-use App\Panel\Conference\Resources\SubmissionResource;
-use Awcodes\Shout\Components\ShoutEntry;
-use Filament\Actions\Action;
-use Filament\Actions\StaticAction;
-use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Infolists\Components\Tabs as HorizontalTabs;
-use Filament\Infolists\Components\Tabs\Tab as HorizontalTab;
-use Filament\Infolists\Concerns\InteractsWithInfolists;
-use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Infolists\Infolist;
-use Filament\Resources\Pages\Concerns\InteractsWithRecord;
-use Filament\Resources\Pages\Page;
-use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\HtmlString;
-use Illuminate\View\Compilers\BladeCompiler;
-use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
-use Squire\Models\Currency;
 
 class ViewSubmission extends Page implements HasForms, HasInfolists
 {
@@ -265,14 +266,32 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                 ]),
                         ])
                 ),
-            Action::make('publish')
-                ->color('success')
+            Action::make('view')
+                ->icon('heroicon-o-eye')
+                ->color('primary')
                 ->outlined()
+                ->url(route('livewirePageGroup.conference.pages.submission-detail', ['submissionId' => $this->record->id]), true)
+                ->label(function () {
+                    if ($this->record->isPublished()) {
+                        return 'View';
+                    }
+
+                    if (StageManager::editing()->isStageOpen() && auth()->user()->can('editing', $this->record)) {
+                        return 'Preview';
+                    }
+                })
+                ->visible(
+                    fn (): bool => ($this->record->isPublished() 
+                        || (StageManager::editing()->isStageOpen() && auth()->user()->can('editing', $this->record)))
+                        && $this->record->proceeding 
+                ),
+            Action::make('publish')
+                ->color('primary')
+                ->label('Publish Now')
                 ->disabled(
                     fn (): bool => ! StageManager::editing()->isStageOpen()
                 )
                 ->authorize('publish', $this->record)
-                ->icon('iconpark-check')
                 ->when(
                     fn () => $this->record->hasPaymentProcess() && ! $this->record->payment?->isCompleted(),
                     fn (Action $action): Action => $action
@@ -539,6 +558,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                         HorizontalTab::make('Workflow')
                             ->schema([
                                 Tabs::make()
+                                    ->verticalSpace('space-y-2')
                                     ->activeTab(function () {
                                         return match ($this->record->stage) {
                                             SubmissionStage::CallforAbstract => 1,
@@ -623,6 +643,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                     )
                                     ->content("You can't edit this submission because it is already published."),
                                 Tabs::make()
+                                    ->verticalSpace('space-y-2')
                                     // ->persistTabInQueryString('ptab') // ptab shorten of publication-tab
                                     ->tabs([
                                         Tab::make('Detail')
@@ -647,6 +668,15 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                             ->schema([
                                                 LivewireEntry::make('presenters')
                                                     ->livewire(PresenterList::class, [
+                                                        'submission' => $this->record,
+                                                        'viewOnly' => ! auth()->user()->can('editing', $this->record),
+                                                    ]),
+                                            ]),
+                                        Tab::make('Galleys')
+                                            ->icon('heroicon-o-document-text')
+                                            ->schema([
+                                                LivewireEntry::make('galleys')
+                                                    ->livewire(GalleyList::class, [
                                                         'submission' => $this->record,
                                                         'viewOnly' => ! auth()->user()->can('editing', $this->record),
                                                     ]),

@@ -2,30 +2,21 @@
 
 namespace App\Panel\Conference\Resources;
 
-use App\Facades\Settings;
-use App\Panel\Conference\Resources\ProceedingResource\Pages;
-use App\Panel\Conference\Resources\ProceedingResource\RelationManagers;
-use App\Models\Proceeding;
-use App\Tables\Columns\IndexColumn;
-use Filament\Forms;
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Support\Enums\Alignment;
-use Filament\Support\Enums\MaxWidth;
 use Filament\Tables;
-use Filament\Tables\Columns\BadgeColumn;
-use Filament\Tables\Columns\Layout\Split;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Livewire\Component;
+use Filament\Forms\Form;
+use App\Facades\Settings;
+use App\Models\Proceeding;
+use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use App\Tables\Columns\IndexColumn;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use App\Panel\Conference\Resources\ProceedingResource\Pages;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProceedingResource extends Resource
 {
@@ -34,6 +25,13 @@ class ProceedingResource extends Resource
     protected static ?int $navigationSort = 2;
 
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
+
+    public static function getEloquentQuery(): Builder
+    {
+        return static::getModel()::query()
+            ->orderBy('order_column')
+            ->withCount('submissions');
+    }
 
     public static function form(Form $form): Form
     {
@@ -70,6 +68,7 @@ class ProceedingResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->reorderable('order_column')
             ->columns([
                 IndexColumn::make('no'),
                 TextColumn::make('title')
@@ -95,7 +94,8 @@ class ProceedingResource extends Resource
                     Tables\Actions\EditAction::make()
                         ->modalWidth('xl'),
                     Tables\Actions\Action::make('preview')
-                        ->icon('heroicon-o-eye'),
+                        ->icon('heroicon-o-eye')
+                        ->url(fn (Proceeding $record) => route('livewirePageGroup.conference.pages.proceeding-detail', [$record->id]), true),
                     Tables\Actions\Action::make('publish')
                         ->requiresConfirmation()
                         ->icon('heroicon-o-arrow-up-tray')
@@ -108,6 +108,7 @@ class ProceedingResource extends Resource
                         ->action(fn (Proceeding $record) => $record->unpublish()),
                     Tables\Actions\Action::make('set_as_current')
                         ->requiresConfirmation()
+                        ->icon('heroicon-s-arrow-up-circle')
                         ->visible(fn (Proceeding $record) => $record->published && !$record->current)
                         ->action(fn (Proceeding $record) => $record->setAsCurrent()),
                     Tables\Actions\DeleteAction::make(),

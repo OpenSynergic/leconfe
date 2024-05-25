@@ -13,7 +13,7 @@ class Settings
         return Setting::updateOrCreate(['conference_id' => app()->getCurrentConferenceId(), 'key' => $key], ['value' => $value, 'type' => gettype($value)]);
     }
 
-    public function get($key)
+    public static function get($key)
     {
         if ($setting = Setting::where('conference_id', app()->getCurrentConferenceId())->where('key', $key)->first()) {
             return $setting?->value;

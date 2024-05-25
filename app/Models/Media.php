@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Constants\SubmissionFileCategory;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Kra8\Snowflake\HasShortflakePrimary;

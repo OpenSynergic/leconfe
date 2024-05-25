@@ -29,9 +29,16 @@ class Home extends Page
             fn ($tab) => $tab['is_shown'] ?? false
         );
 
+        $currentProceeding = app()->getCurrentConference()
+            ->proceedings()
+            ->published()
+            ->current()
+            ->first();
+
         $currentSerie = app()->getCurrentSerie();
         $currentSerie?->load(['speakerRoles.speakers']);
         return [
+            'currentProceeding' => $currentProceeding,
             'currentSerie' => $currentSerie,
             'announcements' => Announcement::query()->get(),
             'acceptedSubmission' => app()->getCurrentConference()->submission()->published()->get(),

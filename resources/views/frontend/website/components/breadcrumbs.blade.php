@@ -3,7 +3,7 @@
 ])
 
 @if(!empty($breadcrumbs))
-<div {{ $attributes->class(['breadcrumbs text-xs bg-gray-200 p-2 ps-4 rounded-md']) }}>
+<div {{ $attributes->class(['breadcrumbs text-sm bg-gray-50 px-2 py-4 ps-4 rounded-md']) }}>
     <ul>
         @foreach ($breadcrumbs as $url => $label)
         <li>
@@ -13,6 +13,9 @@
                 class="link link-hover link-primary"
                 {{-- wire:navigate --}}
             >
+                @if($label == 'Home')
+                    @svg('heroicon-m-home', 'w-4 h-4 my-auto mr-1')
+                @endif
                 {{ $label }}
             </x-website::link>
             @else
