@@ -1,5 +1,4 @@
 @use('App\Constants\SubmissionFileCategory')
-@use('App\Classes\Settings')
 @use('App\Models\Enums\SubmissionStatus')
 
 @php

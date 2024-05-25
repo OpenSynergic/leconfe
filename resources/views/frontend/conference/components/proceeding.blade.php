@@ -1,4 +1,3 @@
-@use('App\Classes\Settings')
 @use('App\Models\Enums\SubmissionStatus')
 
 @props([
@@ -26,7 +25,7 @@
                     {{ $proceeding->description }}
                 </div>
                 <div class="text-sm">
-                    <span class="font-semibold">Published: </span> {{ $proceeding->published_at ? $proceeding->published_at->format(Settings::get('format_date')) : '-' }}
+                    <span class="font-semibold">Published: </span> {{ $proceeding->published_at ? $proceeding->published_at->format(Setting::get('format_date')) : '-' }}
                 </div>
             </div>
         </div>
