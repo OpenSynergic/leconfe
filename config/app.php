@@ -222,9 +222,8 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
-        'Setting' => Akaunting\Setting\Facade::class,
         'MetaTag' => App\Facades\MetaTag::class,
-        'Settings' => App\Facades\Settings::class,
+        'Setting' => App\Facades\Setting::class,
     ])->toArray(),
 
     'filament' => [

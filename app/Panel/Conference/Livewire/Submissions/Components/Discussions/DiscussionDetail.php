@@ -2,7 +2,7 @@
 
 namespace App\Panel\Conference\Livewire\Submissions\Components\Discussions;
 
-use App\Facades\Settings;
+use App\Facades\Setting;
 use App\Models\DiscussionTopic;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -48,7 +48,7 @@ class DiscussionDetail extends \Livewire\Component implements HasForms, HasTable
                         ->height(50),
                     Stack::make([
                         TextColumn::make('user.fullName')
-                            ->description(fn ($record) => $record->created_at->format(Settings::get('format_date')))
+                            ->description(fn ($record) => $record->created_at->format(Setting::get('format_date')))
                             ->label('From'),
                     ]),
                 ]),

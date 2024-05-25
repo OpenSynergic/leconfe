@@ -5,7 +5,7 @@ namespace App\Panel\Conference\Resources;
 use Filament\Tables;
 use Livewire\Component;
 use Filament\Forms\Form;
-use App\Facades\Settings;
+use App\Facades\Setting;
 use App\Models\Proceeding;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
@@ -84,7 +84,7 @@ class ProceedingResource extends Resource
                 TextColumn::make('published_at')
                     ->sortable()
                     ->hidden(fn(Component $livewire) => $livewire->activeTab === 'future')
-                    ->date(Settings::get('format_date'))
+                    ->date(Setting::get('format_date'))
             ])
             ->filters([
                 //

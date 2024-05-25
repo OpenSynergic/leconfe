@@ -46,7 +46,7 @@
             Switch Conference
         </div>
         <div class="max-h-64 overflow-y-scroll">
-        @foreach (App\Models\Conference::latest()->get() as $conference)
+        @foreach (App\Models\Conference::with(['media'])->latest()->get() as $conference)
             <x-filament::dropdown.list.item
                 :href="$conference->getPanelUrl()"
                 :icon="filament()->getTenantAvatarUrl($conference)"

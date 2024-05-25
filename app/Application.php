@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Actions\Site\SiteCreateAction;
-use App\Facades\Settings;
 use App\Models\Announcement;
 use App\Models\AuthorRole;
 use App\Models\Block;
@@ -37,6 +36,8 @@ class Application extends LaravelApplication
     public const CONTEXT_WEBSITE = 0;
 
     protected ?int $currentConferenceId = null;
+
+    protected ?Site $site = null;
 
     protected ?Conference $currentConference = null;
 
@@ -168,13 +169,17 @@ class Application extends LaravelApplication
 
     public function getSite(): Site
     {
-        return Site::getSite() ?? SiteCreateAction::run();
+        if (!$this->site) {
+            $this->site = Site::getSite() ?? SiteCreateAction::run();
+        }
+
+        return $this->site;
     }
 
     public function isReportingErrors(): bool
     {
         try {
-            if ($this->isProduction() && !$this->hasDebugModeEnabled() && Settings::set('send-error-report', true)) {
+            if ($this->isProduction() && !$this->hasDebugModeEnabled() && Setting::set('send_error_report', true)) {
                 return true;
             }
         } catch (\Throwable $th) {

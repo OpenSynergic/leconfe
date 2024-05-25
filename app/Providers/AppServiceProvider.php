@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Application;
+use App\Classes\Setting;
 use App\Facades\SidebarFacade;
 use App\Models\Serie;
 use Livewire\Livewire;
@@ -45,6 +46,11 @@ class AppServiceProvider extends ServiceProvider
             return new DOIManager;
         });
 
+
+        $this->app->bind(Setting::class, function ($app) {
+            return new Setting();
+        });
+
         // Use a custom URL generator to accomodate multi context.
         // This implementation is copied from Illuminate\Routing\RoutingServiceProvider::registerUrlGenerator
         $this->app->singleton('url', function ($app) {
@@ -67,9 +73,6 @@ class AppServiceProvider extends ServiceProvider
             );
         });
 
-        $this->app->bind('Settings', function ($app) {
-            return new Settings();
-        });
     }
 
     /**
@@ -184,6 +187,11 @@ class AppServiceProvider extends ServiceProvider
 
             // Detect serie from URL path when conference is set
             if ($conference) {
+
+                // Eager load conference relations
+                $conference->load(['media', 'meta']);
+
+
                 if(isset($pathInfos[3]) && !blank($pathInfos[3])){
                     $serie = Serie::where('path', $pathInfos[3])->first();
                 }

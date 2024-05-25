@@ -166,4 +166,18 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
     {
         return $this->getFirstMedia('thumbnail')?->getAvailableUrl(['thumb', 'thumb-xl']) ?? Vite::asset('resources/assets/images/placeholder-vertical.jpg');
     }
+
+    protected function getAllDefaultMeta(): array
+    {
+        return [
+            'settings_allow_registration' => true,
+            'settings_must_verify_email' => false,
+            'settings_select_format_date' => 'j F Y',
+            'settings_format_date' => 'j F Y',
+            'settings_select_format_time' => 'H:i',
+            'settings_format_time' => 'H:i',
+            'page_footer' => view('frontend.examples.footer')->render(),
+            'workflow.payment.supported_currencies' => ['usd'],
+        ];
+    }
 }

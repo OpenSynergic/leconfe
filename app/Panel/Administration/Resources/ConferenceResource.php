@@ -3,7 +3,7 @@
 namespace App\Panel\Administration\Resources;
 
 use App\Actions\Conferences\ConferenceUpdateAction;
-use App\Facades\Settings;
+use App\Facades\Setting;
 use App\Models\Conference;
 use App\Models\Enums\SerieType;
 use App\Panel\Administration\Resources\ConferenceResource\Pages;

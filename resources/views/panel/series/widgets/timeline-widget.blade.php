@@ -8,7 +8,7 @@
                 @foreach ($timeline as $timelines)
                     <div class="timeline py-2 first:pt-0 last:pb-0">
                         <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-base font-semibold text-gray-900 dark:text-white">{{ $timelines->date->format(Settings::get('format_date')) }}</h3>
+                            <h3 class="text-base font-semibold text-gray-900 dark:text-white">{{ $timelines->date->format(Setting::get('format_date')) }}</h3>
                             <time
                                 class="text-sm font-normal leading-none text-gray-400 dark:text-gray-500"> {{ $timelines->title }}</time>
                         </div>

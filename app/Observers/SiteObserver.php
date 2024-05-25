@@ -91,7 +91,6 @@ class SiteObserver
             ],
         ]);
 
-
         $role = Role::firstOrCreate(['name' => UserRole::Admin->value]);
 
         RoleAssignDefaultPermissions::run($role);

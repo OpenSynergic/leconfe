@@ -11,6 +11,7 @@ use App\Models\Enums\UserRole;
 use Filament\Facades\Filament;
 use Livewire\Attributes\Title;
 use App\Actions\User\UserCreateAction;
+use App\Facades\Setting;
 use Illuminate\Auth\Events\Registered;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
@@ -47,6 +48,8 @@ class Register extends Page
         if (Filament::auth()->check()) {
             $this->redirect($this->getRedirectUrl(), navigate: false);
         }
+
+        abort_unless(Setting::get('allow_registration'), 403);
     }
 
     public function rules()

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Facades\Settings;
+use App\Facades\Setting;
 use Spatie\MailTemplates\Models\MailTemplate as BaseMailTemplate;
 
 class MailTemplate extends BaseMailTemplate
@@ -13,8 +13,8 @@ class MailTemplate extends BaseMailTemplate
     {
         return view('mail.template', [
             'body' => '{{{ body }}}',
-            'header' => Settings::get('mail_header'),
-            'footer' => Settings::get('mail_footer'),
+            'header' => Setting::get('mail_header'),
+            'footer' => Setting::get('mail_footer'),
         ])->render();
     }
 

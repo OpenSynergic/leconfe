@@ -8,7 +8,7 @@
             </div>
         @endcan
         <div class="text-xs text-gray-500 font-medium">
-            {{ $this->announcement->created_at->format(Settings::get('format_date')) }}</div>
+            {{ $this->announcement->created_at->format(Setting::get('format_date')) }}</div>
         <h1 class="card-title">{{ $this->announcement->title }}</h1>
         <div class="announcement-information">
             @php

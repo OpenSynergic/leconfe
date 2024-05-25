@@ -5,7 +5,7 @@ namespace App\Panel\Conference\Resources;
 use App\Actions\User\UserDeleteAction;
 use App\Actions\User\UserMailAction;
 use App\Actions\User\UserUpdateAction;
-use App\Facades\Settings;
+use App\Facades\Setting;
 use App\Models\Enums\UserRole;
 use App\Models\User;
 use App\Panel\Conference\Livewire\Forms\Conferences\ContributorForm;
@@ -118,7 +118,7 @@ class UserResource extends Resource
                                     ->content(function (?User $record): ?string {
                                         $ban = $record?->bans->first();
 
-                                        return $ban?->created_at?->format(Settings::get('format_date')) ?? '-';
+                                        return $ban?->created_at?->format(Setting::get('format_date')) ?? '-';
                                     }),
                                 Forms\Components\Placeholder::make('disabled_until')
                                     ->visible(fn (?User $record) => $record?->isBanned())
@@ -126,7 +126,7 @@ class UserResource extends Resource
                                     ->content(function (?User $record): ?string {
                                         $ban = $record?->bans->first();
 
-                                        return $ban?->expired_at?->format(Settings::get('format_date')) ?? '-';
+                                        return $ban?->expired_at?->format(Setting::get('format_date')) ?? '-';
                                     }),
 
                             ]),
@@ -211,7 +211,7 @@ class UserResource extends Resource
 
                                 $bannedUntil = $ban->expired_at;
 
-                                return 'Disabled' . ($bannedUntil ? " until {$bannedUntil->format(Settings::get('format_date'))}" : '');
+                                return 'Disabled' . ($bannedUntil ? " until {$bannedUntil->format(Setting::get('format_date'))}" : '');
                             })
                             ->color('danger')
                             ->badge(),

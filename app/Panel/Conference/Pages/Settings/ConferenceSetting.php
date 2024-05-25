@@ -5,6 +5,8 @@ namespace App\Panel\Conference\Pages\Settings;
 use App\Infolists\Components\LivewireEntry;
 use App\Infolists\Components\VerticalTabs as InfolistsVerticalTabs;
 use App\Panel\Administration\Livewire\SidebarSetting;
+use App\Panel\Conference\Livewire\AccessSetting;
+use App\Panel\Conference\Livewire\DateAndTimeSetting;
 use App\Panel\Conference\Livewire\Forms\Conferences\AdditionalInformationSetting;
 use App\Panel\Conference\Livewire\Forms\Conferences\ContactSetting;
 use App\Panel\Conference\Livewire\Forms\Conferences\InformationSetting;
@@ -109,6 +111,26 @@ class ConferenceSetting extends Page implements HasForms, HasInfolists
                                             ->schema([
                                                 LivewireEntry::make('navigation-menu-setting')
                                                     ->livewire(NavigationMenuSetting::class),
+                                            ]),
+                                    ]),
+                            ]),
+                        Tabs\Tab::make('System')
+                            ->schema([
+                                InfolistsVerticalTabs\Tabs::make()
+                                    ->tabs([
+                                        InfolistsVerticalTabs\Tab::make('Access Options')
+                                            ->icon('heroicon-o-information-circle')
+                                            ->schema([
+                                                LivewireEntry::make('access_setting')
+                                                    ->livewire(AccessSetting::class)
+                                                    ->lazy(),
+                                            ]),
+                                        InfolistsVerticalTabs\Tab::make('Date & Time')
+                                            ->icon('heroicon-o-clock')
+                                            ->schema([
+                                                LivewireEntry::make('date_and_time')
+                                                    ->livewire(DateAndTimeSetting::class)
+                                                    ->lazy(),
                                             ]),
                                     ]),
                             ]),

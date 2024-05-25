@@ -3,7 +3,7 @@
         <div class="card-body space-y-2">
             <x-website::breadcrumbs :breadcrumbs="$this->getBreadcrumbs()" />
             <h2 class="card-title">{{ $this->getTitle() }}</h2>
-            @if (Settings::get('allow_registration'))
+            @if (Setting::get('allow_registration'))
                 <form wire:submit='register' class="space-y-4">
                     <div class="grid sm:grid-cols-6 gap-4">
                         <div class="form-control sm:col-span-3 gap-2">

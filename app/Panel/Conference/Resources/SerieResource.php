@@ -4,7 +4,7 @@ namespace App\Panel\Conference\Resources;
 
 use App\Actions\Series\SerieSetAsActiveAction;
 use App\Actions\Series\SerieSetAsCurrentAction;
-use App\Facades\Settings;
+use App\Facades\Setting;
 use App\Models\Enums\SerieState;
 use App\Models\Enums\SerieType;
 use App\Models\Serie;
@@ -90,9 +90,9 @@ class SerieResource extends Resource
                     ->wrap()
                     ->wrapHeader(),
                 TextColumn::make('date_start')
-                    ->date(Settings::get('format_date')),
+                    ->date(Setting::get('format_date')),
                 TextColumn::make('date_end')
-                    ->date(Settings::get('format_date')),
+                    ->date(Setting::get('format_date')),
                 
             ])
             ->filters([

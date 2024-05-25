@@ -2,7 +2,7 @@
 
 namespace App\Frontend\Website\Pages;
 
-use App\Facades\Settings;
+use App\Facades\Setting;
 use Livewire\Attributes\Title;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
@@ -16,7 +16,7 @@ class EmailVerification extends Page
 
     public function mount()
     {
-        if (! Settings::get('must_verify_email')) {
+        if (! Setting::get('must_verify_email')) {
             return redirect()->route('filament.panel.tenant');
         }
 

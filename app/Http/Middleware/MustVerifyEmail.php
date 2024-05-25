@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Facades\Settings;
+use App\Facades\Setting;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,7 +16,7 @@ class MustVerifyEmail
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! Settings::get('must_verify_email')) {
+        if (! Setting::get('must_verify_email')) {
             return $next($request);
         }
 

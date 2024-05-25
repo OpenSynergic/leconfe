@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Panel\Administration\Livewire;
+namespace App\Panel\Conference\Livewire;
 
+use App\Actions\Conferences\ConferenceUpdateAction;
 use App\Actions\Settings\SettingUpdateAction;
 use Livewire\Component;
 use Filament\Forms\Form;
 use App\Actions\Site\SiteUpdateAction;
+use App\Facades\Setting;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Components\Checkbox;
-use App\Facades\Settings;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Concerns\InteractsWithForms;
 
@@ -22,12 +23,12 @@ class AccessSetting extends Component implements HasForms
 
     public function mount()
     {
-        $this->form->fill(Settings::all());
+        $this->form->fill(Setting::all());
     }
 
     public function render()
     {
-        return view('panel.administration.livewire.form');
+        return view('panel.conference.livewire.form');
     }
 
     public function form(Form $form): Form
@@ -52,7 +53,8 @@ class AccessSetting extends Component implements HasForms
                         ->action(function (Action $action) {
                             $formData = $this->form->getState();
                             try {
-                                SettingUpdateAction::run($formData);
+                                Setting::update($formData);
+
                                 $action->sendSuccessNotification();
                             } catch (\Throwable $th) {
                                 $action->failure();
