@@ -50,7 +50,6 @@ class SubmissionProceeding extends \Livewire\Component implements HasForms, HasI
             ->schema([
                 TextEntry::make('id')
                     ->label('Proceeding')
-                    // ->url(fn(Submission $record) => $record->proceeding && route('filament.conference.resources.proceedings.view', ['record' => $record->proceeding]))
                     ->html()
                     ->getStateUsing(function (Submission $record) {
                         if ($record->proceeding){
@@ -74,6 +73,7 @@ class SubmissionProceeding extends \Livewire\Component implements HasForms, HasI
                                 Select::make('proceeding_id')
                                     ->label('Proceeding')
                                     ->placeholder('None')
+                                    ->formatStateUsing(fn () => $this->submission->proceeding_id ?? null)
                                     // ->native(false)
                                     // ->searchable()
                                     ->options(
@@ -91,8 +91,6 @@ class SubmissionProceeding extends \Livewire\Component implements HasForms, HasI
                             ])
                             ->action(fn (Submission $record, array $data) => $data['proceeding_id'] ? $record->assignProceeding($data['proceeding_id']) : $record->unassignProceeding())
                     ]),
-                    // BladeEntry::make('form')
-                    //     ->blade('{{ $this->form }}')
             ]);
     }
 
