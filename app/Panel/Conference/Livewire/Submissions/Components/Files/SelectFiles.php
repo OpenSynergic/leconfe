@@ -71,7 +71,7 @@ final class SelectFiles extends SubmissionFilesTable
                 ->action(function (Collection $records, BulkAction $action) {
                     foreach ($records as $record) {
                         $clonedMedia = $record->media->copy(
-                            $record->submission,
+                            $this->submission,
                             $this->targetCategory,
                             'private-files'
                         );

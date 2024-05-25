@@ -18,6 +18,6 @@ class Proceedings extends BaseNavigationItemType
 
     public static function getUrl(NavigationMenuItem $navigationMenuItem): string
     {
-        return app()->getCurrentConferenceId() ? route('livewirePageGroup.conference.pages.proceeding') : '#';
+        return app()->getCurrentConferenceId() ? route('livewirePageGroup.conference.pages.proceedings') : '#';
     }
 }

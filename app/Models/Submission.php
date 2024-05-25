@@ -176,6 +176,11 @@ class Submission extends Model implements HasMedia, HasPayment, Sortable
         return $this->hasMany(SubmissionFile::class);
     }
 
+    public function galleys()
+    {
+        return $this->hasMany(SubmissionGalley::class);
+    }
+
     public function discussionTopics()
     {
         return $this->hasMany(DiscussionTopic::class);

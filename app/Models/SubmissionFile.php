@@ -62,6 +62,10 @@ class SubmissionFile extends Model
             if ($record->category == SubmissionFileCategory::PAPER_FILES) {
                 $record->reviewerAssginedFiles()->delete();
             }
+
+            if ($record->category == SubmissionFileCategory::GALLEY_FILES) {
+                $record->submissionGalley()->delete();
+            }
         });
 
         static::deleted(function (SubmissionFile $deletedModel) {
@@ -94,5 +98,10 @@ class SubmissionFile extends Model
     public function reviewerAssginedFiles(): HasMany
     {
         return $this->hasMany(ReviewerAssignedFile::class);
+    }
+
+    public function submissionGalley()
+    {
+        return $this->hasOne(SubmissionGalley::class);
     }
 }

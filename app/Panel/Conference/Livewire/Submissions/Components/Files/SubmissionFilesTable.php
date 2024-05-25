@@ -147,6 +147,7 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasFo
         return TableAction::make('upload')
             ->icon('iconpark-upload')
             ->label('Upload Files')
+            ->outlined()
             ->hidden(fn (): bool => $this->isViewOnly())
             ->modalWidth('xl')
             ->form(
@@ -219,7 +220,11 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasFo
 
     public function tableQuery(): Builder
     {
-        return $this->submission->submissionFiles()->where('category', $this->category)->getQuery();
+        return $this->submission
+            ->submissionFiles()
+            ->with(['media'])
+            ->where('category', $this->category)
+            ->getQuery();
     }
 
     public function tableDescription(): string

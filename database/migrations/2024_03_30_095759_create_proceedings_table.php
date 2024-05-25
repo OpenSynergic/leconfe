@@ -25,6 +25,7 @@ return new class extends Migration
             $table->boolean('published')->default(false);
             $table->timestamp('published_at')->nullable();
             $table->boolean('current')->default(false);
+            $table->unsignedInteger('order_column')->nullable();
             $table->timestamps();
         });
     }

@@ -153,6 +153,7 @@ class DiscussionTopic extends \Livewire\Component implements HasForms, HasTable
                 Action::make('create-topic')
                     ->authorize('DiscussionTopic:create')
                     ->icon('lineawesome-plus-solid')
+                    ->outlined()
                     ->label('Topic')
                     ->modalWidth('xl')
                     ->form($this->getFormSchema())

@@ -2,6 +2,7 @@
 
 namespace App\Panel\Conference\Resources\ProceedingResource\Pages;
 
+use App\Models\Proceeding;
 use App\Panel\Conference\Resources\ProceedingResource;
 use Filament\Actions;
 use Filament\Resources\Components\Tab;
@@ -26,10 +27,14 @@ class ManageProceedings extends ManageRecords
         return [
             'future' => Tab::make()
                 ->label('Future Proceedings')
-                ->modifyQueryUsing(fn (Builder $query) => $query->published(false)),
+                ->modifyQueryUsing(fn (Builder $query) => $query->published(false))
+                ->badge(fn () => Proceeding::published(false)->count())
+                ->badgeColor(fn () => Proceeding::published(false)->count() ? 'primary' : 'gray'),
             'back' => Tab::make()
                 ->label('Back Proceedings')
-                ->modifyQueryUsing(fn (Builder $query) => $query->published()),
+                ->modifyQueryUsing(fn (Builder $query) => $query->published())
+                ->badge(fn () => Proceeding::published()->count())
+                ->badgeColor(fn () => Proceeding::published()->count() ? 'primary' : 'gray'),
         ];
     }
 }

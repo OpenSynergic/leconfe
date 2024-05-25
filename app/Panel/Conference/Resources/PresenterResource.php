@@ -119,8 +119,7 @@ class PresenterResource extends Resource
                                 ->extraAttributes([
                                     'class' => 'text-xs',
                                 ])
-                                ->color('gray')
-                                ,
+                                ->color('gray'),
                             TextColumn::make('email')
                                 ->size('xs')
                                 ->extraAttributes([
@@ -131,8 +130,8 @@ class PresenterResource extends Resource
                                 ->icon('heroicon-o-envelope')
                                 ->alignStart(),
                         ])
-                        ->extraAttributes([
-                            'class' => 'w-fit',
+                        ->extraAttributes(fn (Model $record) => [
+                            'class' => $record->getMeta('affiliation') ? 'w-fit' : 'w-fit !gap-0'
                         ]),
                         Panel::make([
                             TextColumn::make('notes')
