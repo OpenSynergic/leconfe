@@ -14,7 +14,7 @@
                 {{-- wire:navigate --}}
             >
                 @if($label == 'Home')
-                    @svg('heroicon-m-home', 'w-4 h-4 my-auto mr-1')
+                    @svg('heroicon-m-home', 'w-4 h-4 -mt-[0.07rem] mr-0.5')
                 @endif
                 {{ $label }}
             </x-website::link>
