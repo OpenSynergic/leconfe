@@ -22,7 +22,6 @@ class Home extends Page
 
     public function mount()
     {
-
     }
 
     protected function getViewData(): array
@@ -41,15 +40,11 @@ class Home extends Page
             ->current()
             ->first();
 
-        $currentProceeding = app()->getCurrentConference()
-            ->proceedings()
-            ->published()
-            ->current()
-            ->first();
-
         $currentSerie = app()->getCurrentSerie();
-        $currentSerie?->load(['speakerRoles.speakers']);
-        
+        $currentSerie?->load([
+            'speakerRoles.speakers' => ['meta'],
+        ]);
+
         return [
             'currentProceeding' => $currentProceeding,
             'currentSerie' => $currentSerie,

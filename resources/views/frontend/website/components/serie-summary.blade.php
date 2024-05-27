@@ -1,8 +1,10 @@
 @props(['serie', 'header' => 'h2'])
 <div class="serie-summary sm:flex gap-4">
+    @if($serie->hasThumbnail())
     <div class="cover max-w-40">
         <img src="{{ $serie->getThumbnailUrl() }}" alt="{{ $serie->title }}">
     </div>
+    @endif
     <div class="information flex-1 space-y-2">
         @if ($serie->date_start)
             <div class="flex items-center text-sm gap-2 text-gray-600">
@@ -19,7 +21,7 @@
         </{{ $header }}>
 
         @if ($serie->getMeta('description'))
-            <p class="serie-description line-clamp-4 text-sm">{{ $serie->getMeta('description') }}</p>
+            <p class="serie-description text-sm">{{ $serie->getMeta('description') }}</p>
         @endif
 
         <a href="{{ $serie->getHomeUrl() }}" class="btn btn-primary btn-sm">Check Conference</a>

@@ -11,6 +11,7 @@ use Spatie\EloquentSortable\Sortable;
 use Database\Factories\SpeakerFactory;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Models\Contracts\HasAvatar;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Notifications\Notifiable;
 use Kra8\Snowflake\HasShortflakePrimary;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,7 +25,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Speaker extends Model implements HasAvatar, HasMedia, Sortable
 {
-    use BelongsToSerie, HasFactory, HasShortflakePrimary, Metable, Notifiable, SortableTrait, InteractsWithMedia;
+    use BelongsToSerie, Cachable, HasFactory, HasShortflakePrimary, Metable, Notifiable, SortableTrait, InteractsWithMedia;
 
     protected $table = 'speakers';
 
@@ -61,11 +62,6 @@ class Speaker extends Model implements HasAvatar, HasMedia, Sortable
         $this->addMediaConversion('thumb-xl')
             ->keepOriginalImageFormat()
             ->width(800);
-    }
-
-    protected function getMetaClassName(): string
-    {
-        return SpeakerMeta::class;
     }
 
     public function scopeEmail(Builder $query, string $email)

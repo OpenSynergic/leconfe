@@ -26,17 +26,24 @@ class Home extends Page
     {
         $serieQuery = Serie::query()
             ->withoutGlobalScopes()
-            ->with(['conference', 'media']);
+            ->with(['conference', 'media', 'meta']);
         
         $currentSeries = (clone $serieQuery)
-        ->paginate(6, pageName: 'currentSeriesPage');
+            ->state(SerieState::Current)
+            ->paginate(6, pageName: 'currentSeriesPage');
 
-        // $upcomingSeries = (clone $serieQuery)
-        //     ->where()
-        // dd(SerieState::array());
+        $upcomingSeries = (clone $serieQuery)
+            ->state(SerieState::Published)
+            ->paginate(6, pageName: 'upcomingSeriesPage');
+
+        $allSeries = (clone $serieQuery)
+            ->whereNot('state', SerieState::Draft)
+            ->paginate(6, pageName: 'allSeriesPage');
 
         return [
             'currentSeries' => $currentSeries,
+            'upcomingSeries' => $upcomingSeries,
+            'allSeries' => $allSeries,
         ];
     }
 
