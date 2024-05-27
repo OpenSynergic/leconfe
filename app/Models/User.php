@@ -143,6 +143,21 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia,
         return $this->hasMany(Submission::class);
     }
 
+    public function submissionsAsParticipant()
+    {
+        return $this->belongsToMany(Submission::class, 'submission_has_participants', 'user_id', 'submission_id');
+    }
+
+    public function scopeEditorSubmission($query, Submission $submission)
+    {
+        $editorRoleId = Role::where('name', UserRole::Editor->value)->first()->getKey();
+
+        return $query->whereHas('submissionsAsParticipant', function ($query) use ($submission, $editorRoleId) {
+            $query->where('role_id', $editorRoleId)
+            ->where('submission_id', $submission->getKey());
+        });
+    }
+
     /**
      * Determine if the model may perform the given permission.
      *
