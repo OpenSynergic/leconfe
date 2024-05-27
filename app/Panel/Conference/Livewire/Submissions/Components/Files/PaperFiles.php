@@ -51,11 +51,10 @@ class PaperFiles extends SubmissionFilesTable
         if ($submissionFile) {
             $editors = User::editorSubmission($this->submission)->get();
 
-            foreach ($editors as $user) {
-                Mail::to($user->email)->send(
-                    new NewPaperUploadedMail($submissionFile)
-                );
-            }
+            $emails = $editors->pluck('email');
+            Mail::send(new NewPaperUploadedMail($submissionFile), [], function ($message) use ($emails) {
+                $message->to($emails);
+            });
         }
 
         $action->success();
