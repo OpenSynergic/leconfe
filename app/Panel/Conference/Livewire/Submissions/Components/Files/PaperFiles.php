@@ -2,8 +2,14 @@
 
 namespace App\Panel\Conference\Livewire\Submissions\Components\Files;
 
+use App\Actions\SubmissionFiles\UploadSubmissionFileAction;
 use App\Constants\SubmissionFileCategory;
+use App\Mail\Templates\NewPaperUploadedMail;
+use App\Models\SubmissionFileType;
+use App\Models\User;
 use Awcodes\Shout\Components\Shout;
+use Filament\Tables\Actions\Action as TableAction;
+use Illuminate\Support\Facades\Mail;
 
 class PaperFiles extends SubmissionFilesTable
 {
@@ -23,5 +29,35 @@ class PaperFiles extends SubmissionFilesTable
                 ->content('After uploading your paper, system will send notification to the editor.'),
             ...parent::uploadFormSchema(),
         ];
+    }
+
+    public function handleUploadAction(array $data, TableAction $action)
+    {
+        $files = $this->submission->getMedia($this->category);
+
+        $submissionFiles = [];
+
+        foreach ($files as $file) {
+            $submissionFiles[] = UploadSubmissionFileAction::run(
+                $this->submission,
+                $file,
+                $this->category,
+                SubmissionFileType::find($data['type'])
+            );
+        }
+
+        $submissionFile = end($submissionFiles) ?? null;
+
+        if ($submissionFile) {
+            $editors = User::editorSubmission($this->submission)->get();
+
+            foreach ($editors as $user) {
+                Mail::to($user->email)->send(
+                    new NewPaperUploadedMail($submissionFile)
+                );
+            }
+        }
+
+        $action->success();
     }
 }
