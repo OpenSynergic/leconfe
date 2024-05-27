@@ -4,7 +4,7 @@
 @use('App\Models\Enums\UserRole')
 <div class="space-y-6">
     <div class="grid grid-cols-12 gap-4">
-        <div class="col-span-8 space-y-4">
+        <div class="space-y-4 col-span-8">
             {{-- Papers --}}
             @livewire(Components\Files\PaperFiles::class, ['submission' => $submission])
 
@@ -17,7 +17,7 @@
             {{-- Discussions --}}
             @livewire(Components\Discussions\DiscussionTopic::class, ['submission' => $submission, 'stage' => SubmissionStage::PeerReview, 'lazy' => true])
         </div>
-        <div class="sticky z-40 flex flex-col self-start col-span-4 gap-4 top-24">
+        <div class="self-start sticky z-40 top-24 flex flex-col gap-4 col-span-4">
             @if ($submission->revision_required)
                 <div class="flex items-center p-4 text-sm border rounded-lg border-warning-400 bg-warning-200 text-warning-600"
                     role="alert">
