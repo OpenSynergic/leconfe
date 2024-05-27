@@ -136,6 +136,11 @@ class Serie extends Model implements HasMedia, HasAvatar, HasName
         return $this->state == SerieState::Published;
     }
 
+    public function isUpcoming(): bool
+    {
+        return $this->isPublished();
+    }
+
     public function isArchived(): bool
     {
         return $this->state == SerieState::Archived;
