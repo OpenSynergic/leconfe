@@ -17,9 +17,9 @@
             {{-- Discussions --}}
             @livewire(Components\Discussions\DiscussionTopic::class, ['submission' => $submission, 'stage' => SubmissionStage::PeerReview, 'lazy' => true])
         </div>
-        <div class="self-start sticky top-24 flex flex-col gap-4 col-span-4">
+        <div class="self-start sticky z-40 top-24 flex flex-col gap-4 col-span-4">
             @if ($submission->revision_required)
-                <div class="flex items-center p-4 text-sm rounded-lg  border border-warning-400 bg-warning-200 text-warning-600"
+                <div class="flex items-center p-4 text-sm border rounded-lg border-warning-400 bg-warning-200 text-warning-600"
                     role="alert">
                     <span class="text-base text-center">
                         Revisions have been requested.

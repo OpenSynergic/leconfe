@@ -13,9 +13,6 @@
                 class="link link-hover link-primary"
                 {{-- wire:navigate --}}
             >
-                @if($label == 'Home')
-                    @svg('heroicon-m-home', 'w-4 h-4 my-auto mr-1')
-                @endif
                 {{ $label }}
             </x-website::link>
             @else

@@ -67,6 +67,7 @@ use App\Panel\Conference\Livewire\Submissions\Components\ActivityLogList;
 use App\Panel\Conference\Livewire\Submissions\Components\ContributorList;
 use App\Panel\Conference\Livewire\Submissions\Components\Files\PresenterFiles;
 use App\Panel\Conference\Livewire\Submissions\Components\SubmissionProceeding;
+use Filament\Support\Enums\MaxWidth;
 
 class ViewSubmission extends Page implements HasForms, HasInfolists
 {
@@ -285,11 +286,25 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                         || (StageManager::editing()->isStageOpen() && auth()->user()->can('editing', $this->record)))
                         && $this->record->proceeding 
                 ),
+            Action::make('assign_proceeding')
+                ->label('Publish Now')
+                ->modalHeading('Assign Proceeding for publication')
+                ->disabled(! StageManager::editing()->isStageOpen())
+                ->visible(fn () => ! $this->record->proceeding && $this->record->stage == SubmissionStage::Editing)
+                ->modalWidth(MaxWidth::ExtraLarge)
+                ->form(SubmissionProceeding::getFormAssignProceeding($this->record))
+                ->action(function (array $data) {
+                    SubmissionProceeding::assignProceeding($this->record, $data);
+
+                    $this->replaceMountedAction('publish');
+                    $this->dispatch('refreshSubmissionProceeding');
+                }),
             Action::make('publish')
                 ->color('primary')
                 ->label('Publish Now')
-                ->disabled(
-                    fn (): bool => ! StageManager::editing()->isStageOpen()
+                ->disabled(! StageManager::editing()->isStageOpen())
+                ->visible(
+                    fn (): bool => $this->record->proceeding ? true : false
                 )
                 ->authorize('publish', $this->record)
                 ->when(

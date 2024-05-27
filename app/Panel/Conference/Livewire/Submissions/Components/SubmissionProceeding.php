@@ -28,6 +28,9 @@ class SubmissionProceeding extends \Livewire\Component implements HasForms, HasI
     public Submission $submission;
     public array $meta = [];
     public array $media = [];
+    protected $listeners = [
+        'refreshSubmissionProceeding' => '$refresh',
+    ];
 
     public function render()
     {
@@ -50,7 +53,6 @@ class SubmissionProceeding extends \Livewire\Component implements HasForms, HasI
             ->schema([
                 TextEntry::make('id')
                     ->label('Proceeding')
-                    // ->url(fn(Submission $record) => $record->proceeding && route('filament.conference.resources.proceedings.view', ['record' => $record->proceeding]))
                     ->html()
                     ->getStateUsing(function (Submission $record) {
                         if ($record->proceeding){
@@ -70,30 +72,39 @@ class SubmissionProceeding extends \Livewire\Component implements HasForms, HasI
                             ->label(fn(Submission $record) => $record->proceeding ? 'Change Proceeding' : 'Assign to Proceeding')
                             ->visible(fn (Submission $record) => auth()->user()->can('editing', $record))
                             ->modalWidth(MaxWidth::ExtraLarge)
-                            ->form([
-                                Select::make('proceeding_id')
-                                    ->label('Proceeding')
-                                    ->placeholder('None')
-                                    // ->native(false)
-                                    // ->searchable()
-                                    ->options(
-                                        fn () => [
-                                            'Future Proceeding' => Proceeding::query()
-                                                ->where('published', false)
-                                                ->pluck('title', 'id')
-                                                ->toArray(),
-                                            'Back Proceeding' => Proceeding::query()
-                                                ->where('published', true)
-                                                ->pluck('title', 'id')
-                                                ->toArray(),
-                                        ]
-                                    )
-                            ])
-                            ->action(fn (Submission $record, array $data) => $data['proceeding_id'] ? $record->assignProceeding($data['proceeding_id']) : $record->unassignProceeding())
+                            ->form(fn (Submission $record) => static::getFormAssignProceeding($record))
+                            ->action(fn (Submission $record, array $data) => static::assignProceeding($record, $data)),
                     ]),
-                    // BladeEntry::make('form')
-                    //     ->blade('{{ $this->form }}')
             ]);
+    }
+
+    public static function getFormAssignProceeding(Submission $submission): array
+    {
+        return [
+            Select::make('proceeding_id')
+                ->label('Proceeding')
+                ->placeholder('None')
+                ->formatStateUsing(fn () => $submission->proceeding_id ?? null)
+                // ->native(false)
+                // ->searchable()
+                ->options(
+                    fn () => [
+                        'Future Proceeding' => Proceeding::query()
+                            ->where('published', false)
+                            ->pluck('title', 'id')
+                            ->toArray(),
+                        'Back Proceeding' => Proceeding::query()
+                            ->where('published', true)
+                            ->pluck('title', 'id')
+                            ->toArray(),
+                    ]
+                )
+        ];
+    }
+
+    public static function assignProceeding(Submission $submission, array $data)
+    {
+        $data['proceeding_id'] ? $submission->assignProceeding($data['proceeding_id']) : $submission->unassignProceeding();
     }
 
     public function form(Form $form): Form
