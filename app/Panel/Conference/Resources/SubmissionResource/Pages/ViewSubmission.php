@@ -290,7 +290,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                 ->label('Publish Now')
                 ->modalHeading('Assign Proceeding for publication')
                 ->disabled(! StageManager::editing()->isStageOpen())
-                ->visible(fn () => ! $this->record->proceeding)
+                ->visible(fn () => ! $this->record->proceeding && $this->record->stage == SubmissionStage::Editing)
                 ->modalWidth(MaxWidth::ExtraLarge)
                 ->form(SubmissionProceeding::getFormAssignProceeding($this->record))
                 ->action(function (array $data) {
