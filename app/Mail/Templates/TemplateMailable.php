@@ -25,13 +25,4 @@ abstract class TemplateMailable extends BaseTemplateMailable implements Interfac
     {
         return preg_replace("/\n\s+/", "\n", rtrim(html_entity_decode(strip_tags(static::getDefaultHtmlTemplate()))));
     }
-
-    // public function getHtmlLayout(): string
-    // {
-    //     return view('mail.template', [
-    //         'body' => '{{{ body }}}',
-    //         'header'=> setting('mail.header'),
-    //         'footer'=> setting('mail.footer'),
-    //     ])->render();
-    // }
 }

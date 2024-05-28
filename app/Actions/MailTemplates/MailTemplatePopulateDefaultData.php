@@ -3,6 +3,7 @@
 namespace App\Actions\MailTemplates;
 
 use App\Mail\Templates\TemplateMailable;
+use App\Models\Conference;
 use App\Models\MailTemplate;
 use Illuminate\Filesystem\Filesystem;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -12,7 +13,7 @@ class MailTemplatePopulateDefaultData
 {
     use AsAction;
 
-    public function handle()
+    public function handle(Conference $conference)
     {
         $directory = app_path('Mail/Templates');
         $namespace = 'App\\Mail\\Templates';
@@ -59,7 +60,10 @@ class MailTemplatePopulateDefaultData
             ];
 
             MailTemplate::firstOrCreate(
-                ['mailable' => $class],
+                [
+                    'conference_id' => $conference->id,
+                    'mailable' => $class
+                ],
                 $data
             );
         }

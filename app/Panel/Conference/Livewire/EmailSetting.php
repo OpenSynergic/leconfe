@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Panel\Administration\Livewire;
+namespace App\Panel\Conference\Livewire;
 
 use App\Actions\MailTemplates\MailTemplateRestoreDefaultData;
 use App\Actions\Settings\SettingUpdateAction;
@@ -54,7 +54,7 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
 
     public function render()
     {
-        return view('panel.administration.livewire.infolist');
+        return view('panel.conference.livewire.infolist');
     }
 
     public function table(Table $table): Table
@@ -171,7 +171,7 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
                         ->action(function (Action $action) {
                             $formData = $this->layoutTemplateForm->getState();
                             try {
-                                SettingUpdateAction::run($formData);
+                                Setting::update($formData);
                                 $action->sendSuccessNotification();
                             } catch (\Throwable $th) {
                                 $action->failure();
