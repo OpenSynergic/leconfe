@@ -2,14 +2,8 @@
 
 namespace App\Panel\Conference\Livewire\Submissions\Components\Files;
 
-use App\Actions\SubmissionFiles\UploadSubmissionFileAction;
 use App\Constants\SubmissionFileCategory;
-use App\Mail\Templates\NewPaperUploadedMail;
-use App\Models\SubmissionFileType;
-use App\Models\User;
 use Awcodes\Shout\Components\Shout;
-use Filament\Tables\Actions\Action as TableAction;
-use Illuminate\Support\Facades\Mail;
 
 class PaperFiles extends SubmissionFilesTable
 {
