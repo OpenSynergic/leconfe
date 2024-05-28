@@ -89,4 +89,9 @@ class Presenter extends Model implements HasAvatar, HasMedia, Sortable
     {
         return $this->belongsTo(Submission::class);
     }
+
+    public function scopeStatus(Builder $query, PresenterStatus $status)
+    {
+        return $query->where('status', $status);
+    }
 }

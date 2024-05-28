@@ -8,6 +8,7 @@ use App\Models\Submission;
 use Filament\Tables\Table;
 use Filament\Forms\Components\Grid;
 use Filament\Tables\Actions\Action;
+use App\Models\Enums\PresenterStatus;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Actions\EditAction;
@@ -25,6 +26,7 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use App\Actions\Presenters\PresenterCreateAction;
 use App\Actions\Presenters\PresenterDeleteAction;
 use App\Actions\Presenters\PresenterUpdateAction;
+use App\Panel\Conference\Resources\PresenterResource;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use App\Panel\Conference\Livewire\Forms\Conferences\ContributorForm;
 
@@ -40,6 +42,10 @@ class PresenterList extends Component implements HasForms, HasTable
     {
         return Presenter::query()
             ->whereSubmissionId($this->submission->getKey())
+            ->when(
+                $this->submission->isPublished(),
+                fn ($query) => $query->status(PresenterStatus::Approve)
+            )
             ->with(['media', 'meta'])
             ->orderBy('order_column');
     }
@@ -124,6 +130,16 @@ class PresenterList extends Component implements HasForms, HasTable
             )
             ->actions([
                 ActionGroup::make([
+                    ...PresenterResource::getTableActions(),
+                ])
+                ->label('Set Decision')
+                ->icon('heroicon-o-chevron-up-down')
+                ->color('primary')
+                ->button()
+                ->size('sm')
+                ->outlined()
+                ->hidden($this->submission->isIncomplete() || $this->submission->isPublished()),
+                ActionGroup::make([
                     EditAction::make()
                         ->modalWidth('3xl')
                         ->hidden(
@@ -141,7 +157,10 @@ class PresenterList extends Component implements HasForms, HasTable
                             fn (Model $record): bool => $record->email == auth()->user()->email
                         ),
                 ])
-                    ->hidden($this->viewOnly),
+                ->button()
+                ->outlined()
+                ->size('sm')
+                ->hidden($this->viewOnly),
             ])
             ->headerActions([
                 CreateAction::make()
