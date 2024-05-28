@@ -5,8 +5,10 @@ namespace App\Mail\Templates;
 use App\Models\MailTemplate;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Spatie\MailTemplates\TemplateMailable as BaseTemplateMailable;
+use Illuminate\Mail\Mailables\Address;
 
 abstract class TemplateMailable extends BaseTemplateMailable implements Interfaces\HasDefaultMailVariable, ShouldQueue
 {
@@ -30,7 +32,7 @@ abstract class TemplateMailable extends BaseTemplateMailable implements Interfac
     {
         return array_merge(static::getConferenceViewData(), parent::getVariables());
     }
-    
+
     public function buildViewData()
     {
         return array_merge(static::getConferenceViewData(), parent::buildViewData());
@@ -49,5 +51,12 @@ abstract class TemplateMailable extends BaseTemplateMailable implements Interfac
             'conferenceLogoUrl' => $conference->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl']),
             'conferenceLogoAltText' => $conference->name,
         ];
+    }
+
+    public function envelope(): Envelope
+    {
+        return new Envelope(
+            from: new Address(config('mail.from.address'), app()->getCurrentConference()->name ?? config('mail.from.name')),
+        );
     }
 }
