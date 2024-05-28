@@ -32,7 +32,7 @@ $scrollIntoViewJsSnippet = '';
             </span>
             
             @if($paginator instanceof \Illuminate\Pagination\LengthAwarePaginator)
-                <div class="flex-1 flex items-center justify-center">
+                <div class="hidden flex-1 sm:flex items-center justify-center">
                     <span class="text-sm"> {{ $paginator->firstItem() }} - {{ $paginator->lastItem() }} of {{ $paginator->total() }} Results</span>
                 </div>
             @endif

@@ -46,7 +46,7 @@
             </div>
             <div class="conference-current space-y-4" x-show="tab === 'current'">
                 @if($currentSeries->isNotEmpty())
-                    <div class="grid sm:grid-cols-2 gap-6">
+                    <div class="grid lg:grid-cols-2 gap-6">
                         @foreach ($currentSeries as $serie)
                             <x-website::serie-summary :serie="$serie" />
                         @endforeach
@@ -61,36 +61,36 @@
                 @endif
             </div>
             <div class="conference-upcoming space-y-4" x-show="tab === 'upcoming'">
-                {{-- @if($upcomingConferences->isNotEmpty())
-                    <div class="grid sm:grid-cols-2 gap-6">
-                        @foreach ($upcomingConferences as $conference)
-                            <x-website::conference-summary :conference="$conference" />
+                @if($upcomingSeries->isNotEmpty())
+                    <div class="grid lg:grid-cols-2 gap-6">
+                        @foreach ($upcomingSeries as $serie)
+                            <x-website::serie-summary :serie="$serie" />
                         @endforeach
                     </div>
-                    @if($upcomingConferences->hasPages())
-                        {{ $upcomingConferences->links('livewire.simple-pagination') }}
+                    @if($upcomingSeries->hasPages())
+                        {{ $upcomingSeries->links('livewire.simple-pagination') }}
                     @endif
                 @else
                     <div class="text-center my-12">
-                        <p class="text-lg font-bold">There are no upcoming conferences</p>
+                        <p class="text-lg font-bold">There are no upcoming conferences taking place at this time</p>
                     </div>
-                @endif --}}
+                @endif
             </div>
             <div class="conference-all space-y-4" x-show="tab === 'allconferences'">
-                {{-- @if($allConferences->isNotEmpty())
-                    <div class="grid sm:grid-cols-2 gap-6">
-                        @foreach ($allConferences as $conference)
-                            <x-website::conference-summary :conference="$conference" />
+                @if($allSeries->isNotEmpty())
+                    <div class="grid lg:grid-cols-2 gap-6">
+                        @foreach ($allSeries as $serie)
+                            <x-website::serie-summary :serie="$serie" />
                         @endforeach
                     </div>
-                    @if($allConferences->hasPages())
-                        {{ $allConferences->links('livewire.simple-pagination') }}
+                    @if($allSeries->hasPages())
+                        {{ $allSeries->links('livewire.simple-pagination') }}
                     @endif
                 @else
                     <div class="text-center my-12">
                         <p class="text-lg font-bold">There are no conferences</p>
                     </div>
-                @endif --}}
+                @endif
             </div>
         </div>
     </div>

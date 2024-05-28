@@ -24,6 +24,9 @@ class FrontendServiceProvider extends ServiceProvider
             LivewirePageGroup::registerPageGroup(
                 $this->conferencePageGroup(PageGroup::make()),
             );
+            LivewirePageGroup::registerPageGroup(
+                $this->seriePageGroup(PageGroup::make()),
+            );
 
             Livewire::addPersistentMiddleware([
                 'web',
@@ -62,6 +65,23 @@ class FrontendServiceProvider extends ServiceProvider
             ->path('{conference:path}')
             ->layout('frontend.website.components.layouts.app')
             ->bootUsing(function () {
+            })
+            ->middleware([
+                'web',
+                IdentifyConference::class,
+                SetupConference::class,
+            ], true)
+            ->discoverPages(in: app_path('Frontend/Conference/Pages'), for: 'App\\Frontend\\Conference\\Pages');
+    }
+
+    public function seriePageGroup(PageGroup $pageGroup): PageGroup
+    {
+        return $pageGroup
+            ->id('archive')
+            ->path('{conference:path}/series/{serie:path}')
+            ->layout('frontend.website.components.layouts.app')
+            ->bootUsing(function () {
+
             })
             ->middleware([
                 'web',
