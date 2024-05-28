@@ -49,7 +49,6 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
 
     public function mount()
     {
-        $this->mailSetupForm->fill(Setting::all());
         $this->layoutTemplateForm->fill(Setting::all());
     }
 
@@ -139,12 +138,6 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
                                 BladeEntry::make('layout-templates')
                                     ->blade('{{ $this->layoutTemplateForm }}'),
                             ]),
-                        VerticalTabs\Tab::make('Setup')
-                            ->icon('heroicon-o-cog')
-                            ->schema([
-                                BladeEntry::make('mail-setup')
-                                    ->blade('{{ $this->mailSetupForm }}'),
-                            ]),
 
                     ]),
             ]);
@@ -153,88 +146,8 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
     protected function getForms(): array
     {
         return [
-            'mailSetupForm',
             'layoutTemplateForm',
         ];
-    }
-
-    public function mailSetupForm(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Section::make('Email from')
-                    ->schema([
-                        TextInput::make('mail_from_name')
-                            ->label('Name')
-                            ->required()
-                            ->default(config('mail.from.name')),
-                        TextInput::make('mail_from_address')
-                            ->label('Address')
-                            ->default(config('mail.from.address'))
-                            ->required(),
-                    ])
-                    ->columns(2),
-                Section::make('Authorization')
-                    ->schema([
-                        TextInput::make('mail_auth_host')
-                            ->label('Host')
-                            ->default(config('mail.mailers.smtp.host'))
-                            ->required(),
-                        TextInput::make('mail_auth_port')
-                            ->label('Port')
-                            ->default(config('mail.mailers.smtp.port'))
-                            ->required(),
-                        TextInput::make('mail_auth_username')
-                            ->label('Username')
-                            ->default(config('mail.mailers.smtp.username')),
-                        TextInput::make('mail_auth_password')
-                            ->label('Password')
-                            ->default(config('mail.mailers.smtp.password'))
-                            ->password(),
-                        Select::make('mail_auth_encryption')
-                            ->label('Encryption')
-                            ->default(config('mail.mailers.smtp.encryption'))
-                            ->options([
-                                null => 'None',
-                                'tls' => 'TLS',
-                                'ssl' => 'SSL',
-                            ])
-                            ->default('ssl'),
-                    ])
-                    ->columns(2),
-                Actions::make([
-                    Action::make('saveEmailForm')
-                        ->label('Save')
-                        ->successNotificationTitle('Saved!')
-                        ->failureNotificationTitle('Data could not be saved.')
-                        ->action(function (Action $action) {
-                            $formData = $this->mailSetupForm->getState();
-                            try {
-                                SettingUpdateAction::run($formData);
-                                $action->sendSuccessNotification();
-                            } catch (\Throwable $th) {
-                                $action->failure();
-                            }
-                        }),
-                    Action::make('testEmail')
-                        ->label('Test Email')
-                        ->color('gray')
-                        ->successNotificationTitle('Success sent test mail to your email.')
-                        ->action(function (Action $action) {
-                            try {
-                                Mail::to(auth()->user()->email)->send(new TestMail());
-                                $action->sendSuccessNotification();
-                            } catch (\Throwable $th) {
-                                Notification::make()
-                                    ->danger()
-                                    ->title('Failed to send test mail to your email.')
-                                    ->body($th->getMessage())
-                                    ->send();
-                            }
-                        }),
-                ])->alignLeft(),
-            ])
-            ->statePath('mailSetupFormData');
     }
 
     public function layoutTemplateForm(Form $form): Form
