@@ -64,7 +64,7 @@ return [
 
         'email' => [
             'plugins' => 'autoresize directionality emoticons link wordcount code',
-            'toolbar' => 'removeformat | bold italic | rtl ltr | alignjustify alignright aligncenter alignleft | link | code',
+            'toolbar' => 'formatselect fontsizeselect | removeformat | bold italic | rtl ltr | alignjustify alignright aligncenter alignleft | link | code',
             'upload_directory' => 'tinyeditor',
         ],
 

@@ -109,12 +109,6 @@ class SiteSettings extends Page implements HasInfolists
                                             ]),
                                     ]),
                             ]),
-                        Tabs\Tab::make('E-Mail')
-                            ->schema([
-                                LivewireEntry::make('mail_setting')
-                                    ->livewire(EmailSetting::class)
-                                    ->lazy(),
-                            ]),
                     ])
                     ->contained(false),
             ]);

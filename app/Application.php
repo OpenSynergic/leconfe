@@ -8,6 +8,7 @@ use App\Models\AuthorRole;
 use App\Models\Block;
 use App\Models\CommitteeRole;
 use App\Models\Conference;
+use App\Models\MailTemplate;
 use App\Models\Sponsor;
 use App\Models\NavigationMenu;
 use App\Models\PaymentItem;
@@ -128,6 +129,7 @@ class Application extends LaravelApplication
             PaymentItem::class,
             Serie::class,
             Proceeding::class,
+            MailTemplate::class,
         ];
 
         foreach ($models as $model) {

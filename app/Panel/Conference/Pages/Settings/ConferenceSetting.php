@@ -4,6 +4,7 @@ namespace App\Panel\Conference\Pages\Settings;
 
 use App\Infolists\Components\LivewireEntry;
 use App\Infolists\Components\VerticalTabs as InfolistsVerticalTabs;
+use App\Panel\Conference\Livewire\EmailSetting;
 use App\Panel\Administration\Livewire\SidebarSetting;
 use App\Panel\Conference\Livewire\AccessSetting;
 use App\Panel\Conference\Livewire\DateAndTimeSetting;
@@ -133,6 +134,12 @@ class ConferenceSetting extends Page implements HasForms, HasInfolists
                                                     ->lazy(),
                                             ]),
                                     ]),
+                            ]),
+                        Tabs\Tab::make('E-Mail')
+                            ->schema([
+                                LivewireEntry::make('mail_setting')
+                                    ->livewire(EmailSetting::class)
+                                    ->lazy(),
                             ]),
                     ])
                     ->contained(false),
