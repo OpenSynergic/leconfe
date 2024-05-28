@@ -4,8 +4,6 @@ namespace App\Mail\Templates;
 
 class TestMail extends TemplateMailable
 {
-    public $author = 'dsadsa';
-
     public static function getDefaultSubject(): string
     {
         return 'Test Mail';
