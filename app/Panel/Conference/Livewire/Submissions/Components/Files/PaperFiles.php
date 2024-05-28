@@ -30,33 +30,4 @@ class PaperFiles extends SubmissionFilesTable
             ...parent::uploadFormSchema(),
         ];
     }
-
-    public function handleUploadAction(array $data, TableAction $action)
-    {
-        $files = $this->submission->getMedia($this->category);
-
-        $submissionFiles = [];
-
-        foreach ($files as $file) {
-            $submissionFiles[] = UploadSubmissionFileAction::run(
-                $this->submission,
-                $file,
-                $this->category,
-                SubmissionFileType::find($data['type'])
-            );
-        }
-
-        $submissionFile = end($submissionFiles) ?? null;
-
-        if ($submissionFile) {
-            $editors = User::editorSubmission($this->submission)->get();
-
-            $emails = $editors->pluck('email');
-            Mail::send(new NewPaperUploadedMail($submissionFile), [], function ($message) use ($emails) {
-                $message->to($emails);
-            });
-        }
-
-        $action->success();
-    }
 }
