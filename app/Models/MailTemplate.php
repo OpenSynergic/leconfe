@@ -4,7 +4,9 @@ namespace App\Models;
 
 use App\Facades\Setting;
 use App\Models\Concerns\BelongsToConference;
+use Exception;
 use Illuminate\Contracts\Mail\Mailable;
+use Illuminate\Support\HtmlString;
 use Spatie\MailTemplates\Interfaces\MailTemplateInterface;
 use Spatie\MailTemplates\Models\MailTemplate as BaseMailTemplate;
 
@@ -16,8 +18,8 @@ class MailTemplate extends BaseMailTemplate implements MailTemplateInterface
     {
         return view('mail.template', [
             'body' => '{{{ body }}}',
-            'header' => Setting::get('mail_header'),
-            'footer' => Setting::get('mail_footer'),
+            'header' => Setting::get('mail_header') ?? static::getDefaultHeader(),
+            'footer' => Setting::get('mail_footer') ?? static::getDefaultFooter(),
         ])->render();
     }
 
@@ -31,16 +33,28 @@ class MailTemplate extends BaseMailTemplate implements MailTemplateInterface
     public static function findForMailable(Mailable $mailable): self
     {
         $mailTemplate = static::forMailable($mailable)->first();
-
-        if (! $mailTemplate) {
-           $mailTemplate = new static([
+        if (!$mailTemplate) {
+            $mailTemplate = new static([
                 'mailable' => get_class($mailable),
                 'subject' => $mailable::getDefaultSubject(),
                 'html_template' => $mailable::getDefaultHtmlTemplate(),
                 'text_template' => $mailable::getDefaultTextTemplate(),
-           ]);
+            ]);
         }
 
         return $mailTemplate;
+    }
+    public static function getDefaultHeader(): string
+    {
+        return '';
+    }
+
+    public static function getDefaultFooter(): string
+    {
+        return <<<'HTML'
+            <p>________________________________________________________________________</p>
+            <pre>{{ conferenceName }}</pre>
+            <p style="font-size: 10px;color: gray;">Easily manage conference platform using <a href="https://leconfe.com">Leconfe</a></p>
+        HTML;
     }
 }

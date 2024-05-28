@@ -170,6 +170,7 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
                         ->failureNotificationTitle('Data could not be saved.')
                         ->action(function (Action $action) {
                             $formData = $this->layoutTemplateForm->getState();
+
                             try {
                                 Setting::update($formData);
                                 $action->sendSuccessNotification();

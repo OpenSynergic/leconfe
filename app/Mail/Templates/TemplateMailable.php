@@ -25,4 +25,29 @@ abstract class TemplateMailable extends BaseTemplateMailable implements Interfac
     {
         return preg_replace("/\n\s+/", "\n", rtrim(html_entity_decode(strip_tags(static::getDefaultHtmlTemplate()))));
     }
+
+    public static function getVariables(): array
+    {
+        return array_merge(static::getConferenceViewData(), parent::getVariables());
+    }
+    
+    public function buildViewData()
+    {
+        return array_merge(static::getConferenceViewData(), parent::buildViewData());
+    }
+
+    public static function getConferenceViewData()
+    {
+        $conference = app()->getCurrentConference();
+
+        if (!$conference) return [];
+
+
+        return [
+            'conferenceName' => $conference->name,
+            'conferenceLink' => $conference->getHomeUrl(),
+            'conferenceLogoUrl' => $conference->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl']),
+            'conferenceLogoAltText' => $conference->name,
+        ];
+    }
 }

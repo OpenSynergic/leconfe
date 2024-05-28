@@ -210,7 +210,7 @@ class AppServiceProvider extends ServiceProvider
         if ($currentConference) {
             // Scope livewire update path to current serie
             $currentSerie = $this->app->getCurrentSerie();
-            if ($currentSerie) {
+            if (isset($pathInfos[3]) && $currentSerie && $currentSerie->path === $pathInfos[3]) {
                 Livewire::setUpdateRoute(
                     fn ($handle) => Route::post($currentConference->path . '/series/' . $currentSerie->path . '/livewire/update', $handle)->middleware('web')
                 );

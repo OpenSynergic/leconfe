@@ -12,7 +12,6 @@ class Dashboard extends PagesDashboard
 {
     public function mount()
     {
-        Mail::to(auth()->user())->send(new TestMail);
     }
 
 

@@ -15,6 +15,8 @@ class MailTemplatePopulateDefaultData
 
     public function handle(Conference $conference)
     {
+        $this->addDefaultHeaderFooter($conference);
+
         $directory = app_path('Mail/Templates');
         $namespace = 'App\\Mail\\Templates';
 
@@ -67,5 +69,13 @@ class MailTemplatePopulateDefaultData
                 $data
             );
         }
+    }
+
+    protected function addDefaultHeaderFooter(Conference $conference)
+    {
+        $conference->setManyMeta([
+            'settings_mail_header' => MailTemplate::getDefaultHeader(),
+            'settings_mail_footer' => MailTemplate::getDefaultFooter(),
+        ]);
     }
 }
