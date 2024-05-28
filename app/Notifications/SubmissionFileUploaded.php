@@ -40,17 +40,17 @@ class SubmissionFileUploaded extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable)
     {
-        $mailTempalte = match ($this->submissionFile->category) {
+        $mailTemplate = match ($this->submissionFile->category) {
             SubmissionFileCategory::PAPER_FILES => NewPaperUploadedMail::class,
             SubmissionFileCategory::REVISION_FILES => NewRevisionUploadedMail::class,
             default => null
         };
 
-        if (! $mailTempalte) {
+        if (! $mailTemplate) {
             return null;
         }
 
-        return (new $mailTempalte($this->submissionFile))
+        return (new $mailTemplate($this->submissionFile))
             ->to($notifiable);
     }
 
