@@ -56,4 +56,14 @@ class PresenterPolicy
             return true;
         }
     }
+
+    /**
+     * Determine whether the user can approve and reject the model.
+     */
+    public function processApproval(User $user, Presenter $presenter)
+    {
+        if($user->can('Presenter:processApproval')){
+            return true;
+        }
+    }
 }
