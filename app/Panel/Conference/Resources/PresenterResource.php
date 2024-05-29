@@ -42,10 +42,14 @@ class PresenterResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return static::getModel()::query()
-            ->with(['media', 'meta', 'submission'])
+            ->with(['media', 'meta', 'submission.participants'])
             ->whereHas(
                 'submission',
                 fn ($query) => $query->where('conference_id', app()->getCurrentConference()->getKey())
+            )
+            ->whereHas(
+                'submission.participants',
+                fn ($query) => $query->where('user_id', auth()->user()->getKey())
             );
     }
 
@@ -162,6 +166,7 @@ class PresenterResource extends Resource
                 Tables\Actions\ActionGroup::make([
                     ...static::getTableActions(),
                 ])
+                ->visible(fn (Presenter $record) => ! $record->submission->isPublished())
                 ->label(fn (Presenter $record) => $record->status == PresenterStatus::Unchecked ? 'Set Decision' : $record->status->getActionText())
                 ->icon(fn (Presenter $record) => $record->status->getActionIcon())
                 ->color(fn (Presenter $record) => $record->status->getActionColor())
