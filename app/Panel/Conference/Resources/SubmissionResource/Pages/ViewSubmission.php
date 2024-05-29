@@ -50,6 +50,7 @@ use App\Infolists\Components\VerticalTabs\Tab as Tab;
 use App\Panel\Conference\Livewire\Submissions\Editing;
 use App\Panel\Conference\Resources\SubmissionResource;
 use App\Infolists\Components\VerticalTabs\Tabs as Tabs;
+use App\Models\Enums\PresenterStatus;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use App\Panel\Conference\Livewire\Submissions\PeerReview;
 use Filament\Infolists\Components\Tabs as HorizontalTabs;
@@ -344,6 +345,15 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                 ]),
                         ])
                         ->action(function (Action $action, array $data) {
+                            $checkedPresenters = $this->record->presenters()?->whereStatus(PresenterStatus::Unchecked)->exists();
+
+                            if ($checkedPresenters) {
+                                $action->failureNotificationTitle('There is still a presenter who has not been checked');
+                                $action->failure();
+
+                                return false;
+                            }
+
                             $this->record->state()->publish();
 
                             if (! $data['do-not-notify-author']) {
