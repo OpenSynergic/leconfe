@@ -11,7 +11,6 @@ class Login extends ConferenceLogin
         return route('filament.administration.home');
     }
 
-
     public function getViewData() : array 
     {
         return [

@@ -51,17 +51,6 @@ class InstallationForm extends Form
     public $db_port = '3306';
 
     /**
-     * Field for Conference
-     */
-    #[Rule('required', onUpdate: false)]
-    public $conference_name = null;
-
-    #[Rule('required', onUpdate: false)]
-    public $conference_type = 'Offline';
-
-    public $conference_description = null;
-
-    /**
      * Field for Timezone
      */
     #[Rule('required')]
@@ -70,9 +59,10 @@ class InstallationForm extends Form
     public function checkDatabaseConnection(): bool
     {
         try {
+            $this->resetErrorBag('error');
             $this->reconnectDbWithNewData();
         } catch (\Throwable $th) {
-            $this->addError('databaseOperationError', 'Connection failed: '.$th->getMessage());
+            $this->addError('error', 'Connection failed: '.$th->getMessage());
 
             return false;
         }
@@ -85,14 +75,14 @@ class InstallationForm extends Form
         $dbName = $this->db_name;
 
         try {
-
+            $this->resetErrorBag('error');
             $this->reconnectDbWithNewData();
 
             if (! $this->checkDatabaseExists($dbName)) {
                 Schema::createDatabase($dbName);
             }
         } catch (\Throwable $th) {
-            $this->addError('databaseOperationError', 'Create database failed: Please manually create your database '.$th->getMessage());
+            $this->addError('error', 'Create database failed: Please manually create your database '. $th->getMessage());
 
             return false;
         }

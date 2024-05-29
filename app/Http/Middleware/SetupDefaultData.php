@@ -21,6 +21,8 @@ class SetupDefaultData
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if(!app()->isInstalled()) return $next($request);
+
         if ($currentConference = app()->getCurrentConference()) {
             $this->setupConference($request, $currentConference);
         } else {

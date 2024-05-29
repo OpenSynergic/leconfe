@@ -84,6 +84,9 @@ class InstallAction
             }
         }
 
+        info('Application information');
+        $data['url'] = text('What is your application url?', placeholder: 'http://localhost', required: true);
+
         info('Timezone information');
         info('The timezone that application gonna use.');
         $timezones = collect(Timezonelist::splitGroup(false)->toArray(false));
@@ -118,10 +121,10 @@ class InstallAction
             }
         }
 
-        info('Create your first conference.');
-        $data['conference_name'] = text('What is your conference name?', required: true);
-        $data['conference_type'] = select('What is your conference type?', \App\Models\Enums\SerieType::array(), default: 'Offline', required: true);
-        $data['conference_description'] = text('What is your conference description?', required: false);
+        // info('Create your first conference.');
+        // $data['conference_name'] = text('What is your conference name?', required: true);
+        // $data['conference_type'] = select('What is your conference type?', \App\Models\Enums\SerieType::array(), default: 'Offline', required: true);
+        // $data['conference_description'] = text('What is your conference description?', required: false);
 
         info('Please review your information before continue.');
         table(

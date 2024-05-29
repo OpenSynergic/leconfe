@@ -70,6 +70,10 @@ class Application extends LaravelApplication
 
     public function getInstalledVersion(): string
     {
+        if(!$this->isInstalled()){
+            return throw new \Exception('Application is not installed');
+        }
+
         return Version::application()?->version;
     }
 

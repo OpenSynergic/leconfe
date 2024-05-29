@@ -4,6 +4,7 @@ namespace App\Utils;
 
 use App\Actions\Conferences\ConferenceCreateAction;
 use App\Actions\User\UserCreateAction;
+use App\Application;
 use App\Events\AppInstalled;
 use App\Models\Conference;
 use App\Models\Enums\UserRole;
@@ -28,27 +29,36 @@ class Installer
 
     public function run()
     {
-        $this->generateEnvFile();
-        $this->migrate();
-        $this->createConference();
-        $this->createAccount();
+        try {
+            $this->configureEnv();
+            $this->configureMigration();
+            $this->configureAccount();    
+            $this->configureApplication();
+            $this->configureOptimization();
+        } catch (\Throwable $th) {
+            $this->clearCache();
+            $this->removeEnvFile();
 
-        Version::application();
-        AppInstalled::dispatch();
-
-        $this->optimize();
+            throw $th;
+        }
     }
 
-    private function migrate()
+    private function configureMigration()
     {
-        Schema::dropAllTables();
-        $this->call('migrate:fresh', [
-            '--force' => true,
-            '--seed' => true,
-        ]);
+        try {
+            Schema::dropAllTables();
+            $this->call('migrate:fresh', [
+                '--force' => true,
+                '--seed' => true,
+            ]);
+        } catch (\Throwable $th) {
+            Schema::dropAllTables();
+            
+            throw $th;
+        }
     }
 
-    public function optimize()
+    public function configureOptimization()
     {
         $this->call('optimize:clear');
         $this->call('storage:link');
@@ -58,7 +68,6 @@ class Installer
     public function clearCache()
     {
         $this->call('optimize:clear');
-        $this->call('icons:clear');
         $this->call('modelCache:clear');
     }
 
@@ -80,12 +89,12 @@ class Installer
         $manifest->write($factory->all());
     }
 
-    private function generateEnvFile()
+    private function configureEnv()
     {
         $envs = [
             'APP_ENV' => 'production',
             'APP_DEBUG' => 'false',
-            'APP_URL' => url('/'),
+            'APP_URL' => $this->readParam('url') ?? url('/'),
             'APP_KEY' => 'base64:'.base64_encode(Encrypter::generateKey(config('app.cipher'))),
             'APP_TIMEZONE' => $this->readParam('timezone'),
             'DB_CONNECTION' => $this->readParam('db_connection'),
@@ -136,19 +145,7 @@ class Installer
         return $this->params[$key] ?? null;
     }
 
-    private function createConference(): Conference
-    {
-        return ConferenceCreateAction::run([
-            'name' => $this->readParam('conference_name'),
-            'type' => $this->readParam('conference_type'),
-            'active' => true,
-            'meta' => [
-                'description' => $this->readParam('conference_description'),
-            ],
-        ]);
-    }
-
-    private function createAccount(): User
+    private function configureAccount(): User
     {
         try {
             DB::beginTransaction();
@@ -160,7 +157,10 @@ class Installer
                 'password' => $this->readParam('password'),
             ]);
 
+            setPermissionsTeamId(Application::CONTEXT_WEBSITE);
             $user->assignRole(UserRole::Admin->value);
+
+            auth()->login($user);
 
             DB::commit();
         } catch (\Throwable $th) {
@@ -171,5 +171,18 @@ class Installer
         }
 
         return $user;
+    }
+
+    private function removeEnvFile()
+    {
+        $filesystem = app(Filesystem::class);
+
+        $filesystem->delete(base_path('.env'));
+    }
+
+    private function configureApplication()
+    {
+        Version::application();
+        AppInstalled::dispatch();
     }
 }
