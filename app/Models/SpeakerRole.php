@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\BelongsToSerie;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,13 +16,12 @@ use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
 class SpeakerRole extends Model implements Sortable
 {
-    use BelongsToSerie, HasFactory, HasRecursiveRelationships, SortableTrait;
+    use BelongsToSerie, Cachable, HasFactory, SortableTrait;
 
     protected $table = 'speaker_roles';
 
     protected $fillable = [
         'serie_id',
-        'parent_id',
         'name',
     ];
 

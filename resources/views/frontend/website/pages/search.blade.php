@@ -30,7 +30,7 @@
                     x-on:click="advancedSearch = !advancedSearch"
                     >
                         Advanced Search <x-heroicon-c-chevron-down class="h-4 w-4 transition-transform" ::class="advancedSearch && 'rotate-180'"/>
-                    </button>
+                </button>
             </div>
             <div class="space-y-4" x-show="advancedSearch" x-collapse x-cloak>
                 <select 
@@ -54,9 +54,9 @@
         </form>
 
         @if($searchResults->isNotEmpty())
-        <div id="search-results" class="search-results grid sm:grid-cols-2 gap-4">
-            @foreach ($searchResults as $conference)
-                <x-website::conference-summary :conference="$conference" />
+        <div id="search-results" class="search-results grid lg:grid-cols-2 gap-6">
+            @foreach ($searchResults as $serie)
+                <x-website::serie-summary :serie="$serie" />
             @endforeach 
         </div>
         @if($searchResults->hasPages())

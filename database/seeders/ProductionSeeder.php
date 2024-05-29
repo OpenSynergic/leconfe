@@ -17,7 +17,6 @@ class ProductionSeeder extends Seeder
     {
         $this->call(PermissionSeeder::class);
         $this->call(SiteSeeder::class);
-        $this->call(MailTemplateSeeder::class);
         $this->call(SubmissionFileTypeSeeder::class);
     }
 }

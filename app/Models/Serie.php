@@ -49,7 +49,7 @@ class Serie extends Model implements HasMedia, HasAvatar, HasName
     protected static function booted(): void
     {
         static::updating(function (Serie $serie) {
-            if ($serie->isDirty('state') && $serie->state == SerieState::Current){
+            if ($serie->isDirty('state') && $serie->state == SerieState::Current) {
                 static::query()
                     ->where('conference_id', $serie->conference_id)
                     ->where('state', SerieState::Current->value)
@@ -104,6 +104,11 @@ class Serie extends Model implements HasMedia, HasAvatar, HasName
         return $this->title;
     }
 
+    public function hasThumbnail(): bool
+    {
+        return $this->getMedia('thumbnail')->isNotEmpty();
+    }
+
     public function getThumbnailUrl(): string
     {
         return $this->getFirstMedia('thumbnail')?->getAvailableUrl(['thumb', 'thumb-xl']) ?? Vite::asset('resources/assets/images/placeholder-vertical.jpg');
@@ -111,26 +116,43 @@ class Serie extends Model implements HasMedia, HasAvatar, HasName
 
     public function getHomeUrl(): string
     {
-        return $this->active ? route('livewirePageGroup.conference.pages.home', ['conference' => $this->conference]) : '#';
+        return $this->isCurrent()
+            ? route('livewirePageGroup.conference.pages.home', ['conference' => $this->conference])
+            : route('livewirePageGroup.archive.pages.home', ['conference' => $this->conference, 'serie' => $this->path]);
     }
 
-    public function isCurrent() : bool
+    public function isCurrent(): bool
     {
         return $this->state == SerieState::Current;
     }
 
-    public function isDraft() : bool
+    public function isDraft(): bool
     {
         return $this->state == SerieState::Draft;
     }
 
-    public function isPublished() : bool
+    public function isPublished(): bool
     {
         return $this->state == SerieState::Published;
     }
 
-    public function isArchived() : bool
+    public function isUpcoming(): bool
+    {
+        return $this->isPublished();
+    }
+
+    public function isArchived(): bool
     {
         return $this->state == SerieState::Archived;
+    }
+
+    public function scopeType($query, SerieType $type)
+    {
+        return $query->where('type', $type);
+    }
+
+    public function scopeState($query, SerieState $state)
+    {
+        return $query->where('state', $state);
     }
 }

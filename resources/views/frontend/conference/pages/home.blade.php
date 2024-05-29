@@ -1,6 +1,8 @@
 <x-website::layouts.main>
     @if($currentSerie)
-        <div class="space-y-10">
+        <div class="space-y-6">
+            <x-conference::alert-serie :serie="$currentSerie" />
+
             <section id="highlight-conference" class="space-y-4">
                 <div class="flex flex-col sm:flex-row flex-wrap space-y-4 sm:space-y-0 gap-4">
                     <div class="flex flex-col gap-4 flex-1">

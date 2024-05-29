@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Actions\Authors\AuthorRolePopulateDefaultDataAction;
+use App\Actions\MailTemplates\MailTemplatePopulateDefaultData;
 use App\Actions\Roles\RolePopulateConferenceAction;
 use App\Models\Conference;
 use App\Models\Enums\UserRole;
@@ -126,6 +127,8 @@ class ConferenceObserver
         ]);
 
         RolePopulateConferenceAction::run($conference);
+
+        MailTemplatePopulateDefaultData::run($conference);
 
         if(auth()->user()){
            $session_team_id = getPermissionsTeamId();
