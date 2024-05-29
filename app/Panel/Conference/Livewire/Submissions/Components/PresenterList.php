@@ -138,7 +138,7 @@ class PresenterList extends Component implements HasForms, HasTable
                 ->button()
                 ->size('sm')
                 ->outlined()
-                ->hidden($this->submission->isIncomplete() || $this->submission->isPublished()),
+                ->visible(fn (Model $record): bool => ! ($this->submission->isIncomplete() || $this->submission->isPublished()) && auth()->user()->can('processApproval', $record)),
                 ActionGroup::make([
                     EditAction::make()
                         ->modalWidth('3xl')
@@ -157,9 +157,6 @@ class PresenterList extends Component implements HasForms, HasTable
                             fn (Model $record): bool => $record->email == auth()->user()->email
                         ),
                 ])
-                ->button()
-                ->outlined()
-                ->size('sm')
                 ->hidden($this->viewOnly),
             ])
             ->headerActions([
