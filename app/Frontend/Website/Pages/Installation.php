@@ -2,6 +2,7 @@
 
 namespace App\Frontend\Website\Pages;
 
+use App\Facades\MetaTag;
 use App\Utils\Installer;
 use Livewire\Attributes\Title;
 use App\Utils\PermissionChecker;
@@ -23,11 +24,15 @@ class Installation extends Page
 
     public InstallationForm $form;
 
+    public bool $installationSuccessful = false;
+
     public function mount()
     {
         if (App::isInstalled()) {
             return redirect('/');
         }
+        
+        MetaTag::add('robots', 'noindex, nofollow');
 
         $this->checkPermission();
     }
@@ -59,7 +64,7 @@ class Installation extends Page
     public function testConnection()
     {
         if ($this->form->checkDatabaseConnection()) {
-            session()->flash('success', 'Successfully Connected');
+            session()->flash('testConnection', true);
         }
     }
 
@@ -69,10 +74,15 @@ class Installation extends Page
             return;
         }
 
-        $installer = new Installer($this->form->all());
-        $installer->run();
+        try {
+            $installer = new Installer($this->form->all());
+            $installer->run();
+    
+            return redirect('/');
+        } catch (\Throwable $th) {
+            $this->form->addError('error', $th->getMessage());
+        }
 
-        return redirect('/');
     }
 
     public function validateInstallation(): bool
