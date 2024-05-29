@@ -26,7 +26,6 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Mail\Templates\ApprovedPresenterMail;
 use App\Mail\Templates\RejectedPresenterMail;
 use App\Actions\Presenters\PresenterApprovedAction;
-use App\Actions\Presenters\PresenterRejectedAction;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use App\Panel\Conference\Resources\PresenterResource\Pages;
 use Mohamedsabil83\FilamentFormsTinyeditor\Components\TinyEditor;
@@ -70,7 +69,7 @@ class PresenterResource extends Resource
                     ->label('Group by Submission')
                     ->titlePrefixedWithLabel(false)
                     ->getTitleFromRecordUsing(fn (Presenter $record): string => 'Submission : '.ucfirst($record->submission?->getMeta('title')))
-                    ->collapsible(),
+                    ->getDescriptionFromRecordUsing(fn (Presenter $record): string => 'Status : '.$record->submission->status->value)
             ])
             ->columns([
                 Split::make([
