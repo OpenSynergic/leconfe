@@ -13,7 +13,7 @@
             <p class="text-lg">You have successfully installed Leconfe</p>
         </div>
         <div class="text-center">
-            <a href="{{ route('livewirePageGroup.website.pages.home') }}" class="btn btn-primary">Go to Home</a>
+            <a href="{{ route('filament.administration.pages.dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
         </div>
     </div>
 </div>
