@@ -57,22 +57,14 @@ class CommitteeResource extends Resource
             ->native(false)
             ->searchable()
             ->allowHtml()
-            ->options(function () {
-                $committees = static::getEloquentQuery()->pluck('email')->toArray();
-
-                return Committee::query()
-                    ->whereNotIn('email', $committees)
-                    ->get()
-                    ->mapWithKeys(fn (Committee $committee) => [$committee->getKey() => static::renderSelectCommittee($committee)])
-                    ->toArray();
-            })
             ->optionsLimit(10)
             ->getSearchResultsUsing(
-                function (string $search) {
+                function (string $search, Select $component) {
                     $committees = static::getEloquentQuery()->pluck('email')->toArray();
 
                     return Committee::query()
                         ->with(['media', 'meta'])
+                        ->limit($component->getOptionsLimit())
                         ->whereNotIn('email', $committees)
                         ->where(fn ($query) => $query->where('given_name', 'LIKE', "%{$search}%")
                             ->orWhere('family_name', 'LIKE', "%{$search}%")

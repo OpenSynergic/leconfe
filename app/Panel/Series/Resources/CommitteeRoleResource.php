@@ -44,9 +44,6 @@ class CommitteeRoleResource extends Resource
                         return $rule
                             ->where('serie_id', app()->getCurrentSerie()->getKey());
                     }),
-                Select::make('parent_id')
-                    ->relationship('parent', 'name', fn ($query, ?CommitteeRole $record) => $query
-                        ->when($record, fn ($query) => $query->whereNot('id', $record->getKey()))),
             ]);
     }
 
@@ -59,8 +56,6 @@ class CommitteeRoleResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('parent.name')
-                    ->badge(),
                 Tables\Columns\TextColumn::make('committees_count')
                     ->label('Committees')
                     ->counts('committees')

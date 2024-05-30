@@ -11,6 +11,7 @@ use Spatie\EloquentSortable\Sortable;
 use Illuminate\Database\Eloquent\Model;
 use Database\Factories\CommitteeFactory;
 use Filament\Models\Contracts\HasAvatar;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Notifications\Notifiable;
 use Kra8\Snowflake\HasShortflakePrimary;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,7 +25,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Committee extends Model implements HasAvatar, HasMedia, Sortable
 {
-    use HasFactory, BelongsToSerie, HasShortflakePrimary, Metable, Notifiable, SortableTrait, InteractsWithMedia;
+    use Cachable, HasFactory, BelongsToSerie, HasShortflakePrimary, Metable, Notifiable, SortableTrait, InteractsWithMedia;
 
     protected $table = 'committees';
 
@@ -61,11 +62,6 @@ class Committee extends Model implements HasAvatar, HasMedia, Sortable
         $this->addMediaConversion('thumb-xl')
             ->keepOriginalImageFormat()
             ->width(800);
-    }
-
-    protected function getMetaClassName(): string
-    {
-        return CommitteeMeta::class;
     }
 
     public function scopeEmail(Builder $query, string $email)

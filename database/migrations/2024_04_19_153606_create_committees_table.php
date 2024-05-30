@@ -16,22 +16,9 @@ return new class extends Migration
         Schema::create('committee_roles', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Serie::class)->constrained();
-            $table->unsignedBigInteger('parent_id')->nullable();
             $table->string('name');
             $table->unsignedInteger('order_column')->nullable();
             $table->timestamps();
-        });
-
-        Schema::create('committee_meta', function (Blueprint $table) {
-            $table->id();
-            $table->string('metable_type');
-            $table->unsignedBigInteger('metable_id');
-            $table->string('type')->default('null');
-            $table->string('key')->index();
-            $table->longtext('value');
-
-            $table->unique(['metable_type', 'metable_id', 'key']);
-            $table->index(['key', 'metable_type']);
         });
 
         Schema::create('committees', function (Blueprint $table) {
@@ -55,7 +42,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('committees');
-        Schema::dropIfExists('committee_meta');
         Schema::dropIfExists('committee_roles');
     }
 };
