@@ -70,6 +70,7 @@ class Register extends Page
             'email' => [
                 'required',
                 'email',
+                'unique:users,email'
             ],
             'password' => [
                 'required',
