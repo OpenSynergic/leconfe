@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\BelongsToConference;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +16,7 @@ use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
 class AuthorRole extends Model implements Sortable
 {
-    use BelongsToConference, HasFactory, HasRecursiveRelationships, SortableTrait;
+    use Cachable, BelongsToConference, HasFactory, SortableTrait;
 
     protected $table = 'author_roles';
 

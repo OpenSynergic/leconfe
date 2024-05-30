@@ -8,6 +8,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\EloquentSortable\Sortable;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Models\Contracts\HasAvatar;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Notifications\Notifiable;
 use Kra8\Snowflake\HasShortflakePrimary;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,7 +20,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Author extends Model implements HasAvatar, HasMedia, Sortable
 {
-    use HasShortflakePrimary, Metable, Notifiable, SortableTrait, InteractsWithMedia;
+    use Cachable, HasShortflakePrimary, Metable, Notifiable, SortableTrait, InteractsWithMedia;
 
     protected $table = 'authors';
 
