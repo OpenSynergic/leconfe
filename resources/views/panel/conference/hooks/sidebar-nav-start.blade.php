@@ -1,6 +1,14 @@
 @use('\App\Models\Conference')
+@use('\App\Models\User')
 @php
     $currentConference = app()->getCurrentConference();
+
+    $conferences = Conference::with(['media'])
+                ->where('path', '!=', $currentConference->path)
+                ->whereHas('conferenceUsers', function ($query) {
+                    $query->where('model_has_roles.model_id', auth()->id());
+                })
+                ->latest();
 @endphp
 
 <x-filament::dropdown
@@ -52,33 +60,35 @@
         </button>
     </x-slot>
 
-    <x-filament::dropdown.list>
-        <div class="flex w-full items-center gap-2 whitespace-nowrap p-2 text-sm transition-colors duration-75 outline-none font-medium border-b">
-            Switch Conference
-        </div>
-        
-        @can('Administration:view')
-        <x-filament::dropdown.list.item
-            :href="route('filament.administration.home')"
-            icon="heroicon-s-cog"
-            tag="a"
-            class="border-b"
-        >
-            {{ __('Administration') }}
-        </x-filament::dropdown.list.item>
-        @endcan
-
-        <div class="max-h-64 overflow-y-scroll">
-        @foreach (Conference::with(['media'])->where('path', '!=', app()->getCurrentConference()->path)->latest()->get() as $conference)
+    @if($conferences->exists())
+        <x-filament::dropdown.list>
+            <div class="flex w-full items-center gap-2 whitespace-nowrap p-2 text-sm transition-colors duration-75 outline-none font-medium border-b">
+                Switch Conference
+            </div>
+            
+            @can('Administration:view')
             <x-filament::dropdown.list.item
-                :href="$conference->getPanelUrl()"
-                :icon="filament()->getTenantAvatarUrl($conference)"
+                :href="route('filament.administration.home')"
+                icon="heroicon-s-cog"
                 tag="a"
+                class="border-b"
             >
-                {{ $conference->name }}
+                {{ __('Administration') }}
             </x-filament::dropdown.list.item>
-        @endforeach
-        </div>
-    </x-filament::dropdown.list>
+            @endcan
+
+            <div class="max-h-64 overflow-y-scroll">
+            @foreach ($conferences->get() as $conference)
+                <x-filament::dropdown.list.item
+                    :href="$conference->getPanelUrl()"
+                    :icon="filament()->getTenantAvatarUrl($conference)"
+                    tag="a"
+                >
+                    {{ $conference->name }}
+                </x-filament::dropdown.list.item>
+            @endforeach
+            </div>
+        </x-filament::dropdown.list>
+    @endif
 
 </x-filament::dropdown>
