@@ -117,7 +117,7 @@ class Register extends Page
         ];
 
         if(!app()->getCurrentConference()){
-            $data['conferences'] = Conference::all();
+            $data['conferences'] = Conference::query()->get();
         }
 
         return $data;
