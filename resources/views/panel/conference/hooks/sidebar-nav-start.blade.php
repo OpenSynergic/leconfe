@@ -1,5 +1,4 @@
 @use('\App\Models\Conference')
-@use('\App\Models\User')
 @php
     $currentConference = app()->getCurrentConference();
 
