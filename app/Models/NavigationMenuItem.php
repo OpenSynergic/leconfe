@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Plank\Metable\Metable;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
-use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
 class NavigationMenuItem extends Model implements Sortable
 {
-    use HasFactory, HasRecursiveRelationships, Metable, SortableTrait;
+    use Cachable, HasFactory, Metable, SortableTrait;
 
     protected $fillable = [
         'label',
@@ -30,9 +32,19 @@ class NavigationMenuItem extends Model implements Sortable
         });
     }
 
-    public function navigationMenu()
+    public function navigationMenu() : BelongsTo
     {
         return $this->belongsTo(NavigationMenu::class);
+    }
+
+    public function parent() : BelongsTo
+    {
+        return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    public function children() : HasMany
+    {
+        return $this->hasMany(self::class, 'parent_id');
     }
 
     public function buildSortQuery()
