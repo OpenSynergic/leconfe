@@ -69,7 +69,5 @@ Route::get('phpmyinfo', function () {
     phpinfo();
 })->middleware('admin')->name('phpmyinfo');
 
-Route::get('{conference:path}/logout', LogoutController::class)->name('conference.logout');
-Route::post('{conference:path}/logout', LogoutController::class)->name('conference.logout');
-Route::get('logout', LogoutController::class)->name('logout');
-Route::post('logout', LogoutController::class)->name('logout');
+Route::any('{conference:path}/logout', LogoutController::class)->name('conference.logout');
+Route::any('logout', LogoutController::class)->name('logout');
