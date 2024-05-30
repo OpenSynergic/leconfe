@@ -8,7 +8,7 @@
 
             @livewire(Components\Discussions\DiscussionTopic::class, ['submission' => $submission, 'stage' => SubmissionStage::CallforAbstract, 'lazy' => true])
         </div>
-        <div class="sticky z-40 flex flex-col self-start col-span-4 gap-3 top-24">
+        <div class="sticky z-30 flex flex-col self-start col-span-4 gap-3 top-24">
             @if ($submission->stage == SubmissionStage::PeerReview && !$reviewStageOpen)
                 <div class="p-4 text-base text-white rounded-lg bg-primary-700">
                     This submission has been accepted. Now, we are waiting to next stage is open.
