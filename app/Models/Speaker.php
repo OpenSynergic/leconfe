@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Models\Concerns\BelongsToSerie;
 use Plank\Metable\Metable;
 use Illuminate\Support\Str;
-use App\Models\Meta\SpeakerMeta;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\EloquentSortable\Sortable;
 use Database\Factories\SpeakerFactory;
