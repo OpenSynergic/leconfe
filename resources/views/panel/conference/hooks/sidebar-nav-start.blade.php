@@ -16,6 +16,7 @@
     teleport
     class="-mx-2"
     id="switch-conference"
+    width="xs"
 >
     <x-slot name="trigger">
         <button
