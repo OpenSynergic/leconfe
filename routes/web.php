@@ -62,7 +62,7 @@ Route::get('local/temp/{path}', function (string $path, Request $request) {
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
 
-    return redirect()->route('filament.panel.tenant');
+    return redirect()->route('livewirePageGroup.website.pages.home');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 Route::get('phpmyinfo', function () {

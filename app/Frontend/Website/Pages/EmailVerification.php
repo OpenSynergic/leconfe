@@ -17,7 +17,7 @@ class EmailVerification extends Page
     public function mount()
     {
         if (! Setting::get('must_verify_email')) {
-            return redirect()->route('filament.panel.tenant');
+            return redirect()->route('livewirePageGroup.website.pages.home');
         }
 
         if (! auth()->check()) {
@@ -25,7 +25,7 @@ class EmailVerification extends Page
         }
 
         if (auth()->user()->hasVerifiedEmail()) {
-            return redirect()->route('filament.panel.tenant');
+            return redirect()->route('livewirePageGroup.website.pages.home');
         }
     }
 
@@ -37,7 +37,7 @@ class EmailVerification extends Page
     public function sendEmailVerificationLink()
     {
         if (auth()->user()->hasVerifiedEmail()) {
-            return redirect()->route('filament.panel.tenant');
+            return redirect()->route('livewirePageGroup.website.pages.home');
         }
 
         try {
