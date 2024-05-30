@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Plank\Metable\Metable;
 use Illuminate\Support\Str;
-use App\Models\Meta\AuthorMeta;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\EloquentSortable\Sortable;
 use Illuminate\Database\Eloquent\Model;
@@ -52,11 +51,6 @@ class Author extends Model implements HasAvatar, HasMedia, Sortable
         $this->addMediaConversion('thumb-xl')
             ->keepOriginalImageFormat()
             ->width(800);
-    }
-
-    protected function getMetaClassName(): string
-    {
-        return AuthorMeta::class;
     }
 
     public function scopeEmail(Builder $query, string $email)

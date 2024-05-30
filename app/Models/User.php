@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Mail\Templates\VerifyUserEmail;
 use App\Models\Enums\UserRole;
-use App\Models\Meta\UserMeta;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasName;
@@ -76,11 +75,6 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia,
     public function canAccessPanel(Panel $panel): bool
     {
         return true;
-    }
-
-    protected function getMetaClassName(): string
-    {
-        return UserMeta::class;
     }
 
     protected function fullName(): Attribute

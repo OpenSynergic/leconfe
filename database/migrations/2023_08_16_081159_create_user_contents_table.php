@@ -23,18 +23,6 @@ return new class extends Migration
             $table->foreignIdFor(User::class, 'created_by');
             $table->timestamps();
         });
-
-        Schema::create('user_content_meta', function (Blueprint $table) {
-            $table->id();
-            $table->string('metable_type');
-            $table->unsignedBigInteger('metable_id');
-            $table->string('type')->default('null');
-            $table->string('key')->index();
-            $table->longtext('value');
-
-            $table->unique(['metable_type', 'metable_id', 'key']);
-            $table->index(['key', 'metable_type']);
-        });
     }
 
     /**
