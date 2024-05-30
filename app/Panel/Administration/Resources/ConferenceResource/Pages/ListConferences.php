@@ -33,10 +33,9 @@ class ListConferences extends ListRecords
                     $serie = SerieCreateAction::run([
                         'conference_id' => $record->getKey(),
                         'path' => Str::slug($data['serie']['title']),
+                        'state' => SerieState::Current,
                         ...$data['serie'],
                     ]);
-
-                    $serie->publish()->setAsCurrent();
 
 
                     return $record;
