@@ -8,5 +8,5 @@ class ParticipanSubmissionWidget extends Widget
 {
     protected static string $view = 'panel.conference.widgets.participan-submission-widget';
 
-    protected static ?int $sort = 2;
+    protected static ?int $sort = 3;
 }

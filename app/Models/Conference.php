@@ -96,6 +96,11 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
         return $this->hasMany(Role::class);
     }
 
+    public function conferenceUsers()
+    {
+        return $this->morphedByMany(User::class, 'model', 'model_has_roles');
+    }
+
     public function proceedings(): HasMany
     {
         return $this->hasMany(Proceeding::class);

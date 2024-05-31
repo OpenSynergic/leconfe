@@ -3,12 +3,14 @@
 namespace App\Panel\Conference\Pages;
 
 use App\Actions\User\UserUpdateAction;
+use App\Infolists\Components\BladeEntry;
 use App\Models\Enums\UserRole;
 use App\Models\User;
 use App\Panel\Conference\Livewire\Forms\Conferences\ContributorForm;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Tabs;
 use Filament\Pages\Page;
 use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
@@ -17,6 +19,8 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\Tabs\Tab;
+use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Hash;
 
@@ -200,5 +204,73 @@ class Profile extends Page implements HasForms
         }
     }
 
+    public function profileInfolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Tabs::make()
+                    ->schema([
+                        Tab::make('Information')
+                            ->icon('heroicon-o-information-circle')
+                            ->schema([
+                                BladeEntry::make('information-form')
+                                    ->blade('
+                                        <form wire:submit="submitInformationForm" class="space-y-4">
+                                            {{ $this->informationForm }}
+                            
+                                            <x-filament::button type="submit">
+                                                Save
+                                            </x-filament::button>                
+                                        </form>
+                                    '),
+                            ]),
+                        Tab::make('Roles')
+                            ->icon('heroicon-o-shield-check')
+                            ->hidden(!app()->getCurrentConference())
+                            ->schema([
+                                BladeEntry::make('roles-form')
+                                    ->blade('
+                                        <form wire:submit="submitRolesForm" class="space-y-4">
+                                            @if (empty(auth()->user()->roles->pluck("name")->toArray()))
+                                            <x-filament::section class="!bg-primary-100">
+                                                <div class="flex items-center justify-between">
+                                                    <div class="flex items-center">
+                                                        <x-heroicon-o-globe-alt class="w-8 h-8 text-primary-800" />
+                                                        <div class="flex flex-col ml-3">
+                                                            <div class="font-medium text-sm leading-none">Register for the conference and select your preferred role to participate.</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </x-filament::section>
+                                            @endif
+                                            {{ $this->rolesForm }}
+                            
+                                            <x-filament::button type="submit">
+                                                Save
+                                            </x-filament::button>                
+                                        </form>
+                                    '),
+                            ]),
+                        Tab::make('Notifications')
+                            ->icon('heroicon-o-bell')
+                            ->schema([
+                                BladeEntry::make('notification-form')
+                                    ->blade('
+                                        <form wire:submit="submitNotificationsForm" class="space-y-4">
+                                            <x-filament::section>
+                                                {{ $this->notificationForm }}
+                                            </x-filament::section>
 
+                                            <x-filament::button type="submit">
+                                                Save
+                                            </x-filament::button>                
+                                        </form>
+                                    '),
+                            ]),
+                    ])
+                    ->contained(false)
+                    ->persistTab()
+                    ->persistTabInQueryString()
+            ]);
+    }
 }
