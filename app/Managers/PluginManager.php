@@ -474,10 +474,6 @@ class PluginManager
             if ($pluginsDisk->exists($pluginName)) {
                 continue;
             }
-            $this->validatePlugin($pluginPath);
-            $plugin = $this->loadPlugin($pluginPath);
-            $plugin->load();
-            $plugin->boot();
             $fileSystem = new Filesystem();
             $fileSystem->copyDirectory($pluginPath, $pluginsDisk->path($pluginName));
         }
