@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Actions\Authors\AuthorRolePopulateDefaultDataAction;
 use App\Actions\MailTemplates\MailTemplatePopulateDefaultData;
 use App\Actions\Roles\RolePopulateConferenceAction;
+use App\Facades\Plugin;
 use App\Models\Conference;
 use App\Models\Enums\UserRole;
 use App\Models\NavigationMenu;
@@ -125,6 +126,8 @@ class ConferenceObserver
                 'updated_at' => now(),
             ],
         ]);
+
+        Plugin::installDefaultPlugins($conference);
 
         RolePopulateConferenceAction::run($conference);
 

@@ -1,14 +1,14 @@
 <?php
 
+namespace CustomSidebarManager;
+
 use App\Classes\Plugin;
 use App\Facades\SidebarFacade;
 use CustomSidebarManager\CustomSidebarBlock;
 use CustomSidebarManager\Pages\CustomSidebarManagerPage;
 use Filament\Panel;
 
-require 'vendor/autoload.php';
-
-return new class extends Plugin
+class CustomSidebarManagerPlugin extends Plugin
 {
     public function boot()
     {
