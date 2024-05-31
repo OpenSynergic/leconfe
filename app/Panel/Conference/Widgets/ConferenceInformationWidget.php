@@ -11,6 +11,8 @@ class ConferenceInformationWidget extends Widget
 
     protected int|string|array $columnSpan = 'full';
 
+    protected static ?int $sort = 2;
+
     protected function getViewData(): array
     {
         return [
