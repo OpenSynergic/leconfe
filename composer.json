@@ -37,6 +37,7 @@
         "plank/laravel-metable": "^5.4",
         "propaganistas/laravel-disposable-email": "^2.2",
         "propaganistas/laravel-phone": "^5.0",
+        "rahmanramsi/laravel-async-queue": "^1.0",
         "rahmanramsi/livewire-page-group": "*",
         "rickselby/laravel-gate-cache": "^3.7",
         "spatie/eloquent-sortable": "^4.0",
