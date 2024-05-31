@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Facades\Setting;
 use App\Models\Concerns\BelongsToConference;
-use App\Models\Meta\UserContentMeta;
 use DateTimeInterface;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Builder;
@@ -53,11 +52,6 @@ class UserContent extends Model implements HasMedia
         $this->addMediaConversion('thumb')
             ->keepOriginalImageFormat()
             ->width(400);
-    }
-
-    protected function getMetaClassName(): string
-    {
-        return UserContentMeta::class;
     }
 
     /**

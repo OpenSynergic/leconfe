@@ -112,12 +112,12 @@
 
                         @if(!$currentConference)
                             <div class="col-span-full space-y-4">
-                                <p class="">Which conferences listed on this website are you interested in registering for??</p>
+                                <p class="">Which conferences listed on this website are you interested in registering for?</p>
                                 @foreach ($conferences as $conference)
-                                    <div class="form-control gap-2">
-                                        <label class="label-text">{{ $conference->name }}</label>
+                                    <div class="conference form-control gap-2">
+                                        <label class="conference-name label-text font-medium">{{ $conference->name }}</label>
                                         @foreach ($roles as $role)
-                                            <div class="form-control">
+                                            <div class="conference-roles form-control">
                                                 <div class="inline-flex gap-2 items-center cursor">
                                                     <input type="checkbox" name="selfAssignRoles[{{ $conference->id }}]" class="checkbox checkbox-sm" wire:model='selfAssignRoles.{{ $conference->id }}.{{ $role }}'
                                                         value="{{ $role }}" />

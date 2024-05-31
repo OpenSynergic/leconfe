@@ -78,7 +78,7 @@ class Installation extends Page
             $installer = new Installer($this->form->all());
             $installer->run();
     
-            return redirect('/');
+            return redirect()->route('livewirePageGroup.website.pages.installation-successful');
         } catch (\Throwable $th) {
             $this->form->addError('error', $th->getMessage());
         }

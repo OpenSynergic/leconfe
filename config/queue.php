@@ -34,6 +34,10 @@ return [
             'driver' => 'sync',
         ],
 
+        'async' => [
+            'driver' => 'async',
+        ],
+
         'database' => [
             'driver' => 'database',
             'table' => 'jobs',

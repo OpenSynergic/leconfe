@@ -70,6 +70,7 @@ class Register extends Page
             'email' => [
                 'required',
                 'email',
+                'unique:users,email'
             ],
             'password' => [
                 'required',
@@ -116,7 +117,7 @@ class Register extends Page
         ];
 
         if(!app()->getCurrentConference()){
-            $data['conferences'] = Conference::all();
+            $data['conferences'] = Conference::query()->get();
         }
 
         return $data;

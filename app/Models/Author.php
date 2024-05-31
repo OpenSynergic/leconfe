@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Plank\Metable\Metable;
 use Illuminate\Support\Str;
-use App\Models\Meta\AuthorMeta;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\EloquentSortable\Sortable;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Models\Contracts\HasAvatar;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Notifications\Notifiable;
 use Kra8\Snowflake\HasShortflakePrimary;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,7 +20,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Author extends Model implements HasAvatar, HasMedia, Sortable
 {
-    use HasShortflakePrimary, Metable, Notifiable, SortableTrait, InteractsWithMedia;
+    use Cachable, HasShortflakePrimary, Metable, Notifiable, SortableTrait, InteractsWithMedia;
 
     protected $table = 'authors';
 
@@ -52,11 +52,6 @@ class Author extends Model implements HasAvatar, HasMedia, Sortable
         $this->addMediaConversion('thumb-xl')
             ->keepOriginalImageFormat()
             ->width(800);
-    }
-
-    protected function getMetaClassName(): string
-    {
-        return AuthorMeta::class;
     }
 
     public function scopeEmail(Builder $query, string $email)

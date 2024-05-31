@@ -58,22 +58,14 @@ class SpeakerResource extends Resource
             ->native(false)
             ->searchable()
             ->allowHtml()
-            ->options(function () {
-                $speakers = static::getEloquentQuery()->pluck('email')->toArray();
-
-                return Speaker::query()
-                    ->whereNotIn('email', $speakers)
-                    ->get()
-                    ->mapWithKeys(fn (Speaker $speaker) => [$speaker->getKey() => static::renderSelectSpeaker($speaker)])
-                    ->toArray();
-            })
             ->optionsLimit(10)
             ->getSearchResultsUsing(
-                function (string $search) {
+                function (string $search, Select $component) {
                     $speakers = static::getEloquentQuery()->pluck('email')->toArray();
 
                     return Speaker::query()
                         ->with(['media', 'meta'])
+                        ->limit($component->getOptionsLimit())
                         ->whereNotIn('email', $speakers)
                         ->where(fn ($query) => $query->where('given_name', 'LIKE', "%{$search}%")
                             ->orWhere('family_name', 'LIKE', "%{$search}%")

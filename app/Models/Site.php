@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Meta\SiteMeta;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Model;
 use Plank\Metable\Metable;
@@ -34,11 +33,6 @@ class Site extends Model implements HasMedia
         $this->addMediaConversion('thumb-xl')
             ->keepOriginalImageFormat()
             ->width(800);
-    }
-
-    protected function getMetaClassName(): string
-    {
-        return SiteMeta::class;
     }
 
     protected function getAllDefaultMeta(): array

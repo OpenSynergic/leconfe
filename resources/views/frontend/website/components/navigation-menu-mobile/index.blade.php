@@ -121,18 +121,6 @@
                                         @endforeach
                                     </ul>
                                 </div>
-                                {{-- <x-website::navigation-mobile.items :items="$items" />
-                                <div class="flex flex-col gap-2">
-                                    @if (\Filament\Facades\Filament::getDefaultPanel()->auth()->user())
-                                        <x-website::link :href="route('filament.panel.tenant')" :spa="false"
-                                            class="btn btn-sm btn-primary rounded px-4 font-normal">Dashboard</x-website::link>
-                                    @else
-                                        <x-website::link :href="route('livewirePageGroup.website.pages.register')" :spa="false"
-                                            class="btn btn-sm btn-primary rounded px-4 font-normal">Register</x-website::link>
-                                        <x-website::link :href="route('livewirePageGroup.website.pages.login')" :spa="false"
-                                            class="btn btn-sm rounded px-4 font-normal text-gray-900">Login</x-website::link>
-                                    @endif
-                                </div> --}}
                             </div>
                         </div>
                     </div>

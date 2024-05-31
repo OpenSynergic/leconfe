@@ -11,11 +11,10 @@ use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
-use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
 class CommitteeRole extends Model implements Sortable
 {
-    use BelongsToSerie, HasFactory, HasRecursiveRelationships, SortableTrait;
+    use BelongsToSerie, HasFactory, SortableTrait;
 
     protected $table = 'committee_roles';
 

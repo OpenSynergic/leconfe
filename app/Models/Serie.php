@@ -17,10 +17,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Vite;
+use Kra8\Snowflake\HasShortflakePrimary;
 
 class Serie extends Model implements HasMedia, HasAvatar, HasName
 {
-    use Cachable, BelongsToConference, HasFactory, InteractsWithMedia, Metable, SoftDeletes;
+    use Cachable, BelongsToConference, HasFactory, InteractsWithMedia, Metable, SoftDeletes, HasShortflakePrimary;
 
     protected $fillable = [
         'conference_id',

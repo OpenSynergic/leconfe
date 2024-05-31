@@ -20,18 +20,6 @@ return new class extends Migration
             $table->string('path')->unique();
             $table->timestamps();
         });
-
-        Schema::create('conference_meta', function (Blueprint $table) {
-            $table->id();
-            $table->string('metable_type');
-            $table->unsignedBigInteger('metable_id');
-            $table->string('type')->default('null');
-            $table->string('key')->index();
-            $table->longtext('value');
-
-            $table->unique(['metable_type', 'metable_id', 'key']);
-            $table->index(['key', 'metable_type']);
-        });
     }
 
     /**
@@ -39,7 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('conference_meta');
         Schema::dropIfExists('conferences');
     }
 };

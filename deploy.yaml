@@ -6,7 +6,7 @@ config:
   repository: 'https://github.com/OpenSynergic/leconfe.git'
   application: 'leconfe'
   php_fpm_version: "8.1"
-  keep_releases: 3
+  keep_releases: 2
   shared_dirs: 
     - storage
     - public/.well-known
@@ -34,9 +34,7 @@ tasks:
     - artisan:view:cache
     - artisan:config:cache
     - artisan:optimize
-    - artisan:migrate
     - pnpm:build
-    - leconfe:upgrade
     - artisan:up
     - deploy:publish
     - php-fpm:reload
@@ -55,6 +53,8 @@ tasks:
     - run: "ln -s {{base_deploy_path}}/public_html/.well-known {{base_deploy_path}}/public_html/current/public/.well-known"
   leconfe:upgrade:
     - run : "cd {{release_path}} && php artisan leconfe:upgrade --confirm"
+  node:delete:
+    - run: "rm -rf {{release_path}}/node_modules"
   
 after:
   deploy:failed: deploy:unlock

@@ -46,11 +46,6 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
 
     ];
 
-    protected function getMetaClassName(): string
-    {
-        return ConferenceMeta::class;
-    }
-
     public function submission(): HasMany
     {
         return $this->hasMany(Submission::class);
@@ -64,11 +59,6 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
     public function topics(): HasMany
     {
         return $this->hasMany(Topic::class);
-    }
-
-    public function settings(): HasMany
-    {
-        return $this->hasMany(Setting::class);
     }
 
     public function announcements(): HasMany
