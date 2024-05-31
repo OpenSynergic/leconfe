@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\Enums\PresenterStatus;
-use App\Models\Meta\PresenterMeta;
 use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -58,11 +57,6 @@ class Presenter extends Model implements HasAvatar, HasMedia, Sortable
         $this->addMediaConversion('thumb-xl')
             ->keepOriginalImageFormat()
             ->width(800);
-    }
-
-    protected function getMetaClassName(): string
-    {
-        return PresenterMeta::class;
     }
 
     public function scopeEmail(Builder $query, string $email)

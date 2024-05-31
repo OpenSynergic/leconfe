@@ -50,7 +50,6 @@
         "spatie/once": "^3.1",
         "squirephp/countries-en": "^3.4",
         "squirephp/currencies-en": "^3.4",
-        "staudenmeir/laravel-adjacency-list": "^1.0",
         "stechstudio/filament-impersonate": "^3.5",
         "stevebauman/purify": "^6.0",
         "symfony/yaml": "^6.4"

@@ -9,7 +9,6 @@ use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
 use App\Models\Interfaces\HasPayment;
-use App\Models\Meta\SubmissionMeta;
 use App\Models\States\Submission\BaseSubmissionState;
 use App\Models\States\Submission\DeclinedSubmissionState;
 use App\Models\States\Submission\EditingSubmissionState;
@@ -72,11 +71,6 @@ class Submission extends Model implements HasMedia, HasPayment, Sortable
         'order_column_name' => 'proceeding_order_column',
         'sort_when_creating' => true,
     ];
-
-    protected function getMetaClassName(): string
-    {
-        return SubmissionMeta::class;
-    }
 
     /**
      * The "booted" method of the model.

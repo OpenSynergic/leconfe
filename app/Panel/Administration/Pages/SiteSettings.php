@@ -18,6 +18,7 @@ use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Auth;
 
 class SiteSettings extends Page implements HasInfolists
 {
@@ -31,6 +32,11 @@ class SiteSettings extends Page implements HasInfolists
 
     public function mount()
     {
+    }
+
+    public static function canAccess(): bool
+    {
+        return Auth::user()->can('update', app()->getSite());
     }
 
     public function infolist(Infolist $infolist): Infolist

@@ -8,6 +8,7 @@ use Filament\Support\Enums\MaxWidth;
 use App\Actions\Series\SerieCreateAction;
 use Filament\Resources\Pages\ListRecords;
 use App\Actions\Conferences\ConferenceCreateAction;
+use App\Models\Enums\SerieState;
 use App\Panel\Administration\Resources\ConferenceResource;
 
 class ListConferences extends ListRecords
@@ -33,10 +34,9 @@ class ListConferences extends ListRecords
                     $serie = SerieCreateAction::run([
                         'conference_id' => $record->getKey(),
                         'path' => Str::slug($data['serie']['title']),
+                        'state' => SerieState::Current,
                         ...$data['serie'],
                     ]);
-
-                    $serie->publish()->setAsCurrent();
 
 
                     return $record;

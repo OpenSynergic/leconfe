@@ -1,8 +1,10 @@
 @use('\App\Models\Conference')
 @php
     $currentConference = app()->getCurrentConference();
+    $conferences = Conference::with(['media'])->where('path', '!=', app()->getCurrentConference()->path)->latest()->get();
 @endphp
 
+@if($conferences->isNotEmpty())
 <x-filament::dropdown
     placement="bottom-start"
     teleport
@@ -67,9 +69,8 @@
             {{ __('Administration') }}
         </x-filament::dropdown.list.item>
         @endcan
-
         <div class="max-h-64 overflow-y-scroll">
-        @foreach (Conference::with(['media'])->where('path', '!=', app()->getCurrentConference()->path)->latest()->get() as $conference)
+        @foreach ($conferences as $conference)
             <x-filament::dropdown.list.item
                 :href="$conference->getPanelUrl()"
                 :icon="filament()->getTenantAvatarUrl($conference)"
@@ -82,3 +83,41 @@
     </x-filament::dropdown.list>
 
 </x-filament::dropdown>
+@else
+    <div class="-mx-2">
+        <button
+            @if (filament()->isSidebarCollapsibleOnDesktop())
+                x-data="{ tooltip: false }"
+                x-effect="
+                    tooltip = $store.sidebar.isOpen
+                        ? false
+                        : {
+                            content: @js($currentConference->name),
+                            placement: document.dir === 'rtl' ? 'left' : 'right',
+                            theme: $store.theme,
+                        }
+                "
+                x-tooltip.html="tooltip"
+            @endif
+            type="button"
+            class="fi-tenant-menu-trigger group flex w-full items-center justify-center gap-x-3 rounded-lg p-2 text-sm font-medium outline-none transition duration-75 hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-white/5 dark:focus:bg-white/5"
+            >
+            <x-filament::avatar
+                    :circular="false"
+                    :src="filament()->getTenantAvatarUrl($currentConference)"
+                />
+            <span
+                @if (filament()->isSidebarCollapsibleOnDesktop())
+                    x-show="$store.sidebar.isOpen"
+                @endif
+                class="grid justify-items-start text-start me-auto truncate"
+            >
+                
+    
+                <span class="text-gray-950 dark:text-white">
+                    {{ $currentConference->name }}
+                </span>
+            </span>
+        </button>
+    </div>
+@endif

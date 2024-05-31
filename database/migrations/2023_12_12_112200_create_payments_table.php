@@ -32,18 +32,6 @@ return new class extends Migration
             $table->index(['state']);
         });
 
-        Schema::create('payment_meta', function (Blueprint $table) {
-            $table->id();
-            $table->string('metable_type');
-            $table->unsignedBigInteger('metable_id');
-            $table->string('type')->default('null');
-            $table->string('key')->index();
-            $table->longtext('value');
-
-            $table->unique(['metable_type', 'metable_id', 'key']);
-            $table->index(['key', 'metable_type']);
-        });
-
         Schema::create('payment_items', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Conference::class)->constrained();
