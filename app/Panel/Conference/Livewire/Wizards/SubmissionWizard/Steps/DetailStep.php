@@ -79,6 +79,7 @@ class DetailStep extends Component implements HasActions, HasForms, HasWizardSte
                             ->type('submissionKeywords'),
                         TinyEditor::make('meta.abstract')
                             ->minHeight(300)
+                            ->required()
                             ->profile('basic'),
                     ]),
             ]),
