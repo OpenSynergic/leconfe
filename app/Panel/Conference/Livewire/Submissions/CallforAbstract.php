@@ -4,7 +4,9 @@ namespace App\Panel\Conference\Livewire\Submissions;
 
 use App\Mail\Templates\AcceptAbstractMail;
 use App\Mail\Templates\DeclineAbstractMail;
+use App\Models\Enums\UserRole;
 use App\Models\MailTemplate;
+use App\Models\Role;
 use App\Models\Submission;
 use App\Notifications\AbstractAccepted;
 use App\Notifications\AbstractDeclined;
@@ -29,6 +31,10 @@ class CallforAbstract extends Component implements HasActions, HasForms
     use InteractsWithActions, InteractsWithForms, InteractWithTenant;
 
     public Submission $submission;
+
+    protected $listeners = [
+        'refreshSubmission' => '$refresh',
+    ];
 
     public function declineAction()
     {
@@ -145,6 +151,13 @@ class CallforAbstract extends Component implements HasActions, HasForms
                 function (Action $action, array $data) {
                     try {
                         $this->submission->state()->acceptAbstract();
+
+                        if (auth()->user()->hasRole(UserRole::Editor->value)) {
+                            $this->submission->participants()->create([
+                                'user_id' => auth()->id(),
+                                'role_id' => Role::where('name', UserRole::Editor->value)->first()->getKey(),
+                            ]);
+                        }
 
                         if (! $data['no-notification']) {
                             try {
