@@ -152,7 +152,7 @@ class PanelProvider extends ServiceProvider
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->viteTheme('resources/panel/css/panel.css')
             ->colors([
-                'primary' => Color::hex('#09b8ed'),
+                'primary' => Color::hex('#1c3569'),
             ])
             ->darkMode(false)
             ->databaseNotifications()

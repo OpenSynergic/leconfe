@@ -40,7 +40,7 @@ export default {
             {
                 light: {
                     ...require("daisyui/src/theming/themes")["winter"],
-                    primary: '#38BDF8',
+                    primary: '#1c3569',
                     'primary-content': '#ffffff',
                     'base-100': '#F1F6FA',
                     '--rounded-box': '0px',
