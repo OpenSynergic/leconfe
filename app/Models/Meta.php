@@ -7,5 +7,6 @@ use Plank\Metable\Meta as Model;
 
 class Meta extends Model
 {
-    use Cachable;
+    // temporarily disable caching because it is not compatible with the plank/metable package
+    // use Cachable;
 }
