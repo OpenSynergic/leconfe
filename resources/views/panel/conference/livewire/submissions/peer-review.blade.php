@@ -27,23 +27,28 @@
                 </div>
             @endif
 
-            {{-- Participants --}}
-            @livewire(Components\ParticipantList::class, ['submission' => $submission, 'lazy' => true])
-
-            @if ($submission->stage == SubmissionStage::PeerReview && $submission->status == SubmissionStatus::OnReview)
-                @can('skipReview', $submission)
-                    {{ $this->skipReviewAction() }}
-                @endcan
-                @can('requestRevision', $submission)
-                    {{ $this->requestRevisionAction() }}
-                @endcan
-                @can('acceptPaper', $submission)
-                    {{ $this->acceptSubmissionAction() }}
-                @endcan
-                @can('declinePaper', $submission)
-                    {{ $this->declineSubmissionAction() }}
-                @endcan
+            @if($submission->getEditors()->isEmpty())
+                <div class="px-4 py-3.5 text-base text-white rounded-lg border-2 border-primary-700 bg-primary-500">
+                    Assign an editor to enable the editorial decisions for this stage.
+                </div>
+            @else
+                @if ($submission->stage == SubmissionStage::PeerReview && $submission->status == SubmissionStatus::OnReview)
+                    @can('skipReview', $submission)
+                        {{ $this->skipReviewAction() }}
+                    @endcan
+                    @can('requestRevision', $submission)
+                        {{ $this->requestRevisionAction() }}
+                    @endcan
+                    @can('acceptPaper', $submission)
+                        {{ $this->acceptSubmissionAction() }}
+                    @endcan
+                    @can('declinePaper', $submission)
+                        {{ $this->declineSubmissionAction() }}
+                    @endcan
+                @endif
             @endif
+
+            @livewire(Components\ParticipantList::class, ['submission' => $submission, 'lazy' => true])
         </div>
 
     </div>
