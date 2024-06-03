@@ -106,9 +106,11 @@ class ReviewerList extends Component implements HasForms, HasTable
                             fn (Builder $query) => $query->whereName(UserRole::Reviewer->value)
                         )
                         ->whereNotIn('id', $component->record->reviews->pluck('user_id'))
-                        ->where('given_name', 'like', "%{$search}%")
-                        ->orWhere('family_name', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%")
+                        ->where(function (Builder $query) use ($search) {
+                            $query->where('given_name', 'like', "%{$search}%")
+                                ->orWhere('family_name', 'like', "%{$search}%")
+                                ->orWhere('email', 'like', "%{$search}%");
+                        })
                         ->limit(10)
                         ->get()
                         ->lazy()
