@@ -33,6 +33,10 @@ class PeerReview extends Component implements HasActions, HasForms
 
     public bool $stageOpened = false;
 
+    protected $listeners = [
+        'refreshSubmission' => '$refresh',
+    ];
+
     public function mount(Submission $submission)
     {
         $this->stageOpened = StageManager::peerReview()->isStageOpen();

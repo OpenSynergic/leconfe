@@ -184,6 +184,8 @@ class ParticipantList extends Component implements HasForms, HasTable
                             'role_id' => $data['role_id'],
                         ]);
 
+                        $this->dispatch('refreshSubmission');
+
                         Log::make(
                             name: 'submission',
                             subject: $this->submission,
@@ -298,6 +300,8 @@ class ParticipantList extends Component implements HasForms, HasTable
                         ->action(function (Action $action, Model $record) {
                             $record->delete();
                             $action->success();
+
+                            $this->dispatch('refreshSubmission');
                         })
                         ->requiresConfirmation(),
                 ]),
