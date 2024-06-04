@@ -11,6 +11,7 @@ use App\Models\Submission;
 use App\Models\SubmissionParticipant;
 use App\Models\User;
 use App\Notifications\ParticipantAssigned;
+use App\Panel\Conference\Resources\SubmissionResource;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
@@ -281,7 +282,7 @@ class ParticipantList extends Component implements HasForms, HasTable
                         ->label('Login as')
                         ->icon('iconpark-login')
                         ->color('primary')
-                        ->redirectTo('panel')
+                        ->redirectTo(SubmissionResource::getUrl('view', ['record' => $this->submission]))
                         ->action(function (SubmissionParticipant $record, Impersonate $action) {
                             if (! $action->impersonate($record->user)) {
                                 $action->failureNotificationTitle("User can't be impersonated");
