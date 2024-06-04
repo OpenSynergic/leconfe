@@ -15,20 +15,20 @@
                 </div>
             @endif
             @if($submission->status == \App\Models\Enums\SubmissionStatus::Queued)
-                <div class="space-y-4">
-                    @if($submission->getEditors()->isEmpty() && ! auth()->user()->hasRole(\App\Models\Enums\UserRole::Editor->value))
-                        <div class="px-4 py-3.5 text-base text-white rounded-lg border-2 border-primary-700 bg-primary-500">
-                            Assign an editor to enable the editorial decisions for this stage.
-                        </div>
-                    @else
+                @if($submission->getEditors()->isEmpty() && ! auth()->user()->hasRole(\App\Models\Enums\UserRole::Editor->value))
+                    <div class="px-4 py-3.5 text-base text-white rounded-lg border-2 border-primary-700 bg-primary-500">
+                        Assign an editor to enable the editorial decisions for this stage.
+                    </div>
+                @else
+                    <div class="space-y-4">
                         @can('acceptAbstract', $submission)
                             {{ $this->acceptAction() }}
                         @endcan
                         @can('declineAbstract', $submission)
                             {{ $this->declineAction() }}
                         @endcan
-                    @endif
-                </div>
+                    </div>
+                @endif
             @endif
             @livewire(Components\ParticipantList::class, ['submission' => $submission])
         </div>
