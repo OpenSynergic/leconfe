@@ -39,7 +39,7 @@
 }
 
 .page-content {
-    @apply card card-compact p-5 bg-white border;
+    @apply card card-compact p-5 bg-white border h-min;
 }
 
 .page-rightbar{
@@ -64,7 +64,7 @@
 
 
 .text-content {
-    @apply text-sm leading-6 text-secondary;
+    @apply text-sm leading-6;
 }
 
 
@@ -122,18 +122,18 @@
     @apply list-decimal list-inside space-y-3;
 }
 
-#block_menu .card-body  {
+.sidebar-menu .card-body  {
     @apply p-0;
 }
 
-#block_menu .card-body ul {
+.sidebar-menu .card-body ul {
     @apply list-none pl-0 my-0;
 }
 
-#block_menu .card-body li {
-    @apply pl-0 my-0
+.sidebar-menu .card-body li {
+    @apply pl-0 my-0 border-b last:border-b-0
 }
 
-#block_menu .card-body li a {
-    @apply block w-full px-4 py-2 font-medium text-left border-b border-gray-200 cursor-pointer hover:bg-primary hover:text-white no-underline hover:underline;
+.sidebar-menu .card-body li a {
+    @apply block w-full px-4 py-2 font-medium text-left border-gray-200 cursor-pointer hover:bg-primary hover:text-white no-underline;
 }
