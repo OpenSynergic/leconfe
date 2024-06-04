@@ -17,6 +17,7 @@ use App\Models\Role;
 use App\Models\Submission;
 use App\Models\SubmissionFile;
 use App\Models\User;
+use App\Panel\Conference\Resources\SubmissionResource;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Fieldset;
@@ -422,7 +423,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                         ->label('Login as')
                         ->icon('iconpark-login')
                         ->color('primary')
-                        ->redirectTo('panel')
+                        ->redirectTo(SubmissionResource::getUrl('review', ['record' => $this->record]))
                         ->action(function (Model $record, Impersonate $action) {
                             $user = User::where('email', $record->user->email)->first();
                             if (! $user) {
@@ -450,6 +451,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                         fn (): bool => $this->record->status == SubmissionStatus::OnReview
                     )
                     ->icon('iconpark-adduser-o')
+                    ->outlined()
                     ->label('Reviewer')
                     ->modalHeading('Assign Reviewer')
                     ->modalWidth('2xl')
@@ -476,12 +478,12 @@ class ReviewerList extends Component implements HasForms, HasTable
 
                             return;
                         }
+
                         $reviewAssignment = $this->record->reviews()
                             ->create([
                                 'user_id' => $data['user_id'],
                                 'date_assigned' => now(),
-                            ])
-                            ->first();
+                            ]);
 
                         if (isset($data['papers'])) {
                             foreach ($data['papers'] as $submissionFileId) {
@@ -489,7 +491,6 @@ class ReviewerList extends Component implements HasForms, HasTable
                                 $reviewAssignment->assignedFiles()
                                     ->create([
                                         'submission_file_id' => $submissionFile->getKey(),
-                                        'media_id' => $submissionFile->media->getKey(),
                                     ]);
                             }
                         }
