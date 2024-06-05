@@ -220,11 +220,7 @@ class SubmissionPolicy
 
     public function declineAbstract(User $user, Submission $submission)
     {
-        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn])) {
-            return false;
-        }
-
-        if ($submission->stage != SubmissionStage::CallforAbstract) {
+        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
             return false;
         }
 
@@ -239,7 +235,7 @@ class SubmissionPolicy
 
     public function acceptAbstract(User $user, Submission $submission)
     {
-        if ($submission->stage != SubmissionStage::CallforAbstract || $submission->status != SubmissionStatus::Queued) {
+        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
             return false;
         }
 

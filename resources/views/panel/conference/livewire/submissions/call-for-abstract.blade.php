@@ -1,6 +1,7 @@
 @use('App\Panel\Conference\Livewire\Submissions\Components')
 @use('App\Models\Enums\SubmissionStage')
 @use('App\Constants\SubmissionFileCategory')
+@use('App\Models\Enums\SubmissionStatus')
 <div class="space-y-6">
     <div class="grid grid-cols-12 gap-4">
         <div class="col-span-8 space-y-4">
@@ -8,28 +9,36 @@
 
             @livewire(Components\Discussions\DiscussionTopic::class, ['submission' => $submission, 'stage' => SubmissionStage::CallforAbstract, 'lazy' => true])
         </div>
-        <div class="sticky z-30 flex flex-col self-start col-span-4 gap-3 top-24">
+        <div class="sticky z-30 flex flex-col self-start col-span-4 gap-3 top-24" x-data="{ decision:@js($submissionDecision) }">
             @if ($submission->stage == SubmissionStage::PeerReview && !$reviewStageOpen)
                 <div class="p-4 text-base text-white rounded-lg bg-primary-700">
                     This submission has been accepted. Now, we are waiting to next stage is open.
                 </div>
             @endif
-            @if($submission->status == \App\Models\Enums\SubmissionStatus::Queued)
+            {{-- @if($submission->status == \App\Models\Enums\SubmissionStatus::Queued) --}}
                 @if($submission->getEditors()->isEmpty() && ! auth()->user()->hasRole(\App\Models\Enums\UserRole::Editor->value))
                     <div class="px-4 py-3.5 text-base text-white rounded-lg border-2 border-primary-700 bg-primary-500">
                         Assign an editor to enable the editorial decisions for this stage.
                     </div>
                 @else
-                    <div class="space-y-4">
-                        @can('acceptAbstract', $submission)
+                    <div class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 space-y-3 py-5 px-6" x-show="decision">
+                        <div class="text-base">
+                            {{ $submission->status == SubmissionStatus::Declined ? 'Submission Declined' : 'Submission accepted for review.' }}
+                        </div>
+                        <a href="#" @@click="decision = !decision" class="text-sm text-primary-500 underline">
+                            Change Decision
+                        </a>
+                    </div>
+                    <div class="space-y-4" x-show="!decision">
+                        @if (auth()->user()->can('acceptAbstract', $submission) && ! in_array($this->submission->status, [SubmissionStatus::OnReview, SubmissionStatus::Editing]))
                             {{ $this->acceptAction() }}
-                        @endcan
-                        @can('declineAbstract', $submission)
+                        @endif
+                        @if (auth()->user()->can('declineAbstract', $submission) && ! in_array($this->submission->status, [SubmissionStatus::Declined]))
                             {{ $this->declineAction() }}
-                        @endcan
+                        @endif
                     </div>
                 @endif
-            @endif
+            {{-- @endif --}}
             @livewire(Components\ParticipantList::class, ['submission' => $submission])
         </div>
     </div>

@@ -4,6 +4,7 @@ namespace App\Panel\Conference\Livewire\Submissions;
 
 use App\Mail\Templates\AcceptAbstractMail;
 use App\Mail\Templates\DeclineAbstractMail;
+use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
 use App\Models\MailTemplate;
 use App\Models\Role;
@@ -206,6 +207,7 @@ class CallforAbstract extends Component implements HasActions, HasForms
     {
         return view('panel.conference.livewire.submissions.call-for-abstract', [
             'reviewStageOpen' => StageManager::peerReview()->isStageOpen(),
+            'submissionDecision' => in_array($this->submission->status, [SubmissionStatus::OnReview, SubmissionStatus::Editing, SubmissionStatus::Declined]),
         ]);
     }
 }
