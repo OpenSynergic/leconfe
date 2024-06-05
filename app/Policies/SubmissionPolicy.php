@@ -57,7 +57,7 @@ class SubmissionPolicy
 
     public function assignReviewer(User $user, Submission $submission)
     {
-        if ($submission->stage != SubmissionStage::PeerReview && $submission->status != SubmissionStatus::OnReview) {
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
             return false;
         }
 
@@ -72,11 +72,44 @@ class SubmissionPolicy
 
     public function editReviewer(User $user, Submission $submission)
     {
-        if ($submission->stage != SubmissionStage::PeerReview || $submission->status == SubmissionStatus::Declined) {
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
             return false;
         }
 
         if ($user->can('Submission:editReviewer')) {
+            return true;
+        }
+    }
+
+    public function cancelReviewer(User $user, Submission $submission)
+    {
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
+            return false;
+        }
+
+        if ($user->can('Submission:cancelReviewer')) {
+            return true;
+        }
+    }
+
+    public function emailReviewer(User $user, Submission $submission)
+    {
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
+            return false;
+        }
+
+        if ($user->can('Submission:emailReviewer')) {
+            return true;
+        }
+    }
+
+    public function reinstateReviewer(User $user, Submission $submission)
+    {
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
+            return false;
+        }
+
+        if ($user->can('Submission:reinstateReviewer')) {
             return true;
         }
     }
@@ -118,9 +151,6 @@ class SubmissionPolicy
 
     public function uploadPaper(User $user, Submission $submission)
     {
-        if ($submission->stage != SubmissionStage::PeerReview) {
-            return false;
-        }
 
         if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
             return false;
@@ -146,6 +176,21 @@ class SubmissionPolicy
         }
 
         if ($submission->stage != SubmissionStage::Editing) {
+            return false;
+        }
+
+        if ($user->can('Submission:uploadPresenterFiles')) {
+            return true;
+        }
+    }
+
+    public function uploadRevisionFiles(User $user, Submission $submission)
+    {
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
+            return false;
+        }
+
+        if (filled($submission->withdrawn_reason)) {
             return false;
         }
 

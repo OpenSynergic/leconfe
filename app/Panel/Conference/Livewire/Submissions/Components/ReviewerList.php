@@ -304,7 +304,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                             $action->success();
                         }),
                     Action::make('email-reviewer')
-                        ->authorize('emailReviewer', $this->record)
+                        ->authorize(fn () => auth()->user()->can('emailReviewer', $this->record))
                         ->label('E-Mail Reviewer')
                         ->icon('iconpark-sendemail')
                         ->modalSubmitActionLabel('Send')
@@ -334,6 +334,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                         }),
                     Action::make('cancel-reviewer')
                         ->color('danger')
+                        ->authorize(fn () => auth()->user()->can('cancelReviewer', $this->record))
                         ->icon('iconpark-deletethree-o')
                         ->label('Cancel Reviewer')
                         ->hidden(
@@ -394,6 +395,7 @@ class ReviewerList extends Component implements HasForms, HasTable
                         }),
                     Action::make('reinstate-reviewer')
                         ->color('primary')
+                        ->authorize(fn () => auth()->user()->can('reinstateReviewer', $this->record))
                         ->modalWidth('2xl')
                         ->icon('iconpark-deletethree-o')
                         ->hidden(
@@ -447,9 +449,6 @@ class ReviewerList extends Component implements HasForms, HasTable
                             'message' => $mailTemplate ? $mailTemplate->html_template : '',
                         ]);
                     })
-                    ->visible(
-                        fn (): bool => $this->record->status == SubmissionStatus::OnReview
-                    )
                     ->icon('iconpark-adduser-o')
                     ->outlined()
                     ->label('Reviewer')
