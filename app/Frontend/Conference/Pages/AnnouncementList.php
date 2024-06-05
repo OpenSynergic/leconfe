@@ -12,6 +12,14 @@ class AnnouncementList extends Page
 {
     protected static string $view = 'frontend.conference.pages.announcement-list';
 
+    public function getBreadcrumbs(): array
+    {
+        return [
+            route(Home::getRouteName()) => 'Home',
+            'Announcements',
+        ];
+    }
+    
     protected function getViewData(): array
     {
         return [
@@ -20,9 +28,7 @@ class AnnouncementList extends Page
                 ->orWhereMeta('expires_at', '')
                 ->orderBy('created_at', 'desc')
                 ->with([
-                    'tags' => function ($query) {
-                        $query->take(3);
-                    },
+                    'tags' => fn ($query) => $query->take(3),
                     'user',
                 ])
                 ->withCount('tags')
