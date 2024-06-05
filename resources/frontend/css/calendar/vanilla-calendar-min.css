@@ -1,5 +1,5 @@
 .vanilla-calendar {
-    width: 310px;
+    width: auto;
     position: relative;
     min-width: -webkit-min-content;
     min-width: min-content;
@@ -9,7 +9,7 @@
     grid-template-columns: 1fr;
     background-color: #fff;
     padding: 16px;
-    border-radius: 4px
+    @apply border
 }
 
 .vanilla-calendar_multiple .vanilla-calendar-month {

@@ -25,6 +25,8 @@ class DefaultSidebarPlugin extends Plugin
                 new Sidebar\SubmitNowSidebar,
                 new Sidebar\CommitteeSidebar,
                 new Sidebar\TopicsSidebar,
+                new Sidebar\PreviousEventSidebar,
+                new Sidebar\TimelineSidebar,
             ]);
         }
 

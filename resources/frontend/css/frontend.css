@@ -1,6 +1,5 @@
 @import "./calendar/vanilla-calendar-min.css";
 @import "./calendar/themes/light.css";
-/* @import "../../../vendor/filament/filament/resources/css/theme.css"; */
 @config './tailwind.config.js';
 
 
