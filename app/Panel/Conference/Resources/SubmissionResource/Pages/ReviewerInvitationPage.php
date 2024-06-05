@@ -38,11 +38,15 @@ class ReviewerInvitationPage extends Page implements HasActions, HasInfolists
 
     public Submission $record;
 
-    public Review $review;
+    public ?Review $review;
 
     public function mount(Submission $record)
     {
-        $this->review = $this->record->reviews()->where('user_id', auth()->id())->first();
+        $this->review = $this->record->reviews()->where('user_id', auth()->id())->first() ?? null;
+
+        if (!$this->review) {
+            abort(404);
+        }
     }
 
     public function getHeading(): string|Htmlable

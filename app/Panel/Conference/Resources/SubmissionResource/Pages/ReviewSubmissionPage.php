@@ -55,6 +55,8 @@ class ReviewSubmissionPage extends Page implements HasActions, HasInfolists
 
         abort_if($this->review->status == ReviewerStatus::DECLINED, 403, 'You have declined this review request');
 
+        abort_if($this->review->status == ReviewerStatus::CANCELED, 403, 'This review request has been canceled');
+
         if ($this->review->status == ReviewerStatus::PENDING) {
             redirect(SubmissionResource::getUrl('reviewer-invitation', ['record' => $this->record]));
         }
