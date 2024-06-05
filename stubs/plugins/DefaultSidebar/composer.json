@@ -1,0 +1,14 @@
+{
+    "name": "leconfe/default-sidebar",
+    "autoload": {
+        "psr-4": {
+            "DefaultSidebar\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Leconfe"
+        }
+    ],
+    "require": {}
+}

@@ -41,4 +41,4 @@ class CustomSidebarManagerPlugin extends Plugin
         }
 
     }
-};
+}

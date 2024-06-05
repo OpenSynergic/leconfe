@@ -6,9 +6,9 @@ use App\Models\CommitteeRole;
 use Livewire\Attributes\Title;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 
-class Committe extends Page
+class Committees extends Page
 {
-    protected static string $view = 'frontend.conference.pages.committe';
+    protected static string $view = 'frontend.conference.pages.committees';
 
     public function mount()
     {
@@ -17,17 +17,20 @@ class Committe extends Page
 
     public function getBreadcrumbs(): array
     {
-        return [];
+        return [
+            route(Home::getRouteName()) => 'Home',
+            'Committees',
+        ];
     }
 
     protected function getViewData(): array
     {
-        $committeeRole = CommitteeRole::query()
+        $committeeRoles = CommitteeRole::query()
             ->with(['committees' => fn ($query) => $query->orderBy('order_column')])
             ->get();
 
         return [
-            'groupedCommittes' => $committeeRole,
+            'committeeRoles' => $committeeRoles,
         ];
     }
 }
