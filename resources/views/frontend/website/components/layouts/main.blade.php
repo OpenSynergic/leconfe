@@ -1,18 +1,14 @@
 @props([
     'sidebars' => \App\Facades\SidebarFacade::get(),
-    'sidebar' => null,
 ])
 
-@php
-    $sidebar ??= count($sidebars) > 0;
-@endphp
 
 <div @class(['page-main'])>
-    <div @class(['page-content', 'lg:col-span-9' => $sidebar, 'lg:col-span-full' => !$sidebar])>
+    <div @class(['page-content', 'lg:col-span-9' => $sidebars->isNotEmpty(), 'lg:col-span-full' => !$sidebars->isNotEmpty()])>
         {{ $slot }}
     </div>
 
-    @if ($sidebar)
+    @if ($sidebars->isNotEmpty())
         <x-website::layouts.sidebar :sidebars="$sidebars"/>
     @endif
 </div>

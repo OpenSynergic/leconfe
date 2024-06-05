@@ -7,6 +7,8 @@ export default {
     content: [
         './resources/views/frontend/**/*.blade.php',
         './resources/views/errors/**/*.blade.php',
+        './stubs/plugins/**/*.blade.php',
+        './plugins/**/*.blade.php',
     ],
     theme: {
         extend: {

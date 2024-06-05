@@ -6,6 +6,7 @@ use App\Actions\Site\SiteCreateAction;
 use App\Models\Announcement;
 use App\Models\AuthorRole;
 use App\Models\Block;
+use App\Models\Committee;
 use App\Models\CommitteeRole;
 use App\Models\Conference;
 use App\Models\MailTemplate;
@@ -126,7 +127,6 @@ class Application extends LaravelApplication
             Submission::class,
             Topic::class,
             NavigationMenu::class,
-            Block::class,
             AuthorRole::class,
             Announcement::class,
             StaticPage::class,
@@ -149,6 +149,7 @@ class Application extends LaravelApplication
             CommitteeRole::class,
             SpeakerRole::class,
             Sponsor::class,
+            Committee::class,
         ];
 
         foreach ($models as $model) {

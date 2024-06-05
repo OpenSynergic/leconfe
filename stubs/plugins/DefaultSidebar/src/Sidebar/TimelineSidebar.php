@@ -1,23 +1,35 @@
 <?php
 
-namespace App\Frontend\Conference\Blocks;
+namespace DefaultSidebar\Sidebar;
 
-use App\Classes\Block;
+use App\Classes\Sidebar;
+use App\Models\Committee;
 use App\Models\Timeline;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\HtmlString;
 
-class CalendarBlock extends Block
+class TimelineSidebar extends Sidebar
 {
-    protected ?string $view = 'frontend.conference.blocks.calendar-block';
+    protected ?string $view = 'DefaultSidebar::sidebar.timeline';
 
-    protected ?int $sort = 1;
+    public function getId(): string
+    {
+        return 'timeline';
+    }
 
-    protected string $name = 'Calendar Block';
+    public function getName(): string
+    {
+        return 'Timeline';
+    }
 
-    protected ?string $position = 'left';
+    public function render(): View
+    {
+        return view($this->view, $this->getViewData());
+    }
 
     public function getViewData(): array
     {
-        // Retrieve timeline data and format it for the calendar
+
         $timelines = Timeline::all();
 
         $formattedTimelines = [];
@@ -41,7 +53,8 @@ class CalendarBlock extends Block
         }
 
         return [
-            'id' => $this->getDatabaseName(),
+            'id' => $this->getId(),
+            'name' => $this->getName(),
             'timelines' => $formattedTimelines,
         ];
     }
