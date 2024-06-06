@@ -116,11 +116,11 @@ class SubmissionPolicy
 
     public function declinePaper(User $user, Submission $submission)
     {
-        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn])) {
+        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
             return false;
         }
 
-        if ($submission->stage != SubmissionStage::PeerReview) {
+        if (filled($submission->withdrawn_reason)) {
             return false;
         }
 
@@ -201,11 +201,7 @@ class SubmissionPolicy
 
     public function acceptPaper(User $user, Submission $submission)
     {
-        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn])) {
-            return false;
-        }
-
-        if ($submission->stage != SubmissionStage::PeerReview) {
+        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
             return false;
         }
 
@@ -265,7 +261,7 @@ class SubmissionPolicy
 
     public function requestRevision(User $user, Submission $submission)
     {
-        if ($submission->stage != SubmissionStage::PeerReview || $submission->status != SubmissionStatus::OnReview || $submission->revision_required) {
+        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
             return false;
         }
 
@@ -280,7 +276,7 @@ class SubmissionPolicy
 
     public function skipReview(User $user, Submission $submission)
     {
-        if ($submission->stage != SubmissionStage::PeerReview || $submission->status != SubmissionStatus::OnReview) {
+        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
             return false;
         }
 
@@ -295,6 +291,10 @@ class SubmissionPolicy
 
     public function assignParticipant(User $user, Submission $submission)
     {
+        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
+            return false;
+        }
+        
         if (filled($submission->withdrawn_reason)) {
             return false;
         }

@@ -6,6 +6,7 @@ use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Mail\Templates\AcceptPaperMail;
 use App\Mail\Templates\DeclinePaperMail;
 use App\Mail\Templates\RevisionRequestMail;
+use App\Models\Enums\SubmissionStatus;
 use App\Models\MailTemplate;
 use App\Models\Submission;
 use App\Panel\Conference\Livewire\Workflows\Classes\StageManager;
@@ -250,6 +251,8 @@ class PeerReview extends Component implements HasActions, HasForms
 
     public function render()
     {
-        return view('panel.conference.livewire.submissions.peer-review');
+        return view('panel.conference.livewire.submissions.peer-review', [
+            'submissionDecision' => in_array($this->submission->status, [SubmissionStatus::Editing, SubmissionStatus::Declined])
+        ]);
     }
 }

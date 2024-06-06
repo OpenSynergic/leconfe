@@ -4,6 +4,7 @@ namespace App\Panel\Conference\Livewire\Submissions\Components;
 
 use App\Classes\Log;
 use App\Mail\Templates\ParticipantAssignedMail;
+use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
 use App\Models\MailTemplate;
 use App\Models\Role;
@@ -294,7 +295,9 @@ class ParticipantList extends Component implements HasForms, HasTable
                         ->color('danger')
                         ->icon('iconpark-deletethree-o')
                         ->visible(
-                            fn (SubmissionParticipant $record): bool => $record->user->email !== $this->submission->user->email
+                            fn (SubmissionParticipant $record): bool => 
+                                $record->user->email !== $this->submission->user->email &&
+                                ! in_array($this->submission->status, [SubmissionStatus::Published, SubmissionStatus::Declined, SubmissionStatus::Withdrawn])
                         )
                         ->label('Remove')
                         ->successNotificationTitle('Participant Removed')

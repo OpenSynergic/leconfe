@@ -17,10 +17,9 @@
             {{-- Discussions --}}
             @livewire(Components\Discussions\DiscussionTopic::class, ['submission' => $submission, 'stage' => SubmissionStage::PeerReview, 'lazy' => true])
         </div>
-        <div class="self-start sticky z-30 top-24 flex flex-col gap-4 col-span-4">
+        <div class="self-start sticky z-30 top-24 flex flex-col gap-4 col-span-4" x-data="{ decision:@js($submissionDecision) }">
             @if ($submission->revision_required)
-                <div class="flex items-center p-4 text-sm border rounded-lg border-warning-400 bg-warning-200 text-warning-600"
-                    role="alert">
+                <div class="flex items-center p-4 text-sm border rounded-lg border-warning-400 bg-warning-200 text-warning-600" x-show="!decision" role="alert">
                     <span class="text-base text-center">
                         Revisions have been requested.
                     </span>
@@ -32,7 +31,15 @@
                     Assign an editor to enable the editorial decisions for this stage.
                 </div>
             @else
-                @if ($submission->stage == SubmissionStage::PeerReview && $submission->status == SubmissionStatus::OnReview)
+                <div class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 space-y-3 py-5 px-6" x-show="decision">
+                    <div class="text-base">
+                        {{ $submission->status == SubmissionStatus::Declined ? 'Submission Declined' : 'Submission accepted for review.' }}
+                    </div>
+                    <a href="#" @@click="decision = !decision" class="text-sm text-primary-500 underline">
+                        Change Decision
+                    </a>
+                </div>
+                <div class="flex flex-col gap-4 col-span-4" x-show="!decision">
                     @can('skipReview', $submission)
                         {{ $this->skipReviewAction() }}
                     @endcan
@@ -45,7 +52,7 @@
                     @can('declinePaper', $submission)
                         {{ $this->declineSubmissionAction() }}
                     @endcan
-                @endif
+                </div>
             @endif
 
             @livewire(Components\ParticipantList::class, ['submission' => $submission, 'lazy' => true])
