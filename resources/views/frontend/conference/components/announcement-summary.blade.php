@@ -1,6 +1,6 @@
 @props(['announcement'])
 
-<div class="announcement-summary flex flex-wrap gap-x-2 p-1">
+<div class="announcement-summary sm:flex sm:flex-row flex-wrap gap-x-2 p-1">
     @if ($announcement->hasMedia('featured_image'))
     <img class="max-h-36 w-auto"
         src="{{ $announcement->getFirstMedia('featured_image')->getAvailableUrl(['thumb']) }}" alt="">
