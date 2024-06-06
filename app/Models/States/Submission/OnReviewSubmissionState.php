@@ -17,6 +17,7 @@ class OnReviewSubmissionState extends BaseSubmissionState
     {
         SubmissionUpdateAction::run([
             'revision_required' => false,
+            'skipped_review' => false,
             'stage' => SubmissionStage::Editing,
             'status' => SubmissionStatus::Editing,
         ], $this->submission);
