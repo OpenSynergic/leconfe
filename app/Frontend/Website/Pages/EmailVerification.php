@@ -31,7 +31,10 @@ class EmailVerification extends Page
 
     public function getBreadcrumbs(): array
     {
-        return [];
+        return [
+            route(Home::getRouteName()) => 'Home',
+            'Email Verification',
+        ];
     }
 
     public function sendEmailVerificationLink()
