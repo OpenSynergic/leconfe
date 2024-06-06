@@ -67,6 +67,8 @@ class DeclinedSubmissionState extends BaseSubmissionState
     {
         SubmissionUpdateAction::run([
             'revision_required' => true,
+            'status' => SubmissionStatus::OnReview,
+            'stage' => SubmissionStage::PeerReview,
         ], $this->submission);
 
         Log::make(

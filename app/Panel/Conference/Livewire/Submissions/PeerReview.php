@@ -6,6 +6,7 @@ use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Mail\Templates\AcceptPaperMail;
 use App\Mail\Templates\DeclinePaperMail;
 use App\Mail\Templates\RevisionRequestMail;
+use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\MailTemplate;
 use App\Models\Submission;
@@ -201,6 +202,8 @@ class PeerReview extends Component implements HasActions, HasForms
             ->action(function (Action $action, array $data) {
                 SubmissionUpdateAction::run([
                     'revision_required' => true,
+                    'status' => SubmissionStatus::OnReview,
+                    'stage' => SubmissionStage::PeerReview,
                 ], $this->submission);
 
                 if (! $data['do-not-notify-author']) {
