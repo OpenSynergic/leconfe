@@ -57,7 +57,7 @@ class SubmissionPolicy
 
     public function assignReviewer(User $user, Submission $submission)
     {
-        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published, SubmissionStatus::Queued])) {
             return false;
         }
 
@@ -72,7 +72,7 @@ class SubmissionPolicy
 
     public function editReviewer(User $user, Submission $submission)
     {
-        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published, SubmissionStatus::Queued])) {
             return false;
         }
 
@@ -83,7 +83,7 @@ class SubmissionPolicy
 
     public function cancelReviewer(User $user, Submission $submission)
     {
-        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published, SubmissionStatus::Queued])) {
             return false;
         }
 
@@ -94,7 +94,7 @@ class SubmissionPolicy
 
     public function emailReviewer(User $user, Submission $submission)
     {
-        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published, SubmissionStatus::Queued])) {
             return false;
         }
 
@@ -105,7 +105,7 @@ class SubmissionPolicy
 
     public function reinstateReviewer(User $user, Submission $submission)
     {
-        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published, SubmissionStatus::Queued])) {
             return false;
         }
 
@@ -116,7 +116,7 @@ class SubmissionPolicy
 
     public function declinePaper(User $user, Submission $submission)
     {
-        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
+        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Published, SubmissionStatus::Queued, SubmissionStatus::Declined])) {
             return false;
         }
 
@@ -152,7 +152,7 @@ class SubmissionPolicy
     public function uploadPaper(User $user, Submission $submission)
     {
 
-        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published, SubmissionStatus::Queued])) {
             return false;
         }
 
@@ -194,14 +194,14 @@ class SubmissionPolicy
             return false;
         }
 
-        if ($user->can('Submission:uploadPresenterFiles')) {
+        if ($user->can('Submission:uploadRevisionFiles')) {
             return true;
         }
     }
 
     public function acceptPaper(User $user, Submission $submission)
     {
-        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
+        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Published, SubmissionStatus::Queued])) {
             return false;
         }
 
@@ -261,7 +261,7 @@ class SubmissionPolicy
 
     public function requestRevision(User $user, Submission $submission)
     {
-        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
+        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Published, SubmissionStatus::Queued])) {
             return false;
         }
 
@@ -276,7 +276,7 @@ class SubmissionPolicy
 
     public function skipReview(User $user, Submission $submission)
     {
-        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
+        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Published, SubmissionStatus::Queued])) {
             return false;
         }
 
