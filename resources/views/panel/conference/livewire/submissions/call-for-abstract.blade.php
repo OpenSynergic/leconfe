@@ -2,6 +2,11 @@
 @use('App\Models\Enums\SubmissionStage')
 @use('App\Constants\SubmissionFileCategory')
 @use('App\Models\Enums\SubmissionStatus')
+
+@php
+    $user = auth()->user();
+@endphp
+
 <div class="space-y-6">
     <div class="grid grid-cols-12 gap-4">
         <div class="col-span-8 space-y-4">
@@ -16,9 +21,9 @@
                 </div>
             @endif
 
-            @if($submission->getEditors()->isEmpty() && ! auth()->user()->hasRole(\App\Models\Enums\UserRole::Editor->value))
+            @if($submission->getEditors()->isEmpty() && ! $user->hasRole(\App\Models\Enums\UserRole::Editor->value))
                 <div class="px-4 py-3.5 text-base text-white rounded-lg border-2 border-primary-700 bg-primary-500">
-                    Assign an editor to enable the editorial decisions for this stage.
+                    {{ $user->can('assignParticipant', $submission) ? 'Assign an editor to enable the editorial decisions for this stage.' : 'No editor assigned to this submission.' }}
                 </div>
             @else
 
@@ -37,10 +42,10 @@
                     'space-y-4',
                     'hidden' => in_array($submission->status, [SubmissionStatus::Published])
                 ]) x-show="!decision">
-                    @if (auth()->user()->can('acceptAbstract', $submission) && ! in_array($this->submission->status, [SubmissionStatus::OnReview, SubmissionStatus::Editing]))
+                    @if ($user->can('acceptAbstract', $submission) && ! in_array($this->submission->status, [SubmissionStatus::OnReview, SubmissionStatus::Editing]))
                         {{ $this->acceptAction() }}
                     @endif
-                    @if (auth()->user()->can('declineAbstract', $submission) && ! in_array($this->submission->status, [SubmissionStatus::Declined]))
+                    @if ($user->can('declineAbstract', $submission) && ! in_array($this->submission->status, [SubmissionStatus::Declined]))
                         {{ $this->declineAction() }}
                     @endif
                 </div>

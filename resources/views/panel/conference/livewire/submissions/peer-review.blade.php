@@ -35,7 +35,7 @@
 
                 @if($submission->getEditors()->isEmpty())
                     <div class="px-4 py-3.5 text-base text-white rounded-lg border-2 border-primary-700 bg-primary-500">
-                        Assign an editor to enable the editorial decisions for this stage.
+                        {{ $user->can('assignParticipant', $submission) ? 'Assign an editor to enable the editorial decisions for this stage.' : 'No editor assigned to this submission.' }}
                     </div>
                 @else
                     
