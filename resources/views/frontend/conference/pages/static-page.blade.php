@@ -4,16 +4,16 @@
     </div>
     <div class="relative">
         <div class="flex mb-5 space-x-4">
-            <h1 class="text-xl font-semibold min-w-fit">{{ $this->getTitle() }}</h1>
+            <h1 class="text-xl font-semibold min-w-fit">{{ $title }}</h1>
             <hr class="w-full h-px my-auto bg-gray-200 border-0 dark:bg-gray-700">
         </div>
-        @if ($about)
+        @if ($content)
             <div class="user-content">
-                {{ new Illuminate\Support\HtmlString($about) }}
+                {{ new Illuminate\Support\HtmlString($content) }}
             </div>
         @else
             <div>
-                No information provided.
+                No content provided.
             </div>
         @endif
     </div>
