@@ -34,7 +34,7 @@
 .page-main {
     @apply 
         mx-auto max-w-7xl flex flex-col w-full
-        lg:grid lg:grid-cols-12 lg:gap-3
+        lg:grid lg:grid-cols-12 gap-3
 }
 
 .page-content {

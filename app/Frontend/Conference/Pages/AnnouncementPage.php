@@ -14,8 +14,13 @@ class AnnouncementPage extends Page
 
     public Announcement $announcement;
 
-    public function mount()
+    public function getBreadcrumbs(): array
     {
+        return [
+            route(Home::getRouteName()) => 'Home',
+            route(AnnouncementList::getRouteName()) => 'Announcements',
+            $this->announcement->title,
+        ];
     }
 
     protected function getViewData(): array

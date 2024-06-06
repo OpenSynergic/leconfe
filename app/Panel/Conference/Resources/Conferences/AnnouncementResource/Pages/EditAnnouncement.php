@@ -15,19 +15,14 @@ class EditAnnouncement extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
             Actions\Action::make('view')
                 ->icon('heroicon-o-eye')
-                ->label('View as page')
+                ->label('View')
                 ->color('success')
-                ->url(function ($record) {
-                    $conference = $record->conference;
-
-                    return route('livewirePageGroup.conference.pages.announcement-page', [
-                        'conference' => $conference->path,
-                        'announcement' => $record->id,
-                    ]);
-                }),
+                ->url(fn($record) =>  route('livewirePageGroup.conference.pages.announcement-page', [
+                    'announcement' => $record->id,
+                ])),
+            Actions\DeleteAction::make(),
         ];
     }
 
