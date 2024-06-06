@@ -23,7 +23,7 @@
             @livewire(Components\Discussions\DiscussionTopic::class, ['submission' => $submission, 'stage' => SubmissionStage::PeerReview, 'lazy' => true])
         </div>
         
-        <div class="self-start sticky z-30 top-24 flex flex-col gap-4 col-span-4" x-data="{ decision:@js($submissionDecision) }">
+        <div class="self-start sticky z-30 top-24 flex flex-col gap-4 col-span-4" x-data="{ decision: @js($submissionDecision) }">
             @if($submission->stage != SubmissionStage::CallforAbstract)    
                 @if ($submission->revision_required)
                     <div class="flex items-center p-4 text-sm border rounded-lg border-warning-400 bg-warning-200 text-warning-600" x-show="!decision" role="alert">
@@ -38,20 +38,24 @@
                         Assign an editor to enable the editorial decisions for this stage.
                     </div>
                 @else
-                    <div class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 space-y-3 py-5 px-6" x-show="decision">
-                        <div class="text-base">
-                            @if ($submission->status == SubmissionStatus::Declined)
-                                Submission Declined
-                            @elseif ($submission->skipped_review)
-                                Submission skipped for review.
-                            @else
-                                Submission accepted for review.
-                            @endif
+                    
+                    @if($submissionDecision)
+                        <div class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 space-y-3 py-5 px-6">
+                            <div class="text-base">
+                                @if ($submission->status == SubmissionStatus::Declined)
+                                    Submission Declined
+                                @elseif ($submission->skipped_review)
+                                    Submission skipped for review.
+                                @else
+                                    Submission accepted for review.
+                                @endif
+                            </div>
+                            <button class="text-sm text-primary-500 underline" 
+                                @@click="decision = !decision" x-text="decision ? 'Change Decision' : 'Cancel'"
+                            ></button>
                         </div>
-                        <a href="#" @@click="decision = !decision" class="text-sm text-primary-500 underline">
-                            Change Decision
-                        </a>
-                    </div>
+                    @endif
+
                     <div @class([
                         'flex flex-col gap-4 col-span-4',
                         'hidden' => in_array($submission->status, [SubmissionStatus::Queued, SubmissionStatus::Published]),
