@@ -29,7 +29,10 @@
                         Change Decision
                     </a>
                 </div>
-                <div class="space-y-4" x-show="!decision">
+                <div @class([
+                    'space-y-4',
+                    'hidden' => in_array($submission->status, [SubmissionStatus::Published])
+                ]) x-show="!decision">
                     @if (auth()->user()->can('acceptAbstract', $submission) && ! in_array($this->submission->status, [SubmissionStatus::OnReview, SubmissionStatus::Editing]))
                         {{ $this->acceptAction() }}
                     @endif
