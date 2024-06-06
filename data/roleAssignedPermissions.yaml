@@ -233,11 +233,6 @@ Reviewer:
     - 'Submission:viewAny'
 Author:
     - 'Conference:viewArchived'
-    - 'Presenter:create'
-    - 'Presenter:delete'
-    - 'Presenter:update'
-    - 'Presenter:view'
-    - 'Presenter:viewAny'
     - 'Presenter:processApproval'
     - 'Submission:create'
     - 'Submission:delete'
@@ -245,6 +240,7 @@ Author:
     - 'Submission:uploadAbstract'
     - 'Submission:uploadPaper'
     - 'Submission:uploadPresenterFiles'
+    - 'Submission:uploadRevisionFiles'
     - 'Submission:view'
     - 'Submission:viewAny'
 'Series Manager':
