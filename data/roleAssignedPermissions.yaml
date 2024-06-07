@@ -240,6 +240,10 @@ Author:
     - 'Submission:view'
     - 'Submission:viewAny'
 'Series Manager':
+    - 'Serie:create'
+    - 'Serie:delete'
+    - 'Serie:update'
+    - 'Serie:viewAny'
     - 'Submission:acceptAbstract'
     - 'Submission:acceptPaper'
     - 'Submission:assignParticipant'
