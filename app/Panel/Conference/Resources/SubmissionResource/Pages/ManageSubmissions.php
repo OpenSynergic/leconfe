@@ -75,7 +75,7 @@ class ManageSubmissions extends ManageRecords
         ];
     }
 
-    protected static function generateQueryByCurrentUser(string $tabs)
+    public static function generateQueryByCurrentUser(string $tabs)
     {
         $statuses = match ($tabs) {
             static::TAB_MYQUEUE => [

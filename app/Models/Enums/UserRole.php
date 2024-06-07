@@ -54,4 +54,14 @@ enum UserRole: string implements HasLabel
             static::Presenter,
         ];
     }
+
+    public static function internalRoles(): array
+    {
+        return [
+            static::Admin,
+            static::ConferenceManager,
+            static::SeriesManager,
+            static::Editor,
+        ];
+    }
 }
