@@ -186,11 +186,11 @@ class AppServiceProvider extends ServiceProvider
             return;
         }
     
-        // $conference = ConferenceFacade::getCurrentConference();
-        // if($conference){
-        //     Livewire::setUpdateRoute(
-        //         fn ($handle) => Route::post('{conference:path}/series/{serie:path}/livewire/update', $handle)->middleware('web')
-        //     );
-        // }
+        $conference = ConferenceFacade::getCurrentConference();
+        if($conference){
+            Livewire::setUpdateRoute(
+                fn ($handle) => Route::post('{conference:path}/series/{serie:path}/livewire/update', $handle)->middleware('web')
+            );
+        }
     }
 }

@@ -104,8 +104,6 @@ class PluginManager
 
     protected function bootPlugins($includeDisabled = false, $refresh = false): void
     {
-        dump('bootplugins');
-
         if (!app()->isInstalled()) {
             return;
         }
