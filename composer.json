@@ -27,6 +27,7 @@
         "kra8/laravel-snowflake": "^2.2",
         "laravel/framework": "^10.0",
         "laravel/horizon": "^5.21",
+        "laravel/octane": "^2.4",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
         "lorisleiva/laravel-actions": "^2.5",

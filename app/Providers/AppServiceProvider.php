@@ -8,10 +8,12 @@ use App\Facades\SidebarFacade;
 use App\Models\Serie;
 use Livewire\Livewire;
 use App\Classes\Settings;
+use App\Facades\ConferenceFacade;
 use App\Listeners\SubmissionEventSubscriber;
 use App\Models\Conference;
 use Illuminate\Support\Str;
 use App\Managers\BlockManager;
+use App\Managers\ConferenceManager;
 use App\Managers\DOIManager;
 use App\Managers\MetaTagManager;
 use App\Managers\SidebarManager;
@@ -46,6 +48,9 @@ class AppServiceProvider extends ServiceProvider
             return new DOIManager;
         });
 
+        $this->app->scoped(ConferenceManager::class, function () {
+            return new ConferenceManager;
+        });
 
         $this->app->bind(Setting::class, function ($app) {
             return new Setting();
@@ -72,7 +77,6 @@ class AppServiceProvider extends ServiceProvider
                 $app['config']['app.asset_url']
             );
         });
-
     }
 
     /**
@@ -85,6 +89,7 @@ class AppServiceProvider extends ServiceProvider
         $this->extendStr();
         $this->detectConference();
 
+
         Event::subscribe(SubmissionEventSubscriber::class);
     }
 
@@ -94,7 +99,7 @@ class AppServiceProvider extends ServiceProvider
          * Add macro to Str class to mask email address.
          */
         Str::macro('maskEmail', function ($email) {
-            if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 return $email;
             }
 
@@ -180,50 +185,12 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole() || !$this->app->isInstalled()) {
             return;
         }
-        $this->app->scopeCurrentConference();
-
-        $pathInfos = explode('/', request()->getPathInfo());
-        // Detect conference from URL path
-        if (isset($pathInfos[1]) && !blank($pathInfos[1])) {
-
-            $conference = Conference::where('path', $pathInfos[1])->first();
-
-            $conference ? $this->app->setCurrentConferenceId($conference->getKey()) : $this->app->setCurrentConferenceId(Application::CONTEXT_WEBSITE);
-
-            // Detect serie from URL path when conference is set
-            if ($conference) {
-
-                // Eager load conference relations
-                $conference->load(['media', 'meta']);
-
-
-                if(isset($pathInfos[3]) && !blank($pathInfos[3])){
-                    $serie = Serie::where('path', $pathInfos[3])->first();
-                }
-
-                $serie ??= $conference->currentSerie;
-                if($serie){
-                    $this->app->setCurrentSerieId($serie->getKey());
-                    $this->app->scopeCurrentSerie();
-                }
-
-            }
-        }
-
-        // Scope livewire update path to current conference
-        $currentConference = $this->app->getCurrentConference();
-        if ($currentConference) {
-            // Scope livewire update path to current serie
-            $currentSerie = $this->app->getCurrentSerie();
-            if (isset($pathInfos[3]) && $currentSerie && $currentSerie->path === $pathInfos[3]) {
-                Livewire::setUpdateRoute(
-                    fn ($handle) => Route::post($currentConference->path . '/series/' . $currentSerie->path . '/livewire/update', $handle)->middleware('web')
-                );
-            } else {
-                Livewire::setUpdateRoute(fn ($handle) => Route::post($currentConference->path . '/livewire/update', $handle)->middleware('web'));
-            }
-        }
-        
-        setPermissionsTeamId($this->app->getCurrentConferenceId());
+    
+        // $conference = ConferenceFacade::getCurrentConference();
+        // if($conference){
+        //     Livewire::setUpdateRoute(
+        //         fn ($handle) => Route::post('{conference:path}/series/{serie:path}/livewire/update', $handle)->middleware('web')
+        //     );
+        // }
     }
 }

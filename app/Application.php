@@ -3,6 +3,8 @@
 namespace App;
 
 use App\Actions\Site\SiteCreateAction;
+use App\Facades\ConferenceFacade;
+use App\Managers\ConferenceManager;
 use App\Models\Announcement;
 use App\Models\AuthorRole;
 use App\Models\Block;
@@ -40,10 +42,6 @@ class Application extends LaravelApplication
     protected ?int $currentConferenceId = null;
 
     protected ?Site $site = null;
-
-    protected ?Conference $currentConference = null;
-
-    protected string $currentConferencePath;
 
     protected ?int $currentSerieId = null;
 
@@ -85,60 +83,22 @@ class Application extends LaravelApplication
 
     public function getCurrentConference(): ?Conference
     {
-        if ($this->currentConferenceId && !$this->currentConference) {
-            $this->currentConference = Conference::find($this->getCurrentConferenceId());
-        }
-
-        return $this->currentConference;
+        return ConferenceFacade::getCurrentConference();
     }
 
     public function getCurrentConferenceId(): int
     {
-        return $this->currentConferenceId ?? static::CONTEXT_WEBSITE;
-    }
-
-    public function setCurrentConferenceId(int $conferenceId)
-    {
-        $this->currentConferenceId = $conferenceId;
+        return ConferenceFacade::getCurrentConferenceId() ?? static::CONTEXT_WEBSITE;
     }
 
     public function getCurrentSerieId(): ?int
     {
-        return $this->currentSerieId;
-    }
-
-    public function setCurrentSerieId(int $serieId)
-    {
-        $this->currentSerieId = $serieId;
+        return ConferenceFacade::getCurrentSerieId();
     }
 
     public function getCurrentSerie(): ?Serie
     {
-        if ($this->currentSerieId && !$this->currentSerie) {
-            $this->currentSerie = Serie::find($this->getCurrentSerieId());
-        }
-
-        return $this->currentSerie;
-    }
-
-    public function scopeCurrentConference(): void
-    {
-        $models = [
-            Submission::class,
-            Topic::class,
-            NavigationMenu::class,
-            AuthorRole::class,
-            Announcement::class,
-            StaticPage::class,
-            PaymentItem::class,
-            Serie::class,
-            Proceeding::class,
-            MailTemplate::class,
-        ];
-
-        foreach ($models as $model) {
-            $model::addGlobalScope(new ConferenceScope);
-        }
+        return ConferenceFacade::getCurrentSerie();
     }
 
     public function scopeCurrentSerie(): void
