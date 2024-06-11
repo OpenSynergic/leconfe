@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('author_roles', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Conference::class)->constrained();
+            $table->foreignIdFor(Conference::class)->constrained()->cascadeOnDelete();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->string('name');
             $table->unsignedInteger('order_column')->nullable();
@@ -26,7 +26,7 @@ return new class extends Migration
         Schema::create('authors', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Submission::class)->constrained();
-            $table->foreignIdFor(AuthorRole::class)->constrained();
+            $table->foreignIdFor(AuthorRole::class)->constrained()->cascadeOnDelete();
             $table->string('email')->nullable();
             $table->string('given_name');
             $table->string('family_name')->nullable();
