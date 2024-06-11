@@ -21,7 +21,7 @@ class Dashboard extends PagesDashboard
             return $this->redirect(SubmissionResource::getUrl());
         }
 
-        if($user->hasRole(UserRole::Reader->value) || $user->role->isEmpty()){
+        if($user->hasRole(UserRole::Reader->value) || $user->role?->isEmpty()){
             return $this->redirectRoute(Profile::getRouteName());
         }
 
