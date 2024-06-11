@@ -19,7 +19,7 @@ return new class extends Migration
         Schema::create('submissions', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class)->constrained();
-            $table->foreignIdFor(Conference::class)->constrained();
+            $table->foreignIdFor(Conference::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Proceeding::class)->nullable();
             $table->integer('proceeding_order_column')->nullable();
             $table->boolean('revision_required')->default(false);

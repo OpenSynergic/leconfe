@@ -167,6 +167,7 @@ class ConferenceObserver
      */
     public function deleting(Conference $conference): void
     {
+
     }
 
     /**

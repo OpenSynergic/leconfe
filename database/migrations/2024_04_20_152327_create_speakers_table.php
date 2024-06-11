@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('speaker_roles', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Serie::class)->constrained();
+            $table->foreignIdFor(Serie::class)->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->unsignedInteger('order_column')->nullable();
             $table->timestamps();
@@ -23,8 +23,8 @@ return new class extends Migration
 
         Schema::create('speakers', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Serie::class)->constrained();
-            $table->foreignIdFor(SpeakerRole::class)->constrained();
+            $table->foreignIdFor(Serie::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(SpeakerRole::class)->constrained()->cascadeOnDelete();
             $table->string('email')->nullable();
             $table->string('given_name');
             $table->string('family_name')->nullable();

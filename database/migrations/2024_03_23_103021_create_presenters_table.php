@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('presenters', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Submission::class)->constrained();
+            $table->foreignIdFor(Submission::class)->constrained()->cascadeOnDelete();
             $table->string('email')->nullable();
             $table->string('given_name');
             $table->string('family_name')->nullable();
