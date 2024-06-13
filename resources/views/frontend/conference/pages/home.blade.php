@@ -8,7 +8,7 @@
                     <div class="flex flex-col gap-4 flex-1">
                         @if ($currentSerie->hasMedia('cover'))
                             <div class="cf-cover">
-                                <img class="w-full"
+                                <img class="h-full"
                                     src="{{ $currentSerie->getFirstMedia('cover')->getAvailableUrl(['thumb', 'thumb-xl']) }}"
                                     alt="{{ $currentSerie->title }}" />
                             </div>
