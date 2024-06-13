@@ -1,6 +1,6 @@
 <x-website::layouts.main>
     @if($currentSerie)
-        <div class="space-y-6">
+        <div class="space-y-8">
             <x-conference::alert-serie :serie="$currentSerie" />
 
             <section id="highlight-conference" class="space-y-4">
@@ -78,37 +78,33 @@
             @endif
             
             @if($additionalInformations->isNotEmpty())
-            <section id="conference-additional-informations" class="space-y-4">
-                <div x-data="{ activeTab: '{{ $additionalInformations[0]['slug'] }}' }" class="bg-white">
-                    <div class="border border-t-0 border-x-0 border-gray-300 flex space-x-1 sm:space-x-2 overflow-x-auto overflow-y-hidden">
+                <section id="conference-additional-informations" class="space-y-4">
+                    <div x-data="{ activeTab: '{{ $additionalInformations[0]['slug'] }}' }" class="bg-white">
+                        <div class="border border-t-0 border-x-0 border-gray-300 flex space-x-1 sm:space-x-2 overflow-x-auto overflow-y-hidden">
+                            @foreach ($additionalInformations as $info)
+                                <button x-on:click="activeTab = '{{ $info['slug'] }}'"
+                                    :class="{ 'text-primary bg-white': activeTab === '{{ $info['slug'] }}', 'bg-gray-100': activeTab !== '{{ $info['slug'] }}' }"
+                                    class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">{{ $info['title'] }}</button>
+                            @endforeach
+                        </div>
                         @foreach ($additionalInformations as $info)
-                            <button x-on:click="activeTab = '{{ $info['slug'] }}'"
-                                :class="{ 'text-primary bg-white': activeTab === '{{ $info['slug'] }}', 'bg-gray-100': activeTab !== '{{ $info['slug'] }}' }"
-                                class="px-4 py-2 text-sm hover:text-primary border border-b-white border-gray-300 text-nowrap">{{ $info['title'] }}</button>
+                            <div 
+                                x-show="activeTab === '{{ $info['slug'] }}'"
+                                class="p-4 border border-t-0 border-gray-300" 
+                                @if(!$loop->first) x-cloak @endif
+                                >
+                                <div class="user-content overflow-x-auto">
+                                    {{ new Illuminate\Support\HtmlString($info['content']) }}
+                                </div>
+                            </div>
                         @endforeach
                     </div>
-                    @foreach ($additionalInformations as $info)
-                        <div 
-                            x-show="activeTab === '{{ $info['slug'] }}'"
-                            class="p-4 border border-t-0 border-gray-300" 
-                            @if(!$loop->first) x-cloak @endif
-                            >
-                            <div class="user-content overflow-x-auto">
-                                {{ new Illuminate\Support\HtmlString($info['content']) }}
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </section>
+                </section>
             @endif
 
             @if ($currentSerie?->speakers()->exists())
-                <section id="conference-speakers" class="flex flex-col space-y-4 gap-y-0">
-                    <div class="flex items-center">
-                        <img src="{{ Vite::asset('resources/assets/images/game-icons_public-speaker.svg') }}"
-                            alt="">
-                        <h2 class="text-xl font-medium pl-2">Speakers</h2>
-                    </div>
+                <section id="conference-speakers" class="flex flex-col gap-y-0">
+                    <x-website::heading-title title="Speakers" />
                     <div class="cf-speakers space-y-6">
                         @foreach ($currentSerie->speakerRoles as $role)
                             @if ($role->speakers->isNotEmpty())
