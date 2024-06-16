@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('series', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Conference::class)->constrained();
+            $table->foreignIdFor(Conference::class)->constrained()->cascadeOnDelete();
             $table->string('path');
             $table->string('title');
             $table->string('issn')->nullable();

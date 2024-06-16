@@ -133,16 +133,17 @@ class ConferenceObserver
 
         MailTemplatePopulateDefaultData::run($conference);
 
-        if(auth()->user()){
-           $session_team_id = getPermissionsTeamId();
-           // set actual new team_id to package instance
-           setPermissionsTeamId($conference);
-           // get the admin user and assign roles/permissions on new conference
-           auth()->user()->assignRole(UserRole::Admin->name);
-           // restore session team_id to package instance using temporary value stored above
-           setPermissionsTeamId($session_team_id);
+        if (auth()->user()) {
+            $session_team_id = getPermissionsTeamId();
+            // set actual new team_id to package instance
+            setPermissionsTeamId($conference);
+            // unset user roles to avoid conflicts
+            auth()->user()->unsetRelation('roles');
+            // get the admin user and assign roles/permissions on new conference
+            auth()->user()->assignRole(UserRole::Admin->name);
+            // restore session team_id to package instance using temporary value stored above
+            setPermissionsTeamId($session_team_id);
         }
-
     }
 
     /**
@@ -166,6 +167,7 @@ class ConferenceObserver
      */
     public function deleting(Conference $conference): void
     {
+
     }
 
     /**

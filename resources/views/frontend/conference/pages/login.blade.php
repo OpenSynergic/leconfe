@@ -1,6 +1,12 @@
-<x-website::layouts.main>
-    <div class="card-body space-y-2">
+<x-website::layouts.main class="space-y-2">
+    <div class="mb-6">
         <x-website::breadcrumbs :breadcrumbs="$this->getBreadcrumbs()" />
+    </div>
+    <div class="relative">
+        <div class="flex mb-5 space-x-4">
+            <h1 class="text-xl font-semibold min-w-fit">Login</h1>
+            <hr class="w-full h-px my-auto bg-gray-200 border-0 dark:bg-gray-700">
+        </div>
         <form wire:submit='login' class="space-y-4">
             <div class="form-control sm:col-span-6 gap-2">
                 <label class="label-text">
@@ -41,4 +47,5 @@
             </div>
         </form>
     </div>
+
 </x-website::layouts.main>

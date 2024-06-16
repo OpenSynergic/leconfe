@@ -1,3 +1,3 @@
 <div class="flex flex-col">
-    <div class="text-lg font-medium">{{ app()->getCurrentConference()->name }}</div>
+    <a href="{{ $currentConference->getHomeUrl() }}" class="text-lg font-medium">{{ $currentConference  ->name }}</a>
 </div>

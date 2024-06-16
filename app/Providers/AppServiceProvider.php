@@ -94,7 +94,12 @@ class AppServiceProvider extends ServiceProvider
          * Add macro to Str class to mask email address.
          */
         Str::macro('maskEmail', function ($email) {
+            if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                return $email;
+            }
+
             $mail_parts = explode('@', $email);
+
             $domain_parts = explode('.', $mail_parts[1]);
 
             $mail_parts[0] = Str::mask($mail_parts[0], '*', 2, strlen($mail_parts[0])); // show first 2 letters and last 1 letter

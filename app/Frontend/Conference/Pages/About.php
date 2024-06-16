@@ -19,6 +19,14 @@ class About extends Page
         return 'About the Conference';
     }
 
+    public function getBreadcrumbs(): array
+    {
+        return [
+            route(Home::getRouteName()) => 'Home',
+            'About',
+        ];
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -27,10 +35,5 @@ class About extends Page
         return [
             'about' => app()->getCurrentConference()?->getMeta('about')
         ];
-    }
-
-    public function getBreadcrumbs(): array
-    {
-        return [];
     }
 }

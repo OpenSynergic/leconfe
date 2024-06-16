@@ -16,6 +16,7 @@ use Illuminate\Auth\Events\Registered;
 use Rahmanramsi\LivewirePageGroup\Pages\Page;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Filament\Http\Responses\Auth\Contracts\RegistrationResponse;
+use Illuminate\Contracts\Support\Htmlable;
 
 class Register extends Page
 {
@@ -50,6 +51,11 @@ class Register extends Page
         }
 
         abort_unless(Setting::get('allow_registration'), 403);
+    }
+
+    public function getTitle(): string|Htmlable
+    {
+        return $this->registerComplete ? 'Registration Complete' : 'Register';
     }
 
     public function rules()
