@@ -15,7 +15,7 @@
                 <x-website::preview-alert />
             </div>
         @endif
-        <h1 class="text-2xl">
+        <h1 class="citation_title text-2xl">
             {{ $submission->getMeta('title') }}
         </h1>
         <div class="mb-4 text-sm text-slate-400">

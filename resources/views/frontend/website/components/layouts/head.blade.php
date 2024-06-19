@@ -3,16 +3,17 @@
 ])
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    {{ MetaTag::render() }}
-
     <title>
         {{ $title ? strip_tags($title) . ' - ' : null }}
         {{ $contextName ?? config('app.name') }}
     </title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="application-name" content="Leconfe" />
     <meta name="generator" content="Leconfe {{ app()->getCodeVersion() }}" />
+
+    {{ MetaTag::render() }}
+
     @if (isset($favicon))
         <link rel="icon" type="image/x-icon" href="{{ $favicon }}" />
     @endif

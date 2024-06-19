@@ -2,8 +2,10 @@
 
 namespace App\Frontend\Conference\Pages;
 
+use App\Facades\MetaTag;
 use App\Models\Submission;
 use App\Panel\Conference\Livewire\Workflows\Classes\StageManager;
+use Illuminate\Contracts\Support\Htmlable;
 use Livewire\Attributes\Title;
 use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
@@ -21,6 +23,56 @@ class SubmissionDetail extends Page
         if (!$this->canAccess()) {
             abort(404);
         }
+
+        $this->addMetadata();
+    }
+
+    public function getTitle(): string|Htmlable
+    {
+        return $this->submission->getMeta('title');
+    }
+
+    public function addMetadata() : void
+    {
+        
+        MetaTag::add('citation_conference_title', app()->getCurrentConference()->name);
+        MetaTag::add('citation_title', e($this->submission->getMeta('title')));
+
+        $this->submission->authors->each(function ($author) {
+            MetaTag::add('citation_author', $author->fullName);
+            if($author->getMeta('affiliation')){
+                MetaTag::add('citation_author_affiliation', $author->getMeta('affiliation'));
+            }
+        });
+
+        if($this->submission->isPublished()){
+            MetaTag::add('citation_publication_date', $this->submission->published_at?->format('Y/m/d'));
+        }
+
+        $proceeding = $this->submission->proceeding;
+        MetaTag::add('citation_volume', $proceeding->volume);
+        MetaTag::add('citation_issue', $proceeding->number);
+
+        if($this->submission->getMeta('article_pages')){
+            [$start, $end] = explode('-', $this->submission->getMeta('article_pages'));
+
+            if($start){
+                MetaTag::add('citation_firstpage', $start);
+            }
+
+            if($end){
+                MetaTag::add('citation_lastpage', $end);
+            }
+        }
+
+        MetaTag::add('citation_abstract_html_url', route(static::getRouteName(), ['submission' => $this->submission->getKey()]));
+        
+        $this->submission->galleys->each(function ($galley) {
+            if($galley->isPdf()){
+                MetaTag::add('citation_pdf_url', $galley->getUrl());
+            }
+        });
+
     }
 
     public function canAccess(): bool
