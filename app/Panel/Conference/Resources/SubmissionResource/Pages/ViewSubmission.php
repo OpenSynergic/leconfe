@@ -272,7 +272,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                 ->icon('heroicon-o-eye')
                 ->color('primary')
                 ->outlined()
-                ->url(route('livewirePageGroup.conference.pages.submission-detail', ['submissionId' => $this->record->id]), true)
+                ->url(route('livewirePageGroup.conference.pages.submission-detail', ['submission' => $this->record->id]), true)
                 ->label(function () {
                     if ($this->record->isPublished()) {
                         return 'View';
