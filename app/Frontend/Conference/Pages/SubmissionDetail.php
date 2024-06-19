@@ -16,10 +16,8 @@ class SubmissionDetail extends Page
 
     public Submission $submission;
 
-    public function mount(int $submissionId)
+    public function mount(Submission $submission)
     {
-        $this->submission = Submission::find($submissionId);
-        
         if (!$this->canAccess()) {
             abort(404);
         }
@@ -76,7 +74,7 @@ class SubmissionDetail extends Page
     public static function routes(PageGroup $pageGroup): void
     {
         $slug = static::getSlug();
-        Route::get("/{$slug}/{submissionId?}", static::class)
+        Route::get("/submission/{submission}", static::class)
             ->middleware(static::getRouteMiddleware($pageGroup))
             ->withoutMiddleware(static::getWithoutRouteMiddleware($pageGroup))
             ->name((string) str($slug)->replace('/', '.'));
