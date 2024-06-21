@@ -3,21 +3,28 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasVirtualColumns;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Spatie\Permission\Models\Permission as Model;
 
 class Permission extends Model
 {
-    use HasVirtualColumns;
+    protected function context(): Attribute
+    {
+        [$context, $action] = explode(':', $this->name);
+        // dd($context);
+        return Attribute::make(
+            get: fn () => $context,
+        );
+    }
 
-    /**
-     * The virtual generated columns on the model
-     *
-     * @var array
-     */
-    protected $virtualColumns = [
-        'context',
-        'action',
-    ];
+    protected function action(): Attribute
+    {
+        [$context, $action] = explode(':', $this->name);
+
+        return Attribute::make(
+            get: fn () => $action,
+        );
+    }
 
     protected static function booting(): void
     {

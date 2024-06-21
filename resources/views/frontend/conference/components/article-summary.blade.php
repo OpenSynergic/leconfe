@@ -5,13 +5,13 @@
 @endphp
 <div class="grid grid-cols-10 space-x-0 sm:space-x-5">
     @if($article->getFirstMediaUrl('article-cover'))
-        <a href="{{ route('livewirePageGroup.conference.pages.submission-detail', ['submissionId' => $article->id]) }}" class="col-span-10 max-w-96 md:col-span-3 sm:col-span-3 lg:col-span-2">
+        <a href="{{ route('livewirePageGroup.conference.pages.submission-detail', ['submission' => $article->id]) }}" class="col-span-10 max-w-96 md:col-span-3 sm:col-span-3 lg:col-span-2">
             <img class="w-full" src="{{ $article->getFirstMediaUrl('article-cover') }}" alt="">
         </a>
     @endif
     <div class="col-span-10 mt-2 md:col-span-7 sm:col-span-7 lg:col-span-8 sm:mt-0">
         <div class="mb-3 text-base">
-            <a href="{{ route('livewirePageGroup.conference.pages.submission-detail', ['submissionId' => $article->id]) }}" class="font-semibold text-gray-700 hover:text-primary">{{ $article->getMeta('title') }}</a>
+            <a href="{{ route('livewirePageGroup.conference.pages.submission-detail', ['submission' => $article->id]) }}" class="font-semibold text-gray-700 hover:text-primary">{{ $article->getMeta('title') }}</a>
             <div class="text-xs text-gray-500">{{ $article->getMeta('subtitle') }}</div>
         </div>
         <div class="grid grid-cols-9 mb-3">
