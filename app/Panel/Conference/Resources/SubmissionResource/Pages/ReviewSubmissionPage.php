@@ -39,7 +39,7 @@ class ReviewSubmissionPage extends Page implements HasActions, HasInfolists
 
     public Submission $record;
 
-    public Review $review;
+    public ?Review $review;
 
     public array $reviewData = [];
 
@@ -51,9 +51,16 @@ class ReviewSubmissionPage extends Page implements HasActions, HasInfolists
 
         $this->review = $this->record->reviews()
             ->user(auth()->user())
-            ->first();
+            ->first() ?? null;
+
+        abort_if(! $this->review, 404);
 
         abort_if($this->review->status == ReviewerStatus::DECLINED, 403, 'You have declined this review request');
+        abort_if($this->review->status == ReviewerStatus::CANCELED, 403, 'This review request has been canceled');
+
+        if ($this->review->status == ReviewerStatus::PENDING) {
+            redirect(SubmissionResource::getUrl('reviewer-invitation', ['record' => $this->record]));
+        }
 
         $this->recommendation = $this->review->recommendation;
 

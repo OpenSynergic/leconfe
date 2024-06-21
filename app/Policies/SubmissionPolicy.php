@@ -57,7 +57,7 @@ class SubmissionPolicy
 
     public function assignReviewer(User $user, Submission $submission)
     {
-        if ($submission->stage != SubmissionStage::PeerReview && $submission->status != SubmissionStatus::OnReview) {
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published, SubmissionStatus::Queued])) {
             return false;
         }
 
@@ -72,7 +72,7 @@ class SubmissionPolicy
 
     public function editReviewer(User $user, Submission $submission)
     {
-        if ($submission->stage != SubmissionStage::PeerReview || $submission->status == SubmissionStatus::Declined) {
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published, SubmissionStatus::Queued])) {
             return false;
         }
 
@@ -81,13 +81,46 @@ class SubmissionPolicy
         }
     }
 
-    public function declinePaper(User $user, Submission $submission)
+    public function cancelReviewer(User $user, Submission $submission)
     {
-        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn])) {
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published, SubmissionStatus::Queued])) {
             return false;
         }
 
-        if ($submission->stage != SubmissionStage::PeerReview) {
+        if ($user->can('Submission:cancelReviewer')) {
+            return true;
+        }
+    }
+
+    public function emailReviewer(User $user, Submission $submission)
+    {
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published, SubmissionStatus::Queued])) {
+            return false;
+        }
+
+        if ($user->can('Submission:emailReviewer')) {
+            return true;
+        }
+    }
+
+    public function reinstateReviewer(User $user, Submission $submission)
+    {
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published, SubmissionStatus::Queued])) {
+            return false;
+        }
+
+        if ($user->can('Submission:reinstateReviewer')) {
+            return true;
+        }
+    }
+
+    public function declinePaper(User $user, Submission $submission)
+    {
+        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Published, SubmissionStatus::Queued, SubmissionStatus::Declined])) {
+            return false;
+        }
+
+        if (filled($submission->withdrawn_reason)) {
             return false;
         }
 
@@ -118,11 +151,8 @@ class SubmissionPolicy
 
     public function uploadPaper(User $user, Submission $submission)
     {
-        if ($submission->stage != SubmissionStage::PeerReview) {
-            return false;
-        }
 
-        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published, SubmissionStatus::Queued])) {
             return false;
         }
 
@@ -154,13 +184,24 @@ class SubmissionPolicy
         }
     }
 
-    public function acceptPaper(User $user, Submission $submission)
+    public function uploadRevisionFiles(User $user, Submission $submission)
     {
-        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn])) {
+        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
             return false;
         }
 
-        if ($submission->stage != SubmissionStage::PeerReview) {
+        if (filled($submission->withdrawn_reason)) {
+            return false;
+        }
+
+        if ($user->can('Submission:uploadRevisionFiles')) {
+            return true;
+        }
+    }
+
+    public function acceptPaper(User $user, Submission $submission)
+    {
+        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Published, SubmissionStatus::Queued])) {
             return false;
         }
 
@@ -175,11 +216,7 @@ class SubmissionPolicy
 
     public function declineAbstract(User $user, Submission $submission)
     {
-        if (in_array($submission->status, [SubmissionStatus::Declined, SubmissionStatus::Withdrawn])) {
-            return false;
-        }
-
-        if ($submission->stage != SubmissionStage::CallforAbstract) {
+        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
             return false;
         }
 
@@ -194,7 +231,7 @@ class SubmissionPolicy
 
     public function acceptAbstract(User $user, Submission $submission)
     {
-        if ($submission->stage != SubmissionStage::CallforAbstract || $submission->status != SubmissionStatus::Queued) {
+        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
             return false;
         }
 
@@ -224,7 +261,7 @@ class SubmissionPolicy
 
     public function requestRevision(User $user, Submission $submission)
     {
-        if ($submission->stage != SubmissionStage::PeerReview || $submission->status != SubmissionStatus::OnReview || $submission->revision_required) {
+        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Published, SubmissionStatus::Queued])) {
             return false;
         }
 
@@ -239,7 +276,7 @@ class SubmissionPolicy
 
     public function skipReview(User $user, Submission $submission)
     {
-        if ($submission->stage != SubmissionStage::PeerReview || $submission->status != SubmissionStatus::OnReview) {
+        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Published, SubmissionStatus::Queued])) {
             return false;
         }
 
@@ -254,6 +291,10 @@ class SubmissionPolicy
 
     public function assignParticipant(User $user, Submission $submission)
     {
+        if (in_array($submission->status, [SubmissionStatus::Withdrawn, SubmissionStatus::Published])) {
+            return false;
+        }
+        
         if (filled($submission->withdrawn_reason)) {
             return false;
         }

@@ -4,6 +4,7 @@ namespace App\Panel\Conference\Livewire\Submissions\Components;
 
 use App\Classes\Log;
 use App\Mail\Templates\ParticipantAssignedMail;
+use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
 use App\Models\MailTemplate;
 use App\Models\Role;
@@ -11,6 +12,7 @@ use App\Models\Submission;
 use App\Models\SubmissionParticipant;
 use App\Models\User;
 use App\Notifications\ParticipantAssigned;
+use App\Panel\Conference\Resources\SubmissionResource;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Grid;
@@ -184,6 +186,8 @@ class ParticipantList extends Component implements HasForms, HasTable
                             'role_id' => $data['role_id'],
                         ]);
 
+                        $this->dispatch('refreshSubmission');
+
                         Log::make(
                             name: 'submission',
                             subject: $this->submission,
@@ -279,7 +283,7 @@ class ParticipantList extends Component implements HasForms, HasTable
                         ->label('Login as')
                         ->icon('iconpark-login')
                         ->color('primary')
-                        ->redirectTo('panel')
+                        ->redirectTo(SubmissionResource::getUrl('view', ['record' => $this->submission]))
                         ->action(function (SubmissionParticipant $record, Impersonate $action) {
                             if (! $action->impersonate($record->user)) {
                                 $action->failureNotificationTitle("User can't be impersonated");
@@ -291,13 +295,17 @@ class ParticipantList extends Component implements HasForms, HasTable
                         ->color('danger')
                         ->icon('iconpark-deletethree-o')
                         ->visible(
-                            fn (SubmissionParticipant $record): bool => $record->user->email !== $this->submission->user->email
+                            fn (SubmissionParticipant $record): bool => 
+                                $record->user->email !== $this->submission->user->email &&
+                                ! in_array($this->submission->status, [SubmissionStatus::Published, SubmissionStatus::Declined, SubmissionStatus::Withdrawn])
                         )
                         ->label('Remove')
                         ->successNotificationTitle('Participant Removed')
                         ->action(function (Action $action, Model $record) {
                             $record->delete();
                             $action->success();
+
+                            $this->dispatch('refreshSubmission');
                         })
                         ->requiresConfirmation(),
                 ]),
