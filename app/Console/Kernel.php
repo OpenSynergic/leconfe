@@ -38,6 +38,8 @@ class Kernel extends ConsoleKernel
                 config('cleaner.day_interval')
             )
         )->name('Remove deleted discussions');
+
+        $schedule->command('leconfe:generate-sitemap')->daily();
     }
 
     /**
