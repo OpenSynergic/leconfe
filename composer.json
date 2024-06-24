@@ -40,6 +40,7 @@
         "rahmanramsi/laravel-async-queue": "^1.0",
         "rahmanramsi/livewire-page-group": "*",
         "rickselby/laravel-gate-cache": "^3.7",
+        "spatie/array-to-xml": "^3.3",
         "spatie/eloquent-sortable": "^4.0",
         "spatie/laravel-activitylog": "^4.7",
         "spatie/laravel-database-mail-templates": "^3.5",
