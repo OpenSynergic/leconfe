@@ -2,7 +2,6 @@
 
 namespace App\Panel\Conference\Widgets;
 
-use App\Models\AuthorRole;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Enums\UserRole;
 use App\Models\Submission;
