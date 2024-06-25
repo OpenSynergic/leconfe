@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\ContributorRole;
 use App\Models\Submission;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -16,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Submission::class)->constrained();
             $table->morphs('contributor', 'submission_has_contributors_contributor_morphs_index');
-            $table->unsignedInteger('order_column')->nullable();
+            $table->foreignIdFor(ContributorRole::class)->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

@@ -4,12 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\EloquentSortable\Sortable;
-use Spatie\EloquentSortable\SortableTrait;
 
-class SubmissionContributor extends Model implements Sortable
+class SubmissionContributor extends Model
 {
-    use HasFactory, SortableTrait;
+    use HasFactory;
 
     protected $table = 'submission_has_contributors';
 
@@ -17,6 +15,7 @@ class SubmissionContributor extends Model implements Sortable
         'submission_id',
         'contributor_id',
         'contributor_type',
+        'contributor_role_id',
     ];
 
     public function contributor()
