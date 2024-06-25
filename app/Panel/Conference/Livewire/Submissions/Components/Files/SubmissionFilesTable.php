@@ -40,6 +40,8 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasFo
 
     protected string $tableDescription = '';
 
+    public ?array $uploadFilesData = [];
+
     public function isViewOnly(): bool
     {
         return $this->viewOnly;
@@ -122,15 +124,19 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasFo
                 ->collection($this->category)
                 ->visibility('private')
                 ->model(fn () => $this->submission)
-                ->saveRelationshipsUsing(
-                    static fn (SpatieMediaLibraryFileUpload $component) => $component->saveUploadedFiles()
-                ),
+                ->saveRelationshipsUsing(function (SpatieMediaLibraryFileUpload $component) {
+                    $component->saveUploadedFiles();
+                    
+                    $this->uploadFilesData[] = $component->getState();
+                }),
         ];
     }
 
     public function handleUploadAction(array $data, TableAction $action)
     {
-        $files = $this->submission->getMedia($this->category);
+        $getUuids = array_merge(...array_map('array_values', $this->uploadFilesData));
+        $files = $this->submission->media()->whereCollectionName($this->category)->whereIn('uuid', $getUuids)->get();
+
         foreach ($files as $file) {
             UploadSubmissionFileAction::run(
                 $this->submission,
@@ -139,6 +145,9 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasFo
                 SubmissionFileType::find($data['type'])
             );
         }
+
+        $this->uploadFilesData = [];
+        
         $action->success();
     }
 
