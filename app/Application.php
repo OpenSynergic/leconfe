@@ -4,7 +4,7 @@ namespace App;
 
 use App\Actions\Site\SiteCreateAction;
 use App\Models\Announcement;
-use App\Models\AuthorRole;
+use App\Models\ContributorRole;
 use App\Models\Block;
 use App\Models\Committee;
 use App\Models\CommitteeRole;
@@ -127,7 +127,7 @@ class Application extends LaravelApplication
             Submission::class,
             Topic::class,
             NavigationMenu::class,
-            AuthorRole::class,
+            ContributorRole::class,
             Announcement::class,
             StaticPage::class,
             PaymentItem::class,

@@ -107,14 +107,15 @@ class Submission extends Model implements HasMedia, HasPayment, Sortable
 
              // Current user as a author
             $author = $submission->authors()->create([
-                'author_role_id' => AuthorRole::where('name', UserRole::Author->value)->first()->getKey(),
+                'contributor_role_id' => ContributorRole::where('name', UserRole::Author->value)->first()->getKey(),
                 ...$submission->user->only(['email', 'given_name', 'family_name', 'public_name']),
             ]);
 
             // Current user as a contributors
             $submission->contributors()->create([
                 'contributor_id' => $author->id,
-                'contributor_type' => Author::class,
+                'contributor_type' => Contributor::class,
+                'contributor_role_id' => ContributorRole::where('name', UserRole::Author->value)->first()->getKey(),
             ]);
         });
     }
@@ -187,7 +188,7 @@ class Submission extends Model implements HasMedia, HasPayment, Sortable
 
     public function authors()
     {
-        return $this->hasMany(Author::class);
+        return $this->hasMany(Contributor::class);
     }
 
     public function presenters()

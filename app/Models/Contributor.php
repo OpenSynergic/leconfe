@@ -18,14 +18,13 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Author extends Model implements HasAvatar, HasMedia, Sortable
+class Contributor extends Model implements HasAvatar, HasMedia, Sortable
 {
     use Cachable, HasShortflakePrimary, Metable, Notifiable, SortableTrait, InteractsWithMedia;
 
-    protected $table = 'authors';
+    protected $table = 'contributors';
 
     protected $fillable = [
-        'author_role_id',
         'email',
         'given_name',
         'family_name',
@@ -76,7 +75,7 @@ class Author extends Model implements HasAvatar, HasMedia, Sortable
 
     public function role(): BelongsTo
     {
-        return $this->belongsTo(AuthorRole::class, 'author_role_id', 'id');
+        return $this->belongsTo(ContributorRole::class, 'contributor_role_id', 'id');
     }
 
     public function submission(): BelongsTo

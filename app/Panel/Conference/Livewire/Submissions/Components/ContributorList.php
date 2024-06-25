@@ -20,13 +20,14 @@ use Filament\Tables\Columns\Layout\Stack;
 use App\Actions\Authors\AuthorCreateAction;
 use App\Actions\Authors\AuthorDeleteAction;
 use App\Actions\Authors\AuthorUpdateAction;
-use App\Panel\Conference\Livewire\Forms\Conferences\ContributorForm;
+use App\Models\Contributor;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Forms\Components\Actions\Action as FormAction;
 use App\Panel\Conference\Resources\Conferences\AuthorRoleResource;
+use App\Panel\Conference\Livewire\Forms\Conferences\ContributorForm;
 
 class ContributorList extends \Livewire\Component implements HasForms, HasTable
 {
@@ -38,7 +39,7 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
 
     public function getQuery(bool $submissionRelated = true): Builder
     {
-        return Author::query()
+        return Contributor::query()
             ->whereSubmissionId($this->submission->getKey())
             ->with(['role', 'media', 'meta'])
             ->orderBy('order_column');
@@ -56,10 +57,10 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
             ->options(function () {
                 $authors = $this->getQuery()->pluck('email')->toArray();
 
-                return Author::query()
+                return Contributor::query()
                     ->whereNotIn('email', $authors)
                     ->get()
-                    ->mapWithKeys(fn (Author $author) => [$author->getKey() => static::renderSelectAuthor($author)])
+                    ->mapWithKeys(fn (Contributor $author) => [$author->getKey() => static::renderSelectAuthor($author)])
                     ->toArray();
             })
             ->optionsLimit(10)
@@ -67,14 +68,14 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
                 function (string $search) {
                     $authors = $this->getQuery()->pluck('email')->toArray();
 
-                    return Author::query()
+                    return Contributor::query()
                         ->with(['media', 'meta'])
                         ->whereNotIn('email', $authors)
                         ->where(fn ($query) => $query->where('given_name', 'LIKE', "%{$search}%")
                             ->orWhere('family_name', 'LIKE', "%{$search}%")
                             ->orWhere('email', 'LIKE', "%{$search}%"))
                         ->get()
-                        ->mapWithKeys(fn (Author $author) => [$author->getKey() => static::renderSelectAuthor($author)])
+                        ->mapWithKeys(fn (Contributor $author) => [$author->getKey() => static::renderSelectAuthor($author)])
                         ->toArray();
                 }
             )
@@ -83,7 +84,7 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
                 if (! $state) {
                     return;
                 }
-                $author = Author::with(['meta', 'role' => fn ($query) => $query->withoutGlobalScopes()])->findOrFail($state);
+                $author = Contributor::with(['meta', 'role' => fn ($query) => $query->withoutGlobalScopes()])->findOrFail($state);
                 $role = AuthorRoleResource::getEloquentQuery()->whereName($author?->role?->name)->first();
 
                 $formData = [ 
@@ -151,7 +152,7 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
                             return $data;
                         })
                         ->form($this->getContributorFormSchema())
-                        ->using(fn (array $data, Author $record) => AuthorUpdateAction::run($data, $record)),
+                        ->using(fn (array $data, Contributor $record) => AuthorUpdateAction::run($data, $record)),
                     DeleteAction::make()
                         ->using(fn (array $data, Model $record) => AuthorDeleteAction::run($record, $data))
                         ->hidden(
@@ -169,7 +170,7 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
                     ->successNotificationTitle('Contributor added')
                     ->form($this->getContributorFormSchema())
                     ->using(function (array $data) {
-                        $author = Author::whereSubmissionId($this->submission->getKey())->email($data['email'])->first();
+                        $author = Contributor::whereSubmissionId($this->submission->getKey())->email($data['email'])->first();
                         if (! $author) {
                             $author = AuthorCreateAction::run($this->submission, $data);
                         }
@@ -229,7 +230,7 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
             ]);
     }
 
-    public static function renderSelectAuthor(Author $author): string
+    public static function renderSelectAuthor(Contributor $author): string
     {
         $author->load('submission');
         return view('forms.select-contributor-submission', ['contributor' => $author])->render();

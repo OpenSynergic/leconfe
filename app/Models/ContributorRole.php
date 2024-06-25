@@ -10,15 +10,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
-use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
-class AuthorRole extends Model implements Sortable
+class ContributorRole extends Model implements Sortable
 {
     use Cachable, BelongsToConference, HasFactory, SortableTrait;
 
-    protected $table = 'author_roles';
+    protected $table = 'contributor_roles';
 
     protected $fillable = [
         'conference_id',
@@ -28,7 +25,7 @@ class AuthorRole extends Model implements Sortable
 
     public function authors(): HasMany
     {
-        return $this->hasMany(Author::class);
+        return $this->hasMany(Contributor::class);
     }
 
     public function scopeOfType(Builder $query, string $type): void

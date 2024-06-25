@@ -2,7 +2,7 @@
 
 namespace App\Actions\Authors;
 
-use App\Models\Author;
+use App\Models\Contributor;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -10,7 +10,7 @@ class AuthorUpdateAction
 {
     use AsAction;
 
-    public function handle(array $data, Author $author): Author
+    public function handle(array $data, Contributor $author): Contributor
     {
         try {
             DB::beginTransaction();

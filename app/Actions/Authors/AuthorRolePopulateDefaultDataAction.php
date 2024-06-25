@@ -2,7 +2,7 @@
 
 namespace App\Actions\Authors;
 
-use App\Models\AuthorRole;
+use App\Models\ContributorRole;
 use App\Models\Conference;
 use App\Models\Enums\UserRole;
 use Illuminate\Support\Facades\DB;
@@ -20,8 +20,9 @@ class AuthorRolePopulateDefaultDataAction
             foreach ([
                 UserRole::Author->value,
                 'Co Author',
+                'Presenter',
             ] as $authorRole) {
-                AuthorRole::firstOrCreate([
+                ContributorRole::firstOrCreate([
                     'name' => $authorRole,
                     'conference_id' => $conference->getKey(),
                 ]);

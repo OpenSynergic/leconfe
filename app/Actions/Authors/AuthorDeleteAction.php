@@ -2,7 +2,7 @@
 
 namespace App\Actions\Authors;
 
-use App\Models\Author;
+use App\Models\Contributor;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -10,7 +10,7 @@ class AuthorDeleteAction
 {
     use AsAction;
 
-    public function handle(Author $author)
+    public function handle(Contributor $author)
     {
         try {
             DB::beginTransaction();

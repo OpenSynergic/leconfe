@@ -2,7 +2,7 @@
 
 namespace App\Panel\Conference\Resources\Conferences;
 
-use App\Models\AuthorRole;
+use App\Models\ContributorRole;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -17,7 +17,7 @@ class AuthorRoleResource extends Resource
 {
     protected static bool $isDiscovered = false;
 
-    protected static ?string $model = AuthorRole::class;
+    protected static ?string $model = ContributorRole::class;
 
     protected static ?string $navigationGroup = 'Conferences';
 
@@ -58,11 +58,11 @@ class AuthorRoleResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('authors_count')
-                    ->label('Authors')
-                    ->counts('authors')
-                    ->badge()
-                    ->color(fn (int $state) => $state > 0 ? 'primary' : 'gray'),
+                // Tables\Columns\TextColumn::make('authors_count')
+                //     ->label('Authors')
+                //     ->counts('authors')
+                //     ->badge()
+                //     ->color(fn (int $state) => $state > 0 ? 'primary' : 'gray'),
 
             ])
             ->filters([
@@ -71,7 +71,7 @@ class AuthorRoleResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
-                    ->using(function (AuthorRole $record, Tables\Actions\DeleteAction $action) {
+                    ->using(function (ContributorRole $record, Tables\Actions\DeleteAction $action) {
                         try {
                             $authorCount = $record->authors()->count();
                             if ($authorCount > 0) {

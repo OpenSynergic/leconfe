@@ -78,7 +78,7 @@ class Conference extends Model implements HasAvatar, HasMedia, HasName
 
     public function authorRoles(): HasMany
     {
-        return $this->hasMany(AuthorRole::class);
+        return $this->hasMany(ContributorRole::class);
     }
 
     public function getNavigationItems(string $handle): array

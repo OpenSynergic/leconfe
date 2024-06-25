@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\AuthorRole;
 use App\Models\Conference;
+use App\Models\ContributorRole;
 use App\Models\Submission;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -14,7 +14,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('author_roles', function (Blueprint $table) {
+        Schema::create('contributor_roles', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Conference::class)->constrained()->cascadeOnDelete();
             $table->unsignedBigInteger('parent_id')->nullable();
@@ -23,10 +23,9 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('authors', function (Blueprint $table) {
+        Schema::create('contributors', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Submission::class)->constrained();
-            $table->foreignIdFor(AuthorRole::class)->constrained()->cascadeOnDelete();
             $table->string('email')->nullable();
             $table->string('given_name');
             $table->string('family_name')->nullable();
