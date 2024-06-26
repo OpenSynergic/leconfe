@@ -59,6 +59,11 @@ class DistributionSetting extends Page implements HasForms, HasInfolists
                                                 LivewireEntry::make('doi-setting')
                                                     ->livewire(DOISetup::class),
                                             ]),
+                                        InfolistsVerticalTabs\Tab::make('Registration')
+                                            ->schema([
+                                                LivewireEntry::make('doi-registration')
+                                                    ->livewire(DOIRegistration::class),
+                                            ]),
                                     ]),
                             ]),
                         Tabs\Tab::make('Search Indexing')
