@@ -63,7 +63,6 @@ class DOISetup extends Component implements HasForms
                                         'articles' => 'Articles',
                                         'proceedings' => 'Proceedings',
                                     ])
-
                             ])
                             ->columns(1),
                         TextInput::make('meta.doi_prefix')
@@ -115,5 +114,4 @@ class DOISetup extends Component implements HasForms
             ])
             ->statePath('formData');
     }
-
 }

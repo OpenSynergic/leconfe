@@ -2,6 +2,7 @@
 
 namespace App\Panel\Conference\Livewire;
 
+use App\Classes\ImportExport\ExportArticleCrossref;
 use App\Facades\DOIFacade;
 use App\Models\DOI;
 use App\Models\Enums\DOIStatus;
@@ -87,7 +88,9 @@ class SubmissionDOI extends Component implements HasForms, HasTable
                                     ->action(fn (Set $set) => $set('doi', DOIFacade::generate()))
                             ),
                     ])
-                    ->action(fn (Submission $record, array $data) => $record->doi()->updateOrCreate(['id' => $record->doi?->id], ['doi' => $data['doi']]))
+                    ->action(fn (Submission $record, array $data) => $record->doi()->updateOrCreate(['id' => $record->doi?->id], ['doi' => $data['doi']])),
+                Action::make('export')
+                    ->action(fn (Submission $record) => (new ExportArticleCrossref($record))->depositXml()),
             ])
             ->bulkActions([
                 // ...
