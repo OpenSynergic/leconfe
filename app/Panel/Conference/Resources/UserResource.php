@@ -7,6 +7,7 @@ use App\Actions\User\UserMailAction;
 use App\Actions\User\UserUpdateAction;
 use App\Facades\Setting;
 use App\Models\Enums\UserRole;
+use App\Models\Role;
 use App\Models\User;
 use App\Panel\Conference\Livewire\Forms\Conferences\ContributorForm;
 use App\Panel\Conference\Resources\UserResource\Pages;
@@ -140,7 +141,9 @@ class UserResource extends Resource
                                         modifyQueryUsing: fn ($query) => $query->where('name', '!=', UserRole::Admin)
                                     )
                                     ->saveRelationshipsUsing(function (Forms\Components\CheckboxList $component, ?array $state) {
-                                        $component->getModelInstance()->syncRoles($state);
+                                        $roles = $state ? Role::whereIn('id', $state)->pluck('name')->toArray() : [];
+
+                                        $component->getModelInstance()->syncRoles($roles);
                                     }),
                             ]),
                     ])

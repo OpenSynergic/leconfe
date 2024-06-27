@@ -150,9 +150,12 @@ class ParticipantList extends Component implements HasForms, HasTable
                                                 fn (Builder $query) => $query->whereId($get('role_id'))
                                             )
                                             ->whereNotIn('id', $this->submission->participants->pluck('user_id'))
-                                            ->where('given_name', 'like', "%{$search}%")
-                                            ->orWhere('family_name', 'like', "%{$search}%")
-                                            ->orWhere('email', 'like', "%{$search}%")
+                                            ->where(function ($query) use ($search) {
+                                                $query
+                                                    ->where('given_name', 'like', "%{$search}%")
+                                                    ->orWhere('family_name', 'like', "%{$search}%")
+                                                    ->orWhere('email', 'like', "%{$search}%");
+                                            })
                                             ->get()
                                             ->mapWithKeys(
                                                 fn (User $user) => [
