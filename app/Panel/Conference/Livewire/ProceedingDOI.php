@@ -2,8 +2,7 @@
 
 namespace App\Panel\Conference\Livewire;
 
-use App\Facades\DOIFacade;
-use App\Models\DOI;
+use App\Classes\DOIGenerator;
 use App\Models\Enums\DOIStatus;
 use App\Models\Proceeding;
 use App\Tables\Columns\IndexColumn;
@@ -78,7 +77,7 @@ class ProceedingDOI extends Component implements HasForms, HasTable
                                     ->button()
                                     // ->outlined()
                                     // ->color('secondary')
-                                    ->action(fn (Set $set) => $set('doi', DOIFacade::generate()))
+                                    ->action(fn (Set $set) => $set('doi', DOIGenerator::generate()))
                             ),
                     ])
                     ->action(fn (Proceeding $record, array $data) => $record->doi()->updateOrCreate(['id' => $record->doi?->id], ['doi' => $data['doi']]))

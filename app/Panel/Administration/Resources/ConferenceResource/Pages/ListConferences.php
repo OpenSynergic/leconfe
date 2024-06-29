@@ -28,16 +28,9 @@ class ListConferences extends ListRecords
     {
         return [
             Actions\CreateAction::make()
+                ->modalWidth(MaxWidth::ExtraLarge)
                 ->using(function (array $data) {
-                    
                     $record = ConferenceCreateAction::run($data);
-                    $serie = SerieCreateAction::run([
-                        'conference_id' => $record->getKey(),
-                        'path' => Str::slug($data['serie']['title']),
-                        'state' => SerieState::Current,
-                        ...$data['serie'],
-                    ]);
-
 
                     return $record;
                 })

@@ -2,8 +2,7 @@
 
 namespace App\Panel\Conference\Resources;
 
-use App\Actions\Series\SerieSetAsActiveAction;
-use App\Actions\Series\SerieSetAsCurrentAction;
+use App\Actions\Series\SerieUpdateAction;
 use App\Facades\Setting;
 use App\Models\Enums\SerieState;
 use App\Models\Enums\SerieType;
@@ -46,18 +45,25 @@ class SerieResource extends Resource
                             ->autofocus()
                             ->autocomplete()
                             ->required()
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(fn (Set $set, ?string $state) => $set('path', Str::slug($state)))
                             ->placeholder('Enter the title of the serie'),
                         TextInput::make('path')
                             ->label('Path')
                             ->rule('alpha_dash')
                             ->required()
                             ->placeholder('Enter the path of the serie'),
+                        TextInput::make('meta.theme')
+                            ->placeholder('e.g. Creating a better future with us')
+                            ->columnSpanFull()
+                            ->helperText("The theme of the conference. This will be used in the conference's branding."),
+                        TextInput::make('meta.publisher_name'),
+                        TextInput::make('meta.publisher_location'),
+                        Textarea::make('meta.description')
+                            ->hint('Recommended length: 50-160 characters')
+                            ->helperText('A short description of the conference. This will used to help search engines understand the conference.')
+                            ->maxLength(255)
+                            ->autosize()
+                            ->columnSpanFull(),
                     ]),
-                TextInput::make('issn')
-                    ->label('ISSN')
-                    ->placeholder('Enter the ISSN of the serie'),
                 Grid::make()
                     ->schema([
                         DatePicker::make('date_start')
@@ -85,7 +91,7 @@ class SerieResource extends Resource
                 IndexColumn::make('no'),
                 TextColumn::make('title')
                     ->searchable()
-                    ->description(fn(Serie $record) => $record->current ? 'Current' : null)
+                    ->description(fn (Serie $record) => $record->current ? 'Current' : null)
                     ->sortable()
                     ->wrap()
                     ->wrapHeader(),
@@ -93,7 +99,7 @@ class SerieResource extends Resource
                     ->date(Setting::get('format_date')),
                 TextColumn::make('date_end')
                     ->date(Setting::get('format_date')),
-                
+
             ])
             ->filters([
                 //
@@ -110,7 +116,7 @@ class SerieResource extends Resource
                                 ->label('Set as current serie'),
                         ])
                         ->hidden(fn (Serie $record) => $record->isArchived() || $record->isCurrent() || $record->isPublished() || $record->trashed())
-                        ->action(function (Serie $record, array $data, Tables\Actions\Action $action){
+                        ->action(function (Serie $record, array $data, Tables\Actions\Action $action) {
                             $data['set_as_current'] ? $record->update(['state' => SerieState::Current]) : $record->update(['state' => SerieState::Published]);
 
                             return $action->success();
@@ -122,9 +128,15 @@ class SerieResource extends Resource
                         ->color('success')
                         ->hidden(fn (Serie $record) => $record->isArchived() || $record->isCurrent() || $record->isDraft() || $record->trashed())
                         ->action(fn (Serie $record, Tables\Actions\Action $action) => $record->update(['state' => SerieState::Current]) && $action->success())
-                        ->successNotificationTitle(fn(Serie $serie) => $serie->title . ' is set as current'),
+                        ->successNotificationTitle(fn (Serie $serie) => $serie->title . ' is set as current'),
                     Tables\Actions\EditAction::make()
-                        ->hidden(fn (Serie $record) => $record->isArchived() || $record->trashed()),
+                        ->hidden(fn (Serie $record) => $record->isArchived() || $record->trashed())
+                        ->mutateRecordDataUsing(function (Serie $record, array $data) {
+                            $data['meta'] = $record->getAllMeta()->toArray();
+    
+                            return $data;
+                        })
+                        ->using(fn (Serie $record, array $data) => SerieUpdateAction::run($record, $data)),
                     // Tables\Actions\DeleteAction::make()
                     //     ->label('Move To Trash')
                     //     ->modalHeading('Move To Trash')

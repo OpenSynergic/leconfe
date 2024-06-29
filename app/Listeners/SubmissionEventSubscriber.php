@@ -2,9 +2,9 @@
 
 namespace App\Listeners;
 
+use App\Classes\DOIGenerator;
 use App\Events\Submissions\Accepted;
 use App\Events\Submissions\Published;
-use App\Facades\DOIFacade;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Events\Dispatcher;
@@ -24,7 +24,7 @@ class SubmissionEventSubscriber
         if (!$event->submission->doi) {
             $event->submission
                 ->doi()
-                ->create(['doi' => DOIFacade::generate()]);
+                ->create(['doi' => DOIGenerator::generate()]);
         }
     }
 
@@ -41,7 +41,7 @@ class SubmissionEventSubscriber
         if (!$event->submission->doi) {
             $event->submission
                 ->doi()
-                ->create(['doi' => DOIFacade::generate()]);
+                ->create(['doi' => DOIGenerator::generate()]);
         }
     }
 
