@@ -18,8 +18,6 @@ use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\ActionGroup;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
-use Spatie\ArrayToXml\ArrayToXml;
-
 class CrossrefDOIRegistration extends BaseDOIRegistration
 {
 	public function getName(): string
@@ -111,14 +109,14 @@ class CrossrefDOIRegistration extends BaseDOIRegistration
 	public function getSettingFormSchema(): array
 	{
 		return [
-			Section::make('Automatic Deposit')
-				->schema([
-					Placeholder::make('doi_automatic_deposit_description')
-						->content("The DOI registration and metadata can be automatically deposited with the selected registration agency whenever an item with a DOI is published. Automatic deposit will happen at scheduled intervals and each DOI's registration status can be monitored from the DOI management page")
-						->hiddenLabel(),
-					Checkbox::make('meta.doi_automatic_deposit')
-						->label('Automatically deposit DOIs')
-				]),
+			// Section::make('Automatic Deposit')
+			// 	->schema([
+			// 		Placeholder::make('doi_automatic_deposit_description')
+			// 			->content("The DOI registration and metadata can be automatically deposited with the selected registration agency whenever an item with a DOI is published. Automatic deposit will happen at scheduled intervals and each DOI's registration status can be monitored from the DOI management page")
+			// 			->hiddenLabel(),
+			// 		Checkbox::make('meta.doi_automatic_deposit')
+			// 			->label('Automatically deposit DOIs')
+			// 	]),5
 			Placeholder::make('Crossref Settings')
 				->content("The following items are required for a successful Crossref deposit"),
 			TextInput::make('meta.doi_crossref_depositor_name')
