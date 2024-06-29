@@ -37,7 +37,6 @@ class ExportArticleCrossref
 
 	public function getUrl(): string
 	{
-		return $this->testUrl;
 		return $this->submission->conference->getMeta('doi_crossref_test') ? $this->testUrl : $this->productionUrl;
 	}
 
