@@ -128,7 +128,6 @@ class Application extends LaravelApplication
             Topic::class,
             NavigationMenu::class,
             AuthorRole::class,
-            Announcement::class,
             StaticPage::class,
             PaymentItem::class,
             Serie::class,
@@ -150,6 +149,7 @@ class Application extends LaravelApplication
             SpeakerRole::class,
             Sponsor::class,
             Committee::class,
+            Announcement::class,
         ];
 
         foreach ($models as $model) {
