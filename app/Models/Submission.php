@@ -90,6 +90,7 @@ class Submission extends Model implements HasMedia, HasPayment, Sortable
         static::creating(function (Submission $submission) {
             $submission->user_id ??= Auth::id();
             $submission->conference_id ??= app()->getCurrentConferenceId();
+            $submission->serie_id ??= app()->getCurrentSerieId();
         });
 
         static::deleting(function (Submission $submission) {
@@ -158,6 +159,11 @@ class Submission extends Model implements HasMedia, HasPayment, Sortable
     public function conference()
     {
         return $this->belongsTo(Conference::class);
+    }
+
+    public function serie()
+    {
+        return $this->belongsTo(Serie::class);
     }
 
     public function user()

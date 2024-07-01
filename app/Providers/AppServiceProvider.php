@@ -11,8 +11,6 @@ use App\Classes\Settings;
 use App\Listeners\SubmissionEventSubscriber;
 use App\Models\Conference;
 use Illuminate\Support\Str;
-use App\Managers\BlockManager;
-use App\Managers\DOIManager;
 use App\Managers\MetaTagManager;
 use App\Managers\SidebarManager;
 use Illuminate\Support\Facades\DB;
@@ -42,9 +40,6 @@ class AppServiceProvider extends ServiceProvider
             return new MetaTagManager;
         });
 
-        $this->app->scoped(DOIManager::class, function () {
-            return new DOIManager;
-        });
 
 
         $this->app->bind(Setting::class, function ($app) {

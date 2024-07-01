@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Managers;
+namespace App\Classes;
 
 use Dflydev\Base32\Crockford\Crockford;
 
-class DOIManager
+class DOIGenerator
 {
     // 32 by the factor of 6
     protected const UPPER_LIMIT = 1073741823;
 
-    public function generate(): string
+    public static function generate(): string
     {
         $prefix = app()->getCurrentConference()->getMeta('doi_prefix');
-        $suffix = $this->encodeSuffix();
+        $suffix = static::encodeSuffix();
 
         return $prefix . '/' . $suffix;
     }
@@ -22,11 +22,11 @@ class DOIManager
      * to generate the suffix.
      *
      */
-    public function encodeSuffix(): string
+    public static function encodeSuffix(): string
     {
         $number = random_int(1, static::UPPER_LIMIT);
 
-        return $this->base32EncodeSuffix($number);
+        return static::base32EncodeSuffix($number);
     }
 
     /**
@@ -34,7 +34,7 @@ class DOIManager
      *
      * @return int|null Returns null if checksum is invalid
      */
-    public function decodeSuffix(string $suffix): ?int
+    public static function decodeSuffix(string $suffix): ?int
     {
         $suffix = strtoupper($suffix);
         $suffixParts = str_split($suffix, 6);
@@ -43,7 +43,7 @@ class DOIManager
 
         $decodedSuffix = Crockford::decode($encodedString);
 
-        $isSuffixValid = $this->verifySuffixChecksum($decodedSuffix, $checksum);
+        $isSuffixValid = static::verifySuffixChecksum($decodedSuffix, $checksum);
 
         return $isSuffixValid ? $decodedSuffix : null;
     }
@@ -55,13 +55,13 @@ class DOIManager
      *
      * @param int $number A random number between 1 and 1073741823 (UPPER_LIMIT). Used as seed for encoding suffix.
      */
-    protected function base32EncodeSuffix(int $number): string
+    protected static function base32EncodeSuffix(int $number): string
     {
         // Initial base32 encoded string (up to 6 characters max)
         $encodedNumber = strtolower(Crockford::encode($number));
 
         // Add checksum at end of string, calculated as modulo 97-10 (ISO 7064)
-        $remainder = $this->calculateChecksum($number);
+        $remainder = static::calculateChecksum($number);
         $payload = $encodedNumber . sprintf('%02d', $remainder);
 
         return str_pad($payload, 8, '0', STR_PAD_LEFT);
@@ -74,15 +74,15 @@ class DOIManager
      * @param int $number The integer decoded form the base 32 suffix. Original number used to generate suffix.
      * @param int $checksum The two-digit checksum (last two digits of suffix)
      */
-    protected function verifySuffixChecksum(int $number, int $checksum): bool
+    protected  static function verifySuffixChecksum(int $number, int $checksum): bool
     {
-        return $checksum === $this->calculateChecksum($number);
+        return $checksum === static::calculateChecksum($number);
     }
 
     /**
      * Checksum calculated as modulo 97-10 (ISO 7064).
      */
-    protected function calculateChecksum(int $number): int
+    protected static function calculateChecksum(int $number): int
     {
         return 98 - (($number * 100) % 97);
     }

@@ -2,7 +2,9 @@
 
 namespace App\Panel\Conference\Livewire;
 
-use App\Facades\DOIFacade;
+use App\Classes\DOIGenerator;
+use App\Classes\ImportExport\ExportArticleCrossref;
+use App\Facades\DOIRegistrationFacade;
 use App\Models\DOI;
 use App\Models\Enums\DOIStatus;
 use App\Models\Proceeding;
@@ -16,6 +18,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Notifications\Notification;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Support\View\Components\Modal;
 use Filament\Tables\Actions\Action;
@@ -38,6 +41,8 @@ class SubmissionDOI extends Component implements HasForms, HasTable
 
     public function table(Table $table): Table
     {
+        $registrationAgency = app()->getCurrentConference()->getMeta('doi_registration_agency');
+
         return $table
             ->query(Submission::query()->with('doi'))
             ->columns([
@@ -84,10 +89,11 @@ class SubmissionDOI extends Component implements HasForms, HasTable
                                     ->button()
                                     // ->outlined()
                                     // ->color('secondary')
-                                    ->action(fn (Set $set) => $set('doi', DOIFacade::generate()))
+                                    ->action(fn (Set $set) => $set('doi', DOIGenerator::generate()))
                             ),
                     ])
-                    ->action(fn (Submission $record, array $data) => $record->doi()->updateOrCreate(['id' => $record->doi?->id], ['doi' => $data['doi']]))
+                    ->action(fn (Submission $record, array $data) => $record->doi()->updateOrCreate(['id' => $record->doi?->id], ['doi' => $data['doi']])),
+                ...$registrationAgency ? DOIRegistrationFacade::driver($registrationAgency)?->getTableActions() : [],
             ])
             ->bulkActions([
                 // ...

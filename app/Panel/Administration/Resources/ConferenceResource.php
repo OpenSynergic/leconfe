@@ -38,130 +38,26 @@ class ConferenceResource extends Resource
     {
         return $form
             ->schema([
-                Grid::make(1)
-                    ->columnSpan([
-                        'sm' => 2,
-                        'lg' => 2,
-                    ])
+                TextInput::make('name')
+                    ->columnSpanFull()
+                    ->required(),
+                Grid::make()
                     ->schema([
-                        Section::make()
-                            ->columns([
-                                'sm' => 2,
-                            ])
-                            ->schema([
-                                TextInput::make('name')
-                                    ->columnSpanFull()
-                                    ->required(),
-                                TextInput::make('meta.acronym')
-                                    ->unique(column: 'path')
-                                    ->rule('alpha_dash')
-                                    ->live(onBlur: true),
-                                Placeholder::make('path')
-                                    ->content(function (Get $get) {
-                                        $baseUrl = config('app.url') . '/';
-                                        $acronym = $get('meta.acronym') ?? '{acronym}';
-                                        return new HtmlString("<span class='text-gray-500'>{$baseUrl}</span>{$acronym}");
-                                    }),
-                                Section::make()
-                                    ->columns(2)
-                                    ->schema([
-                                        TextInput::make('serie.title')
-                                            ->label('Serie Title')
-                                            ->columnSpanFull()
-                                            ->required(),
-                                        DatePicker::make('serie.date_start')
-                                            ->label('Start Date')
-                                            ->placeholder('Enter the start date of the serie')
-                                            ->requiredWith('serie.date_end'),
-                                        DatePicker::make('serie.date_end')
-                                            ->label('End Date')
-                                            ->afterOrEqual('serie.date_start')
-                                            ->requiredWith('serie.date_start')
-                                            ->placeholder('Enter the end date of the serie'),
-                                        Select::make('serie.type')
-                                            ->required()
-                                            ->columnSpanFull()
-                                            ->options(SerieType::array()),
-                                    ])
-                                    ->hidden(fn($record) => $record),
-                                TextInput::make('meta.theme')
-                                    ->placeholder('e.g. Creating a better future with us')
-                                    ->helperText("The theme of the conference. This will be used in the conference's branding.")
-                                    ->columnSpanFull(),
-                                Textarea::make('meta.description')
-                                    ->hint('Recommended length: 50-160 characters')
-                                    ->helperText('A short description of the conference. This will used to help search engines understand the conference.')
-                                    ->maxLength(255)
-                                    ->autosize()
-                                    ->columnSpanFull(),
-                            ]),
-                        Section::make()
-                            ->columns(2)
-                            ->schema([
-                                TextInput::make('meta.publisher_name'),
-                                TextInput::make('meta.publisher_location'),
-                                TextInput::make('meta.affiliation'),
-                                Select::make('meta.country')
-                                    ->searchable()
-                                    ->options(Country::pluck('name', 'id'))
-                                    ->optionsLimit(250),
-                            ]),
+                        TextInput::make('meta.acronym')
+                            ->helperText('The acronym of the conference series'),
+                        TextInput::make('meta.issn')
+                            ->label('ISSN')
+                            ->helperText('The ISSN of the conference series'),
                     ]),
-                Section::make()
-                    ->columnSpan([
-                        'sm' => 1,
-                    ])
-                    ->schema([
-                        // Select::make('conference_id')
-                        //     ->label('Previous Conference')
-                        //     ->hidden(fn($record) => $record)
-                        //     ->options(function () {
-                        //         return Conference::query()
-                        //             ->latest('created_at')
-                        //             ->take(5)
-                        //             ->pluck('name', 'id')
-                        //             ->toArray();
-                        //     })
-                        //     ->helperText('Fill the data from previous conference')
-                        //     ->searchable()
-                        //     ->preload()
-                        //     ->live()
-                        //     ->afterStateUpdated(function (Set $set, ?string $state, Get $get) {
-                        //         $getDataConference = Conference::find($state);
-
-                        //         $defaults = [
-                        //             'name' => $getDataConference?->name,
-                        //             'path' => $getDataConference?->path,
-                        //             'meta.theme' => $getDataConference?->getMeta('theme'),
-                        //             'meta.description' => $getDataConference?->getMeta('description'),
-                        //             'meta.publisher_name' => $getDataConference?->getMeta('publisher_name'),
-                        //             'meta.publisher_location' => $getDataConference?->getMeta('publisher_location'),
-                        //             'meta.affiliation' => $getDataConference?->getMeta('affiliation'),
-                        //             'meta.acronym' => $getDataConference?->getMeta('acronym'),
-                        //             'meta.country' => $getDataConference?->getMeta('country'),
-                        //         ];
-
-                        //         foreach ($defaults as $key => $previousConferenceValue) {
-                        //             $fieldUserValue = $get($key);
-                        //             empty($fieldUserValue) ? $set($key, $previousConferenceValue) : $set($key, $fieldUserValue);
-                        //         }
-                        //     }),
-
-                        SpatieMediaLibraryFileUpload::make('logo')
-                            ->collection('logo')
-                            ->image()
-                            ->conversion('thumb'),
-                        SpatieMediaLibraryFileUpload::make('thumbnail')
-                            ->helperText('A image representation of the conference that can be used in lists of conferences.')
-                            ->collection('thumbnail')
-                            ->image()
-                            ->conversion('thumb'),
-                    ]),
+                TextInput::make('path')
+                    ->label('Path')
+                    ->helperText('The path of the conference. This will be used in the URL of the conference.')
+                    ->required()
+                    ->rule('alpha_dash')
+                    ->unique(ignoreRecord: true)
+                    ->prefix(config('app.url') . '/'),
             ])
-            ->columns([
-                'sm' => 3,
-                'lg' => 3,
-            ]);
+            ->columns(1);
     }
 
     public static function table(Table $table): Table
@@ -181,17 +77,16 @@ class ConferenceResource extends Resource
                     ->url(fn (Conference $record) => route('filament.conference.pages.dashboard', $record))
                     ->openUrlInNewTab(),
                 Tables\Actions\EditAction::make()
-                    ->modalWidth(MaxWidth::FiveExtraLarge)
+                    ->modalWidth(MaxWidth::ExtraLarge)
                     ->button()
-                    ->mutateRecordDataUsing(function(Conference $record, array $data){
+                    ->mutateRecordDataUsing(function (Conference $record, array $data) {
                         $data['meta'] = $record->getAllMeta()->toArray();
 
                         return $data;
                     })
-                    ->using(fn(Conference $record, array $data) => ConferenceUpdateAction::run($record, $data)),
+                    ->using(fn (Conference $record, array $data) => ConferenceUpdateAction::run($record, $data)),
                 Tables\Actions\DeleteAction::make()
                     ->button(),
-
             ])
             ->bulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),

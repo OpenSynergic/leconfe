@@ -61,9 +61,7 @@ class DOISetup extends Component implements HasForms
                                     ->hiddenLabel()
                                     ->options([
                                         'articles' => 'Articles',
-                                        'proceedings' => 'Proceedings',
                                     ])
-
                             ])
                             ->columns(1),
                         TextInput::make('meta.doi_prefix')

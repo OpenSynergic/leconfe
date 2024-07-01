@@ -21,10 +21,6 @@ class SerieUpdateAction
             if (data_get($data, 'meta')) {
                 $serie->setManyMeta(data_get($data, 'meta'));
             }
-            
-            if(data_get($data, 'set_as_active')) {
-                SerieSetAsActiveAction::run($serie);
-            }
 
 
             DB::commit();
