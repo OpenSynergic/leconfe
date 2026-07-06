@@ -42,4 +42,14 @@ class PaymentDetailTest extends TestCase
 
         $this->assertFalse($page->shouldSendParticipantPaymentNotificationPublic($payment, []));
     }
+
+    public function test_submission_payment_title_handles_string_payment_type(): void
+    {
+        $page = new PaymentDetail;
+        $page->record = new Payment([
+            'type' => (string) PaymentManager::TYPE_SUBMISSION_FEE,
+        ]);
+
+        $this->assertSame('Submission Payment', $page->getTitle());
+    }
 }

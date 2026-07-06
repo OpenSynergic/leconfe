@@ -42,6 +42,7 @@ class Payment extends Model implements HasMedia
     ];
 
     protected $casts = [
+        'type' => 'integer',
         'paid_at' => 'datetime',
     ];
 
