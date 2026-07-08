@@ -6,6 +6,7 @@ use App\Frontend\Website\Pages\InvitationRegister;
 use App\Mail\Templates\VerifyUserEmail;
 use App\Models\Conference;
 use App\Models\Role;
+use App\Models\ScheduledConference;
 use App\Models\User;
 use App\Models\UserInvitation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -100,6 +101,40 @@ class InvitationRegisterTest extends TestCase
             'status' => 'pending',
         ]);
         Mail::assertNothingQueued();
+    }
+
+    public function test_scheduled_conference_invitation_registration_displays_scheduled_conference_name(): void
+    {
+        $conference = Conference::query()->create([
+            'name' => 'Test Conference',
+            'path' => 'test-conference',
+        ]);
+
+        $scheduledConference = ScheduledConference::query()->create([
+            'conference_id' => $conference->getKey(),
+            'title' => 'Published Scheduled Conference',
+            'path' => 'published-scheduled-conference',
+            'is_published' => true,
+        ]);
+
+        $invitation = UserInvitation::query()->create([
+            'email' => 'invitee@example.com',
+            'role_name' => 'Reviewer',
+            'token' => 'scheduled-invite-token-new-user',
+            'status' => 'pending',
+            'conference_id' => $conference->getKey(),
+            'scheduled_conference_id' => $scheduledConference->getKey(),
+        ]);
+
+        app()->setCurrentConferenceId($conference->getKey());
+        app()->setCurrentScheduledConferenceId($scheduledConference->getKey());
+
+        $this->withoutVite()
+            ->get($invitation->getRegisterUrl())
+            ->assertOk()
+            ->assertSee('Invitation Registration')
+            ->assertSee('for <strong>Published Scheduled Conference</strong>', false)
+            ->assertDontSee('for <strong>Test Conference</strong>', false);
     }
 
     protected function createInvitationRole(Conference $conference): void
