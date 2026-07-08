@@ -106,6 +106,8 @@ class InvitationRegisterTest extends TestCase
             ->get($invitation->getRegisterUrl())
             ->assertOk()
             ->assertSee('Invitation Registration')
+            ->assertSee('for <strong>Draft Scheduled Conference</strong>', false)
+            ->assertDontSee('for <strong>Test Conference</strong>', false)
             ->assertDontSee(__('scheduled_conference.unpublished_description'));
     }
 
