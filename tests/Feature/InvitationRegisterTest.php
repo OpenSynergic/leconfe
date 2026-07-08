@@ -126,6 +126,9 @@ class InvitationRegisterTest extends TestCase
             'scheduled_conference_id' => $scheduledConference->getKey(),
         ]);
 
+        app()->setCurrentConferenceId($conference->getKey());
+        app()->setCurrentScheduledConferenceId($scheduledConference->getKey());
+
         $this->withoutVite()
             ->get($invitation->getRegisterUrl())
             ->assertOk()
