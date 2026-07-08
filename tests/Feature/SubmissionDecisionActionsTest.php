@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Constants\SubmissionFileCategory;
 use App\Mail\Templates\AcceptAbstractMail;
+use App\Mail\Templates\DeclineAbstractMail;
+use App\Mail\Templates\DeclinePaperMail;
 use App\Mail\Templates\RevisionRequestMail;
 use App\Mail\Templates\SendForReviewMail;
 use App\Models\Conference;
@@ -464,6 +466,47 @@ class SubmissionDecisionActionsTest extends TestCase
             ]);
 
         Mail::assertQueued(RevisionRequestMail::class);
+    }
+
+    public function test_call_for_abstract_decline_defaults_to_notifying_author_when_checkbox_is_omitted(): void
+    {
+        Mail::fake();
+
+        $context = $this->makeEditorSubmissionContext([
+            'stage' => SubmissionStage::CallforAbstract,
+            'status' => SubmissionStatus::Queued,
+        ]);
+
+        $this->actingAs($context['editor']);
+
+        Livewire::test(CallforAbstract::class, ['submission' => $context['submission']])
+            ->callAction('decline', data: [
+                'subject' => 'Declined abstract',
+                'message' => 'Your abstract was declined.',
+            ]);
+
+        Mail::assertQueued(DeclineAbstractMail::class);
+    }
+
+    public function test_peer_review_decline_defaults_to_notifying_author_when_checkbox_is_omitted(): void
+    {
+        Mail::fake();
+
+        $context = $this->makeEditorSubmissionContext([
+            'stage' => SubmissionStage::PeerReview,
+            'status' => SubmissionStatus::OnReview,
+        ]);
+
+        $this->actingAs($context['editor']);
+
+        Livewire::test(PeerReview::class, ['submission' => $context['submission']])
+            ->callAction('declineSubmissionAction', data: [
+                'email' => $context['author']->email,
+                'subject' => 'Declined paper',
+                'message' => 'Your paper was declined.',
+            ]);
+
+        Mail::assertQueued(DeclinePaperMail::class);
     }
 
     public function test_peer_review_decision_can_move_editing_submission_back_to_presentation(): void
