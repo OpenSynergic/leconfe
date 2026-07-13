@@ -1,0 +1,8 @@
+plugins:
+  - name: CertificateManager
+    repository: leconfe/CertificateManager
+    ref: 2.0.x
+
+  - name: SubmissionReport
+    repository: leconfe/SubmissionReport
+    ref: main
