@@ -1,0 +1,50 @@
+{
+    "name": "propaganistas/laravel-phone",
+    "description": "Adds phone number functionality to Laravel based on Google's libphonenumber API.",
+    "keywords": [
+        "laravel",
+        "libphonenumber",
+        "validation",
+        "phone"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Propaganistas",
+            "email": "Propaganistas@users.noreply.github.com"
+        }
+    ],
+    "require": {
+        "illuminate/contracts": "^10.0|^11.0|^12.0|^13.0",
+        "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
+        "illuminate/validation": "^10.0|^11.0|^12.0|^13.0",
+        "giggsey/libphonenumber-for-php-lite": "^8.13.35|^9.0.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "*",
+        "phpunit/phpunit": "^10.5|^11.5.3",
+        "laravel/pint": "^1.14"
+    },
+    "autoload": {
+        "psr-4": {
+            "Propaganistas\\LaravelPhone\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Propaganistas\\LaravelPhone\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Propaganistas\\LaravelPhone\\PhoneServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

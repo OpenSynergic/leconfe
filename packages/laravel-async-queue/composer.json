@@ -1,0 +1,30 @@
+{
+    "name": "rahmanramsi/laravel-async-queue",
+    "description": "Async queue driver for laravel",
+    "type": "laravel",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Rahmanramsi\\LaravelAsyncQueue\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Rahman Ramsi",
+            "email": "rahmanramsi19@gmail.com"
+        }
+    ],
+    "require": {
+        "illuminate/auth": "10.*|11.*|12.*|13.*",
+        "illuminate/contracts": "10.*|11.*|12.*|13.*",
+        "amphp/sync": "^2.2"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Rahmanramsi\\LaravelAsyncQueue\\AsyncQueueServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable"
+}

@@ -1,0 +1,10 @@
+<?php
+
+namespace {{ namespace }};
+
+use Rahmanramsi\LivewirePageGroup\Pages\Page;
+
+class {{ class }} extends Page
+{
+    protected static string $view = '{{ view }}';
+}

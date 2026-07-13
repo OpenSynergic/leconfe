@@ -38,7 +38,7 @@ class Media extends Model
         return $this->hasMany(SubmissionFile::class);
     }
 
-    public function getTemporaryUrl(DateTimeInterface $expiration, string $conversionName = '', array $options = []): string
+    public function getTemporaryUrl(?DateTimeInterface $expiration = null, string $conversionName = '', array $options = []): string
     {
         return parent::getTemporaryUrl($expiration, $conversionName, array_merge($options, ['disk' => $this->disk]));
     }

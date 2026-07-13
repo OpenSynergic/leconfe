@@ -21,7 +21,7 @@ class DateTimeHandler extends PlankDateTimeHandler
     /**
      * {@inheritdoc}
      */
-    public function unserializeValue(string $value)
+    public function unserializeValue(string $value): mixed
     {
         return Carbon::createFromFormat($this->format, $value);
     }

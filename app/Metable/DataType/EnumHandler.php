@@ -27,8 +27,18 @@ abstract class EnumHandler implements HandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function serializeValue($value): string
+    public function serializeValue(mixed $value): string
     {
         return $value->value;
+    }
+
+    public function getNumericValue(mixed $value): null|int|float
+    {
+        return null;
+    }
+
+    public function useHmacVerification(): bool
+    {
+        return false;
     }
 }

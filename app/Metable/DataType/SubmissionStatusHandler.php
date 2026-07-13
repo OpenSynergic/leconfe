@@ -17,7 +17,7 @@ class SubmissionStatusHandler extends EnumHandler
     /**
      * {@inheritdoc}
      */
-    public function canHandleValue($value): bool
+    public function canHandleValue(mixed $value): bool
     {
         return $value instanceof SubmissionStatus;
     }
@@ -25,7 +25,7 @@ class SubmissionStatusHandler extends EnumHandler
     /**
      * {@inheritdoc}
      */
-    public function unserializeValue(string $value)
+    public function unserializeValue(string $value): mixed
     {
         return SubmissionStatus::from($value);
     }
