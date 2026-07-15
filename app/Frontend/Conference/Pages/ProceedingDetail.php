@@ -46,6 +46,7 @@ class ProceedingDetail extends Page
     {
         $slug = static::getSlug();
         Route::get('/proceedings/view/{proceeding}', static::class)
+            ->whereNumber('proceeding')
             ->middleware(static::getRouteMiddleware($pageGroup))
             ->withoutMiddleware(static::getWithoutRouteMiddleware($pageGroup))
             ->name((string) str($slug)->replace('/', '.'));
