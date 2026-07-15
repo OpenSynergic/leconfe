@@ -22,20 +22,20 @@ class Home extends Page
         'faculty' => [
             'search' => '',
             'value' => [],
-            'options' => []
+            'options' => [],
         ],
         'category' => [
             'search' => '',
             'value' => [],
-            'options' => []
+            'options' => [],
         ],
         'search' => [
-            'value' => ''
-        ]
+            'value' => '',
+        ],
     ];
 
     protected static string|array $routeMiddleware = [
-        RedirectToConference::class
+        RedirectToConference::class,
     ];
 
     public function getTitle(): string|Htmlable
@@ -51,7 +51,7 @@ class Home extends Page
             ]);
     }
 
-    public function resetFilter(string $type = null): void
+    public function resetFilter(?string $type = null): void
     {
         if ($type) {
             $this->filter[$type]['search'] = '';
@@ -83,20 +83,22 @@ class Home extends Page
             ->published()
             ->orderBy('date_start', 'DESC');
 
-        if (!empty($this->filter['category']['value'])) {
+        if (! empty($this->filter['category']['value'])) {
             $scheduledQuery->filterByCategories($this->filter['category']['value']);
         }
 
-        if (!empty($this->filter['faculty']['value'])) {
+        if (! empty($this->filter['faculty']['value'])) {
             $scheduledQuery->whereHas('meta', function ($m) {
                 $m->where('key', 'faculty')
                     ->whereIn('value', $this->filter['faculty']['value']);
             });
         }
 
-        if ($this->filter['search']['value'] !== '') {
-            $scheduledQuery->where(function ($q) {
-                $searchTerm = '%' . mb_strtolower($this->filter['search']['value']) . '%';
+        $search = $this->filter['search']['value'] ?? '';
+
+        if ($search !== '') {
+            $scheduledQuery->where(function ($q) use ($search) {
+                $searchTerm = '%'.mb_strtolower($search).'%';
                 $q->whereRaw('LOWER(title) LIKE ?', [$searchTerm]);
             });
         }
@@ -112,7 +114,7 @@ class Home extends Page
     public function loadCategories(): void
     {
         $categories = collect(Site::getSite()->getMeta('scheduled_conference_categories', []));
-        if (!empty($this->filter['category']['search'])) {
+        if (! empty($this->filter['category']['search'])) {
             $search = $this->filter['category']['search'];
             $categories = $categories->filter(function ($value) use ($search) {
                 return stripos($value, $search) !== false;
@@ -124,7 +126,7 @@ class Home extends Page
     public function loadFaculties(): void
     {
         $faculties = collect(Site::getSite()->getMeta('scheduled_conference_faculties', []));
-        if (!empty($this->filter['faculty']['search'])) {
+        if (! empty($this->filter['faculty']['search'])) {
             $search = $this->filter['faculty']['search'];
             $faculties = $faculties->filter(function ($value) use ($search) {
                 return stripos($value, $search) !== false;
@@ -137,11 +139,13 @@ class Home extends Page
     {
         if ($name === 'filter.category.search') {
             $this->loadCategories();
+
             return;
         }
 
         if ($name === 'filter.faculty.search') {
             $this->loadFaculties();
+
             return;
         }
     }
