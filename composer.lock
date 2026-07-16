@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ccb4d7f76cad9d1a6418bc112ccb4922",
+    "content-hash": "7e548b7aaf7ce9420dc6993f86e1d652",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -6984,6 +6984,55 @@
                 }
             ],
             "time": "2026-02-13T11:51:03+00:00"
+        },
+        {
+            "name": "openjournalteam/laravel-bangau-mail",
+            "version": "v0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/openjournalteam/laravel-bangau-mail.git",
+                "reference": "d5041c25a83525eb07ab13e1d29163759d4566cf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/openjournalteam/laravel-bangau-mail/zipball/d5041c25a83525eb07ab13e1d29163759d4566cf",
+                "reference": "d5041c25a83525eb07ab13e1d29163759d4566cf",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/mail": "^10.0",
+                "illuminate/support": "^10.0",
+                "php": "^8.1",
+                "symfony/mailer": "^6.0",
+                "symfony/mime": "^6.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^8.0",
+                "phpunit/phpunit": "^10.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Bangau\\LaravelMail\\BangauServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Bangau\\LaravelMail\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Laravel 10 mail transport for an external HTTP delivery API.",
+            "support": {
+                "issues": "https://github.com/openjournalteam/laravel-bangau-mail/issues",
+                "source": "https://github.com/openjournalteam/laravel-bangau-mail/tree/v0.1.0"
+            },
+            "time": "2026-07-16T09:13:47+00:00"
         },
         {
             "name": "openspout/openspout",
