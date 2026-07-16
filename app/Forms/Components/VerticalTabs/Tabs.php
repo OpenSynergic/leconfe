@@ -2,10 +2,10 @@
 
 namespace App\Forms\Components\VerticalTabs;
 
+use Exception;
 use Closure;
-use Filament\Forms\Components\Tabs as ComponentsTabs;
 
-class Tabs extends ComponentsTabs
+class Tabs extends \Filament\Schemas\Components\Tabs
 {
     protected string $view = 'forms.components.vertical-tabs.tabs';
 
@@ -19,7 +19,7 @@ class Tabs extends ComponentsTabs
         if ($position === 'left' || $position === 'right') {
             $this->position = $position;
         } else {
-            throw new \Exception('Invalid position provided. Only "left" and "right" are allowed.');
+            throw new Exception('Invalid position provided. Only "left" and "right" are allowed.');
         }
 
         return $this;

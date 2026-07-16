@@ -2,25 +2,29 @@
 
 namespace App\Panel\Administration\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Actions;
+use Filament\Actions\Action;
+use Throwable;
 use App\Facades\Plugin as FacadesPlugin;
 use App\Forms\Components\CssFileUpload;
 use App\Models\Plugin;
-use Filament\Forms\Components\Actions;
-use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\BaseFileUpload;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
-class ThemeSetting extends Component implements HasForms
+class ThemeSetting extends Component implements HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms;
 
     public ?array $formData = [];
@@ -42,9 +46,9 @@ class ThemeSetting extends Component implements HasForms
         return view('forms.form');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->model()
             ->schema([
                 Section::make()
@@ -91,7 +95,7 @@ class ThemeSetting extends Component implements HasForms
                                 $theme?->saveFormData($formData['theme'] ?? []);
 
                                 $action->sendSuccessNotification();
-                            } catch (\Throwable $th) {
+                            } catch (Throwable $th) {
                                 throw $th;
                                 $action->sendFailureNotification();
                             }

@@ -2,10 +2,18 @@
 
 namespace App\Panel\ScheduledConference\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Exception;
+use Throwable;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\CreateAction;
 use App\Models\CommitteeRole;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -18,7 +26,7 @@ class CommitteeRoleResource extends Resource
 
     protected static ?string $model = CommitteeRole::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static string $roleType = 'committee';
 
@@ -33,10 +41,10 @@ class CommitteeRoleResource extends Resource
             ->orderBy('order_column');
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('name')
                     ->label(__('general.name'))
                     ->required()
@@ -53,11 +61,11 @@ class CommitteeRoleResource extends Resource
             ->reorderable('order_column')
             ->columns([
                 IndexColumn::make('no'),
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label(__('general.name'))
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('committees_count')
+                TextColumn::make('committees_count')
                     ->label(__('general.committees'))
                     ->counts('committees')
                     ->badge()
@@ -67,25 +75,25 @@ class CommitteeRoleResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()
-                    ->using(function (CommitteeRole $record, Tables\Actions\DeleteAction $action) {
+            ->recordActions([
+                EditAction::make(),
+                DeleteAction::make()
+                    ->using(function (CommitteeRole $record, DeleteAction $action) {
                         try {
                             $speakerCount = $record->committees()->count();
                             if ($speakerCount > 0) {
-                                throw new \Exception(__('general.cannot_delete_role_commites', ['name' => $record->name, 'roleType' => static::$roleType]));
+                                throw new Exception(__('general.cannot_delete_role_commites', ['name' => $record->name, 'roleType' => static::$roleType]));
                             }
 
                             return $record->delete();
-                        } catch (\Throwable $th) {
+                        } catch (Throwable $th) {
                             $action->failureNotificationTitle($th->getMessage());
                         }
                     }),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ])
             ->emptyStateActions([
@@ -93,8 +101,8 @@ class CommitteeRoleResource extends Resource
             ])
             ->heading(__('general.committee_roles_table'))
             ->headerActions([
-                Tables\Actions\CreateAction::make()
-                    ->mutateFormDataUsing(function (array $data): array {
+                CreateAction::make()
+                    ->mutateDataUsing(function (array $data): array {
                         return $data;
                     })
                     ->label(__('general.new_committee_role'))

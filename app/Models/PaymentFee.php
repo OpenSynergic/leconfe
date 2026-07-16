@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Filament\Actions\Action;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Components\Fieldset;
 use App\Managers\PaymentManager;
 use App\Models\Concerns\BelongsToConference;
 use App\Models\Concerns\BelongsToScheduledConference;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Set;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -225,7 +227,7 @@ class PaymentFee extends Model implements Sortable
                 ->default(0)
                 ->helperText($description ? "{$description} - {$formattedAmount} each" : "{$formattedAmount} each")
                 ->suffixAction(
-                    \Filament\Actions\StaticAction::make('clear')
+                    Action::make('clear')
                         ->icon('heroicon-x-mark')
                         ->action(function (Set $set) use ($key) {
                             $set("additional_items.{$key}", 0);
@@ -234,7 +236,7 @@ class PaymentFee extends Model implements Sortable
         })->toArray();
 
         return [
-            \Filament\Forms\Components\Fieldset::make('Add-on Items')
+            Fieldset::make('Add-on Items')
                 ->schema($schema)
                 ->visible(fn () => count($items) > 0),
         ];

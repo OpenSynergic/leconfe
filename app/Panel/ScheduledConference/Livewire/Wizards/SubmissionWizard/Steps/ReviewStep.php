@@ -2,6 +2,7 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Wizards\SubmissionWizard\Steps;
 
+use Exception;
 use App\Actions\Submissions\SubmissionAssignParticipant;
 use App\Mail\Templates\ThankAuthorMail;
 use App\Models\Enums\UserRole;
@@ -35,7 +36,7 @@ class ReviewStep extends Component implements HasActions, HasForms, HasWizardSte
         return __('general.review');
     }
 
-    public function submitAction()
+    public function submitAction(): \Filament\Actions\Action
     {
         return Action::make('submitAction')
             ->label(__('general.submit'))
@@ -76,7 +77,7 @@ class ReviewStep extends Component implements HasActions, HasForms, HasWizardSte
                     $this->record->touch();
 
                     DB::commit();
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     Log::error($e->getMessage());
                     DB::rollBack();
 

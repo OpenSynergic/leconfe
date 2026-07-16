@@ -2,6 +2,13 @@
 
 namespace App\Panel\ScheduledConference\Pages;
 
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Utilities\Get;
+use App\Forms\Components\AddOnItemCounter;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Panel;
 use App\Facades\Setting;
 use App\Managers\PaymentManager;
 use App\Models\Enums\SubmissionStatus;
@@ -14,7 +21,7 @@ use App\Notifications\ParticipantPayment;
 use App\Notifications\PaymentConfirmed;
 use App\Notifications\SubmissionPayment;
 use App\Panel\ScheduledConference\Resources\SubmissionResource;
-use Awcodes\Shout\Components\ShoutEntry;
+use Awcodes\Shout\Components\Shout;
 use Closure;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -22,11 +29,7 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Get;
-use Filament\Infolists\Components\Grid;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
@@ -34,11 +37,11 @@ use Illuminate\Support\Str;
 
 class PaymentDetail extends Page
 {
-    protected static string $view = 'panel.scheduledConference.pages.payment-detail';
+    protected string $view = 'panel.scheduledConference.pages.payment-detail';
 
     public Payment $record;
 
-    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-banknotes';
 
     protected static ?int $navigationSort = 99;
 
@@ -125,7 +128,7 @@ class PaymentDetail extends Page
                             'additional_items' => $additionalItemsData,
                         ];
                     })
-                    ->form([
+                    ->schema([
                         TextInput::make('invoice')
                             ->visible(fn () => app()->getCurrentScheduledConference()?->isInvoiceEnabled())
                             ->rule(fn ($record): Closure => function (string $attribute, $value, Closure $fail) use ($record) {
@@ -153,7 +156,7 @@ class PaymentDetail extends Page
                                     ->get()
                                     ->mapWithKeys(fn (PaymentFee $paymentFee) => [$paymentFee->getKey() => '('.$paymentFee->getFormattedFee().')'])
                             ),
-                        \Filament\Forms\Components\Fieldset::make('Add-on Items')
+                        Fieldset::make('Add-on Items')
                             ->schema(function (Get $get, ?Payment $record) {
                                 $record ??= $this->record;
                                 if (! $record) {
@@ -174,7 +177,7 @@ class PaymentDetail extends Page
                                     $existingItem = collect($existingItems)->firstWhere('key', $item['key']);
                                     $defaultValue = $existingItem ? (int) data_get($existingItem, 'quantity', 0) : 0;
 
-                                    return \App\Forms\Components\AddOnItemCounter::make("additional_items.{$item['key']}")
+                                    return AddOnItemCounter::make("additional_items.{$item['key']}")
                                         ->label("{$item['name']} ({$formattedAmount})")
                                         ->helperText($item['description'] ?? null)
                                         ->minValue(0)
@@ -232,7 +235,7 @@ class PaymentDetail extends Page
                     ->authorize(fn (Payment $record) => auth()->user()->can('update', $record))
                     ->record($this->record)
                     ->requiresConfirmation()
-                    ->form([
+                    ->schema([
                         DateTimePicker::make('paid_at')
                             ->label('Paid At')
                             ->default(now())
@@ -442,9 +445,9 @@ class PaymentDetail extends Page
         return ! data_get($data, 'dont_send_notification', false);
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
-        return $infolist
+        return $schema
             ->record($this->record)
             ->columns(12)
             ->schema([
@@ -525,7 +528,7 @@ class PaymentDetail extends Page
                         'lg' => 4,
                     ])
                     ->schema([
-                        ShoutEntry::make('payment_availability_notice')
+                        Shout::make('payment_availability_notice')
                             ->visible(fn (Payment $record) => ! $record->isPaid() && $this->shouldShowPaymentAvailabilitySection())
                             ->heading(fn () => $this->getPaymentAvailabilityHeading())
                             ->type(fn () => $this->getPaymentAvailabilityType())
@@ -576,7 +579,7 @@ class PaymentDetail extends Page
             ]);
     }
 
-    public static function getRoutePath(): string
+    public static function getRoutePath(Panel $panel): string
     {
         return '/payments/detail/{record?}';
     }

@@ -2,6 +2,14 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions;
 
+use Filament\Support\Enums\Width;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Utilities\Get;
+use Exception;
+use Filament\Schemas\Components\Actions;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Components\Grid;
 use App\Actions\Submissions\NotifySubmissionRevisionRequestAction;
 use App\Actions\Submissions\StartSubmissionReviewRoundAction;
 use App\Classes\Log;
@@ -28,23 +36,15 @@ use App\Panel\ScheduledConference\Resources\SubmissionResource;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Forms\Components\Actions;
-use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
 use Filament\Support\Colors\Color;
-use Filament\Support\Enums\MaxWidth;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -110,7 +110,7 @@ class PeerReview extends Component implements HasActions, HasForms
             ->orderByDesc('round_number')
             ->value('id');
 
-        return $activeRoundId && (int) $activeRoundId === $this->selectedRoundId;
+        return $activeRoundId && (int) $activeRoundId === (int) $this->selectedRoundId;
     }
 
     public function isSelectedRoundDecisionContext(): bool
@@ -133,10 +133,10 @@ class PeerReview extends Component implements HasActions, HasForms
             ->value('id');
 
         if ($activeRoundId) {
-            return (int) $activeRoundId === $this->selectedRoundId;
+            return (int) $activeRoundId === (int) $this->selectedRoundId;
         }
 
-        return (int) $latestRoundId === $this->selectedRoundId;
+        return (int) $latestRoundId === (int) $this->selectedRoundId;
     }
 
     public function selectRound(int $roundId): void
@@ -212,20 +212,20 @@ class PeerReview extends Component implements HasActions, HasForms
             ->modalHeading(__('general.start_next_review_round'))
             ->modalDescription(__('general.start_next_review_round_modal_description'))
             ->modalSubmitActionLabel(__('general.start_next_review_round_modal_submit'))
-            ->modalWidth(MaxWidth::ExtraLarge)
+            ->modalWidth(Width::ExtraLarge)
             ->closeModalByClickingAway()
             ->extraAttributes(['class' => 'w-full'], true)
             ->hidden(fn (): bool => ! $this->isSelectedRoundActionable())
-            ->mountUsing(function (Form $form): void {
+            ->mountUsing(function (Schema $schema): void {
                 $mailTemplate = DefaultMailTemplate::where('mailable', ReviewRoundStartedMail::class)->first();
-                $form->fill([
+                $schema->fill([
                     'email' => $this->submission->user->email,
                     'subject' => $mailTemplate ? $mailTemplate->subject : ReviewRoundStartedMail::getDefaultSubject(),
                     'message' => $mailTemplate ? $mailTemplate->html_template : ReviewRoundStartedMail::getDefaultHtmlTemplate(),
                     'do-not-notify-author' => false,
                 ]);
             })
-            ->form([
+            ->schema([
                 TextInput::make('name')
                     ->label(__('general.review_round_name'))
                     ->maxLength(255),
@@ -297,7 +297,7 @@ class PeerReview extends Component implements HasActions, HasForms
                                 subject: $data['subject'] ?? '',
                             )
                         );
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $action->failureNotificationTitle(__('general.email_notification_was_not_delivered'));
                         $action->failure();
 
@@ -320,7 +320,7 @@ class PeerReview extends Component implements HasActions, HasForms
             ->label(__('general.rename_review_round'))
             ->modalHeading(__('general.rename_review_round'))
             ->modalSubmitActionLabel(__('general.save'))
-            ->modalWidth(MaxWidth::Medium)
+            ->modalWidth(Width::Medium)
             ->successNotificationTitle(__('general.review_round_renamed'))
             ->fillForm(function (array $arguments): array {
                 $roundId = (int) ($arguments['round'] ?? 0);
@@ -340,7 +340,7 @@ class PeerReview extends Component implements HasActions, HasForms
                     'name' => $reviewRound?->name ?? '',
                 ];
             })
-            ->form([
+            ->schema([
                 TextInput::make('name')
                     ->label(__('general.review_round_name'))
                     ->placeholder(__('general.review_round_name_placeholder'))
@@ -374,7 +374,7 @@ class PeerReview extends Component implements HasActions, HasForms
             });
     }
 
-    public function declineSubmissionAction()
+    public function declineSubmissionAction(): \Filament\Actions\Action
     {
         return Action::make('declineSubmissionAction')
             ->icon('lineawesome-times-solid')
@@ -383,15 +383,15 @@ class PeerReview extends Component implements HasActions, HasForms
             ->color('danger')
             ->outlined()
             ->hidden(fn (): bool => ! $this->isSelectedRoundDecisionContext())
-            ->mountUsing(function (Form $form) {
+            ->mountUsing(function (Schema $schema) {
                 $mailTemplate = DefaultMailTemplate::where('mailable', DeclinePaperMail::class)->first();
-                $form->fill([
+                $schema->fill([
                     'email' => $this->submission->user->email,
                     'subject' => $mailTemplate ? $mailTemplate->subject : '',
                     'message' => $mailTemplate ? $mailTemplate->html_template : '',
                 ]);
             })
-            ->form([
+            ->schema([
                 Fieldset::make('Notification')
                     ->columns(1)
                     ->schema([
@@ -408,7 +408,7 @@ class PeerReview extends Component implements HasActions, HasForms
                             ->profile('email')
                             ->columnSpanFull(),
                         Actions::make([
-                            FormAction::make('add_reviews_to_email')
+                            Action::make('add_reviews_to_email')
                                 ->icon('heroicon-m-plus')
                                 ->action(fn (Set $set, Get $get) => $set('message', $get('message').$this->reviewsEmailMessage())),
                         ]),
@@ -435,7 +435,7 @@ class PeerReview extends Component implements HasActions, HasForms
                                     ->subjectUsing($data['subject'])
                                     ->contentUsing($data['message'])
                             );
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $action->failureNotificationTitle(__('general.email_notification_was_not_delivered'));
                         $action->failure();
                     }
@@ -451,7 +451,7 @@ class PeerReview extends Component implements HasActions, HasForms
             });
     }
 
-    public function acceptSubmissionAction()
+    public function acceptSubmissionAction(): \Filament\Actions\Action
     {
         return Action::make('acceptSubmissionAction')
             ->authorize('acceptPaper', $this->submission)
@@ -460,15 +460,15 @@ class PeerReview extends Component implements HasActions, HasForms
             ->label(__('general.accept_submission'))
             ->modalSubmitActionLabel(__('general.accept'))
             ->hidden(fn (): bool => ! $this->isSelectedRoundDecisionContext())
-            ->mountUsing(function (Form $form) {
+            ->mountUsing(function (Schema $schema) {
                 $mailTemplate = DefaultMailTemplate::where('mailable', AcceptPaperMail::class)->first();
-                $form->fill([
+                $schema->fill([
                     'email' => $this->submission->user->email,
                     'subject' => $mailTemplate ? $mailTemplate->subject : '',
                     'message' => $mailTemplate ? $mailTemplate->html_template : '',
                 ]);
             })
-            ->form([
+            ->schema([
                 Fieldset::make('Notification')
                     ->label(__('general.notification'))
                     ->columns(1)
@@ -486,7 +486,7 @@ class PeerReview extends Component implements HasActions, HasForms
                             ->profile('email')
                             ->columnSpanFull(),
                         Actions::make([
-                            FormAction::make('add_reviews_to_email')
+                            Action::make('add_reviews_to_email')
                                 ->icon('heroicon-m-plus')
                                 ->action(fn (Set $set, Get $get) => $set('message', $get('message').$this->reviewsEmailMessage())),
                         ]),
@@ -569,7 +569,7 @@ class PeerReview extends Component implements HasActions, HasForms
                                     ->subjectUsing($data['subject'])
                                     ->contentUsing($data['message'])
                             );
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $action->failureNotificationTitle(__('general.email_notification_was_not_delivered'));
                         $action->failure();
                     }
@@ -584,7 +584,7 @@ class PeerReview extends Component implements HasActions, HasForms
             });
     }
 
-    public function requestRevisionAction()
+    public function requestRevisionAction(): \Filament\Actions\Action
     {
         return Action::make('requestRevisionAction')
             ->authorize('requestRevision', $this->submission)
@@ -593,15 +593,15 @@ class PeerReview extends Component implements HasActions, HasForms
             ->color(Color::Orange)
             ->label(__('general.request_revision'))
             ->hidden(fn (): bool => ! $this->isSelectedRoundDecisionContext())
-            ->mountUsing(function (Form $form): void {
+            ->mountUsing(function (Schema $schema): void {
                 $mailTemplate = DefaultMailTemplate::where('mailable', RevisionRequestMail::class)->first();
-                $form->fill([
+                $schema->fill([
                     'email' => $this->submission->user->email,
                     'subject' => $mailTemplate ? $mailTemplate->subject : '',
                     'message' => $mailTemplate ? $mailTemplate->html_template : '',
                 ]);
             })
-            ->form([
+            ->schema([
                 Fieldset::make('Notification')
                     ->label(__('general.notification'))
                     ->columns(1)
@@ -619,7 +619,7 @@ class PeerReview extends Component implements HasActions, HasForms
                             ->profile('email')
                             ->columnSpanFull(),
                         Actions::make([
-                            FormAction::make('add_reviews_to_email')
+                            Action::make('add_reviews_to_email')
                                 ->icon('heroicon-m-plus')
                                 ->action(fn (Set $set, Get $get) => $set('message', $get('message').$this->reviewsEmailMessage())),
                         ]),
@@ -648,7 +648,7 @@ class PeerReview extends Component implements HasActions, HasForms
                         ! data_get($data, 'do-not-notify-author', false),
                         auth()->user(),
                     );
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $action->failureNotificationTitle(__('general.email_notification_was_not_delivered'));
                     $action->failure();
 

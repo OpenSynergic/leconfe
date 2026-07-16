@@ -2,6 +2,7 @@
 
 namespace App\Events\Submissions;
 
+use Illuminate\Broadcasting\Channel;
 use App\Models\Submission;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -22,7 +23,7 @@ class Withdrawed
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
+     * @return array<int, Channel>
      */
     public function broadcastOn(): array
     {

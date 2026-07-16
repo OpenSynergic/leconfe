@@ -2,6 +2,13 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Fieldset;
+use Exception;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Get;
+use App\Forms\Components\AddOnItemCounter;
+use Throwable;
 use App\Actions\Submissions\StartSubmissionReviewRoundAction;
 use App\Constants\SubmissionFileCategory;
 use App\Forms\Components\TinyEditor;
@@ -23,14 +30,10 @@ use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\HtmlString;
@@ -46,7 +49,7 @@ class CallforAbstract extends Component implements HasActions, HasForms
         'refreshSubmission' => '$refresh',
     ];
 
-    public function declineAction()
+    public function declineAction(): \Filament\Actions\Action
     {
         return Action::make('decline')
             ->outlined()
@@ -57,14 +60,14 @@ class CallforAbstract extends Component implements HasActions, HasForms
             ->modalHeading(__('general.confirmation'))
             ->modalSubmitActionLabel(__('general.decline'))
             ->extraAttributes(['class' => 'w-full'], true)
-            ->mountUsing(function (Form $form): void {
+            ->mountUsing(function (Schema $schema): void {
                 $mailTempalte = DefaultMailTemplate::where('mailable', DeclineAbstractMail::class)->first();
-                $form->fill([
+                $schema->fill([
                     'subject' => $mailTempalte ? $mailTempalte->subject : '',
                     'message' => $mailTempalte ? $mailTempalte->html_template : '',
                 ]);
             })
-            ->form([
+            ->schema([
                 Fieldset::make('Notification')
                     ->label(__('general.notification'))
                     ->columns(1)
@@ -100,7 +103,7 @@ class CallforAbstract extends Component implements HasActions, HasForms
                                 channels: ['mail']
                             )
                         );
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $action->failureNotificationTitle(__('general.email_notification_was_not_delivered'));
                         $action->failure();
                     }
@@ -120,22 +123,22 @@ class CallforAbstract extends Component implements HasActions, HasForms
             ->icon('lineawesome-times-circle-solid');
     }
 
-    public function acceptAndSkipReview()
+    public function acceptAndSkipReview(): \Filament\Actions\Action
     {
         return Action::make('acceptAndSkipReview')
             ->label(__('general.skip_review'))
             ->icon('lineawesome-check-circle-solid')
             ->color('gray')
             ->outlined()
-            ->mountUsing(function (Form $form) {
+            ->mountUsing(function (Schema $schema) {
                 $mailTemplate = DefaultMailTemplate::where('mailable', AcceptPaperMail::class)->first();
-                $form->fill([
+                $schema->fill([
                     'email' => $this->submission->user->email,
                     'subject' => $mailTemplate ? $mailTemplate->subject : '',
                     'message' => $mailTemplate ? $mailTemplate->html_template : '',
                 ]);
             })
-            ->form([
+            ->schema([
                 Fieldset::make('Notification')
                     ->label(__('general.notification'))
                     ->columns(1)
@@ -169,7 +172,7 @@ class CallforAbstract extends Component implements HasActions, HasForms
                                     ->subjectUsing($data['subject'])
                                     ->contentUsing($data['message'])
                             );
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $action->failureNotificationTitle(__('general.email_notification_was_not_delivered'));
                         $action->failure();
                     }
@@ -185,7 +188,7 @@ class CallforAbstract extends Component implements HasActions, HasForms
             });
     }
 
-    public function sendForReviewAction()
+    public function sendForReviewAction(): \Filament\Actions\Action
     {
         return Action::make('sendForReview')
             ->label(__('general.send_for_review'))
@@ -195,14 +198,14 @@ class CallforAbstract extends Component implements HasActions, HasForms
             ->successNotificationTitle(__('general.send_for_review'))
             ->extraAttributes(['class' => 'w-full'])
             ->icon('lineawesome-check-circle-solid')
-            ->mountUsing(function (Form $form): void {
+            ->mountUsing(function (Schema $schema): void {
                 $mailTemplate = DefaultMailTemplate::where('mailable', SendForReviewMail::class)->first();
-                $form->fill([
+                $schema->fill([
                     'subject' => $mailTemplate ? $mailTemplate->subject : '',
                     'message' => $mailTemplate ? $mailTemplate->html_template : '',
                 ]);
             })
-            ->form([
+            ->schema([
                 TextInput::make('review_round_name')
                     ->label(__('general.review_round_name'))
                     ->placeholder(__('general.review_round_name_placeholder'))
@@ -259,7 +262,7 @@ class CallforAbstract extends Component implements HasActions, HasForms
                                     ->get()
                                     ->mapWithKeys(fn (PaymentFee $paymentFee) => [$paymentFee->getKey() => '('.$paymentFee->getFormattedFee().')'])
                             ),
-                        \Filament\Forms\Components\Fieldset::make('Add-on Items')
+                        Fieldset::make('Add-on Items')
                             ->schema(function (Get $get) {
                                 $paymentFee = PaymentFee::find($get('payment_fee_id'));
                                 if (! $paymentFee) {
@@ -269,7 +272,7 @@ class CallforAbstract extends Component implements HasActions, HasForms
                                 return collect($paymentFee->getAdditionalItems())->map(function ($item) use ($paymentFee) {
                                     $formattedAmount = money($item['amount'], $paymentFee->currency, true)->formatWithoutZeroes();
 
-                                    return \App\Forms\Components\AddOnItemCounter::make("additional_items.{$item['key']}")
+                                    return AddOnItemCounter::make("additional_items.{$item['key']}")
                                         ->label("{$item['name']} ({$formattedAmount})")
                                         ->helperText($item['description'] ?? null)
                                         ->minValue(0)
@@ -383,7 +386,7 @@ class CallforAbstract extends Component implements HasActions, HasForms
                             $paymentFee = PaymentFee::find(data_get($data, 'payment_fee_id'));
 
                             if (! $paymentFee) {
-                                throw new \Exception('Payment Fee not found');
+                                throw new Exception('Payment Fee not found');
                             }
 
                             $additionalItems = data_get($data, 'additional_items', []);
@@ -417,7 +420,7 @@ class CallforAbstract extends Component implements HasActions, HasForms
                                             channels: ['mail']
                                         )
                                     );
-                            } catch (\Exception $e) {
+                            } catch (Exception $e) {
                                 $action->failureNotificationTitle(__('general.email_notification_was_not_delivered'));
                                 $action->failure();
                             }
@@ -440,7 +443,7 @@ class CallforAbstract extends Component implements HasActions, HasForms
                         );
 
                         $action->success();
-                    } catch (\Throwable $th) {
+                    } catch (Throwable $th) {
                         Log::error($th->getMessage());
                         $action->failureNotificationTitle(__('general.failed_to_send_for_review'));
                         $action->failure();

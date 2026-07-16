@@ -2,6 +2,11 @@
 
 namespace App\Panel\ScheduledConference\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Actions\Action;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use App\Panel\ScheduledConference\Resources\AnnouncementResource\Pages\ListAnnouncements;
 use App\Actions\Announcements\AnnouncementUpdateAction;
 use App\Facades\Setting;
 use App\Forms\Components\TinyEditor;
@@ -12,11 +17,7 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -37,17 +38,17 @@ class AnnouncementResource extends Resource
         return __('general.announcement');
     }
 
-    protected static ?string $navigationIcon = 'heroicon-o-speaker-wave';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-speaker-wave';
 
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery();
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('title')
                     ->label(__('general.title'))
                     ->required(),
@@ -86,7 +87,7 @@ class AnnouncementResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('view')
                     ->label(__('general.view'))
                     ->icon('heroicon-o-eye')
@@ -103,7 +104,7 @@ class AnnouncementResource extends Resource
                     ->using(fn (Announcement $record, array $data) => AnnouncementUpdateAction::run($record, $data)),
                 DeleteAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
@@ -111,7 +112,7 @@ class AnnouncementResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListAnnouncements::route('/'),
+            'index' => ListAnnouncements::route('/'),
         ];
     }
 }

@@ -2,13 +2,14 @@
 
 namespace App\Panel\Conference\Resources\ProceedingResource\Pages;
 
+use Filament\Actions\CreateAction;
+use Filament\Support\Enums\Width;
+use Filament\Schemas\Components\Tabs\Tab;
 use App\Actions\Proceedings\ProceedingCreateAction;
 use App\Models\Proceeding;
 use App\Panel\Conference\Resources\ProceedingResource;
 use Filament\Actions;
-use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ManageRecords;
-use Filament\Support\Enums\MaxWidth;
 use Illuminate\Database\Eloquent\Builder;
 
 class ManageProceedings extends ManageRecords
@@ -18,8 +19,8 @@ class ManageProceedings extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
-                ->modalWidth(MaxWidth::ExtraLarge)
+            CreateAction::make()
+                ->modalWidth(Width::ExtraLarge)
                 ->using(fn (array $data) => ProceedingCreateAction::run($data)),
         ];
     }

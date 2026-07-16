@@ -2,6 +2,13 @@
 
 namespace App\Panel\ScheduledConference\Pages;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Utilities\Get;
+use App\Forms\Components\AddOnItemCounter;
+use Throwable;
 use App\Facades\Hook;
 use App\Managers\PaymentManager;
 use App\Models\Enums\UserRole;
@@ -12,15 +19,11 @@ use App\Models\PaymentFormItem;
 use App\Notifications\ParticipantPayment;
 use App\Notifications\ParticipantRegistered;
 use App\Services\Notifications\OperationalNotificationRecipients;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Arr;
@@ -32,9 +35,9 @@ class ParticipantRegistration extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-circle';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-user-circle';
 
-    protected static string $view = 'panel.scheduledConference.pages.participant-register';
+    protected string $view = 'panel.scheduledConference.pages.participant-register';
 
     protected static ?int $navigationSort = 99;
 
@@ -73,9 +76,9 @@ class ParticipantRegistration extends Page implements HasForms
         ];
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->operation('create')
             ->schema([
                 Section::make()
@@ -123,7 +126,7 @@ class ParticipantRegistration extends Page implements HasForms
                                     ->get()
                                     ->mapWithKeys(fn (PaymentFee $paymentFee) => [$paymentFee->getKey() => '('.$paymentFee->getFormattedFee().')'])
                             ),
-                        \Filament\Forms\Components\Fieldset::make('Add-on Items')
+                        Fieldset::make('Add-on Items')
                             ->schema(function (Get $get) {
                                 $paymentFee = PaymentFee::find($get('payment_fee_id'));
                                 if (! $paymentFee) {
@@ -133,7 +136,7 @@ class ParticipantRegistration extends Page implements HasForms
                                 return collect($paymentFee->getAdditionalItems())->map(function ($item) use ($paymentFee) {
                                     $formattedAmount = money($item['amount'], $paymentFee->currency, true)->formatWithoutZeroes();
 
-                                    return \App\Forms\Components\AddOnItemCounter::make("additional_items.{$item['key']}")
+                                    return AddOnItemCounter::make("additional_items.{$item['key']}")
                                         ->label("{$item['name']} ({$formattedAmount})")
                                         ->helperText($item['description'] ?? null)
                                         ->minValue(0)
@@ -222,7 +225,7 @@ class ParticipantRegistration extends Page implements HasForms
                 ->each(fn ($user) => $user->notify(new ParticipantRegistered($participant)));
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Notification::make()
                 ->danger()
                 ->title($th->getMessage())

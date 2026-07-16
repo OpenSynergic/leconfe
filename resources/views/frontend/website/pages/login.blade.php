@@ -30,15 +30,15 @@
             </div>
         @enderror
 
-        <x-filament-panels::form wire:submit="login">
+        <form wire:submit="login" class="fi-form space-y-6">
             {{ $this->form }}
 
             <a href="{{ $resetPasswordUrl }}" class="fi-simple-link">
                 {{ __('general.forgot_password_question') }}
             </a>
 
-            <x-filament-panels::form.actions :actions="$this->getFormActions()" :fullWidth="true" />
-        </x-filament-panels::form>
+            <x-filament::actions :actions="$this->getFormActions()" :full-width="true" />
+        </form>
     </section>
 
     <x-filament-actions::modals />

@@ -2,16 +2,22 @@
 
 namespace App\Panel\Conference\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Grid;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\Action;
+use Filament\Actions\EditAction;
+use Filament\Support\Enums\Width;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ForceDeleteAction;
+use App\Panel\Conference\Resources\ScheduledConferenceResource\Pages\ManageScheduledConferences;
 use App\Actions\ScheduledConferences\ScheduledConferenceUpdateAction;
 use App\Models\ScheduledConference;
 use App\Panel\Conference\Resources\ScheduledConferenceResource\Pages;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Support\Enums\MaxWidth;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -21,7 +27,7 @@ class ScheduledConferenceResource extends Resource
 {
     protected static ?string $model = ScheduledConference::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-calendar-days';
 
     public static function getNavigationLabel(): string
     {
@@ -33,9 +39,9 @@ class ScheduledConferenceResource extends Resource
         return __('general.scheduled_conference');
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->columns(1)
             ->schema([
                 TextInput::make('title')
@@ -102,21 +108,21 @@ class ScheduledConferenceResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\Action::make('publish')
+            ->recordActions([
+                ActionGroup::make([
+                    Action::make('publish')
                         ->label(__('general.publish'))
                         ->requiresConfirmation()
                         ->icon('heroicon-o-arrow-up-on-square')
                         ->color('success')
                         ->hidden(fn (ScheduledConference $record) => $record->is_published)
-                        ->action(function (ScheduledConference $record, array $data, Tables\Actions\Action $action) {
+                        ->action(function (ScheduledConference $record, array $data, Action $action) {
                             ScheduledConferenceUpdateAction::run($record, ['is_published' => true]);
 
                             return $action->success();
                         }),
-                    Tables\Actions\EditAction::make()
-                        ->modalWidth(MaxWidth::ExtraLarge)
+                    EditAction::make()
+                        ->modalWidth(Width::ExtraLarge)
                         ->hidden(fn (ScheduledConference $record) => $record->trashed())
                         ->mutateRecordDataUsing(function (ScheduledConference $record, array $data) {
                             $data['meta'] = $record->getAllMeta()->toArray();
@@ -124,18 +130,18 @@ class ScheduledConferenceResource extends Resource
                             return $data;
                         })
                         ->using(fn (ScheduledConference $record, array $data) => ScheduledConferenceUpdateAction::run($record, $data)),
-                    Tables\Actions\Action::make('set_as_draft')
+                    Action::make('set_as_draft')
                         ->label(__('general.set_as_draft'))
                         ->requiresConfirmation()
                         ->icon('heroicon-o-pencil-square')
                         ->hidden(fn (ScheduledConference $record) => ! $record->is_published || $record->trashed())
-                        ->action(fn (ScheduledConference $record, Tables\Actions\Action $action) => $record->update(['is_published' => false]) && $action->success()),
-                    Tables\Actions\DeleteAction::make()
+                        ->action(fn (ScheduledConference $record, Action $action) => $record->update(['is_published' => false]) && $action->success()),
+                    DeleteAction::make()
                         ->label(__('general.move_to_trash'))
                         ->modalHeading(__('general.move_to_trash'))
                         ->hidden(fn (ScheduledConference $record) => $record->trashed())
                         ->successNotificationTitle(__('general.serie_moved_to_trash')),
-                    Tables\Actions\ForceDeleteAction::make()
+                    ForceDeleteAction::make()
                         ->label(__('general.delete_permanently'))
                         ->hidden(fn (ScheduledConference $record) => ! $record->trashed())
                         ->successNotificationTitle(__('general.serie_deleted_permanently')),
@@ -146,7 +152,7 @@ class ScheduledConferenceResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageScheduledConferences::route('/'),
+            'index' => ManageScheduledConferences::route('/'),
         ];
     }
 }

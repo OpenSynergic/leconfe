@@ -2,6 +2,7 @@
 
 namespace App\Panel\Administration\Resources\StaticPageResource\Pages;
 
+use Filament\Actions\CreateAction;
 use App\Actions\StaticPages\StaticPageCreateAction;
 use App\Panel\Administration\Resources\StaticPageResource;
 use Filament\Actions;
@@ -14,7 +15,7 @@ class ListStaticPages extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
+            CreateAction::make()
                 ->using(fn (array $data) => StaticPageCreateAction::run($data)),
         ];
     }

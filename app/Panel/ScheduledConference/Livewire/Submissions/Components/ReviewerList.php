@@ -2,6 +2,17 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions\Components;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Actions\Action;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Grid;
+use stdClass;
+use Throwable;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Livewire;
+use Filament\Actions\ActionGroup;
+use Exception;
 use App\Actions\Review\ReviewUpdateAction;
 use App\Actions\Submissions\StartSubmissionReviewRoundAction;
 use App\Classes\Log;
@@ -34,20 +45,12 @@ use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Livewire;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
@@ -64,7 +67,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\HtmlString;
 use Livewire\Attributes\On;
 use Livewire\Component;
-use STS\FilamentImpersonate\Tables\Actions\Impersonate;
+use STS\FilamentImpersonate\Actions\Impersonate;
 
 class ReviewerList extends Component implements HasActions, HasForms, HasTable
 {
@@ -218,9 +221,9 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
             ->to(PeerReviewDiscussionTopic::class);
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->id('reviewerForm')
             ->schema([
                 Select::make('user_id')
@@ -361,7 +364,7 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
                             ->when(
                                 $this->record->isParticipantAuthor(auth()->user()),
                                 fn ($action) => $action
-                                    ->getStateUsing(function (Review $record, \stdClass $rowLoop) {
+                                    ->getStateUsing(function (Review $record, stdClass $rowLoop) {
                                         if ($record->getMeta('review_mode') != Review::MODE_OPEN) {
                                             return 'Reviewer '.$rowLoop->iteration;
                                         }
@@ -402,7 +405,7 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
                 ]),
 
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('read-review')
                     ->visible(fn (Review $record): bool => $record->reviewSubmitted())
                     ->modalWidth('2xl')
@@ -416,10 +419,10 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
                             ->modalCancelAction(false)
                             ->modalSubmitAction(false)
                     )
-                    ->mountUsing(function (Review $record, Form $form) {
-                        $form->disabled(! auth()->user()->can('actAsEditor', $this->record));
+                    ->mountUsing(function (Review $record, Schema $schema) {
+                        $schema->disabled(! auth()->user()->can('actAsEditor', $this->record));
 
-                        $form->fill([
+                        $schema->fill([
                             ...$record->attributesToArray(),
                             'meta' => $record->getAllMeta(),
                         ]);
@@ -433,7 +436,7 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
                             ReviewUpdateAction::run($record, Arr::only($data, ['date_acknowledged', 'recommendation', 'quality']));
 
                             DB::commit();
-                        } catch (\Throwable $th) {
+                        } catch (Throwable $th) {
                             DB::rollBack();
                             $action->failureNotificationTitle($th->getMessage());
                             $action->failure();
@@ -444,7 +447,7 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
                         $action->success();
                     })
                     ->form(
-                        fn (Form $form, Review $record) => $form
+                        fn (Schema $schema, Review $record) => $schema
                             ->model($record)
                             ->id('readReview')
                             ->schema([
@@ -519,8 +522,8 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
                         ->modalWidth('2xl')
                         ->icon('iconpark-edit')
                         ->label(__('general.edit'))
-                        ->mountUsing(function (Review $record, Form $form) {
-                            $form->fill([
+                        ->mountUsing(function (Review $record, Schema $schema) {
+                            $schema->fill([
                                 'papers' => $record->assignedFiles()->with(['submissionFile'])
                                     ->get()
                                     ->pluck('submission_file_id')
@@ -528,7 +531,7 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
                                 'meta' => $record->getAllMeta(),
                             ]);
                         })
-                        ->form(fn ($form) => $this->form($form))
+                        ->schema(fn ($form) => $this->form($form))
                         ->successNotificationTitle(__('general.reviewer_updated'))
                         ->action(function (Action $action, Review $record, array $data) {
                             $record->assignedFiles()->get()->each(
@@ -554,13 +557,13 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
                         ->label(__('general.email_reviewer'))
                         ->icon('iconpark-sendemail')
                         ->modalSubmitActionLabel(__('general.send'))
-                        ->mountUsing(function (Form $form, Review $record) {
-                            $form->fill([
+                        ->mountUsing(function (Schema $schema, Review $record) {
+                            $schema->fill([
                                 'email' => $record->user->email,
                                 'subject' => 'Notification for you',
                             ]);
                         })
-                        ->form([
+                        ->schema([
                             TextInput::make('email')
                                 ->label(__('general.email'))
                                 ->dehydrated()
@@ -592,15 +595,15 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
                         )
                         ->successNotificationTitle(__('general.reviewer_unassigned'))
                         ->modalWidth('2xl')
-                        ->mountUsing(function (Form $form, Review $record) {
+                        ->mountUsing(function (Schema $schema, Review $record) {
                             $mailTemplate = DefaultMailTemplate::where('mailable', ReviewerCancelationMail::class)->first();
-                            $form->fill([
+                            $schema->fill([
                                 'email' => $record->user->email,
                                 'subject' => $mailTemplate ? $mailTemplate->subject : '',
                                 'message' => $mailTemplate ? $mailTemplate->html_template : '',
                             ]);
                         })
-                        ->form([
+                        ->schema([
                             Fieldset::make('Notification')
                                 ->label(__('general.notification'))
                                 ->columns(1)
@@ -648,7 +651,7 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
                                 $record->delete();
 
                                 DB::commit();
-                            } catch (\Throwable $th) {
+                            } catch (Throwable $th) {
                                 DB::rollBack();
 
                                 $action->failureNotificationTitle($th->getMessage());
@@ -665,7 +668,7 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
                                                 ->subjectUsing($data['subject'])
                                                 ->contentUsing($data['message'])
                                         );
-                                } catch (\Exception $e) {
+                                } catch (Exception $e) {
                                     $action->failureNotificationTitle(__('general.email_notification_was_not_delivered'));
                                     $action->failure();
                                 }
@@ -683,15 +686,15 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
                         )
                         ->successNotificationTitle(__('general.reviewer_canceled'))
                         ->modalWidth('2xl')
-                        ->mountUsing(function (Form $form, Review $record) {
+                        ->mountUsing(function (Schema $schema, Review $record) {
                             $mailTemplate = DefaultMailTemplate::where('mailable', ReviewerCancelationMail::class)->first();
-                            $form->fill([
+                            $schema->fill([
                                 'email' => $record->user->email,
                                 'subject' => $mailTemplate ? $mailTemplate->subject : '',
                                 'message' => $mailTemplate ? $mailTemplate->html_template : '',
                             ]);
                         })
-                        ->form([
+                        ->schema([
                             Fieldset::make('Notification')
                                 ->label(__('general.notification'))
                                 ->columns(1)
@@ -743,7 +746,7 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
                                                 ->subjectUsing($data['subject'])
                                                 ->contentUsing($data['message'])
                                         );
-                                } catch (\Exception $e) {
+                                } catch (Exception $e) {
                                     $action->failureNotificationTitle(__('general.email_notification_was_not_delivered'));
                                     $action->failure();
                                 }
@@ -761,7 +764,7 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
                         )
                         ->label(__('general.reinstate_reviewer'))
                         ->successNotificationTitle(__('general.reviewer_reinstated'))
-                        ->form([
+                        ->schema([
                             Checkbox::make('do-not-notify-reinstatement')
                                 ->label(__('general.dont_send_notification'))
                                 ->columnSpanFull(),
@@ -804,7 +807,7 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
             ->heading(__('general.reviewers'))
             ->headerActions([
                 Action::make('add-reviewer')
-                    ->mountUsing(function (Form $form): void {
+                    ->mountUsing(function (Schema $schema): void {
                         $mailTemplate = DefaultMailTemplate::where('mailable', ReviewerInvitationMail::class)->first();
                         $defaultFileIds = collect($this->selectedRound?->default_file_ids ?? [])
                             ->filter(fn ($id) => is_numeric($id))
@@ -812,7 +815,7 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
                             ->values()
                             ->all();
 
-                        $form->fill([
+                        $schema->fill([
                             'subject' => $mailTemplate ? $mailTemplate->subject : '',
                             'message' => $mailTemplate ? $mailTemplate->html_template : '',
                             'papers' => $defaultFileIds,
@@ -831,7 +834,7 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
                     ->modalWidth('2xl')
                     ->authorize(fn () => auth()->user()->can('assignReviewer', $this->record))
                     ->hidden(fn (): bool => ! $this->isSelectedRoundActive())
-                    ->form(fn ($form) => $this->form($form))
+                    ->schema(fn ($form) => $this->form($form))
                     ->action(function (Action $action, array $data) {
                         $reviewRound = $this->ensureSelectedOpenRound();
 
@@ -901,7 +904,7 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
                                             ->subjectUsing($data['subject'])
                                             ->contentUsing($data['message'])
                                     );
-                            } catch (\Exception $e) {
+                            } catch (Exception $e) {
                                 $action->failureNotificationTitle(__('general.email_notification_was_not_delivered'));
                                 $action->failure();
                             }

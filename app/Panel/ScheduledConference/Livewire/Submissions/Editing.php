@@ -2,10 +2,11 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions;
 
+use Livewire\Component;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Submission;
 
-class Editing extends \Livewire\Component
+class Editing extends Component
 {
     public Submission $submission;
 

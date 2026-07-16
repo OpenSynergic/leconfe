@@ -2,6 +2,7 @@
 
 namespace App\Actions\Proceedings;
 
+use Throwable;
 use App\Models\Proceeding;
 use App\Models\ScheduledConference;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +24,7 @@ class ProceedingCreateAction
             }
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
             throw $th;
         }

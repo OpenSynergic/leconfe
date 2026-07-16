@@ -2,6 +2,16 @@
 
 namespace App\Panel\ScheduledConference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
+use Filament\Support\Enums\Width;
+use Filament\Schemas\Schema;
+use Filament\Actions\CreateAction;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Schemas\Components\Utilities\Get;
 use App\Models\SubmissionFormItem;
 use App\Tables\Columns\IndexColumn;
 use BladeUI\Icons\Components\Icon;
@@ -16,15 +26,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Infolists\Components\Livewire;
-use Filament\Support\Enums\MaxWidth;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
@@ -34,8 +36,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 
-class SubmissionFormItemTable extends Component implements HasForms, HasTable
+class SubmissionFormItemTable extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     public function mount() {}
@@ -67,19 +70,19 @@ class SubmissionFormItemTable extends Component implements HasForms, HasTable
             ->headerActions([
                 Action::make('preview')
                     ->label(__('general.preview'))
-                    ->modalWidth(MaxWidth::ExtraLarge)
+                    ->modalWidth(Width::ExtraLarge)
                     ->color('gray')
                     ->visible(SubmissionFormItem::exists())
                     ->modalSubmitAction(false)
-                    ->form(function(Form $form){
-                        return $form->schema([
+                    ->schema(function(Schema $schema){
+                        return $schema->components([
                             ...SubmissionFormItem::buildFormSchema(),
                         ]);
                     }),
                 CreateAction::make()
                     ->label('New Item')
-                    ->modalWidth(MaxWidth::ExtraLarge)
-                    ->form(fn(Form $form) => $this->form($form))
+                    ->modalWidth(Width::ExtraLarge)
+                    ->schema(fn(Schema $schema) => $this->form($schema))
                     ->using(function ($data) {
                         $record = new SubmissionFormItem;
                         $record->fill($data);
@@ -92,16 +95,16 @@ class SubmissionFormItemTable extends Component implements HasForms, HasTable
                         return $record;
                     }),
             ])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
                     EditAction::make()
-                        ->modalWidth(MaxWidth::ExtraLarge)
+                        ->modalWidth(Width::ExtraLarge)
                         ->mutateRecordDataUsing(function (SubmissionFormItem $record, array $data): array {
                             $data['meta'] = $record->getAllMeta()->toArray();
 
                             return $data;
                         })
-                        ->form(fn(Form $form) => $this->form($form))
+                        ->form(fn(Schema $schema) => $this->form($schema))
                         ->using(function (SubmissionFormItem $record, array $data) {
                             $record->update($data);
 
@@ -116,10 +119,10 @@ class SubmissionFormItemTable extends Component implements HasForms, HasTable
             ]);
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('meta.name')
                     ->required()
                     ->label('Item Name'),

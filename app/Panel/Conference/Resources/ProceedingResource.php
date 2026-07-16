@@ -2,17 +2,24 @@
 
 namespace App\Panel\Conference\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\EditAction;
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
+use Throwable;
+use App\Panel\Conference\Resources\ProceedingResource\Pages\ManageProceedings;
+use App\Panel\Conference\Resources\ProceedingResource\Pages\ViewProceeding;
 use App\Facades\Setting;
 use App\Forms\Components\TinyEditor;
 use App\Models\Proceeding;
 use App\Panel\Conference\Resources\ProceedingResource\Pages;
 use App\Tables\Columns\IndexColumn;
-use Filament\Forms\Components\Fieldset;
 use App\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\Alignment;
 use Filament\Tables;
@@ -28,7 +35,7 @@ class ProceedingResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
-    protected static ?string $navigationIcon = 'heroicon-o-book-open';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-book-open';
 
     public static function getNavigationLabel(): string
     {
@@ -47,9 +54,9 @@ class ProceedingResource extends Resource
             ->withCount('submissions');
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->columns(1)
             ->schema([
                 SpatieMediaLibraryFileUpload::make('cover')
@@ -133,40 +140,40 @@ class ProceedingResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make()
+            ->recordActions([
+                ActionGroup::make([
+                    EditAction::make()
                         ->modalWidth('xl'),
-                    Tables\Actions\Action::make('preview')
+                    Action::make('preview')
                         ->label(__('general.preview'))
                         ->icon('heroicon-o-eye')
                         ->hidden(fn (Proceeding $record) => ! $record->published)
                         ->url(fn (Proceeding $record) => route('livewirePageGroup.conference.pages.proceeding-detail', [$record->id]), true),
-                    Tables\Actions\Action::make('publish')
+                    Action::make('publish')
                         ->label(__('general.publish'))
                         ->requiresConfirmation()
                         ->color('success')
                         ->icon('heroicon-o-arrow-up-tray')
                         ->hidden(fn (Proceeding $record) => $record->published)
                         ->action(fn (Proceeding $record) => $record->publish()),
-                    Tables\Actions\Action::make('unpublish')
+                    Action::make('unpublish')
                         ->label(__('general.unpublish'))
                         ->requiresConfirmation()
                         ->color('danger')
                         ->icon('heroicon-o-arrow-down-tray')
                         ->hidden(fn (Proceeding $record) => ! $record->published)
                         ->action(fn (Proceeding $record) => $record->unpublish()),
-                    Tables\Actions\Action::make('set_as_current')
+                    Action::make('set_as_current')
                         ->label(__('general.set_as_current'))
                         ->requiresConfirmation()
                         ->icon('heroicon-s-arrow-up-circle')
                         ->visible(fn (Proceeding $record) => $record->published && ! $record->current)
                         ->action(fn (Proceeding $record) => $record->setAsCurrent()),
-                    Tables\Actions\DeleteAction::make()
-                        ->using(function (Proceeding $record, Tables\Actions\DeleteAction $action) {
+                    DeleteAction::make()
+                        ->using(function (Proceeding $record, DeleteAction $action) {
                             try {
                                 $record->delete();
-                            } catch (\Throwable $th) {
+                            } catch (Throwable $th) {
                                 $action->failureNotificationTitle($th->getMessage());
 
                                 return false;
@@ -179,8 +186,8 @@ class ProceedingResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageProceedings::route('/'),
-            'view' => Pages\ViewProceeding::route('/{record}'),
+            'index' => ManageProceedings::route('/'),
+            'view' => ViewProceeding::route('/{record}'),
         ];
     }
 }

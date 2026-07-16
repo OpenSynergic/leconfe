@@ -2,6 +2,8 @@
 
 namespace App\Classes\ImportExport;
 
+use Exception;
+use DOMDocument;
 use App\Models\Enums\DOIStatus;
 use App\Models\Submission;
 use Illuminate\Support\Facades\Http;
@@ -63,25 +65,25 @@ class ExportArticleCrossref
         $responseContent = $response->getBody()->getContents();
 
         if ($response->unauthorized()) {
-            throw new \Exception('Unauthorized to deposit to crossref. Please check your username and password.');
+            throw new Exception('Unauthorized to deposit to crossref. Please check your username and password.');
         } elseif ($response->forbidden()) {
-            $xmlDoc = new \DOMDocument('1.0', 'utf-8');
+            $xmlDoc = new DOMDocument('1.0', 'utf-8');
             $xmlDoc->loadXML($responseContent);
 
             $batchIdNode = $xmlDoc->getElementsByTagName('batch_id')->item(0);
             $msg = $xmlDoc->getElementsByTagName('msg')->item(0)->nodeValue;
             $this->updateDepositStatus(DOIStatus::Error, $batchIdNode->nodeValue, $msg, $responseContent);
 
-            throw new \Exception($msg);
+            throw new Exception($msg);
         } elseif ($response->clientError() || $response->serverError()) {
             $message = $responseContent.' ('.$response->status().')';
 
             $this->updateDepositStatus(DOIStatus::Error, $this->batchId, $message, $message);
 
-            throw new \Exception($message);
+            throw new Exception($message);
         }
 
-        $xmlDoc = new \DOMDocument('1.0', 'utf-8');
+        $xmlDoc = new DOMDocument('1.0', 'utf-8');
         $xmlDoc->loadXML($responseContent);
         $batchIdNode = $xmlDoc->getElementsByTagName('batch_id')->item(0);
         $submissionIdNode = $xmlDoc->getElementsByTagName('submission_id')->item(0);
@@ -235,7 +237,7 @@ class ExportArticleCrossref
         $proceeding = $this->submission->proceeding;
 
         if (! $proceeding) {
-            throw new \Exception('Submission does not have a proceeding');
+            throw new Exception('Submission does not have a proceeding');
         }
 
         $metadata = [
@@ -243,7 +245,7 @@ class ExportArticleCrossref
         ];
 
         if (! $site->getMeta('publisher_name')) {
-            throw new \Exception('Publisher name cannot be empty, please set it in the Administration > Website Setting > Publishing Details');
+            throw new Exception('Publisher name cannot be empty, please set it in the Administration > Website Setting > Publishing Details');
         }
 
         $metadata['publisher']['publisher_name'] = $site->getMeta('publisher_name');
@@ -283,7 +285,7 @@ class ExportArticleCrossref
         ];
 
         if (! $conference->getMeta('issn')) {
-            throw new \Exception('ISSN cannot be empty');
+            throw new Exception('ISSN cannot be empty');
         }
 
         $metadata['issn'] = $conference->getMeta('issn');

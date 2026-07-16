@@ -2,6 +2,14 @@
 
 namespace App\Panel\ScheduledConference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkAction;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Grid;
 use App\Mail\Templates\ParticipantPaymentMail;
 use App\Managers\PaymentManager;
 use App\Models\DefaultMailTemplate;
@@ -12,18 +20,12 @@ use App\Panel\ScheduledConference\Pages\PaymentDetail;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\BulkAction;
-use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -38,8 +40,9 @@ use Illuminate\Validation\Rules\Unique;
 use Livewire\Component;
 use Squire\Models\Currency;
 
-class ParticipantPaymentFeeTable extends Component implements HasForms, HasTable
+class ParticipantPaymentFeeTable extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     public function mount() {}
@@ -113,7 +116,7 @@ class ParticipantPaymentFeeTable extends Component implements HasForms, HasTable
                     ->label('Paid')
                     ->nullable(),
             ])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
                     Action::make('send-invoice')
                         ->label(__('general.send_invoice'))
@@ -151,16 +154,16 @@ class ParticipantPaymentFeeTable extends Component implements HasForms, HasTable
                         }),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkAction::make('send-email')
-                    ->mountUsing(function (Form $form): void {
+                    ->mountUsing(function (Schema $schema): void {
                         $mailTemplate = DefaultMailTemplate::where('mailable', ParticipantPaymentMail::class)->first();
-                        $form->fill([
+                        $schema->fill([
                             'subject' => $mailTemplate ? $mailTemplate->subject : '',
                             'message' => $mailTemplate ? $mailTemplate->html_template : '',
                         ]);
                     })
-                    ->form([
+                    ->schema([
                         TextInput::make('subject')
                             ->label(__('general.subject'))
                             ->required(),
@@ -202,17 +205,17 @@ class ParticipantPaymentFeeTable extends Component implements HasForms, HasTable
             ]);
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Grid::make()
                     ->schema([
                         TextInput::make('name')
                             ->label(__('general.name'))
                             ->required()
                             ->unique(
-                                ignorable: fn () => $form->getRecord(),
+                                ignorable: fn () => $schema->getRecord(),
                                 modifyRuleUsing: fn (Unique $rule) => $rule->where('scheduled_conference_id', app()->getCurrentScheduledConferenceId()),
                             ),
                         TextInput::make('limit')

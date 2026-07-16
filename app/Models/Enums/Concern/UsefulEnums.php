@@ -2,6 +2,8 @@
 
 namespace App\Models\Enums\Concern;
 
+use ValueError;
+
 trait UsefulEnums
 {
     public static function names(): array
@@ -39,7 +41,7 @@ trait UsefulEnums
         if ($status = self::tryFromName($name)) {
             return $status;
         }
-        throw new \ValueError("$name is not a valid backing value for enum ".self::class);
+        throw new ValueError("$name is not a valid backing value for enum ".self::class);
     }
 
     public static function tryFromName(string $name): ?static

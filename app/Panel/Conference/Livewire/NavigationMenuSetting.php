@@ -2,6 +2,9 @@
 
 namespace App\Panel\Conference\Livewire;
 
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Utilities\Get;
 use App\Actions\NavigationMenu\CreateNavigationMenuAction;
 use App\Actions\NavigationMenu\CreateNavigationMenuItemAction;
 use App\Actions\NavigationMenu\UpdateNavigationMenuAction;
@@ -12,13 +15,10 @@ use Closure;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -62,7 +62,7 @@ class NavigationMenuSetting extends Component implements HasActions, HasForms
             Action::make('create-navigation-menu')
                 ->label(__('general.add_navigation_menu'))
                 ->modalWidth('xl')
-                ->form($this->getNavigationMenuForm())
+                ->schema($this->getNavigationMenuForm())
                 ->action(function ($data) {
                     CreateNavigationMenuAction::run($data);
                 }),
@@ -76,7 +76,7 @@ class NavigationMenuSetting extends Component implements HasActions, HasForms
             ->modalWidth('xl')
             ->icon('heroicon-s-pencil')
             ->size('xs')
-            ->form($this->getNavigationMenuForm())
+            ->schema($this->getNavigationMenuForm())
             ->fillForm(function (array $arguments) {
                 return NavigationMenu::query()
                     ->select(['name', 'handle'])
@@ -114,7 +114,7 @@ class NavigationMenuSetting extends Component implements HasActions, HasForms
             ->size('xs')
             ->color('gray')
             ->modalWidth('xl')
-            ->form($this->getNavigationMenuItemForm())
+            ->schema($this->getNavigationMenuItemForm())
             ->action(function (array $data, array $arguments) {
                 $data['navigation_menu_id'] = $arguments['navigation_menu_id'];
 
@@ -134,7 +134,7 @@ class NavigationMenuSetting extends Component implements HasActions, HasForms
                 'class' => 'hidden',
             ])
             ->modalWidth('xl')
-            ->form($this->getNavigationMenuItemForm())
+            ->schema($this->getNavigationMenuItemForm())
             ->action(function (array $data, array $arguments) {
                 $data['parent_id'] = $arguments['parent_id'];
                 $data['navigation_menu_id'] = $arguments['navigation_menu_id'];
@@ -161,7 +161,7 @@ class NavigationMenuSetting extends Component implements HasActions, HasForms
             })
             ->color('gray')
             ->modalWidth('xl')
-            ->form($this->getNavigationMenuItemForm())
+            ->schema($this->getNavigationMenuItemForm())
             ->action(function (array $data, array $arguments) {
                 UpdateNavigationMenuItemAction::run(NavigationMenuItem::find($arguments['id']), $data);
             });

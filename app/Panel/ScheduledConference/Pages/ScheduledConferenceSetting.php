@@ -2,11 +2,12 @@
 
 namespace App\Panel\ScheduledConference\Pages;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Livewire;
 use App\Panel\ScheduledConference\Livewire\ContactSetting;
 use App\Panel\ScheduledConference\Livewire\MastHeadSetting;
-use Filament\Infolists\Components\Livewire;
-use Filament\Infolists\Components\Tabs;
-use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\App;
@@ -14,9 +15,9 @@ use Illuminate\Support\Facades\Auth;
 
 class ScheduledConferenceSetting extends Page
 {
-    protected static string $view = 'panel.scheduledConference.pages.scheduled-conference-setting';
+    protected string $view = 'panel.scheduledConference.pages.scheduled-conference-setting';
 
-    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-calendar-days';
 
     public static function getNavigationLabel(): string
     {
@@ -43,19 +44,19 @@ class ScheduledConferenceSetting extends Page
         return Auth::user()->can('update', App::getCurrentScheduledConference());
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
+        return $schema
+            ->components([
                 Tabs::make()
                     ->contained(false)
                     ->tabs([
-                        Tabs\Tab::make('Masthead')
+                        Tab::make('Masthead')
                             ->label(__('general.masthead'))
                             ->schema([
                                 Livewire::make(MastHeadSetting::class),
                             ]),
-                        Tabs\Tab::make(__('general.contact'))
+                        Tab::make(__('general.contact'))
                             ->schema([
                                 Livewire::make(ContactSetting::class),
                             ]),

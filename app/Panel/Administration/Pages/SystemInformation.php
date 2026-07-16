@@ -13,9 +13,9 @@ class SystemInformation extends Page implements HasInfolists
 {
     use InteractsWithInfolists;
 
-    protected static ?string $navigationIcon = 'heroicon-m-cog';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-m-cog';
 
-    protected static string $view = 'panel.administration.pages.system-information';
+    protected string $view = 'panel.administration.pages.system-information';
 
     protected static bool $shouldRegisterNavigation = false;
 

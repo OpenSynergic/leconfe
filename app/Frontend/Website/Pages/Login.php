@@ -2,6 +2,7 @@
 
 namespace App\Frontend\Website\Pages;
 
+use Filament\Schemas\Schema;
 use App\Events\UserLoggedIn;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
@@ -13,7 +14,6 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Support\Enums\Alignment;
 use Illuminate\Contracts\Support\Htmlable;
@@ -110,13 +110,13 @@ class Login extends Page implements HasActions, HasForms
     }
 
     /**
-     * @return array<int | string, string | Form>
+     * @return array<int|string, string|Schema>
      */
     protected function getForms(): array
     {
         return [
             'form' => $this->form(
-                $this->makeForm()
+                $this->makeSchema()
                     ->schema([
                         TextInput::make('email')
                             ->label(__('general.email'))
@@ -140,9 +140,9 @@ class Login extends Page implements HasActions, HasForms
         ];
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form;
+        return $schema;
     }
 
     /**

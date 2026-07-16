@@ -2,6 +2,8 @@
 
 namespace App\Actions\Leconfe;
 
+use Exception;
+use Throwable;
 use App\Models\Conference;
 use App\Models\ScheduledConference;
 use App\Models\User;
@@ -57,7 +59,7 @@ class CheckLatestVersion
         })->get(app()->getApiUrl('checkversion'));
 
         if ($response->failed()) {
-            throw new \Exception('Failed to get latest version');
+            throw new Exception('Failed to get latest version');
         }
 
         return $response->json();
@@ -85,7 +87,7 @@ class CheckLatestVersion
                 $command->info('Download latest version here : '.$data['package']);
                 $command->warn('Learn how to upgrade here: '.$data['upgrade_guide']);
             }
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             throw new $th;
             $command->error($th->getMessage());
         }

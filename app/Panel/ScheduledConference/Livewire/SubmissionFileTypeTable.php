@@ -2,17 +2,19 @@
 
 namespace App\Panel\ScheduledConference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\CreateAction;
+use Filament\Support\Enums\Width;
+use Filament\Schemas\Schema;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
 use App\Models\SubmissionFileType;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Support\Enums\MaxWidth;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -20,8 +22,9 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
 
-class SubmissionFileTypeTable extends Component implements HasForms, HasTable
+class SubmissionFileTypeTable extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     public function render()
@@ -50,25 +53,25 @@ class SubmissionFileTypeTable extends Component implements HasForms, HasTable
             ->headerActions([
                 CreateAction::make()
                     ->label(__('general.add_a_component'))
-                    ->modalWidth(MaxWidth::ExtraLarge)
-                    ->form(fn (Form $form) => $this->form($form)),
+                    ->modalWidth(Width::ExtraLarge)
+                    ->schema(fn (Schema $schema) => $this->form($schema)),
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make()
-                    ->modalWidth(MaxWidth::ExtraLarge)
-                    ->form(fn (Form $form) => $this->form($form)),
+                    ->modalWidth(Width::ExtraLarge)
+                    ->schema(fn (Schema $schema) => $this->form($schema)),
                 DeleteAction::make()
                     ->hidden(fn (SubmissionFileType $record) => $record->files_count > 0),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 DeleteBulkAction::make(),
             ]);
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('name')
                     ->label(__('general.name'))
                     ->required(),

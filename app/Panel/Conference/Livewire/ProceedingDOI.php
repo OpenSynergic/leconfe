@@ -2,17 +2,18 @@
 
 namespace App\Panel\Conference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
+use Filament\Support\Enums\Width;
+use Filament\Schemas\Components\Utilities\Set;
 use App\Classes\DOIGenerator;
 use App\Models\Enums\DOIStatus;
 use App\Models\Proceeding;
 use App\Tables\Columns\IndexColumn;
-use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Set;
-use Filament\Support\Enums\MaxWidth;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -20,8 +21,9 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Livewire\Component;
 
-class ProceedingDOI extends Component implements HasForms, HasTable
+class ProceedingDOI extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms;
     use InteractsWithTable;
 
@@ -50,7 +52,7 @@ class ProceedingDOI extends Component implements HasForms, HasTable
                         return ! $data['value'] ? $query : $query->whereHas('doi', fn ($query) => $query->where('status', $data['value']));
                     }),
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('edit')
                     ->label('Edit')
                     ->icon('heroicon-o-pencil')
@@ -60,13 +62,13 @@ class ProceedingDOI extends Component implements HasForms, HasTable
                             'doi' => $record->doi?->doi,
                         ];
                     })
-                    ->modalWidth(MaxWidth::ExtraLarge)
+                    ->modalWidth(Width::ExtraLarge)
                     ->modalHeading(fn ($record) => $record->title)
-                    ->form([
+                    ->schema([
                         TextInput::make('doi')
                             ->label('DOI')
                             ->suffixAction(
-                                FormAction::make('generate')
+                                Action::make('generate')
                                     ->label('Generate')
                                     ->button()
                                     // ->outlined()
@@ -76,7 +78,7 @@ class ProceedingDOI extends Component implements HasForms, HasTable
                     ])
                     ->action(fn (Proceeding $record, array $data) => $record->doi()->updateOrCreate(['id' => $record->doi?->id], ['doi' => $data['doi']])),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // ...
             ]);
     }

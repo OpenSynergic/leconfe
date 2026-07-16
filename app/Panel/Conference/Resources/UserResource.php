@@ -2,6 +2,21 @@
 
 namespace App\Panel\Conference\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Actions\CreateAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\DeleteAction;
+use Throwable;
+use Filament\Actions\DeleteBulkAction;
+use App\Panel\Conference\Resources\UserResource\Pages\ListUsers;
+use App\Panel\Conference\Resources\UserResource\Pages\CreateUser;
+use App\Panel\Conference\Resources\UserResource\Pages\EditUser;
 use App\Actions\User\UserDeleteAction;
 use App\Actions\User\UserMailAction;
 use App\Facades\Setting;
@@ -15,18 +30,11 @@ use App\Panel\Conference\Resources\UserResource\Pages;
 use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
@@ -38,13 +46,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use STS\FilamentImpersonate\Tables\Actions\Impersonate;
+use STS\FilamentImpersonate\Actions\Impersonate;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-circle';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-user-circle';
 
     public static function getNavigationLabel(): string
     {
@@ -81,14 +89,14 @@ class UserResource extends Resource
         return static::$isDiscovered;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->columns(3)
             ->schema([
-                Forms\Components\Grid::make()
+                Grid::make()
                     ->schema([
-                        Forms\Components\Section::make()
+                        Section::make()
                             ->schema([
                                 SpatieMediaLibraryFileUpload::make('profile')
                                     ->label(__('general.profile_photo'))
@@ -96,28 +104,28 @@ class UserResource extends Resource
                                     ->alignCenter()
                                     ->avatar()
                                     ->columnSpan(['lg' => 2]),
-                                Forms\Components\TextInput::make('given_name')
+                                TextInput::make('given_name')
                                     ->label(__('general.given_name'))
                                     ->required(),
-                                Forms\Components\TextInput::make('family_name')
+                                TextInput::make('family_name')
                                     ->label(__('general.family_name')),
-                                Forms\Components\TextInput::make('meta.public_name')
+                                TextInput::make('meta.public_name')
                                     ->label(__('general.public_name'))
                                     ->helperText(__('general.public_name_helper'))
                                     ->columnSpan(['lg' => 2]),
-                                Forms\Components\TextInput::make('email')
+                                TextInput::make('email')
                                     ->required()
                                     ->label(__('general.email'))
                                     ->columnSpan(['lg' => 2])
                                     ->unique(ignoreRecord: true),
-                                Forms\Components\TextInput::make('password')
+                                TextInput::make('password')
                                     ->label(__('general.password'))
                                     ->required(fn(?User $record) => !$record)
                                     ->password()
                                     ->dehydrateStateUsing(fn($state) => Hash::make($state))
                                     ->dehydrated(fn($state) => filled($state))
                                     ->confirmed(),
-                                Forms\Components\TextInput::make('password_confirmation')
+                                TextInput::make('password_confirmation')
                                     ->label(__('general.password_confirmation'))
                                     ->requiredWith('password')
                                     ->password()
@@ -128,14 +136,14 @@ class UserResource extends Resource
                             ->columns(2),
 
                     ])
-                    ->columnSpan(['lg' => 2]),
+                    ->columnSpan(fn (?User $record) => (app()->isOnSite() && !($record?->isBanned() ?? false)) ? 3 : 2),
 
-                Forms\Components\Grid::make()
+                Grid::make()
                     ->schema([
-                        Forms\Components\Section::make()
+                        Section::make()
                             ->visible(fn(?User $record) => $record?->isBanned())
                             ->schema([
-                                Forms\Components\Placeholder::make('disabled_at')
+                                Placeholder::make('disabled_at')
                                     ->visible(fn(?User $record) => $record?->isBanned())
                                     ->label(__('general.disabled_at'))
                                     ->content(function (?User $record): ?string {
@@ -143,7 +151,7 @@ class UserResource extends Resource
 
                                         return $ban?->created_at?->format(Setting::get('format_date')) ?? '-';
                                     }),
-                                Forms\Components\Placeholder::make('disabled_until')
+                                Placeholder::make('disabled_until')
                                     ->visible(fn(?User $record) => $record?->isBanned())
                                     ->label(__('general.disabled_until'))
                                     ->content(function (?User $record): ?string {
@@ -153,10 +161,10 @@ class UserResource extends Resource
                                     }),
 
                             ]),
-                        Forms\Components\Section::make(__('general.user_roles'))
+                        Section::make(__('general.user_roles'))
                             ->hidden(fn() => app()->isOnSite())
                             ->schema([
-                                Forms\Components\CheckboxList::make('roles')
+                                CheckboxList::make('roles')
                                     ->hiddenLabel()
                                     ->required()
                                     ->relationship(
@@ -164,7 +172,7 @@ class UserResource extends Resource
                                         titleAttribute: 'name',
                                         modifyQueryUsing: fn($query) => $query->withoutGlobalScopes()->availableRolesByContext()
                                     )
-                                    ->saveRelationshipsUsing(function (Forms\Components\CheckboxList $component, ?array $state, User $record) {
+                                    ->saveRelationshipsUsing(function (CheckboxList $component, ?array $state, User $record) {
 
                                         $roles = $state ? Role::whereIn('id', $state)->pluck('name')->toArray() : [];
 
@@ -174,7 +182,8 @@ class UserResource extends Resource
                                     }),
                             ]),
                     ])
-                    ->columnSpan(['lg' => 1]),
+                    ->columnSpan(1)
+                    ->hidden(fn (?User $record) => app()->isOnSite() && !($record?->isBanned() ?? false)),
             ]);
     }
 
@@ -260,10 +269,10 @@ class UserResource extends Resource
             ])
             ->deferFilters()
             ->headerActions([
-                Tables\Actions\CreateAction::make()
+                CreateAction::make()
                     ->icon('heroicon-o-user-plus'),
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make()
                     ->modalWidth('full'),
                 Action::make('remove')
@@ -299,7 +308,7 @@ class UserResource extends Resource
                         ->modalWidth('3xl')
                         ->fillForm(fn($record) => ['to' => $record->email])
                         ->modalHeading(fn(User $record) => __('general.send_email_to') . $record->full_name)
-                        ->form([
+                        ->schema([
                             Grid::make()
                                 ->schema([
                                     TextInput::make('subject')
@@ -334,7 +343,7 @@ class UserResource extends Resource
                         ->color('danger')
                         ->modalWidth('xl')
                         ->modalHeading(fn(User $record) => "Disable User : {$record->full_name}")
-                        ->form([
+                        ->schema([
                             Textarea::make('comment')
                                 ->label(__('general.reason_for_disabling_user')),
                             DatePicker::make('expired_at')
@@ -352,7 +361,7 @@ class UserResource extends Resource
                                 $user = UserDeleteAction::run($data, $record);
 
                                 return $user;
-                            } catch (\Throwable $th) {
+                            } catch (Throwable $th) {
                                 $action->failureNotificationTitle($th->getMessage());
 
                                 return false;
@@ -361,11 +370,11 @@ class UserResource extends Resource
                 ]),
             ])
             ->queryStringIdentifier('users')
-            ->bulkActions([
+            ->toolbarActions([
                 DeleteBulkAction::make(),
             ])
             ->emptyStateActions([
-                Tables\Actions\CreateAction::make()
+                CreateAction::make()
                     ->icon('heroicon-o-user-plus'),
             ]);
     }
@@ -380,9 +389,9 @@ class UserResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            'index' => ListUsers::route('/'),
+            'create' => CreateUser::route('/create'),
+            'edit' => EditUser::route('/{record}/edit'),
         ];
     }
 }

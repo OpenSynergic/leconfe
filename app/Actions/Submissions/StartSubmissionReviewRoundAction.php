@@ -2,6 +2,7 @@
 
 namespace App\Actions\Submissions;
 
+use Illuminate\Support\Collection;
 use App\Constants\ReviewerStatus;
 use App\Constants\SubmissionFileCategory;
 use App\Models\Review;
@@ -114,7 +115,7 @@ class StartSubmissionReviewRoundAction
         return $fileIds->all();
     }
 
-    protected function sanitizeDefaultFileIds(array $defaultFileIds): \Illuminate\Support\Collection
+    protected function sanitizeDefaultFileIds(array $defaultFileIds): Collection
     {
         return collect($defaultFileIds)
             ->filter(fn ($id) => is_numeric($id))

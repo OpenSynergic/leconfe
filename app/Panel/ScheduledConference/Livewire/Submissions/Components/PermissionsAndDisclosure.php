@@ -2,21 +2,26 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions\Components;
 
+use Livewire\Component;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Schema;
+use Filament\Support\Enums\Width;
+use Filament\Actions\Action;
+use Throwable;
 use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Facades\License;
 use App\Models\Submission;
-use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
-use Filament\Support\Enums\MaxWidth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\HtmlString;
 
-class PermissionsAndDisclosure extends \Livewire\Component implements HasForms
+class PermissionsAndDisclosure extends Component implements HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms;
 
     public Submission $submission;
@@ -41,9 +46,9 @@ class PermissionsAndDisclosure extends \Livewire\Component implements HasForms
         ]);
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->model($this->submission)
             ->disabled(function (): bool {
                 return ! auth()->user()->can('editing', $this->submission);
@@ -54,14 +59,14 @@ class PermissionsAndDisclosure extends \Livewire\Component implements HasForms
                     ->helperText(__('general.submission_copyright_holder_helper', [
                         'copyrightHolder' => app()->getCurrentConference()->getCopyrightHolderForSubmission($this->submission),
                     ]))
-                    ->maxWidth(MaxWidth::Large)
+                    ->maxWidth(Width::Large)
                     ->disabled(fn () => ! $this->submission->getMeta('copyright_holder') && ! $this->overrideCopyrightHolder)
                     ->suffixActions([
                         Action::make('overridde')
                             ->label(__('general.override'))
                             ->link()
                             ->color('primary')
-                            ->hidden(fn () => $this->submission->getMeta('copyright_holder') || $form->isDisabled())
+                            ->hidden(fn () => $this->submission->getMeta('copyright_holder') || $schema->isDisabled())
                             ->action(fn () => $this->overrideCopyrightHolder = true),
                     ]),
                 TextInput::make('meta.copyright_year')
@@ -69,14 +74,14 @@ class PermissionsAndDisclosure extends \Livewire\Component implements HasForms
                     ->minLength(0)
                     ->label(__('general.submission_copyright_year'))
                     ->helperText(__('general.submission_copyright_year_helper'))
-                    ->maxWidth(MaxWidth::Large)
+                    ->maxWidth(Width::Large)
                     ->disabled(fn () => ! $this->submission->getMeta('copyright_year') && ! $this->overrideCopyrightYear)
                     ->suffixActions([
                         Action::make('overridde')
                             ->label(__('general.override'))
                             ->link()
                             ->color('primary')
-                            ->hidden(fn () => $this->submission->getMeta('copyright_year') || $form->isDisabled())
+                            ->hidden(fn () => $this->submission->getMeta('copyright_year') || $schema->isDisabled())
                             ->action(fn () => $this->overrideCopyrightYear = true),
                     ]),
                 TextInput::make('meta.license_url')
@@ -95,14 +100,14 @@ class PermissionsAndDisclosure extends \Livewire\Component implements HasForms
                             'licenseName' => $licenseName,
                         ]));
                     })
-                    ->maxWidth(MaxWidth::Large)
+                    ->maxWidth(Width::Large)
                     ->disabled(fn () => ! $this->submission->getMeta('license_url') && ! $this->overrideLicenseUrl)
                     ->suffixActions([
                         Action::make('overridde')
                             ->label(__('general.override'))
                             ->link()
                             ->color('primary')
-                            ->hidden(fn () => $this->submission->getMeta('license_url') || $form->isDisabled())
+                            ->hidden(fn () => $this->submission->getMeta('license_url') || $schema->isDisabled())
                             ->action(fn () => $this->overrideLicenseUrl = true),
                     ]),
             ])
@@ -124,7 +129,7 @@ class PermissionsAndDisclosure extends \Livewire\Component implements HasForms
                 ->success()
                 ->title(__('general.saved'))
                 ->send();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Notification::make()
                 ->danger()
                 ->title(__('general.error'))

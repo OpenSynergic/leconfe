@@ -2,6 +2,8 @@
 
 namespace App\Actions\Leconfe;
 
+use App\Utils\Upgrader;
+use Throwable;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -21,7 +23,7 @@ class UpgradeAction
         Artisan::call('optimize:clear');
         Artisan::call('modelCache:clear');
 
-        $upgrader = new \App\Utils\Upgrader($params);
+        $upgrader = new Upgrader($params);
         $upgrader->run();
     }
 
@@ -58,11 +60,11 @@ class UpgradeAction
             $command->callSilently('icons:cache');
             $command->callSilently('modelCache:clear');
 
-            $upgrader = new \App\Utils\Upgrader(command: $command);
+            $upgrader = new Upgrader(command: $command);
             $upgrader->run();
 
             info('Success upgrade Leconfe to '.$codeVersion.'!');
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             $command->error($th->getMessage());
         }
     }

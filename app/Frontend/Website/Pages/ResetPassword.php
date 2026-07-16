@@ -2,6 +2,7 @@
 
 namespace App\Frontend\Website\Pages;
 
+use Filament\Schemas\Schema;
 use App\Mail\Templates\ResetPasswordMail;
 use App\Models\User;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
@@ -13,7 +14,6 @@ use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Support\Enums\Alignment;
 use Illuminate\Contracts\Support\Htmlable;
@@ -113,13 +113,13 @@ class ResetPassword extends Page implements HasActions, HasForms
     }
 
     /**
-     * @return array<int | string, string | Form>
+     * @return array<int|string, string|Schema>
      */
     protected function getForms(): array
     {
         return [
             'form' => $this->form(
-                $this->makeForm()
+                $this->makeSchema()
                     ->schema([
                         TextInput::make('email')
                             ->label(__('general.email'))
@@ -127,15 +127,16 @@ class ResetPassword extends Page implements HasActions, HasForms
                             ->required()
                             ->autofocus()
                             ->autocomplete('username')
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->rules(['exists:users,email']),
                     ]),
             ),
         ];
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form;
+        return $schema;
     }
 
     /**
@@ -173,13 +174,6 @@ class ResetPassword extends Page implements HasActions, HasForms
         return [];
     }
 
-    public function rules()
-    {
-        return [
-            'email' => 'required|email|exists:users',
-        ];
-    }
-
     public function submit()
     {
         try {
@@ -196,6 +190,12 @@ class ResetPassword extends Page implements HasActions, HasForms
         $this->validate();
 
         $user = User::where('email', $this->email)->first();
+
+        if (! $user) {
+            $this->addError('email', __('validation.exists', ['attribute' => 'email']));
+
+            return null;
+        }
 
         Mail::to($this->email)
             ->send(new ResetPasswordMail($user));

@@ -2,6 +2,10 @@
 
 namespace App\Panel\Conference\Pages;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Livewire;
 use App\Infolists\Components\VerticalTabs as InfolistsVerticalTabs;
 use App\Panel\Conference\Livewire\CitationSetting;
 use App\Panel\Conference\Livewire\Forms\Conferences\DOIRegistration;
@@ -10,11 +14,8 @@ use App\Panel\Conference\Livewire\Forms\Conferences\SearchEngineSetting;
 use App\Panel\Conference\Livewire\LicenseSetting;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Infolists\Components\Livewire;
-use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\App;
@@ -26,9 +27,9 @@ class DistributionSetting extends Page implements HasForms, HasInfolists
 
     protected static ?int $navigationSort = 3;
 
-    protected static ?string $navigationIcon = 'heroicon-o-window';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-window';
 
-    protected static string $view = 'panel.conference.pages.distribution';
+    protected string $view = 'panel.conference.pages.distribution';
 
     public static function getNavigationLabel(): string
     {
@@ -55,13 +56,13 @@ class DistributionSetting extends Page implements HasForms, HasInfolists
         return Auth::user()->can('update', App::getCurrentConference());
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
+        return $schema
+            ->components([
                 Tabs::make('distribution_settings')
                     ->tabs([
-                        Tabs\Tab::make('Papers')
+                        Tab::make('Papers')
                             ->label(__('general.papers'))
                             ->icon('heroicon-o-document-text')
                             ->schema([
@@ -80,7 +81,7 @@ class DistributionSetting extends Page implements HasForms, HasInfolists
 
                                     ]),
                             ]),
-                        Tabs\Tab::make('DOI')
+                        Tab::make('DOI')
                             ->icon('academicon-doi')
                             ->schema([
                                 InfolistsVerticalTabs\Tabs::make()
@@ -97,7 +98,7 @@ class DistributionSetting extends Page implements HasForms, HasInfolists
                                             ]),
                                     ]),
                             ]),
-                        Tabs\Tab::make('Search Indexing')
+                        Tab::make('Search Indexing')
                             ->label(__('general.search_indexing'))
                             ->icon('heroicon-o-magnifying-glass')
                             ->schema([

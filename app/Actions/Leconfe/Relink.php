@@ -2,6 +2,7 @@
 
 namespace App\Actions\Leconfe;
 
+use Throwable;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -40,7 +41,7 @@ class Relink
                     File::delete($file);
                 }
             }
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Log::warning($th->getMessage());
         }
     }

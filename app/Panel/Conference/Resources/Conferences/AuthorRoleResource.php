@@ -2,11 +2,20 @@
 
 namespace App\Panel\Conference\Resources\Conferences;
 
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Exception;
+use Throwable;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\CreateAction;
+use App\Panel\Conference\Resources\Conferences\AuthorRoleResource\Pages\ManageAuthorRoles;
 use App\Models\AuthorRole;
 use App\Panel\Conference\Resources\Conferences\AuthorRoleResource\Pages;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -19,9 +28,9 @@ class AuthorRoleResource extends Resource
 
     protected static ?string $model = AuthorRole::class;
 
-    protected static ?string $navigationGroup = 'Conferences';
+    protected static string | \UnitEnum | null $navigationGroup = 'Conferences';
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-users';
 
     public static function getNavigationLabel(): string
     {
@@ -36,10 +45,10 @@ class AuthorRoleResource extends Resource
             ->orderBy('order_column');
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('name')
                     ->label(__('general.name'))
                     ->required()
@@ -56,11 +65,11 @@ class AuthorRoleResource extends Resource
             ->reorderable('order_column')
             ->columns([
                 IndexColumn::make('no'),
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label(__('general.name'))
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('authors_count')
+                TextColumn::make('authors_count')
                     ->label(__('general.authors'))
                     ->counts('authors')
                     ->badge()
@@ -70,30 +79,30 @@ class AuthorRoleResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()
-                    ->using(function (AuthorRole $record, Tables\Actions\DeleteAction $action) {
+            ->recordActions([
+                EditAction::make(),
+                DeleteAction::make()
+                    ->using(function (AuthorRole $record, DeleteAction $action) {
                         try {
                             $authorCount = $record->authors()->count();
                             if ($authorCount > 0) {
-                                throw new \Exception(__('general.cannot_delete_role', ['variable' => $record->name]));
+                                throw new Exception(__('general.cannot_delete_role', ['variable' => $record->name]));
                             }
 
                             return $record->delete();
-                        } catch (\Throwable $th) {
+                        } catch (Throwable $th) {
                             $action->failureNotificationTitle($th->getMessage());
                         }
                     }),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()
-                    ->mutateFormDataUsing(function (array $data): array {
+                CreateAction::make()
+                    ->mutateDataUsing(function (array $data): array {
                         return $data;
                     })
                     ->label(__('general.new_author_role'))
@@ -104,7 +113,7 @@ class AuthorRoleResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageAuthorRoles::route('/'),
+            'index' => ManageAuthorRoles::route('/'),
         ];
     }
 }

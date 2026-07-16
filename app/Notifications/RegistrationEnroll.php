@@ -2,9 +2,9 @@
 
 namespace App\Notifications;
 
+use Filament\Actions\Action;
 use App\Mail\Templates\RegistrationEnrollMail;
 use App\Models\Registration;
-use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification as FilamentNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;

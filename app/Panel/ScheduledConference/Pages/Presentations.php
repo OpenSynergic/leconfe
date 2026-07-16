@@ -2,17 +2,17 @@
 
 namespace App\Panel\ScheduledConference\Pages;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Grid;
 use App\Models\Presentation;
 use App\Models\Submission;
 use App\Models\Timeline;
 use App\Models\Topic;
 use App\Models\Track;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Livewire\WithPagination;
 
@@ -21,9 +21,9 @@ class Presentations extends Page implements HasForms
     use InteractsWithForms;
     use WithPagination;
 
-    protected static ?string $navigationIcon = 'heroicon-o-computer-desktop';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-computer-desktop';
 
-    protected static string $view = 'panel.scheduledConference.pages.presentations';
+    protected string $view = 'panel.scheduledConference.pages.presentations';
 
     protected static ?int $navigationSort = 99;
 
@@ -56,10 +56,10 @@ class Presentations extends Page implements HasForms
         $this->resetPage();
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Grid::make()
                     ->columns(4)
                     ->schema([

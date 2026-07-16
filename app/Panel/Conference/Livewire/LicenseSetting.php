@@ -2,22 +2,26 @@
 
 namespace App\Panel\Conference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Actions;
+use Filament\Actions\Action;
+use Throwable;
 use App\Actions\Conferences\ConferenceUpdateAction;
 use App\Facades\License;
 use App\Forms\Components\TinyEditor;
-use Filament\Forms\Components\Actions;
-use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Livewire\Component;
 
-class LicenseSetting extends Component implements HasForms
+class LicenseSetting extends Component implements HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms;
 
     public ?array $formData = [];
@@ -35,9 +39,9 @@ class LicenseSetting extends Component implements HasForms
         return view('forms.form');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->model(app()->getCurrentConference())
             ->schema([
                 Section::make()
@@ -87,7 +91,7 @@ class LicenseSetting extends Component implements HasForms
                             try {
                                 ConferenceUpdateAction::run($this->form->getRecord(), $formData);
                                 $action->sendSuccessNotification();
-                            } catch (\Throwable $th) {
+                            } catch (Throwable $th) {
                                 $action->sendFailureNotification();
                             }
                         }),

@@ -2,14 +2,17 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions\Components;
 
+use Livewire\Component;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
 use App\Constants\SubmissionFileCategory;
 use App\Models\Media;
 use App\Models\Review;
 use App\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -17,8 +20,9 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Spatie\MediaLibrary\Support\MediaStream;
 
-class ReviewerFiles extends \Livewire\Component implements HasForms, HasTable
+class ReviewerFiles extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     public Review $record;
@@ -54,7 +58,7 @@ class ReviewerFiles extends \Livewire\Component implements HasForms, HasTable
                         fn (): bool => $this->isViewOnly()
                     )
                     ->icon('iconpark-upload')
-                    ->form([
+                    ->schema([
                         SpatieMediaLibraryFileUpload::make('reviewer-files')
                             ->required()
                             ->previewable(false)
@@ -70,7 +74,7 @@ class ReviewerFiles extends \Livewire\Component implements HasForms, HasTable
                             ),
                     ]),
             ])
-            ->actions([
+            ->recordActions([
                 DeleteAction::make()
                     ->hidden(
                         fn (): bool => $this->isViewOnly()

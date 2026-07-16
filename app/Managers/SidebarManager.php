@@ -2,6 +2,7 @@
 
 namespace App\Managers;
 
+use Exception;
 use App\Classes\Sidebar;
 use Illuminate\Support\Collection;
 
@@ -17,7 +18,7 @@ class SidebarManager
 
         foreach ($this->sidebars as $sidebar) {
             if (! $sidebar instanceof Sidebar) {
-                throw new \Exception("{$sidebar->getName()} must be an instance of ".Sidebar::class);
+                throw new Exception("{$sidebar->getName()} must be an instance of ".Sidebar::class);
             }
         }
     }
@@ -31,7 +32,7 @@ class SidebarManager
         // Validate sidebar inside the array
         foreach ($sidebars as $sidebar) {
             if (! $sidebar instanceof Sidebar) {
-                throw new \Exception("Error: could not register sidebar. {$sidebar->getName()} must be an instance of ".Sidebar::class);
+                throw new Exception("Error: could not register sidebar. {$sidebar->getName()} must be an instance of ".Sidebar::class);
             }
         }
 

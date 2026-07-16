@@ -2,6 +2,7 @@
 
 namespace App\Managers;
 
+use Throwable;
 use App\Classes\Plugin as ClassesPlugin;
 use App\Classes\Plugin;
 use App\Events\PluginInstalled;
@@ -73,7 +74,7 @@ class PluginManager
                     if (! $disk->exists($pluginDir . DIRECTORY_SEPARATOR . 'index.php')) {
                         throw new Exception("Plugin ({$pluginDir}) is missing index.php file");
                     }
-                } catch (\Throwable $th) {
+                } catch (Throwable $th) {
                     return false;
                 }
 
@@ -132,7 +133,7 @@ class PluginManager
             }
 
             $this->plugins->put($id, $plugin);
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             throw $th;
         }
     }
@@ -147,7 +148,7 @@ class PluginManager
             if (! $plugin instanceof ClassesPlugin) {
                 throw new Exception('Plugin must return an instance of ' . ClassesPlugin::class);
             }
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             throw $th;
         }
 
@@ -178,17 +179,17 @@ class PluginManager
         ]));
     }
 
-    protected function getPluginFolder(Plugin $plugin): string
+    protected function getPluginFolder(ClassesPlugin $plugin): string
     {
         return $plugin->getInfo('folder');
     }
 
-    protected function isPluginSitewide(Plugin $plugin): bool
+    protected function isPluginSitewide(ClassesPlugin $plugin): bool
     {
         return $plugin->getInfo('sitewide') ?? false;
     }
 
-    public function getSetting(Plugin $plugin, mixed $key, $default = null): mixed
+    public function getSetting(ClassesPlugin $plugin, mixed $key, $default = null): mixed
     {
         $pluginFolder = $this->getPluginFolder($plugin);
         $sitewide = $this->isPluginSitewide($plugin);
@@ -213,7 +214,7 @@ class PluginManager
         });
     }
 
-    public function updateSetting(Plugin $plugin, $key, $value): mixed
+    public function updateSetting(ClassesPlugin $plugin, $key, $value): mixed
     {
         $pluginFolder = $this->getPluginFolder($plugin);
         $sitewide = $this->isPluginSitewide($plugin);
@@ -266,7 +267,7 @@ class PluginManager
 
         try {
             $plugin = $this->initiatePlugin($this->getDisk()->path($folderName), true);
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             $pluginTempDisk->deleteDirectory($folderName);
 
             throw $th;
@@ -352,7 +353,7 @@ class PluginManager
             if (! file_exists($this->getTempDisk()->path($pluginInfo['folder']))) {
                 throw new Exception('Plugin must contain a folder with the same name as the plugin folder name');
             }
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             throw $th;
         }
 

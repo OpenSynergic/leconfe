@@ -2,11 +2,14 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions\Components\Discussions;
 
+use Livewire\Component;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\DeleteAction;
 use App\Facades\Setting;
 use App\Models\DiscussionTopic;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\Layout\Panel;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
@@ -17,8 +20,9 @@ use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 
-class DiscussionDetail extends \Livewire\Component implements HasForms, HasTable
+class DiscussionDetail extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     public DiscussionTopic $topic;
@@ -32,7 +36,7 @@ class DiscussionDetail extends \Livewire\Component implements HasForms, HasTable
         return $table
             ->query(fn () => $this->topic->discussions()->orderBy('created_at', 'desc'))
             ->heading(__('general.discussion'))
-            ->actions([
+            ->recordActions([
                 DeleteAction::make()
                     ->authorize('Discussion:delete')
                     ->visible(fn (): bool => $this->topic->open),

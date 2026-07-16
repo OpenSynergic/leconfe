@@ -2,6 +2,10 @@
 
 namespace App\Panel\ScheduledConference\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
+use App\Panel\ScheduledConference\Resources\SpeakerResource\Pages\ManageSpeakers;
 use App\Actions\Speakers\SpeakerCreateAction;
 use App\Actions\Speakers\SpeakerDeleteAction;
 use App\Actions\Speakers\SpeakerUpdateAction;
@@ -9,12 +13,9 @@ use App\Models\Speaker;
 use App\Panel\Conference\Livewire\Forms\Conferences\ContributorForm;
 use App\Panel\ScheduledConference\Resources\SpeakerResource\Pages;
 use Filament\Forms;
-use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -22,7 +23,7 @@ class SpeakerResource extends Resource
 {
     protected static ?string $model = Speaker::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-users';
 
     public static function getNavigationGroup(): string
     {
@@ -51,12 +52,12 @@ class SpeakerResource extends Resource
         return __('general.speaker');
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 ...ContributorForm::generalFormField(app()->getCurrentScheduledConference()),
-                Forms\Components\Select::make('speaker_role_id')
+                Select::make('speaker_role_id')
                     ->label(__('general.role'))
                     ->required()
                     ->searchable()
@@ -71,14 +72,14 @@ class SpeakerResource extends Resource
                             ->required(),
                     ])
                     ->createOptionAction(
-                        fn (FormAction $action) => $action->color('primary')
+                        fn (Action $action) => $action->color('primary')
                             ->modalWidth('xl')
                             ->modalHeading(__('general.create_speaker_position'))
                             ->mutateFormDataUsing(function (array $data): array {
                                 return $data;
                             })
-                            ->form(function (Select $component, Form $form): array|Form|null {
-                                return SpeakerRoleResource::form($form);
+                            ->form(function (Select $component, Schema $schema): array|Schema|null {
+                                return SpeakerRoleResource::form($schema);
                             })
                     )
                     ->columnSpan([
@@ -100,7 +101,7 @@ class SpeakerResource extends Resource
                     ->using(fn (array $data) => SpeakerCreateAction::run($data)),
             ])
             ->columns(ContributorForm::generalTableColumns())
-            ->actions(ContributorForm::tableActions(SpeakerUpdateAction::class, SpeakerDeleteAction::class))
+            ->recordActions(ContributorForm::tableActions(SpeakerUpdateAction::class, SpeakerDeleteAction::class))
             ->filters([
                 //
             ]);
@@ -109,7 +110,7 @@ class SpeakerResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageSpeakers::route('/'),
+            'index' => ManageSpeakers::route('/'),
         ];
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Actions\Submissions;
 
+use Throwable;
 use App\Classes\Log;
 use App\Models\Submission;
 use Illuminate\Support\Facades\DB;
@@ -31,7 +32,7 @@ class SubmissionCreateAction
                 ->save();
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
 
             throw $th;

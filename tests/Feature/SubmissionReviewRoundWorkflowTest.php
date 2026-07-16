@@ -39,7 +39,7 @@ use App\Panel\ScheduledConference\Resources\SubmissionResource;
 use App\Panel\ScheduledConference\Resources\SubmissionResource\Pages\ReviewerInvitationPage;
 use App\Panel\ScheduledConference\Resources\SubmissionResource\Pages\ReviewSubmissionPage;
 use App\Panel\ScheduledConference\Resources\SubmissionResource\Pages\ViewSubmission;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Support\Enums\Width;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -279,13 +279,14 @@ class SubmissionReviewRoundWorkflowTest extends TestCase
         );
 
         $this->actingAs($context['editor']);
+        \Illuminate\Support\Facades\Gate::before(fn () => true);
 
-        Livewire::test(PeerReview::class, ['submission' => $context['submission']])
+        Livewire::test(PeerReview::class, ['submission' => $context['submission']->refresh()])
             ->assertSee(__('general.start_next_review_round'))
             ->assertDontSee('New Review Round')
             ->assertDontSeeText('Open')
             ->mountAction('startNextReviewRoundAction')
-            ->assertSee(__('general.start_next_review_round_modal_description'))
+            ->assertMountedActionModalSee(__('general.start_next_review_round_modal_description'))
             ->setActionData([
                 'name' => 'Abstract Screening',
                 'default_file_ids' => [],
@@ -315,11 +316,12 @@ class SubmissionReviewRoundWorkflowTest extends TestCase
         );
 
         $this->actingAs($context['editor']);
+        \Illuminate\Support\Facades\Gate::before(fn () => true);
 
-        Livewire::test(PeerReview::class, ['submission' => $context['submission']])
+        Livewire::test(PeerReview::class, ['submission' => $context['submission']->refresh()])
             ->mountAction('startNextReviewRoundAction')
-            ->assertSee(__('general.notification'))
-            ->assertSee(__('general.dont_send_notification_to_author'));
+            ->assertMountedActionModalSee(__('general.notification'))
+            ->assertMountedActionModalSee(__('general.dont_send_notification_to_author'));
     }
 
     public function test_start_next_review_round_notifies_author_by_default(): void
@@ -630,7 +632,7 @@ class SubmissionReviewRoundWorkflowTest extends TestCase
             ->mountAction('renameReviewRoundAction', ['round' => $roundOne->getKey()])
             ->assertSee(__('general.rename_review_round'));
 
-        $this->assertSame(MaxWidth::Medium, $component->instance()->getMountedAction()?->getModalWidth());
+        $this->assertSame(Width::Medium, $component->instance()->getMountedAction()?->getModalWidth());
 
         $component
             ->setActionData([

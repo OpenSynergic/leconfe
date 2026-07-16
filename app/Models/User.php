@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use BackedEnum;
 use App\Mail\Templates\VerifyUserEmail;
 use App\Models\Enums\RegistrationPaymentState;
 use App\Models\Enums\UserRole;
@@ -114,7 +116,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia,
      * Replaced From original DatabaseNotification laravel
      * Get the entity's notifications.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     * @return MorphMany
      */
     public function notifications()
     {
@@ -227,7 +229,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasMedia,
     /**
      * Assign the given role to the model.
      *
-     * @param  string|int|array|Role|Collection|\BackedEnum  ...$roles
+     * @param string|int|array|Role|Collection|BackedEnum ...$roles
      * @return $this
      */
     public function assignRole(...$roles)

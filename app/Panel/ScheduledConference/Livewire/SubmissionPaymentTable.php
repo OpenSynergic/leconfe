@@ -2,6 +2,13 @@
 
 namespace App\Panel\ScheduledConference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkAction;
+use Filament\Schemas\Schema;
 use App\Mail\Templates\SubmissionPaymentMail;
 use App\Managers\PaymentManager;
 use App\Models\DefaultMailTemplate;
@@ -17,11 +24,6 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\BulkAction;
-use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -33,8 +35,9 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
-class SubmissionPaymentTable extends Component implements HasForms, HasTable
+class SubmissionPaymentTable extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     public function mount() {}
@@ -169,7 +172,7 @@ class SubmissionPaymentTable extends Component implements HasForms, HasTable
                     ->label('Paid')
                     ->nullable(),
             ])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
                     Action::make('send-invoice')
                         ->label(__('general.send_invoice'))
@@ -198,16 +201,16 @@ class SubmissionPaymentTable extends Component implements HasForms, HasTable
                         ->hidden(fn (Payment $record) => $record->isPaid()),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkAction::make('send-email')
-                    ->mountUsing(function (Form $form): void {
+                    ->mountUsing(function (Schema $schema): void {
                         $mailTemplate = DefaultMailTemplate::where('mailable', SubmissionPaymentMail::class)->first();
-                        $form->fill([
+                        $schema->fill([
                             'subject' => $mailTemplate ? $mailTemplate->subject : '',
                             'message' => $mailTemplate ? $mailTemplate->html_template : '',
                         ]);
                     })
-                    ->form([
+                    ->schema([
                         TextInput::make('subject')
                             ->label(__('general.subject'))
                             ->required(),

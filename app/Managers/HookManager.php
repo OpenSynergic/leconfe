@@ -85,7 +85,7 @@ class HookManager
      * @param  mixed  $passable
      * @return mixed
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
     protected function handleException(mixed $arguments, Throwable $e)
     {

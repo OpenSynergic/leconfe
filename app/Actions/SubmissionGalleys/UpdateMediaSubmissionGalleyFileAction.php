@@ -2,6 +2,7 @@
 
 namespace App\Actions\SubmissionGalleys;
 
+use Throwable;
 use App\Constants\SubmissionFileCategory;
 use App\Models\SubmissionGalley;
 use Illuminate\Support\Facades\DB;
@@ -31,7 +32,7 @@ class UpdateMediaSubmissionGalleyFileAction
             }
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
             throw $th;
         }

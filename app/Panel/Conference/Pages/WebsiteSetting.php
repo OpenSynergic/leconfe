@@ -2,6 +2,10 @@
 
 namespace App\Panel\Conference\Pages;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Livewire;
 use App\Infolists\Components\ShoutUpdateVersion;
 use App\Infolists\Components\VerticalTabs;
 use App\Panel\Administration\Livewire\LanguageSetting;
@@ -9,9 +13,6 @@ use App\Panel\Administration\Livewire\SidebarSetting;
 use App\Panel\Conference\Livewire\DateAndTimeSetting;
 use App\Panel\Conference\Livewire\NavigationMenuSetting;
 use App\Panel\Conference\Livewire\SetupSetting;
-use Filament\Infolists\Components\Livewire;
-use Filament\Infolists\Components\Tabs;
-use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\App;
@@ -19,14 +20,14 @@ use Illuminate\Support\Facades\Auth;
 
 class WebsiteSetting extends Page
 {
-    protected static string $view = 'panel.conference.pages.website-setting';
+    protected string $view = 'panel.conference.pages.website-setting';
 
     public static function getNavigationGroup(): string
     {
         return __('general.settings');
     }
 
-    protected static ?string $navigationIcon = 'heroicon-o-globe-alt';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-globe-alt';
 
     public static function getNavigationLabel(): string
     {
@@ -48,15 +49,15 @@ class WebsiteSetting extends Page
         return Auth::user()->can('update', App::getCurrentConference());
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
+        return $schema
+            ->components([
                 ShoutUpdateVersion::make('update-version'),
                 Tabs::make()
                     ->contained(false)
                     ->tabs([
-                        Tabs\Tab::make('Appearance')
+                        Tab::make('Appearance')
                             ->label(__('general.appearance'))
                             ->schema([
                                 VerticalTabs\Tabs::make()
@@ -76,7 +77,7 @@ class WebsiteSetting extends Page
                                             ]),
                                     ]),
                             ]),
-                        Tabs\Tab::make('Setup')
+                        Tab::make('Setup')
                             ->label(__('general.setup'))
                             ->schema([
                                 VerticalTabs\Tabs::make()

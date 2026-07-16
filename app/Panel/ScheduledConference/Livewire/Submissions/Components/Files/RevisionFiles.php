@@ -2,14 +2,17 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions\Components\Files;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
 use App\Constants\SubmissionFileCategory;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Submission;
 use Awcodes\Shout\Components\Shout;
 use Livewire\Attributes\On;
 
-class RevisionFiles extends SubmissionFilesTable
+class RevisionFiles extends SubmissionFilesTable implements HasActions
 {
+    use InteractsWithActions;
     protected ?string $category = SubmissionFileCategory::REVISION_FILES;
 
     protected string $tableHeading;

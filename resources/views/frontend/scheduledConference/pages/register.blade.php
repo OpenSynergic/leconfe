@@ -25,11 +25,11 @@
         </header>
 
         @if ($allowRegistration)
-            <x-filament-panels::form wire:submit="register">
+            <form wire:submit="register" class="fi-form space-y-6">
                 {{ $this->form }}
 
-                <x-filament-panels::form.actions :actions="$this->getFormActions()" :fullWidth="true" />
-            </x-filament-panels::form>
+                <x-filament::actions :actions="$this->getFormActions()" :full-width="true" />
+            </form>
         @else
             <div class="rounded-xl bg-gray-50 px-4 py-3 text-center text-sm font-medium text-gray-700 ring-1 ring-gray-950/5 dark:bg-white/5 dark:text-gray-200 dark:ring-white/10">
                 {{ __('general.registration_closed') }}

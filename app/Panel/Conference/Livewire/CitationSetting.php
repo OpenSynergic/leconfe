@@ -2,21 +2,25 @@
 
 namespace App\Panel\Conference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Actions;
+use Filament\Actions\Action;
+use Throwable;
 use App\Actions\Conferences\ConferenceUpdateAction;
 use App\Facades\Citation;
 use App\Models\AuthorRole;
-use Filament\Forms\Components\Actions;
-use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Livewire\Component;
 
-class CitationSetting extends Component implements HasForms
+class CitationSetting extends Component implements HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms;
 
     public ?array $formData = [];
@@ -34,12 +38,12 @@ class CitationSetting extends Component implements HasForms
         return view('forms.form');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
         $citationStyleOptions = collect(Citation::getCitationStyles())->mapWithKeys(fn ($style) => [$style['id'] => $style['title']]);
         $citationDownloadOptions = collect(Citation::getCitationDownloads())->mapWithKeys(fn ($style) => [$style['id'] => $style['title']]);
 
-        return $form
+        return $schema
             ->model(app()->getCurrentConference())
             ->schema([
                 Section::make()
@@ -80,7 +84,7 @@ class CitationSetting extends Component implements HasForms
                             try {
                                 ConferenceUpdateAction::run($this->form->getRecord(), $formData);
                                 $action->sendSuccessNotification();
-                            } catch (\Throwable $th) {
+                            } catch (Throwable $th) {
                                 $action->sendFailureNotification();
                             }
                         }),

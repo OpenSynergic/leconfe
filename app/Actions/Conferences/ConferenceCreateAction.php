@@ -2,6 +2,7 @@
 
 namespace App\Actions\Conferences;
 
+use Throwable;
 use App\Models\Conference;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -24,7 +25,7 @@ class ConferenceCreateAction
             }
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
             throw $th;
         }

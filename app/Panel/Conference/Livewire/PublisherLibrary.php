@@ -2,6 +2,17 @@
 
 namespace App\Panel\Conference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
+use Filament\Facades\Filament;
+use Filament\Support\Enums\Width;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Schemas\Schema;
+use Throwable;
 use App\Frontend\ScheduledConference\Pages\PublisherLibrary as PublisherLibraryPage;
 use App\Models\Media;
 use App\Models\ScheduledConference;
@@ -12,13 +23,6 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Support\Enums\MaxWidth;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -28,8 +32,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
-class PublisherLibrary extends Component implements HasForms, HasTable
+class PublisherLibrary extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms;
     use InteractsWithTable;
 
@@ -66,7 +71,7 @@ class PublisherLibrary extends Component implements HasForms, HasTable
                     ->openUrlInNewTab(),
                 Action::make('add_a_file')
                     ->label(__('general.add_a_file'))
-                    ->modalWidth(MaxWidth::ExtraLarge)
+                    ->modalWidth(Width::ExtraLarge)
                     ->icon('heroicon-o-plus')
                     ->action(function (array $data) {
                         $currentScheduledConference = app()->getCurrentScheduledConference();
@@ -75,9 +80,9 @@ class PublisherLibrary extends Component implements HasForms, HasTable
                             ->withCustomProperties($data['custom'])
                             ->toMediaCollection('publisher-library', 'private-files');
                     })
-                    ->form(fn ($form) => $this->form($form)),
+                    ->schema(fn ($form) => $this->form($form)),
             ])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
                     EditAction::make()
                         ->fillForm(function (Media $record, array $data): array {
@@ -87,8 +92,8 @@ class PublisherLibrary extends Component implements HasForms, HasTable
 
                             return $data;
                         })
-                        ->modalWidth(MaxWidth::ExtraLarge)
-                        ->form(fn ($form, $record) => $this->form($form))
+                        ->modalWidth(Width::ExtraLarge)
+                        ->schema(fn ($form, $record) => $this->form($form))
                         ->using(function (Media $record, $data) {
                             $currentScheduledConference = app()->getCurrentScheduledConference();
 
@@ -118,15 +123,15 @@ class PublisherLibrary extends Component implements HasForms, HasTable
                     DeleteAction::make(),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 DeleteBulkAction::make(),
             ]);
     }
 
-    public function form(Form $form)
+    public function form(Schema $schema)
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('name')
                     ->required(),
                 FileUpload::make('file_name')
@@ -152,7 +157,7 @@ class PublisherLibrary extends Component implements HasForms, HasTable
                                 now()->addMinutes(5),
                                 options: ['disk' => $record?->disk]
                             );
-                        } catch (\Throwable $exception) {
+                        } catch (Throwable $exception) {
                             // This driver does not support creating temporary URLs.
                         }
 

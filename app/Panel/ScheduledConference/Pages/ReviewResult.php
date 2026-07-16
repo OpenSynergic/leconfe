@@ -23,9 +23,9 @@ class ReviewResult extends Page implements HasForms, HasTable
 {
     use InteractsWithForms, InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-eye';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-eye';
 
-    protected static string $view = 'panel.scheduledConference.pages.review-result';
+    protected string $view = 'panel.scheduledConference.pages.review-result';
 
     protected static ?int $navigationSort = 99;
 
@@ -135,10 +135,10 @@ class ReviewResult extends Page implements HasForms, HasTable
             ->filters([
                 // ...
             ])
-            ->actions([
+            ->recordActions([
                 // ...
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // ...
             ]);
     }

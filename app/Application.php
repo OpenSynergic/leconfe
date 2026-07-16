@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Exception;
+use Throwable;
 use App\Actions\Site\SiteCreateAction;
 use App\Classes\Theme;
 use App\Facades\Plugin;
@@ -83,7 +85,7 @@ class Application extends LaravelApplication
     public function getInstalledVersion(): string
     {
         if (! $this->isInstalled()) {
-            return throw new \Exception('Application is not installed');
+            return throw new Exception('Application is not installed');
         }
 
         return Version::application()?->version;
@@ -228,7 +230,7 @@ class Application extends LaravelApplication
             if ($this->isProduction() && ! $this->hasDebugModeEnabled() && config('app.report_errors')) {
                 return true;
             }
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             //
         }
 
@@ -252,7 +254,7 @@ class Application extends LaravelApplication
     {
         try {
             return version_compare($this->getInstalledVersion(), $this->getCodeVersion(), '<');
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             return false;
         }
     }

@@ -2,6 +2,13 @@
 
 namespace App\Panel\Conference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use BackedEnum;
+use Filament\Actions\EditAction;
+use Filament\Support\Enums\Width;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\Action;
 use App\Actions\Roles\RoleCreateAction;
 use App\Actions\Roles\RoleUpdateAction;
 use App\Models\Enums\UserRole;
@@ -9,10 +16,6 @@ use App\Models\Role;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
-use Filament\Support\Enums\MaxWidth;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -23,8 +26,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 
-class UserRoleTable extends Component implements HasForms, HasTable
+class UserRoleTable extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use AuthorizesRequests;
     use InteractsWithForms, InteractsWithTable;
 
@@ -45,12 +49,12 @@ class UserRoleTable extends Component implements HasForms, HasTable
         $permissionLevelOptions = [];
         if (app()->isOnScheduledConference()) {
             $permissionLevelOptions = collect(UserRole::scheduledConferenceRoles())
-                ->map(fn($role) => $role instanceof \BackedEnum ? $role->value : $role)
+                ->map(fn($role) => $role instanceof BackedEnum ? $role->value : $role)
                 ->mapWithKeys(fn($role) => [$role => $role])
                 ->toArray();
         } else {
             $permissionLevelOptions = collect(UserRole::conferenceRoles())
-                ->map(fn($role) => $role instanceof \BackedEnum ? $role->value : $role)
+                ->map(fn($role) => $role instanceof BackedEnum ? $role->value : $role)
                 ->mapWithKeys(fn($role) => [$role => $role])
                 ->toArray();
         }
@@ -71,10 +75,10 @@ class UserRoleTable extends Component implements HasForms, HasTable
                     ->label(__('general.users'))
                     ->badge()
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make()
                     ->label(__('general.edit'))
-                    ->modalWidth(MaxWidth::Large)
+                    ->modalWidth(Width::Large)
                     ->hidden(fn(Role $record) => in_array($record->name, $defaultRoles))
                     ->fillForm(function (Role $record) {
                         $meta = $record->getAllMeta()->toArray();
@@ -87,7 +91,7 @@ class UserRoleTable extends Component implements HasForms, HasTable
                             'meta' => $meta,
                         ];
                     })
-                    ->form([
+                    ->schema([
                         TextInput::make('name')
                             ->label(__('general.name'))
                             ->required(),
@@ -130,8 +134,8 @@ class UserRoleTable extends Component implements HasForms, HasTable
                 Action::make('createRole')
                     ->label(__('general.new_role'))
                     ->icon('heroicon-o-plus')
-                    ->modalWidth(MaxWidth::Large)
-                    ->form([
+                    ->modalWidth(Width::Large)
+                    ->schema([
                         TextInput::make('name')
                             ->label(__('general.name'))
                             ->required(),

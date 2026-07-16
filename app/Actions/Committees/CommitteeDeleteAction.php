@@ -2,6 +2,7 @@
 
 namespace App\Actions\Committees;
 
+use Throwable;
 use App\Models\Committee;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -18,7 +19,7 @@ class CommitteeDeleteAction
             $committee->delete();
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
             throw $th;
         }

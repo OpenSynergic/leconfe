@@ -2,6 +2,7 @@
 
 namespace App\Actions\SubmissionGalleys;
 
+use Throwable;
 use App\Models\SubmissionGalley;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -40,7 +41,7 @@ class UpdateSubmissionGalleyAction
             }
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
             throw $th;
         }

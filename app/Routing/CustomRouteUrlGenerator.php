@@ -2,6 +2,7 @@
 
 namespace App\Routing;
 
+use Illuminate\Routing\Route;
 use Illuminate\Routing\Exceptions\UrlGenerationException;
 use Illuminate\Routing\RouteUrlGenerator;
 
@@ -10,15 +11,17 @@ class CustomRouteUrlGenerator extends RouteUrlGenerator
     /**
      * Generate a URL for the given route.
      *
-     * @param  \Illuminate\Routing\Route  $route
+     * @param Route $route
      * @param  array  $parameters
      * @param  bool  $absolute
      * @return string
      *
-     * @throws \Illuminate\Routing\Exceptions\UrlGenerationException
+     * @throws UrlGenerationException
      */
     public function to($route, $parameters = [], $absolute = false)
     {
+        $parameters = $this->formatParameters($route, $parameters);
+
         $domain = $this->getRouteDomain($route, $parameters);
 
         // First we will construct the entire URI including the root and query string. Once it
@@ -30,7 +33,9 @@ class CustomRouteUrlGenerator extends RouteUrlGenerator
             $route
         ), $parameters);
 
-        if (preg_match_all('/{(.*?)}/', $uri, $matchedMissingParameters)) {
+        $uriWithoutQuery = explode('?', $uri, 2)[0];
+
+        if (preg_match_all('/{(.*?)}/', $uriWithoutQuery, $matchedMissingParameters)) {
             throw UrlGenerationException::forMissingParameters($route, $matchedMissingParameters[1]);
         }
 

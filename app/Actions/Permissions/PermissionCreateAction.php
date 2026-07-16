@@ -2,6 +2,7 @@
 
 namespace App\Actions\Permissions;
 
+use Throwable;
 use App\Models\Permission;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -18,7 +19,7 @@ class PermissionCreateAction
             $permission = Permission::create($data);
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
 
             throw $th;

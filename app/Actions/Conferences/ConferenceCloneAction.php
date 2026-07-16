@@ -2,6 +2,7 @@
 
 namespace App\Actions\Conferences;
 
+use Throwable;
 use App\Models\Conference;
 use App\Models\Scopes\ConferenceScope;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +24,7 @@ class ConferenceCloneAction
             DB::commit();
 
             return $clonedDataConference;
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
             throw $th;
         }

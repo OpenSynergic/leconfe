@@ -8,7 +8,7 @@ use Filament\Resources\Pages\ManageRecords;
 
 class ManageSpeakers extends ManageRecords
 {
-    protected static string $view = 'panel.scheduledConference.resources.speaker-resource.pages.list-speakers';
+    protected string $view = 'panel.scheduledConference.resources.speaker-resource.pages.list-speakers';
 
     protected static string $resource = SpeakerResource::class;
 

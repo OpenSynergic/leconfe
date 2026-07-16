@@ -35,11 +35,11 @@
                 {{ __('general.please_enter_email_to_reset_password') }}
             </p>
 
-            <x-filament-panels::form wire:submit="submit">
+            <form wire:submit="submit" class="fi-form space-y-6">
                 {{ $this->form }}
 
-                <x-filament-panels::form.actions :actions="$this->getFormActions()" :fullWidth="true" />
-            </x-filament-panels::form>
+                <x-filament::actions :actions="$this->getFormActions()" :full-width="true" />
+            </form>
         @else
             <div class="space-y-4">
                 <p class="text-sm leading-6 text-gray-600 dark:text-gray-300">

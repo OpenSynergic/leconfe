@@ -2,6 +2,7 @@
 
 namespace App\Frontend\Website\Pages;
 
+use Throwable;
 use App\Actions\Leconfe\UpgradeAction;
 use App\Facades\MetaTag;
 use App\Http\Middleware\RedirectToConference;
@@ -46,7 +47,7 @@ class Upgrade extends Page
             UpgradeAction::run();
 
             return redirect()->route('livewirePageGroup.website.pages.installation-successful');
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             $this->addError('upgrade', $th->getMessage());
         }
 

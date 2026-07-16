@@ -2,26 +2,28 @@
 
 namespace App\Panel\ScheduledConference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
+use Filament\Support\Enums\Width;
+use Filament\Schemas\Schema;
+use Filament\Actions\CreateAction;
+use Throwable;
+use Filament\Actions\EditAction;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Get;
 use App\Models\ReviewFormItem;
 use Closure;
 use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\Component as FormComponent;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Support\Enums\MaxWidth;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -29,8 +31,9 @@ use Filament\Tables\Table;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
-class ReviewFormTable extends Component implements HasForms, HasTable
+class ReviewFormTable extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     public function render()
@@ -57,14 +60,14 @@ class ReviewFormTable extends Component implements HasForms, HasTable
                 Action::make('form_preview')
                     ->label(__('scheduled_conference.form_preview'))
                     ->icon('heroicon-m-eye')
-                    ->modalWidth(MaxWidth::TwoExtraLarge)
+                    ->modalWidth(Width::TwoExtraLarge)
                     ->closeModalByClickingAway()
-                    ->form(function (Form $form) {
-                        return $form->schema(ReviewFormItem::ordered()->lazy()->map(fn (ReviewFormItem $item) => $item->getFormField())->toArray());
+                    ->schema(function (Schema $schema) {
+                        return $schema->components(ReviewFormItem::ordered()->lazy()->map(fn (ReviewFormItem $item) => $item->getFormField())->toArray());
                     }),
                 CreateAction::make()
-                    ->modalWidth(MaxWidth::ExtraLarge)
-                    ->form(fn (Form $form) => $this->form($form))
+                    ->modalWidth(Width::ExtraLarge)
+                    ->schema(fn (Schema $schema) => $this->form($schema))
                     ->using(function ($data) {
                         try {
                             DB::beginTransaction();
@@ -75,7 +78,7 @@ class ReviewFormTable extends Component implements HasForms, HasTable
                             }
 
                             DB::commit();
-                        } catch (\Throwable $th) {
+                        } catch (Throwable $th) {
                             DB::rollBack();
 
                             throw $th;
@@ -84,10 +87,10 @@ class ReviewFormTable extends Component implements HasForms, HasTable
                         return $record;
                     }),
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make()
-                    ->modalWidth(MaxWidth::ExtraLarge)
-                    ->form(fn (Form $form) => $this->form($form))
+                    ->modalWidth(Width::ExtraLarge)
+                    ->schema(fn (Schema $schema) => $this->form($schema))
                     ->mutateRecordDataUsing(function (ReviewFormItem $record, array $data) {
                         $data['meta'] = $record->getAllMeta()->toArray();
 
@@ -104,7 +107,7 @@ class ReviewFormTable extends Component implements HasForms, HasTable
                             $record->save();
 
                             DB::commit();
-                        } catch (\Throwable $th) {
+                        } catch (Throwable $th) {
                             DB::rollBack();
 
                             throw $th;
@@ -115,10 +118,10 @@ class ReviewFormTable extends Component implements HasForms, HasTable
                 ActionGroup::make([
                     Action::make('copy')
                         ->label(__('scheduled_conference.copy'))
-                        ->modalWidth(MaxWidth::ExtraLarge)
+                        ->modalWidth(Width::ExtraLarge)
                         ->icon('heroicon-m-clipboard-document-check')
                         ->color('warning')
-                        ->form(fn (Form $form) => $this->form($form)->model(null))
+                        ->schema(fn (Schema $schema) => $this->form($schema)->model(null))
                         ->fillForm(fn ($record) => [
                             ...$record->attributesToArray(),
                             'meta' => $record->getAllMeta()->toArray(),
@@ -133,7 +136,7 @@ class ReviewFormTable extends Component implements HasForms, HasTable
                                 }
 
                                 DB::commit();
-                            } catch (\Throwable $th) {
+                            } catch (Throwable $th) {
                                 DB::rollBack();
 
                                 throw $th;
@@ -144,15 +147,15 @@ class ReviewFormTable extends Component implements HasForms, HasTable
                     DeleteAction::make(),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 DeleteBulkAction::make(),
             ]);
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('label')
                     ->label(__('scheduled_conference.label'))
                     ->required(),
@@ -177,7 +180,7 @@ class ReviewFormTable extends Component implements HasForms, HasTable
             ]);
     }
 
-    protected function getSchemaTypeSelect(): FormComponent
+    protected function getSchemaTypeSelect(): \Filament\Schemas\Components\Component
     {
         return Grid::make(1)
             ->visible(fn (Get $get) => $get('type') == ReviewFormItem::TYPE_SELECT)
@@ -227,7 +230,7 @@ class ReviewFormTable extends Component implements HasForms, HasTable
             ]);
     }
 
-    protected function getSchemaTypeCheckbox(): FormComponent
+    protected function getSchemaTypeCheckbox(): \Filament\Schemas\Components\Component
     {
         return Grid::make(1)
             ->visible(fn (Get $get) => $get('type') == ReviewFormItem::TYPE_CHECKBOX)
@@ -242,7 +245,7 @@ class ReviewFormTable extends Component implements HasForms, HasTable
             ]);
     }
 
-    protected function getSchemaTypeRadio(): FormComponent
+    protected function getSchemaTypeRadio(): \Filament\Schemas\Components\Component
     {
         return Grid::make(1)
             ->visible(fn (Get $get) => $get('type') == ReviewFormItem::TYPE_RADIO)

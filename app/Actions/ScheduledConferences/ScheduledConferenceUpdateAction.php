@@ -2,6 +2,7 @@
 
 namespace App\Actions\ScheduledConferences;
 
+use Throwable;
 use App\Models\ScheduledConference;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -22,7 +23,7 @@ class ScheduledConferenceUpdateAction
             }
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
 
             throw $th;

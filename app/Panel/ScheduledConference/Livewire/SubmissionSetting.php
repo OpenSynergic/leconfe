@@ -2,22 +2,26 @@
 
 namespace App\Panel\ScheduledConference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Actions;
+use Filament\Actions\Action;
+use Throwable;
 use App\Models\Timeline;
-use Filament\Forms\Components\Actions;
-use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
-class SubmissionSetting extends Component implements HasForms
+class SubmissionSetting extends Component implements HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms;
 
     public ?array $formData = [];
@@ -37,9 +41,9 @@ class SubmissionSetting extends Component implements HasForms
         return view('forms.form');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->model(app()->getCurrentScheduledConference())
             ->schema([
                 Section::make(__('general.submission_setting'))
@@ -99,14 +103,14 @@ class SubmissionSetting extends Component implements HasForms
 
                                 DB::commit();
                                 $action->sendSuccessNotification();
-                            } catch (\Throwable $th) {
+                            } catch (Throwable $th) {
                                 $action->failureNotificationTitle($th->getMessage());
                                 $action->sendFailureNotification();
                                 DB::rollBack();
                                 throw $th;
                             }
                         }),
-                ])->alignLeft(),
+                ])->key('saveAction')->alignLeft(),
             ])
             ->statePath('formData');
     }

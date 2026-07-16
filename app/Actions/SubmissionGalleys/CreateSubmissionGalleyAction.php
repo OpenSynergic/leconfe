@@ -2,6 +2,7 @@
 
 namespace App\Actions\SubmissionGalleys;
 
+use Throwable;
 use App\Constants\SubmissionFileCategory;
 use App\Models\Submission;
 use App\Models\SubmissionFile;
@@ -39,7 +40,7 @@ class CreateSubmissionGalleyAction
             }
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
             throw $th;
         }
@@ -59,7 +60,7 @@ class CreateSubmissionGalleyAction
             ->usingFileName($filename)
             ->usingName($customFileName ?? pathinfo(SpatieMediaLibraryFileUpload::getClientOriginalName($file), PATHINFO_FILENAME))
             ->storingConversionsOnDisk($component->getConversionsDisk() ?? '')
-            ->withCustomProperties($component->getCustomProperties())
+            ->withCustomProperties($component->getCustomProperties($file))
             ->withManipulations($component->getManipulations())
             ->withResponsiveImagesIf($component->hasResponsiveImages())
             ->withProperties($component->getProperties())

@@ -2,11 +2,11 @@
 
 namespace App\Notifications;
 
+use Filament\Actions\Action;
 use App\Mail\Templates\PaymentRequiredMail;
 use App\Mail\Templates\SubmissionPaymentMail;
 use App\Models\Payment;
 use App\Models\Submission;
-use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification as FilamentNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

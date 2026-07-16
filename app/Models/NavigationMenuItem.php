@@ -2,6 +2,18 @@
 
 namespace App\Models;
 
+use App\Models\NavigationItemType\RemoteUrl;
+use App\Models\NavigationItemType\About;
+use App\Models\NavigationItemType\Contact;
+use App\Models\NavigationItemType\Announcements;
+use App\Models\NavigationItemType\Dashboard;
+use App\Models\NavigationItemType\Home;
+use App\Models\NavigationItemType\Login;
+use App\Models\NavigationItemType\Logout;
+use App\Models\NavigationItemType\Proceedings;
+use App\Models\NavigationItemType\Profile;
+use App\Models\NavigationItemType\Register;
+use App\Models\NavigationItemType\Search;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -57,18 +69,18 @@ class NavigationMenuItem extends Model implements Sortable
     public static function getTypes(): array
     {
         return [
-            'remote-url' => NavigationItemType\RemoteUrl::class,
-            'about' => NavigationItemType\About::class,
-            'contact' => NavigationItemType\Contact::class,
-            'announcements' => NavigationItemType\Announcements::class,
-            'dashboard' => NavigationItemType\Dashboard::class,
-            'home' => NavigationItemType\Home::class,
-            'login' => NavigationItemType\Login::class,
-            'logout' => NavigationItemType\Logout::class,
-            'proceedings' => NavigationItemType\Proceedings::class,
-            'profile' => NavigationItemType\Profile::class,
-            'register' => NavigationItemType\Register::class,
-            'search' => NavigationItemType\Search::class,
+            'remote-url' => RemoteUrl::class,
+            'about' => About::class,
+            'contact' => Contact::class,
+            'announcements' => Announcements::class,
+            'dashboard' => Dashboard::class,
+            'home' => Home::class,
+            'login' => Login::class,
+            'logout' => Logout::class,
+            'proceedings' => Proceedings::class,
+            'profile' => Profile::class,
+            'register' => Register::class,
+            'search' => Search::class,
         ];
     }
 

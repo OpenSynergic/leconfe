@@ -2,6 +2,8 @@
 
 namespace App\Panel\Conference\Resources\ProceedingResource\Pages;
 
+use Filament\Actions\Action;
+use Filament\Schemas\Schema;
 use App\Actions\Proceedings\ProceedingUpdateAction;
 use App\Models\Proceeding;
 use App\Models\Submission;
@@ -10,11 +12,9 @@ use App\Tables\Columns\IndexColumn;
 use Filament\Actions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -30,7 +30,7 @@ class ViewProceeding extends Page implements HasForms, HasTable
 
     protected static string $resource = ProceedingResource::class;
 
-    protected static string $view = 'panel.conference.resources.proceeding-resource.pages.view-proceeding';
+    protected string $view = 'panel.conference.resources.proceeding-resource.pages.view-proceeding';
 
     public ?array $data = null;
 
@@ -48,7 +48,7 @@ class ViewProceeding extends Page implements HasForms, HasTable
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('preview')
+            Action::make('preview')
                 ->label(__('general.preview'))
                 ->icon('heroicon-o-eye')
                 ->hidden(fn (Proceeding $record) => ! $record->published)
@@ -76,13 +76,13 @@ class ViewProceeding extends Page implements HasForms, HasTable
         return $this->record->title;
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        $form
+        $schema
             ->disabled(fn () => ! $this->can('update', $this->record))
             ->model($this->record);
 
-        return static::getResource()::form($form)
+        return static::getResource()::form($schema)
             ->statePath('data');
     }
 
@@ -132,14 +132,14 @@ class ViewProceeding extends Page implements HasForms, HasTable
             ->filters([
                 // ...
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('remove')
                     ->label(__('general.remove'))
                     ->requiresConfirmation()
                     ->color('danger')
                     ->action(fn (Submission $record) => $record->unassignProceeding()),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // ...
             ]);
     }

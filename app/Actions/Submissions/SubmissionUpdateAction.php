@@ -2,6 +2,7 @@
 
 namespace App\Actions\Submissions;
 
+use Throwable;
 use App\Classes\Log;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
@@ -73,7 +74,7 @@ class SubmissionUpdateAction
 
                     try {
                         app(SubmissionBillingNotifier::class)->maybeNotifyForSubmission($freshSubmission);
-                    } catch (\Throwable $th) {
+                    } catch (Throwable $th) {
                         Logger::error($th->getMessage());
                     }
                 });
@@ -96,7 +97,7 @@ class SubmissionUpdateAction
                 ->save();
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
 
             throw $th;

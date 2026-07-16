@@ -2,19 +2,22 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Wizards\SubmissionWizard\Steps;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Components\Section;
 use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Forms\Components\TinyEditor;
 use App\Models\Submission;
 use App\Panel\ScheduledConference\Livewire\Wizards\SubmissionWizard\Contracts\HasWizardStep;
 use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Livewire\Component;
 
-class ForTheEditorsStep extends Component implements HasForms, HasWizardStep
+class ForTheEditorsStep extends Component implements HasForms, HasWizardStep, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms;
 
     public Submission $record;

@@ -6,7 +6,7 @@ use App\Frontend\ScheduledConference\Pages\Login;
 use App\Frontend\ScheduledConference\Pages\PrivacyStatement;
 use App\Models\Conference;
 use App\Models\ScheduledConference;
-use Filament\Support\Enums\MaxWidth;
+use Filament\Support\Enums\Width;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -20,7 +20,7 @@ class ScheduledConferencePrivacyStatementTest extends TestCase
         $scheduledConference = $this->makeScheduledConferenceWithPrivacyStatement('<p>Personal data processing details.</p>');
 
         $this->assertSame(Login::getLayout(), PrivacyStatement::getLayout());
-        $this->assertSame(MaxWidth::FourExtraLarge, $this->getPrivacyStatementLayoutData()['maxWidth']);
+        $this->assertSame(Width::FourExtraLarge, $this->getPrivacyStatementLayoutData()['maxWidth']);
 
         Livewire::test(PrivacyStatement::class)
             ->assertSeeHtml('fi-simple-page')

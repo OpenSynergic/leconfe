@@ -2,6 +2,11 @@
 
 namespace App\Panel\Conference\Resources\UserResource\Pages;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Throwable;
+use Illuminate\Support\Facades\Log;
 use App\Forms\Components\TinyEditor;
 use App\Models\Enums\UserRole;
 use App\Models\Role;
@@ -12,7 +17,6 @@ use Filament\Actions;
 use Filament\Forms;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,7 +28,7 @@ class ListUsers extends ListRecords implements HasForms
     use InteractsWithForms;
 
     protected static string $resource = UserResource::class;
-    protected static string $view = 'panel.conference.resources.user-resource.pages.list-users';
+    protected string $view = 'panel.conference.resources.user-resource.pages.list-users';
 
     public ?array $notifyFormData = [];
 
@@ -38,7 +42,7 @@ class ListUsers extends ListRecords implements HasForms
     public function getView(): string
     {
         if (app()->isOnSite()) {
-            return static::$view;
+            return $this->view;
         }
         return 'panel.conference.resources.user-resource.pages.list-users';
     }
@@ -69,11 +73,11 @@ class ListUsers extends ListRecords implements HasForms
         ];
     }
 
-    public function notifyForm(Form $form): Form
+    public function notifyForm(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('role_ids')
+        return $schema
+            ->components([
+                Select::make('role_ids')
                     ->label(__('general.roles'))
                     ->options(
                         Role::where('name', '!=', UserRole::Admin)
@@ -85,7 +89,7 @@ class ListUsers extends ListRecords implements HasForms
                     ->preload()
                     ->helperText(__('general.send_notification_description'))
                     ->columnSpanFull(),
-                Forms\Components\TextInput::make('subject')
+                TextInput::make('subject')
                     ->label(__('general.subject'))
                     ->required()
                     ->default('')
@@ -126,9 +130,9 @@ class ListUsers extends ListRecords implements HasForms
                         Mail::to($user->email)
                             ->send((new MailUser($subject, $message))->from(config('mail.from.address'), $fromName));
                     }
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     // ignore individual mail failures
-                    \Illuminate\Support\Facades\Log::error("Failed to send email to user {$user->id}: " . $e->getMessage());
+                    Log::error("Failed to send email to user {$user->id}: " . $e->getMessage());
                 }
             }
 
@@ -138,7 +142,7 @@ class ListUsers extends ListRecords implements HasForms
                 ->send();
 
             $this->notifyForm->fill([]);
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Notification::make()
                 ->danger()
                 ->title(__('general.failed_to_send'))

@@ -2,6 +2,7 @@
 
 namespace App\Actions\StaticPages;
 
+use Throwable;
 use App\Models\StaticPage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +24,7 @@ class StaticPageUpdateAction
             }
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
 
             throw $th;

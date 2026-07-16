@@ -2,25 +2,28 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions\Components;
 
+use Livewire\Component;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Actions\CreateAction;
+use Filament\Support\Enums\Width;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\Action;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
 use App\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Models\Enums\PresentationType;
 use App\Models\Presentation;
 use App\Models\Submission;
 use App\Panel\ScheduledConference\Pages\PresentationDetail;
 use Filament\Forms\Components\Checkbox;
-use Filament\Tables\Actions\EditAction;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Support\Enums\MaxWidth;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -30,8 +33,9 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\HtmlString;
 
-class PresentationList extends \Livewire\Component implements HasForms, HasTable
+class PresentationList extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     public Submission $submission;
@@ -50,9 +54,9 @@ class PresentationList extends \Livewire\Component implements HasForms, HasTable
             ->getQuery();
     }
 
-    public function form(Form $form)
+    public function form(Schema $schema)
     {
-        return $form->schema([
+        return $schema->components([
             SpatieMediaLibraryFileUpload::make('thumbnail')
                 ->collection('thumbnail')
                 ->image(),
@@ -127,8 +131,8 @@ class PresentationList extends \Livewire\Component implements HasForms, HasTable
                     ->label('Add Presentation')
                     ->icon('heroicon-o-plus')
                     ->outlined()
-                    ->modalWidth(MaxWidth::ExtraLarge)
-                    ->form(fn(Form $form) => $this->form($form))
+                    ->modalWidth(Width::ExtraLarge)
+                    ->schema(fn(Schema $schema) => $this->form($schema))
                     ->using(function (array $data) {
                         $record = $this->submission->presentations()->create([
                             'type' => $data['type'],
@@ -149,7 +153,7 @@ class PresentationList extends \Livewire\Component implements HasForms, HasTable
                     })
 
             ])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
                     Action::make('preview')
                         ->icon('heroicon-o-eye')
@@ -167,8 +171,8 @@ class PresentationList extends \Livewire\Component implements HasForms, HasTable
                             $action->success();
                         }),
                     EditAction::make()
-                        ->modalWidth(MaxWidth::ExtraLarge)
-                        ->form(fn($form) => $this->form($form))
+                        ->modalWidth(Width::ExtraLarge)
+                        ->schema(fn($form) => $this->form($form))
                         ->mutateRecordDataUsing(function (array $data, Presentation $record) {
                             $data['meta'] = $record->getAllMeta()->toArray();
 

@@ -2,12 +2,17 @@
 
 namespace App\Panel\Conference\Livewire\Forms\Conferences;
 
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\Select;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Grid;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
 use App\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
@@ -29,17 +34,17 @@ class ContributorForm extends Component
                 ->columnSpan([
                     'lg' => 2,
                 ]),
-            Forms\Components\TextInput::make('given_name')
+            TextInput::make('given_name')
                 ->label(__('general.given_name'))
                 ->required(),
-            Forms\Components\TextInput::make('family_name')
+            TextInput::make('family_name')
                 ->label(__('general.family_name')),
-            Forms\Components\TextInput::make('email')
+            TextInput::make('email')
                 ->label(__('general.email'))
                 ->columnSpan([
                     'lg' => 2,
                 ]),
-            Forms\Components\TextInput::make('meta.public_name')
+            TextInput::make('meta.public_name')
                 ->label(__('general.public_name'))
                 ->helperText(__('general.public_name_helper'))
                 ->columnSpan(['lg' => 2]),
@@ -49,49 +54,48 @@ class ContributorForm extends Component
     public static function additionalFormField(): array
     {
         return [
-            Forms\Components\TagsInput::make('meta.expertise')
+            TagsInput::make('meta.expertise')
                 ->label(__('general.expertise'))
                 ->placeholder('')
                 ->columnSpan([
                     'lg' => 2,
                 ]),
-            Forms\Components\TextInput::make('meta.affiliation')
+            TextInput::make('meta.affiliation')
                 ->label(__('general.affiliation'))
                 ->prefixIcon('heroicon-s-building-library')
                 ->placeholder('University of Jakarta')
                 ->columnSpan([
                     'lg' => 2,
                 ]),
-            Forms\Components\Select::make('meta.country')
+            Select::make('meta.country')
                 ->label(__('general.country'))
                 ->placeholder(__('general.select_a_country'))
                 ->searchable()
                 ->options(fn () => Country::all()->mapWithKeys(fn ($country) => [$country->id => $country->flag.' '.$country->name]))
                 ->optionsLimit(250),
-            Forms\Components\TextInput::make('meta.phone')
+            TextInput::make('meta.phone')
                 ->label(__('general.phone'))
                 ->prefixIcon('heroicon-s-phone')
                 ->type('tel')
                 ->rule('phone:INTERNATIONAL')
                 ->helperText(__('general.phone_format_international')),
-            Forms\Components\Fieldset::make(__('general.scholar_profile'))
+            Fieldset::make(__('general.scholar_profile'))
                 ->schema([
-                    Forms\Components\Grid::make(2)
-                        ->schema([
-                            Forms\Components\TextInput::make('meta.orcid_url')
-                                ->prefixIcon('academicon-orcid')
-                                ->url()
-                                ->label(__('general.orcid_id')),
-                            Forms\Components\TextInput::make('meta.google_scholar_url')
-                                ->prefixIcon('academicon-google-scholar')
-                                ->url()
-                                ->label(__('general.google_scholar')),
-                            Forms\Components\TextInput::make('meta.scopus_url')
-                                ->label(__('general.scopus_id'))
-                                ->url()
-                                ->prefixIcon('academicon-scopus-square'),
-                        ]),
-                ]),
+                    TextInput::make('meta.orcid_url')
+                        ->prefixIcon('academicon-orcid')
+                        ->url()
+                        ->label(__('general.orcid_id')),
+                    TextInput::make('meta.google_scholar_url')
+                        ->prefixIcon('academicon-google-scholar')
+                        ->url()
+                        ->label(__('general.google_scholar')),
+                    TextInput::make('meta.scopus_url')
+                        ->label(__('general.scopus_id'))
+                        ->url()
+                        ->prefixIcon('academicon-scopus-square'),
+                ])
+                ->columns(3)
+                ->columnSpan(['lg' => 2]),
         ];
     }
 

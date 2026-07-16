@@ -2,12 +2,12 @@
 
 namespace App\Notifications;
 
+use Filament\Actions\Action;
 use App\Constants\SubmissionFileCategory;
 use App\Mail\Templates\NewReviewFileUploadedMail;
 use App\Mail\Templates\NewRevisionUploadedMail;
 use App\Models\SubmissionFile;
 use App\Panel\ScheduledConference\Resources\SubmissionResource;
-use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification as FilamentNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

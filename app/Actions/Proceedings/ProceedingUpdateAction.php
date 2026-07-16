@@ -2,6 +2,7 @@
 
 namespace App\Actions\Proceedings;
 
+use Throwable;
 use App\Models\Proceeding;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -21,7 +22,7 @@ class ProceedingUpdateAction
             }
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
 
             throw $th;

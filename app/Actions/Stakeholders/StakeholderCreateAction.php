@@ -2,6 +2,7 @@
 
 namespace App\Actions\Stakeholders;
 
+use Throwable;
 use App\Models\Stakeholder;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -22,7 +23,7 @@ class StakeholderCreateAction
             }
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
 
             throw $th;

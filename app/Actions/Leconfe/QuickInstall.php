@@ -2,6 +2,8 @@
 
 namespace App\Actions\Leconfe;
 
+use App\Utils\Installer;
+use Throwable;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
@@ -50,8 +52,8 @@ class QuickInstall
 
         try {
             alert('Installing Leconfe...');
-            (new \App\Utils\Installer($data, $command))->run();
-        } catch (\Throwable $th) {
+            (new Installer($data, $command))->run();
+        } catch (Throwable $th) {
             throw $th;
         }
     }

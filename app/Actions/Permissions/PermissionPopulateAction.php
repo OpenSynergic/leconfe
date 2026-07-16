@@ -2,6 +2,8 @@
 
 namespace App\Actions\Permissions;
 
+use Exception;
+use Throwable;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsAction;
 use Spatie\Permission\Models\Permission;
@@ -17,7 +19,7 @@ class PermissionPopulateAction
     {
         $file = base_path('data/permissions.yaml');
         if (! file_exists($file)) {
-            throw new \Exception('File storage/app/permissions.yaml does not exist');
+            throw new Exception('File storage/app/permissions.yaml does not exist');
         }
 
         $permissions = Yaml::parseFile($file);
@@ -33,7 +35,7 @@ class PermissionPopulateAction
         try {
             $this->handle();
             $command->info('Permissions populated from ./data/permissions.yaml');
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             $command->error($th->getMessage());
         }
     }

@@ -2,6 +2,13 @@
 
 namespace App\Panel\ScheduledConference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Actions\Action;
+use Throwable;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
 use App\Forms\Form;
 use App\Models\PaymentFee;
 use App\Models\PaymentFeeFormItem;
@@ -14,10 +21,6 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Get;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -25,8 +28,9 @@ use Filament\Tables\Table;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
-class PaymentFeeFormItemTable extends Component implements HasForms, HasTable
+class PaymentFeeFormItemTable extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms;
     use InteractsWithTable;
 
@@ -45,7 +49,7 @@ class PaymentFeeFormItemTable extends Component implements HasForms, HasTable
     public function form(Form $form)
     {
         return $form
-            ->schema([
+            ->components([
                 TextInput::make('meta.name')
                     ->required()
                     ->label('Item Name'),
@@ -98,7 +102,7 @@ class PaymentFeeFormItemTable extends Component implements HasForms, HasTable
             ->headerActions([
                 Action::make('create')
                     ->hidden(fn () => $this->record->payments->count())
-                    ->form(fn ($form) => $this->form($form))
+                    ->schema(fn ($form) => $this->form($form))
                     ->action(function (array $data, Action $action) {
                         try {
                             DB::beginTransaction();
@@ -114,7 +118,7 @@ class PaymentFeeFormItemTable extends Component implements HasForms, HasTable
                             $action->successNotificationTitle('Item Created.');
 
                             $action->success();
-                        } catch (\Throwable $th) {
+                        } catch (Throwable $th) {
 
                             DB::rollBack();
 
@@ -124,7 +128,7 @@ class PaymentFeeFormItemTable extends Component implements HasForms, HasTable
                         }
                     }),
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make()
                     ->hidden(fn () => $this->record->payments->count())
                     ->mutateRecordDataUsing(function (PaymentFeeFormItem $record, array $data): array {
@@ -146,7 +150,7 @@ class PaymentFeeFormItemTable extends Component implements HasForms, HasTable
                             DB::commit();
 
                             $action->successNotificationTitle('Item Updated.');
-                        } catch (\Throwable $th) {
+                        } catch (Throwable $th) {
 
                             DB::rollBack();
 
@@ -156,7 +160,7 @@ class PaymentFeeFormItemTable extends Component implements HasForms, HasTable
                 DeleteAction::make()
                     ->hidden(fn () => $this->record->payments->count()),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // ...
             ]);
     }

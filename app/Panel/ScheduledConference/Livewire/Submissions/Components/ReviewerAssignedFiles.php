@@ -2,6 +2,9 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions\Components;
 
+use Livewire\Component;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
 use App\Models\Review;
 use App\Models\ReviewerAssignedFile;
 use App\Models\User;
@@ -14,8 +17,9 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Response;
 
-class ReviewerAssignedFiles extends \Livewire\Component implements HasForms, HasTable
+class ReviewerAssignedFiles extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     public Review $record;

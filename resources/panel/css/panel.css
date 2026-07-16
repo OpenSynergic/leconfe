@@ -1,5 +1,7 @@
-@import "../../../vendor/filament/filament/resources/css/theme.css";
 @import "tippy.js/dist/tippy.css";
+
+@tailwind components;
+@tailwind utilities;
 
 @config './tailwind.config.js';
 
@@ -146,3 +148,103 @@ body {
     overflow: hidden;
     padding-top: 56.25%; /* 16:9 Aspect Ratio */
 }
+
+.fi-layout, .fi-main-ctn, .fi-main, .fi-page {
+    @apply bg-gray-100 dark:bg-gray-950;
+}
+
+.fi-logo img {
+    max-height: 2rem !important;
+    width: auto !important;
+}
+
+.welcome-banner-gradient {
+    background: linear-gradient(135deg, var(--primary-800), var(--primary-950)) !important;
+}
+
+.discover-primary-card-gradient {
+    background: linear-gradient(to right, var(--primary-50), white) !important;
+}
+.dark .discover-primary-card-gradient {
+    background: linear-gradient(to right, var(--primary-950), var(--gray-900)) !important;
+}
+
+.discover-success-card-gradient {
+    background: linear-gradient(to right, var(--success-50), white) !important;
+}
+.dark .discover-success-card-gradient {
+    background: linear-gradient(to right, var(--success-950), var(--gray-900)) !important;
+}
+
+.presentations-thumbnail-placeholder-gradient {
+    background: linear-gradient(135deg, var(--gray-100), var(--gray-200)) !important;
+}
+.dark .presentations-thumbnail-placeholder-gradient {
+    background: linear-gradient(135deg, var(--gray-900), var(--gray-950)) !important;
+}
+
+.welcome-banner-card {
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1) !important;
+}
+.dark .welcome-banner-card {
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5) !important;
+}
+
+.welcome-banner-blur-circle {
+    filter: blur(64px) !important;
+}
+
+:root, .fi-layout {
+    --primary-50: #f4f5f8 !important;
+    --primary-100: #e8ebf0 !important;
+    --primary-200: #c6cdda !important;
+    --primary-300: #a4aed7 !important;
+    --primary-400: #607296 !important;
+    --primary-500: #1c3569 !important;
+    --primary-600: #19305f !important;
+    --primary-700: #15284f !important;
+    --primary-800: #11203f !important;
+    --primary-900: #0e1a33 !important;
+    --primary-950: #081020 !important;
+}
+
+/* Fix primary button background and text */
+.welcome-banner-continue-btn {
+    background-color: #19305f !important;
+    border-color: #19305f !important;
+}
+.welcome-banner-continue-btn:hover {
+    background-color: #1c3569 !important;
+    border-color: #1c3569 !important;
+}
+.welcome-banner-continue-btn,
+.welcome-banner-continue-btn * {
+    color: white !important;
+}
+
+/* Fix selected primary role card border and background */
+.peer:checked ~ .peer-checked\:border-primary-500 {
+    border-color: #1c3569 !important;
+    background-color: rgba(28, 53, 105, 0.05) !important;
+}
+.dark .peer:checked ~ .peer-checked\:border-primary-500 {
+    background-color: rgba(28, 53, 105, 0.2) !important;
+}
+
+/* Fix selected primary check icon */
+.peer:checked ~ .peer-checked\:bg-primary-500 {
+    background-color: #1c3569 !important;
+    border-color: #1c3569 !important;
+    color: white !important;
+}
+
+/* Fix all solid primary buttons globally in Filament */
+.fi-btn:not(.fi-outlined).fi-color-primary {
+    --text: #ffffff !important;
+    --dark-text: #ffffff !important;
+    color: #ffffff !important;
+}
+.fi-btn:not(.fi-outlined).fi-color-primary * {
+    color: #ffffff !important;
+}
+

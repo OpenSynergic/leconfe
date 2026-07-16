@@ -2,6 +2,9 @@
 
 namespace App\Managers;
 
+use Illuminate\Support\Collection;
+use Throwable;
+use InvalidArgumentException;
 use App\Interfaces\DOIRegistrationDriver;
 use App\Services\DOIRegistrations\CrossrefDOIRegistration;
 use Illuminate\Support\Facades\App;
@@ -19,7 +22,7 @@ class DOIRegistrationManager extends Manager
         return new CrossrefDOIRegistration;
     }
 
-    public function getAllDriverNames(): \Illuminate\Support\Collection
+    public function getAllDriverNames(): Collection
     {
         return collect(['crossref' => 'crossref', ...$this->customCreators])->mapWithKeys(function ($driver, $key) {
             return [$key => $this->driver($key)->getName()];
@@ -32,13 +35,13 @@ class DOIRegistrationManager extends Manager
      * @param  string  $driver
      * @return mixed
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function createDriver($driver)
     {
         try {
             return parent::createDriver($driver);
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             return null;
         }
     }

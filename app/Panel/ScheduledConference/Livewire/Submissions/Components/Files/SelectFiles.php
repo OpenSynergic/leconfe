@@ -2,15 +2,18 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions\Components\Files;
 
-use Filament\Tables\Actions\BulkAction;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
 use GuzzleHttp\Psr7\MimeType;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-final class SelectFiles extends SubmissionFilesTable
+final class SelectFiles extends SubmissionFilesTable implements HasActions
 {
+    use InteractsWithActions;
     public bool $viewOnly = true;
 
     public string $targetCategory;

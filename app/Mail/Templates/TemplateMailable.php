@@ -2,6 +2,7 @@
 
 namespace App\Mail\Templates;
 
+use App\Mail\Templates\Interfaces\HasDefaultMailVariable;
 use App\Models\MailTemplate;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -11,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use Mustache_Engine;
 use Spatie\MailTemplates\TemplateMailable as BaseTemplateMailable;
 
-abstract class TemplateMailable extends BaseTemplateMailable implements Interfaces\HasDefaultMailVariable, ShouldQueue
+abstract class TemplateMailable extends BaseTemplateMailable implements HasDefaultMailVariable, ShouldQueue
 {
     use Queueable, SerializesModels;
 

@@ -2,6 +2,7 @@
 
 namespace App\Classes;
 
+use Filament\Schemas\Components\Section;
 use App\Facades\Hook;
 use App\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Mail\Templates\UserPayPaymentMail;
@@ -10,8 +11,6 @@ use App\Models\Payment;
 use App\Services\Notifications\OperationalNotificationRecipients;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Placeholder;
-use Filament\Infolists\Components\Actions\Action as InfolistAction;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\HtmlString;
@@ -30,7 +29,7 @@ class ManualPaymentPlugin extends Plugin
                 $actions['manual'] = Action::make('manual')
                     ->label(app()->getCurrentScheduledConference()->getMeta('manual_payment_name') ?? 'Manual Payment')
                     ->fillForm([])
-                    ->form([
+                    ->schema([
                         Placeholder::make('manual_payment_instructions')
                             ->hiddenLabel()
                             ->label('Payment Instructions')
@@ -68,7 +67,7 @@ class ManualPaymentPlugin extends Plugin
                             ->state('Download')
                             ->color('primary')
                             ->action(
-                                InfolistAction::make('download')->action(fn ($record) => $record->getFirstMedia('manual_payment_proof'))
+                                Action::make('download')->action(fn ($record) => $record->getFirstMedia('manual_payment_proof'))
                             ),
                     ]);
 

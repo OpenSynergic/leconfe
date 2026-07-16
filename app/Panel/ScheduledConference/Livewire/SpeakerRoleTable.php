@@ -2,11 +2,15 @@
 
 namespace App\Panel\ScheduledConference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
+use Filament\Actions\EditAction;
+use Filament\Schemas\Schema;
 use App\Panel\ScheduledConference\Resources\SpeakerRoleResource;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Tables;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -16,8 +20,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Livewire\Component;
 
-class SpeakerRoleTable extends Component implements HasForms, HasTable
+class SpeakerRoleTable extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     protected static string $resource = SpeakerRoleResource::class;
@@ -33,21 +38,21 @@ class SpeakerRoleTable extends Component implements HasForms, HasTable
             ->query(fn (): Builder => static::getResource()::getEloquentQuery());
     }
 
-    protected function configureTableAction(Tables\Actions\Action $action): void
+    protected function configureTableAction(Action $action): void
     {
         match (true) {
-            $action instanceof Tables\Actions\EditAction => $this->configureEditAction($action),
-            $action instanceof Tables\Actions\CreateAction => $this->configureCreateAction($action),
+            $action instanceof EditAction => $this->configureEditAction($action),
+            $action instanceof CreateAction => $this->configureCreateAction($action),
             default => null,
         };
     }
 
-    protected function configureEditAction(Tables\Actions\EditAction $action): void
+    protected function configureEditAction(EditAction $action): void
     {
         $resource = static::getResource();
         $action
             ->authorize(fn (Model $record): bool => $resource::canEdit($record))
-            ->form(fn (Form $form): Form => $resource::form($form))
+            ->form(fn (Schema $schema): Schema => $resource::form($schema))
             ->modalWidth('xl');
 
         if ($resource::hasPage('edit')) {
@@ -55,7 +60,7 @@ class SpeakerRoleTable extends Component implements HasForms, HasTable
         }
     }
 
-    protected function configureCreateAction(CreateAction|Tables\Actions\CreateAction $action): void
+    protected function configureCreateAction(CreateAction $action): void
     {
         $resource = static::getResource();
 
@@ -63,7 +68,7 @@ class SpeakerRoleTable extends Component implements HasForms, HasTable
             ->authorize($resource::canCreate())
             ->model(static::getResource()::getModel())
             ->modelLabel(static::getResource()::getModelLabel())
-            ->form(fn (Form $form): Form => $resource::form($form))
+            ->schema(fn (Schema $schema): Schema => $resource::form($schema))
             ->modalWidth('xl');
 
         if ($action instanceof CreateAction) {

@@ -2,21 +2,25 @@
 
 namespace App\Panel\ScheduledConference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Actions;
+use Filament\Actions\Action;
+use Throwable;
 use App\Actions\ScheduledConferences\ScheduledConferenceUpdateAction;
 use App\Models\Review;
-use Filament\Forms\Components\Actions;
-use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Livewire\Component;
 
-class ReviewSetupSetting extends Component implements HasForms
+class ReviewSetupSetting extends Component implements HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms;
 
     public ?array $formData = [];
@@ -36,9 +40,9 @@ class ReviewSetupSetting extends Component implements HasForms
         return view('forms.form');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->model(app()->getCurrentScheduledConference())
             ->schema([
                 Section::make()
@@ -73,7 +77,7 @@ class ReviewSetupSetting extends Component implements HasForms
                             try {
                                 ScheduledConferenceUpdateAction::run(app()->getCurrentScheduledConference(), $formData);
                                 $action->sendSuccessNotification();
-                            } catch (\Throwable $th) {
+                            } catch (Throwable $th) {
                                 $action->sendFailureNotification();
                             }
                         }),

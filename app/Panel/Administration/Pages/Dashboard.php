@@ -2,6 +2,12 @@
 
 namespace App\Panel\Administration\Pages;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Actions;
+use Filament\Actions\Action;
+use Throwable;
 use App\Actions\Leconfe\Relink;
 use App\Facades\Setting;
 use App\Models\Role;
@@ -9,13 +15,8 @@ use App\Models\ScheduledConference;
 use App\Models\User;
 use Carbon\Carbon;
 use Filament\Facades\Filament;
-use Filament\Infolists\Components\Actions;
-use Filament\Infolists\Components\Actions\Action;
-use Filament\Infolists\Components\Grid;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
@@ -29,9 +30,9 @@ class Dashboard extends Page implements HasInfolists
 {
     use InteractsWithInfolists;
 
-    protected static ?string $navigationIcon = 'heroicon-m-home';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-m-home';
 
-    protected static string $view = 'panel.administration.pages.dashboard';
+    protected string $view = 'panel.administration.pages.dashboard';
 
     public static function getNavigationLabel(): string
     {
@@ -52,10 +53,10 @@ class Dashboard extends Page implements HasInfolists
         return Auth::check();
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
+        return $schema
+            ->components([
                 Section::make('')
                     ->visible(fn (): bool => Auth::user()->can('Administration:view'))
                     ->columns(2)
@@ -263,7 +264,7 @@ class Dashboard extends Page implements HasInfolists
             $action->sendSuccessNotification();
 
             $this->redirect(Filament::getUrl());
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             $action->sendFailureNotification();
         }
     }
@@ -274,7 +275,7 @@ class Dashboard extends Page implements HasInfolists
             Artisan::call($command);
 
             $action->sendSuccessNotification();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             $action->sendFailureNotification();
         }
     }

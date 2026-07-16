@@ -2,6 +2,12 @@
 
 namespace App\Panel\ScheduledConference\Resources\SubmissionResource\Pages;
 
+use Exception;
+use Throwable;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Livewire;
 use App\Actions\Review\ReviewUpdateAction;
 use App\Classes\Log;
 use App\Constants\ReviewerStatus;
@@ -17,13 +23,9 @@ use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Infolists\Components\Fieldset;
-use Filament\Infolists\Components\Livewire;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\DB;
@@ -37,7 +39,7 @@ class ReviewerInvitationPage extends Page implements HasActions, HasInfolists
 
     protected static string $resource = SubmissionResource::class;
 
-    protected static string $view = 'panel.conference.resources.submission-resource.pages.reviewer-invitation-page';
+    protected string $view = 'panel.conference.resources.submission-resource.pages.reviewer-invitation-page';
 
     public Submission $record;
 
@@ -83,7 +85,7 @@ class ReviewerInvitationPage extends Page implements HasActions, HasInfolists
         return null;
     }
 
-    public function acceptAction()
+    public function acceptAction(): \Filament\Actions\Action
     {
         return Action::make('acceptAction')
             ->label(__('general.accept_request'))
@@ -138,14 +140,14 @@ class ReviewerInvitationPage extends Page implements HasActions, HasInfolists
                                 ->send(
                                     new ReviewerAcceptedInvitationMail($review)
                                 );
-                        } catch (\Exception $e) {
+                        } catch (Exception $e) {
                             $action->failureNotificationTitle(__('general.failed_send_notification_to_author'));
                             $action->failure();
                         }
                     }
 
                     DB::commit();
-                } catch (\Throwable $th) {
+                } catch (Throwable $th) {
                     DB::rollBack();
 
                     $action->failure();
@@ -160,7 +162,7 @@ class ReviewerInvitationPage extends Page implements HasActions, HasInfolists
             });
     }
 
-    public function declineAction()
+    public function declineAction(): \Filament\Actions\Action
     {
         return Action::make('declineAction')
             ->label(__('general.decline_request'))
@@ -204,7 +206,7 @@ class ReviewerInvitationPage extends Page implements HasActions, HasInfolists
                         ->send(
                             new ReviewerDeclinedInvitationMail($review)
                         );
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $action->failureNotificationTitle(__('general.failed_send_notification_to_author'));
                     $action->failure();
                 }
@@ -213,9 +215,9 @@ class ReviewerInvitationPage extends Page implements HasActions, HasInfolists
             });
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
-        return $infolist
+        return $schema
             ->record($this->record)
             ->schema([
                 Section::make()

@@ -2,8 +2,13 @@
 
 namespace App\Panel\ScheduledConference\Widgets;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Components\Section;
+use Filament\Actions\Action;
+use Filament\Support\Enums\TextSize;
 use App\Actions\ScheduledConferences\ScheduledConferenceUpdateAction;
-use App\Infolists\Infolist;
+use Filament\Schemas\Schema;
 use App\Managers\PaymentManager;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Payment;
@@ -16,24 +21,22 @@ use App\Panel\ScheduledConference\Pages\ScheduledConferenceSetting;
 use App\Panel\ScheduledConference\Resources\SubmissionResource;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Infolists\Components\Actions\Action;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Components\TextEntry\TextEntrySize;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Widgets\Widget;
 use Illuminate\Database\Eloquent\Builder;
 use Squire\Models\Currency;
 
-class Overview extends Widget implements HasForms, HasInfolists
+class Overview extends Widget implements HasForms, HasInfolists, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms;
     use InteractsWithInfolists;
 
     protected int|string|array $columnSpan = 'full';
 
-    protected static string $view = 'panel.scheduledConference.widgets.overview';
+    protected string $view = 'panel.scheduledConference.widgets.overview';
 
     public static function canView(): bool
     {
@@ -64,7 +67,7 @@ class Overview extends Widget implements HasForms, HasInfolists
             );
     }
 
-    public function scheduledConferenceInfolist(Infolist $infolist): Infolist
+    public function scheduledConferenceInfolist(Schema $infolist): Schema
     {
         $currencies = PaymentFee::query()
             ->distinct('currency')
@@ -74,7 +77,7 @@ class Overview extends Widget implements HasForms, HasInfolists
         return $infolist
             ->record(app()->getCurrentScheduledConference())
             ->columns(2)
-            ->schema([
+            ->components([
                 Section::make('Overview')
                     ->columnSpanFull()
                     ->headerActions([
@@ -140,7 +143,7 @@ class Overview extends Widget implements HasForms, HasInfolists
                             ->getStateUsing(
                                 fn (ScheduledConference $record) => $record->submittedSubmissions()->count()
                             )
-                            ->size(TextEntrySize::Large)
+                            ->size(TextSize::Large)
                             ->color('primary')
                             ->url(SubmissionResource::getUrl('index')),
                         TextEntry::make('unassigned')
@@ -151,21 +154,21 @@ class Overview extends Widget implements HasForms, HasInfolists
                                     SubmissionStatus::Withdrawn,
                                 ])->count()
                             )
-                            ->size(TextEntrySize::Large)
+                            ->size(TextSize::Large)
                             ->color('primary')
                             ->url(SubmissionResource::getUrl('index', ['activeTab' => 1])),
                         TextEntry::make('reviews')
                             ->getStateUsing(
                                 fn () => Submission::query()->where('status', SubmissionStatus::OnReview)->count()
                             )
-                            ->size(TextEntrySize::Large)
+                            ->size(TextSize::Large)
                             ->color('primary')
                             ->url(SubmissionResource::getUrl('index', ['activeTab' => 2, 'tableFilters[status][value]' => SubmissionStatus::OnReview->value])),
                         TextEntry::make('published')
                             ->getStateUsing(
                                 fn () => Submission::query()->where('status', SubmissionStatus::Published)->count()
                             )
-                            ->size(TextEntrySize::Large)
+                            ->size(TextSize::Large)
                             ->color('primary')
                             ->url(SubmissionResource::getUrl('index', ['activeTab' => 3, 'tableFilters[status][value]' => SubmissionStatus::Published->value])),
                     ]),
@@ -180,11 +183,11 @@ class Overview extends Widget implements HasForms, HasInfolists
                     ->schema([
                         TextEntry::make('submission_payment')
                             ->label('Submission Payment')
-                            ->size(TextEntrySize::Large)
+                            ->size(TextSize::Large)
                             ->getStateUsing(fn () => static::getSubmissionPaymentOverviewState()),
                         TextEntry::make('participant_payment')
                             ->label('Participant Payment')
-                            ->size(TextEntrySize::Large)
+                            ->size(TextSize::Large)
                             ->getStateUsing(function () {
                                 $submissionPaymentCount = Payment::query()
                                     ->type(PaymentManager::TYPE_PARTICIPANT_FEE)
@@ -206,7 +209,7 @@ class Overview extends Widget implements HasForms, HasInfolists
 
                             return TextEntry::make('paid_'.$currency)
                                 ->label('Paid ('.$currency->name.')')
-                                ->size(TextEntrySize::Large)
+                                ->size(TextSize::Large)
                                 ->state(money($total, $code, true)->formatWithoutZeroes());
                         })->filter(),
                     ]),

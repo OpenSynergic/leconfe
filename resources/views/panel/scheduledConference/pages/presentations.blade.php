@@ -16,7 +16,7 @@
                             <img class="rounded-t-lg w-full aspect-[16/9] object-cover"
                                 src="{{ $presentation->getFirstMediaUrl('thumbnail') }}" alt="" />
                         @else 
-                            <div class="rounded-t-lg w-full aspect-[16/9] bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                            <div class="rounded-t-lg w-full aspect-[16/9] presentations-thumbnail-placeholder-gradient flex items-center justify-center">
                                 <x-heroicon-o-computer-desktop class="w-12 h-12 text-gray-400"/>
                             </div>
                         @endif

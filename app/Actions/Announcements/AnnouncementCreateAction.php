@@ -2,6 +2,7 @@
 
 namespace App\Actions\Announcements;
 
+use Throwable;
 use App\Models\Announcement;
 use App\Models\ScheduledConference;
 use Illuminate\Support\Facades\DB;
@@ -26,7 +27,7 @@ class AnnouncementCreateAction
             }
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
 
             throw $th;

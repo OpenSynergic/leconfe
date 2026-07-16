@@ -2,6 +2,13 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions\Components;
 
+use Livewire\Component;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Schema;
+use Filament\Actions\Action;
+use Filament\Support\Enums\Width;
+use Throwable;
 use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Models\Proceeding;
 use App\Models\Submission;
@@ -10,18 +17,15 @@ use App\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
-use Filament\Support\Enums\MaxWidth;
 use Illuminate\Support\Facades\Log;
 
-class SubmissionProceeding extends \Livewire\Component implements HasForms, HasInfolists
+class SubmissionProceeding extends Component implements HasForms, HasInfolists, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithInfolists;
 
     public Submission $submission;
@@ -47,9 +51,9 @@ class SubmissionProceeding extends \Livewire\Component implements HasForms, HasI
         ]);
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
-        return $infolist
+        return $schema
             ->record($this->submission)
             ->schema([
                 TextEntry::make('id')
@@ -73,8 +77,8 @@ class SubmissionProceeding extends \Livewire\Component implements HasForms, HasI
                             ->button()
                             ->label(fn (Submission $record) => $record->proceeding ? __('general.change_proceeding') : __('general.assign_to_proceeding'))
                             ->visible(fn (Submission $record) => auth()->user()->can('editing', $record))
-                            ->modalWidth(MaxWidth::ExtraLarge)
-                            ->form(fn (Submission $record) => static::getFormAssignProceeding($record))
+                            ->modalWidth(Width::ExtraLarge)
+                            ->schema(fn (Submission $record) => static::getFormAssignProceeding($record))
                             ->action(fn (Submission $record, array $data) => static::assignProceeding($record, $data)),
                     ]),
             ]);
@@ -109,9 +113,9 @@ class SubmissionProceeding extends \Livewire\Component implements HasForms, HasI
         $data['proceeding_id'] ? $submission->assignProceeding($data['proceeding_id']) : $submission->unassignProceeding();
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->model($this->submission)
             ->disabled(function (): bool {
                 return ! auth()->user()->can('editing', $this->submission);
@@ -152,7 +156,7 @@ class SubmissionProceeding extends \Livewire\Component implements HasForms, HasI
                 ->success()
                 ->title(__('general.saved'))
                 ->send();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Notification::make()
                 ->danger()
                 ->title(__('general.error'))

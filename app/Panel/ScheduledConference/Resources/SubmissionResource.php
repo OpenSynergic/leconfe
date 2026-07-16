@@ -2,6 +2,14 @@
 
 namespace App\Panel\ScheduledConference\Resources;
 
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
+use App\Panel\ScheduledConference\Resources\SubmissionResource\Pages\ManageSubmissions;
+use App\Panel\ScheduledConference\Resources\SubmissionResource\Pages\CreateSubmission;
+use App\Panel\ScheduledConference\Resources\SubmissionResource\Pages\CompleteSubmission;
+use App\Panel\ScheduledConference\Resources\SubmissionResource\Pages\ViewSubmission;
+use App\Panel\ScheduledConference\Resources\SubmissionResource\Pages\ReviewSubmissionPage;
+use App\Panel\ScheduledConference\Resources\SubmissionResource\Pages\ReviewerInvitationPage;
 use App\Constants\ReviewerStatus;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
@@ -24,7 +32,7 @@ class SubmissionResource extends Resource
 
     protected static ?string $model = Submission::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
 
     public static function getRecordTitle(?Model $record): string|Htmlable|null
     {
@@ -122,7 +130,7 @@ class SubmissionResource extends Resource
                             'style' => 'width: 1px',
                         ]),
                     Stack::make([
-                        Tables\Columns\TextColumn::make('title')
+                        TextColumn::make('title')
                             ->getStateUsing(fn (Submission $record) => $record->getMeta('title'))
                             ->description(function (Submission $record) {
                                 $review = $record->getReviewForUserInActiveRound(auth()->user());
@@ -138,11 +146,11 @@ class SubmissionResource extends Resource
                                     ->orWhereHas('user', fn ($query) => $query->whereMeta('public_name', 'like', "%{$search}%")->orWhere('given_name', 'like', "%{$search}%")->orWhere('family_name', 'like', "%{$search}%"));
                             }),
                         Split::make([
-                            Tables\Columns\TextColumn::make('status')
+                            TextColumn::make('status')
                                 ->grow(false)
                                 ->badge()
                                 ->getStateUsing(fn (Submission $record) => $record->status?->value),
-                            Tables\Columns\TextColumn::make('latest-review-round')
+                            TextColumn::make('latest-review-round')
                                 ->grow(false)
                                 ->badge()
                                 ->color('info')
@@ -160,7 +168,7 @@ class SubmissionResource extends Resource
                         //     ->getStateUsing(fn(Submission $record) => view('panel.conference.resources.submission-resource.reviewer-editor', ['record' => $record])),
                     ]),
                     Stack::make([
-                        Tables\Columns\TextColumn::make('editor-assigned-badges')
+                        TextColumn::make('editor-assigned-badges')
                             ->badge()
                             ->extraAttributes([
                                 'class' => 'mt-2',
@@ -176,7 +184,7 @@ class SubmissionResource extends Resource
                                     return __('general.no_editor_assigned');
                                 }
                             }),
-                        Tables\Columns\TextColumn::make('reviews')
+                        TextColumn::make('reviews')
                             ->extraCellAttributes([
                                 'style' => 'width: 1px',
                             ])
@@ -186,7 +194,7 @@ class SubmissionResource extends Resource
                                     'completed_reviews_count' => $record->latestReviewRound->latest_round_completed_reviews_count,
                                 ])
                                 : ''),
-                        Tables\Columns\TextColumn::make('reviewed')
+                        TextColumn::make('reviewed')
                             ->badge()
                             ->color('success')
                             ->getStateUsing(function (Submission $record) {
@@ -199,7 +207,7 @@ class SubmissionResource extends Resource
                                     return __('general.reviewed');
                                 }
                             }),
-                        Tables\Columns\TextColumn::make('withdrawn-notification')
+                        TextColumn::make('withdrawn-notification')
                             ->badge()
                             ->extraAttributes([
                                 'class' => 'mt-2',
@@ -213,8 +221,8 @@ class SubmissionResource extends Resource
                     ]),
                 ]),
             ])
-            ->actions([
-                Tables\Actions\Action::make('view')
+            ->recordActions([
+                Action::make('view')
                     ->label(__('general.view'))
                     ->icon('lineawesome-eye-solid')
                     ->authorize(function (Submission $record) {
@@ -239,7 +247,7 @@ class SubmissionResource extends Resource
                             // 'stage' => '-'.str($record->stage->value)->slug('-').'-tab',
                         ]);
                     }),
-                Tables\Actions\Action::make('view_as_editor')
+                Action::make('view_as_editor')
                     ->label(__('general.view_as_editor'))
                     ->icon('lineawesome-eye-solid')
                     ->color('warning')
@@ -247,7 +255,7 @@ class SubmissionResource extends Resource
                     ->url(fn (Submission $record) => static::getUrl('view', [
                         'record' => $record->id,
                     ])),
-                Tables\Actions\DeleteAction::make(),
+                DeleteAction::make(),
             ])
             ->filters([
                 SelectFilter::make('status')
@@ -266,12 +274,12 @@ class SubmissionResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageSubmissions::route('/'),
-            'create' => Pages\CreateSubmission::route('/create'),
-            'complete' => Pages\CompleteSubmission::route('/complete/{record}'),
-            'view' => Pages\ViewSubmission::route('/{record}'),
-            'review' => Pages\ReviewSubmissionPage::route('/{record}/review'),
-            'reviewer-invitation' => Pages\ReviewerInvitationPage::route('/{record}/reviewer-invitation'),
+            'index' => ManageSubmissions::route('/'),
+            'create' => CreateSubmission::route('/create'),
+            'complete' => CompleteSubmission::route('/complete/{record}'),
+            'view' => ViewSubmission::route('/{record}'),
+            'review' => ReviewSubmissionPage::route('/{record}/review'),
+            'reviewer-invitation' => ReviewerInvitationPage::route('/{record}/reviewer-invitation'),
         ];
     }
 }

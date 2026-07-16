@@ -2,13 +2,14 @@
 
 namespace App\Panel\Conference\Pages;
 
+use Filament\Panel;
 use Filament\Pages\Page;
 
 class DOIPage extends Page
 {
-    protected static ?string $navigationIcon = 'academicon-doi';
+    protected static string | \BackedEnum | null $navigationIcon = 'academicon-doi';
 
-    protected static string $view = 'panel.conference.pages.doi-page';
+    protected string $view = 'panel.conference.pages.doi-page';
 
     protected static ?string $title = 'DOIs';
 
@@ -29,7 +30,7 @@ class DOIPage extends Page
         ];
     }
 
-    public static function getRoutePath(): string
+    public static function getRoutePath(Panel $panel): string
     {
         return '/dois';
     }

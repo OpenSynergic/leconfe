@@ -2,6 +2,14 @@
 
 namespace App\Panel\Administration\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\CreateAction;
+use Filament\Support\Enums\Width;
+use Filament\Schemas\Schema;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
 use App\Actions\Stakeholders\StakeholderCreateAction;
 use App\Actions\Stakeholders\StakeholderUpdateAction;
 use App\Models\Stakeholder;
@@ -10,12 +18,6 @@ use App\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Support\Enums\MaxWidth;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
@@ -24,8 +26,9 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
 
-class PartnerTable extends Component implements HasForms, HasTable
+class PartnerTable extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     public function render()
@@ -61,22 +64,22 @@ class PartnerTable extends Component implements HasForms, HasTable
                 CreateAction::make()
                     ->label(__('general.add_partner'))
                     ->modalHeading(__('general.create_partner'))
-                    ->mutateFormDataUsing(function (array $data): array {
+                    ->mutateDataUsing(function (array $data): array {
                         $data['type'] = Stakeholder::TYPE_PARTNER;
 
                         return $data;
                     })
-                    ->modalWidth(MaxWidth::ExtraLarge)
-                    ->form(fn (Form $form) => $this->form($form))
+                    ->modalWidth(Width::ExtraLarge)
+                    ->schema(fn (Schema $schema) => $this->form($schema))
                     ->using(fn (array $data) => StakeholderCreateAction::run($data)),
             ])
             ->filters([
                 // ...
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make()
-                    ->modalWidth(MaxWidth::ExtraLarge)
-                    ->form(fn (Form $form) => $this->form($form))
+                    ->modalWidth(Width::ExtraLarge)
+                    ->schema(fn (Schema $schema) => $this->form($schema))
                     ->mutateRecordDataUsing(function (Stakeholder $record, array $data): array {
                         $data['meta']['url'] = $record->getMeta('url');
 
@@ -85,15 +88,15 @@ class PartnerTable extends Component implements HasForms, HasTable
                     ->using(fn (Stakeholder $record, array $data) => StakeholderUpdateAction::run($record, $data)),
                 DeleteAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 DeleteBulkAction::make(),
             ]);
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 SpatieMediaLibraryFileUpload::make('logo')
                     ->label(__('general.logo'))
                     ->image()
