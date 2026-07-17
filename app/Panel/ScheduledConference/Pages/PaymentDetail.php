@@ -92,7 +92,7 @@ class PaymentDetail extends Page
             );
 
         return [
-            ActionGroup::make($paymentActions->toArray())
+            ActionGroup::make($paymentActions->all())
                 ->button()
                 ->label('Payment'),
             ActionGroup::make([
@@ -451,9 +451,9 @@ class PaymentDetail extends Page
             ->record($this->record)
             ->columns(12)
             ->schema([
-                Grid::make()
+                Grid::make(1)
                     ->columnSpan([
-                        'default' => 1,
+                        'default' => 12,
                         'lg' => 8,
                     ])
                     ->schema([
@@ -522,9 +522,9 @@ class PaymentDetail extends Page
                                 ...PaymentFormItem::buildInfolistSchema($this->record->type),
                             ]),
                     ]),
-                Grid::make()
+                Grid::make(1)
                     ->columnSpan([
-                        'default' => 1,
+                        'default' => 12,
                         'lg' => 4,
                     ])
                     ->schema([

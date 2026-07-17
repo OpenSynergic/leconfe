@@ -35,8 +35,18 @@ class AuthorRoleTable extends Component implements HasForms, HasTable, HasAction
 
     public function table(Table $table): Table
     {
-        return static::$resource::table($table)
+        $table = static::$resource::table($table)
             ->query(fn (): Builder => static::getResource()::getEloquentQuery());
+
+        foreach ($table->getFlatActions() as $action) {
+            if ($action instanceof CreateAction) {
+                $this->configureCreateAction($action);
+            } elseif ($action instanceof EditAction) {
+                $this->configureEditAction($action);
+            }
+        }
+
+        return $table;
     }
 
     protected function configureTableAction(Action $action): void
@@ -73,7 +83,7 @@ class AuthorRoleTable extends Component implements HasForms, HasTable, HasAction
             ->modalWidth('xl');
 
         if ($action instanceof CreateAction) {
-            $action->relationship(($tenant = Filament::getTenant()) ? fn (): Relation => static::getResource()::getTenantRelationship($tenant) : null);
+            $action->relationship(($tenant = app()->getCurrentConference()) ? fn (): Relation => static::getResource()::getTenantRelationship($tenant) : null);
         }
 
         if ($resource::hasPage('create')) {

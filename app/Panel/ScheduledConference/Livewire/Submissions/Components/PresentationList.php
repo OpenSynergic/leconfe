@@ -47,6 +47,15 @@ class PresentationList extends Component implements HasForms, HasTable, HasActio
         return view('panel.scheduledConference.livewire.submissions.components.presentation-list');
     }
 
+    protected function getPresentationType(mixed $value): ?PresentationType
+    {
+        if ($value instanceof PresentationType) {
+            return $value;
+        }
+
+        return PresentationType::tryFrom((int) $value);
+    }
+
     public function getQuery(): Builder
     {
         return $this->submission->presentations()
@@ -74,28 +83,28 @@ class PresentationList extends Component implements HasForms, HasTable, HasActio
                         ->disk('private-files')
                         ->maxFiles(1)
                         ->visible(function (Get $get) {
-                            $type = PresentationType::tryFrom((int) $get('type'));
+                            $type = $this->getPresentationType($get('type'));
 
                             return $type?->isOneOf(PresentationType::PDF, PresentationType::Other) ?? false;
                         })
                         ->dehydrated(function (Get $get) {
-                            $type = PresentationType::tryFrom((int) $get('type'));
+                            $type = $this->getPresentationType($get('type'));
 
                             return $type?->isOneOf(PresentationType::PDF, PresentationType::Other) ?? false;
                         })
-                        ->rules(fn(Get $get) => PresentationType::PDF->is((int) $get('type')) ? ['mimes:pdf'] : []),
+                        ->rules(fn(Get $get) => $this->getPresentationType($get('type')) === PresentationType::PDF ? ['mimes:pdf'] : []),
                     TextInput::make('meta.youtube_video_id')
                         ->label('Youtube URL')
                         ->required()
                         ->prefix('https://www.youtube.com/watch?v=')
-                        ->visible(fn(Get $get) => PresentationType::Youtube->is((int) $get('type')))
-                        ->dehydrated(fn(Get $get) => PresentationType::Youtube->is((int) $get('type'))),
+                        ->visible(fn(Get $get) => $this->getPresentationType($get('type')) === PresentationType::Youtube)
+                        ->dehydrated(fn(Get $get) => $this->getPresentationType($get('type')) === PresentationType::Youtube),
                     TextInput::make('meta.google_slide_url')
                         ->label('Google Slide Published URL')
                         ->regex('/^https:\/\/docs\.google\.com\/presentation\/d\/e\/[A-Za-z0-9_-]+\/pub(embed)?(\?.*)?$/')
                         ->required()
-                        ->visible(fn(Get $get) => PresentationType::GoogleSlide->is((int) $get('type')))
-                        ->dehydrated(fn(Get $get) => PresentationType::GoogleSlide->is((int) $get('type')))
+                        ->visible(fn(Get $get) => $this->getPresentationType($get('type')) === PresentationType::GoogleSlide)
+                        ->dehydrated(fn(Get $get) => $this->getPresentationType($get('type')) === PresentationType::GoogleSlide)
                         ->dehydrateStateUsing(function (string $state) {
                             if (str_contains($state, '/pubembed?')) {
                                 return $state;
@@ -138,7 +147,7 @@ class PresentationList extends Component implements HasForms, HasTable, HasActio
                             'type' => $data['type'],
                         ]);
 
-                        if (PresentationType::from($data['type'])->isOneOf(PresentationType::Youtube, PresentationType::GoogleSlide)) {
+                        if ($this->getPresentationType($data['type'])->isOneOf(PresentationType::Youtube, PresentationType::GoogleSlide)) {
                             $record->setManyMeta($data['meta']);
                         }
 
@@ -183,7 +192,7 @@ class PresentationList extends Component implements HasForms, HasTable, HasActio
                                 'type' => $data['type'],
                             ]);
 
-                            if (PresentationType::from($data['type'])->isOneOf(PresentationType::Youtube, PresentationType::GoogleSlide)) {
+                            if ($this->getPresentationType($data['type'])->isOneOf(PresentationType::Youtube, PresentationType::GoogleSlide)) {
                                 $record->setManyMeta($data['meta']);
                             }
 

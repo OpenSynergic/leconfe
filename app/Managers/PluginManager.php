@@ -27,6 +27,8 @@ class PluginManager
 
     protected bool $isBooted = false;
 
+    protected static array $initiatedPlugins = [];
+
     public function __construct()
     {
         $this->plugins = collect();
@@ -140,6 +142,10 @@ class PluginManager
 
     protected function initiatePlugin(string $pluginPath): ?ClassesPlugin
     {
+        if (isset(static::$initiatedPlugins[$pluginPath])) {
+            return static::$initiatedPlugins[$pluginPath];
+        }
+
         try {
             $plugin = include $pluginPath . DIRECTORY_SEPARATOR . 'index.php';
 
@@ -148,6 +154,8 @@ class PluginManager
             if (! $plugin instanceof ClassesPlugin) {
                 throw new Exception('Plugin must return an instance of ' . ClassesPlugin::class);
             }
+
+            static::$initiatedPlugins[$pluginPath] = $plugin;
         } catch (Throwable $th) {
             throw $th;
         }
@@ -251,6 +259,93 @@ class PluginManager
         File::cleanDirectory($this->getTempDisk()->path(''));
     }
 
+    public function applyFilament5CompatibilityFix(string $pluginPath): void
+    {
+        if (! is_dir($pluginPath)) {
+            return;
+        }
+
+        $it = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($pluginPath));
+        foreach ($it as $file) {
+            if ($file->isDir() || $file->getExtension() !== 'php') {
+                continue;
+            }
+
+            $filepath = $file->getPathname();
+            $content = file_get_contents($filepath);
+            $original = $content;
+
+            // 1. Replace "protected static string $view =" or similar for Filament Pages only
+            if (str_contains($content, 'use Filament\Pages\Page;')) {
+                $content = preg_replace(
+                    '/protected\s+static\s+(string|\?string)?\s*\$view\s*=/',
+                    'protected string $view =',
+                    $content
+                );
+            }
+
+            // 2. Replace "protected static ?string $navigationGroup ="
+            $content = preg_replace(
+                '/protected\s+static\s+\?string\s+\$navigationGroup\s*=/',
+                'protected static string | \UnitEnum | null $navigationGroup =',
+                $content
+            );
+
+            // 3. Replace "protected static ?string $navigationIcon ="
+            $content = preg_replace(
+                '/protected\s+static\s+\?string\s+\$navigationIcon\s*=/',
+                'protected static string | \BackedEnum | null $navigationIcon =',
+                $content
+            );
+
+            // 4. Replace "use Filament\Tables\Actions\ActionGroup;"
+            $content = str_replace(
+                'use Filament\Tables\Actions\ActionGroup;',
+                'use Filament\Actions\ActionGroup;',
+                $content
+            );
+
+            // 5. Replace "use Filament\Tables\Actions\Action as TableAction;"
+            $content = str_replace(
+                'use Filament\Tables\Actions\Action as TableAction;',
+                'use Filament\Actions\Action as TableAction;',
+                $content
+            );
+
+            // 6. Update routes method signature and body in page classes
+            if (str_contains($content, 'public static function routes(Panel $panel)')) {
+                $content = str_replace(
+                    'public static function routes(Panel $panel): void',
+                    'public static function routes(Panel $panel, ?\Filament\Pages\PageConfiguration $configuration = null): void',
+                    $content
+                );
+                $content = str_replace(
+                    'static::getRoutePath()',
+                    'static::getRoutePath($panel)',
+                    $content
+                );
+                $content = str_replace(
+                    'static::getRelativeRouteName()',
+                    'static::getRelativeRouteName($panel)',
+                    $content
+                );
+            }
+
+            // 7. Update getRoutePath signature in page classes
+            if (str_contains($content, 'public static function getRoutePath(): string')) {
+                $content = str_replace(
+                    'public static function getRoutePath(): string',
+                    'public static function getRoutePath(\Filament\Panel $panel): string',
+                    $content
+                );
+            }
+
+            if ($content !== $original) {
+                file_put_contents($filepath, $content);
+            }
+        }
+    }
+
     public function install(string $file)
     {
         $pluginTempDisk = $this->getTempDisk();
@@ -263,6 +358,7 @@ class PluginManager
 
         $fileSystem = new Filesystem;
         $fileSystem->copyDirectory($pluginTempDisk->path($folderName), $this->getDisk()->path($folderName));
+        $this->applyFilament5CompatibilityFix($this->getDisk()->path($folderName));
         $this->cleanTempPlugins();
 
         try {

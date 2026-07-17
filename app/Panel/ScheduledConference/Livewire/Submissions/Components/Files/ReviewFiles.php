@@ -122,7 +122,7 @@ class ReviewFiles extends SubmissionFilesTable implements HasActions
             });
     }
 
-    public function uploadAction(): \Filament\Actions\Action
+    public function uploadAction(): \Filament\Actions\Action|\Filament\Actions\ActionGroup
     {
         return Action::make('upload')
             ->icon('heroicon-o-cloud-arrow-up')

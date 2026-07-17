@@ -15,7 +15,7 @@ trait CanSelectFiles
 
     abstract public function getSelectableCategories(): array;
 
-    public function uploadAction(): \Filament\Actions\Action
+    public function uploadAction(): \Filament\Actions\Action|\Filament\Actions\ActionGroup
     {
         return ActionGroup::make([
             Action::make('select-files')

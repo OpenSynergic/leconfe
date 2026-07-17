@@ -175,6 +175,7 @@ class ParticipantList extends Component implements HasForms, HasTable, HasAction
                                     ->columnSpan(2),
                                 Fieldset::make()
                                     ->label(__('general.notification'))
+                                    ->columnSpanFull()
                                     ->schema([
                                         TextInput::make('subject')
                                             ->label(__('general.subject'))

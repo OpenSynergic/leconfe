@@ -64,6 +64,7 @@ class PanelProvider extends ServiceProvider
                     $currentConference = app()->getCurrentConference();
                     $currentScheduledConference = app()->getCurrentScheduledConference();
                     $scheduledConferences = ScheduledConference::query()
+                        ->where('conference_id', $currentConference->id)
                         ->where('path', '!=', $currentScheduledConference->path)
                         ->with(['media'])
                         ->latest()

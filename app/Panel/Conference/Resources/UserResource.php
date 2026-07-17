@@ -94,7 +94,7 @@ class UserResource extends Resource
         return $schema
             ->columns(3)
             ->schema([
-                Grid::make()
+                Grid::make(1)
                     ->schema([
                         Section::make()
                             ->schema([
@@ -136,9 +136,9 @@ class UserResource extends Resource
                             ->columns(2),
 
                     ])
-                    ->columnSpan(fn (?User $record) => (app()->isOnSite() && !($record?->isBanned() ?? false)) ? 3 : 2),
+                    ->columnSpan(fn (?User $record) => (app()->isOnSite() && !($record?->isBanned() ?? false)) ? ['lg' => 3] : ['lg' => 2]),
 
-                Grid::make()
+                Grid::make(1)
                     ->schema([
                         Section::make()
                             ->visible(fn(?User $record) => $record?->isBanned())
@@ -182,7 +182,7 @@ class UserResource extends Resource
                                     }),
                             ]),
                     ])
-                    ->columnSpan(1)
+                    ->columnSpan(['lg' => 1])
                     ->hidden(fn (?User $record) => app()->isOnSite() && !($record?->isBanned() ?? false)),
             ]);
     }

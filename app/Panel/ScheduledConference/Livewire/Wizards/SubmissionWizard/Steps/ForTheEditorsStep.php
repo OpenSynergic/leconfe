@@ -75,6 +75,6 @@ class ForTheEditorsStep extends Component implements HasForms, HasWizardStep, Ha
         $data = $this->form->getState();
         SubmissionUpdateAction::run($data, $this->record);
 
-        $this->dispatchBrowserEvent('next-wizard-step');
+        $this->dispatch('next-wizard-step');
     }
 }

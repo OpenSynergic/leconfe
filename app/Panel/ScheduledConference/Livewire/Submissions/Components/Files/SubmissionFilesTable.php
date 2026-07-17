@@ -137,25 +137,25 @@ abstract class SubmissionFilesTable extends Component implements HasForms, HasTa
                 ->collection($this->category)
                 ->visibility('private')
                 ->model(fn () => $this->submission)
+                ->dehydrated(true)
                 ->saveRelationshipsUsing(function (SpatieMediaLibraryFileUpload $component) {
                     $component->saveUploadedFiles();
-
-                    $this->uploadFilesData[] = $component->getState();
                 }),
         ];
     }
 
     public function handleUploadAction(array $data, Action $action): void
     {
-        $getUuids = [];
-        foreach ($this->uploadFilesData as $val) {
-            if (is_array($val)) {
-                $getUuids = array_merge($getUuids, array_values($val));
-            } elseif (is_string($val)) {
-                $getUuids[] = $val;
-            }
-        }
-        $files = $this->submission->media()->whereCollectionName($this->category)->whereIn('uuid', $getUuids)->get();
+        $existingMediaIds = DB::table('submission_files')
+            ->where('submission_id', $this->submission->id)
+            ->pluck('media_id')
+            ->toArray();
+
+        $files = $this->submission->media()
+            ->whereCollectionName($this->category)
+            ->whereNotIn('id', $existingMediaIds)
+            ->get();
+
         foreach ($files as $file) {
             $submissionFile = UploadSubmissionFileAction::run(
                 $this->submission,
@@ -185,7 +185,7 @@ abstract class SubmissionFilesTable extends Component implements HasForms, HasTa
         $this->dispatch('refreshLivewire');
     }
 
-    public function uploadAction(): \Filament\Actions\Action
+    public function uploadAction(): \Filament\Actions\Action|\Filament\Actions\ActionGroup
     {
         return Action::make('upload')
             ->icon('iconpark-upload')
