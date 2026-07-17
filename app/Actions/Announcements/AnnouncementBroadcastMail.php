@@ -5,7 +5,6 @@ namespace App\Actions\Announcements;
 use App\Mail\Templates\NewAnnouncementMail;
 use App\Models\Announcement;
 use App\Models\Enums\UserRole;
-use App\Models\ScheduledConference;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -16,10 +15,10 @@ class AnnouncementBroadcastMail
 
     public function handle(Announcement $announcement)
     {
-        // Filter by user subsribe to announcement
+        // Filter by users subscribed to announcement emails.
         $users = User::query()
             ->with('meta')
-            ->whereHas('roles', fn ($query) => $query->where('name', '!=', UserRole::Admin))
+            ->whereDoesntHave('roles', fn ($query) => $query->where('name', UserRole::Admin->value))
             ->whereMeta('enable_new_announcement_email', true)
             ->notBanned()
             ->lazy();

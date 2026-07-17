@@ -2,8 +2,8 @@
 
 namespace App\Frontend\Website\Pages;
 
-use App\Actions\UserInvitation\AcceptUserInvitationAction;
 use App\Actions\User\UserCreateAction;
+use App\Actions\UserInvitation\AcceptUserInvitationAction;
 use App\Models\User;
 use App\Models\UserInvitation;
 use Filament\Facades\Filament;
@@ -110,6 +110,9 @@ class InvitationRegister extends Page
 
         return [
             'invitation' => $invitation,
+            'invitationDisplayName' => $invitation->scheduledConference?->title
+                ?? $invitation->conference?->name
+                ?? app()->getSite()->getMeta('name'),
             'privacyStatementUrl' => $invitation->scheduledConference && $invitation->conference
                 ? route('livewirePageGroup.scheduledConference.pages.privacy-statement', [
                     'conference' => $invitation->conference->path,

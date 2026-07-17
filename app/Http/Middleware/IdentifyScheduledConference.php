@@ -21,6 +21,10 @@ class IdentifyScheduledConference
             return abort(404);
         }
 
+        if ($this->canAccessBeforePublication($request)) {
+            return $next($request);
+        }
+
         if (Gate::allows('view', $scheduledConference)) {
             return $next($request);
         }
@@ -34,5 +38,14 @@ class IdentifyScheduledConference
         }
 
         return abort(404);
+    }
+
+    protected function canAccessBeforePublication(Request $request): bool
+    {
+        return in_array($request->route()?->getName(), [
+            'livewirePageGroup.scheduledConference.pages.invitation-accept',
+            'livewirePageGroup.scheduledConference.pages.invitation-register',
+            'livewirePageGroup.scheduledConference.pages.login',
+        ], true);
     }
 }

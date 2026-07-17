@@ -2,7 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Actions\Announcements\AnnouncementBroadcastMail;
+use App\Mail\Templates\NewAnnouncementMail;
 use App\Managers\PaymentManager;
+use App\Models\Announcement;
 use App\Models\Conference;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
@@ -21,6 +24,7 @@ use App\Panel\ScheduledConference\Pages\ParticipantRegistration;
 use App\Panel\ScheduledConference\Resources\SubmissionResource\Pages\ViewSubmission;
 use App\Services\Notifications\OperationalNotificationRecipients;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
@@ -79,6 +83,20 @@ class OperationalNotificationRecipientsTest extends TestCase
 
         $this->assertFalse($recipientIds->contains($admin->getKey()));
         $this->assertTrue($recipientIds->contains($manager->getKey()));
+    }
+
+    public function test_operational_recipients_exclude_admin_accounts_with_operational_roles(): void
+    {
+        $adminManager = $this->userWithRole(UserRole::Admin, 'admin-manager@example.test');
+        $adminManager->assignRole($this->role(UserRole::ConferenceManager));
+        $manager = $this->userWithRole(UserRole::ConferenceManager, 'manager@example.test');
+
+        $recipientIds = app(OperationalNotificationRecipients::class)
+            ->forRoles([UserRole::ConferenceManager])
+            ->pluck('id')
+            ->all();
+
+        $this->assertSame([$manager->getKey()], $recipientIds);
     }
 
     public function test_operational_recipients_accept_enum_and_string_roles(): void
@@ -210,6 +228,32 @@ class OperationalNotificationRecipientsTest extends TestCase
 
         $this->assertCount(1, Notification::sent($manager, SubmissionWithdrawRequested::class));
         Notification::assertNotSentTo($admin, SubmissionWithdrawRequested::class);
+    }
+
+    public function test_announcement_broadcast_excludes_admin_accounts_with_subscribed_roles(): void
+    {
+        $adminManager = $this->userWithRole(UserRole::Admin, 'admin-manager@example.test');
+        $adminManager->assignRole($this->role(UserRole::ConferenceManager));
+        $manager = $this->userWithRole(UserRole::ConferenceManager, 'manager@example.test');
+        $adminManager->setMeta('enable_new_announcement_email', true);
+        $manager->setMeta('enable_new_announcement_email', true);
+        $announcement = Announcement::withoutGlobalScopes()->forceCreate([
+            'scheduled_conference_id' => $this->scheduledConference->getKey(),
+            'title' => 'Program update',
+        ]);
+
+        Mail::fake();
+
+        app(AnnouncementBroadcastMail::class)->handle($announcement);
+
+        Mail::assertQueued(
+            NewAnnouncementMail::class,
+            fn (NewAnnouncementMail $mail): bool => $mail->hasTo($manager->email)
+        );
+        Mail::assertNotQueued(
+            NewAnnouncementMail::class,
+            fn (NewAnnouncementMail $mail): bool => $mail->hasTo($adminManager->email)
+        );
     }
 
     private function role(UserRole $role): Role

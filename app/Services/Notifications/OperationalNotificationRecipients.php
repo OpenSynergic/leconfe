@@ -26,6 +26,7 @@ class OperationalNotificationRecipients
 
         return User::query()
             ->whereHas('roles', fn ($query) => $query->whereIn('name', $roleNames))
+            ->whereDoesntHave('roles', fn ($query) => $query->where('name', UserRole::Admin->value))
             ->get()
             ->unique(fn (User $user): int|string => $user->getKey())
             ->values();

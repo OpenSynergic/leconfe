@@ -93,17 +93,15 @@ class CallforAbstract extends Component implements HasActions, HasForms
             ->action(function (Action $action, array $data) {
                 $this->submission->state()->decline();
 
-                if (! $data['no-notification']) {
+                if (! data_get($data, 'no-notification', false)) {
                     try {
-                        $this->submission->user->notify(
-                            new AbstractDeclined(
-                                submission: $this->submission,
-                                message: $data['message'],
-                                subject: $data['subject'],
-                                channels: ['mail']
-                            )
-                        );
-                    } catch (Exception $e) {
+                        Mail::to($this->submission->user->email)
+                            ->send(
+                                (new DeclineAbstractMail($this->submission))
+                                    ->subjectUsing($data['subject'])
+                                    ->contentUsing($data['message'])
+                            );
+                    } catch (\Exception $e) {
                         $action->failureNotificationTitle(__('general.email_notification_was_not_delivered'));
                         $action->failure();
                     }
