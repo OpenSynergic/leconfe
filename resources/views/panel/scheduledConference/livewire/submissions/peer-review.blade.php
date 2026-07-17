@@ -89,22 +89,22 @@
                     ])>
                         <div class="p-4">
                             {{-- Review Files --}}
-                            @livewire(Components\Files\ReviewFiles::class, ['submission' => $submission])
+                            @livewire(Components\Files\ReviewFiles::class, ['submission' => $submission], key('review-files-' . $submission->id . '-' . $this->selectedRoundId))
                         </div>
 
                         <div class="border-t border-gray-200 p-4">
                             {{-- Reviewer List --}}
-                            @livewire(Components\ReviewerList::class, ['record' => $submission])
+                            @livewire(Components\ReviewerList::class, ['record' => $submission], key('reviewer-list-' . $submission->id . '-' . $this->selectedRoundId))
                         </div>
 
                         <div class="border-t border-gray-200 p-4">
                             {{-- Revision Files --}}
-                            @livewire(Components\Files\RevisionFiles::class, ['submission' => $submission])
+                            @livewire(Components\Files\RevisionFiles::class, ['submission' => $submission], key('revision-files-' . $submission->id . '-' . $this->selectedRoundId))
                         </div>
 
                         <div class="border-t border-gray-200 p-4">
                             {{-- Discussions --}}
-                            @livewire(Components\Discussions\PeerReviewDiscussionTopic::class, ['submission' => $submission, 'stage' => SubmissionStage::PeerReview, 'lazy' => true])
+                            @livewire(Components\Discussions\PeerReviewDiscussionTopic::class, ['submission' => $submission, 'stage' => SubmissionStage::PeerReview, 'lazy' => true], key('discussions-' . $submission->id . '-' . $this->selectedRoundId))
                         </div>
                     </div>
 
@@ -186,7 +186,7 @@
                             @endif
 
                             <div class="mt-4 border-t border-gray-200 pt-4">
-                                @livewire(Components\ParticipantList::class, ['submission' => $submission, 'lazy' => true])
+                                @livewire(Components\ParticipantList::class, ['submission' => $submission, 'lazy' => true], key('participants-' . $submission->id . '-' . $this->selectedRoundId))
                             </div>
                         </div>
                     @endcan

@@ -27,7 +27,7 @@ class ForTheEditorsStep extends Component implements HasForms, HasWizardStep, Ha
     public function mount($record)
     {
         $this->form->fill([
-            'meta' => $record->getAllMeta(),
+            'meta' => $record->getAllMeta()->toArray(),
             'submission_progress' => 'review',
         ]);
     }

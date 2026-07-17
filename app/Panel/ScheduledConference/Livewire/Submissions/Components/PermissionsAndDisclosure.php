@@ -42,7 +42,7 @@ class PermissionsAndDisclosure extends Component implements HasForms, HasActions
     public function mount(Submission $submission)
     {
         $this->form->fill([
-            'meta' => $submission->getAllMeta(),
+            'meta' => $submission->getAllMeta()->toArray(),
         ]);
     }
 

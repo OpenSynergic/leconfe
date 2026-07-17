@@ -63,7 +63,7 @@ class ReviewSubmissionPage extends Page implements HasActions, HasInfolists
 
         $formData = [
             ...$this->review->attributesToArray(),
-            'meta' => $this->review->getAllMeta(),
+            'meta' => $this->review->getAllMeta()->toArray(),
         ];
 
         Hook::call('ReviewSubmissionPage::Form::fill', [&$formData, $this]);
@@ -205,7 +205,17 @@ class ReviewSubmissionPage extends Page implements HasActions, HasInfolists
                     return;
                 }
 
-                $data = $this->form->getState();
+                try {
+                    $data = $this->form->getState();
+                } catch (\Illuminate\Validation\ValidationException $e) {
+                    \Filament\Notifications\Notification::make()
+                        ->title(app()->getLocale() === 'id' ? 'Galat Validasi' : 'Validation Error')
+                        ->body(app()->getLocale() === 'id' ? 'Silakan isi semua bidang wajib di formulir penilaian.' : 'Please fill in all required fields on the review form.')
+                        ->danger()
+                        ->send();
+
+                    throw $e;
+                }
                 $data['date_completed'] = now();
 
                 if (array_key_exists('review_responses', data_get($data, 'meta', []))) {

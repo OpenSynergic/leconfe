@@ -23,9 +23,12 @@
 }
     ">
     @if($review->reviewSubmitted())
-        <x-shout::shout type="success" color="success" icon="heroicon-o-check-circle">
-            {{ __('general.review_thank_you_message') }}
-        </x-shout::shout>
+        <div role="alert" class="flex items-center p-4 text-sm border rounded-lg border-success-400 bg-success-50 text-success-800 dark:bg-success-950/20 dark:border-success-500/30 dark:text-success-400">
+            <x-heroicon-o-check-circle class="flex-shrink-0 inline w-5 h-5 me-3" />
+            <div>
+                <span class="font-medium">{{ __('general.review_thank_you_message') }}</span>
+            </div>
+        </div>
     @endif
     <div class="grid grid-cols-12 gap-4">
         <div class="col-span-8 space-y-4">

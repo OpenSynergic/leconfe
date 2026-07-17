@@ -424,7 +424,7 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
 
                         $schema->fill([
                             ...$record->attributesToArray(),
-                            'meta' => $record->getAllMeta(),
+                            'meta' => $record->getAllMeta()->toArray(),
                         ]);
                     })
                     ->action(function (Review $record, array $data, Action $action) {
@@ -451,7 +451,7 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
                             ->model($record)
                             ->id('readReview')
                             ->schema([
-                                Placeholder::make('')
+                                Placeholder::make('read_instruction')
                                     ->extraAttributes(['class' => 'text-gray-500'])
                                     ->when(
                                         $this->record->isParticipantAuthor(auth()->user()),
@@ -528,7 +528,7 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
                                     ->get()
                                     ->pluck('submission_file_id')
                                     ->toArray(),
-                                'meta' => $record->getAllMeta(),
+                                'meta' => $record->getAllMeta()->toArray(),
                             ]);
                         })
                         ->schema(fn ($form) => $this->form($form))
