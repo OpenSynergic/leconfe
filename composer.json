@@ -38,6 +38,7 @@
         "luizbills/css-generator": "^4.0",
         "matthieumastadenis/couleur": "^0.1.2",
         "mchev/banhammer": "^2",
+        "openjournalteam/laravel-bangau-mail": "^0.1",
         "plank/laravel-metable": "^5.4",
         "propaganistas/laravel-disposable-email": "^2.2",
         "propaganistas/laravel-phone": "^5.0",

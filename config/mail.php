@@ -34,6 +34,18 @@ return [
     */
 
     'mailers' => [
+        'bangau' => [
+            'transport' => 'bangau',
+            'endpoint' => env('BANGAU_ENDPOINT'),
+            'api_key' => env('BANGAU_API_KEY'),
+            'sender' => env('BANGAU_SENDER'),
+            'timeout' => (int) env('BANGAU_TIMEOUT', 15),
+            'source' => env('BANGAU_SOURCE', 'LARAVEL_MAIL'),
+            'allow_insecure_endpoint' => (bool) env('BANGAU_ALLOW_INSECURE_ENDPOINT', false),
+            'fallback_mailer' => env('BANGAU_FALLBACK_MAILER', 'smtp'),
+            'fallback_on_failure' => (bool) env('BANGAU_FALLBACK_ON_FAILURE', true),
+        ],
+
         'smtp' => [
             'transport' => 'smtp',
             'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
