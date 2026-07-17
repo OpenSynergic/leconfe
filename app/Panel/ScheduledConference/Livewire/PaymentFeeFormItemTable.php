@@ -9,7 +9,7 @@ use Filament\Actions\Action;
 use Throwable;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
-use App\Forms\Form;
+use Filament\Schemas\Schema;
 use App\Models\PaymentFee;
 use App\Models\PaymentFeeFormItem;
 use App\Tables\Columns\IndexColumn;
@@ -46,9 +46,9 @@ class PaymentFeeFormItemTable extends Component implements HasForms, HasTable, H
         return view('tables.table');
     }
 
-    public function form(Form $form)
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->components([
                 TextInput::make('meta.name')
                     ->required()
