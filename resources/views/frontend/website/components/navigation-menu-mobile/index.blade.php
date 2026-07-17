@@ -67,9 +67,9 @@
                                                                     <li class="navigation-menu-item relative">
                                                                         <x-website::link @class([
                                                                             'hover:bg-base-content/10 items-center py-2 px-4 pr-6 text-sm outline-none transition-colors gap-4 w-full flex',
-                                                                            'text-primary font-semibold' => request()->url() === $item->getUrl(),
-                                                                            'text-slate-900 font-medium' => request()->url() !== $item->getUrl(),
-                                                                        ]) :href="$item->getUrl()">
+                                                                            'text-primary font-semibold' => request()->url() === $childItem->getUrl(),
+                                                                            'text-slate-900 font-medium' => request()->url() !== $childItem->getUrl(),
+                                                                        ]) :href="$childItem->getUrl()">
                                                                             {{ $childItem->getLabel() }}
                                                                         </x-website::link>
                                                                     </li>
@@ -117,9 +117,9 @@
                                                                 <li class="navigation-menu-item relative">
                                                                     <x-website::link @class([
                                                                         'hover:bg-base-content/10 items-center py-2 px-4 pr-6 text-sm outline-none transition-colors gap-4 w-full flex',
-                                                                        'text-primary font-semibold' => request()->url() === $item->getUrl(),
-                                                                        'text-slate-900 font-medium' => request()->url() !== $item->getUrl(),
-                                                                    ]) :href="$item->getUrl()">
+                                                                        'text-primary font-semibold' => request()->url() === $childItem->getUrl(),
+                                                                        'text-slate-900 font-medium' => request()->url() !== $childItem->getUrl(),
+                                                                    ]) :href="$childItem->getUrl()">
                                                                         {{ $childItem->getLabel() }}
                                                                     </x-website::link>
                                                                 </li>
