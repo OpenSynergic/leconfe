@@ -33,8 +33,10 @@
 }
 
 .fi-simple-link {
-    @apply text-primary-600 underline transition hover:text-primary-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 dark:text-primary-400 dark:hover:text-primary-300 dark:focus-visible:ring-primary-500;
+       @apply block mt-4 mb-2 text-primary-600 underline transition hover:text-primary-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 dark:text-primary-400 dark:hover:text-primary-300 dark:focus-visible:ring-primary-500;
+
 }
+
 /* 
 .fi-sidebar {
     @apply lg:!bg-white dark:lg:!bg-gray-900 !rounded-xl my-4 ml-4 -left-6 lg:left-0;
@@ -243,8 +245,25 @@ body {
     --text: #ffffff !important;
     --dark-text: #ffffff !important;
     color: #ffffff !important;
+    background-color: #19305f !important; /* Tambahan background */
+}
+.fi-btn:not(.fi-outlined).fi-color-primary:hover {
+    background-color: #1c3569 !important; /* Tambahan hover */
 }
 .fi-btn:not(.fi-outlined).fi-color-primary * {
     color: #ffffff !important;
 }
+/* Mulai dari baris 263 */
+.fi-simple-layout {
+    @apply !bg-gray-100 dark:!bg-gray-950;
+}
+
+.fi-simple-main {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(9, 9, 11, 0.05) !important;
+}
+
+.fi-btn {
+    font-weight: 700 !important;
+}
+
 
