@@ -94,7 +94,7 @@ class ContributorForm extends Component
                         ->url()
                         ->prefixIcon('academicon-scopus-square'),
                 ])
-                ->columns(3)
+                ->columns(2)
                 ->columnSpan(['lg' => 2]),
         ];
     }
