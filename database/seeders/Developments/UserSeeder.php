@@ -33,7 +33,7 @@ class UserSeeder extends Seeder
         foreach ($conferences as $key => $conference) {
             app()->setCurrentConferenceId($conference->getKey());
 
-            $users->random(2)->each(fn ($user) => $user->assignRole($conferenceRoles->random(2)));
+            $users->random(2)->each(fn ($user) => $user->assignRole($conferenceRoles->random(min(2, $conferenceRoles->count()))));
         }
 
         $scheduledConferences = ScheduledConference::all();

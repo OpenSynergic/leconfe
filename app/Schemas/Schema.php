@@ -17,8 +17,9 @@ class Schema extends BaseSchema
      */
     public function components(\Filament\Schemas\Components\Component|\Filament\Actions\Action|\Filament\Actions\ActionGroup|\Illuminate\Contracts\Support\Htmlable|Closure|array|string $components): static
     {
-        if ($this->getId()) {
-            Hook::call('Forms::Form::components::'.Str::camel($this->getId()), [&$components, $this]);
+        $id = $this->getCustomId() ?? ($this->key ?? $this->getStatePath(isAbsolute: false));
+        if ($id) {
+            Hook::call('Forms::Form::components::'.Str::camel($id), [&$components, $this]);
         }
 
         return parent::components($components);
