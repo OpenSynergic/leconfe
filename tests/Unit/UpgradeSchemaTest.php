@@ -43,4 +43,22 @@ class UpgradeSchemaTest extends TestCase
 
         $schemas['1.5.0-beta.2']->run();
     }
+
+    public function test_upgrade_from_1_5_0_beta_2_to_1_5_0_beta_3_runs_upgrade_schema(): void
+    {
+        $schemas = UpgradeSchema::getSchemasByVersion('1.5.0-beta.2', '1.5.0-beta.3');
+
+        $this->assertArrayHasKey('1.5.0-beta.3', $schemas);
+        $this->assertInstanceOf(
+            'App\\Utils\\UpgradeSchemas\\Upgrade150Beta3',
+            $schemas['1.5.0-beta.3'],
+        );
+
+        Artisan::shouldReceive('call')
+            ->once()
+            ->with('migrate', ['--force' => true])
+            ->andReturn(0);
+
+        $schemas['1.5.0-beta.3']->run();
+    }
 }
