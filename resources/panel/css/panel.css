@@ -294,5 +294,10 @@ body {
     }
 }
 
+/* Hide table headers when table is empty */
+.fi-ta-ctn:has(.fi-ta-empty-state) thead {
+    display: none !important;
+}
+
 
 
