@@ -257,7 +257,8 @@ class UserResource extends Resource
                     Stack::make([
                         TextColumn::make('roles.name')
                             ->badge(),
-                    ]),
+                    ])->grow(false),
+
                 ])->from('md'),
             ])
             ->filters([

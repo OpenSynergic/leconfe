@@ -132,7 +132,7 @@
                 <div class="grid gap-4">
                     @role(App\Models\Enums\UserRole::Author->value)
                     <div
-                        class="rounded-2xl border border-primary-200/70 discover-primary-card-gradient p-5 shadow-sm transition-all hover:shadow-md dark:border-primary-900/40">
+                        class="rounded-2xl border border-primary-100 discover-primary-card-gradient p-5 shadow-sm transition-all hover:shadow-md dark:border-primary-900">
                         <a href="{{ $submissionUrl }}" class="flex items-start gap-4">
                             <div
                                 class="mt-0.5 inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300">
@@ -154,7 +154,7 @@
                     @role(App\Models\Enums\UserRole::Participant->value)
                     @if (!auth()->user()->submissions()->exists())
                     <div
-                        class="rounded-2xl border border-success-200/70 discover-success-card-gradient p-5 shadow-sm transition-all hover:shadow-md dark:border-success-900/40">
+                        class="rounded-2xl border border-success-100 discover-success-card-gradient p-5 shadow-sm transition-all hover:shadow-md dark:border-success-900">
                         <a href="{{ $scheduledConference->isParticipantRegistrationEnabled() ? (auth()->user()->isRegisteredAsParticipant() ? $participantPaymentUrl : $participantRegistrationUrl) : '#' }}"
                             class="flex items-start gap-4">
                             <div
