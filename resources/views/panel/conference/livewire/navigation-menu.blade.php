@@ -1,12 +1,12 @@
 <div class="space-y-4 navigation-menus">
     @forelse ($navigationMenus as $navigationMenu)
-        <div class="bg-white border navigation-menu rounded-xl">
+        <div class="bg-white border border-gray-200 dark:border-gray-800 navigation-menu rounded-xl">
             <div class="flex flex-wrap items-center gap-2 px-6 py-4">
                 <div>
                     <h2 class="text-base font-medium leading-6">{{ $navigationMenu->name }}</h2>
                 </div>
             </div>
-            <hr />
+            <hr class="border-gray-200 dark:border-gray-800" />
             <div class="p-4 space-y-2 text-sm navigation-menu-items" x-data="navigationMenuItemSortable({
                     group: {{ $navigationMenu->id }},
                     parentId: null
@@ -14,9 +14,9 @@
                 @forelse ($navigationMenu->items as $navigationMenuItem)
                     <div class="space-y-2" data-sortable-item data-id="{{ $navigationMenuItem->id }}" x-data="{ open: true }">
                         <div class="relative group">
-                            <div class="flex items-center gap-4 bg-white border rounded-xl">
+                            <div class="flex items-center gap-4 bg-white border border-gray-200 dark:border-gray-800 rounded-xl">
                                 <button type="button"
-                                    class="p-3 text-sm text-gray-500 border-r bg-gray-50 rounded-l-xl hover:text-gray-900"
+                                    class="p-3 text-sm text-gray-500 border-r border-gray-200 dark:border-gray-800 bg-gray-50 rounded-l-xl hover:text-gray-900"
                                     data-sortable-handle>
                                     <x-heroicon-s-arrows-up-down class="w-4 h-4" />
                                 </button>
@@ -31,7 +31,7 @@
                                 @endif
                             </div>
                             <div
-                                class="absolute top-0 right-0 hidden h-6 overflow-hidden transition ease-in-out border-b border-l border-gray-300 divide-x rounded-tr-lg rounded-bl-lg opacity-0 rtl:border-l-0 rtl:border-r rtl:right-auto rtl:left-0 rtl:rounded-bl-none rtl:rounded-br-lg rtl:rounded-tr-none rtl:rounded-tl-lg group-hover:opacity-100 group-hover:flex duration-250 dark:border-gray-600 dark:divide-gray-600">
+                                class="absolute top-0 right-0 hidden h-6 overflow-hidden transition ease-in-out border-b border-l border-gray-200 dark:border-gray-800 divide-x rounded-tr-lg rounded-bl-lg opacity-0 rtl:border-l-0 rtl:border-r rtl:right-auto rtl:left-0 rtl:rounded-bl-none rtl:rounded-br-lg rtl:rounded-tr-none rtl:rounded-tl-lg group-hover:opacity-100 group-hover:flex duration-250 dark:border-gray-600 dark:divide-gray-600">
                                 {{ $this->deleteNavigationItemMenuAction }}
                                 {{ $this->addNavigationMenuItemChildAction }}
                                 <button
@@ -71,9 +71,9 @@
                             })">
                             @foreach($navigationMenuItem->children as $child)
                                 <div class="relative group" data-sortable-item data-id="{{ $child->id }}">
-                                    <div class="flex items-center gap-4 bg-white border rounded-xl">
+                                    <div class="flex items-center gap-4 bg-white border border-gray-200 dark:border-gray-800 rounded-xl">
                                         <button type="button"
-                                            class="p-3 text-sm text-gray-500 border-r bg-gray-50 rounded-l-xl hover:text-gray-900"
+                                            class="p-3 text-sm text-gray-500 border-r border-gray-200 dark:border-gray-800 bg-gray-50 rounded-l-xl hover:text-gray-900"
                                             data-sortable-handle>
                                             <x-heroicon-s-arrows-up-down class="w-4 h-4" />
                                         </button>
@@ -85,7 +85,7 @@
                                         </button>
                                     </div>
                                     <div
-                                        class="absolute top-0 right-0 hidden h-6 overflow-hidden transition ease-in-out border-b border-l border-gray-300 divide-x rounded-tr-lg rounded-bl-lg opacity-0 rtl:border-l-0 rtl:border-r rtl:right-auto rtl:left-0 rtl:rounded-bl-none rtl:rounded-br-lg rtl:rounded-tr-none rtl:rounded-tl-lg group-hover:opacity-100 group-hover:flex duration-250 dark:border-gray-600 dark:divide-gray-600">
+                                        class="absolute top-0 right-0 hidden h-6 overflow-hidden transition ease-in-out border-b border-l border-gray-200 dark:border-gray-800 divide-x rounded-tr-lg rounded-bl-lg opacity-0 rtl:border-l-0 rtl:border-r rtl:right-auto rtl:left-0 rtl:rounded-bl-none rtl:rounded-br-lg rtl:rounded-tr-none rtl:rounded-tl-lg group-hover:opacity-100 group-hover:flex duration-250 dark:border-gray-600 dark:divide-gray-600">
                                         {{ $this->deleteNavigationItemMenuAction }}
                                         <button
                                             x-tooltip.raw.duration.0="Remove"
