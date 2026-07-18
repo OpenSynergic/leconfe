@@ -266,19 +266,6 @@ body {
     font-weight: 700 !important;
 }
 
-.page-website-setting {
-    --primary-50: 244, 245, 248 !important;
-    --primary-100: 232, 235, 240 !important;
-    --primary-200: 198, 205, 218 !important;
-    --primary-300: 164, 174, 215 !important;
-    --primary-400: 96, 114, 150 !important;
-    --primary-500: 28, 53, 105 !important;
-    --primary-600: 25, 48, 95 !important;
-    --primary-700: 21, 40, 79 !important;
-    --primary-800: 17, 32, 63 !important;
-    --primary-900: 14, 26, 51 !important;
-    --primary-950: 8, 16, 32 !important;
-}
 
 /* Make active sidebar item text and icon navy blue */
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-sidebar-item-label {
