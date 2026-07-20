@@ -119,7 +119,6 @@ class ReviewResult extends Page implements HasForms, HasTable
                 TextColumn::make('title')
                     ->getStateUsing(fn ($record) => $record->getMeta('title'))
                     ->color('primary')
-                    ->openUrlInNewTab()
                     ->url(fn ($record) => SubmissionResource::getUrl('view', ['record' => $record]))
                     ->wrap(),
                 TextColumn::make('status')
