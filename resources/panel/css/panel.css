@@ -1,6 +1,5 @@
 @import "tippy.js/dist/tippy.css";
 
-@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -282,10 +281,43 @@ body {
     }
 }
 
-/* Hide table headers when table is empty */
-.fi-ta-ctn:has(.fi-ta-empty-state) thead {
-    display: none !important;
+/* Fix Chrome layout bug where SVG icon (display: block) causes line breaks in Filament Tables & Infolists */
+.fi-ta-text-item,
+.fi-in-text-item {
+    display: inline-flex !important;
+    align-items: center !important;
+    white-space: nowrap !important;
 }
 
+.fi-ta-text-item > svg,
+.fi-ta-text-item-icon,
+.fi-in-text-item > svg,
+.fi-in-text-item > .fi-icon,
+.fi-in-text-item > span:not(.fi-badge) > .fi-icon {
+    display: inline-block !important;
+    vertical-align: middle !important;
+    flex-shrink: 0 !important;
+    margin-inline-end: 0.375rem !important;
+}
 
+/* Fix infolist badge stretching across 100% width of the card */
+.fi-in-text.fi-in-text-has-badges {
+    width: max-content !important;
+    max-width: 100%;
+}
 
+/* Fix bare border classes defaulting to pitch black in form cards and modals */
+.filament-forms-card-component,
+.fi-fo-card-wrp,
+.fi-fo-field-wrp,
+.fi-fo-fieldset,
+.fi-modal-window {
+    border-color: #e5e7eb;
+}
+.dark .filament-forms-card-component,
+.dark .fi-fo-card-wrp,
+.dark .fi-fo-field-wrp,
+.dark .fi-fo-fieldset,
+.dark .fi-modal-window {
+    border-color: #1f2937;
+}
