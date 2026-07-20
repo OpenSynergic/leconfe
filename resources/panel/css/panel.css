@@ -291,6 +291,20 @@ body {
 .fi-btn:not(.fi-outlined).fi-color-primary * {
     color: #ffffff !important;
 }
+
+/* Fix all solid warning buttons globally in Filament (e.g. Set as draft) */
+.fi-btn:not(.fi-outlined).fi-color-warning {
+    --text: #ffffff !important;
+    --dark-text: #ffffff !important;
+    color: #ffffff !important;
+    background-color: #d97706 !important;
+}
+.fi-btn:not(.fi-outlined).fi-color-warning:hover {
+    background-color: #b45309 !important;
+}
+.fi-btn:not(.fi-outlined).fi-color-warning * {
+    color: #ffffff !important;
+}
 /* Mulai dari baris 263 */
 .fi-simple-layout {
     @apply !bg-gray-100 dark:!bg-gray-950;
@@ -358,6 +372,21 @@ body {
 .dark .fi-fo-fieldset,
 .dark .fi-modal-window {
     border-color: #1f2937;
+}
+
+/* Thin border line for table containers without heavy ring shadow */
+.fi-ta-ctn {
+    box-shadow: none !important;
+    --tw-ring-shadow: none !important;
+    --tw-ring-color: transparent !important;
+    ring: 0 !important;
+    border: 1px solid #e5e7eb !important;
+}
+
+/* Subtle divider line inside table container */
+.fi-ta-ctn > :not([hidden]) ~ :not([hidden]),
+.fi-ta-header-toolbar {
+    border-color: rgba(0, 0, 0, 0.06) !important;
 }
 
 /* Clean Table Styling inside User Content */
