@@ -121,10 +121,19 @@ class ReviewResult extends Page implements HasForms, HasTable
                     ->color('primary')
                     ->openUrlInNewTab()
                     ->url(fn ($record) => SubmissionResource::getUrl('view', ['record' => $record]))
-                    ->wrap(),
-                TextColumn::make('status')
+                    ->wrap()
+                    ->extraHeaderAttributes([
+                        'style' => 'max-width: 350px;',
+                    ])
+                    ->extraCellAttributes([
+                        'style' => 'max-width: 350px; white-space: normal !important;',
+                    ])
                     ->extraAttributes([
-                        'class' => 'mt-2',
+                        'style' => 'white-space: normal !important; word-break: break-word;',
+                    ]),
+                TextColumn::make('status')
+                    ->extraCellAttributes([
+                        'style' => 'width: 1px; white-space: nowrap;',
                     ])
                     ->badge()
                     ->formatStateUsing(
