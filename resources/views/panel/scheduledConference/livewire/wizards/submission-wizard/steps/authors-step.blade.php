@@ -1,5 +1,5 @@
 <div class="space-y-6">
-    <div class="p-6 bg-white border filament-forms-card-component dark:bg-gray-900 rounded-xl dark:border-gray-800">
+    <div class="p-6 bg-white border border-gray-200 filament-forms-card-component dark:bg-gray-900 rounded-xl dark:border-gray-800">
         <div class="grid grid-cols-1 gap-6 filament-forms-component-container">
             <div class="col-span-full">
                 <div id="upload-files" class="grid grid-cols-1 filament-forms-section-component md:grid-cols-2">
