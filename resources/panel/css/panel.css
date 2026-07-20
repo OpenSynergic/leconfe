@@ -91,10 +91,48 @@ body {
     @apply shadow-sm z-10
 }
 
-/* Styling TinyMCE input field */
-.tox-tinymce {
-    @apply !rounded-lg;
+/* Filament Input Wrapper containing TinyMCE - Unified Card Border */
+.fi-input-wrp:has(.tox-tinymce),
+.fi-input-wrp:has([x-data*="tinyeditor"]) {
+    @apply !rounded-xl !overflow-hidden !bg-white dark:!bg-gray-900;
+    border: 1px solid #e5e7eb !important;
+    box-shadow: none !important;
+    outline: none !important;
+    --tw-ring-shadow: none !important;
+    --tw-ring-color: transparent !important;
+    ring: 0 !important;
 }
+
+/* TinyMCE Inner Reset */
+.tox-tinymce {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    @apply !rounded-none !overflow-hidden;
+}
+
+.tox-tinymce .tox-editor-header {
+    background-color: #f8fafc !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    box-shadow: none !important;
+}
+
+.tox-tinymce .tox-toolbar-overlord,
+.tox-tinymce .tox-toolbar,
+.tox-tinymce .tox-toolbar__group {
+    background: transparent !important;
+    border: none !important;
+}
+
+.tox-tinymce .tox-edit-area,
+.tox-tinymce .tox-edit-area iframe {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+
+
+
 
 /* #switch-conference .fi-dropdown-panel,
 #switch-series .fi-dropdown-panel {
@@ -285,6 +323,34 @@ body {
 .fi-ta-ctn:has(.fi-ta-empty-state) thead {
     display: none !important;
 }
+
+/* Clean Table Styling inside User Content */
+.user-content table {
+    width: 100%;
+    border-collapse: collapse !important;
+    margin: 1rem 0;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    border: 1px solid #e2e8f0 !important;
+}
+
+.user-content table td,
+.user-content table th {
+    border: 1px solid #e2e8f0 !important;
+    padding: 0.5rem 0.75rem;
+}
+
+/* Menggeser profil & notifikasi kanan atas sedikit ke kiri */
+.fi-topbar > nav > div:last-child,
+.fi-user-menu {
+    margin-right: 1.2rem !important;
+}
+
+
+
+
+
+
 
 
 
