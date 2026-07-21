@@ -75,6 +75,8 @@ class PresentationDiscussion extends Component implements HasForms, HasActions
 
 	public function render()
 	{
+		$this->loadComments();
+
 		return view('panel.scheduledConference.livewire.presentation-discussion');
 	}
 }

@@ -24,7 +24,17 @@ class Dashboard extends BaseDashboard
 
     public static function show(): bool
     {
-        return ! auth()->user()?->hasAnyRole([
+        $user = auth()->user();
+
+        if (! $user) {
+            return false;
+        }
+
+        if ($user->hasRole(UserRole::Admin)) {
+            return true;
+        }
+
+        return ! $user->hasAnyRole([
             UserRole::TrackEditor,
             UserRole::Reviewer,
         ]);

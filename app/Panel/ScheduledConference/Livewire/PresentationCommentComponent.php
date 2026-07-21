@@ -101,6 +101,8 @@ class PresentationCommentComponent extends Component implements HasForms, HasAct
 
 	public function render()
 	{
+		$this->loadData();
+
 		return view('panel.scheduledConference.livewire.presentation-comment-component');
 	}
 }

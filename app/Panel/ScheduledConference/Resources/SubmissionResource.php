@@ -140,6 +140,7 @@ class SubmissionResource extends Resource
 
                                 return $record->user->fullName;
                             })
+                            ->wrap()
                             ->searchable(query: function (Builder $query, string $search): Builder {
                                 return $query
                                     ->whereMeta('title', 'like', "%{$search}%")
