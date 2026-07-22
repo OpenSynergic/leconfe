@@ -212,7 +212,9 @@ class ParticipantRegistration extends Page implements HasForms
 
             if (app()->getCurrentScheduledConference()->isParticipantPaymentAutoNotify()) {
                 $payment->ensureInvoice();
-                auth()->user()->notify(new ParticipantPayment($payment->getKey()));
+                auth()->user()->notify(
+                    (new ParticipantPayment($payment->getKey()))->afterCommit()
+                );
                 $payment->markInvoiceAsSent();
             }
 

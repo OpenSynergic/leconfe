@@ -17,6 +17,7 @@ use App\Models\Submission;
 use App\Models\Track;
 use App\Models\User;
 use App\Notifications\NewSubmission;
+use App\Notifications\ParticipantPayment;
 use App\Notifications\ParticipantRegistered;
 use App\Notifications\SubmissionWithdrawRequested;
 use App\Panel\ScheduledConference\Livewire\Wizards\SubmissionWizard\Steps\ReviewStep;
@@ -150,6 +151,29 @@ class OperationalNotificationRecipientsTest extends TestCase
 
         Notification::assertSentTo($manager, ParticipantRegistered::class);
         Notification::assertNotSentTo($admin, ParticipantRegistered::class);
+    }
+
+    public function test_participant_registration_defers_invoice_notification_until_after_commit(): void
+    {
+        $participant = $this->userWithRole(UserRole::Participant, 'invoice-participant@example.test');
+        $paymentFee = $this->createPaymentFee(PaymentManager::TYPE_PARTICIPANT_FEE);
+
+        $this->scheduledConference->setMeta('participant_payment', true);
+        Notification::fake();
+
+        $this->actingAs($participant);
+
+        Livewire::test(ParticipantRegistration::class)
+            ->set('formData.given_name', 'Invoice')
+            ->set('formData.family_name', 'Participant')
+            ->set('formData.payment_fee_id', $paymentFee->getKey())
+            ->call('submit');
+
+        Notification::assertSentTo(
+            $participant,
+            ParticipantPayment::class,
+            fn (ParticipantPayment $notification): bool => $notification->afterCommit === true,
+        );
     }
 
     public function test_participant_registration_submit_is_ignored_when_registration_is_disabled(): void
