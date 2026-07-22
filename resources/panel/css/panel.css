@@ -421,6 +421,25 @@ body {
     align-items: center !important;
 }
 
+/* Ensure paragraphs inside placeholders, infolists, and rich text always stack vertically */
+.prose p,
+.user-content p,
+.fi-fo-placeholder p,
+.fi-in-text p,
+.fi-in-text-item p {
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 0.75rem !important;
+}
+
+.prose,
+.user-content,
+.fi-fo-placeholder,
+.fi-in-text,
+.fi-in-text-item {
+    flex-direction: column !important;
+}
+
 .fi-ta-text-item > svg,
 .fi-ta-text-item-icon,
 .fi-in-text-item > svg,
