@@ -272,6 +272,16 @@ body {
     @apply bg-gray-100 dark:bg-gray-950;
 }
 
+/* Keep the scheduled-conference index aligned with the original panel layout. */
+.fi-resource-scheduled-conferences > .fi-page-header-main-ctn {
+    padding-top: 0.25rem;
+}
+
+.fi-resource-scheduled-conferences .fi-header-heading {
+    position: relative;
+    top: 0.625rem;
+}
+
 .fi-logo img {
     max-height: 2rem !important;
     width: auto !important;
