@@ -181,24 +181,38 @@ body {
 }
 
 .scheduled-conference-overview .fi-in-text-item > .fi-icon.fi-size-sm,
-.scheduled-conference-overview .fi-in-text-item > span:not(.fi-badge) > .fi-icon.fi-size-sm {
+.scheduled-conference-overview .fi-in-text-item > .fi-in-text-item-icon.fi-size-sm,
+.scheduled-conference-overview .fi-in-text-item > svg.fi-size-sm,
+.scheduled-conference-overview .fi-in-text-item > span:not(.fi-badge) > .fi-icon.fi-size-sm,
+.scheduled-conference-overview .fi-in-text-item > span:not(.fi-badge) > svg.fi-size-sm {
     width: 1.25rem;
     height: 1.25rem;
 }
 
 /* Keep overview values consistently aligned like a compact icon-and-text row. */
-.scheduled-conference-overview .dashboard-overview-section .fi-in-text-item {
+.scheduled-conference-overview .dashboard-overview-section .fi-in-text-item,
+.scheduled-conference-overview .dashboard-overview-section .fi-in-text,
+.scheduled-conference-overview .dashboard-overview-section .fi-in-entry-wrp {
     display: inline-flex !important;
+    flex-direction: row !important;
     align-items: center !important;
     column-gap: 0.5rem;
     line-height: 1.5rem;
 }
 
 .scheduled-conference-overview .dashboard-overview-section .fi-in-text-item > .fi-icon,
-.scheduled-conference-overview .dashboard-overview-section .fi-in-text-item > span:not(.fi-badge) > .fi-icon {
+.scheduled-conference-overview .dashboard-overview-section .fi-in-text-item > .fi-in-text-item-icon,
+.scheduled-conference-overview .dashboard-overview-section .fi-in-text-item > svg,
+.scheduled-conference-overview .dashboard-overview-section .fi-in-text-item > span:not(.fi-badge) > .fi-icon,
+.scheduled-conference-overview .dashboard-overview-section .fi-in-text-item > span:not(.fi-badge) > svg,
+.scheduled-conference-overview .dashboard-overview-section .fi-in-text > .fi-icon,
+.scheduled-conference-overview .dashboard-overview-section .fi-in-text > .fi-in-text-item-icon,
+.scheduled-conference-overview .dashboard-overview-section .fi-in-text > svg {
+    display: inline-block !important;
     margin-inline-end: 0 !important;
-    flex-shrink: 0;
-    transform: translateY(-2px);
+    flex-shrink: 0 !important;
+    vertical-align: middle !important;
+    transform: translateY(-1px);
 }
 
 .scheduled-conference-overview .fi-section-header .fi-btn.fi-color-success:not(.fi-outlined) {
@@ -398,10 +412,11 @@ body {
     }
 }
 
-/* Fix Chrome layout bug only for table values that contain an SVG icon.
- * Applying inline-flex to every value prevents wrapped text from growing
- * naturally and can make long payment labels appear clipped. */
-.fi-ta-text-item:has(> svg) {
+/* Fix Chrome layout bug where SVG icon (display: block) causes line breaks in Filament Tables & Infolists.
+ * Applying inline-flex only when an SVG icon is present prevents wrapped text from growing
+ * naturally and clipping long payment labels. */
+.fi-ta-text-item:has(> svg),
+.fi-in-text-item:has(> svg) {
     display: inline-flex !important;
     align-items: center !important;
 }
@@ -410,6 +425,8 @@ body {
 .fi-ta-text-item-icon,
 .fi-in-text-item > svg,
 .fi-in-text-item > .fi-icon,
+.fi-in-text-item > .fi-in-text-item-icon,
+.fi-in-text-item > span:not(.fi-badge) > svg,
 .fi-in-text-item > span:not(.fi-badge) > .fi-icon {
     display: inline-block !important;
     vertical-align: middle !important;
