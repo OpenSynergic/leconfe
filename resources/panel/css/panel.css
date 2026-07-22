@@ -412,9 +412,11 @@ body {
     }
 }
 
-/* Fix Chrome layout bug where SVG icon (display: block) causes line breaks in Filament Tables & Infolists */
-.fi-ta-text-item,
-.fi-in-text-item {
+/* Fix Chrome layout bug where SVG icon (display: block) causes line breaks in Filament Tables & Infolists.
+ * Applying inline-flex only when an SVG icon is present prevents wrapped text from growing
+ * naturally and clipping long payment labels. */
+.fi-ta-text-item:has(> svg),
+.fi-in-text-item:has(> svg) {
     display: inline-flex !important;
     align-items: center !important;
 }
