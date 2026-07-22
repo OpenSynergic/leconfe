@@ -33,9 +33,11 @@
         <form wire:submit="login" class="fi-form space-y-6">
             {{ $this->form }}
 
-            <a href="{{ $resetPasswordUrl }}" class="fi-simple-link">
-                {{ __('general.forgot_password_question') }}
-            </a>
+            <div class="block mt-4 mb-2">
+                <a href="{{ $resetPasswordUrl }}" class="fi-simple-link">
+                    {{ __('general.forgot_password_question') }}
+                </a>
+            </div>
 
             <x-filament::actions :actions="$this->getFormActions()" :full-width="true" />
         </form>

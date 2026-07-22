@@ -33,8 +33,7 @@
 }
 
 .fi-simple-link {
-       @apply block mt-4 mb-2 text-primary-600 underline transition hover:text-primary-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 dark:text-primary-400 dark:hover:text-primary-300 dark:focus-visible:ring-primary-500;
-
+    @apply text-primary-600 underline transition hover:text-primary-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 dark:text-primary-400 dark:hover:text-primary-300 dark:focus-visible:ring-primary-500;
 }
 
 /* 
