@@ -64,42 +64,44 @@ class DetailStep extends Component implements HasActions, HasForms, HasWizardSte
         $abstractWordLimit = (int) ($this->record?->track?->getMeta('abstract_word_count') ?? 0);
 
         return [
-            Section::make(__('general.submission_details'))
-                ->description(__('general.provide_details_to_help_us'))
-                ->aside()
-                ->schema([
-                    Hidden::make('nextStep'),
-                    Select::make('topic')
-                        ->visible(fn () => Topic::query()->count())
-                        ->preload()
-                        ->multiple()
-                        ->maxItems(fn (): ?int => $this->topicSelectionLimit())
-                        ->helperText(fn (): ?string => $this->topicSelectionLimitHelperText())
-                        ->label(__('general.topic'))
-                        ->searchable()
-                        ->relationship('topics', 'name'),
-                    TextInput::make('meta.title')
-                        ->label(__('general.title'))
-                        ->required(),
-                    TagsInput::make('meta.keywords')
-                        ->label(__('general.keywords'))
-                        ->splitKeys([','])
-                        ->placeholder(''),
-                    TinyEditor::make('meta.abstract')
-                        ->label(__('general.abstract'))
-                        ->minHeight(300)
-                        ->rule(fn (): Closure => function (string $attribute, $value, Closure $fail) use ($abstractWordLimit) {
-                            if ($abstractWordLimit < 1 || blank($value)) {
-                                return;
-                            }
+            Section::make([
+                Section::make(__('general.submission_details'))
+                    ->description(__('general.provide_details_to_help_us'))
+                    ->aside()
+                    ->schema([
+                        Hidden::make('nextStep'),
+                        Select::make('topic')
+                            ->visible(fn () => Topic::query()->count())
+                            ->preload()
+                            ->multiple()
+                            ->maxItems(fn (): ?int => $this->topicSelectionLimit())
+                            ->helperText(fn (): ?string => $this->topicSelectionLimitHelperText())
+                            ->label(__('general.topic'))
+                            ->searchable()
+                            ->relationship('topics', 'name'),
+                        TextInput::make('meta.title')
+                            ->label(__('general.title'))
+                            ->required(),
+                        TagsInput::make('meta.keywords')
+                            ->label(__('general.keywords'))
+                            ->splitKeys([','])
+                            ->placeholder(''),
+                        TinyEditor::make('meta.abstract')
+                            ->label(__('general.abstract'))
+                            ->minHeight(300)
+                            ->rule(fn (): Closure => function (string $attribute, $value, Closure $fail) use ($abstractWordLimit) {
+                                if ($abstractWordLimit < 1 || blank($value)) {
+                                    return;
+                                }
 
-                            if (TinyMceWordCounter::countWords($value) > $abstractWordLimit) {
-                                $fail(__('general.abstract_word_limit_exceeded', ['count' => $abstractWordLimit]));
-                            }
-                        })
-                        ->required(! $this->record?->track->getMeta('do_not_require_abstract') ?? true)
-                        ->dehydrateStateUsing(fn (?string $state) => Purify::clean($state)),
-                ]),
+                                if (TinyMceWordCounter::countWords($value) > $abstractWordLimit) {
+                                    $fail(__('general.abstract_word_limit_exceeded', ['count' => $abstractWordLimit]));
+                                }
+                            })
+                            ->required(! $this->record?->track->getMeta('do_not_require_abstract') ?? true)
+                            ->dehydrateStateUsing(fn (?string $state) => Purify::clean($state)),
+                    ]),
+            ]),
         ];
     }
 

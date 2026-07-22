@@ -383,9 +383,8 @@ body {
     }
 }
 
-/* Fix Chrome layout bug where SVG icon (display: block) causes line breaks in Filament Tables & Infolists */
-.fi-ta-text-item,
-.fi-in-text-item {
+/* Fix Chrome layout bug where SVG icon (display: block) causes line breaks in Filament Tables */
+.fi-ta-text-item {
     display: inline-flex !important;
     align-items: center !important;
     white-space: nowrap !important;
