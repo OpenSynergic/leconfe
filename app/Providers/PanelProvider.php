@@ -13,6 +13,7 @@ use App\Models\Enums\UserRole;
 use Filament\Facades\Filament;
 use Filament\Navigation\MenuItem;
 use Filament\Support\Colors\Color;
+use Filament\Support\Icons\Heroicon;
 use App\Models\ScheduledConference;
 use Filament\View\PanelsRenderHook;
 use App\Forms\Components\TinyEditor;
@@ -199,7 +200,10 @@ class PanelProvider extends ServiceProvider
             )
             ->userMenuItems([
                 'profile' => MenuItem::make()
-                    ->url(fn(): string => Profile::getUrl()),
+                    ->label(fn (): string => Filament::getUserName(Filament::auth()->user()))
+                    ->icon(Heroicon::UserCircle)
+                    ->sort(-1)
+                    ->url(fn (): string => Profile::getUrl()),
             ])
             ->navigationItems([
                 NavigationItem::make(fn() => __('general.documentation'))
