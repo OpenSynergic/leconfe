@@ -387,7 +387,6 @@ body {
 .fi-ta-text-item {
     display: inline-flex !important;
     align-items: center !important;
-    white-space: nowrap !important;
 }
 
 .fi-ta-text-item > svg,
