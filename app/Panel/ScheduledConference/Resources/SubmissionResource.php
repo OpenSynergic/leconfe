@@ -269,6 +269,11 @@ class SubmissionResource extends Resource
                     ->multiple()
                     ->searchable()
                     ->preload(),
+                SelectFilter::make('topic')
+                    ->relationship('topics', 'name')
+                    ->multiple()
+                    ->searchable()
+                    ->preload(),
             ]);
     }
 

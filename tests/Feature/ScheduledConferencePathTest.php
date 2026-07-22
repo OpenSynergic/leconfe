@@ -70,7 +70,7 @@ class ScheduledConferencePathTest extends TestCase
             'Business',
         ]);
 
-        $page = new WebsiteHome();
+        $page = new WebsiteHome;
         $page->filter['faculty']['search'] = 'med';
 
         $page->loadFaculties();
@@ -106,7 +106,7 @@ class ScheduledConferencePathTest extends TestCase
         ]);
         $medicine->setMeta('faculty', 'Medicine');
 
-        $page = new WebsiteHome();
+        $page = new WebsiteHome;
         $page->filter['faculty']['value'] = ['Engineering'];
 
         $method = new \ReflectionMethod($page, 'getViewData');
@@ -115,5 +115,20 @@ class ScheduledConferencePathTest extends TestCase
 
         $this->assertTrue($viewData['scheduledConferences']->contains($engineering));
         $this->assertFalse($viewData['scheduledConferences']->contains($medicine));
+    }
+
+    public function test_website_home_handles_a_hydrated_filter_without_search_state(): void
+    {
+        $page = new WebsiteHome;
+        $page->filter = [
+            'faculty' => ['value' => []],
+            'category' => ['value' => []],
+        ];
+
+        $method = new \ReflectionMethod($page, 'getViewData');
+        $method->setAccessible(true);
+        $viewData = $method->invoke($page);
+
+        $this->assertEmpty($viewData['scheduledConferences']);
     }
 }

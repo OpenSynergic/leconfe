@@ -19,7 +19,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Proceeding extends Model implements HasMedia, Sortable
 {
-    use BelongsToConference, Cachable, HasDOI, HasFactory, InteractsWithMedia, SortableTrait, Metable;
+    use BelongsToConference, Cachable, HasDOI, HasFactory, InteractsWithMedia, Metable, SortableTrait;
 
     protected $table = 'proceedings';
 
@@ -145,6 +145,22 @@ class Proceeding extends Model implements HasMedia, Sortable
             'proceeding' => $this,
             'conference' => $this->conference,
         ]);
+    }
+
+    /**
+     * Resolve the model from a route parameter.
+     *
+     * PostgreSQL rejects a non-numeric value when it is compared with this
+     * model's bigint primary key. Treat an invalid ID as a missing model so
+     * Laravel returns its normal 404 response instead.
+     */
+    public function resolveRouteBinding($value, $field = null)
+    {
+        if (($field ?? $this->getRouteKeyName()) === $this->getKeyName() && ! ctype_digit((string) $value)) {
+            return null;
+        }
+
+        return parent::resolveRouteBinding($value, $field);
     }
 
     protected function getAllDefaultMeta(): array
