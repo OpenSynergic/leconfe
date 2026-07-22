@@ -99,9 +99,9 @@ class MastHeadSetting extends Component implements HasForms, HasActions
                         ->action(function (Action $action) {
                             try {
                                 ConferenceUpdateAction::run($this->form->getRecord(), $this->form->getState());
-                                $action->sendSuccessNotification();
                             } catch (Throwable $th) {
                                 $action->sendFailureNotification();
+                                $action->halt();
                             }
                         }),
                 ])->alignLeft(),

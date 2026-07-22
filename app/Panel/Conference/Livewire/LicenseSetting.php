@@ -90,9 +90,9 @@ class LicenseSetting extends Component implements HasForms, HasActions
                             $formData = $this->form->getState();
                             try {
                                 ConferenceUpdateAction::run($this->form->getRecord(), $formData);
-                                $action->sendSuccessNotification();
                             } catch (Throwable $th) {
                                 $action->sendFailureNotification();
+                                $action->halt();
                             }
                         }),
                 ])->alignLeft(),

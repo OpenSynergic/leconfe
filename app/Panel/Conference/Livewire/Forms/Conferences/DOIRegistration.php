@@ -76,11 +76,9 @@ class DOIRegistration extends Component implements HasForms, HasActions
                                     $driver = DOIRegistrationFacade::driver(Arr::get($formData, 'meta.doi_registration_agency'));
                                     $driver->updateSettings($formData);
                                 }
-
-                                $action->sendSuccessNotification();
                             } catch (Throwable $th) {
-                                throw $th;
                                 $action->sendFailureNotification();
+                                throw $th;
                             }
                         }),
                 ])->alignLeft(),

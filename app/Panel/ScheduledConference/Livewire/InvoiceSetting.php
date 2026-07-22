@@ -109,9 +109,9 @@ class InvoiceSetting extends Component implements HasForms, HasActions
                             $formData = $this->form->getState();
                             try {
                                 app()->getCurrentScheduledConference()->setManyMeta($formData['meta']);
-                                $action->sendSuccessNotification();
                             } catch (Throwable $th) {
                                 $action->sendFailureNotification();
+                                $action->halt();
                             }
                         }),
                 ])->alignLeft(),

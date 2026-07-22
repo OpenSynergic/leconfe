@@ -87,13 +87,14 @@ class SetupSetting extends Component implements HasForms, HasActions
                     Action::make('save')
                         ->label(__('general.save'))
                         ->successNotificationTitle(__('general.saved'))
+                        ->failureNotificationTitle(__('general.data_could_not_saved'))
                         ->action(function (Action $action) {
                             $formData = $this->form->getState();
                             try {
                                 ScheduledConferenceUpdateAction::run(app()->getCurrentScheduledConference(), $formData);
-                                $action->sendSuccessNotification();
                             } catch (Throwable $th) {
                                 $action->sendFailureNotification();
+                                $action->halt();
                             }
                         }),
                 ])->alignLeft(),

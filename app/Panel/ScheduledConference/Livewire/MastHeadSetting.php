@@ -139,11 +139,10 @@ class MastHeadSetting extends Component implements HasForms, HasActions
                                 $scheduledConference = app()->getCurrentScheduledConference();
 
                                 ScheduledConferenceUpdateAction::run($scheduledConference, $formData);
-
-                                $action->sendSuccessNotification();
                             } catch (Throwable $th) {
                                 Log::error($th);
                                 $action->sendFailureNotification();
+                                $action->halt();
                             }
                         }),
                 ])->alignLeft(),

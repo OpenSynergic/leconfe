@@ -123,9 +123,9 @@ class SetupSetting extends Component implements HasForms, HasActions
                             $data = $this->form->getState();
                             try {
                                 SiteUpdateAction::run($data);
-                                $action->sendSuccessNotification();
                             } catch (Throwable $th) {
                                 $action->sendFailureNotification();
+                                $action->halt();
                             }
                         }),
                 ]),

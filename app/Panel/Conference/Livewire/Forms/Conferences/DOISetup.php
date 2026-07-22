@@ -106,10 +106,9 @@ class DOISetup extends Component implements HasForms, HasActions
                             $formData = $this->form->getState();
                             try {
                                 ConferenceUpdateAction::run(app()->getCurrentConference(), $formData);
-                                $action->sendSuccessNotification();
                             } catch (Throwable $th) {
-                                throw $th;
                                 $action->sendFailureNotification();
+                                throw $th;
                             }
                         }),
                 ])->alignLeft(),

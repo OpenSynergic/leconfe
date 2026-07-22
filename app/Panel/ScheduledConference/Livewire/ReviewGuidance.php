@@ -62,9 +62,9 @@ class ReviewGuidance extends Component implements HasForms, HasActions
                             $formData = $this->form->getState();
                             try {
                                 ScheduledConferenceUpdateAction::run(app()->getCurrentScheduledConference(), $formData);
-                                $action->sendSuccessNotification();
                             } catch (Throwable $th) {
                                 $action->sendFailureNotification();
+                                $action->halt();
                             }
                         }),
                 ])->alignLeft(),

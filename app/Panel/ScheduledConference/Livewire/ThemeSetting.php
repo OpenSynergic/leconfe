@@ -96,11 +96,9 @@ class ThemeSetting extends Component implements HasForms, HasActions
 
                                 $theme = FacadesPlugin::getPlugin($formData['meta']['theme']);
                                 $theme?->saveFormData($formData['theme'] ?? []);
-
-                                $action->sendSuccessNotification();
                             } catch (Throwable $th) {
-                                throw $th;
                                 $action->sendFailureNotification();
+                                throw $th;
                             }
                         }),
                 ])->alignLeft(),
