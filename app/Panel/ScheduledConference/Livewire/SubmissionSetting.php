@@ -102,7 +102,6 @@ class SubmissionSetting extends Component implements HasForms, HasActions
                                 }
 
                                 DB::commit();
-                                $action->sendSuccessNotification();
                             } catch (Throwable $th) {
                                 $action->failureNotificationTitle($th->getMessage());
                                 $action->sendFailureNotification();

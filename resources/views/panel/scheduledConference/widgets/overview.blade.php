@@ -1,4 +1,4 @@
-<x-filament-widgets::widget>
+<x-filament-widgets::widget class="scheduled-conference-overview">
     @hook('Panel::ScheduledConference::DashboardOverviewBefore')
 
     {{ $this->scheduledConferenceInfolist }}
