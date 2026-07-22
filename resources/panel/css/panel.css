@@ -147,6 +147,10 @@ body {
     @apply !bg-white;
 }
 
+.fi-ta-hide-header-when-empty:has(.fi-ta-empty-state) .fi-ta-table thead {
+    display: none;
+}
+
 /* .fi-ta-group-header {
     @apply !bg-white !py-3;
 } */
@@ -410,5 +414,4 @@ body {
 .fi-user-menu {
     margin-right: 1.2rem !important;
 }
-
 

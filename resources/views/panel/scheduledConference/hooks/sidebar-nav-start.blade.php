@@ -51,7 +51,7 @@
     </x-slot>
 
     <x-filament::dropdown.list>
-        <div class="flex items-center w-full gap-2 p-2 text-sm font-medium transition-colors duration-75 border-b outline-none whitespace-nowrap">
+        <div class="flex items-center w-full gap-2 p-2 text-sm font-medium transition-colors duration-75 border-b border-gray-200 outline-none whitespace-nowrap dark:border-gray-700">
             {{ __('general.switch_scheduled_conference') }}
         </div>
 
