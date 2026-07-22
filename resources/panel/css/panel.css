@@ -463,10 +463,16 @@ body {
     margin-inline-end: 0.375rem !important;
 }
 
-/* Fix infolist badge stretching across 100% width of the card */
-.fi-in-text.fi-in-text-has-badges {
-    width: max-content !important;
-    max-width: 100%;
+/* Fix infolist & table badge stretching across 100% width of the card without altering column placement */
+.fi-in-text.fi-in-text-has-badges,
+.fi-ta-text.fi-ta-text-has-badges,
+.fi-ta-text-has-badges .fi-ta-text-item,
+.fi-ta-text-has-badges .fi-badge,
+.fi-ta-badges .fi-badge {
+    width: auto !important;
+    max-width: max-content !important;
+    flex: 0 0 auto !important;
+    display: inline-flex !important;
 }
 
 /* Fix bare border classes defaulting to pitch black in form cards and modals */
