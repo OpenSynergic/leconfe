@@ -79,6 +79,7 @@ class Overview extends Widget implements HasForms, HasInfolists, HasActions
             ->columns(2)
             ->components([
                 Section::make('Overview')
+                    ->extraAttributes(['class' => 'dashboard-overview-section'])
                     ->columnSpanFull()
                     ->headerActions([
                         Action::make('setting')
@@ -173,6 +174,7 @@ class Overview extends Widget implements HasForms, HasInfolists, HasActions
                             ->url(SubmissionResource::getUrl('index', ['activeTab' => 3, 'tableFilters[status][value]' => SubmissionStatus::Published->value])),
                     ]),
                 Section::make('Payments')
+                    ->extraAttributes(['class' => 'dashboard-payments-section'])
                     ->columnSpan(1)
                     ->columns(2)
                     ->headerActions([

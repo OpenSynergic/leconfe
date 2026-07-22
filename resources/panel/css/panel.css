@@ -146,8 +146,55 @@ body {
     @apply !bg-white;
 }
 
-.fi-ta-hide-header-when-empty:has(.fi-ta-empty-state) .fi-ta-table thead {
+.fi-ta-ctn:has(.fi-ta-empty-state) .fi-ta-table thead {
     display: none;
+}
+
+.scheduled-conference-overview .fi-section:not(.fi-section-not-contained):not(.fi-aside) > .fi-section-header {
+    padding-block: 1.375rem;
+}
+
+.scheduled-conference-overview .fi-section:not(.fi-section-not-contained):not(.fi-divided) > .fi-section-content-ctn > .fi-section-content {
+    padding-block: 1.75rem;
+}
+
+.scheduled-conference-overview .dashboard-overview-section > .fi-section > .fi-section-content-ctn > .fi-section-content {
+    padding-top: 1.625rem;
+    padding-bottom: 1.3125rem;
+}
+
+.scheduled-conference-overview .dashboard-overview-section .fi-in-entry {
+    row-gap: 0.75rem;
+}
+
+.scheduled-conference-overview .dashboard-payments-section > .fi-section > .fi-section-content-ctn > .fi-section-content {
+    padding-top: 1.6875rem;
+    padding-bottom: 1.5rem;
+}
+
+.scheduled-conference-overview .fi-in-entry-label {
+    color: #4b5563;
+}
+
+.scheduled-conference-overview .fi-in-entry-label:where(.dark, .dark *) {
+    color: #9ca3af;
+}
+
+.scheduled-conference-overview .fi-in-text-item > .fi-icon.fi-size-sm,
+.scheduled-conference-overview .fi-in-text-item > span:not(.fi-badge) > .fi-icon.fi-size-sm {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.scheduled-conference-overview .fi-section-header .fi-btn.fi-color-success:not(.fi-outlined) {
+    --bg: #16a34a;
+    --text: #ffffff;
+    --hover-bg: #15803d;
+    --hover-text: #ffffff;
+    --dark-bg: #16a34a;
+    --dark-text: #ffffff;
+    --dark-hover-bg: #15803d;
+    --dark-hover-text: #ffffff;
 }
 
 /* .fi-ta-group-header {
@@ -413,4 +460,3 @@ body {
 .fi-user-menu {
     margin-right: 1.2rem !important;
 }
-

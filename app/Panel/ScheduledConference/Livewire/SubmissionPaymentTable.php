@@ -44,7 +44,7 @@ class SubmissionPaymentTable extends Component implements HasForms, HasTable, Ha
 
     public function render()
     {
-        return view('tables.submission-payment-table');
+        return view('tables.table');
     }
 
     public static function canSendInvoiceFor(Payment $record): bool
