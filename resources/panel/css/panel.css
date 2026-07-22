@@ -398,8 +398,10 @@ body {
     }
 }
 
-/* Fix Chrome layout bug where SVG icon (display: block) causes line breaks in Filament Tables */
-.fi-ta-text-item {
+/* Fix Chrome layout bug only for table values that contain an SVG icon.
+ * Applying inline-flex to every value prevents wrapped text from growing
+ * naturally and can make long payment labels appear clipped. */
+.fi-ta-text-item:has(> svg) {
     display: inline-flex !important;
     align-items: center !important;
 }
