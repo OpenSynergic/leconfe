@@ -12,7 +12,7 @@ USER root
 COPY ./.dockerdata/entrypoint.d /etc/entrypoint.d
 
 # Install PHP extensions with root permissions
-RUN install-php-extensions intl bcmath gd exif pdo_mysql
+RUN install-php-extensions intl bcmath gd exif
 
 ############################################
 # Production Image
