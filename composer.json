@@ -44,7 +44,7 @@
         "propaganistas/laravel-phone": "*@dev",
         "rahmanramsi/laravel-async-queue": "*@dev",
         "rahmanramsi/livewire-page-group": "*@dev",
-        "rickselby/laravel-gate-cache": "*@dev",
+        "alecto1b/laravel-gate-cache": "*@dev",
         "seboettg/citeproc-php": "2.5.2",
         "seboettg/collection": ">=3.1.0,<4.0.0",
         "spatie/array-to-xml": "^3.3",
@@ -127,20 +127,20 @@
     },
     "repositories": [
         {
-            "type": "path",
-            "url": "packages/laravel-async-queue"
+            "type": "git",
+            "url": "https://github.com/nescryo/laravel-async-queue.git"
         },
         {
-            "type": "path",
-            "url": "packages/livewire-page-group"
+            "type": "git",
+            "url": "https://github.com/Alecto1b/livewire-page-group.git"
         },
         {
-            "type": "path",
-            "url": "packages/laravel-phone"
+            "type": "git",
+            "url": "https://github.com/nescryo/laravel-phone.git"
         },
         {
-            "type": "path",
-            "url": "packages/laravel-gate-cache"
+            "type": "git",
+            "url": "https://github.com/Alecto1b/laravel-gate-cache.git"
         }
     ],
     "minimum-stability": "dev",
