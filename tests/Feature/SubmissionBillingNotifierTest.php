@@ -765,7 +765,11 @@ class SubmissionBillingNotifierTest extends TestCase
             'record' => $payment,
         ]);
 
-        Notification::assertSentTo($context['user'], SubmissionPayment::class);
+        Notification::assertSentTo(
+            $context['user'],
+            SubmissionPayment::class,
+            fn (SubmissionPayment $notification): bool => $notification->paymentId === $payment->getKey(),
+        );
         $this->assertNotNull($payment->refresh()->invoice);
         $this->assertTrue($payment->hasInvoiceBeenSent());
     }
@@ -866,7 +870,11 @@ class SubmissionBillingNotifierTest extends TestCase
             'record' => $payment,
         ]);
 
-        Notification::assertSentTo($participant, ParticipantPayment::class);
+        Notification::assertSentTo(
+            $participant,
+            ParticipantPayment::class,
+            fn (ParticipantPayment $notification): bool => $notification->paymentId === $payment->getKey(),
+        );
         $this->assertNotNull($payment->refresh()->invoice);
         $this->assertTrue($payment->hasInvoiceBeenSent());
     }
@@ -935,8 +943,6 @@ class SubmissionBillingNotifierTest extends TestCase
 
         $payment = $context['submission']->payment()->with('scheduledConference.conference')->firstOrFail();
         $payment->update(['invoice' => 'INV-001']);
-        $context['submission']->setRelation('payment', $payment);
-
         (function () {
             $this->currentConferenceId = null;
             $this->currentConference = null;
@@ -945,7 +951,7 @@ class SubmissionBillingNotifierTest extends TestCase
         })->call(app());
 
         $url = $payment->getPaymentDetailUrl();
-        $notification = new SubmissionPayment($context['submission']);
+        $notification = new SubmissionPayment($payment->getKey());
         $databaseMessage = $notification->toDatabase($context['user']);
 
         $this->assertSame(
@@ -997,8 +1003,6 @@ class SubmissionBillingNotifierTest extends TestCase
         )->loadMissing(['scheduledConference.conference', 'fee']);
 
         $payment->update(['invoice' => 'INV-002']);
-        $participant->setRelation('payment', $payment);
-
         (function () {
             $this->currentConferenceId = null;
             $this->currentConference = null;
@@ -1007,7 +1011,7 @@ class SubmissionBillingNotifierTest extends TestCase
         })->call(app());
 
         $url = $payment->getPaymentDetailUrl();
-        $notification = new ParticipantPayment($participant);
+        $notification = new ParticipantPayment($payment->getKey());
         $databaseMessage = $notification->toDatabase($context['user']);
 
         $this->assertSame(
@@ -1020,6 +1024,55 @@ class SubmissionBillingNotifierTest extends TestCase
         );
         $this->assertSame($url, data_get($databaseMessage, 'actions.0.url'));
         $this->assertSame($url, data_get($notification->toMail($context['user'])->buildViewData(), 'Payment Link'));
+    }
+
+    public function test_payment_notifications_queue_only_the_payment_identifier(): void
+    {
+        $context = $this->makeSubmissionContext(
+            billingStage: SubmissionStage::PeerReview,
+            submissionStage: SubmissionStage::PeerReview,
+            submissionStatus: SubmissionStatus::OnReview,
+        );
+
+        $this->queueSubmissionPayment($context['submission'], $context['paymentFee']);
+        $submissionPayment = $context['submission']->payment()->firstOrFail();
+
+        $participant = Participant::withoutGlobalScopes()->create([
+            'given_name' => 'Participant',
+            'family_name' => 'Tester',
+            'email' => 'participant-queue@example.test',
+            'conference_id' => $context['conference']->getKey(),
+            'scheduled_conference_id' => $context['scheduledConference']->getKey(),
+        ]);
+
+        $participantPayment = PaymentManager::get()->queue(
+            $participant,
+            $context['paymentFee'],
+            $context['user'],
+            PaymentManager::TYPE_PARTICIPANT_FEE,
+            $participant->full_name,
+            '/participant/'.$participant->getKey(),
+            'Participant billing',
+        );
+
+        $submissionNotification = new SubmissionPayment($submissionPayment->getKey());
+        $participantNotification = new ParticipantPayment($participantPayment->getKey());
+        $restoredSubmissionNotification = unserialize(serialize($submissionNotification));
+        $restoredParticipantNotification = unserialize(serialize($participantNotification));
+        $restoredSubmissionJob = unserialize(serialize(new \Illuminate\Notifications\SendQueuedNotifications($context['user'], $submissionNotification, ['mail'])));
+        $restoredParticipantJob = unserialize(serialize(new \Illuminate\Notifications\SendQueuedNotifications($participant, $participantNotification, ['mail'])));
+
+        $submission = app(\App\Services\Billing\InvoicePaymentContextResolver::class)->submission($submissionPayment->getKey());
+        $resolvedParticipant = app(\App\Services\Billing\InvoicePaymentContextResolver::class)->participant($participantPayment->getKey());
+
+        $this->assertSame($submissionPayment->getKey(), $restoredSubmissionNotification->paymentId);
+        $this->assertSame($participantPayment->getKey(), $restoredParticipantNotification->paymentId);
+        $this->assertSame($submissionPayment->getKey(), $restoredSubmissionJob->notification->paymentId);
+        $this->assertSame($participantPayment->getKey(), $restoredParticipantJob->notification->paymentId);
+        $this->assertTrue($submission->relationLoaded('payment'));
+        $this->assertFalse($submission->payment->relationLoaded('model'));
+        $this->assertTrue($resolvedParticipant->relationLoaded('payment'));
+        $this->assertFalse($resolvedParticipant->payment->relationLoaded('model'));
     }
 
     protected function makeSubmissionContext(

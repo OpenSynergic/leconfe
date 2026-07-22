@@ -310,8 +310,7 @@ class PaymentDetail extends Page
 
             if ($participant && $record->user) {
                 $record->ensureInvoice();
-                $participant->setRelation('payment', $record->refresh());
-                $record->user->notify(new ParticipantPayment($participant));
+                $record->user->notify(new ParticipantPayment($record->getKey()));
                 $record->markInvoiceAsSent();
             }
         }
@@ -391,8 +390,7 @@ class PaymentDetail extends Page
             return;
         }
 
-        $submission->setRelation('payment', $record);
-        $submission->user->notify(new SubmissionPayment($submission));
+        $submission->user->notify(new SubmissionPayment($record->getKey()));
         $record->markInvoiceAsSent();
 
         static::successSendInvoice($action);
@@ -409,8 +407,7 @@ class PaymentDetail extends Page
             return;
         }
 
-        $participant->setRelation('payment', $record);
-        $participant->notify(new ParticipantPayment($participant));
+        $participant->notify(new ParticipantPayment($record->getKey()));
         $record->markInvoiceAsSent();
 
         static::successSendInvoice($action);
