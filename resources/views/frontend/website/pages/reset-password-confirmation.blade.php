@@ -40,9 +40,11 @@
                     {{ __('general.reset_password_update_success') }}
                 </p>
 
-                <a href="{{ app()->getLoginUrl() }}" class="fi-simple-link">
-                    {{ __('general.login') }}
-                </a>
+                <div class="block mt-4 mb-2">
+                    <a href="{{ app()->getLoginUrl() }}" class="fi-simple-link">
+                        {{ __('general.login') }}
+                    </a>
+                </div>
             </div>
         @endif
     </section>

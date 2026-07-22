@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "be5dc4096e451b0caf047296fce8c72f",
+    "content-hash": "e3eb36c58d1a423e8074ebbc0c09d159",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -76,11 +76,17 @@
         },
         {
             "name": "alecto1b/laravel-gate-cache",
-            "version": "dev-main",
+            "version": "v3.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Alecto1b/laravel-gate-cache.git",
-                "reference": "881abe2685d57cca14605ecfa17c5939de968632"
+                "reference": "8d61e3fe3eb290246c66e80e4116c9212ae4b20d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Alecto1b/laravel-gate-cache/zipball/8d61e3fe3eb290246c66e80e4116c9212ae4b20d",
+                "reference": "8d61e3fe3eb290246c66e80e4116c9212ae4b20d",
+                "shasum": ""
             },
             "require": {
                 "illuminate/auth": "^10.0 || ^11.0 || ^12.0 || ^13.0",
@@ -92,7 +98,6 @@
                 "laravel/pint": "^1.14",
                 "phpunit/phpunit": "^10.5 || ^11.5 || ^12.5"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -106,30 +111,28 @@
                     "RickSelby\\Laravel\\GateCache\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "RickSelby\\Tests\\": "tests/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "phpunit"
-                ],
-                "format": [
-                    "pint"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "authors": [
                 {
                     "name": "Rick Selby",
-                    "email": "rick@selby-family.co.uk"
+                    "email": "rick@selby-family.co.uk",
+                    "role": "Original Author"
+                },
+                {
+                    "name": "Alecto1b",
+                    "role": "Maintainer"
                 }
             ],
             "description": "Add a per-request caching layer to Laravel's Gate",
-            "time": "2026-07-21T05:39:56+00:00"
+            "homepage": "https://github.com/Alecto1b/laravel-gate-cache",
+            "support": {
+                "issues": "https://github.com/Alecto1b/laravel-gate-cache/issues",
+                "source": "https://github.com/Alecto1b/laravel-gate-cache"
+            },
+            "time": "2026-07-22T00:23:06+00:00"
         },
         {
             "name": "amidesfahani/filament-tinyeditor",
@@ -7950,30 +7953,31 @@
         },
         {
             "name": "propaganistas/laravel-phone",
-            "version": "dev-main",
+            "version": "6.0.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/nescryo/laravel-phone.git",
-                "reference": "86ae76e14d426b7bb5b76a5ac6ea6271a1278201"
+                "url": "https://github.com/Propaganistas/Laravel-Phone.git",
+                "reference": "b0e2bdb44cfbeaf2466862aaf854815605b5205a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nescryo/laravel-phone/zipball/86ae76e14d426b7bb5b76a5ac6ea6271a1278201",
-                "reference": "86ae76e14d426b7bb5b76a5ac6ea6271a1278201",
+                "url": "https://api.github.com/repos/Propaganistas/Laravel-Phone/zipball/b0e2bdb44cfbeaf2466862aaf854815605b5205a",
+                "reference": "b0e2bdb44cfbeaf2466862aaf854815605b5205a",
                 "shasum": ""
             },
             "require": {
-                "giggsey/libphonenumber-for-php-lite": "^8.13.35|^9.0.0",
-                "illuminate/contracts": "^10.0|^11.0|^12.0|^13.0",
-                "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
-                "illuminate/validation": "^10.0|^11.0|^12.0|^13.0"
+                "ext-mbstring": "*",
+                "giggsey/libphonenumber-for-php-lite": "^9.0",
+                "illuminate/contracts": "^11.0|^12.0|^13.0",
+                "illuminate/support": "^11.0|^12.0|^13.0",
+                "illuminate/validation": "^11.0|^12.0|^13.0",
+                "php": "^8.2"
             },
             "require-dev": {
-                "laravel/pint": "^1.14",
+                "laravel/pint": "^1.21",
                 "orchestra/testbench": "*",
-                "phpunit/phpunit": "^10.5|^11.5.3"
+                "phpunit/phpunit": "^11.5.3"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
@@ -7983,18 +7987,14 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Propaganistas\\LaravelPhone\\": "src/"
-                },
                 "files": [
                     "src/helpers.php"
-                ]
-            },
-            "autoload-dev": {
+                ],
                 "psr-4": {
-                    "Propaganistas\\LaravelPhone\\Tests\\": "tests/"
+                    "Propaganistas\\LaravelPhone\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -8012,10 +8012,16 @@
                 "validation"
             ],
             "support": {
-                "source": "https://github.com/nescryo/laravel-phone/tree/main",
-                "issues": "https://github.com/nescryo/laravel-phone/issues"
+                "issues": "https://github.com/Propaganistas/Laravel-Phone/issues",
+                "source": "https://github.com/Propaganistas/Laravel-Phone/tree/6.0.3"
             },
-            "time": "2026-07-21T01:41:20+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/Propaganistas",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-03-18T07:05:47+00:00"
         },
         {
             "name": "psr/clock",
@@ -8510,16 +8516,16 @@
         },
         {
             "name": "rahmanramsi/laravel-async-queue",
-            "version": "dev-main",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/nescryo/laravel-async-queue.git",
-                "reference": "bdb2be2fc6168d6ffe2b04b47451267b61972639"
+                "url": "https://github.com/rahmanramsi/laravel-async-queue.git",
+                "reference": "f9d9c864105d7121cb5c283aab22565b05198cd9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nescryo/laravel-async-queue/zipball/bdb2be2fc6168d6ffe2b04b47451267b61972639",
-                "reference": "bdb2be2fc6168d6ffe2b04b47451267b61972639",
+                "url": "https://api.github.com/repos/rahmanramsi/laravel-async-queue/zipball/f9d9c864105d7121cb5c283aab22565b05198cd9",
+                "reference": "f9d9c864105d7121cb5c283aab22565b05198cd9",
                 "shasum": ""
             },
             "require": {
@@ -8527,7 +8533,6 @@
                 "illuminate/auth": "10.*|11.*|12.*|13.*",
                 "illuminate/contracts": "10.*|11.*|12.*|13.*"
             },
-            "default-branch": true,
             "type": "laravel",
             "extra": {
                 "laravel": {
@@ -8541,6 +8546,7 @@
                     "Rahmanramsi\\LaravelAsyncQueue\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -8552,17 +8558,24 @@
             ],
             "description": "Async queue driver for laravel",
             "support": {
-                "source": "https://github.com/nescryo/laravel-async-queue/tree/main"
+                "issues": "https://github.com/rahmanramsi/laravel-async-queue/issues",
+                "source": "https://github.com/rahmanramsi/laravel-async-queue/tree/1.1.0"
             },
-            "time": "2026-07-21T02:24:16+00:00"
+            "time": "2026-07-21T23:57:55+00:00"
         },
         {
             "name": "rahmanramsi/livewire-page-group",
-            "version": "dev-main",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Alecto1b/livewire-page-group.git",
-                "reference": "4779b6967f3e7022f0511718704cbeca62185c98"
+                "url": "https://github.com/rahmanramsi/livewire-page-group.git",
+                "reference": "03a26b597b880673c5b0cc0f3921789164f3817e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rahmanramsi/livewire-page-group/zipball/03a26b597b880673c5b0cc0f3921789164f3817e",
+                "reference": "03a26b597b880673c5b0cc0f3921789164f3817e",
+                "shasum": ""
             },
             "require": {
                 "illuminate/contracts": "^10.0 || ^11.0 || ^12.0 || ^13.0",
@@ -8578,16 +8591,15 @@
                 "pestphp/pest-plugin-arch": "^2.7 || ^3.1 || ^4.0",
                 "pestphp/pest-plugin-laravel": "^2.4 || ^3.2 || ^4.0"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "laravel": {
-                    "providers": [
-                        "Rahmanramsi\\LivewirePageGroup\\LivewirePageGroupServiceProvider"
-                    ],
                     "aliases": {
                         "LivewirePageGroup": "Rahmanramsi\\LivewirePageGroup\\Facades\\LivewirePageGroup"
-                    }
+                    },
+                    "providers": [
+                        "Rahmanramsi\\LivewirePageGroup\\LivewirePageGroupServiceProvider"
+                    ]
                 }
             },
             "autoload": {
@@ -8595,25 +8607,7 @@
                     "Rahmanramsi\\LivewirePageGroup\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Rahmanramsi\\LivewirePageGroup\\Tests\\": "tests/"
-                }
-            },
-            "scripts": {
-                "post-autoload-dump": [
-                    "@php ./vendor/bin/testbench package:discover --ansi"
-                ],
-                "test": [
-                    "vendor/bin/pest"
-                ],
-                "test-coverage": [
-                    "vendor/bin/pest --coverage"
-                ],
-                "format": [
-                    "vendor/bin/pint"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -8631,7 +8625,11 @@
                 "livewire-page-group",
                 "rahmanramsi"
             ],
-            "time": "2026-07-21T02:02:45+00:00"
+            "support": {
+                "issues": "https://github.com/rahmanramsi/livewire-page-group/issues",
+                "source": "https://github.com/rahmanramsi/livewire-page-group/tree/1.1.0"
+            },
+            "time": "2026-07-22T00:20:53+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
@@ -17231,12 +17229,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "alecto1b/laravel-gate-cache": 20,
-        "propaganistas/laravel-phone": 20,
-        "rahmanramsi/laravel-async-queue": 20,
-        "rahmanramsi/livewire-page-group": 20
-    },
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

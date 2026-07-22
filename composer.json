@@ -41,10 +41,10 @@
         "omnipay/paypal": "^3.0",
         "plank/laravel-metable": "^6.0",
         "propaganistas/laravel-disposable-email": "^2.2",
-        "propaganistas/laravel-phone": "*@dev",
-        "rahmanramsi/laravel-async-queue": "*@dev",
-        "rahmanramsi/livewire-page-group": "*@dev",
-        "alecto1b/laravel-gate-cache": "*@dev",
+        "propaganistas/laravel-phone": "^6.0",
+        "rahmanramsi/laravel-async-queue": "^1.1",
+        "rahmanramsi/livewire-page-group": "^1.1",
+        "alecto1b/laravel-gate-cache": "^3.10",
         "seboettg/citeproc-php": "2.5.2",
         "seboettg/collection": ">=3.1.0,<4.0.0",
         "spatie/array-to-xml": "^3.3",
@@ -125,24 +125,6 @@
             "php-http/discovery": true
         }
     },
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/nescryo/laravel-async-queue.git"
-        },
-        {
-            "type": "git",
-            "url": "https://github.com/Alecto1b/livewire-page-group.git"
-        },
-        {
-            "type": "git",
-            "url": "https://github.com/nescryo/laravel-phone.git"
-        },
-        {
-            "type": "git",
-            "url": "https://github.com/Alecto1b/laravel-gate-cache.git"
-        }
-    ],
     "minimum-stability": "dev",
     "prefer-stable": true
 }

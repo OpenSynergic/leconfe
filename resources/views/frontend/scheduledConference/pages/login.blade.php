@@ -27,7 +27,7 @@
         <form wire:submit="login" class="fi-form space-y-6">
             {{ $this->form }}
 
-            <label class="label-text">
+            <label class="label-text block mt-4 mb-2">
                 <x-website::link :href="$resetPasswordUrl"
                     class="fi-simple-link">{{ __('general.forgot_password_question') }}</x-website::link>
             </label>
