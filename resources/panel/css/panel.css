@@ -186,6 +186,21 @@ body {
     height: 1.25rem;
 }
 
+/* Keep overview values consistently aligned like a compact icon-and-text row. */
+.scheduled-conference-overview .dashboard-overview-section .fi-in-text-item {
+    display: inline-flex !important;
+    align-items: center !important;
+    column-gap: 0.5rem;
+    line-height: 1.5rem;
+}
+
+.scheduled-conference-overview .dashboard-overview-section .fi-in-text-item > .fi-icon,
+.scheduled-conference-overview .dashboard-overview-section .fi-in-text-item > span:not(.fi-badge) > .fi-icon {
+    margin-inline-end: 0 !important;
+    flex-shrink: 0;
+    transform: translateY(-2px);
+}
+
 .scheduled-conference-overview .fi-section-header .fi-btn.fi-color-success:not(.fi-outlined) {
     --bg: #16a34a;
     --text: #ffffff;
@@ -457,4 +472,19 @@ body {
 .fi-topbar > nav > div:last-child,
 .fi-user-menu {
     margin-right: 1.2rem !important;
+}
+
+/* Match the spacing of the original empty notification state. */
+.fi-no-database .fi-modal-window.fi-align-center .fi-modal-header {
+    margin-top: 0.5rem;
+    padding-top: 1.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.fi-no-database .fi-modal-window.fi-align-center .fi-modal-icon-ctn {
+    margin-bottom: 1.75rem;
+}
+
+.fi-no-database .fi-modal-window.fi-align-center .fi-modal-close-btn {
+    top: 1.5rem;
 }
