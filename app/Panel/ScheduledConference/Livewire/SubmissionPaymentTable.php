@@ -19,6 +19,7 @@ use App\Models\Submission;
 use App\Notifications\SubmissionPayment;
 use App\Panel\ScheduledConference\Pages\PaymentDetail;
 use App\Panel\ScheduledConference\Resources\SubmissionResource;
+use App\Services\Billing\InvoicePaymentContextResolver;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
@@ -191,8 +192,7 @@ class SubmissionPaymentTable extends Component implements HasForms, HasTable, Ha
                                 return;
                             }
 
-                            $submission->setRelation('payment', $record->refresh());
-                            $submission->user->notify(new SubmissionPayment($submission));
+                            $submission->user->notify(new SubmissionPayment($record->getKey()));
                             $record->markInvoiceAsSent();
                             $action->successNotificationTitle(__('general.invoice_sent_successfully'));
                             $action->success();
@@ -220,23 +220,13 @@ class SubmissionPaymentTable extends Component implements HasForms, HasTable, Ha
                             ->required(),
                     ])
                     ->action(function (Collection $records, array $data, BulkAction $action) {
-                        $records->load([
-                            'model.user',
-                            'scheduledConference.conference',
-                        ]);
-
                         $records->each(function ($record) use ($data) {
-                            $submission = $record->model;
+                            $record->ensureInvoice();
+                            $submission = app(InvoicePaymentContextResolver::class)->submission($record->getKey());
 
-                            if (! $submission || ! $submission->user) {
+                            if (! $submission->user) {
                                 return;
                             }
-
-                            $record->ensureInvoice();
-                            $submission->setRelation(
-                                'payment',
-                                $record->refresh()->loadMissing('scheduledConference.conference')
-                            );
 
                             $mailTemplate = new SubmissionPaymentMail($submission);
 

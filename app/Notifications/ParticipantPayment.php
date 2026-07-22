@@ -2,9 +2,10 @@
 
 namespace App\Notifications;
 
-use Filament\Actions\Action;
 use App\Mail\Templates\ParticipantPaymentMail;
 use App\Models\Participant;
+use App\Services\Billing\InvoicePaymentContextResolver;
+use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification as FilamentNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -18,9 +19,8 @@ class ParticipantPayment extends Notification implements ShouldQueue
      * Create a new notification instance.
      */
     public function __construct(
-        public Participant $participant,
-        )
-    {
+        public int $paymentId,
+    ) {
         //
     }
 
@@ -39,25 +39,32 @@ class ParticipantPayment extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable)
     {
-        return (new ParticipantPaymentMail($this->participant))
+        return (new ParticipantPaymentMail($this->participant()))
             ->to($notifiable);
     }
 
     public function toDatabase(object $notifiable)
     {
+        $participant = $this->participant();
+
         return FilamentNotification::make()
             ->icon('lineawesome-exclamation-circle-solid')
             ->iconColor('primary')
             ->title('Payment Required')
-            ->body("Participant Payment for: " . $this->participant->payment->fee->name)
+            ->body('Participant Payment for: '.$participant->payment->fee->name)
             ->actions([
                 Action::make('new-submission')
-                    ->url($this->participant->payment->getPaymentDetailUrl())
+                    ->url($participant->payment->getPaymentDetailUrl())
                     ->label('Pay')
                     ->openUrlInNewTab()
                     ->markAsRead(),
             ])
             ->getDatabaseMessage();
+    }
+
+    protected function participant()
+    {
+        return app(InvoicePaymentContextResolver::class)->participant($this->paymentId);
     }
 
     /**

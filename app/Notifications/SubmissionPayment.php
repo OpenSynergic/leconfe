@@ -2,11 +2,12 @@
 
 namespace App\Notifications;
 
-use Filament\Actions\Action;
 use App\Mail\Templates\PaymentRequiredMail;
 use App\Mail\Templates\SubmissionPaymentMail;
 use App\Models\Payment;
 use App\Models\Submission;
+use App\Services\Billing\InvoicePaymentContextResolver;
+use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification as FilamentNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -20,9 +21,8 @@ class SubmissionPayment extends Notification implements ShouldQueue
      * Create a new notification instance.
      */
     public function __construct(
-        public Submission $submission,
-        )
-    {
+        public int $paymentId,
+    ) {
         //
     }
 
@@ -41,25 +41,32 @@ class SubmissionPayment extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable)
     {
-        return (new SubmissionPaymentMail($this->submission))
+        return (new SubmissionPaymentMail($this->submission()))
             ->to($notifiable);
     }
 
     public function toDatabase(object $notifiable)
     {
+        $submission = $this->submission();
+
         return FilamentNotification::make()
             ->icon('lineawesome-exclamation-circle-solid')
             ->iconColor('primary')
             ->title('Payment Required')
-            ->body('Title: '.$this->submission->payment->getMeta('title'))
+            ->body('Title: '.$submission->payment->getMeta('title'))
             ->actions([
                 Action::make('new-submission')
-                    ->url($this->submission->payment->getPaymentDetailUrl())
+                    ->url($submission->payment->getPaymentDetailUrl())
                     ->label('Pay')
                     ->openUrlInNewTab()
                     ->markAsRead(),
             ])
             ->getDatabaseMessage();
+    }
+
+    protected function submission()
+    {
+        return app(InvoicePaymentContextResolver::class)->submission($this->paymentId);
     }
 
     /**

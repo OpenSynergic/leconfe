@@ -17,6 +17,7 @@ use App\Models\Payment;
 use App\Models\PaymentFee;
 use App\Notifications\ParticipantPayment;
 use App\Panel\ScheduledConference\Pages\PaymentDetail;
+use App\Services\Billing\InvoicePaymentContextResolver;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
@@ -136,8 +137,7 @@ class ParticipantPaymentFeeTable extends Component implements HasForms, HasTable
                                 return;
                             }
 
-                            $participant->setRelation('payment', $record->refresh());
-                            $participant->notify(new ParticipantPayment($participant));
+                            $participant->notify(new ParticipantPayment($record->getKey()));
                             $record->markInvoiceAsSent();
 
                             $action->successNotificationTitle(__('general.invoice_sent_successfully'));
@@ -173,24 +173,13 @@ class ParticipantPaymentFeeTable extends Component implements HasForms, HasTable
                             ->required(),
                     ])
                     ->action(function (Collection $records, array $data, BulkAction $action) {
-                        $records->load([
-                            'model',
-                            'scheduledConference.conference',
-                            'fee',
-                        ]);
-
                         $records->each(function ($record) use ($data) {
-                            $participant = $record->model;
+                            $record->ensureInvoice();
+                            $participant = app(InvoicePaymentContextResolver::class)->participant($record->getKey());
 
-                            if (! $participant || ! $participant->email) {
+                            if (! $participant->email) {
                                 return;
                             }
-
-                            $record->ensureInvoice();
-                            $participant->setRelation(
-                                'payment',
-                                $record->refresh()->loadMissing(['scheduledConference.conference', 'fee'])
-                            );
 
                             $mailTemplate = new ParticipantPaymentMail($participant);
                             $mailTemplate->subjectUsing($data['subject']);
