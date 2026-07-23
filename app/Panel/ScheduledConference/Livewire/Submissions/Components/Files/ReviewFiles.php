@@ -28,11 +28,12 @@ class ReviewFiles extends SubmissionFilesTable implements HasActions
         $this->tableHeading = __('general.review_files');
     }
 
-    public function mount(Submission $submission): void
+    public function mount(Submission $submission, ?int $reviewRoundId = null): void
     {
         $this->submission = $submission;
-        $this->reviewRoundId = $submission->activeReviewRound?->getKey()
-            ?? $submission->latestReviewRound?->getKey();
+        $this->reviewRoundId = $reviewRoundId && $submission->reviewRounds()->whereKey($reviewRoundId)->exists()
+            ? $reviewRoundId
+            : ($submission->activeReviewRound?->getKey() ?? $submission->latestReviewRound?->getKey());
     }
 
     #[On('peer-review-round-selected')]

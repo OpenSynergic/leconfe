@@ -450,6 +450,38 @@ class SubmissionReviewRoundWorkflowTest extends TestCase
             ->assertActionVisible('declineSubmissionAction');
     }
 
+    public function test_historical_review_round_is_preserved_when_child_components_are_recreated(): void
+    {
+        $context = $this->makeSubmissionContext();
+
+        $roundOne = StartSubmissionReviewRoundAction::run(
+            $context['submission'],
+            [],
+            $context['editor'],
+        );
+
+        StartSubmissionReviewRoundAction::run(
+            $context['submission'],
+            [],
+            $context['editor'],
+        );
+
+        $this->actingAs($context['editor']);
+
+        Livewire::test(ReviewFiles::class, [
+            'submission' => $context['submission'],
+            'reviewRoundId' => $roundOne->getKey(),
+        ])->assertSet('reviewRoundId', $roundOne->getKey());
+
+        Livewire::test(ReviewerList::class, [
+            'record' => $context['submission'],
+            'selectedRoundId' => $roundOne->getKey(),
+        ])
+            ->assertSet('selectedRoundId', $roundOne->getKey())
+            ->assertNotDispatched('peer-review-round-selected')
+            ->assertNotDispatched('reviewer-list-round-created');
+    }
+
     public function test_peer_review_round_switch_has_section_loading_feedback(): void
     {
         $context = $this->makeSubmissionContext();

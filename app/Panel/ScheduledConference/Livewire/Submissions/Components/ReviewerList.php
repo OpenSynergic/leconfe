@@ -34,9 +34,6 @@ use App\Models\Submission;
 use App\Models\SubmissionFile;
 use App\Models\SubmissionReviewRound;
 use App\Models\User;
-use App\Panel\ScheduledConference\Livewire\Submissions\Components\Discussions\PeerReviewDiscussionTopic;
-use App\Panel\ScheduledConference\Livewire\Submissions\Components\Files\ReviewFiles;
-use App\Panel\ScheduledConference\Livewire\Submissions\Components\Files\RevisionFiles;
 use App\Panel\ScheduledConference\Livewire\Submissions\PeerReview;
 use App\Panel\ScheduledConference\Resources\SubmissionResource;
 use Awcodes\Shout\Components\Shout;
@@ -81,7 +78,7 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
 
     public ?int $selectedRoundId = null;
 
-    public function mount(Submission $record)
+    public function mount(Submission $record, ?int $selectedRoundId = null)
     {
         $this->record = $record;
         $this->reviewerRole = Role::where('name', UserRole::Reviewer->value)->first();
@@ -96,10 +93,9 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
             $this->record->refresh();
         }
 
-        $this->selectedRoundId = $this->record->activeReviewRound?->getKey()
-            ?? $this->record->latestReviewRound?->getKey();
-
-        $this->dispatchSelectedRound();
+        $this->selectedRoundId = $selectedRoundId && $this->record->reviewRounds()->whereKey($selectedRoundId)->exists()
+            ? $selectedRoundId
+            : ($this->record->activeReviewRound?->getKey() ?? $this->record->latestReviewRound?->getKey());
     }
 
     #[On('peer-review-round-selected')]
@@ -117,7 +113,6 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
 
         $this->selectedRoundId = $roundId;
         $this->resetTable();
-        $this->dispatchSelectedRound();
     }
 
     public function getReviewRoundsProperty(): Collection
@@ -197,28 +192,10 @@ class ReviewerList extends Component implements HasActions, HasForms, HasTable
         );
 
         $this->selectedRoundId = $round->getKey();
-        $this->dispatchSelectedRound();
-
-        return $round;
-    }
-
-    protected function dispatchSelectedRound(): void
-    {
-        if (! $this->selectedRoundId) {
-            return;
-        }
-
-        $this->dispatch('peer-review-round-selected', roundId: $this->selectedRoundId)
+        $this->dispatch('reviewer-list-round-created', roundId: $this->selectedRoundId)
             ->to(PeerReview::class);
 
-        $this->dispatch('peer-review-round-selected', roundId: $this->selectedRoundId)
-            ->to(ReviewFiles::class);
-
-        $this->dispatch('peer-review-round-selected', roundId: $this->selectedRoundId)
-            ->to(RevisionFiles::class);
-
-        $this->dispatch('peer-review-round-selected', roundId: $this->selectedRoundId)
-            ->to(PeerReviewDiscussionTopic::class);
+        return $round;
     }
 
     public function form(Schema $schema): Schema

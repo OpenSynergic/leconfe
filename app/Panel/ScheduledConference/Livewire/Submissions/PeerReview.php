@@ -149,10 +149,15 @@ class PeerReview extends Component implements HasActions, HasForms
         $this->dispatchSelectedRound();
     }
 
-    #[On('peer-review-round-selected')]
-    public function onReviewRoundSelected(int $roundId): void
+    #[On('reviewer-list-round-created')]
+    public function onReviewerListRoundCreated(int $roundId): void
     {
+        if (! $this->reviewRounds->pluck('id')->contains($roundId)) {
+            return;
+        }
+
         $this->selectedRoundId = $roundId;
+        $this->dispatchSelectedRound();
     }
 
     protected function dispatchSelectedRound(): void
