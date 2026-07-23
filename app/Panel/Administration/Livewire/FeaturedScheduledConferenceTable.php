@@ -2,6 +2,11 @@
 
 namespace App\Panel\Administration\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
+use Filament\Schemas\Schema;
 use App\Actions\Stakeholders\StakeholderCreateAction;
 use App\Actions\Stakeholders\StakeholderUpdateAction;
 use App\Facades\Setting;
@@ -15,10 +20,7 @@ use App\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Support\Enums\MaxWidth;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -26,8 +28,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Component;
 
-class FeaturedScheduledConferenceTable extends Component implements HasForms, HasTable
+class FeaturedScheduledConferenceTable extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     public function render()
@@ -67,7 +70,7 @@ class FeaturedScheduledConferenceTable extends Component implements HasForms, Ha
             ->headerActions([
                 Action::make('add_featured')
                     ->fillForm([])
-                    ->form([
+                    ->schema([
                         CheckboxList::make('featured_scheduled_conferences')
                             ->hiddenLabel()
                             ->searchable()
@@ -86,7 +89,7 @@ class FeaturedScheduledConferenceTable extends Component implements HasForms, Ha
             ->filters([
                 // ...
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('remove')
                     ->requiresConfirmation()
                     ->icon('heroicon-o-trash')
@@ -96,7 +99,7 @@ class FeaturedScheduledConferenceTable extends Component implements HasForms, Ha
                     ->requiresConfirmation()
                     ->color('danger'),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkAction::make('remove_featured')
                     ->requiresConfirmation()
                     ->icon('heroicon-o-trash')
@@ -111,10 +114,10 @@ class FeaturedScheduledConferenceTable extends Component implements HasForms, Ha
             ]);
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 SpatieMediaLibraryFileUpload::make('logo')
                     ->label(__('general.logo'))
                     ->image()

@@ -2,6 +2,7 @@
 
 namespace App\Actions\Speakers;
 
+use Throwable;
 use App\Models\ScheduledConference;
 use App\Models\SpeakerRole;
 use Illuminate\Support\Facades\DB;
@@ -27,7 +28,7 @@ class SpeakerRolePopulateDefaultDataAction
             }
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
 
             throw $th;

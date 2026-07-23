@@ -1,13 +1,13 @@
 <x-filament-widgets::widget>
     <div
-        class="flex flex-col overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-gray-950/5 transition-all duration-300 dark:bg-gray-900 dark:ring-white/10 lg:flex-row">
+        class="welcome-banner-card flex flex-col overflow-hidden rounded-3xl bg-white shadow-xl ring-1 ring-gray-950/5 transition-all duration-300 dark:bg-gray-900 dark:ring-white/10 lg:flex-row">
 
         <!-- Left Side: Welcome & Context Banner -->
         <div
-            class="relative flex flex-col justify-between overflow-hidden bg-gradient-to-br from-primary-600 to-primary-900 p-8 text-white lg:w-2/5 lg:p-12">
+            class="relative flex flex-col justify-between overflow-hidden welcome-banner-gradient p-8 text-white lg:w-2/5 lg:p-12">
             <!-- Decorative elements -->
-            <div class="absolute -left-20 -top-24 h-64 w-64 rounded-full bg-white/10 blur-3xl"></div>
-            <div class="absolute -bottom-24 -right-20 h-64 w-64 rounded-full bg-white/10 blur-3xl"></div>
+            <div class="absolute -left-20 -top-24 h-64 w-64 rounded-full bg-white/10 welcome-banner-blur-circle"></div>
+            <div class="absolute -bottom-24 -right-20 h-64 w-64 rounded-full bg-white/10 welcome-banner-blur-circle"></div>
 
             <div class="relative z-10">
                 <div
@@ -115,7 +115,7 @@
                 <!-- Footer Action -->
                 <div class="mt-8 flex items-center justify-between border-t border-gray-100 pt-6 dark:border-gray-800">
                     <x-filament::button type="button" size="lg" color="primary" wire:click="submitRoles"
-                        class="ml-auto w-full rounded-xl px-8 py-3 shadow-md transition-all hover:shadow-lg lg:w-auto">
+                        class="welcome-banner-continue-btn ml-auto w-full rounded-xl px-8 py-3 shadow-md transition-all hover:shadow-lg lg:w-auto">
                         {{ __('general.continue') }}
                         <x-heroicon-m-arrow-right class="ml-2 inline h-5 w-5" />
                     </x-filament::button>
@@ -132,7 +132,7 @@
                 <div class="grid gap-4">
                     @role(App\Models\Enums\UserRole::Author->value)
                     <div
-                        class="rounded-2xl border border-primary-200/70 bg-gradient-to-r from-primary-50 to-white p-5 shadow-sm transition-all hover:shadow-md dark:border-primary-900/40 dark:from-primary-950/40 dark:to-gray-900">
+                        class="rounded-2xl border border-primary-100 discover-primary-card-gradient p-5 shadow-sm transition-all hover:shadow-md dark:border-primary-900">
                         <a href="{{ $submissionUrl }}" class="flex items-start gap-4">
                             <div
                                 class="mt-0.5 inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary-100 text-primary-700 dark:bg-primary-900/50 dark:text-primary-300">
@@ -154,7 +154,7 @@
                     @role(App\Models\Enums\UserRole::Participant->value)
                     @if (!auth()->user()->submissions()->exists())
                     <div
-                        class="rounded-2xl border border-success-200/70 bg-gradient-to-r from-success-50 to-white p-5 shadow-sm transition-all hover:shadow-md dark:border-success-900/40 dark:from-success-950/30 dark:to-gray-900">
+                        class="rounded-2xl border border-success-100 discover-success-card-gradient p-5 shadow-sm transition-all hover:shadow-md dark:border-success-900">
                         <a href="{{ $scheduledConference->isParticipantRegistrationEnabled() ? (auth()->user()->isRegisteredAsParticipant() ? $participantPaymentUrl : $participantRegistrationUrl) : '#' }}"
                             class="flex items-start gap-4">
                             <div

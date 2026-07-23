@@ -2,6 +2,7 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Wizards\SubmissionWizard\Steps;
 
+use Filament\Schemas\Components\Section;
 use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Forms\Components\TinyEditor;
 use App\Models\Submission;
@@ -13,7 +14,6 @@ use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
@@ -98,14 +98,14 @@ class DetailStep extends Component implements HasActions, HasForms, HasWizardSte
                                     $fail(__('general.abstract_word_limit_exceeded', ['count' => $abstractWordLimit]));
                                 }
                             })
-                            ->required(! $this->record?->track->getMeta('do_not_require_abstracts') ?? true)
+                            ->required(! $this->record?->track->getMeta('do_not_require_abstract') ?? true)
                             ->dehydrateStateUsing(fn (?string $state) => Purify::clean($state)),
                     ]),
             ]),
         ];
     }
 
-    public function nextStep()
+    public function nextStep(): Action
     {
         return Action::make('nextStep')
             ->label(__('general.next'))

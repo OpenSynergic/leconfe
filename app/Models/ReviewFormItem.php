@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use Filament\Schemas\Components\Component;
 use App\Models\Concerns\BelongsToScheduledConference;
 use App\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;

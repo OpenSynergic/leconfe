@@ -2,26 +2,29 @@
 
 namespace App\Panel\ScheduledConference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\CreateAction;
+use Filament\Support\Enums\Width;
+use Filament\Schemas\Schema;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
 use App\Actions\Topics\TopicCreateAction;
 use App\Actions\Topics\TopicUpdateAction;
 use App\Models\Topic;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Support\Enums\MaxWidth;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
 
-class TopicTable extends Component implements HasForms, HasTable
+class TopicTable extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     public function render()
@@ -42,29 +45,29 @@ class TopicTable extends Component implements HasForms, HasTable
             ])
             ->headerActions([
                 CreateAction::make('createtopic')
-                    ->modalWidth(MaxWidth::ExtraLarge)
-                    ->form(fn(Form $form) => $this->form($form))
+                    ->modalWidth(Width::ExtraLarge)
+                    ->schema(fn(Schema $schema) => $this->form($schema))
                     ->using(fn(array $data) => TopicCreateAction::run($data)),
             ])
             ->filters([
                 // ...
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make()
-                    ->modalWidth(MaxWidth::ExtraLarge)
-                    ->form(fn(Form $form) => $this->form($form))
+                    ->modalWidth(Width::ExtraLarge)
+                    ->schema(fn(Schema $schema) => $this->form($schema))
                     ->action(fn(Topic $record, array $data) => TopicUpdateAction::run($record, $data)),
                 DeleteAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 DeleteBulkAction::make(),
             ]);
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('name')
                     ->label(__('general.name'))
                     ->required(),

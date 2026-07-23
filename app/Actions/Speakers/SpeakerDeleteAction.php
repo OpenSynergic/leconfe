@@ -2,6 +2,7 @@
 
 namespace App\Actions\Speakers;
 
+use Throwable;
 use App\Models\Speaker;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -18,7 +19,7 @@ class SpeakerDeleteAction
             $speaker->delete();
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
             throw $th;
         }

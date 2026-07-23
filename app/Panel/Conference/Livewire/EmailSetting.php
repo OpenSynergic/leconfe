@@ -2,6 +2,17 @@
 
 namespace App\Panel\Conference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Support\Enums\TextSize;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\Action;
+use Throwable;
+use Filament\Schemas\Schema;
+use App\Infolists\Components\VerticalTabs\Tabs;
+use App\Infolists\Components\VerticalTabs\Tab;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Actions;
 use App\Facades\Setting;
 use App\Forms\Components\TinyEditor;
 use App\Infolists\Components\BladeEntry;
@@ -9,24 +20,16 @@ use App\Infolists\Components\VerticalTabs;
 use App\Mail\Templates\TestMail;
 use App\Models\DefaultMailTemplate;
 use App\Models\MailTemplate;
-use Filament\Forms\Components\Actions;
-use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Support\Enums\FontWeight;
-use Filament\Tables\Actions\Action as TableAction;
-use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\TextColumn\TextColumnSize;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
@@ -34,8 +37,9 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
-class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
+class EmailSetting extends Component implements HasForms, HasInfolists, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms;
     use InteractsWithInfolists;
     use InteractsWithTable;
@@ -68,7 +72,7 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
                             ->sortable(),
                         TextColumn::make('description')
                             ->label(__('general.description'))
-                            ->size(TextColumnSize::Small)
+                            ->size(TextSize::Small)
                             ->searchable()
                             ->color('gray'),
                         TextColumn::make('key')
@@ -82,13 +86,13 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
             ->filters([
                 // ...
             ])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
-                    TableAction::make('edit')
+                    Action::make('edit')
                         ->color('primary')
                         ->icon('heroicon-m-pencil-square')
                         ->fillForm(fn (DefaultMailTemplate $record) => $record->toArray())
-                        ->form([
+                        ->schema([
                             TextInput::make('subject')
                                 ->label(__('general.subject'))
                                 ->required()
@@ -113,7 +117,7 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
                                 $data
                             );
                         }),
-                    TableAction::make('restoreDefault')
+                    Action::make('restoreDefault')
                         ->color('danger')
                         ->successNotificationTitle(__('general.email_template_restored_to_default_data'))
                         ->icon('heroicon-o-arrow-path')
@@ -121,37 +125,37 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
                         ->requiresConfirmation()
                         ->failureNotificationTitle(__('general.are_sure_want_restore_default_data'))
                         ->visible(fn (DefaultMailTemplate $record) => $record->custom)
-                        ->action(function (DefaultMailTemplate $record, TableAction $action) {
+                        ->action(function (DefaultMailTemplate $record, Action $action) {
                             try {
                                 MailTemplate::query()
                                     ->where('mailable', $record->mailable)
                                     ->delete();
 
                                 $action->sendSuccessNotification();
-                            } catch (\Throwable $th) {
+                            } catch (Throwable $th) {
                                 $action->failure();
                             }
                         }),
                 ]),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // ...
             ]);
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
-                VerticalTabs\Tabs::make()
+        return $schema
+            ->components([
+                Tabs::make()
                     ->schema([
-                        VerticalTabs\Tab::make(__('general.email_templates'))
+                        Tab::make(__('general.email_templates'))
                             ->icon('heroicon-o-envelope')
                             ->schema([
                                 BladeEntry::make('mail-templates')
                                     ->blade('{{ $this->table }}'),
                             ]),
-                        VerticalTabs\Tab::make(__('general.layout_templates'))
+                        Tab::make(__('general.layout_templates'))
                             ->icon('heroicon-o-bars-3-bottom-left')
                             ->schema([
                                 BladeEntry::make('layout-templates')
@@ -169,10 +173,10 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
         ];
     }
 
-    public function layoutTemplateForm(Form $form): Form
+    public function layoutTemplateForm(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Section::make(__('general.layout_templates'))
                     ->schema([
                         TinyEditor::make('mail_header')
@@ -193,7 +197,7 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
                             try {
                                 Setting::update($formData);
                                 $action->sendSuccessNotification();
-                            } catch (\Throwable $th) {
+                            } catch (Throwable $th) {
                                 $action->failure();
                             }
                         }),
@@ -205,7 +209,7 @@ class EmailSetting extends Component implements HasForms, HasInfolists, HasTable
                             try {
                                 Mail::to(auth()->user()->email)->send(new TestMail);
                                 $action->sendSuccessNotification();
-                            } catch (\Throwable $th) {
+                            } catch (Throwable $th) {
                                 Notification::make()
                                     ->danger()
                                     ->title(__('general.failed_sent_test_mail_to_your_email'))

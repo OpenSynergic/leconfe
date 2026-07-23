@@ -2,6 +2,7 @@
 
 namespace App\Frontend\Website\Pages;
 
+use Throwable;
 use App\Facades\Hook;
 use App\Facades\MetaTag;
 use App\Http\Middleware\RedirectToConference;
@@ -89,7 +90,7 @@ class Installation extends Page
             $installer->run();
 
             return redirect()->route('livewirePageGroup.website.pages.installation-successful');
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             $this->form->addError('error', $th->getMessage());
         }
 

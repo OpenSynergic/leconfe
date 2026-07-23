@@ -9,7 +9,6 @@ use App\Http\Middleware\RedirectToConference;
 use App\Http\Middleware\RedirectToScheduledConference;
 use App\Http\Middleware\SetLocale;
 use App\Http\Responses\Auth\LogoutResponse;
-use Filament\Http\Responses\Auth\Contracts\LogoutResponse as LogoutResponseContract;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
@@ -41,7 +40,7 @@ class FrontendServiceProvider extends ServiceProvider
 
         });
 
-        $this->app->bind(LogoutResponseContract::class, LogoutResponse::class);
+        $this->app->bind(\Filament\Auth\Http\Responses\Contracts\LogoutResponse::class, LogoutResponse::class);
 
     }
 

@@ -11,7 +11,6 @@ use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasName;
-use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -28,7 +27,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class ScheduledConference extends Model implements HasAvatar, HasMedia, HasName
 {
-    use BelongsToConference, Cachable, HasFactory, InteractsWithMedia, Metable, SoftDeletes;
+    use BelongsToConference, HasFactory, InteractsWithMedia, Metable, SoftDeletes;
 
     public const META_SUBMISSION_TOPIC_SELECTION_LIMIT = 'submission_topic_selection_limit';
 
@@ -275,9 +274,11 @@ class ScheduledConference extends Model implements HasAvatar, HasMedia, HasName
 
     public function getPanelUrl(): string
     {
-        $currentConference = app()->getCurrentConference() ?? $this->conference;
+        $conference = $this->relationLoaded('conference')
+            ? $this->conference
+            : Conference::find($this->conference_id);
 
-        return route('filament.scheduledConference.pages.dashboard', ['serie' => $this->path, 'conference' => $currentConference]);
+        return route('filament.scheduledConference.pages.dashboard', ['serie' => $this->path, 'conference' => $conference]);
     }
 
     public function getFilamentAvatarUrl(): ?string

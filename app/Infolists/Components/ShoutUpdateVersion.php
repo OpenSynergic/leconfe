@@ -2,11 +2,12 @@
 
 namespace App\Infolists\Components;
 
+use Throwable;
 use App\Actions\Leconfe\CheckLatestVersion;
-use Awcodes\Shout\Components\ShoutEntry;
+use Awcodes\Shout\Components\Shout;
 use Filament\Support\Colors\Color;
 
-class ShoutUpdateVersion extends ShoutEntry
+class ShoutUpdateVersion extends Shout
 {
     protected function setUp(): void
     {
@@ -16,7 +17,7 @@ class ShoutUpdateVersion extends ShoutEntry
             ->visible(function () {
                 try {
                     return CheckLatestVersion::isUpdateAvailable();
-                } catch (\Throwable $th) {
+                } catch (Throwable $th) {
                     return false;
                 }
             })

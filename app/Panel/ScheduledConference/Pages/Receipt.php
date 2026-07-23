@@ -2,6 +2,7 @@
 
 namespace App\Panel\ScheduledConference\Pages;
 
+use Filament\Panel;
 use App\Models\Participant;
 use App\Models\Payment;
 use App\Models\Submission;
@@ -11,7 +12,7 @@ use Squire\Models\Country;
 
 class Receipt extends Page
 {
-    protected static string $view = 'panel.scheduledConference.pages.receipt';
+    protected string $view = 'panel.scheduledConference.pages.receipt';
 
     public Payment $record;
 
@@ -59,7 +60,7 @@ class Receipt extends Page
             $data['user_country_name'] = Country::find($participant->getMeta('country'))?->name;
         }
 
-        return view(static::$view, $data);
+        return view($this->view, $data);
     }
 
     public function mount(Payment $record): void {}
@@ -69,7 +70,7 @@ class Receipt extends Page
         return false;
     }
 
-    public static function getRoutePath(): string
+    public static function getRoutePath(Panel $panel): string
     {
         return '/payments/receipt/{record}';
     }

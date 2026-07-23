@@ -2,11 +2,12 @@
 
 namespace App\Panel\ScheduledConference\Resources\TimelineResource\Pages;
 
+use Filament\Actions\CreateAction;
+use Filament\Support\Enums\Width;
 use App\Models\Timeline;
 use App\Panel\ScheduledConference\Resources\TimelineResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Support\Enums\MaxWidth;
 
 class ManageTimeline extends ListRecords
 {
@@ -15,9 +16,9 @@ class ManageTimeline extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
+            CreateAction::make()
                 ->modalHeading(__('general.add_timeline'))
-                ->modalWidth(MaxWidth::ExtraLarge)
+                ->modalWidth(Width::ExtraLarge)
                 ->model(Timeline::class)
                 ->authorize('create', Timeline::class),
         ];

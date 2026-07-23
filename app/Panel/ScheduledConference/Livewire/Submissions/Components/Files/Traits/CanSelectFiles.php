@@ -2,11 +2,11 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions\Components\Files\Traits;
 
+use Filament\Actions\ActionGroup;
+use Filament\Actions\Action;
+use Filament\Schemas\Components\Livewire;
 use App\Panel\ScheduledConference\Livewire\Submissions\Components\Files\SelectFiles;
-use Awcodes\Shout\Components\ShoutEntry;
-use Filament\Infolists\Components\Livewire;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
+use Awcodes\Shout\Components\Shout;
 use Illuminate\Support\HtmlString;
 
 trait CanSelectFiles
@@ -15,7 +15,7 @@ trait CanSelectFiles
 
     abstract public function getSelectableCategories(): array;
 
-    public function uploadAction()
+    public function uploadAction(): \Filament\Actions\Action|\Filament\Actions\ActionGroup
     {
         return ActionGroup::make([
             Action::make('select-files')
@@ -27,8 +27,8 @@ trait CanSelectFiles
                 ->extraAttributes([
                     'x-on:close-select-files.window' => new HtmlString('$wire.unmountTableAction(\'select-files\')'),
                 ])
-                ->infolist([
-                    ShoutEntry::make('information')
+                ->schema([
+                    Shout::make('information')
                         ->color('info')
                         ->content('Choose the files to create duplicates.'),
                     Livewire::make(
@@ -49,7 +49,7 @@ trait CanSelectFiles
                     fn (): bool => $this->submission->isDeclined() ?: $this->isViewOnly()
                 )
                 ->modalWidth('xl')
-                ->form(
+                ->schema(
                     $this->uploadFormSchema()
                 )
                 ->successNotificationTitle('Files added successfully')

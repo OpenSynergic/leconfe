@@ -2,6 +2,10 @@
 
 namespace App\Panel\ScheduledConference\Pages;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Livewire;
 use App\Infolists\Components\ShoutUpdateVersion;
 use App\Infolists\Components\VerticalTabs;
 use App\Panel\Administration\Livewire\PartnerTable;
@@ -13,9 +17,6 @@ use App\Panel\ScheduledConference\Livewire\AppearanceSetupSetting;
 use App\Panel\ScheduledConference\Livewire\PrivacySetting;
 use App\Panel\ScheduledConference\Livewire\SetupSetting;
 use App\Panel\ScheduledConference\Livewire\ThemeSetting;
-use Filament\Infolists\Components\Livewire;
-use Filament\Infolists\Components\Tabs;
-use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\App;
@@ -23,7 +24,7 @@ use Illuminate\Support\Facades\Auth;
 
 class WebsiteSetting extends Page
 {
-    protected static string $view = 'panel.scheduledConference.pages.website-setting';
+    protected string $view = 'panel.scheduledConference.pages.website-setting';
 
     public static function getNavigationGroup(): string
     {
@@ -35,7 +36,7 @@ class WebsiteSetting extends Page
         return __('general.website_setting');
     }
 
-    protected static ?string $navigationIcon = 'heroicon-o-globe-alt';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-globe-alt';
 
     public static function getNavigationLabel(): string
     {
@@ -52,15 +53,15 @@ class WebsiteSetting extends Page
         return Auth::user()->can('update', App::getCurrentScheduledConference());
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
+        return $schema
+            ->components([
                 ShoutUpdateVersion::make('update-version'),
                 Tabs::make()
                     ->contained(false)
                     ->tabs([
-                        Tabs\Tab::make('Appearance')
+                        Tab::make('Appearance')
                             ->label(__('general.appearance'))
                             ->schema([
                                 VerticalTabs\Tabs::make()
@@ -90,17 +91,17 @@ class WebsiteSetting extends Page
                                             ->schema([
                                                 Tabs::make('sponsors')
                                                     ->tabs([
-                                                        Tabs\Tab::make('Sponsorship Levels')
+                                                        Tab::make('Sponsorship Levels')
                                                             ->label(__('general.sponsorship_levels'))
                                                             ->schema([
                                                                 Livewire::make(SponsorLevelTable::class),
                                                             ]),
-                                                        Tabs\Tab::make('Sponsors')
+                                                        Tab::make('Sponsors')
                                                             ->label(__('general.sponsors'))
                                                             ->schema([
                                                                 Livewire::make(SponsorTable::class),
                                                             ]),
-                                                        Tabs\Tab::make('Partners')
+                                                        Tab::make('Partners')
                                                             ->label(__('general.partners'))
                                                             ->schema([
                                                                 Livewire::make(PartnerTable::class),
@@ -109,7 +110,7 @@ class WebsiteSetting extends Page
                                             ]),
                                     ]),
                             ]),
-                        Tabs\Tab::make('Setup')
+                        Tab::make('Setup')
                             ->label(__('general.setup'))
                             ->schema([
                                 VerticalTabs\Tabs::make()

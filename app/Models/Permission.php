@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Exception;
 use App\Models\Enums\UserRole;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -33,7 +34,7 @@ class Permission extends Model
         static::deleting(function (Permission $permission) {
             $permission->loadMissing('roles');
             if ($permission->roles()->exists()) {
-                throw new \Exception('Permission cannot be deleted because it is currently assigned to a roles');
+                throw new Exception('Permission cannot be deleted because it is currently assigned to a roles');
             }
         });
     }

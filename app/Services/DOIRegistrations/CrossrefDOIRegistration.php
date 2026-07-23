@@ -2,6 +2,13 @@
 
 namespace App\Services\DOIRegistrations;
 
+use Filament\Actions\ActionGroup;
+use Filament\Actions\Action;
+use Throwable;
+use Exception;
+use Filament\Support\Enums\Width;
+use Filament\Schemas\Schema;
+use Filament\Support\Enums\Size;
 use App\Classes\ImportExport\ExportArticleCrossref;
 use App\Models\Enums\DOIStatus;
 use App\Models\Submission;
@@ -10,12 +17,7 @@ use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
-use Filament\Support\Enums\ActionSize;
-use Filament\Support\Enums\MaxWidth;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
@@ -42,7 +44,7 @@ class CrossrefDOIRegistration extends BaseDOIRegistration
                             return response()->streamDownload(function () use ($xml) {
                                 echo $xml;
                             }, $filename);
-                        } catch (\Throwable $th) {
+                        } catch (Throwable $th) {
                             // throw $th;
                             Notification::make()
                                 ->danger()
@@ -65,7 +67,7 @@ class CrossrefDOIRegistration extends BaseDOIRegistration
                                     ->title(__('general.deposit_success'))
                                     ->send();
                             }
-                        } catch (\Exception $e) {
+                        } catch (Exception $e) {
                             Notification::make()
                                 ->danger()
                                 ->title(__('general.failed_to_deposit'))
@@ -78,17 +80,17 @@ class CrossrefDOIRegistration extends BaseDOIRegistration
                     ->color('danger')
                     ->icon('heroicon-o-x-mark')
                     ->hidden(fn (Submission $record) => $record->doi?->status !== DOIStatus::Error)
-                    ->modalWidth(MaxWidth::Large)
+                    ->modalWidth(Width::Large)
                     ->modalSubmitAction(false)
                     ->modalCancelAction(false)
-                    ->infolist(function (Infolist $infolist, Submission $record) {
+                    ->schema(function (Schema $schema, Submission $record) {
                         $doi = $record->doi;
 
-                        $infolist->state([
+                        $schema->state([
                             'message' => $doi->getMeta('crossref_message'),
                         ]);
 
-                        $infolist->schema([
+                        $schema->components([
                             TextEntry::make('message')
                                 ->hiddenLabel()
                                 ->formatStateUsing(function (?string $state) {
@@ -96,10 +98,10 @@ class CrossrefDOIRegistration extends BaseDOIRegistration
                                 }),
                         ]);
 
-                        return $infolist;
+                        return $schema;
                     }),
             ])
-                ->size(ActionSize::Small)
+                ->size(Size::Small)
                 ->outlined()
                 ->label(__('general.crossref'))
                 ->button()

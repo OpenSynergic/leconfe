@@ -2,6 +2,7 @@
 
 namespace App\Actions\Submissions;
 
+use Throwable;
 use App\Models\Discussion;
 use App\Models\DiscussionTopic;
 use App\Models\DiscussionTopicParticipant;
@@ -20,7 +21,7 @@ class RemoveDeletedDiscussion
             Discussion::onlyTrashed()->forceDelete();
             DiscussionTopic::onlyTrashed()->forceDelete();
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
             throw $th;
         }

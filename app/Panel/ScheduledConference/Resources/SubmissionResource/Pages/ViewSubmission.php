@@ -2,6 +2,13 @@
 
 namespace App\Panel\ScheduledConference\Resources\SubmissionResource\Pages;
 
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Utilities\Get;
+use App\Forms\Components\AddOnItemCounter;
+use Filament\Support\Enums\Width;
+use Filament\Schemas\Schema;
+use Exception;
+use Filament\Schemas\Components\Livewire;
 use App\Actions\Submissions\AcceptWithdrawalAction;
 use App\Actions\Submissions\CancelWithdrawalAction;
 use App\Actions\Submissions\RequestWithdrawalAction;
@@ -36,28 +43,18 @@ use App\Panel\ScheduledConference\Pages\PaymentDetail;
 use App\Panel\ScheduledConference\Resources\SubmissionResource;
 use App\Services\Billing\SubmissionBillingNotifier;
 use App\Services\Notifications\OperationalNotificationRecipients;
-use Awcodes\Shout\Components\ShoutEntry;
+use Awcodes\Shout\Components\Shout;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Infolists\Components\Livewire;
-use Filament\Infolists\Components\Tabs as HorizontalTabs;
-use Filament\Infolists\Components\Tabs as StageTabs;
-use Filament\Infolists\Components\Tabs\Tab as HorizontalTab;
-use Filament\Infolists\Components\Tabs\Tab as StageTab;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
 use Filament\Resources\Pages\Page;
-use Filament\Support\Enums\MaxWidth;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\HtmlString;
@@ -69,7 +66,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
 
     protected static string $resource = SubmissionResource::class;
 
-    protected static string $view = 'panel.conference.resources.submission-resource.pages.view-submission';
+    protected string $view = 'panel.conference.resources.submission-resource.pages.view-submission';
 
     public function mount($record): void
     {
@@ -109,7 +106,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
             Action::make('submission_payment')
                 ->hidden(fn (Submission $record) => ! app()->getCurrentScheduledConference()->isSubmissionPaymentEnabled() || $record->status == SubmissionStatus::Incomplete || $record->payment)
                 ->label('Submission Payment')
-                ->form([
+                ->schema([
                     Radio::make('payment_fee_id')
                         ->label('Payment Fee')
                         ->visible(fn () => app()->getCurrentScheduledConference()->getMeta('submission_payment'))
@@ -127,7 +124,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                 ->get()
                                 ->mapWithKeys(fn (PaymentFee $paymentFee) => [$paymentFee->getKey() => '('.$paymentFee->getFormattedFee().')'])
                         ),
-                    \Filament\Forms\Components\Fieldset::make('Add-on Items')
+                    Fieldset::make('Add-on Items')
                         ->schema(function (Get $get) {
                             $paymentFee = PaymentFee::find($get('payment_fee_id'));
                             if (! $paymentFee) {
@@ -137,7 +134,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                             return collect($paymentFee->getAdditionalItems())->map(function ($item) use ($paymentFee) {
                                 $formattedAmount = money($item['amount'], $paymentFee->currency, true)->formatWithoutZeroes();
 
-                                return \App\Forms\Components\AddOnItemCounter::make("additional_items.{$item['key']}")
+                                return AddOnItemCounter::make("additional_items.{$item['key']}")
                                     ->label("{$item['name']} ({$formattedAmount})")
                                     ->helperText($item['description'] ?? null)
                                     ->minValue(0)
@@ -205,8 +202,8 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                 ->authorize('publish', $this->record)
                 ->modalHeading(__('general.assign_proceeding_for_publication'))
                 ->visible(fn () => ! $this->record->proceeding && $this->record->stage == SubmissionStage::Editing)
-                ->modalWidth(MaxWidth::ExtraLarge)
-                ->form(SubmissionProceeding::getFormAssignProceeding($this->record))
+                ->modalWidth(Width::ExtraLarge)
+                ->schema(SubmissionProceeding::getFormAssignProceeding($this->record))
                 ->action(function (array $data) {
                     SubmissionProceeding::assignProceeding($this->record, $data);
 
@@ -221,15 +218,15 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                 )
                 ->authorize('publish', $this->record)
                 ->successNotificationTitle(__('general.submission_published_successfully'))
-                ->mountUsing(function (Form $form) {
+                ->mountUsing(function (Schema $schema) {
                     $mailTemplate = DefaultMailTemplate::where('mailable', PublishSubmissionMail::class)->first();
-                    $form->fill([
+                    $schema->fill([
                         'email' => $this->record->user->email,
                         'subject' => $mailTemplate ? $mailTemplate->subject : '',
                         'message' => $mailTemplate ? $mailTemplate->html_template : '',
                     ]);
                 })
-                ->form([
+                ->schema([
                     Fieldset::make('Notification')
                         ->label(__('general.notification'))
                         ->columns(1)
@@ -260,7 +257,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                         ->subjectUsing($data['subject'])
                                         ->contentUsing($data['message'])
                                 );
-                        } catch (\Exception $e) {
+                        } catch (Exception $e) {
                             $action->failureNotificationTitle(__('general.failed_send_notification_to_author'));
                             $action->failure();
                         }
@@ -296,7 +293,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                 ->authorize('requestWithdraw', $this->record)
                 ->label(__('general.request_for_withdrawal'))
                 ->icon('lineawesome-times-circle-solid')
-                ->form([
+                ->schema([
                     Textarea::make('reason')
                         ->required()
                         ->placeholder(__('general.reason_for_withdrawal'))
@@ -322,7 +319,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                             ->each(function (User $user) {
                                 $user->notify(new SubmissionWithdrawRequested($this->record));
                             });
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $action->failureNotificationTitle(__('general.failed_send_notification'));
                         $action->failure();
                     }
@@ -350,12 +347,12 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                     return [];
                 })
                 ->authorize('withdraw', $this->record)
-                ->mountUsing(function (Form $form) {
-                    $form->fill([
+                ->mountUsing(function (Schema $schema) {
+                    $schema->fill([
                         'reason' => $this->record->withdrawn_reason,
                     ]);
                 })
-                ->form([
+                ->schema([
                     Textarea::make('reason')
                         ->readonly()
                         ->placeholder(__('general.reason_for_disabling_user'))
@@ -390,7 +387,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                         $this->record->user->notify(
                             new SubmissionWithdrawn($this->record)
                         );
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $action->failureNotificationTitle(__('general.failed_send_notification'));
                         $action->failure();
                     }
@@ -415,7 +412,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                 ->modalWidth('5xl')
                 ->modalSubmitAction(false)
                 ->modalCancelActionLabel(__('general.close'))
-                ->infolist(function () {
+                ->schema(function () {
                     return [
                         Livewire::make(ActivityLogList::class, [
                             'submission' => $this->record,
@@ -468,18 +465,18 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
         return new HtmlString('<span class="text-xl ">'.$this->record->getMeta('title').'</span>');
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
-                HorizontalTabs::make()
+        return $schema
+            ->components([
+                \Filament\Schemas\Components\Tabs::make()
                     // ->persistTabInQueryString('tab')
                     ->contained(false)
                     ->tabs([
-                        HorizontalTab::make('Workflow')
+                        \Filament\Schemas\Components\Tabs\Tab::make('Workflow')
                             ->label(__('general.workflow'))
                             ->schema([
-                                StageTabs::make()
+                                \Filament\Schemas\Components\Tabs::make()
                                     ->contained(true)
                                     ->activeTab(function () {
                                         return match ($this->record->stage) {
@@ -491,14 +488,14 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                         };
                                     })
                                     ->tabs([
-                                        StageTab::make('Submission')
+                                        \Filament\Schemas\Components\Tabs\Tab::make('Submission')
                                             ->label(__('general.submission'))
                                             ->icon('heroicon-o-information-circle')
                                             ->schema([
                                                 Livewire::make(CallforAbstract::class, ['submission' => $this->record])
                                                     ->key('call-for-abstract'),
                                             ]),
-                                        StageTab::make('Peer Review')
+                                        \Filament\Schemas\Components\Tabs\Tab::make('Peer Review')
                                             ->label(__('general.peer_review'))
                                             ->icon('iconpark-checklist-o')
                                             ->schema([
@@ -507,7 +504,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                                 ])
                                                     ->key('peer-review'),
                                             ]),
-                                        StageTab::make('Presentation')
+                                        \Filament\Schemas\Components\Tabs\Tab::make('Presentation')
                                             ->label(__('general.presentation'))
                                             ->icon('heroicon-o-presentation-chart-bar')
                                             ->schema([
@@ -516,7 +513,7 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                                 ])
                                                     ->key('presentation'),
                                             ]),
-                                        StageTab::make('Editing')
+                                        \Filament\Schemas\Components\Tabs\Tab::make('Editing')
                                             ->label(__('general.editing'))
                                             ->icon('heroicon-o-pencil')
                                             ->schema([
@@ -528,13 +525,13 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                                     ])
                                     ->maxWidth('full'),
                             ]),
-                        HorizontalTab::make('Publication')
+                        \Filament\Schemas\Components\Tabs\Tab::make('Publication')
                             ->label(__('general.publication'))
                             ->extraAttributes([
                                 'x-on:open-publication-tab.window' => new HtmlString('tab = \'-publication-tab\''),
                             ])
                             ->schema([
-                                ShoutEntry::make('can-not-edit')
+                                Shout::make('can-not-edit')
                                     ->type('warning')
                                     ->color('warning')
                                     ->visible(

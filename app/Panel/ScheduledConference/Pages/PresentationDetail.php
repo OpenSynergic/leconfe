@@ -2,6 +2,7 @@
 
 namespace App\Panel\ScheduledConference\Pages;
 
+use Filament\Panel;
 use App\Models\Presentation;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -14,9 +15,9 @@ class PresentationDetail extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-computer-desktop';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-computer-desktop';
 
-    protected static string $view = 'panel.scheduledConference.pages.presentation-detail';
+    protected string $view = 'panel.scheduledConference.pages.presentation-detail';
 
     protected static bool $shouldRegisterNavigation = false;
 
@@ -57,7 +58,7 @@ class PresentationDetail extends Page implements HasForms
         ];
     }
 
-    public static function getRoutePath(): string
+    public static function getRoutePath(Panel $panel): string
     {
         return '/presentations/{record}';
     }

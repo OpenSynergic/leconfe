@@ -2,24 +2,28 @@
 
 namespace App\Panel\ScheduledConference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Actions;
+use Filament\Actions\Action;
+use Throwable;
 use App\Actions\ScheduledConferences\ScheduledConferenceUpdateAction;
 use App\Models\ScheduledConference;
-use Filament\Forms\Components\Actions;
-use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Livewire\Component;
 
-class PaymentSetting extends Component implements HasForms
+class PaymentSetting extends Component implements HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms;
 
     public ?array $formData = [];
@@ -31,10 +35,10 @@ class PaymentSetting extends Component implements HasForms
         ]);
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Section::make(__('general.submission_payment'))
                     ->schema([
                         Checkbox::make('meta.submission_payment')
@@ -108,7 +112,7 @@ class PaymentSetting extends Component implements HasForms
 
                             try {
                                 ScheduledConferenceUpdateAction::run(app()->getCurrentScheduledConference(), $formData);
-                            } catch (\Throwable $th) {
+                            } catch (Throwable $th) {
                                 $action->failure();
                                 throw $th;
                             }

@@ -2,14 +2,17 @@
 
 namespace App\Panel\Administration\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Actions\EditAction;
+use Filament\Support\Enums\Width;
+use Filament\Actions\DeleteAction;
+use App\Panel\Administration\Resources\ConferenceResource\Pages\ListConferences;
 use App\Actions\Conferences\ConferenceUpdateAction;
 use App\Models\Conference;
 use App\Panel\Administration\Resources\ConferenceResource\Pages;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Support\Enums\MaxWidth;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -34,12 +37,12 @@ class ConferenceResource extends Resource
         return __('general.conference');
     }
 
-    protected static ?string $navigationIcon = 'heroicon-o-window';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-window';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('name')
                     ->label(__('general.name'))
                     ->columnSpanFull()
@@ -67,9 +70,9 @@ class ConferenceResource extends Resource
                     ->label(__('general.name'))
                     ->searchable(),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make()
-                    ->modalWidth(MaxWidth::ExtraLarge)
+            ->recordActions([
+                EditAction::make()
+                    ->modalWidth(Width::ExtraLarge)
                     ->button()
                     ->mutateRecordDataUsing(function (Conference $record, array $data) {
                         $data['meta'] = $record->getAllMeta()->toArray();
@@ -77,10 +80,10 @@ class ConferenceResource extends Resource
                         return $data;
                     })
                     ->using(fn (Conference $record, array $data) => ConferenceUpdateAction::run($record, $data)),
-                Tables\Actions\DeleteAction::make()
+                DeleteAction::make()
                     ->button(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
@@ -95,7 +98,7 @@ class ConferenceResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListConferences::route('/'),
+            'index' => ListConferences::route('/'),
             // 'create' => Pages\CreateConference::route('/create'),
             // 'edit' => Pages\EditConference::route('/{record}/edit'),
         ];

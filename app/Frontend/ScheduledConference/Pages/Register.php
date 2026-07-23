@@ -2,6 +2,9 @@
 
 namespace App\Frontend\ScheduledConference\Pages;
 
+use Filament\Support\Enums\Width;
+use Filament\Schemas\Schema;
+use Throwable;
 use App\Actions\User\UserCreateAction;
 use App\Frontend\ScheduledConference\Pages\Concerns\HasScheduledConferenceAuthLogo;
 use App\Frontend\Website\Pages\Page;
@@ -18,11 +21,9 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Support\Enums\Alignment;
-use Filament\Support\Enums\MaxWidth;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -74,9 +75,9 @@ class Register extends Page implements HasActions, HasForms
         $this->country = app()->getCurrentScheduledConference()->getMeta('default_register_country');
     }
 
-    public function getMaxWidth(): MaxWidth|string|null
+    public function getMaxWidth(): Width|string|null
     {
-        return MaxWidth::FourExtraLarge;
+        return Width::FourExtraLarge;
     }
 
     public static function getLayout(): string
@@ -158,7 +159,7 @@ class Register extends Page implements HasActions, HasForms
     }
 
     /**
-     * @return array<int | string, string | Form>
+     * @return array<int|string, string|Schema>
      */
     protected function getForms(): array
     {
@@ -166,7 +167,7 @@ class Register extends Page implements HasActions, HasForms
 
         return [
             'form' => $this->form(
-                $this->makeForm()
+                $this->makeSchema()
                     ->schema([
                         TextInput::make('given_name')
                             ->label(__('general.given_name'))
@@ -234,9 +235,9 @@ class Register extends Page implements HasActions, HasForms
         ];
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form;
+        return $schema;
     }
 
     protected function getPrivacyStatementAgreeLabel(): HtmlString
@@ -310,7 +311,7 @@ class Register extends Page implements HasActions, HasForms
 
     public function getRedirectUrl(): string
     {
-        return route(Dashboard::getRouteName('scheduledConference'));
+        return route(Dashboard::getRouteName(Filament::getPanel('scheduledConference')));
     }
 
     public function register()
@@ -342,7 +343,7 @@ class Register extends Page implements HasActions, HasForms
             ]);
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
             throw $th;
         }

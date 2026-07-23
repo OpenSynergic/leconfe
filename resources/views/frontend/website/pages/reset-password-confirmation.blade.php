@@ -29,20 +29,22 @@
                 {{ __('general.enter_password_to_update') }}
             </p>
 
-            <x-filament-panels::form wire:submit="submit">
+            <form wire:submit="submit" class="fi-form space-y-6">
                 {{ $this->form }}
 
-                <x-filament-panels::form.actions :actions="$this->getFormActions()" :fullWidth="true" />
-            </x-filament-panels::form>
+                <x-filament::actions :actions="$this->getFormActions()" :full-width="true" />
+            </form>
         @else
             <div class="space-y-4">
                 <p class="text-sm leading-6 text-gray-600 dark:text-gray-300">
                     {{ __('general.reset_password_update_success') }}
                 </p>
 
-                <a href="{{ app()->getLoginUrl() }}" class="fi-simple-link">
-                    {{ __('general.login') }}
-                </a>
+                <div class="block mt-4 mb-2">
+                    <a href="{{ app()->getLoginUrl() }}" class="fi-simple-link">
+                        {{ __('general.login') }}
+                    </a>
+                </div>
             </div>
         @endif
     </section>

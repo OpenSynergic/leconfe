@@ -2,6 +2,7 @@
 
 namespace App\Managers;
 
+use Throwable;
 use App\Facades\Hook;
 use App\Interfaces\HasPayment;
 use App\Models\Payment;
@@ -76,7 +77,7 @@ class PaymentManager
 
                 try {
                     app(SubmissionBillingNotifier::class)->maybeNotifyForSubmission($submission);
-                } catch (\Throwable $th) {
+                } catch (Throwable $th) {
                     Log::error($th->getMessage());
                 }
             });

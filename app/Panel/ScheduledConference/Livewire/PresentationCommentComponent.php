@@ -2,6 +2,8 @@
 
 namespace App\Panel\ScheduledConference\Livewire;
 
+use Filament\Support\Enums\Width;
+use Filament\Schemas\Schema;
 use App\Actions\ScheduledConferences\ScheduledConferenceUpdateAction;
 use App\Forms\Components\TinyEditor;
 use App\Models\Presentation;
@@ -13,9 +15,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
-use Filament\Support\Enums\MaxWidth;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -36,21 +36,21 @@ class PresentationCommentComponent extends Component implements HasForms, HasAct
 	{
 		return Action::make('edit')
 			->color('info')
-			->modalWidth(MaxWidth::ExtraLarge)
+			->modalWidth(Width::ExtraLarge)
 			->fillForm([
 				'content' => $this->record->getMeta('content')
 			])
 			->visible(fn() => auth()->user()->can('update', $this->record))
-			->form(fn($form) => $this->form($form))
+			->schema(fn($form) => $this->form($form))
 			->action(function (array $data) {
 				$this->record->setMeta('content', $data['content']);
 			});
 	}
 
-	public function form(Form $form): Form
+	public function form(Schema $schema): Schema
 	{
-		return $form
-			->schema([
+		return $schema
+			->components([
 				TinyEditor::make('content')
 					->required()
 					->hiddenLabel()
@@ -76,8 +76,8 @@ class PresentationCommentComponent extends Component implements HasForms, HasAct
 			->icon('heroicon-o-chat-bubble-left-ellipsis')
 			->link()
 			->color('gray')
-			->modalWidth(MaxWidth::ExtraLarge)
-			->form(fn($form) => $this->form($form))
+			->modalWidth(Width::ExtraLarge)
+			->schema(fn($form) => $this->form($form))
 			->action(function ($data) {
 				$comment = $this->record->childs()->create([
 					'user_id' => auth()->id(),
@@ -101,6 +101,8 @@ class PresentationCommentComponent extends Component implements HasForms, HasAct
 
 	public function render()
 	{
+		$this->loadData();
+
 		return view('panel.scheduledConference.livewire.presentation-comment-component');
 	}
 }

@@ -2,11 +2,11 @@
 
 namespace App\Notifications;
 
+use Filament\Actions\Action;
 use App\Mail\Templates\ReviewRoundStartedMail;
 use App\Models\Submission;
 use App\Models\SubmissionReviewRound;
 use App\Panel\ScheduledConference\Resources\SubmissionResource;
-use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification as FilamentNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;

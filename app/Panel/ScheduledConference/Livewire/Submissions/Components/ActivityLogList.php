@@ -2,6 +2,9 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions\Components;
 
+use Livewire\Component;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
 use App\Facades\Setting;
 use App\Models\Submission;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -13,8 +16,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-class ActivityLogList extends \Livewire\Component implements HasForms, HasTable
+class ActivityLogList extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     public Submission $submission;

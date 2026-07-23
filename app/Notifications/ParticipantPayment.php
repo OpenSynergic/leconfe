@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Mail\Templates\ParticipantPaymentMail;
+use App\Models\Participant;
 use App\Services\Billing\InvoicePaymentContextResolver;
 use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification as FilamentNotification;

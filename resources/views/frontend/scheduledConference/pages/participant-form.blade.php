@@ -10,17 +10,13 @@
                     {{ $this->getTitle()}}
                 </div>
 
-                <x-filament-panels::form
-                    id="form" 
-                    wire:submit="submit"
-                    class="space-y-2"
-                    >
+                <form id="form" wire:submit="submit" class="space-y-2">
                     {{ $this->form }}
 
                     <div class="flex">
                         {{ $this->submitAction }}
                     </div>
-                </x-filament-panels::form>
+                </form>
             </div>
         </main>
     </div>

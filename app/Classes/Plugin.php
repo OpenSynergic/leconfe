@@ -2,6 +2,7 @@
 
 namespace App\Classes;
 
+use Throwable;
 use App\Facades\Plugin as FacadesPlugin;
 use App\Interfaces\HasPlugin;
 use Filament\Panel;
@@ -147,7 +148,7 @@ abstract class Plugin implements HasPlugin
             if (file_exists($publicPluginAssetPath) && ! is_link($publicPluginAssetPath)) {
                 try {
                     File::deleteDirectory($publicPluginAssetPath);
-                } catch (\Throwable $th) {
+                } catch (Throwable $th) {
                     throw $th;
                     Log::warning('Failed to fix public plugin asset directory symlink: '.$publicPluginAssetPath.' (please remove if manually)');
                 }

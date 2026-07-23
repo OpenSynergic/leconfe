@@ -2,6 +2,8 @@
 
 namespace App\Routing;
 
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
+use Illuminate\Routing\RouteUrlGenerator;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Str;
 
@@ -15,7 +17,7 @@ class CustomUrlGenerator extends UrlGenerator
      * @param  bool  $absolute
      * @return string
      *
-     * @throws \Symfony\Component\Routing\Exception\RouteNotFoundException
+     * @throws RouteNotFoundException
      */
     public function route($name, $parameters = [], $absolute = true)
     {
@@ -40,7 +42,7 @@ class CustomUrlGenerator extends UrlGenerator
     /**
      * Get the Route URL generator instance.
      *
-     * @return \Illuminate\Routing\RouteUrlGenerator
+     * @return RouteUrlGenerator
      */
     protected function routeUrl()
     {

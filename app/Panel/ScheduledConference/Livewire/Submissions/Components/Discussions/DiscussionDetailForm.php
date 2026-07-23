@@ -2,17 +2,21 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions\Components\Discussions;
 
+use Livewire\Component;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Schema;
 use App\Models\DiscussionTopic;
 use Awcodes\Shout\Components\Shout;
 use App\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 
-class DiscussionDetailForm extends \Livewire\Component implements HasForms
+class DiscussionDetailForm extends Component implements HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms;
 
     public DiscussionTopic $topic;
@@ -57,9 +61,9 @@ class DiscussionDetailForm extends \Livewire\Component implements HasForms
         $this->dispatch('refreshMessages');
     }
 
-    public function form(Form $form)
+    public function form(Schema $schema)
     {
-        return $form
+        return $schema
             ->disabled(fn (): bool => ! $this->topic->open)
             ->schema([
                 Shout::make('discussion-alert')

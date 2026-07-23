@@ -2,6 +2,7 @@
 
 namespace App\Actions\Submissions;
 
+use Throwable;
 use App\Models\Submission;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -29,7 +30,7 @@ class CreateDiscussionTopic
             DB::commit();
 
             return $discussionTopic;
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
             throw $th;
         }

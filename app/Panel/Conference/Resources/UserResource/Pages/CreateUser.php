@@ -18,4 +18,9 @@ class CreateUser extends CreateRecord
     {
         return UserCreateAction::run($data);
     }
+
+    public function getMaxWidth(): string
+    {
+        return 'full';
+    }
 }

@@ -30,13 +30,13 @@ class ContributorListTest extends TestCase
         $this->actingAs($context['user']);
 
         Livewire::test(ContributorList::class, ['submission' => $context['submission']])
-            ->assertFormFieldDoesNotExist('author_id')
-            ->assertFormFieldExists('profile', fn ($field): bool => ! array_key_exists(
+            ->assertFormFieldDoesNotExist('author_id', 'form')
+            ->assertFormFieldExists('profile', 'form', fn ($field): bool => ! array_key_exists(
                 'x-on:update-profile-image.window',
                 $field->getExtraAlpineAttributes()
             ))
-            ->assertFormFieldExists('given_name')
-            ->assertFormFieldExists('email');
+            ->assertFormFieldExists('given_name', 'form')
+            ->assertFormFieldExists('email', 'form');
     }
 
     public function test_speaker_and_committee_create_forms_do_not_offer_existing_person_selection(): void
@@ -48,23 +48,23 @@ class ContributorListTest extends TestCase
 
         Livewire::test(ManageSpeakers::class)
             ->mountTableAction('create')
-            ->assertFormFieldDoesNotExist('speaker_id', 'mountedTableActionForm')
-            ->assertFormFieldExists('profile', 'mountedTableActionForm', fn ($field): bool => ! array_key_exists(
+            ->assertFormFieldDoesNotExist('speaker_id')
+            ->assertFormFieldExists('profile', fn ($field): bool => ! array_key_exists(
                 'x-on:speaker-profile-image-selected.window',
                 $field->getExtraAlpineAttributes()
             ))
-            ->assertFormFieldExists('given_name', 'mountedTableActionForm')
-            ->assertFormFieldExists('email', 'mountedTableActionForm');
+            ->assertFormFieldExists('given_name')
+            ->assertFormFieldExists('email');
 
         Livewire::test(ManageCommittee::class)
             ->mountTableAction('create')
-            ->assertFormFieldDoesNotExist('committee_id', 'mountedTableActionForm')
-            ->assertFormFieldExists('profile', 'mountedTableActionForm', fn ($field): bool => ! array_key_exists(
+            ->assertFormFieldDoesNotExist('committee_id')
+            ->assertFormFieldExists('profile', fn ($field): bool => ! array_key_exists(
                 'x-on:committee-profile-image-selected.window',
                 $field->getExtraAlpineAttributes()
             ))
-            ->assertFormFieldExists('given_name', 'mountedTableActionForm')
-            ->assertFormFieldExists('email', 'mountedTableActionForm');
+            ->assertFormFieldExists('given_name')
+            ->assertFormFieldExists('email');
     }
 
     public function test_wizard_owner_can_add_themselves_as_contributor(): void

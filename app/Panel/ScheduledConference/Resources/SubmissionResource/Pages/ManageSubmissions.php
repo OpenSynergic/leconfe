@@ -2,13 +2,13 @@
 
 namespace App\Panel\ScheduledConference\Resources\SubmissionResource\Pages;
 
+use Filament\Schemas\Components\Tabs\Tab;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Submission;
 use App\Models\Timeline;
 use App\Panel\ScheduledConference\Pages\WorkflowSetting;
 use App\Panel\ScheduledConference\Resources\SubmissionResource;
 use Filament\Actions\Action;
-use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ManageRecords;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -24,7 +24,7 @@ class ManageSubmissions extends ManageRecords
             Action::make('Settings')
                 ->label(__('general.settings'))
                 ->button()
-                ->authorize('update', app()->getCurrentScheduledConference())
+                ->authorize(fn (): bool => auth()->user()->can('update', app()->getCurrentScheduledConference()))
                 ->outlined()
                 ->icon('heroicon-o-cog')
                 ->url(WorkflowSetting::getUrl()),

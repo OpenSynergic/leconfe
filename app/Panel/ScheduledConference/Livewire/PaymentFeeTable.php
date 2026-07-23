@@ -2,26 +2,28 @@
 
 namespace App\Panel\ScheduledConference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\CreateAction;
+use Filament\Schemas\Schema;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\EditAction;
+use Filament\Actions\Action;
+use Filament\Support\Enums\Width;
+use Filament\Schemas\Components\Livewire;
+use Filament\Actions\DeleteAction;
+use Filament\Schemas\Components\Grid;
 use App\Facades\Setting;
 use App\Models\PaymentFee;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Infolists\Components\Livewire;
-use Filament\Support\Enums\MaxWidth;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -33,8 +35,9 @@ use Illuminate\Support\Str;
 use Livewire\Component;
 use Squire\Models\Currency;
 
-class PaymentFeeTable extends Component implements HasForms, HasTable
+class PaymentFeeTable extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     public int $paymentType;
@@ -80,7 +83,7 @@ class PaymentFeeTable extends Component implements HasForms, HasTable
             ])
             ->headerActions([
                 CreateAction::make()
-                    ->form(fn (Form $form) => $this->form($form))
+                    ->schema(fn (Schema $schema) => $this->form($schema))
                     ->using(function ($data) {
                         $record = new PaymentFee;
                         $record->fill($data);
@@ -94,7 +97,7 @@ class PaymentFeeTable extends Component implements HasForms, HasTable
                         return $record;
                     }),
             ])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
                     EditAction::make()
                         ->mutateRecordDataUsing(function (PaymentFee $record, array $data): array {
@@ -102,7 +105,7 @@ class PaymentFeeTable extends Component implements HasForms, HasTable
 
                             return $data;
                         })
-                        ->form(fn (Form $form) => $this->form($form))
+                        ->form(fn (Schema $schema) => $this->form($schema))
                         ->using(function (PaymentFee $record, array $data) {
                             $record->update($data);
 
@@ -114,12 +117,12 @@ class PaymentFeeTable extends Component implements HasForms, HasTable
                         }),
                     Action::make('items')
                         ->label('Form Items')
-                        ->modalWidth(MaxWidth::TwoExtraLarge)
+                        ->modalWidth(Width::TwoExtraLarge)
                         ->icon('heroicon-m-list-bullet')
                         ->modalCancelAction(false)
                         ->modalSubmitAction(false)
                         ->modalHeading(false)
-                        ->infolist(fn ($record) => [
+                        ->schema(fn ($record) => [
                             Livewire::make(PaymentFeeFormItemTable::class, ['record' => $record]),
                         ]),
                     DeleteAction::make()
@@ -128,10 +131,10 @@ class PaymentFeeTable extends Component implements HasForms, HasTable
             ]);
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Grid::make()
                     ->schema([
                         TextInput::make('name')

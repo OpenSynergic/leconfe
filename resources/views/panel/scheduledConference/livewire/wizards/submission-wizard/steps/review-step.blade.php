@@ -56,12 +56,9 @@
                                     <div class="font-medium">{{ __('general.keywords') }}</div>
                                     <div class="flex flex-wrap items-center gap-1 text-gray-500">
                                         @forelse ($this->record->getMeta('keywords') ?? [] as $keyword)
-                                            <span @class([
-                                                'inline-flex items-center justify-center min-h-6 px-2 py-0.5 text-sm tracking-tight rounded-xl text-primary-700 bg-primary-500/10 whitespace-normal',
-                                                'dark:text-primary-500' => config('tables.dark_mode'),
-                                            ])>
+                                            <x-filament::badge size="sm" color="gray" class="!border !border-gray-300 dark:!border-gray-700">
                                                 {{ $keyword }}
-                                            </span>
+                                            </x-filament::badge>
                                         @empty
                                             {{ __('general.no_information_been_provide') }}
                                         @endforelse

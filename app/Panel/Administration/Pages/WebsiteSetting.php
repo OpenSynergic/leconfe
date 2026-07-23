@@ -2,6 +2,10 @@
 
 namespace App\Panel\Administration\Pages;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Livewire;
 use App\Infolists\Components\ShoutUpdateVersion;
 use App\Infolists\Components\VerticalTabs;
 use App\Panel\Administration\Livewire\FeaturedScheduledConferenceTable;
@@ -9,11 +13,8 @@ use App\Panel\Administration\Livewire\LanguageSetting;
 use App\Panel\Administration\Livewire\SetupSetting;
 use App\Panel\Administration\Livewire\SidebarSetting;
 use App\Panel\Conference\Livewire\NavigationMenuSetting;
-use Filament\Infolists\Components\Livewire;
-use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Auth;
@@ -22,9 +23,9 @@ class WebsiteSetting extends Page implements HasInfolists
 {
     use InteractsWithInfolists;
 
-    protected static ?string $navigationIcon = 'heroicon-m-cog';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-m-cog';
 
-    protected static string $view = 'panel.administration.pages.site-settings';
+    protected string $view = 'panel.administration.pages.site-settings';
 
     public static function getNavigationLabel(): string
     {
@@ -50,14 +51,14 @@ class WebsiteSetting extends Page implements HasInfolists
         return Auth::user()->can('update', app()->getSite());
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
+        return $schema
+            ->components([
                 ShoutUpdateVersion::make('update-version'),
                 Tabs::make('site_settings')
                     ->tabs([
-                        Tabs\Tab::make('Site Setup')
+                        Tab::make('Site Setup')
                             ->label(__('general.site_setup'))
                             ->schema([
                                 VerticalTabs\Tabs::make()
@@ -88,7 +89,7 @@ class WebsiteSetting extends Page implements HasInfolists
                                             ]),
                                     ]),
                             ]),
-                        Tabs\Tab::make('Appearance')
+                        Tab::make('Appearance')
                             ->label(__('general.appearance'))
                             ->schema([
                                 VerticalTabs\Tabs::make()

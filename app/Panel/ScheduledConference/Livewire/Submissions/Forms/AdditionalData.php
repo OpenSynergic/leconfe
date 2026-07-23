@@ -2,6 +2,10 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions\Forms;
 
+use Livewire\Component;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Schema;
 use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Models\Submission;
@@ -9,11 +13,11 @@ use App\Models\SubmissionFormItem;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 
-class AdditionalData extends \Livewire\Component implements HasForms
+class AdditionalData extends Component implements HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms;
 
     public Submission $submission;
@@ -44,9 +48,9 @@ class AdditionalData extends \Livewire\Component implements HasForms
             ->send();
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->disabled(function (): bool {
                 return ! auth()->user()->can('editing', $this->submission);
             })

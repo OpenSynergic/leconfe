@@ -2,6 +2,7 @@
 
 namespace App\Actions\User;
 
+use Throwable;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -26,7 +27,7 @@ class UserCreateAction
             }
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
 
             throw $th;

@@ -2,6 +2,7 @@
 
 namespace App\Panel\ScheduledConference\Livewire;
 
+use Filament\Schemas\Schema;
 use App\Forms\Components\TinyEditor;
 use App\Models\Presentation;
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -9,7 +10,6 @@ use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -30,10 +30,10 @@ class PresentationDiscussion extends Component implements HasForms, HasActions
 		$this->loadComments();
 	}
 
-	public function form(Form $form): Form
+	public function form(Schema $schema): Schema
 	{
-		return $form
-			->schema([
+		return $schema
+			->components([
 				TinyEditor::make('content')
 					->hiddenLabel()
 					->required()
@@ -75,6 +75,8 @@ class PresentationDiscussion extends Component implements HasForms, HasActions
 
 	public function render()
 	{
+		$this->loadComments();
+
 		return view('panel.scheduledConference.livewire.presentation-discussion');
 	}
 }

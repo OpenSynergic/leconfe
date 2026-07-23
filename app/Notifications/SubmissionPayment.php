@@ -2,7 +2,10 @@
 
 namespace App\Notifications;
 
+use App\Mail\Templates\PaymentRequiredMail;
 use App\Mail\Templates\SubmissionPaymentMail;
+use App\Models\Payment;
+use App\Models\Submission;
 use App\Services\Billing\InvoicePaymentContextResolver;
 use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification as FilamentNotification;

@@ -2,6 +2,7 @@
 
 namespace App\Utils\UpgradeSchemas;
 
+use Throwable;
 use App\Frontend\ScheduledConference\Pages\ParticipantRegistrationSuccess;
 use App\Managers\PaymentManager;
 use App\Models\NavigationMenuItem;
@@ -112,7 +113,7 @@ class Upgrade120Beta4 extends UpgradeBase
                 });
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
             throw $th;
         }

@@ -2,6 +2,7 @@
 
 namespace App\Actions\Roles;
 
+use Throwable;
 use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Support\Facades\DB;
@@ -35,7 +36,7 @@ class RoleCreateAction
             }
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
 
             throw $th;

@@ -1,5 +1,7 @@
-@import "../../../vendor/filament/filament/resources/css/theme.css";
 @import "tippy.js/dist/tippy.css";
+
+@tailwind components;
+@tailwind utilities;
 
 @config './tailwind.config.js';
 
@@ -33,6 +35,7 @@
 .fi-simple-link {
     @apply text-primary-600 underline transition hover:text-primary-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 dark:text-primary-400 dark:hover:text-primary-300 dark:focus-visible:ring-primary-500;
 }
+
 /* 
 .fi-sidebar {
     @apply lg:!bg-white dark:lg:!bg-gray-900 !rounded-xl my-4 ml-4 -left-6 lg:left-0;
@@ -87,10 +90,48 @@ body {
     @apply shadow-sm z-10
 }
 
-/* Styling TinyMCE input field */
-.tox-tinymce {
-    @apply !rounded-lg;
+/* Filament Input Wrapper containing TinyMCE - Unified Card Border */
+.fi-input-wrp:has(.tox-tinymce),
+.fi-input-wrp:has([x-data*="tinyeditor"]) {
+    @apply !rounded-xl !overflow-hidden !bg-white dark:!bg-gray-900;
+    border: 1px solid #e5e7eb !important;
+    box-shadow: none !important;
+    outline: none !important;
+    --tw-ring-shadow: none !important;
+    --tw-ring-color: transparent !important;
+    ring: 0 !important;
 }
+
+/* TinyMCE Inner Reset */
+.tox-tinymce {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    @apply !rounded-none !overflow-hidden;
+}
+
+.tox-tinymce .tox-editor-header {
+    background-color: #f8fafc !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    box-shadow: none !important;
+}
+
+.tox-tinymce .tox-toolbar-overlord,
+.tox-tinymce .tox-toolbar,
+.tox-tinymce .tox-toolbar__group {
+    background: transparent !important;
+    border: none !important;
+}
+
+.tox-tinymce .tox-edit-area,
+.tox-tinymce .tox-edit-area iframe {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+
+
+
 
 /* #switch-conference .fi-dropdown-panel,
 #switch-series .fi-dropdown-panel {
@@ -103,6 +144,86 @@ body {
 
 .fi-ta-group-selection-cell {
     @apply !bg-white;
+}
+
+.fi-ta-ctn:has(.fi-ta-empty-state) .fi-ta-table thead {
+    display: none;
+}
+
+.scheduled-conference-overview .fi-section:not(.fi-section-not-contained):not(.fi-aside) > .fi-section-header {
+    padding-block: 1.375rem;
+}
+
+.scheduled-conference-overview .fi-section:not(.fi-section-not-contained):not(.fi-divided) > .fi-section-content-ctn > .fi-section-content {
+    padding-block: 1.75rem;
+}
+
+.scheduled-conference-overview .dashboard-overview-section > .fi-section > .fi-section-content-ctn > .fi-section-content {
+    padding-top: 1.625rem;
+    padding-bottom: 1.3125rem;
+}
+
+.scheduled-conference-overview .dashboard-overview-section .fi-in-entry {
+    row-gap: 0.75rem;
+}
+
+.scheduled-conference-overview .dashboard-payments-section > .fi-section > .fi-section-content-ctn > .fi-section-content {
+    padding-top: 1.6875rem;
+    padding-bottom: 1.5rem;
+}
+
+.scheduled-conference-overview .fi-in-entry-label {
+    color: #4b5563;
+}
+
+.scheduled-conference-overview .fi-in-entry-label:where(.dark, .dark *) {
+    color: #9ca3af;
+}
+
+.scheduled-conference-overview .fi-in-text-item > .fi-icon.fi-size-sm,
+.scheduled-conference-overview .fi-in-text-item > .fi-in-text-item-icon.fi-size-sm,
+.scheduled-conference-overview .fi-in-text-item > svg.fi-size-sm,
+.scheduled-conference-overview .fi-in-text-item > span:not(.fi-badge) > .fi-icon.fi-size-sm,
+.scheduled-conference-overview .fi-in-text-item > span:not(.fi-badge) > svg.fi-size-sm {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+/* Keep overview values consistently aligned like a compact icon-and-text row. */
+.scheduled-conference-overview .dashboard-overview-section .fi-in-text-item,
+.scheduled-conference-overview .dashboard-overview-section .fi-in-text,
+.scheduled-conference-overview .dashboard-overview-section .fi-in-entry-wrp {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    column-gap: 0.5rem;
+    line-height: 1.5rem;
+}
+
+.scheduled-conference-overview .dashboard-overview-section .fi-in-text-item > .fi-icon,
+.scheduled-conference-overview .dashboard-overview-section .fi-in-text-item > .fi-in-text-item-icon,
+.scheduled-conference-overview .dashboard-overview-section .fi-in-text-item > svg,
+.scheduled-conference-overview .dashboard-overview-section .fi-in-text-item > span:not(.fi-badge) > .fi-icon,
+.scheduled-conference-overview .dashboard-overview-section .fi-in-text-item > span:not(.fi-badge) > svg,
+.scheduled-conference-overview .dashboard-overview-section .fi-in-text > .fi-icon,
+.scheduled-conference-overview .dashboard-overview-section .fi-in-text > .fi-in-text-item-icon,
+.scheduled-conference-overview .dashboard-overview-section .fi-in-text > svg {
+    display: inline-block !important;
+    margin-inline-end: 0 !important;
+    flex-shrink: 0 !important;
+    vertical-align: middle !important;
+    transform: translateY(-1px);
+}
+
+.scheduled-conference-overview .fi-section-header .fi-btn.fi-color-success:not(.fi-outlined) {
+    --bg: #16a34a;
+    --text: #ffffff;
+    --hover-bg: #15803d;
+    --hover-text: #ffffff;
+    --dark-bg: #16a34a;
+    --dark-text: #ffffff;
+    --dark-hover-bg: #15803d;
+    --dark-hover-text: #ffffff;
 }
 
 /* .fi-ta-group-header {
@@ -145,4 +266,279 @@ body {
     width: 100%;
     overflow: hidden;
     padding-top: 56.25%; /* 16:9 Aspect Ratio */
+}
+
+.fi-layout, .fi-main-ctn, .fi-main, .fi-page {
+    @apply bg-gray-100 dark:bg-gray-950;
+}
+
+/* Keep the scheduled-conference index aligned with the original panel layout. */
+.fi-resource-scheduled-conferences > .fi-page-header-main-ctn {
+    padding-top: 0.25rem;
+}
+
+.fi-resource-scheduled-conferences .fi-header-heading {
+    position: relative;
+    top: 0.625rem;
+}
+
+.fi-logo img {
+    max-height: 2rem !important;
+    width: auto !important;
+}
+
+.welcome-banner-gradient {
+    background: linear-gradient(135deg, var(--primary-800), var(--primary-950)) !important;
+}
+
+.discover-primary-card-gradient {
+    background: linear-gradient(to right, var(--primary-50), white) !important;
+}
+.dark .discover-primary-card-gradient {
+    background: linear-gradient(to right, var(--primary-950), var(--gray-900)) !important;
+}
+
+.discover-success-card-gradient {
+    background: linear-gradient(to right, var(--success-50), white) !important;
+}
+.dark .discover-success-card-gradient {
+    background: linear-gradient(to right, var(--success-950), var(--gray-900)) !important;
+}
+
+.presentations-thumbnail-placeholder-gradient {
+    background: linear-gradient(135deg, var(--gray-100), var(--gray-200)) !important;
+}
+.dark .presentations-thumbnail-placeholder-gradient {
+    background: linear-gradient(135deg, var(--gray-900), var(--gray-950)) !important;
+}
+
+.welcome-banner-card {
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1) !important;
+}
+.dark .welcome-banner-card {
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5) !important;
+}
+
+.welcome-banner-blur-circle {
+    filter: blur(64px) !important;
+}
+
+:root, .fi-layout {
+    --primary-50: #f4f5f8 !important;
+    --primary-100: #e8ebf0 !important;
+    --primary-200: #c6cdda !important;
+    --primary-300: #a4aed7 !important;
+    --primary-400: #607296 !important;
+    --primary-500: #1c3569 !important;
+    --primary-600: #19305f !important;
+    --primary-700: #15284f !important;
+    --primary-800: #11203f !important;
+    --primary-900: #0e1a33 !important;
+    --primary-950: #081020 !important;
+}
+
+/* Fix primary button background and text */
+.welcome-banner-continue-btn {
+    background-color: #19305f !important;
+    border-color: #19305f !important;
+}
+.welcome-banner-continue-btn:hover {
+    background-color: #1c3569 !important;
+    border-color: #1c3569 !important;
+}
+.welcome-banner-continue-btn,
+.welcome-banner-continue-btn * {
+    color: white !important;
+}
+
+/* Fix selected primary role card border and background */
+.peer:checked ~ .peer-checked\:border-primary-500 {
+    border-color: #1c3569 !important;
+    background-color: rgba(28, 53, 105, 0.05) !important;
+}
+.dark .peer:checked ~ .peer-checked\:border-primary-500 {
+    background-color: rgba(28, 53, 105, 0.2) !important;
+}
+
+/* Fix selected primary check icon */
+.peer:checked ~ .peer-checked\:bg-primary-500 {
+    background-color: #1c3569 !important;
+    border-color: #1c3569 !important;
+    color: white !important;
+}
+
+/* Fix all solid primary buttons globally in Filament */
+.fi-btn:not(.fi-outlined).fi-color-primary {
+    --text: #ffffff !important;
+    --dark-text: #ffffff !important;
+    color: #ffffff !important;
+    background-color: #19305f !important; /* Tambahan background */
+}
+.fi-btn:not(.fi-outlined).fi-color-primary:hover {
+    background-color: #1c3569 !important; /* Tambahan hover */
+}
+.fi-btn:not(.fi-outlined).fi-color-primary * {
+    color: #ffffff !important;
+}
+
+/* Fix all solid warning buttons globally in Filament (e.g. Set as draft) */
+.fi-btn:not(.fi-outlined).fi-color-warning {
+    --text: #ffffff !important;
+    --dark-text: #ffffff !important;
+    color: #ffffff !important;
+    background-color: #d97706 !important;
+}
+.fi-btn:not(.fi-outlined).fi-color-warning:hover {
+    background-color: #b45309 !important;
+}
+.fi-btn:not(.fi-outlined).fi-color-warning * {
+    color: #ffffff !important;
+}
+/* Mulai dari baris 263 */
+.fi-simple-layout {
+    @apply !bg-gray-100 dark:!bg-gray-950;
+}
+
+.fi-simple-main {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(9, 9, 11, 0.05) !important;
+}
+
+.fi-btn {
+    font-weight: 700 !important;
+}
+
+
+/* Make active sidebar item text and icon navy blue */
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-sidebar-item-label {
+    color: #19305f !important;
+}
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-icon {
+    color: #19305f !important;
+}
+
+@media (min-width: 1280px) {
+    .fi-vertical-tabs .fi-tabs-item {
+        justify-content: flex-start !important;
+    }
+}
+
+/* Fix Chrome layout bug where SVG icon (display: block) causes line breaks in Filament Tables & Infolists.
+ * Applying inline-flex only when an SVG icon is present prevents wrapped text from growing
+ * naturally and clipping long payment labels. */
+.fi-ta-text-item:has(> svg),
+.fi-in-text-item:has(> svg) {
+    display: inline-flex !important;
+    align-items: center !important;
+}
+
+/* Ensure paragraphs inside placeholders, infolists, and rich text always stack vertically */
+.prose p,
+.user-content p,
+.fi-fo-placeholder p,
+.fi-in-text p,
+.fi-in-text-item p {
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 0.75rem !important;
+}
+
+.prose,
+.user-content,
+.fi-fo-placeholder,
+.fi-in-text,
+.fi-in-text-item {
+    flex-direction: column !important;
+}
+
+.fi-ta-text-item > svg,
+.fi-ta-text-item-icon,
+.fi-in-text-item > svg,
+.fi-in-text-item > .fi-icon,
+.fi-in-text-item > .fi-in-text-item-icon,
+.fi-in-text-item > span:not(.fi-badge) > svg,
+.fi-in-text-item > span:not(.fi-badge) > .fi-icon {
+    display: inline-block !important;
+    vertical-align: middle !important;
+    flex-shrink: 0 !important;
+    margin-inline-end: 0.375rem !important;
+}
+
+/* Fix infolist & table badge stretching across 100% width of the card without altering column placement */
+.fi-in-text.fi-in-text-has-badges,
+.fi-ta-text.fi-ta-text-has-badges,
+.fi-ta-text-has-badges .fi-ta-text-item,
+.fi-ta-text-has-badges .fi-badge,
+.fi-ta-badges .fi-badge {
+    width: auto !important;
+    max-width: max-content !important;
+    flex: 0 0 auto !important;
+    display: inline-flex !important;
+}
+
+/* Fix bare border classes defaulting to pitch black in form cards and modals */
+.filament-forms-card-component,
+.fi-fo-card-wrp,
+.fi-fo-field-wrp,
+.fi-fo-fieldset,
+.fi-modal-window {
+    border-color: #e5e7eb;
+}
+.dark .filament-forms-card-component,
+.dark .fi-fo-card-wrp,
+.dark .fi-fo-field-wrp,
+.dark .fi-fo-fieldset,
+.dark .fi-modal-window {
+    border-color: #1f2937;
+}
+
+/* Thin border line for table containers without heavy ring shadow */
+.fi-ta-ctn {
+    box-shadow: none !important;
+    --tw-ring-shadow: none !important;
+    --tw-ring-color: transparent !important;
+    ring: 0 !important;
+    border: 1px solid #e5e7eb !important;
+}
+
+/* Subtle divider line inside table container */
+.fi-ta-ctn > :not([hidden]) ~ :not([hidden]),
+.fi-ta-header-toolbar {
+    border-color: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Clean Table Styling inside User Content */
+.user-content table {
+    width: 100%;
+    border-collapse: collapse !important;
+    margin: 1rem 0;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    border: 1px solid #e2e8f0 !important;
+}
+
+.user-content table td,
+.user-content table th {
+    border: 1px solid #e2e8f0 !important;
+    padding: 0.5rem 0.75rem;
+}
+
+/* Menggeser profil & notifikasi kanan atas sedikit ke kiri */
+.fi-topbar > nav > div:last-child,
+.fi-user-menu {
+    margin-right: 1.2rem !important;
+}
+
+/* Match the spacing of the original empty notification state. */
+.fi-no-database .fi-modal-window.fi-align-center .fi-modal-header {
+    margin-top: 0.5rem;
+    padding-top: 1.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.fi-no-database .fi-modal-window.fi-align-center .fi-modal-icon-ctn {
+    margin-bottom: 1.75rem;
+}
+
+.fi-no-database .fi-modal-window.fi-align-center .fi-modal-close-btn {
+    top: 1.5rem;
 }

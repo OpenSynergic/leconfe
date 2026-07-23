@@ -2,6 +2,7 @@
 
 namespace App\Frontend\ScheduledConference\Pages;
 
+use Filament\Schemas\Schema;
 use App\Events\UserLoggedIn;
 use App\Frontend\ScheduledConference\Pages\Concerns\HasScheduledConferenceAuthLogo;
 use App\Frontend\Website\Pages\Login as WebsiteLogin;
@@ -14,7 +15,6 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Support\Enums\Alignment;
@@ -66,13 +66,13 @@ class Login extends WebsiteLogin implements HasActions, HasForms
     }
 
     /**
-     * @return array<int | string, string | Form>
+     * @return array<int|string, string|Schema>
      */
     protected function getForms(): array
     {
         return [
             'form' => $this->form(
-                $this->makeForm()
+                $this->makeSchema()
                     ->schema([
                         TextInput::make('email')
                             ->label(__('general.email'))
@@ -96,9 +96,9 @@ class Login extends WebsiteLogin implements HasActions, HasForms
         ];
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form;
+        return $schema;
     }
 
     /**

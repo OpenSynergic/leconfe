@@ -60,7 +60,7 @@ class SubmissionWizardRequiredFilesTest extends TestCase
         );
 
         Livewire::test(UploadFilesStep::class, ['record' => $submission])
-            ->call('mountAction', 'nextStep')
+            ->callAction('nextStep')
             ->assertNotDispatched('next-wizard-step');
 
         $media = $submission->addMedia(resource_path('assets/sample.pdf'))
@@ -81,7 +81,7 @@ class SubmissionWizardRequiredFilesTest extends TestCase
         );
 
         Livewire::test(UploadFilesStep::class, ['record' => $submission->refresh()])
-            ->call('mountAction', 'nextStep')
+            ->callAction('nextStep')
             ->assertNotDispatched('next-wizard-step');
 
         $media = $submission->addMedia(resource_path('assets/sample.pdf'))
@@ -97,7 +97,7 @@ class SubmissionWizardRequiredFilesTest extends TestCase
         ]);
 
         Livewire::test(UploadFilesStep::class, ['record' => $submission->refresh()])
-            ->call('mountAction', 'nextStep')
+            ->callAction('nextStep')
             ->assertDispatched('next-wizard-step');
     }
 
@@ -166,16 +166,17 @@ class SubmissionWizardRequiredFilesTest extends TestCase
         ]);
 
         $this->actingAs($context['user']);
+        Gate::before(fn () => true);
 
         $media = $submission->addMedia(resource_path('assets/sample.pdf'))
             ->preservingOriginal()
             ->toMediaCollection(SubmissionFileCategory::ABSTRACT_FILES, 'private-files');
 
         Livewire::test(AbstractFiles::class, ['submission' => $submission])
-            ->set('uploadFilesData', [
-                ['files' => [$media->uuid]],
+            ->callTableAction('upload', data: [
+                'type' => $manuscript->getKey(),
+                'files' => [$media->uuid],
             ])
-            ->call('handleUploadAction', ['type' => $manuscript->getKey()], TableAction::make('upload'))
             ->assertDispatched('refreshLivewire');
     }
 

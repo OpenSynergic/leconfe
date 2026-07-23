@@ -2,6 +2,7 @@
 
 namespace App\Frontend\Website\Pages;
 
+use Filament\Schemas\Schema;
 use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -10,7 +11,6 @@ use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Support\Enums\Alignment;
 use Illuminate\Contracts\Support\Htmlable;
@@ -129,13 +129,13 @@ class ResetPasswordConfirmation extends Page implements HasActions, HasForms
     }
 
     /**
-     * @return array<int | string, string | Form>
+     * @return array<int|string, string|Schema>
      */
     protected function getForms(): array
     {
         return [
             'form' => $this->form(
-                $this->makeForm()
+                $this->makeSchema()
                     ->schema([
                         TextInput::make('password')
                             ->label(__('general.new_password'))
@@ -143,22 +143,24 @@ class ResetPasswordConfirmation extends Page implements HasActions, HasForms
                             ->revealable()
                             ->required()
                             ->autocomplete('new-password')
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->rules(['confirmed', Password::min(12)]),
                         TextInput::make('password_confirmation')
                             ->label(__('general.confirm_password'))
                             ->password()
                             ->revealable()
                             ->required()
                             ->autocomplete('new-password')
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->rules(['same:password']),
                     ]),
             ),
         ];
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form;
+        return $schema;
     }
 
     /**
@@ -194,14 +196,6 @@ class ResetPasswordConfirmation extends Page implements HasActions, HasForms
     public function getExtraBodyAttributes(): array
     {
         return [];
-    }
-
-    public function rules()
-    {
-        return [
-            'password' => ['required', 'confirmed', Password::min(12)],
-            'password_confirmation' => ['required', 'same:password'],
-        ];
     }
 
     public function submit()

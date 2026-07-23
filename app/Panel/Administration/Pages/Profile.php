@@ -2,6 +2,11 @@
 
 namespace App\Panel\Administration\Pages;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Throwable;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
 use App\Actions\User\UserUpdateAction;
 use App\Infolists\Components\BladeEntry;
 use App\Models\Enums\UserRole;
@@ -10,16 +15,11 @@ use App\Panel\Conference\Livewire\Forms\Conferences\ContributorForm;
 use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\Section;
 use App\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Infolists\Components\Tabs;
-use Filament\Infolists\Components\Tabs\Tab;
-use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Hash;
@@ -28,9 +28,9 @@ class Profile extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'panel.administration.pages.profile';
+    protected string $view = 'panel.administration.pages.profile';
 
     protected static bool $shouldRegisterNavigation = false;
 
@@ -68,9 +68,9 @@ class Profile extends Page implements HasForms
         ];
     }
 
-    public function informationForm(Form $form): Form
+    public function informationForm(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->model(auth()->user())
             ->schema([
                 Section::make()
@@ -121,7 +121,7 @@ class Profile extends Page implements HasForms
                 ->success()
                 ->title(__('general.saved'))
                 ->send();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Notification::make()
                 ->danger()
                 ->title(__('general.failed_to_save'))
@@ -129,12 +129,12 @@ class Profile extends Page implements HasForms
         }
     }
 
-    public function rolesForm(Form $form): Form
+    public function rolesForm(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->model(auth()->user())
             ->schema([
-                Forms\Components\Section::make()
+                Section::make()
                     ->schema([
                         CheckboxList::make('roles')
                             ->label(__('general.roles'))
@@ -171,7 +171,7 @@ class Profile extends Page implements HasForms
                 ->success()
                 ->title(__('general.saved'))
                 ->send();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Notification::make()
                 ->danger()
                 ->title(__('general.failed_to_save'))
@@ -180,9 +180,9 @@ class Profile extends Page implements HasForms
         }
     }
 
-    public function notificationForm(Form $form)
+    public function notificationForm(Schema $schema)
     {
-        return $form
+        return $schema
             ->statePath('notificationFormData')
             ->schema([
                 Section::make(__('general.new_announcement'))
@@ -208,7 +208,7 @@ class Profile extends Page implements HasForms
                 ->success()
                 ->title(__('general.saved'))
                 ->send();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Notification::make()
                 ->danger()
                 ->title(__('general.failed_to_save'))
@@ -217,10 +217,10 @@ class Profile extends Page implements HasForms
         }
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
+        return $schema
+            ->components([
                 Tabs::make()
                     ->schema([
                         Tab::make('Information')

@@ -13,6 +13,7 @@ use App\Models\Enums\UserRole;
 use Filament\Facades\Filament;
 use Filament\Navigation\MenuItem;
 use Filament\Support\Colors\Color;
+use Filament\Support\Icons\Heroicon;
 use App\Models\ScheduledConference;
 use Filament\View\PanelsRenderHook;
 use App\Forms\Components\TinyEditor;
@@ -53,7 +54,7 @@ class PanelProvider extends ServiceProvider
             ->discoverWidgets(in: app_path('Panel/ScheduledConference/Widgets'), for: 'App\\Panel\\ScheduledConference\\Widgets')
             ->discoverLivewireComponents(in: app_path('Panel/ScheduledConference/Livewire'), for: 'App\\Panel\\ScheduledConference\\Livewire')
             ->renderHook(
-                PanelsRenderHook::TOPBAR_START,
+                PanelsRenderHook::TOPBAR_LOGO_AFTER,
                 fn() => view('panel.scheduledConference.hooks.topbar'),
             )
             ->renderHook(
@@ -64,6 +65,7 @@ class PanelProvider extends ServiceProvider
                     $currentConference = app()->getCurrentConference();
                     $currentScheduledConference = app()->getCurrentScheduledConference();
                     $scheduledConferences = ScheduledConference::query()
+                        ->where('conference_id', $currentConference->id)
                         ->where('path', '!=', $currentScheduledConference->path)
                         ->with(['media'])
                         ->latest()
@@ -100,7 +102,7 @@ class PanelProvider extends ServiceProvider
                 Dashboard::class,
             ])
             ->renderHook(
-                PanelsRenderHook::TOPBAR_START,
+                PanelsRenderHook::TOPBAR_LOGO_AFTER,
                 fn() => view('panel.conference.hooks.topbar'),
             )
             ->renderHook(
@@ -180,6 +182,12 @@ class PanelProvider extends ServiceProvider
                     Blade)
             )
             ->renderHook(
+                PanelsRenderHook::STYLES_AFTER,
+                fn() => Blade::render(<<<'Blade'
+                        @vite(['resources/panel/css/panel.css'])
+                    Blade)
+            )
+            ->renderHook(
                 PanelsRenderHook::USER_MENU_PROFILE_AFTER,
                 function () {
                     $languages = Setting::get('languages', ['en']);
@@ -190,10 +198,12 @@ class PanelProvider extends ServiceProvider
                     return Blade::render('@livewire(App\Livewire\LanguageSwitcher::class)');
                 },
             )
-            ->viteTheme('resources/panel/css/panel.css')
             ->userMenuItems([
                 'profile' => MenuItem::make()
-                    ->url(fn(): string => Profile::getUrl()),
+                    ->label(fn (): string => Filament::getUserName(Filament::auth()->user()))
+                    ->icon(Heroicon::UserCircle)
+                    ->sort(-1)
+                    ->url(fn (): string => Profile::getUrl()),
             ])
             ->navigationItems([
                 NavigationItem::make(fn() => __('general.documentation'))
@@ -286,7 +296,7 @@ class PanelProvider extends ServiceProvider
             $table
                 ->defaultPaginationPageOption(10)
                 ->paginationPageOptions([5, 10, 25, 50]);
-            Table::$defaultDateDisplayFormat = Setting::get('format_date');
+            Table::configureUsing(fn(Table $table) => $table->defaultDateDisplayFormat(Setting::get('format_date')));
         });
 
         TinyEditor::configureUsing(function (TinyEditor $tinyEditor): void {

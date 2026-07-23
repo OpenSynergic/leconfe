@@ -2,6 +2,7 @@
 
 namespace App\Actions\Submissions;
 
+use Throwable;
 use App\Classes\Log;
 use App\Mail\Templates\ParticipantAssignedMail;
 use App\Models\DefaultMailTemplate;
@@ -55,7 +56,7 @@ class SubmissionAssignParticipant
             );
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
 
             throw $th;

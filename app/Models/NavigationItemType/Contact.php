@@ -2,6 +2,7 @@
 
 namespace App\Models\NavigationItemType;
 
+use Filament\Facades\Filament;
 use App\Frontend\ScheduledConference\Pages\Contact as ContactPage;
 use App\Models\NavigationMenuItem;
 

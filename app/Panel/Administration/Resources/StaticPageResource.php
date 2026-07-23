@@ -2,17 +2,18 @@
 
 namespace App\Panel\Administration\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Actions\Action;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use App\Panel\Administration\Resources\StaticPageResource\Pages\ListStaticPages;
 use App\Actions\StaticPages\StaticPageUpdateAction;
 use App\Forms\Components\TinyEditor;
 use App\Models\StaticPage;
 use App\Panel\Administration\Resources\StaticPageResource\Pages;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -22,7 +23,7 @@ class StaticPageResource extends Resource
 {
     protected static ?string $model = StaticPage::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-credit-card';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-credit-card';
 
     public static function getNavigationLabel(): string
     {
@@ -50,10 +51,10 @@ class StaticPageResource extends Resource
         return $query;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('title')
                     ->label(__('general.title'))
                     ->required(),
@@ -91,7 +92,7 @@ class StaticPageResource extends Resource
                     ->searchable()
                     ->color('primary'),
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('preview')
                     ->label(__('general.preview'))
                     ->icon('heroicon-o-eye')
@@ -112,7 +113,7 @@ class StaticPageResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListStaticPages::route('/'),
+            'index' => ListStaticPages::route('/'),
         ];
     }
 }

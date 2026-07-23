@@ -23,80 +23,84 @@ class SiteObserver
      */
     public function created(Site $site): void
     {
-        $primaryNavigationMenu = NavigationMenu::create([
-            'name' => 'Primary Navigation Menu',
+        $primaryNavigationMenu = NavigationMenu::firstOrCreate([
             'handle' => 'primary-navigation-menu',
             'conference_id' => Application::CONTEXT_WEBSITE,
+        ], [
+            'name' => 'Primary Navigation Menu',
         ]);
-        $userNavigationMenu = NavigationMenu::create([
-            'name' => 'User Navigation Menu',
+        $userNavigationMenu = NavigationMenu::firstOrCreate([
             'handle' => 'user-navigation-menu',
             'conference_id' => Application::CONTEXT_WEBSITE,
+        ], [
+            'name' => 'User Navigation Menu',
         ]);
 
-        NavigationMenuItem::insert([
-            [
-                'navigation_menu_id' => $userNavigationMenu->getKey(),
-                'label' => 'Login',
-                'type' => 'login',
-                'order_column' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'navigation_menu_id' => $primaryNavigationMenu->getKey(),
-                'label' => 'Proceedings',
-                'type' => 'proceedings',
-                'order_column' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'navigation_menu_id' => $userNavigationMenu->getKey(),
-                'label' => 'Register',
-                'type' => 'register',
-                'order_column' => 2,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
+        if ($primaryNavigationMenu->items()->count() === 0 && $userNavigationMenu->items()->count() === 0) {
+            NavigationMenuItem::insert([
+                [
+                    'navigation_menu_id' => $userNavigationMenu->getKey(),
+                    'label' => 'Login',
+                    'type' => 'login',
+                    'order_column' => 1,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+                [
+                    'navigation_menu_id' => $primaryNavigationMenu->getKey(),
+                    'label' => 'Proceedings',
+                    'type' => 'proceedings',
+                    'order_column' => 1,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+                [
+                    'navigation_menu_id' => $userNavigationMenu->getKey(),
+                    'label' => 'Register',
+                    'type' => 'register',
+                    'order_column' => 2,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+            ]);
 
-        $usernameNavigation = NavigationMenuItem::create([
-            'navigation_menu_id' => $userNavigationMenu->getKey(),
-            'label' => '{$username}',
-            'type' => 'dashboard',
-            'order_column' => 3,
-        ]);
-
-        NavigationMenuItem::insert([
-            [
+            $usernameNavigation = NavigationMenuItem::create([
                 'navigation_menu_id' => $userNavigationMenu->getKey(),
-                'parent_id' => $usernameNavigation->getKey(),
-                'label' => 'Dashboard',
+                'label' => '{$username}',
                 'type' => 'dashboard',
-                'order_column' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'navigation_menu_id' => $userNavigationMenu->getKey(),
-                'parent_id' => $usernameNavigation->getKey(),
-                'label' => 'Profile',
-                'type' => 'profile',
-                'order_column' => 2,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'navigation_menu_id' => $userNavigationMenu->getKey(),
-                'parent_id' => $usernameNavigation->getKey(),
-                'label' => 'Logout',
-                'type' => 'logout',
                 'order_column' => 3,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
+            ]);
+
+            NavigationMenuItem::insert([
+                [
+                    'navigation_menu_id' => $userNavigationMenu->getKey(),
+                    'parent_id' => $usernameNavigation->getKey(),
+                    'label' => 'Dashboard',
+                    'type' => 'dashboard',
+                    'order_column' => 1,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+                [
+                    'navigation_menu_id' => $userNavigationMenu->getKey(),
+                    'parent_id' => $usernameNavigation->getKey(),
+                    'label' => 'Profile',
+                    'type' => 'profile',
+                    'order_column' => 2,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+                [
+                    'navigation_menu_id' => $userNavigationMenu->getKey(),
+                    'parent_id' => $usernameNavigation->getKey(),
+                    'label' => 'Logout',
+                    'type' => 'logout',
+                    'order_column' => 3,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+            ]);
+        }
 
         Role::firstOrCreate(['name' => UserRole::Admin]);
     }

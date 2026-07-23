@@ -1,6 +1,5 @@
 <x-filament::dropdown
     placement="bottom-start"
-    teleport
     class="-mx-2"
     id="switch-conference"
     width="xs"

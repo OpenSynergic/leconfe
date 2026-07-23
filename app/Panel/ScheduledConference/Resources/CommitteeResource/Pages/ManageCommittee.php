@@ -8,7 +8,7 @@ use Filament\Resources\Pages\ManageRecords;
 
 class ManageCommittee extends ManageRecords
 {
-    protected static string $view = 'panel.scheduledConference.resources.committee-resource.pages.list-committees';
+    protected string $view = 'panel.scheduledConference.resources.committee-resource.pages.list-committees';
 
     protected static string $resource = CommitteeResource::class;
 

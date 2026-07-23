@@ -2,12 +2,13 @@
 
 namespace App\Panel\Conference\Resources\ScheduledConferenceResource\Pages;
 
+use Filament\Actions\CreateAction;
+use Filament\Support\Enums\Width;
+use Filament\Schemas\Components\Tabs\Tab;
 use App\Actions\ScheduledConferences\ScheduledConferenceCreateAction;
 use App\Panel\Conference\Resources\ScheduledConferenceResource;
 use Filament\Actions;
-use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ManageRecords;
-use Filament\Support\Enums\MaxWidth;
 use Illuminate\Database\Eloquent\Builder;
 
 class ManageScheduledConferences extends ManageRecords
@@ -17,8 +18,8 @@ class ManageScheduledConferences extends ManageRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
-                ->modalWidth(MaxWidth::ExtraLarge)
+            CreateAction::make()
+                ->modalWidth(Width::ExtraLarge)
                 ->using(fn (array $data) => ScheduledConferenceCreateAction::run($data)),
         ];
     }

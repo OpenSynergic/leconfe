@@ -2,6 +2,15 @@
 
 namespace App\Panel\ScheduledConference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\CreateAction;
+use Filament\Support\Enums\Width;
+use Filament\Schemas\Schema;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Throwable;
+use Filament\Schemas\Components\Grid;
 use App\Actions\Tracks\TrackCreateAction;
 use App\Actions\Tracks\TrackUpdateAction;
 use App\Forms\Components\TinyEditor;
@@ -11,23 +20,18 @@ use App\Models\User;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Support\Enums\MaxWidth;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Livewire\Component;
 
-class TrackTable extends Component implements HasForms, HasTable
+class TrackTable extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     public function render()
@@ -58,14 +62,14 @@ class TrackTable extends Component implements HasForms, HasTable
             ->headerActions([
                 CreateAction::make()
                     ->label(__('general.new_track'))
-                    ->modalWidth(MaxWidth::ThreeExtraLarge)
-                    ->form(fn (Form $form) => $this->form($form))
+                    ->modalWidth(Width::ThreeExtraLarge)
+                    ->schema(fn (Schema $schema) => $this->form($schema))
                     ->using(fn (array $data) => TrackCreateAction::run($data)),
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make()
-                    ->modalWidth(MaxWidth::ThreeExtraLarge)
-                    ->form(fn (Form $form) => $this->form($form))
+                    ->modalWidth(Width::ThreeExtraLarge)
+                    ->schema(fn (Schema $schema) => $this->form($schema))
                     ->mutateRecordDataUsing(function (array $data, Track $record) {
                         $data['meta'] = $record->getAllMeta();
 
@@ -77,7 +81,7 @@ class TrackTable extends Component implements HasForms, HasTable
                         try {
                             $record->delete();
 
-                        } catch (\Throwable $th) {
+                        } catch (Throwable $th) {
 
                             $action->failureNotificationTitle($th->getMessage());
 
@@ -89,10 +93,10 @@ class TrackTable extends Component implements HasForms, HasTable
             ]);
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Grid::make()
                     ->schema([
                         TextInput::make('title')

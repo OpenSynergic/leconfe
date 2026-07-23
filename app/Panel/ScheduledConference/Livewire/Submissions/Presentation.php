@@ -2,6 +2,7 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions;
 
+use Throwable;
 use App\Models\Enums\SubmissionStage;
 use App\Models\Enums\SubmissionStatus;
 use App\Models\Submission;
@@ -24,7 +25,7 @@ class Presentation extends Component implements HasActions, HasForms
         'refreshSubmission' => '$refresh',
     ];
 
-    public function sendToEditingAction()
+    public function sendToEditingAction(): \Filament\Actions\Action
     {
         return Action::make('sendToEditing')
             ->label(__('general.send_to_editing'))
@@ -49,7 +50,7 @@ class Presentation extends Component implements HasActions, HasForms
                         );
 
                         $action->success();
-                    } catch (\Throwable $th) {
+                    } catch (Throwable $th) {
                         Log::error($th->getMessage());
                         $action->failureNotificationTitle(__('general.failed_to_send_to_editing'));
                         $action->failure();

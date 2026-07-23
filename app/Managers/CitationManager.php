@@ -2,6 +2,7 @@
 
 namespace App\Managers;
 
+use stdClass;
 use App\Facades\Setting;
 use App\Models\Submission;
 use Illuminate\Support\Facades\App;
@@ -139,7 +140,7 @@ class CitationManager
 
     public function getCitation(Submission $paper, $citationStyle = 'apa'): string
     {
-        $citationData = new \stdClass;
+        $citationData = new stdClass;
         $citationData->type = 'paper-conference';
         $citationData->id = $paper->getKey();
         $citationData->title = $paper->getMeta('title');
@@ -154,7 +155,7 @@ class CitationManager
         $citationData->keywords = $paper->getMeta('keywords') ?? [];
         $citationData->abstract = strip_tags($paper->getMeta('abstract'));
         foreach ($paper->authors as $author) {
-            $currentAuthor = new \stdClass;
+            $currentAuthor = new stdClass;
 
             if (! empty($author->family_name)) {
                 $currentAuthor->family = $author->family_name ?: null;
@@ -195,11 +196,11 @@ class CitationManager
 
         $citationData->{'container-title-short'} = $paper->conference->path;
 
-        $accessed = new \stdClass;
+        $accessed = new stdClass;
         $accessed->raw = date('Y-m-d');
         $citationData->accessed = $accessed;
 
-        $issued = new \stdClass;
+        $issued = new stdClass;
         $issued->raw = $paper->published_at?->format('Y-m-d');
         $citationData->issued = $issued;
 

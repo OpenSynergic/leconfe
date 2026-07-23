@@ -2,21 +2,25 @@
 
 namespace App\Panel\Conference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Actions;
+use Filament\Actions\Action;
+use Throwable;
 use App\Facades\Setting;
-use Filament\Forms\Components\Actions;
-use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Illuminate\Support\HtmlString;
 use Livewire\Component;
 
-class DateAndTimeSetting extends Component implements HasForms
+class DateAndTimeSetting extends Component implements HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms;
 
     public ?array $formData = [];
@@ -31,11 +35,11 @@ class DateAndTimeSetting extends Component implements HasForms
         return view('forms.form');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
         $now = now()->hours(16);
 
-        return $form
+        return $schema
             ->statePath('formData')
             ->schema([
                 Section::make(__('general.date_and_time_formats'))
@@ -81,14 +85,14 @@ class DateAndTimeSetting extends Component implements HasForms
                     Action::make('save')
                         ->label(__('general.save'))
                         ->successNotificationTitle(__('general.saved'))
+                        ->failureNotificationTitle(__('general.data_could_not_saved'))
                         ->action(function (Action $action) {
                             $formData = $this->form->getState();
                             try {
                                 Setting::update($formData);
-
-                                $action->sendSuccessNotification();
-                            } catch (\Throwable $th) {
+                            } catch (Throwable $th) {
                                 $action->sendFailureNotification();
+                                $action->halt();
                             }
                         }),
                 ])->alignLeft(),

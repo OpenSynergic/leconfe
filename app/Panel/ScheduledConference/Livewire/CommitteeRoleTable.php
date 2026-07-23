@@ -2,11 +2,15 @@
 
 namespace App\Panel\ScheduledConference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
+use Filament\Actions\EditAction;
+use Filament\Schemas\Schema;
 use App\Panel\ScheduledConference\Resources\CommitteeRoleResource;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Tables;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -16,8 +20,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Livewire\Component;
 
-class CommitteeRoleTable extends Component implements HasForms, HasTable
+class CommitteeRoleTable extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     protected static string $resource = CommitteeRoleResource::class;
@@ -29,25 +34,35 @@ class CommitteeRoleTable extends Component implements HasForms, HasTable
 
     public function table(Table $table): Table
     {
-        return static::$resource::table($table)
+        $table = static::$resource::table($table)
             ->query(fn (): Builder => static::getResource()::getEloquentQuery());
+
+        foreach ($table->getFlatActions() as $action) {
+            if ($action instanceof CreateAction) {
+                $this->configureCreateAction($action);
+            } elseif ($action instanceof EditAction) {
+                $this->configureEditAction($action);
+            }
+        }
+
+        return $table;
     }
 
-    protected function configureTableAction(Tables\Actions\Action $action): void
+    protected function configureTableAction(Action $action): void
     {
         match (true) {
-            $action instanceof Tables\Actions\EditAction => $this->configureEditAction($action),
-            $action instanceof Tables\Actions\CreateAction => $this->configureCreateAction($action),
+            $action instanceof EditAction => $this->configureEditAction($action),
+            $action instanceof CreateAction => $this->configureCreateAction($action),
             default => null,
         };
     }
 
-    protected function configureEditAction(Tables\Actions\EditAction $action): void
+    protected function configureEditAction(EditAction $action): void
     {
         $resource = static::getResource();
         $action
             ->authorize(fn (Model $record): bool => $resource::canEdit($record))
-            ->form(fn (Form $form): Form => $resource::form($form))
+            ->form(fn (Schema $schema): Schema => $resource::form($schema))
             ->modalWidth('xl');
 
         if ($resource::hasPage('edit')) {
@@ -55,7 +70,7 @@ class CommitteeRoleTable extends Component implements HasForms, HasTable
         }
     }
 
-    protected function configureCreateAction(CreateAction|Tables\Actions\CreateAction $action): void
+    protected function configureCreateAction(CreateAction $action): void
     {
         $resource = static::getResource();
 
@@ -63,7 +78,7 @@ class CommitteeRoleTable extends Component implements HasForms, HasTable
             ->authorize($resource::canCreate())
             ->model(static::getResource()::getModel())
             ->modelLabel(static::getResource()::getModelLabel())
-            ->form(fn (Form $form): Form => $resource::form($form))
+            ->schema(fn (Schema $schema): Schema => $resource::form($schema))
             ->modalWidth('xl');
 
         if ($action instanceof CreateAction) {

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Exception;
 use App\Models\Concerns\BelongsToScheduledConference;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Model;
@@ -24,7 +25,7 @@ class Track extends Model implements Sortable
     {
         static::deleting(function (Track $track) {
             if ($track->submissions()->exists()) {
-                throw new \Exception('Before this track can be deleted, you must move paper submitted to it into other track');
+                throw new Exception('Before this track can be deleted, you must move paper submitted to it into other track');
             }
         });
     }

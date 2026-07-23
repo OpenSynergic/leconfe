@@ -35,7 +35,7 @@ class SubmissionTopicLimitTest extends TestCase
 
         Livewire::test(SubmissionSetting::class)
             ->set('formData.meta.submission_topic_selection_limit', 4)
-            ->call('mountFormComponentAction', 'formData.saveAction', 'save');
+            ->callFormComponentAction('saveAction', 'save');
 
         $this->assertSame(
             4,

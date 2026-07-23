@@ -2,6 +2,7 @@
 
 namespace App\Actions\Announcements;
 
+use Throwable;
 use App\Models\Announcement;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +24,7 @@ class AnnouncementUpdateAction
             }
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
 
             throw $th;

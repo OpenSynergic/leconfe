@@ -2,13 +2,14 @@
 
 namespace App\Panel\ScheduledConference\Resources\AnnouncementResource\Pages;
 
+use Filament\Actions\CreateAction;
+use Filament\Support\Enums\Width;
 use App\Actions\Announcements\AnnouncementCreateAction;
 use App\Models\Enums\UserRole;
 use App\Models\User;
 use App\Panel\ScheduledConference\Resources\AnnouncementResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Support\Enums\MaxWidth;
 
 class ListAnnouncements extends ListRecords
 {
@@ -17,8 +18,8 @@ class ListAnnouncements extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
-                ->modalWidth(MaxWidth::TwoExtraLarge)
+            CreateAction::make()
+                ->modalWidth(Width::TwoExtraLarge)
                 ->using(fn (array $data) => AnnouncementCreateAction::run($data, $data['send_email'] ?? false)),
         ];
     }

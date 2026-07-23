@@ -2,19 +2,20 @@
 
 namespace App\Panel\ScheduledConference\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Grid;
+use Filament\Actions\EditAction;
+use Filament\Support\Enums\Width;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\DeleteAction;
+use App\Panel\ScheduledConference\Resources\TimelineResource\Pages\ManageTimeline;
 use App\Models\Timeline;
 use App\Panel\ScheduledConference\Resources\TimelineResource\Pages;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Support\Enums\MaxWidth;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
@@ -24,7 +25,7 @@ class TimelineResource extends Resource
 {
     protected static ?string $model = Timeline::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clock';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-clock';
 
     public static function getNavigationGroup(): string
     {
@@ -36,10 +37,10 @@ class TimelineResource extends Resource
         return __('general.timeline');
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('name')
                     ->label(__('general.name'))
                     ->required(),
@@ -60,7 +61,7 @@ class TimelineResource extends Resource
                     ->options(Timeline::getTypes())
                     ->helperText(__('general.type_integrates_with_workflow_process'))
                     ->unique(
-                        ignorable: fn () => $form->getRecord(),
+                        ignorable: fn () => $schema->getRecord(),
                         modifyRuleUsing: fn (Unique $rule) => $rule->where('scheduled_conference_id', app()->getCurrentScheduledConferenceId()),
                     )
                     ->native(false),
@@ -86,9 +87,9 @@ class TimelineResource extends Resource
             ->filters([
                 // ...
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make()
-                    ->modalWidth(MaxWidth::ExtraLarge),
+                    ->modalWidth(Width::ExtraLarge),
                 ActionGroup::make([
                     DeleteAction::make(),
                 ]),
@@ -105,7 +106,7 @@ class TimelineResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageTimeline::route('/'),
+            'index' => ManageTimeline::route('/'),
         ];
     }
 }

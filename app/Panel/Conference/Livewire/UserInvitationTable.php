@@ -2,6 +2,13 @@
 
 namespace App\Panel\Conference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
+use Filament\Support\Enums\Width;
+use Filament\Schemas\Components\Utilities\Get;
+use Closure;
+use Filament\Actions\ActionGroup;
 use App\Actions\UserInvitation\InviteUserAction;
 use App\Mail\Templates\UserRoleInvitationMail;
 use App\Models\Role;
@@ -10,11 +17,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Get;
 use Filament\Notifications\Notification;
-use Filament\Support\Enums\MaxWidth;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -25,8 +28,9 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Js;
 use Livewire\Component;
 
-class UserInvitationTable extends Component implements HasForms, HasTable
+class UserInvitationTable extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     public function render()
@@ -82,15 +86,15 @@ class UserInvitationTable extends Component implements HasForms, HasTable
                 Action::make('inviteUser')
                     ->label(__('general.invite_user'))
                     ->icon('heroicon-o-envelope')
-                    ->modalWidth(MaxWidth::ExtraLarge)
+                    ->modalWidth(Width::ExtraLarge)
                     ->authorize(fn () => $this->canInviteUsers())
-                    ->form([
+                    ->schema([
                         TextInput::make('email')
                             ->label(__('general.email'))
                             ->email()
                             ->required()
                             ->rule(function (Get $get) {
-                                return function (string $attribute, $value, \Closure $fail) use ($get) {
+                                return function (string $attribute, $value, Closure $fail) use ($get) {
                                     $roleId = $get('role_id');
                                     $role = Role::query()
                                         ->withoutGlobalScopes()
@@ -124,7 +128,7 @@ class UserInvitationTable extends Component implements HasForms, HasTable
                             ->preload()
                             ->options(fn () => $this->getRoleOptions())
                             ->rule(function () {
-                                return function (string $attribute, $value, \Closure $fail) {
+                                return function (string $attribute, $value, Closure $fail) {
                                     if (! $value) {
                                         return;
                                     }
@@ -147,7 +151,7 @@ class UserInvitationTable extends Component implements HasForms, HasTable
             ])
             ->emptyStateHeading(__('general.no_user_invitations'))
             ->emptyStateDescription(__('general.no_user_invitations_description'))
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
                     Action::make('copy_link')
                         ->label('Copy Link')

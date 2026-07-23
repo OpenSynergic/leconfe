@@ -2,6 +2,10 @@
 
 namespace App\Panel\ScheduledConference\Pages;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Livewire;
 use App\Infolists\Components\VerticalTabs as InfolistsVerticalTabs;
 use App\Panel\Conference\Livewire\EmailSetting;
 use App\Panel\Conference\Livewire\PublisherLibrary;
@@ -17,9 +21,6 @@ use App\Panel\ScheduledConference\Livewire\SubmissionFormItemTable;
 use App\Panel\ScheduledConference\Livewire\SubmissionSetting;
 use App\Panel\ScheduledConference\Livewire\TopicTable;
 use App\Panel\ScheduledConference\Livewire\TrackTable;
-use Filament\Infolists\Components\Livewire;
-use Filament\Infolists\Components\Tabs;
-use Filament\Infolists\Infolist;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\App;
@@ -27,7 +28,7 @@ use Illuminate\Support\Facades\Auth;
 
 class WorkflowSetting extends Page
 {
-    protected static string $view = 'panel.scheduledConference.pages.workflow-setting';
+    protected string $view = 'panel.scheduledConference.pages.workflow-setting';
 
     public static function getNavigationGroup(): string
     {
@@ -44,7 +45,7 @@ class WorkflowSetting extends Page
         return __('general.workflow_settings');
     }
 
-    protected static ?string $navigationIcon = 'heroicon-o-window';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-window';
 
     public function mount(): void
     {
@@ -56,14 +57,14 @@ class WorkflowSetting extends Page
         return Auth::user()->can('update', App::getCurrentScheduledConference());
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
-        return $infolist
-            ->schema([
+        return $schema
+            ->components([
                 Tabs::make('workflow')
                     ->contained(false)
                     ->tabs([
-                        Tabs\Tab::make('Submission')
+                        Tab::make('Submission')
                             ->label(__('general.submissions'))
                             ->schema([
                                 InfolistsVerticalTabs\Tabs::make('workflow-submission')
@@ -110,7 +111,7 @@ class WorkflowSetting extends Page
                                             ]),
                                     ]),
                             ]),
-                        Tabs\Tab::make('Review')
+                        Tab::make('Review')
                             ->label(__('general.review'))
                             ->schema([
                                 InfolistsVerticalTabs\Tabs::make('workflow-review')
@@ -133,17 +134,17 @@ class WorkflowSetting extends Page
                                             ]),
                                     ]),
                             ]),
-                        Tabs\Tab::make('Presentations')
+                        Tab::make('Presentations')
                             ->label('Presentations')
                             ->schema([
                                 Livewire::make(PresentationSetting::class),
                             ]),
-                        Tabs\Tab::make('Publisher Library')
+                        Tab::make('Publisher Library')
                             ->label(__('general.publisher_library'))
                             ->schema([
                                 Livewire::make(PublisherLibrary::class),
                             ]),
-                        Tabs\Tab::make('Emails')
+                        Tab::make('Emails')
                             ->label(__('general.email'))
                             ->schema([
                                 Livewire::make(EmailSetting::class),

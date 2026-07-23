@@ -2,6 +2,16 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions\Components;
 
+use Livewire\Component;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Actions\Action;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Actions\CreateAction;
+use Throwable;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
 use App\Actions\SubmissionGalleys\CreateSubmissionGalleyAction;
 use App\Actions\SubmissionGalleys\UpdateMediaSubmissionGalleyFileAction;
 use App\Actions\SubmissionGalleys\UpdateSubmissionGalleyAction;
@@ -9,7 +19,6 @@ use App\Constants\SubmissionFileCategory;
 use App\Models\Submission;
 use App\Models\SubmissionFileType;
 use App\Models\SubmissionGalley;
-use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
 use App\Forms\Components\SpatieMediaLibraryFileUpload;
@@ -17,11 +26,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -31,8 +35,9 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\HtmlString;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
-class GalleyList extends \Livewire\Component implements HasForms, HasTable
+class GalleyList extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     public Submission $submission;
@@ -81,7 +86,7 @@ class GalleyList extends \Livewire\Component implements HasForms, HasTable
                         ->label(__('general.name'))
                         ->required(),
                 ])
-                ->createOptionAction(function (FormAction $action) {
+                ->createOptionAction(function (Action $action) {
                     $action->modalWidth('xl')
                         ->color('primary')
                         ->failureNotificationTitle(__('general.problem_creating_file_type'))
@@ -167,8 +172,8 @@ class GalleyList extends \Livewire\Component implements HasForms, HasTable
                     ->icon('heroicon-o-arrow-up-tray')
                     ->successNotificationTitle(__('general.galley_added_succesfully'))
                     ->failureNotificationTitle(__('general.there_was_problem_adding_galley'))
-                    ->form(static::getGalleyFormSchema())
-                    ->using(function (array $data, \Livewire\Component $livewire) {
+                    ->schema(static::getGalleyFormSchema())
+                    ->using(function (array $data, Component $livewire) {
                         try {
                             $componentFile = ! $data['is_remote_url'] ?
                                 $livewire->getMountedTableActionForm()->getComponent('mountedTableActionsData.0.media.files') :
@@ -179,13 +184,13 @@ class GalleyList extends \Livewire\Component implements HasForms, HasTable
                             if ($newGalley instanceof SubmissionGalley) {
                                 return $newGalley;
                             }
-                        } catch (\Throwable $th) {
+                        } catch (Throwable $th) {
                             throw $th;
                         }
                     })
                     ->hidden($this->viewOnly),
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make()
                     ->modalWidth('2xl')
                     ->successNotificationTitle(__('general.galley_updated_successfully'))

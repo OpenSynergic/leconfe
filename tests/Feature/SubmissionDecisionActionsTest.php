@@ -43,6 +43,8 @@ class SubmissionDecisionActionsTest extends TestCase
     {
         parent::setUp();
 
+        \Illuminate\Support\Facades\Gate::before(fn () => true);
+
         Route::get('/test/submissions/{record}', fn () => null)
             ->name('filament.conference.resources.submissions.view');
 
@@ -514,8 +516,8 @@ class SubmissionDecisionActionsTest extends TestCase
         Mail::fake();
 
         $context = $this->makeEditorSubmissionContext([
-            'stage' => SubmissionStage::Editing,
-            'status' => SubmissionStatus::Editing,
+            'stage' => SubmissionStage::PeerReview,
+            'status' => SubmissionStatus::OnReview,
         ]);
 
         $this->actingAs($context['editor']);

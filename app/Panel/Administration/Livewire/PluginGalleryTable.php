@@ -2,6 +2,9 @@
 
 namespace App\Panel\Administration\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
 use App\Facades\Plugin;
 use App\Models\PluginGallery;
 use App\Tables\Columns\IndexColumn;
@@ -9,7 +12,6 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Support\Enums\FontWeight;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -19,8 +21,9 @@ use Illuminate\Support\HtmlString;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-class PluginGalleryTable extends Component implements HasForms, HasTable
+class PluginGalleryTable extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     public function render()

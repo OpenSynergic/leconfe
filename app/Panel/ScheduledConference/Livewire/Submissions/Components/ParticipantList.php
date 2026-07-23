@@ -2,6 +2,15 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions\Components;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\CreateAction;
+use Filament\Actions\Action;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Actions\ActionGroup;
 use App\Actions\Submissions\SubmissionAssignParticipant;
 use App\Classes\Log;
 use App\Forms\Components\TinyEditor;
@@ -15,17 +24,10 @@ use App\Models\SubmissionParticipant;
 use App\Models\User;
 use App\Panel\ScheduledConference\Resources\SubmissionResource;
 use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
@@ -38,10 +40,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
-use STS\FilamentImpersonate\Tables\Actions\Impersonate;
+use STS\FilamentImpersonate\Actions\Impersonate;
 
-class ParticipantList extends Component implements HasForms, HasTable
+class ParticipantList extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     public Submission $submission;
@@ -107,15 +110,15 @@ class ParticipantList extends Component implements HasForms, HasTable
                     })
                     ->modalSubmitActionLabel(__('general.assign'))
                     ->modalWidth('2xl')
-                    ->mountUsing(function (Form $form): void {
+                    ->mountUsing(function (Schema $schema): void {
                         $mailTemplate = DefaultMailTemplate::where('mailable', ParticipantAssignedMail::class)->first();
 
-                        $form->fill([
+                        $schema->fill([
                             'subject' => $mailTemplate ? $mailTemplate->subject : '',
                             'message' => $mailTemplate ? $mailTemplate->html_template : '',
                         ]);
                     })
-                    ->form([
+                    ->schema([
                         Grid::make(3)
                             ->schema([
                                 Select::make('role_id')
@@ -172,6 +175,7 @@ class ParticipantList extends Component implements HasForms, HasTable
                                     ->columnSpan(2),
                                 Fieldset::make()
                                     ->label(__('general.notification'))
+                                    ->columnSpanFull()
                                     ->schema([
                                         TextInput::make('subject')
                                             ->label(__('general.subject'))
@@ -201,7 +205,7 @@ class ParticipantList extends Component implements HasForms, HasTable
                         $action->success();
                     }),
             ])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
                     Action::make('notify-participant')
                         ->authorize('SubmissionParticipant:notify')
@@ -213,12 +217,12 @@ class ParticipantList extends Component implements HasForms, HasTable
                         ->visible(
                             fn (Model $record): bool => $record->user->email !== auth()->user()->email
                         )
-                        ->mountUsing(function (Form $form) {
-                            $form->fill([
+                        ->mountUsing(function (Schema $schema) {
+                            $schema->fill([
                                 'subject' => __('general.notification_from_leconfe'), // should it use 'leconfe'
                             ]);
                         })
-                        ->form([
+                        ->schema([
                             Grid::make(1)
                                 ->schema([
                                     TextInput::make('email')

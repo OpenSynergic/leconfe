@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Throwable;
+use Exception;
 use App\Classes\Plugin as ClassesPlugin;
 use App\Facades\Plugin;
 use Composer\Semver\Semver;
@@ -51,7 +53,7 @@ class PluginGallery extends Model
             if ($response->failed()) {
                 return [];
             }
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Log::error($th);
 
             return [];
@@ -121,12 +123,12 @@ class PluginGallery extends Model
 
         try {
             if (! Plugin::getTempDisk()->put($filename, file_get_contents($latestRelease['download_url']))) {
-                throw new \Exception('The file could not be written to disk');
+                throw new Exception('The file could not be written to disk');
             }
 
             Plugin::install(Plugin::getTempDisk()->path($filename));
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             throw $th;
         } finally {
             Plugin::getTempDisk()->delete($filename);

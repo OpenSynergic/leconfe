@@ -2,9 +2,9 @@
 
 namespace App\Frontend\ScheduledConference\Pages;
 
+use Filament\Support\Enums\Width;
 use App\Frontend\ScheduledConference\Pages\Concerns\HasScheduledConferenceAuthLogo;
 use App\Frontend\Website\Pages\Page;
-use Filament\Support\Enums\MaxWidth;
 use Illuminate\Contracts\Support\Htmlable;
 
 class PrivacyStatement extends Page
@@ -25,9 +25,9 @@ class PrivacyStatement extends Page
         return static::$layout;
     }
 
-    public function getMaxWidth(): MaxWidth|string|null
+    public function getMaxWidth(): Width|string|null
     {
-        return MaxWidth::FourExtraLarge;
+        return Width::FourExtraLarge;
     }
 
     protected function getLayoutData(): array

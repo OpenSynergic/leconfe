@@ -2,6 +2,14 @@
 
 namespace App\Panel\ScheduledConference\Resources\SubmissionResource\Pages;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Utilities\Get;
+use App\Forms\Components\AddOnItemCounter;
+use Filament\Schemas\Components\Section;
+use Exception;
+use Throwable;
 use App\Actions\Submissions\SubmissionCreateAction;
 use App\Facades\Hook;
 use App\Managers\PaymentManager;
@@ -15,16 +23,11 @@ use App\Models\Timeline;
 use App\Models\Track;
 use App\Panel\ScheduledConference\Resources\SubmissionResource;
 use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
@@ -39,7 +42,7 @@ class CreateSubmission extends Page implements HasForms
 
     protected static string $resource = SubmissionResource::class;
 
-    protected static string $view = 'panel.conference.resources.submission-resource.pages.create-submission';
+    protected string $view = 'panel.conference.resources.submission-resource.pages.create-submission';
 
     public $data;
 
@@ -74,10 +77,10 @@ class CreateSubmission extends Page implements HasForms
         ];
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Placeholder::make('before_you_begin')
                     ->label(__('general.before_you_begin'))
                     ->extraAttributes(['class' => 'prose prose-sm max-w-none'])
@@ -109,7 +112,7 @@ class CreateSubmission extends Page implements HasForms
                                     ->get()
                                     ->mapWithKeys(fn (PaymentFee $paymentFee) => [$paymentFee->getKey() => '('.$paymentFee->getFormattedFee().')'])
                             ),
-                        \Filament\Forms\Components\Fieldset::make('Add-on Items')
+                        Fieldset::make('Add-on Items')
                             ->schema(function (Get $get) {
                                 $paymentFee = PaymentFee::find($get('payment_fee_id'));
                                 if (! $paymentFee) {
@@ -119,7 +122,7 @@ class CreateSubmission extends Page implements HasForms
                                 return collect($paymentFee->getAdditionalItems())->map(function ($item) use ($paymentFee) {
                                     $formattedAmount = money($item['amount'], $paymentFee->currency, true)->formatWithoutZeroes();
 
-                                    return \App\Forms\Components\AddOnItemCounter::make("additional_items.{$item['key']}")
+                                    return AddOnItemCounter::make("additional_items.{$item['key']}")
                                         ->label("{$item['name']} ({$formattedAmount})")
                                         ->helperText($item['description'] ?? null)
                                         ->minValue(0)
@@ -230,11 +233,11 @@ class CreateSubmission extends Page implements HasForms
                 ->first();
 
             if ($submitAsRole === null) {
-                throw new \Exception('Role not found');
+                throw new Exception('Role not found');
             }
 
             if (! auth()->user()->hasRole($submitAsRole)) {
-                throw new \Exception('You are not allowed to submit as this role');
+                throw new Exception('You are not allowed to submit as this role');
             }
 
             $submission->participants()->create([
@@ -279,7 +282,7 @@ class CreateSubmission extends Page implements HasForms
             }
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
 
             Notification::make()

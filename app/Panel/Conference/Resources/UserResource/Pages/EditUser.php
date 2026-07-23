@@ -55,4 +55,9 @@ class EditUser extends EditRecord
 
         return $data;
     }
+
+    public function getMaxWidth(): string
+    {
+        return 'full';
+    }
 }

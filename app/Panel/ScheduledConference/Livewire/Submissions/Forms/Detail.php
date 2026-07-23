@@ -2,6 +2,11 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions\Forms;
 
+use Livewire\Component;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Utilities\Get;
 use App\Actions\Submissions\SubmissionUpdateAction;
 use App\Forms\Components\TinyEditor;
 use App\Models\Submission;
@@ -13,13 +18,12 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Stevebauman\Purify\Facades\Purify;
 
-class Detail extends \Livewire\Component implements HasForms
+class Detail extends Component implements HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms;
 
     public Submission $submission;
@@ -36,11 +40,11 @@ class Detail extends \Livewire\Component implements HasForms
         ]);
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
         $abstractWordLimit = (int) ($this->submission?->track?->getMeta('abstract_word_count') ?? 0);
 
-        return $form
+        return $schema
             ->disabled(function (): bool {
                 return ! auth()->user()->can('editing', $this->submission);
             })

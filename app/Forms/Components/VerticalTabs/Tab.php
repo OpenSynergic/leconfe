@@ -2,9 +2,7 @@
 
 namespace App\Forms\Components\VerticalTabs;
 
-use Filament\Forms\Components\Tabs\Tab as TabsTab;
-
-class Tab extends TabsTab
+class Tab extends \Filament\Schemas\Components\Tabs\Tab
 {
     protected string $view = 'forms.components.vertical-tabs.tab';
 }

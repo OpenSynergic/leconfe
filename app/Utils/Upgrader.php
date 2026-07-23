@@ -2,6 +2,8 @@
 
 namespace App\Utils;
 
+use Exception;
+use Throwable;
 use App\Utils\Enums\UpgradeActionPriority;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
@@ -22,7 +24,7 @@ class Upgrader extends Installer
         $this->codeVersion = App::getCodeVersion();
 
         if (version_compare($this->installedVersion, $this->codeVersion, '>=')) {
-            throw new \Exception('Your application is already up to date!');
+            throw new Exception('Your application is already up to date!');
         }
     }
 
@@ -39,7 +41,7 @@ class Upgrader extends Installer
             $this->addNewApplicationVersion();
 
             $this->configureOptimization();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             throw $th;
 
             return;

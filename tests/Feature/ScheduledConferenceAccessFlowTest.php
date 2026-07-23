@@ -134,7 +134,7 @@ class ScheduledConferenceAccessFlowTest extends TestCase
         app()->setCurrentScheduledConferenceId($scheduledConference->getKey());
 
         $this->assertSame(
-            route(Dashboard::getRouteName('scheduledConference')),
+            route(Dashboard::getRouteName(\Filament\Facades\Filament::getPanel('scheduledConference'))),
             (new Register)->getRedirectUrl()
         );
     }

@@ -2,6 +2,11 @@
 
 namespace App\Panel\ScheduledConference\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
+use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
+use App\Panel\ScheduledConference\Resources\CommitteeResource\Pages\ManageCommittee;
 use App\Actions\Committees\CommitteeCreateAction;
 use App\Actions\Committees\CommitteeDeleteAction;
 use App\Actions\Committees\CommitteeUpdateAction;
@@ -9,10 +14,7 @@ use App\Models\Committee;
 use App\Panel\Conference\Livewire\Forms\Conferences\ContributorForm;
 use App\Panel\ScheduledConference\Resources\CommitteeResource\Pages;
 use Filament\Forms;
-use Filament\Forms\Components\Actions\Action as FormAction;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -25,7 +27,7 @@ class CommitteeResource extends Resource
         return __('general.conference');
     }
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-users';
 
     public static function getNavigationLabel(): string
     {
@@ -49,12 +51,12 @@ class CommitteeResource extends Resource
         return __('general.committee');
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 ...ContributorForm::generalFormField(app()->getCurrentScheduledConference()),
-                Forms\Components\Select::make('committee_role_id')
+                Select::make('committee_role_id')
                     ->label(__('general.role'))
                     ->required()
                     ->searchable()
@@ -65,7 +67,7 @@ class CommitteeResource extends Resource
                     ->preload()
                     ->createOptionForm(fn ($form) => CommitteeRoleResource::form($form))
                     ->createOptionAction(
-                        fn (FormAction $action) => $action->color('primary')
+                        fn (Action $action) => $action->color('primary')
                             ->modalWidth('xl')
                             ->modalHeading(__('general.create_committee_role'))
                     )
@@ -88,14 +90,14 @@ class CommitteeResource extends Resource
                     ->using(fn (array $data) => CommitteeCreateAction::run($data)),
             ])
             ->columns(ContributorForm::generalTableColumns())
-            ->actions(ContributorForm::tableActions(CommitteeUpdateAction::class, CommitteeDeleteAction::class))
+            ->recordActions(ContributorForm::tableActions(CommitteeUpdateAction::class, CommitteeDeleteAction::class))
             ->filters([]);
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageCommittee::route('/'),
+            'index' => ManageCommittee::route('/'),
         ];
     }
 }

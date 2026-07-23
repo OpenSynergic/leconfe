@@ -2,6 +2,9 @@
 
 namespace App\Utils;
 
+use Throwable;
+use BladeUI\Icons\Factory;
+use BladeUI\Icons\IconsManifest;
 use App\Actions\User\UserCreateAction;
 use App\Events\AppInstalled;
 use App\Models\Enums\UserRole;
@@ -32,7 +35,7 @@ class Installer
             $this->configureAccount();
             $this->configureApplication();
             $this->configureOptimization();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             $this->clearCache();
             $this->removeEnvFile();
 
@@ -48,7 +51,7 @@ class Installer
                 '--force' => true,
                 '--seed' => true,
             ]);
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Schema::dropAllTables();
 
             throw $th;
@@ -79,8 +82,8 @@ class Installer
 
     public function iconCache(): void
     {
-        $factory = app(\BladeUI\Icons\Factory::class);
-        $manifest = app(\BladeUI\Icons\IconsManifest::class);
+        $factory = app(Factory::class);
+        $manifest = app(IconsManifest::class);
 
         $manifest->write($factory->all());
     }
@@ -159,7 +162,7 @@ class Installer
             auth()->login($user);
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
 
             DB::rollBack();
 

@@ -4,14 +4,14 @@
 
 # Learn more about the Server Side Up PHP Docker Images at:
 # https://serversideup.net/open-source/docker-php/
-FROM serversideup/php:8.1-fpm-nginx-alpine-v3.5.2 as base
+FROM serversideup/php:8.4-fpm-nginx-alpine as base
 
 # Switch to root so we can do root things
 USER root
 
 COPY ./.dockerdata/entrypoint.d /etc/entrypoint.d
 
-# Install the intl extension with root permissions
+# Install PHP extensions with root permissions
 RUN install-php-extensions intl bcmath gd exif
 
 ############################################
@@ -27,3 +27,4 @@ ENV SHOW_WELCOME_MESSAGE=false
 USER www-data
 
 RUN touch /var/www/html/.env
+

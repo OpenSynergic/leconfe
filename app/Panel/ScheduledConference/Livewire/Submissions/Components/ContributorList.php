@@ -2,6 +2,16 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions\Components;
 
+use Livewire\Component;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Grid;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
 use App\Actions\Authors\AuthorCreateAction;
 use App\Actions\Authors\AuthorDeleteAction;
 use App\Actions\Authors\AuthorUpdateAction;
@@ -12,18 +22,11 @@ use App\Models\Enums\SubmissionStage;
 use App\Models\Submission;
 use App\Panel\Conference\Livewire\Forms\Conferences\ContributorForm;
 use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -33,8 +36,9 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\UniqueConstraintViolationException;
 
-class ContributorList extends \Livewire\Component implements HasForms, HasTable
+class ContributorList extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     public Submission $submission;
@@ -51,9 +55,9 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
             ->orderBy('order_column');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form->schema([
+        return $schema->components([
             Grid::make()
                 ->schema([
                     SpatieMediaLibraryFileUpload::make('profile')
@@ -107,7 +111,7 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
                 fn (): Builder => $this->getQuery()
             )
             ->reorderable('order_column')
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
                     EditAction::make()
                         ->modalWidth('3xl')
@@ -117,7 +121,7 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
 
                             return $data;
                         })
-                        ->form(fn (Form $form) => $this->form($form))
+                        ->form(fn (Schema $schema) => $this->form($schema))
                         ->using(function (array $data, Author $record) {
                             AuthorUpdateAction::run($data, $record);
 
@@ -143,7 +147,7 @@ class ContributorList extends \Livewire\Component implements HasForms, HasTable
                     ->icon('heroicon-o-user-plus')
                     ->modalHeading(__('general.add_contributor'))
                     ->successNotificationTitle(__('general.contributor_added'))
-                    ->form(fn (Form $form) => $this->form($form))
+                    ->schema(fn (Schema $schema) => $this->form($schema))
                     ->using(function (array $data) {
                         $author = AuthorCreateAction::run($this->submission, $data);
 

@@ -2,10 +2,18 @@
 
 namespace App\Panel\ScheduledConference\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Exception;
+use Throwable;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\CreateAction;
 use App\Models\SpeakerRole;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -18,7 +26,7 @@ class SpeakerRoleResource extends Resource
 
     protected static ?string $model = SpeakerRole::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static string $roleType = 'speaker';
 
@@ -28,10 +36,10 @@ class SpeakerRoleResource extends Resource
             ->orderBy('order_column');
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('name')
                     ->label(__('general.name'))
                     ->required()
@@ -48,11 +56,11 @@ class SpeakerRoleResource extends Resource
             ->reorderable('order_column')
             ->columns([
                 IndexColumn::make('no'),
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label(__('general.name'))
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('speakers_count')
+                TextColumn::make('speakers_count')
                     ->label(__('general.speakers'))
                     ->counts('speakers')
                     ->badge()
@@ -62,31 +70,31 @@ class SpeakerRoleResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()
-                    ->using(function (SpeakerRole $record, Tables\Actions\DeleteAction $action) {
+            ->recordActions([
+                EditAction::make(),
+                DeleteAction::make()
+                    ->using(function (SpeakerRole $record, DeleteAction $action) {
                         try {
                             $speakerCount = $record->speakers()->count();
                             if ($speakerCount > 0) {
-                                throw new \Exception(__('general.cannot_delete_speakers_role', ['variable' => $record->name]));
+                                throw new Exception(__('general.cannot_delete_speakers_role', ['variable' => $record->name]));
                             }
 
                             return $record->delete();
-                        } catch (\Throwable $th) {
+                        } catch (Throwable $th) {
                             $action->failureNotificationTitle($th->getMessage());
                         }
                     }),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ])
             ->heading(__('general.speaker_roles_table'))
             ->headerActions([
-                Tables\Actions\CreateAction::make()
-                    ->mutateFormDataUsing(function (array $data): array {
+                CreateAction::make()
+                    ->mutateDataUsing(function (array $data): array {
                         return $data;
                     })
                     ->label(__('general.new_speaker_role'))

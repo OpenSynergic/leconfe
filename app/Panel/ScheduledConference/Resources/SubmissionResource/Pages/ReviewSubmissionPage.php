@@ -2,6 +2,10 @@
 
 namespace App\Panel\ScheduledConference\Resources\SubmissionResource\Pages;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Grid;
+use Throwable;
 use App\Actions\Review\ReviewUpdateAction;
 use App\Classes\Log;
 use App\Constants\ReviewerStatus;
@@ -17,15 +21,10 @@ use App\Panel\ScheduledConference\Resources\SubmissionResource;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Form;
-use Filament\Infolists\Components\Grid;
-use Filament\Infolists\Components\Section as InfolistSection;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\DB;
@@ -37,7 +36,7 @@ class ReviewSubmissionPage extends Page implements HasActions, HasInfolists
 
     protected static string $resource = SubmissionResource::class;
 
-    protected static string $view = 'panel.conference.resources.submission-resource.pages.review-submission-page';
+    protected string $view = 'panel.conference.resources.submission-resource.pages.review-submission-page';
 
     public Submission $record;
 
@@ -64,7 +63,7 @@ class ReviewSubmissionPage extends Page implements HasActions, HasInfolists
 
         $formData = [
             ...$this->review->attributesToArray(),
-            'meta' => $this->review->getAllMeta(),
+            'meta' => $this->review->getAllMeta()->toArray(),
         ];
 
         Hook::call('ReviewSubmissionPage::Form::fill', [&$formData, $this]);
@@ -91,12 +90,12 @@ class ReviewSubmissionPage extends Page implements HasActions, HasInfolists
         ]);
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Schema $schema): Schema
     {
-        return $infolist
+        return $schema
             ->record($this->record)
             ->schema([
-                InfolistSection::make()
+                Section::make()
                     ->heading(__('general.submission_details'))
                     ->schema([
                         Grid::make(1)
@@ -162,9 +161,9 @@ class ReviewSubmissionPage extends Page implements HasActions, HasInfolists
         return $this->hasReviewGuidelines() || $this->hasCompetingInterests();
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->id('reviewSubmissionForm')
             ->model($this->review)
             ->statePath('formData')
@@ -188,7 +187,7 @@ class ReviewSubmissionPage extends Page implements HasActions, HasInfolists
             ]);
     }
 
-    public function submitReviewAction()
+    public function submitReviewAction(): \Filament\Actions\Action
     {
         return Action::make('submitReviewAction')
             ->icon('lineawesome-check-circle-solid')
@@ -206,7 +205,17 @@ class ReviewSubmissionPage extends Page implements HasActions, HasInfolists
                     return;
                 }
 
-                $data = $this->form->getState();
+                try {
+                    $data = $this->form->getState();
+                } catch (\Illuminate\Validation\ValidationException $e) {
+                    \Filament\Notifications\Notification::make()
+                        ->title(app()->getLocale() === 'id' ? 'Galat Validasi' : 'Validation Error')
+                        ->body(app()->getLocale() === 'id' ? 'Silakan isi semua bidang wajib di formulir penilaian.' : 'Please fill in all required fields on the review form.')
+                        ->danger()
+                        ->send();
+
+                    throw $e;
+                }
                 $data['date_completed'] = now();
 
                 if (array_key_exists('review_responses', data_get($data, 'meta', []))) {
@@ -248,7 +257,7 @@ class ReviewSubmissionPage extends Page implements HasActions, HasInfolists
                     $action->success();
 
                     DB::commit();
-                } catch (\Throwable $th) {
+                } catch (Throwable $th) {
                     DB::rollBack();
 
                     $action->failureNotificationTitle($th->getMessage());
@@ -260,7 +269,7 @@ class ReviewSubmissionPage extends Page implements HasActions, HasInfolists
             });
     }
 
-    public function saveForLaterAction()
+    public function saveForLaterAction(): \Filament\Actions\Action
     {
         return Action::make('saveForLaterAction')
             ->label(__('general.save_for_later'))
@@ -277,7 +286,7 @@ class ReviewSubmissionPage extends Page implements HasActions, HasInfolists
                 try {
                     ReviewUpdateAction::run($this->review, $data);
                     $this->form->model($this->review)->saveRelationships();
-                } catch (\Throwable $th) {
+                } catch (Throwable $th) {
                     $action->failureNotificationTitle($th->getMessage());
                     $action->failure();
 

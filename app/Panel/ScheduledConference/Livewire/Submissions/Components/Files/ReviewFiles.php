@@ -2,20 +2,23 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions\Components\Files;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\Action;
 use App\Actions\Submissions\CloneSubmissionFilesToReviewRoundAction;
 use App\Constants\SubmissionFileCategory;
 use App\Models\Submission;
 use App\Models\SubmissionFile;
 use App\Models\SubmissionReviewRound;
 use Filament\Forms\Components\CheckboxList;
-use Filament\Tables\Actions\Action as TableAction;
-use Filament\Tables\Actions\ActionGroup;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\On;
 use Spatie\MediaLibrary\Support\MediaStream;
 
-class ReviewFiles extends SubmissionFilesTable
+class ReviewFiles extends SubmissionFilesTable implements HasActions
 {
+    use InteractsWithActions;
     protected ?string $category = SubmissionFileCategory::REVIEW_FILES;
 
     protected string $tableHeading;
@@ -92,14 +95,14 @@ class ReviewFiles extends SubmissionFilesTable
         ];
     }
 
-    public function downloadAllAction(): TableAction
+    public function downloadAllAction(): Action
     {
-        return TableAction::make('download_all')
+        return Action::make('download_all')
             ->icon('heroicon-o-arrow-down-tray')
             ->label(__('general.download_all_files'))
             ->color('primary')
             ->hidden(fn (): bool => ! $this->canManageReviewFiles() || ! $this->tableQuery()->exists())
-            ->action(function (TableAction $action) {
+            ->action(function (Action $action) {
                 $mediaIds = $this->tableQuery()->pluck('media_id');
                 $files = $this->submission->media()
                     ->whereIn('id', $mediaIds)
@@ -119,19 +122,19 @@ class ReviewFiles extends SubmissionFilesTable
             });
     }
 
-    public function uploadAction()
+    public function uploadAction(): \Filament\Actions\Action|\Filament\Actions\ActionGroup
     {
-        return TableAction::make('upload')
+        return Action::make('upload')
             ->icon('heroicon-o-cloud-arrow-up')
             ->label(__('general.upload_files'))
             ->color('success')
             ->hidden(fn (): bool => $this->isViewOnly())
             ->modalWidth('xl')
-            ->form($this->uploadFormSchema())
+            ->schema($this->uploadFormSchema())
             ->successNotificationTitle(__('general.files_added_successfully'))
             ->failureNotificationTitle(__('general.a_problem_adding_files'))
             ->action(
-                fn (array $data, TableAction $action) => $this->handleUploadAction($data, $action)
+                fn (array $data, Action $action) => $this->handleUploadAction($data, $action)
             );
     }
 
@@ -203,9 +206,9 @@ class ReviewFiles extends SubmissionFilesTable
         return $this->canManageReviewFiles() && auth()->user()->can('deleteFile', $record->submission);
     }
 
-    public function selectFilesAction(): TableAction
+    public function selectFilesAction(): Action
     {
-        return TableAction::make('select-files')
+        return Action::make('select-files')
             ->label(__('general.select_files'))
             ->icon('heroicon-o-document-duplicate')
             ->color('warning')
@@ -214,7 +217,7 @@ class ReviewFiles extends SubmissionFilesTable
                 ? __('general.select_files').' '.__('general.round').' '.$this->previousReviewRound->round_number
                 : __('general.select_files'))
             ->hidden(fn (): bool => ! $this->canTakeFromPreviousRound())
-            ->form([
+            ->schema([
                 CheckboxList::make('file_ids')
                     ->label(__('general.files_from_previous_round'))
                     ->options(function () {
@@ -233,7 +236,7 @@ class ReviewFiles extends SubmissionFilesTable
                     }),
             ])
             ->successNotificationTitle(__('general.files_added_successfully'))
-            ->action(function (array $data, TableAction $action) {
+            ->action(function (array $data, Action $action) {
                 $selectedFileIds = collect($data['file_ids'] ?? [])
                     ->filter(fn ($id) => is_numeric($id))
                     ->map(fn ($id) => (int) $id)

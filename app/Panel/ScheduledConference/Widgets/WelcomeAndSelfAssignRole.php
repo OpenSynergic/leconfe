@@ -11,7 +11,7 @@ use Filament\Widgets\Widget;
 
 class WelcomeAndSelfAssignRole extends Widget
 {
-    protected static string $view = 'panel.scheduledConference.widgets.welcome-and-self-assign-role';
+    protected string $view = 'panel.scheduledConference.widgets.welcome-and-self-assign-role';
 
     protected int|string|array $columnSpan = 'full';
 

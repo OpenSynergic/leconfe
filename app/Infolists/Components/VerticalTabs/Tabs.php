@@ -2,12 +2,12 @@
 
 namespace App\Infolists\Components\VerticalTabs;
 
+use Exception;
 use App\Facades\Hook;
 use Closure;
-use Filament\Infolists\Components\Tabs as ComponentsTabs;
 use Illuminate\Support\Str;
 
-class Tabs extends ComponentsTabs
+class Tabs extends \Filament\Schemas\Components\Tabs
 {
     protected string $view = 'infolists.components.vertical-tabs.tabs';
 
@@ -23,7 +23,7 @@ class Tabs extends ComponentsTabs
         if ($position === 'left' || $position === 'right') {
             $this->position = $position;
         } else {
-            throw new \Exception('Invalid position provided. Only "left" and "right" are allowed.');
+            throw new Exception('Invalid position provided. Only "left" and "right" are allowed.');
         }
 
         return $this;
@@ -40,7 +40,7 @@ class Tabs extends ComponentsTabs
         if (str_starts_with($verticalSpace, 'space-y-')) {
             $this->verticalSpace = $verticalSpace;
         } else {
-            throw new \Exception('Invalid verticalSpace provided. Only "space-y-" are allowed.');
+            throw new Exception('Invalid verticalSpace provided. Only "space-y-" are allowed.');
         }
 
         return $this;
@@ -63,13 +63,13 @@ class Tabs extends ComponentsTabs
         return $this->sticky;
     }
 
-    public function childComponents(array|Closure $components): static
+    public function childComponents(array | \Filament\Schemas\Schema | \Filament\Schemas\Components\Component | \Filament\Actions\Action | \Filament\Actions\ActionGroup | string | \Illuminate\Contracts\Support\Htmlable | \Closure | null $components, string $key = 'default'): static
     {
         $id = Str::slug($this->label);
 
         Hook::call('VerticalTabs::Tabs::childComponents', [$id, &$components, $this]);
 
-        $this->childComponents = $components;
+        $this->childComponents[$key] = $components;
 
         return $this;
     }

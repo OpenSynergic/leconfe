@@ -2,24 +2,28 @@
 
 namespace App\Panel\ScheduledConference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Actions;
+use Filament\Actions\Action;
+use Throwable;
 use App\Actions\ScheduledConferences\ScheduledConferenceUpdateAction;
 use App\Models\Enums\UserRole;
-use Filament\Forms\Components\Actions;
-use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Jackiedo\Timezonelist\Facades\Timezonelist;
 use Livewire\Component;
 use Squire\Models\Country;
 
-class SetupSetting extends Component implements HasForms
+class SetupSetting extends Component implements HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms;
 
     public ?array $formData = [];
@@ -39,9 +43,9 @@ class SetupSetting extends Component implements HasForms
         return view('forms.form');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->model(app()->getCurrentScheduledConference())
             ->schema([
                 Section::make()
@@ -83,13 +87,14 @@ class SetupSetting extends Component implements HasForms
                     Action::make('save')
                         ->label(__('general.save'))
                         ->successNotificationTitle(__('general.saved'))
+                        ->failureNotificationTitle(__('general.data_could_not_saved'))
                         ->action(function (Action $action) {
                             $formData = $this->form->getState();
                             try {
                                 ScheduledConferenceUpdateAction::run(app()->getCurrentScheduledConference(), $formData);
-                                $action->sendSuccessNotification();
-                            } catch (\Throwable $th) {
+                            } catch (Throwable $th) {
                                 $action->sendFailureNotification();
+                                $action->halt();
                             }
                         }),
                 ])->alignLeft(),

@@ -2,6 +2,7 @@
 
 namespace App\Actions\Leconfe;
 
+use Throwable;
 use Illuminate\Console\Command;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -18,7 +19,7 @@ class CheckVersionAction
     {
         try {
             $command->info('Leconfe version: '.$this->handle());
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             $command->error($th->getMessage());
         }
 

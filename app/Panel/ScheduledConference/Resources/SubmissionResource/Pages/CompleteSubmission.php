@@ -15,7 +15,7 @@ class CompleteSubmission extends Page
 
     protected static string $resource = SubmissionResource::class;
 
-    protected static string $view = 'panel.conference.resources.submission-resource.pages.complete-submission';
+    protected string $view = 'panel.conference.resources.submission-resource.pages.complete-submission';
 
     public function mount(Submission $record)
     {

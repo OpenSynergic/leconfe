@@ -2,6 +2,13 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions\Components\Files;
 
+use Livewire\Component;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Action;
+use Filament\Schemas\Schema;
+use Throwable;
+use Filament\Actions\DeleteAction;
 use App\Actions\SubmissionFiles\UploadSubmissionFileAction;
 use App\Classes\Log;
 use App\Facades\Setting;
@@ -13,9 +20,6 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Tables\Actions\Action as TableAction;
-use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -25,8 +29,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\Support\MediaStream;
 
-abstract class SubmissionFilesTable extends \Livewire\Component implements HasForms, HasTable
+abstract class SubmissionFilesTable extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     public Submission $submission;
@@ -89,15 +94,15 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasFo
         ];
     }
 
-    public function downloadAllAction()
+    public function downloadAllAction(): \Filament\Actions\Action
     {
-        return TableAction::make('download_all')
+        return Action::make('download_all')
             ->icon('iconpark-download-o')
             ->label(__('general.download_all_files'))
             ->button()
             ->hidden(fn (Table $table): bool => ! $table->getQuery()->exists() || $this->isViewOnly())
             ->color('gray')
-            ->action(function (TableAction $action) {
+            ->action(function (Action $action) {
                 $mediaIds = $this->tableQuery()->pluck('media_id');
                 $files = $this->submission->media()
                     ->whereIn('id', $mediaIds)
@@ -132,18 +137,25 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasFo
                 ->collection($this->category)
                 ->visibility('private')
                 ->model(fn () => $this->submission)
+                ->dehydrated(true)
                 ->saveRelationshipsUsing(function (SpatieMediaLibraryFileUpload $component) {
                     $component->saveUploadedFiles();
-
-                    $this->uploadFilesData[] = $component->getState();
                 }),
         ];
     }
 
-    public function handleUploadAction(array $data, TableAction $action)
+    public function handleUploadAction(array $data, Action $action): void
     {
-        $getUuids = array_merge(...array_map('array_values', $this->uploadFilesData));
-        $files = $this->submission->media()->whereCollectionName($this->category)->whereIn('uuid', $getUuids)->get();
+        $existingMediaIds = DB::table('submission_files')
+            ->where('submission_id', $this->submission->id)
+            ->pluck('media_id')
+            ->toArray();
+
+        $files = $this->submission->media()
+            ->whereCollectionName($this->category)
+            ->whereNotIn('id', $existingMediaIds)
+            ->get();
+
         foreach ($files as $file) {
             $submissionFile = UploadSubmissionFileAction::run(
                 $this->submission,
@@ -173,21 +185,21 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasFo
         $this->dispatch('refreshLivewire');
     }
 
-    public function uploadAction()
+    public function uploadAction(): \Filament\Actions\Action|\Filament\Actions\ActionGroup
     {
-        return TableAction::make('upload')
+        return Action::make('upload')
             ->icon('iconpark-upload')
             ->label(__('general.upload_files'))
             ->outlined()
             ->hidden(fn (): bool => $this->isViewOnly())
             ->modalWidth('xl')
-            ->form(
+            ->schema(
                 $this->uploadFormSchema()
             )
             ->successNotificationTitle(__('general.files_added_successfully'))
             ->failureNotificationTitle(__('general.a_problem_adding_files'))
             ->action(
-                fn (array $data, TableAction $action) => $this->handleUploadAction($data, $action)
+                fn (array $data, Action $action) => $this->handleUploadAction($data, $action)
             );
     }
 
@@ -202,20 +214,20 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasFo
     public function tableActions(): array
     {
         return [
-            TableAction::make('rename')
+            Action::make('rename')
                 ->icon('iconpark-edit')
                 ->label(__('general.edit'))
                 ->modalWidth('md')
                 ->modalHeading(__('general.edit_files'))
                 ->hidden(fn (SubmissionFile $record): bool => ! $this->canEditSubmissionFile($record))
                 ->successNotificationTitle(__('general.file_updated_successfully'))
-                ->mountUsing(function (SubmissionFile $record, Form $form) {
-                    $form->fill([
+                ->mountUsing(function (SubmissionFile $record, Schema $schema) {
+                    $schema->fill([
                         'name' => $record->media->name,
                         'type' => $record->submission_file_type_id,
                     ]);
                 })
-                ->action(function (SubmissionFile $record, array $data, TableAction $action) {
+                ->action(function (SubmissionFile $record, array $data, Action $action) {
                     try {
                         DB::beginTransaction();
 
@@ -249,7 +261,7 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasFo
                         $log->save();
 
                         DB::commit();
-                    } catch (\Throwable $th) {
+                    } catch (Throwable $th) {
                         DB::rollBack();
                         throw $th;
                     }
@@ -257,7 +269,7 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasFo
                     $this->dispatch('refreshLivewire');
                 })
                 ->modalSubmitActionLabel(__('general.save'))
-                ->form([
+                ->schema([
                     TextInput::make('name')
                         ->label(__('general.new_filename'))
                         ->formatStateUsing(function (SubmissionFile $record) {
@@ -293,7 +305,7 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasFo
                             ->save();
 
                         DB::commit();
-                    } catch (\Throwable $th) {
+                    } catch (Throwable $th) {
                         DB::rollBack();
 
                         throw $th;
@@ -349,8 +361,8 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasFo
             ->query($this->tableQuery())
             ->columns($this->tableColumns())
             ->headerActions($this->headerActions())
-            ->actions($this->tableActions())
-            ->bulkActions($this->bulkActions());
+            ->recordActions($this->tableActions())
+            ->toolbarActions($this->bulkActions());
     }
 
     public function bulkActions(): array

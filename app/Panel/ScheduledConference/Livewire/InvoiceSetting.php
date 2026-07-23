@@ -2,21 +2,25 @@
 
 namespace App\Panel\ScheduledConference\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Actions;
+use Filament\Actions\Action;
+use Throwable;
 use App\Forms\Components\TinyEditor;
-use Filament\Forms\Components\Actions;
-use Filament\Forms\Components\Actions\Action as ActionForm;
 use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Livewire\Component;
 
-class InvoiceSetting extends Component implements HasForms
+class InvoiceSetting extends Component implements HasForms, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms;
 
     public ?array $formData = [];
@@ -35,9 +39,9 @@ class InvoiceSetting extends Component implements HasForms
         return view('forms.form');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->model(app()->getCurrentScheduledConference())
             ->schema([
                 Section::make('Invoice')
@@ -97,17 +101,17 @@ class InvoiceSetting extends Component implements HasForms
                             ->visible(fn (Get $get) => $get('meta.receipt_enable')),
                     ]),
                 Actions::make([
-                    ActionForm::make('save')
+                    Action::make('save')
                         ->label(__('general.save'))
                         ->successNotificationTitle(__('general.saved'))
                         ->failureNotificationTitle(__('general.data_could_not_saved'))
-                        ->action(function (ActionForm $action) {
+                        ->action(function (Action $action) {
                             $formData = $this->form->getState();
                             try {
                                 app()->getCurrentScheduledConference()->setManyMeta($formData['meta']);
-                                $action->sendSuccessNotification();
-                            } catch (\Throwable $th) {
+                            } catch (Throwable $th) {
                                 $action->sendFailureNotification();
+                                $action->halt();
                             }
                         }),
                 ])->alignLeft(),

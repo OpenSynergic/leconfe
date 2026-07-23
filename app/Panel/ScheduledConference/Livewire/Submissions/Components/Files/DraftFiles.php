@@ -2,11 +2,12 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions\Components\Files;
 
+use App\Panel\ScheduledConference\Livewire\Submissions\Components\Files\Traits\CanSelectFiles;
 use App\Constants\SubmissionFileCategory;
 
 class DraftFiles extends SubmissionFilesTable
 {
-    use Traits\CanSelectFiles;
+    use CanSelectFiles;
 
     protected ?string $category = SubmissionFileCategory::EDITING_DRAFT_FILES;
 

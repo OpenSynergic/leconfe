@@ -2,22 +2,20 @@
 
 namespace App\Providers;
 
+use Throwable;
 use App\Actions\Leconfe\CheckLatestVersion;
 use App\Application;
 use App\Classes\Setting;
 use App\Console\Kernel as ConsoleKernel;
 use App\Events\UserLoggedIn;
-use App\Forms\Form;
 use App\Http\Kernel as HttpKernel;
-use App\Infolists\Infolist;
+use App\Schemas\Schema as AppSchema;
 use App\Listeners\SubmissionEventSubscriber;
 use App\Managers\MetaTagManager;
 use App\Managers\SidebarManager;
 use App\Models\Conference;
 use App\Models\ScheduledConference;
 use App\Routing\CustomUrlGenerator;
-use Filament\Forms\Form as FilamentForm;
-use Filament\Infolists\Infolist as FilamentInfolist;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Client\Factory as Http;
@@ -55,12 +53,8 @@ class AppServiceProvider extends ServiceProvider
             return new Setting;
         });
 
-        $this->app->bind(FilamentForm::class, function ($app, $args) {
-            return new Form(...$args);
-        });
-
-        $this->app->bind(FilamentInfolist::class, function ($app, $args) {
-            return new Infolist(...$args);
+        $this->app->bind(\Filament\Schemas\Schema::class, function ($app, $args) {
+            return new AppSchema(...$args);
         });
 
         // Use a custom URL generator to accomodate multi context.
@@ -128,7 +122,7 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(queueable(function (UserLoggedIn $event) {
             try {
                 CheckLatestVersion::run();
-            } catch (\Throwable $th) {
+            } catch (Throwable $th) {
                 //
             }
         }));

@@ -27,7 +27,7 @@ class ContributorsStep extends Component implements HasActions, HasForms, HasWiz
         return view('panel.scheduledConference.livewire.wizards.submission-wizard.steps.authors-step');
     }
 
-    public function nextStep()
+    public function nextStep(): Action
     {
         return Action::make('nextStep')
             ->label(__('general.next'))

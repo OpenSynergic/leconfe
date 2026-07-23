@@ -32,7 +32,7 @@ class UploadFilesStep extends Component implements HasActions, HasForms, HasWiza
         return view('panel.scheduledConference.livewire.wizards.submission-wizard.steps.upload-files-step');
     }
 
-    public function nextStep()
+    public function nextStep(): \Filament\Actions\Action
     {
         return PageAction::make('nextStep')
             ->label(__('general.next'))

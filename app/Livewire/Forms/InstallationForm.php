@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Forms;
 
+use Throwable;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -72,7 +73,7 @@ class InstallationForm extends Form
         try {
             $this->resetErrorBag('error');
             $this->reconnectDbWithNewData();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             $this->addError('error', 'Connection failed: ' . $th->getMessage());
 
             return false;

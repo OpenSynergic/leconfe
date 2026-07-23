@@ -2,6 +2,15 @@
 
 namespace App\Console;
 
+use App\Actions\Permissions\PermissionPersistAction;
+use App\Actions\Permissions\PermissionPopulateAction;
+use App\Actions\Leconfe\InstallAction;
+use App\Actions\Leconfe\UpgradeAction;
+use App\Actions\Leconfe\CheckVersionAction;
+use App\Actions\Leconfe\CheckLatestVersion;
+use App\Actions\Leconfe\QuickInstall;
+use App\Actions\Leconfe\GetUpgradeActionHistory;
+use App\Actions\Leconfe\Relink;
 use App\Actions;
 use App\Actions\Submissions\RemoveDeletedDiscussion;
 use App\Models\UserInvitation;
@@ -16,15 +25,15 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Actions\Permissions\PermissionPersistAction::class,
-        Actions\Permissions\PermissionPopulateAction::class,
-        Actions\Leconfe\InstallAction::class,
-        Actions\Leconfe\UpgradeAction::class,
-        Actions\Leconfe\CheckVersionAction::class,
-        Actions\Leconfe\CheckLatestVersion::class,
-        Actions\Leconfe\QuickInstall::class,
-        Actions\Leconfe\GetUpgradeActionHistory::class,
-        Actions\Leconfe\Relink::class,
+        PermissionPersistAction::class,
+        PermissionPopulateAction::class,
+        InstallAction::class,
+        UpgradeAction::class,
+        CheckVersionAction::class,
+        CheckLatestVersion::class,
+        QuickInstall::class,
+        GetUpgradeActionHistory::class,
+        Relink::class,
     ];
 
     /**

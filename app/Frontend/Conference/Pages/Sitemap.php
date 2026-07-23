@@ -2,6 +2,7 @@
 
 namespace App\Frontend\Conference\Pages;
 
+use Filament\Facades\Filament;
 use App\Frontend\ScheduledConference\Pages as ScheduledConferencePages;
 use App\Frontend\Website\Pages\Page;
 use App\Http\Middleware\RedirectToScheduledConference;

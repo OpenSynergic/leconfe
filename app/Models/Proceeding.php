@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Exception;
 use App\Frontend\Conference\Pages\ProceedingDetail;
 use App\Models\Concerns\BelongsToConference;
 use App\Models\Concerns\HasDOI;
@@ -48,7 +49,7 @@ class Proceeding extends Model implements HasMedia, Sortable
     {
         static::deleting(function (Proceeding $proceeding) {
             if ($proceeding->submissions->isNotEmpty()) {
-                throw new \Exception('Could not delete proceeding with submissions, please remove submissions first.');
+                throw new Exception('Could not delete proceeding with submissions, please remove submissions first.');
             }
         });
     }

@@ -2,6 +2,8 @@
 
 namespace App\Actions\Leconfe;
 
+use App\Utils\Installer;
+use Throwable;
 use App\Utils\PermissionChecker;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
@@ -25,7 +27,7 @@ class InstallAction
 
     public function handle(array $params)
     {
-        $upgrade = new \App\Utils\Installer($params);
+        $upgrade = new Installer($params);
         $upgrade->run();
     }
 
@@ -135,7 +137,7 @@ class InstallAction
                 info('Database connection success.');
 
                 break;
-            } catch (\Throwable $th) {
+            } catch (Throwable $th) {
                 error('Cannot connect to database with provided information. Please check again.');
                 error($th->getMessage());
             }
@@ -156,10 +158,10 @@ class InstallAction
         try {
 
             spin(
-                fn () => (new \App\Utils\Installer($data, $command))->run(),
+                fn () => (new Installer($data, $command))->run(),
                 'Installing application...'
             );
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             throw $th;
         }
 

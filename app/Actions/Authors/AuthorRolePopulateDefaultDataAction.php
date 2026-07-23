@@ -2,6 +2,7 @@
 
 namespace App\Actions\Authors;
 
+use Throwable;
 use App\Models\AuthorRole;
 use App\Models\Conference;
 use Illuminate\Support\Facades\DB;
@@ -32,7 +33,7 @@ class AuthorRolePopulateDefaultDataAction
             ]);
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
 
             throw $th;

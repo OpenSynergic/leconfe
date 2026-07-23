@@ -2,6 +2,7 @@
 
 namespace App\Actions\NavigationMenu;
 
+use Throwable;
 use App\Models\NavigationMenuItem;
 use Illuminate\Support\Facades\DB;
 use Lorisleiva\Actions\Concerns\AsAction;
@@ -21,7 +22,7 @@ class UpdateNavigationMenuItemAction
             }
 
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
             throw $th;
         }

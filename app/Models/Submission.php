@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Exception;
+use Filament\Facades\Filament;
 use App\Frontend\Conference\Pages\Paper;
 use App\Interfaces\HasPayment;
 use App\Models\Concerns\BelongsToScheduledConference;
@@ -305,7 +307,7 @@ class Submission extends Model implements HasMedia, HasPayment, Sortable
             SubmissionStatus::Declined => new DeclinedSubmissionState($this),
             SubmissionStatus::PaymentDeclined => new DeclinedPaymentSubmissionState($this),
             SubmissionStatus::Withdrawn => new WithdrawnSubmissionState($this),
-            default => throw new \Exception('Invalid submission status'),
+            default => throw new Exception('Invalid submission status'),
         };
     }
 

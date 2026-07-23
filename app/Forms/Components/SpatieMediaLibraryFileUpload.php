@@ -42,7 +42,7 @@ class SpatieMediaLibraryFileUpload extends FileUpload
 				->usingFileName($filename)
 				->usingName($component->getMediaName($file) ??  pathinfo(static::getClientOriginalName($file), PATHINFO_FILENAME))
 				->storingConversionsOnDisk($component->getConversionsDisk() ?? '')
-				->withCustomProperties($component->getCustomProperties())
+				->withCustomProperties($component->getCustomProperties($file))
 				->withManipulations($component->getManipulations())
 				->withResponsiveImagesIf($component->hasResponsiveImages())
 				->withProperties($component->getProperties())
@@ -67,5 +67,22 @@ class SpatieMediaLibraryFileUpload extends FileUpload
 			$metaFileData = json_decode($contents, true);
 		}
 		return $metaFileData;
+	}
+
+	public function getDiskName(): string
+	{
+		$name = $this->evaluate($this->diskName);
+
+		if (filled($name)) {
+			return $name;
+		}
+
+		$parentDisk = parent::getDiskName();
+
+		if ($parentDisk === 'local') {
+			return config('media-library.disk_name', 'media-library');
+		}
+
+		return $parentDisk;
 	}
 }

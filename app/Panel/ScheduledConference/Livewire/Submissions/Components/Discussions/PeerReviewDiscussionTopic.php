@@ -2,6 +2,17 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions\Components\Discussions;
 
+use Livewire\Component;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\Action;
+use Filament\Schemas\Components\Livewire;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Actions\DeleteAction;
+use Throwable;
 use App\Actions\Submissions\CreateDiscussionTopic;
 use App\Actions\Submissions\UpdateDiscussionTopic;
 use App\Models\DiscussionTopic;
@@ -12,20 +23,13 @@ use App\Models\Submission;
 use App\Models\SubmissionParticipant;
 use App\Models\User;
 use App\Notifications\NewDiscussionTopic;
-use Awcodes\FilamentBadgeableColumn\Components\Badge;
-use Awcodes\FilamentBadgeableColumn\Components\BadgeableColumn;
+use Awcodes\BadgeableColumn\Components\Badge;
+use Awcodes\BadgeableColumn\Components\BadgeableColumn;
 use Closure;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Infolists\Components\Fieldset;
-use Filament\Infolists\Components\Livewire;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -34,8 +38,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 
-class PeerReviewDiscussionTopic extends \Livewire\Component implements HasForms, HasTable
+class PeerReviewDiscussionTopic extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     public Submission $submission;
@@ -73,10 +78,10 @@ class PeerReviewDiscussionTopic extends \Livewire\Component implements HasForms,
         return $activeRoundId && (int) $activeRoundId === $this->reviewRoundId;
     }
 
-    protected function form(Form $form): Form
+    protected function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('name')
                     ->label(__('general.topic_name'))
                     ->placeholder(__('general.topic_name'))
@@ -189,7 +194,7 @@ class PeerReviewDiscussionTopic extends \Livewire\Component implements HasForms,
             ->heading(__('general.discussion'))
             ->query(fn () => $this->getEloquentQuery())
             ->recordAction('open-discussion-detail')
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
                     Action::make('open-discussion-detail')
                         ->icon('lineawesome-eye-solid')
@@ -197,7 +202,7 @@ class PeerReviewDiscussionTopic extends \Livewire\Component implements HasForms,
                         ->modalWidth('6xl')
                         ->modalHeading(fn (Model $discussionTopic): string => __('general.discussion_for_topic', ['variable' => $discussionTopic->name]))
                         ->modalSubmitAction(false)
-                        ->infolist(function (Model $discussionTopic) {
+                        ->schema(function (Model $discussionTopic) {
                             return [
                                 Livewire::make(
                                     DiscussionDetail::class,
@@ -219,14 +224,14 @@ class PeerReviewDiscussionTopic extends \Livewire\Component implements HasForms,
                         ->label(__('general.edit'))
                         ->icon('lineawesome-edit-solid')
                         ->hidden(fn (): bool => ! $this->isSelectedRoundOpen())
-                        ->mountUsing(function ($record, Form $form) {
-                            $form->fill([
+                        ->mountUsing(function ($record, Schema $schema) {
+                            $schema->fill([
                                 'name' => $record->name,
                                 'user_id' => $record->participants()->pluck('user_id')->toArray(),
                             ]);
                         })
                         ->authorize(fn ($record) => auth()->user()->can('update', $record))
-                        ->form(fn (Form $form) => $this->form($form))
+                        ->schema(fn (Schema $schema) => $this->form($schema))
                         ->successNotificationTitle(__('general.topic_updated_successfully'))
                         ->action(function (Action $action, array $data, Model $record) {
                             UpdateDiscussionTopic::run(
@@ -261,11 +266,11 @@ class PeerReviewDiscussionTopic extends \Livewire\Component implements HasForms,
                     ->outlined()
                     ->label(__('general.topic'))
                     ->modalWidth('xl')
-                    ->form(fn ($form) => $this->form($form))
+                    ->schema(fn ($form) => $this->form($form))
                     ->successNotificationTitle(__('general.topic_created_successfully'))
                     ->failureNotificationTitle(__('general.topic_createtion_failed'))
-                    ->action(function (Action $action, array $data, Form $form) {
-                        $form->validate();
+                    ->action(function (Action $action, array $data, Schema $schema) {
+                        $schema->validate();
 
                         $topic = CreateDiscussionTopic::run(
                             $this->submission,
@@ -286,7 +291,7 @@ class PeerReviewDiscussionTopic extends \Livewire\Component implements HasForms,
                                         new NewDiscussionTopic($topic)
                                     );
                                 });
-                        } catch (\Throwable $th) {
+                        } catch (Throwable $th) {
                             $action->failureNotificationTitle(__('general.failed_to_send_notification_to_participants'));
                             $action->failure();
                         } finally {

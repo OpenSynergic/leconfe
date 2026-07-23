@@ -2,14 +2,16 @@
 
 namespace App\Panel\Administration\Livewire;
 
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\DeleteAction;
 use App\Facades\Plugin as FacadesPlugin;
 use App\Models\Plugin;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Enums\FontWeight;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -19,8 +21,9 @@ use Filament\Tables\Table;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-class PluginTable extends Component implements HasForms, HasTable
+class PluginTable extends Component implements HasForms, HasTable, HasActions
 {
+    use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
 
     public function render()
@@ -64,7 +67,7 @@ class PluginTable extends Component implements HasForms, HasTable
                         return $state;
                     }),
             ])
-            ->actions([
+            ->recordActions([
                 ActionGroup::make([
                     DeleteAction::make()
                         ->authorize(fn (Plugin $record) => auth()->user()->can('delete', $record))

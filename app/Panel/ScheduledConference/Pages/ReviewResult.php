@@ -23,9 +23,9 @@ class ReviewResult extends Page implements HasForms, HasTable
 {
     use InteractsWithForms, InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-eye';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-eye';
 
-    protected static string $view = 'panel.scheduledConference.pages.review-result';
+    protected string $view = 'panel.scheduledConference.pages.review-result';
 
     protected static ?int $navigationSort = 99;
 
@@ -119,12 +119,20 @@ class ReviewResult extends Page implements HasForms, HasTable
                 TextColumn::make('title')
                     ->getStateUsing(fn ($record) => $record->getMeta('title'))
                     ->color('primary')
-                    ->openUrlInNewTab()
                     ->url(fn ($record) => SubmissionResource::getUrl('view', ['record' => $record]))
-                    ->wrap(),
-                TextColumn::make('status')
+                    ->wrap()
+                    ->extraHeaderAttributes([
+                        'style' => 'max-width: 350px;',
+                    ])
+                    ->extraCellAttributes([
+                        'style' => 'max-width: 350px; white-space: normal !important;',
+                    ])
                     ->extraAttributes([
-                        'class' => 'mt-2',
+                        'style' => 'white-space: normal !important; word-break: break-word;',
+                    ]),
+                TextColumn::make('status')
+                    ->extraCellAttributes([
+                        'style' => 'width: 1px; white-space: nowrap;',
                     ])
                     ->badge()
                     ->formatStateUsing(
@@ -135,10 +143,10 @@ class ReviewResult extends Page implements HasForms, HasTable
             ->filters([
                 // ...
             ])
-            ->actions([
+            ->recordActions([
                 // ...
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 // ...
             ]);
     }

@@ -2,19 +2,20 @@
 
 namespace App\Forms;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Concerns\HasId;
 use App\Facades\Hook;
 use Closure;
-use Filament\Forms\Components\Concerns\HasId;
 use Illuminate\Support\Str;
 
-class Form extends \Filament\Forms\Form
+class Form extends Schema
 {
     use HasId;
 
     /**
      * @param  array<Component> | Closure  $components
      */
-    public function components(array|Closure $components): static
+    public function components(\Filament\Schemas\Components\Component|\Filament\Actions\Action|\Filament\Actions\ActionGroup|\Illuminate\Contracts\Support\Htmlable|Closure|array|string $components): static
     {
         if ($this->getId()) {
             Hook::call('Forms::Form::components::'.Str::camel($this->getId()), [&$components, $this]);

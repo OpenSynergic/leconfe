@@ -1,6 +1,5 @@
 <x-filament::dropdown
     placement="bottom-start"
-    teleport
     class="-mx-2"
     id="switch-scheduled-conference"
     width="xs"
@@ -22,22 +21,22 @@
                 x-tooltip.html="tooltip"
             @endif
             type="button"
-            class="flex items-center justify-between w-full p-2 text-sm font-medium transition duration-75 rounded-lg outline-none fi-tenant-menu-trigger group gap-x-3 hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-white/5 dark:focus:bg-white/5"
+            class="flex items-center justify-center w-full p-2 text-sm font-medium transition duration-75 rounded-lg outline-none fi-tenant-menu-trigger group gap-x-3 hover:bg-gray-100 focus:bg-gray-100 dark:hover:bg-white/5 dark:focus:bg-white/5"
         >
             <span
                 @if (filament()->isSidebarCollapsibleOnDesktop())
                     x-show="$store.sidebar.isOpen"
                 @endif
-                class="flex flex-wrap items-center justify-between truncate text-start grow"
+                class="flex items-center gap-x-2 truncate text-start me-auto"
             >
-                <span class="text-gray-950 dark:text-white">
+                <span class="truncate text-gray-950 dark:text-white">
                     {{ $currentScheduledConference->title }}
                 </span>
 
                 @if($currentScheduledConference->current)
-                <x-filament::badge size="sm" class="" color="primary">
-                    {{ __('general.current') }}
-                </x-filament::badge>
+                    <x-filament::badge size="sm" color="primary">
+                        {{ __('general.current') }}
+                    </x-filament::badge>
                 @endif
 
                 @hook('Panel::ScheduledConference::TenantMenuAfterCurrentTitle')
@@ -46,13 +45,13 @@
              <x-filament::icon
                 icon="heroicon-m-chevron-down"
                 icon-alias="panels::tenant-menu.toggle-button"
-                class="hidden w-5 h-5 text-gray-400 transition duration-75 md:block shrink-0 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400 dark:group-focus:text-gray-400"
+                class="hidden w-5 h-5 text-gray-400 transition duration-75 md:block ms-auto shrink-0 group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400 dark:group-focus:text-gray-400"
             />
         </button>
     </x-slot>
 
     <x-filament::dropdown.list>
-        <div class="flex items-center w-full gap-2 p-2 text-sm font-medium transition-colors duration-75 border-b outline-none whitespace-nowrap">
+        <div class="flex items-center w-full gap-2 p-2 text-sm font-medium transition-colors duration-75 border-b border-gray-200 outline-none whitespace-nowrap dark:border-gray-700">
             {{ __('general.switch_scheduled_conference') }}
         </div>
 
