@@ -39,7 +39,7 @@
         "mchev/banhammer": "^2",
         "mike-bronner/laravel-model-caching": "^13.0",
         "omnipay/paypal": "^3.0",
-        "openjournalteam/laravel-bangau-mail": "^0.1",
+        "openjournalteam/laravel-bangau-mail": "^0.2.0",
         "plank/laravel-metable": "^6.0",
         "propaganistas/laravel-disposable-email": "^2.2",
         "propaganistas/laravel-phone": "^6.0",
