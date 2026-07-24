@@ -2,30 +2,28 @@
 
 namespace App\Panel\ScheduledConference\Livewire\Submissions\Components;
 
-use Livewire\Component;
-use Filament\Actions\Contracts\HasActions;
-use Filament\Actions\Concerns\InteractsWithActions;
-use Filament\Schemas\Components\Utilities\Get;
-use Filament\Actions\Action;
-use Filament\Schemas\Components\Utilities\Set;
-use Filament\Actions\CreateAction;
-use Throwable;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
 use App\Actions\SubmissionGalleys\CreateSubmissionGalleyAction;
 use App\Actions\SubmissionGalleys\UpdateMediaSubmissionGalleyFileAction;
 use App\Actions\SubmissionGalleys\UpdateSubmissionGalleyAction;
 use App\Constants\SubmissionFileCategory;
+use App\Forms\Components\SpatieMediaLibraryFileUpload;
 use App\Models\Submission;
 use App\Models\SubmissionFileType;
 use App\Models\SubmissionGalley;
+use Filament\Actions\Action;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
-use App\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -33,9 +31,11 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\HtmlString;
+use Illuminate\Validation\ValidationException;
+use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
-class GalleyList extends Component implements HasForms, HasTable, HasActions
+class GalleyList extends Component implements HasActions, HasForms, HasTable
 {
     use InteractsWithActions;
     use InteractsWithForms, InteractsWithTable;
@@ -141,13 +141,33 @@ class GalleyList extends Component implements HasForms, HasTable, HasActions
                     if (! $mediaFile) {
                         return null;
                     }
-                    $mediaFile = reset($mediaFile) instanceof TemporaryUploadedFile
-                        ? SpatieMediaLibraryFileUpload::getClientOriginalName(reset($mediaFile))
-                        : $record->file?->media->file_name;
+                    $mediaFile = is_array($mediaFile) ? reset($mediaFile) : $mediaFile;
+                    $mediaFile = $mediaFile instanceof TemporaryUploadedFile
+                        ? SpatieMediaLibraryFileUpload::getClientOriginalName($mediaFile)
+                        : $record?->file?->media?->file_name;
 
-                    return pathinfo($mediaFile, PATHINFO_EXTENSION) ?: null;
+                    return $mediaFile ? (pathinfo($mediaFile, PATHINFO_EXTENSION) ?: null) : null;
                 }),
         ];
+    }
+
+    protected function getMountedGalleyFileUpload(): SpatieMediaLibraryFileUpload
+    {
+        $schemaName = $this->getMountedActionSchemaName();
+        $schema = filled($schemaName) ? $this->getSchema($schemaName) : null;
+        $component = $schema?->getComponent('media.files', withHidden: true);
+
+        if ($component instanceof SpatieMediaLibraryFileUpload) {
+            return $component;
+        }
+
+        $statePath = filled($schema?->getStatePath())
+            ? "{$schema->getStatePath()}.media.files"
+            : 'media.files';
+
+        throw ValidationException::withMessages([
+            $statePath => __('The galley file upload component could not be resolved. Please reload the page and try again.'),
+        ]);
     }
 
     public function table(Table $table): Table
@@ -173,19 +193,15 @@ class GalleyList extends Component implements HasForms, HasTable, HasActions
                     ->successNotificationTitle(__('general.galley_added_succesfully'))
                     ->failureNotificationTitle(__('general.there_was_problem_adding_galley'))
                     ->schema(static::getGalleyFormSchema())
-                    ->using(function (array $data, Component $livewire) {
-                        try {
-                            $componentFile = ! $data['is_remote_url'] ?
-                                $livewire->getMountedTableActionForm()->getComponent('mountedTableActionsData.0.media.files') :
-                                null;
+                    ->using(function (array $data) {
+                        $componentFile = data_get($data, 'is_remote_url', false)
+                            ? null
+                            : $this->getMountedGalleyFileUpload();
 
-                            $newGalley = CreateSubmissionGalleyAction::run($this->submission, $data, $componentFile);
+                        $newGalley = CreateSubmissionGalleyAction::run($this->submission, $data, $componentFile);
 
-                            if ($newGalley instanceof SubmissionGalley) {
-                                return $newGalley;
-                            }
-                        } catch (Throwable $th) {
-                            throw $th;
+                        if ($newGalley instanceof SubmissionGalley) {
+                            return $newGalley;
                         }
                     })
                     ->hidden($this->viewOnly),
