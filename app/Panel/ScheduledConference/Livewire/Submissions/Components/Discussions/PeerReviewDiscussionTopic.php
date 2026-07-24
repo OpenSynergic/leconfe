@@ -49,12 +49,13 @@ class PeerReviewDiscussionTopic extends Component implements HasForms, HasTable,
 
     public ?int $reviewRoundId = null;
 
-    public function mount(Submission $submission, SubmissionStage $stage): void
+    public function mount(Submission $submission, SubmissionStage $stage, ?int $reviewRoundId = null): void
     {
         $this->submission = $submission;
         $this->stage = $stage;
-        $this->reviewRoundId = $submission->activeReviewRound?->getKey()
-            ?? $submission->latestReviewRound?->getKey();
+        $this->reviewRoundId = $reviewRoundId && $submission->reviewRounds()->whereKey($reviewRoundId)->exists()
+            ? $reviewRoundId
+            : ($submission->activeReviewRound?->getKey() ?? $submission->latestReviewRound?->getKey());
     }
 
     #[On('peer-review-round-selected')]
