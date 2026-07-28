@@ -62,7 +62,23 @@ class PaymentFee extends Model implements Sortable
 
     public function scopeActive($query, $active = true): Builder
     {
-        return $query->where('is_active', $active);
+        $query->where('is_active', $active);
+
+        if (! $active) {
+            return $query;
+        }
+
+        $now = now();
+
+        return $query
+            ->where(function (Builder $query) use ($now) {
+                $query->whereNull('opened_at')
+                    ->orWhereDate('opened_at', '<=', $now);
+            })
+            ->where(function (Builder $query) use ($now) {
+                $query->whereNull('closed_at')
+                    ->orWhereDate('closed_at', '>=', $now);
+            });
     }
 
     public function formItems(): HasMany
