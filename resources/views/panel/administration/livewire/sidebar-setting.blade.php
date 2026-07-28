@@ -15,9 +15,9 @@
                     <template x-for="sidebar in items" :key="sidebar.id">
                         <div class="sidebar-item" data-sortable-item :data-id="sidebar.id">
                             <div class="relative group">
-                                <div class="flex items-center gap-2 bg-white border rounded-xl">
+                                <div class="flex items-center gap-2 bg-white border border-gray-200 rounded-xl">
                                     <button type="button"
-                                        class="p-3 text-sm text-gray-500 border-r bg-gray-50 rounded-l-xl hover:text-gray-900"
+                                        class="p-3 text-sm text-gray-500 border-r border-gray-200 bg-gray-50 rounded-l-xl hover:text-gray-900"
                                         data-sortable-handle>
                                         <x-heroicon-s-arrows-up-down class="w-4 h-4" />
                                     </button>
