@@ -187,9 +187,14 @@ class ResetPassword extends Page implements HasActions, HasForms
             return null;
         }
 
+        if (is_string($this->email)) {
+            $this->email = \Illuminate\Support\Str::lower(trim($this->email));
+        }
+
         $this->validate();
 
-        $user = User::where('email', $this->email)->first();
+        $email = \Illuminate\Support\Str::lower(trim((string) $this->email));
+        $user = User::whereRaw('TRIM(LOWER(email)) = ?', [$email])->first();
 
         if (! $user) {
             $this->addError('email', __('validation.exists', ['attribute' => 'email']));
