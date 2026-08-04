@@ -32,9 +32,16 @@ class SetupSetting extends Component implements HasForms, HasActions
     {
         $scheduledConference = app()->getCurrentScheduledConference();
 
+        $meta = $scheduledConference->getAllMeta();
+        if ($meta->has('allowed_self_assign_roles')) {
+            $allowed = (array) $meta->get('allowed_self_assign_roles');
+            $validSetupRoles = array_keys(UserRole::selfAssignedRoleSetupNames());
+            $meta->set('allowed_self_assign_roles', array_values(array_intersect($allowed, $validSetupRoles)));
+        }
+
         $this->form->fill([
             ...$scheduledConference->attributesToArray(),
-            'meta' => $scheduledConference->getAllMeta(),
+            'meta' => $meta->toArray(),
         ]);
     }
 
