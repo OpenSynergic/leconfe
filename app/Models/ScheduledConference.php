@@ -223,7 +223,6 @@ class ScheduledConference extends Model implements HasAvatar, HasMedia, HasName
         );
     }
 
-
     public function conference(): BelongsTo
     {
         return $this->belongsTo(Conference::class);
