@@ -196,6 +196,28 @@ class ScheduledConference extends Model implements HasAvatar, HasMedia, HasName
         return $limit > 0 ? $limit : null;
     }
 
+    public function getTimezone(): string
+    {
+        return (string) $this->getMeta('timezone', config('app.timezone', 'UTC'));
+    }
+
+    protected function timezoneLabel(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $tz = $this->getTimezone();
+                try {
+                    $offset = (new \DateTimeZone($tz))->getOffset(new \DateTime('now', new \DateTimeZone('UTC')));
+                    $hours = sprintf('%+03d:%02d', intdiv($offset, 3600), abs($offset % 3600) / 60);
+                    return "{$tz} (UTC{$hours})";
+                } catch (\Throwable $e) {
+                    return $tz;
+                }
+            },
+        );
+    }
+
+
     public function conference(): BelongsTo
     {
         return $this->belongsTo(Conference::class);

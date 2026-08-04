@@ -63,7 +63,9 @@ class SetupSetting extends Component implements HasForms, HasActions
                             ->options(fn() => Country::all()->mapWithKeys(fn($country) => [$country->id => $country->flag . ' ' . $country->name]))
                             ->optionsLimit(250),
                         Select::make('meta.timezone')
+                            ->label(__('general.timezone'))
                             ->options(Timezonelist::toArray(false))
+                            ->optionsLimit(500)
                             ->selectablePlaceholder(false)
                             ->searchable()
                             ->required(),
