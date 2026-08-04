@@ -180,6 +180,7 @@ class ScheduledConference extends Model implements HasAvatar, HasMedia, HasName
             'required_country' => false,
             'required_phone' => false,
             self::META_SUBMISSION_TOPIC_SELECTION_LIMIT => null,
+            'timezone' => config('app.timezone', 'UTC'),
         ];
     }
 
@@ -207,9 +208,8 @@ class ScheduledConference extends Model implements HasAvatar, HasMedia, HasName
             get: function () {
                 $tz = $this->getTimezone();
                 try {
-                    $offset = (new \DateTimeZone($tz))->getOffset(new \DateTime('now', new \DateTimeZone('UTC')));
-                    $hours = sprintf('%+03d:%02d', intdiv($offset, 3600), abs($offset % 3600) / 60);
-                    return "{$tz} (UTC{$hours})";
+                    $offset = (new \DateTime('now', new \DateTimeZone($tz)))->format('P');
+                    return "{$tz} (UTC{$offset})";
                 } catch (\Throwable $e) {
                     return $tz;
                 }
