@@ -68,7 +68,8 @@ class SetupSetting extends Component implements HasForms, HasActions
                             ->optionsLimit(500)
                             ->selectablePlaceholder(false)
                             ->searchable()
-                            ->required(),
+                            ->required()
+                            ->rules(['timezone']),
                     ]),
                 Section::make(__('general.registration_required_fields'))
                     ->schema([

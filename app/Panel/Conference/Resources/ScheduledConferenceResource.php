@@ -76,7 +76,8 @@ class ScheduledConferenceResource extends Resource
                     ->default(config('app.timezone', 'UTC'))
                     ->selectablePlaceholder(false)
                     ->searchable()
-                    ->required(),
+                    ->required()
+                    ->rules(['timezone']),
             ]);
     }
 

@@ -146,8 +146,6 @@ class ScheduledConference extends Model implements HasAvatar, HasMedia, HasName
     protected function getAllDefaultMeta(): array
     {
         return [
-            'timezone' => 'UTC',
-            'submission_payment' => false,
             'before_you_begin' => __('general.before_you_begin_current_scheduled', ['title' => $this->title]),
             'submission_checklist' => __('general.submission_checklist_following_requirements'),
             'review_mode' => Review::MODE_DOUBLE_ANONYMOUS,
@@ -199,7 +197,15 @@ class ScheduledConference extends Model implements HasAvatar, HasMedia, HasName
 
     public function getTimezone(): string
     {
-        return (string) $this->getMeta('timezone', config('app.timezone', 'UTC'));
+        $tz = (string) $this->getMeta('timezone', config('app.timezone', 'UTC'));
+
+        try {
+            new \DateTimeZone($tz);
+
+            return $tz;
+        } catch (\Throwable $e) {
+            return (string) config('app.timezone', 'UTC');
+        }
     }
 
     protected function timezoneLabel(): Attribute

@@ -52,4 +52,17 @@ class ScheduledConferenceTimezoneTest extends TestCase
         $this->assertEquals('Asia/Tokyo', config('app.timezone'));
         $this->assertEquals('Asia/Tokyo', date_default_timezone_get());
     }
+
+    public function test_scheduled_conference_invalid_timezone_falls_back_gracefully(): void
+    {
+        $conference = Conference::factory()->create();
+        $scheduledConference = ScheduledConference::factory()->create([
+            'conference_id' => $conference->id,
+        ]);
+
+        $scheduledConference->setMeta('timezone', 'Invalid/Timezone_Name');
+
+        $this->assertEquals(config('app.timezone', 'UTC'), $scheduledConference->getTimezone());
+        $this->assertStringContainsString(config('app.timezone', 'UTC'), $scheduledConference->timezone_label);
+    }
 }
