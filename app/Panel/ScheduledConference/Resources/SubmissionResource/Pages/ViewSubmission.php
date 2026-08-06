@@ -481,6 +481,9 @@ class ViewSubmission extends Page implements HasForms, HasInfolists
                             ->schema([
                                 StageTabs::make()
                                     ->contained(true)
+                                    ->extraAttributes([
+                                        'class' => 'submission-workflow-stage-tabs',
+                                    ])
                                     ->activeTab(function () {
                                         return match ($this->record->stage) {
                                             SubmissionStage::CallforAbstract => 1,

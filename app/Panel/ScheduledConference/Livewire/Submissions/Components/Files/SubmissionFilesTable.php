@@ -67,9 +67,11 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasFo
     {
         return [
             TextColumn::make('id')
+                ->visibleFrom('md')
                 ->wrap(),
             TextColumn::make('media.original_file_name')
                 ->wrap()
+                ->extraAttributes(['class' => 'break-all'])
                 ->label(__('general.filename'))
                 ->color('primary')
                 ->action(function (SubmissionFile $record) {
@@ -83,6 +85,7 @@ abstract class SubmissionFilesTable extends \Livewire\Component implements HasFo
                 })
                 ->description(fn (SubmissionFile $record) => $record->type->name),
             TextColumn::make('created_at')
+                ->visibleFrom('md')
                 ->label(__('general.uploaded_at'))
                 ->formatStateUsing(fn ($state) => $state?->format(Setting::get('format_date').' '.Setting::get('format_time')))
                 ->sortable(),

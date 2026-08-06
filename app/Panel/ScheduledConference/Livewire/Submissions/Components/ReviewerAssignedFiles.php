@@ -36,6 +36,8 @@ class ReviewerAssignedFiles extends \Livewire\Component implements HasForms, Has
             )
             ->columns([
                 TextColumn::make('submissionFile.media.original_file_name')
+                    ->wrap()
+                    ->extraAttributes(['class' => 'break-all'])
                     ->color('primary')
                     ->action(function (ReviewerAssignedFile $record) {
                         return Response::download(

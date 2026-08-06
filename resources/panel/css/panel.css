@@ -30,6 +30,20 @@
     @apply font-semibold;
 }
 
+@media (max-width: 639px) {
+    .submission-workflow-stage-tabs > .fi-tabs {
+        @apply grid grid-cols-2 gap-1 overflow-visible;
+    }
+
+    .submission-workflow-stage-tabs > .fi-tabs .fi-tabs-item {
+        @apply min-h-11 min-w-0 whitespace-normal;
+    }
+
+    .submission-workflow-stage-tabs > .fi-tabs .fi-tabs-item-label {
+        @apply text-center;
+    }
+}
+
 .fi-simple-link {
     @apply text-primary-600 underline transition hover:text-primary-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 dark:text-primary-400 dark:hover:text-primary-300 dark:focus-visible:ring-primary-500;
 }
