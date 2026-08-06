@@ -87,6 +87,8 @@ class ReviewerFiles extends \Livewire\Component implements HasForms, HasTable
             )
             ->columns([
                 TextColumn::make('file_name')
+                    ->wrap()
+                    ->extraAttributes(['class' => 'break-all'])
                     ->color('primary')
                     ->action(
                         fn (Media $record) => $record
