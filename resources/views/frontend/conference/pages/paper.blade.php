@@ -143,6 +143,7 @@
                     {!! $paper->getMeta('abstract') !!}
                 </div>
             </section>
+            @livewire(App\Livewire\PaperDownloadChart::class, ['submission' => $paper])
             <section class="references">
                 <h2 class="pb-1 mb-3 text-base font-medium border-b border-b-slate-200">
                     {{ __('general.references') }}

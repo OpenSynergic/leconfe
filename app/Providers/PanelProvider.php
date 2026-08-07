@@ -53,6 +53,11 @@ class PanelProvider extends ServiceProvider
             ->discoverPages(in: app_path('Panel/ScheduledConference/Pages'), for: 'App\\Panel\\ScheduledConference\\Pages')
             ->discoverWidgets(in: app_path('Panel/ScheduledConference/Widgets'), for: 'App\\Panel\\ScheduledConference\\Widgets')
             ->discoverLivewireComponents(in: app_path('Panel/ScheduledConference/Livewire'), for: 'App\\Panel\\ScheduledConference\\Livewire')
+            ->navigationGroups([
+                'Settings',
+                'Reports & Analytics',
+                'Conference',
+            ])
             ->renderHook(
                 PanelsRenderHook::TOPBAR_LOGO_AFTER,
                 fn() => view('panel.scheduledConference.hooks.topbar'),

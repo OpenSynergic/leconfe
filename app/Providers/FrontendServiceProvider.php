@@ -52,6 +52,8 @@ class FrontendServiceProvider extends ServiceProvider
         Blade::anonymousComponentPath(resource_path('views/frontend/website/components'), 'website');
         Blade::anonymousComponentPath(resource_path('views/frontend/conference/components'), 'conference');
         Blade::anonymousComponentPath(resource_path('views/frontend/scheduledConference/components'), 'scheduledConference');
+
+        Livewire::component('analytic-stats-chart', \App\Frontend\ScheduledConference\Components\AnalyticStatsChart::class);
     }
 
     public function websitePageGroup(PageGroup $pageGroup): PageGroup

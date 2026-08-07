@@ -44,12 +44,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         $schedule->call(function () {
             RemoveDeletedDiscussion::run();
-        })->cron(
-            sprintf(
-                '*/0 */0 */%d * *',
-                config('cleaner.day_interval')
-            )
-        )->name('Remove deleted discussions');
+        })->daily()->name('Remove deleted discussions');
 
         $schedule->call(function () {
             UserInvitation::query()
