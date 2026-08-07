@@ -48,10 +48,23 @@
                 </div>
             @endif
             @if($paper->galleys->isNotEmpty())
-                <div class="flex space-x-1.5">
-                    @foreach ($paper->galleys as $galley)
-                        <x-scheduledConference::galley-link :galley="$galley"/>
-                    @endforeach
+                <div class="flex items-center justify-between flex-wrap gap-2">
+                    <div class="flex space-x-1.5">
+                        @foreach ($paper->galleys as $galley)
+                            <x-scheduledConference::galley-link :galley="$galley"/>
+                        @endforeach
+                    </div>
+                    @php
+                        $pdfDownloads = (int) \App\Models\AnalyticMetric::where('submission_id', $paper->id)
+                            ->where('assoc_type', 4)
+                            ->sum('metric');
+                    @endphp
+                    @if($pdfDownloads > 0)
+                        <div class="flex items-center space-x-1 text-xs text-gray-500 font-medium">
+                            <x-heroicon-o-presentation-chart-line class="w-3.5 h-3.5 text-primary" />
+                            <span>PDF downloads: {{ $pdfDownloads }}</span>
+                        </div>
+                    @endif
                 </div>
             @endif
         </div>

@@ -91,6 +91,7 @@ class Kernel extends HttpKernel
             SubstituteBindings::class,
             InstallationMiddleware::class,
             SetLocale::class,
+            \App\Http\Middleware\LogAnalyticEventMiddleware::class,
         ],
 
         'api' => [

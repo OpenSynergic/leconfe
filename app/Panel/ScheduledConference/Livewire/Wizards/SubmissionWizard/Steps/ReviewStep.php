@@ -36,7 +36,7 @@ class ReviewStep extends Component implements HasActions, HasForms, HasWizardSte
         return __('general.review');
     }
 
-    public function submitAction(): \Filament\Actions\Action
+    public function submitAction(): Action
     {
         return Action::make('submitAction')
             ->label(__('general.submit'))
@@ -56,33 +56,43 @@ class ReviewStep extends Component implements HasActions, HasForms, HasWizardSte
 
                     $this->record->state()->fulfill();
 
-                    Mail::to($this->record->user)->send(
-                        new ThankAuthorMail($this->record)
-                    );
-
                     $trackRole = Role::where('name', UserRole::TrackEditor)->first();
 
-                    if (! empty($this->record->track->getMeta('track_editors'))) {
+                    if (! empty($this->record->track?->getMeta('track_editors')) && $trackRole) {
                         User::with(['meta'])
                             ->role(UserRole::TrackEditor)
                             ->whereIn('id', $this->record->track->getMeta('track_editors'))
                             ->lazy()
-                            ->each(fn ($user) => SubmissionAssignParticipant::run($this->record, $user->getKey(), $trackRole->getKey()));
-                    } else {
-                        app(OperationalNotificationRecipients::class)
-                            ->forRoles([UserRole::ConferenceManager])
-                            ->each(fn ($user) => $user->notify(new NewSubmission($this->record)));
+                            ->each(fn ($user) => SubmissionAssignParticipant::run($this->record, $user->getKey(), $trackRole->getKey(), false));
                     }
 
                     $this->record->touch();
 
                     DB::commit();
                 } catch (Exception $e) {
-                    Log::error($e->getMessage());
+                    Log::error('Submission fulfill error: ' . $e->getMessage());
                     DB::rollBack();
 
                     $action->failureNotificationTitle(__('general.failed_send_notification'));
                     $action->failure();
+                    return;
+                }
+
+                // Send email & manager notifications safely outside DB transaction
+                try {
+                    if ($this->record->user?->email) {
+                        Mail::to($this->record->user)->send(
+                            new ThankAuthorMail($this->record)
+                        );
+                    }
+
+                    if (empty($this->record->track?->getMeta('track_editors'))) {
+                        app(OperationalNotificationRecipients::class)
+                            ->forRoles([UserRole::ConferenceManager])
+                            ->each(fn ($user) => $user->notify(new NewSubmission($this->record)));
+                    }
+                } catch (Exception $e) {
+                    Log::error('Submission mail error (suppressed): ' . $e->getMessage());
                 }
 
                 $action->success();
