@@ -1,6 +1,7 @@
 @props([
     'paper',
     'hideAuthor' => false,
+    'downloadCounts' => null,
 ])
 
 <div class="paper-summary flex flex-col sm:flex-row gap-2 sm:gap-4">
@@ -55,9 +56,9 @@
                         @endforeach
                     </div>
                     @php
-                        $pdfDownloads = (int) \App\Models\AnalyticMetric::where('submission_id', $paper->id)
-                            ->where('assoc_type', 4)
-                            ->sum('metric');
+                        $pdfDownloads = isset($downloadCounts)
+                            ? (int) ($downloadCounts[$paper->id] ?? 0)
+                            : (int) \App\Models\AnalyticMetric::where('submission_id', $paper->id)->where('assoc_type', 4)->sum('metric');
                     @endphp
                     @if($pdfDownloads > 0)
                         <div class="flex items-center space-x-1 text-xs text-gray-500 font-medium">

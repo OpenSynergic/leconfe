@@ -63,7 +63,7 @@ class ReviewStep extends Component implements HasActions, HasForms, HasWizardSte
                             ->role(UserRole::TrackEditor)
                             ->whereIn('id', $this->record->track->getMeta('track_editors'))
                             ->lazy()
-                            ->each(fn ($user) => SubmissionAssignParticipant::run($this->record, $user->getKey(), $trackRole->getKey(), false));
+                            ->each(fn ($user) => SubmissionAssignParticipant::run($this->record, $user->getKey(), $trackRole->getKey(), true));
                     }
 
                     $this->record->touch();

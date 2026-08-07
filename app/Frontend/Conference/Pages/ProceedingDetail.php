@@ -71,9 +71,18 @@ class ProceedingDetail extends Page
             )
             ->get();
 
+        $submissionIds = $tracks->flatMap(fn ($t) => $t->submissions->pluck('id'))->toArray();
+        $downloadCounts = \App\Models\AnalyticMetric::whereIn('submission_id', $submissionIds)
+            ->where('assoc_type', 4)
+            ->groupBy('submission_id')
+            ->selectRaw('submission_id, SUM(metric) as total')
+            ->pluck('total', 'submission_id')
+            ->toArray();
+
         return [
             'proceeding' => $this->proceeding,
             'tracks' => $tracks,
+            'downloadCounts' => $downloadCounts,
             'additionalContents' => $this->proceeding->getMeta('additional_content'),
         ];
     }

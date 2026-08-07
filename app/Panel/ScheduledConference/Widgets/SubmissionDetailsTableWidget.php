@@ -24,11 +24,17 @@ class SubmissionDetailsTableWidget extends BaseWidget
             ->query(
                 Submission::query()
                     ->with(['authors', 'meta'])
+                    ->when(app()->getCurrentScheduledConferenceId(), fn ($q, $confId) => $q->where('submissions.scheduled_conference_id', $confId))
                     ->select('submissions.id', 'submissions.scheduled_conference_id', 'submissions.proceeding_id')
                     ->selectRaw('COALESCE(SUM(CASE WHEN analytic_metrics.assoc_type != 4 THEN analytic_metrics.metric ELSE 0 END), 0) as abstract_views')
                     ->selectRaw('COALESCE(SUM(CASE WHEN analytic_metrics.assoc_type = 4 THEN analytic_metrics.metric ELSE 0 END), 0) as file_views')
                     ->selectRaw('COALESCE(SUM(analytic_metrics.metric), 0) as total_views')
-                    ->leftJoin('analytic_metrics', 'submissions.id', '=', 'analytic_metrics.submission_id')
+                    ->leftJoin('analytic_metrics', function ($join) {
+                        $join->on('submissions.id', '=', 'analytic_metrics.submission_id');
+                        if ($confId = app()->getCurrentScheduledConferenceId()) {
+                            $join->where('analytic_metrics.scheduled_conference_id', '=', $confId);
+                        }
+                    })
                     ->groupBy('submissions.id', 'submissions.scheduled_conference_id', 'submissions.proceeding_id')
                     ->orderByDesc('total_views')
             )

@@ -40,7 +40,13 @@ class AnalyticStatsEngine
             $files = File::files($this->logsDir);
             foreach ($files as $file) {
                 if (($force || $file->getFilename() !== $todayLog) && $file->getExtension() === 'log') {
-                    $target = $this->stageDir . '/' . $file->getFilename();
+                    $targetFilename = $file->getFilename();
+                    if ($force) {
+                        $name = pathinfo($targetFilename, PATHINFO_FILENAME);
+                        $ext = pathinfo($targetFilename, PATHINFO_EXTENSION);
+                        $targetFilename = sprintf('%s_%s.%s', $name, date('His'), $ext);
+                    }
+                    $target = $this->stageDir . '/' . $targetFilename;
                     File::move($file->getRealPath(), $target);
                     $stagedFiles[] = $target;
                 }

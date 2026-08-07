@@ -40,7 +40,15 @@ class LogAnalyticEventMiddleware
         if ($galley = $request->route('galley')) {
             $assocType = self::ASSOC_TYPE_GALLEY;
             $assocId = is_object($galley) ? $galley->id : (int)$galley;
-            $fileType = 1;
+            
+            $isPdf = true;
+            if ($galley instanceof \App\Models\SubmissionGalley) {
+                $isPdf = $galley->isPdf();
+            } elseif (is_numeric($galley)) {
+                $gObj = \App\Models\SubmissionGalley::find($galley);
+                $isPdf = $gObj ? $gObj->isPdf() : true;
+            }
+            $fileType = $isPdf ? 1 : 2;
         } elseif ($proceeding = $request->route('proceeding')) {
             $assocType = self::ASSOC_TYPE_PROCEEDING;
             $assocId = is_object($proceeding) ? $proceeding->id : (int)$proceeding;
