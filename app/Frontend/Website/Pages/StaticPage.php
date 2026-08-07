@@ -3,6 +3,7 @@
 namespace App\Frontend\Website\Pages;
 
 use App\Models\StaticPage as StaticPageModel;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Route;
 use Rahmanramsi\LivewirePageGroup\PageGroup;
 
@@ -13,6 +14,11 @@ class StaticPage extends Page
     public StaticPageModel $staticPage;
 
     public function mount() {}
+
+    public function getTitle(): string|Htmlable
+    {
+        return $this->staticPage->title;
+    }
 
     protected function getViewData(): array
     {
