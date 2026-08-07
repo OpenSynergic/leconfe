@@ -126,6 +126,15 @@ class MastHeadSetting extends Component implements HasForms, HasActions
                                     ->label(__('general.about_the_scheduled_conference'))
                                     ->profile('advanced'),
                             ]),
+                        Section::make('Reader Statistics')
+                            ->description('Configure display of download statistics for readers on the paper view page.')
+                            ->aside()
+                            ->schema([
+                                \Filament\Forms\Components\Toggle::make('meta.display_reader_statistics')
+                                    ->label('Display submission statistics chart for readers')
+                                    ->helperText('If enabled, a bar chart showing monthly paper downloads will be displayed on the public paper detail page.')
+                                    ->default(true),
+                            ]),
                     ]),
                 Actions::make([
                     Action::make('save')
