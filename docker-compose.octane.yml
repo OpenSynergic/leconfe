@@ -1,0 +1,33 @@
+services:
+  leconfe-octane:
+    build:
+      context: .
+      dockerfile: Dockerfile.octane
+    env_file:
+      - .env
+    environment:
+      APP_BASE_DIR: /var/www/html
+      OCTANE_SERVER: frankenphp
+    command:
+      - sh
+      - -c
+      - >-
+        php artisan leconfe:relink && php artisan config:cache && exec php artisan octane:start
+        --server=frankenphp --host=0.0.0.0 --port=8080 --workers=4 --max-requests=500
+        --caddyfile=/var/www/html/docker/octane/Caddyfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - octane-storage:/var/www/html/storage
+      - octane-plugins:/var/www/html/plugins
+    stop_grace_period: 30s
+    healthcheck:
+      test: ["CMD-SHELL", "healthcheck-octane && curl --fail --silent http://127.0.0.1:8080/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  octane-storage:
+  octane-plugins:

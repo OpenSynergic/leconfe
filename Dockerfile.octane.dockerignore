@@ -1,0 +1,14 @@
+.env
+.git
+**/.git
+.omo
+.debug-journal.md
+bootstrap/cache/*.php
+database/*.sqlite
+database/*.sqlite-shm
+database/*.sqlite-wal
+node_modules
+public/build
+public/storage
+storage
+vendor
