@@ -83,7 +83,7 @@ class PanelProvider extends ServiceProvider
             ], true)
             ->authMiddleware(static::getAuthMiddleware(), true);
 
-        Plugin::getPluginsForRegistration('scheduled-conference')->each(function ($plugin) use ($panel) {
+        Plugin::getPlugins()->each(function ($plugin) use ($panel) {
             $plugin->onPanel($panel);
         });
 
@@ -131,7 +131,7 @@ class PanelProvider extends ServiceProvider
             ], true)
             ->authMiddleware(static::getAuthMiddleware(), true);
 
-        Plugin::getPluginsForRegistration('conference')->each(function ($plugin) use ($panel) {
+        Plugin::getPlugins()->each(function ($plugin) use ($panel) {
             $plugin->onPanel($panel);
         });
 
@@ -156,7 +156,7 @@ class PanelProvider extends ServiceProvider
             ->middleware(static::getMiddleware(), true)
             ->authMiddleware(static::getAuthMiddleware(), true);
 
-        Plugin::getPluginsForRegistration('site')->each(function ($plugin) use ($panel) {
+        Plugin::getPlugins()->each(function ($plugin) use ($panel) {
             $plugin->onPanel($panel);
         });
 

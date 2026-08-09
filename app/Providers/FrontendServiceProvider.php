@@ -66,7 +66,7 @@ class FrontendServiceProvider extends ServiceProvider
             ], true)
             ->discoverPages(in: app_path('Frontend/Website/Pages'), for: 'App\\Frontend\\Website\\Pages');
 
-        Plugin::getPluginsForRegistration('site')->each(fn ($plugin) => $plugin->onFrontend($pageGroup));
+        Plugin::getPlugins()->each(fn ($plugin) => $plugin->onFrontend($pageGroup));
 
         return $pageGroup;
     }
@@ -84,7 +84,7 @@ class FrontendServiceProvider extends ServiceProvider
             ], true)
             ->discoverPages(in: app_path('Frontend/Conference/Pages'), for: 'App\\Frontend\\Conference\\Pages');
 
-        Plugin::getPluginsForRegistration('conference')->each(fn ($plugin) => $plugin->onFrontend($pageGroup));
+        Plugin::getPlugins()->each(fn ($plugin) => $plugin->onFrontend($pageGroup));
 
         return $pageGroup;
     }
@@ -103,7 +103,7 @@ class FrontendServiceProvider extends ServiceProvider
             ], true)
             ->discoverPages(in: app_path('Frontend/ScheduledConference/Pages'), for: 'App\\Frontend\\ScheduledConference\\Pages');
 
-        Plugin::getPluginsForRegistration('scheduled-conference')->each(fn ($plugin) => $plugin->onFrontend($pageGroup));
+        Plugin::getPlugins()->each(fn ($plugin) => $plugin->onFrontend($pageGroup));
 
         return $pageGroup;
     }
