@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Application;
+use App\Facades\Plugin;
 use App\Models\Conference;
 use App\Models\ScheduledConference;
 use Closure;
@@ -13,10 +14,21 @@ class DetectConferenceContext
 {
     public function handle(Request $request, Closure $next): Response
     {
+        $this->detect($request);
+
+        if (app()->isInstalled()) {
+            Plugin::ensureCurrentContextInitialized();
+        }
+
+        return $next($request);
+    }
+
+    public function detect(Request $request): void
+    {
         app()->resetCurrentContext();
 
         if (! app()->isInstalled()) {
-            return $next($request);
+            return;
         }
 
         app()->scopeCurrentConference();
@@ -26,31 +38,28 @@ class DetectConferenceContext
         $conferencePath = $segments[0] ?? null;
         $isScheduledPath = ($segments[1] ?? null) === 'scheduled' && filled($segments[2] ?? null);
 
-        if (! $conferencePath) {
-            return $next($request);
-        }
+        if ($conferencePath) {
+            $conference = Conference::query()
+                ->with(['media', 'meta'])
+                ->where('path', $conferencePath)
+                ->first();
 
-        $conference = Conference::query()
-            ->with(['media', 'meta'])
-            ->where('path', $conferencePath)
-            ->first();
+            app()->setCurrentConferenceId($conference?->getKey() ?? Application::CONTEXT_WEBSITE);
 
-        app()->setCurrentConferenceId($conference?->getKey() ?? Application::CONTEXT_WEBSITE);
-
-        if (! $conference && $isScheduledPath) {
-            abort(404);
-        }
-
-        if ($conference && $isScheduledPath) {
-            $scheduledConference = ScheduledConference::findByConferenceAndExactPath($conference, $segments[2]);
-
-            if (! $scheduledConference) {
+            if (! $conference && $isScheduledPath) {
                 abort(404);
             }
 
-            app()->setCurrentScheduledConferenceId($scheduledConference->getKey());
+            if ($conference && $isScheduledPath) {
+                $scheduledConference = ScheduledConference::findByConferenceAndExactPath($conference, $segments[2]);
+
+                if (! $scheduledConference) {
+                    abort(404);
+                }
+
+                app()->setCurrentScheduledConferenceId($scheduledConference->getKey());
+            }
         }
 
-        return $next($request);
     }
 }

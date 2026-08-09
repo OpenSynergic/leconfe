@@ -2,10 +2,9 @@
 
 namespace App\Providers;
 
-use App\Classes\DefaultTheme;
-use App\Classes\ManualPaymentPlugin;
-use App\Facades\Plugin;
+use App\Http\Middleware\DetectConferenceContext;
 use App\Managers\PluginManager;
+use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
 
 class PluginServiceProvider extends ServiceProvider
@@ -16,18 +15,22 @@ class PluginServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->scoped('plugin', function (): PluginManager {
-            return new PluginManager;
+            $manager = new PluginManager;
+            $this->initializePluginManager($manager, request(), app()->runningInConsole());
+
+            return $manager;
         });
 
     }
 
-    /**
-     * Bootstrap services.
-     */
-    public function boot(): void
+    protected function initializePluginManager(PluginManager $manager, Request $request, bool $runningInConsole): void
     {
-        Plugin::register('DefaultTheme', new DefaultTheme, true);
-        Plugin::register('ManualPayment', new ManualPaymentPlugin, true);
-        Plugin::initialize();
+        $manager->registerCorePlugins();
+
+        if (! $runningInConsole && ! isset($_SERVER['LARAVEL_OCTANE'])) {
+            app(DetectConferenceContext::class)->detect($request);
+        }
+
+        $manager->initialize();
     }
 }
