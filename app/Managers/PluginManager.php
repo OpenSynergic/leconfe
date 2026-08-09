@@ -67,7 +67,21 @@ class PluginManager
 
         $context = $this->getCurrentContextString();
 
-        collect($disk->directories())
+        $this->pluginDirectoriesForContext($context)
+            ->each(function ($pluginPath) use ($disk) {
+                $plugin = $this->initiatePlugin($disk->path($pluginPath));
+
+                $this->register($pluginPath, $plugin, $this->getSetting($plugin, 'enabled', false));
+            });
+
+        $this->initializedContext = $this->currentContext();
+    }
+
+    protected function pluginDirectoriesForContext(string $context): Collection
+    {
+        $disk = $this->getDisk();
+
+        return collect($disk->directories())
             ->filter(function ($pluginDir) use ($disk, $context) {
                 try {
                     if (Str::contains($pluginDir, ' ')) {
@@ -98,20 +112,33 @@ class PluginManager
                 }
 
                 return true;
-            })
-            ->each(function ($pluginPath) use ($disk) {
-                $plugin = $this->initiatePlugin($disk->path($pluginPath));
-                $plugin->load();
-
-                $this->register($pluginPath, $plugin, $this->getSetting($plugin, 'enabled', false));
             });
+    }
 
-        $this->initializedContext = $this->currentContext();
+    public function getPluginsForRegistration(string $context): Collection
+    {
+        if (! isset($_SERVER['LARAVEL_OCTANE'])) {
+            return $this->getPlugins();
+        }
+
+        $plugins = $this->plugins->only(['DefaultTheme', 'ManualPayment']);
+
+        if (! app()->isInstalled()) {
+            return $plugins;
+        }
+
+        $disk = $this->getDisk();
+
+        $this->pluginDirectoriesForContext($context)->each(function ($pluginPath) use ($disk, $plugins) {
+            $plugins->put($pluginPath, $this->initiatePlugin($disk->path($pluginPath))->load());
+        });
+
+        return $plugins;
     }
 
     public function reinitialize()
     {
-        $this->plugins = $this->plugins->only(['DefaultTheme', 'ManualPayment']);
+        $this->plugins = collect();
         $this->registerCorePlugins();
         $this->initialize();
     }

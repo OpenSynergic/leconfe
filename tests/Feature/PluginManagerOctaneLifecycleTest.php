@@ -5,12 +5,18 @@ namespace Tests\Feature;
 use App\Classes\DefaultTheme;
 use App\Classes\ManualPaymentPlugin;
 use App\Classes\Plugin as PluginObject;
+use App\Facades\Hook;
 use App\Facades\Plugin;
 use App\Http\Middleware\DetectConferenceContext;
 use App\Managers\PluginManager;
 use App\Models\Conference;
+use App\Models\ScheduledConference;
+use App\Providers\FrontendServiceProvider;
+use App\Providers\PanelProvider;
 use App\Providers\PluginServiceProvider;
 use App\Support\FrankenPhpWorkerReloader;
+use Filament\Pages\Page;
+use Filament\Panel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
@@ -20,6 +26,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Laravel\Octane\FrankenPhp\ServerStateFile;
 use Mockery;
+use Rahmanramsi\LivewirePageGroup\PageGroup;
 use ReflectionMethod;
 use Tests\TestCase;
 use Throwable;
@@ -171,6 +178,81 @@ class PluginManagerOctaneLifecycleTest extends TestCase
         $this->assertInstanceOf(ManualPaymentPlugin::class, $second->getPlugin('ManualPayment'));
     }
 
+    public function test_scheduled_context_reboots_manual_payment_hooks_after_website_boot(): void
+    {
+        $conference = Conference::query()->create([
+            'name' => 'Manual Payment Context',
+            'path' => 'manual-payment-context',
+        ]);
+        $scheduledConference = ScheduledConference::query()->create([
+            'conference_id' => $conference->getKey(),
+            'title' => 'Manual Payment Event',
+            'path' => 'manual-payment-event',
+        ]);
+        $scheduledConference->setMeta('manual_payment_enabled', true);
+        Hook::clear('PaymentManager::getPaymentMethodActions');
+
+        $manager = new PluginManager;
+        $manager->registerCorePlugins();
+        $websitePlugin = $manager->getPlugin('ManualPayment');
+        $this->app->instance('plugin', $manager);
+        Plugin::clearResolvedInstance('plugin');
+
+        app(DetectConferenceContext::class)->handle(
+            Request::create('/manual-payment-context/scheduled/manual-payment-event'),
+            fn () => response('ok'),
+        );
+
+        $actions = [];
+        Hook::call('PaymentManager::getPaymentMethodActions', [&$actions]);
+
+        $this->assertArrayHasKey('manual', $actions);
+        $this->assertNotSame($websitePlugin, $manager->getPlugin('ManualPayment'));
+    }
+
+    public function test_octane_registers_targeted_external_ui_only_for_its_page_group_and_panel_without_booting_it(): void
+    {
+        $_SERVER['LARAVEL_OCTANE'] = '1';
+        $this->makeTargetedUiPluginDirectory();
+        Hook::clear('TargetedUiPlugin::booted');
+        $manager = new PluginManager;
+        $manager->registerCorePlugins();
+        $this->app->instance('plugin', $manager);
+        Plugin::clearResolvedInstance('plugin');
+
+        $panelProvider = new PanelProvider($this->app);
+        $scheduledPanel = $panelProvider->scheduledConferencePanel(Panel::make());
+        $conferencePanel = $panelProvider->conferencePanel(Panel::make());
+        $administrationPanel = $panelProvider->administrationPanel(Panel::make());
+        $frontendProvider = new FrontendServiceProvider($this->app);
+        $scheduledFrontend = $frontendProvider->scheduledConferencePageGroup(PageGroup::make());
+        $conferenceFrontend = $frontendProvider->conferencePageGroup(PageGroup::make());
+        $websiteFrontend = $frontendProvider->websitePageGroup(PageGroup::make());
+
+        $this->assertContains(OctaneTargetedPanelPage::class, $scheduledPanel->getPages());
+        $this->assertNotContains(OctaneTargetedPanelPage::class, $conferencePanel->getPages());
+        $this->assertNotContains(OctaneTargetedPanelPage::class, $administrationPanel->getPages());
+        $this->assertContains(OctaneTargetedFrontendPage::class, $scheduledFrontend->getPages());
+        $this->assertNotContains(OctaneTargetedFrontendPage::class, $conferenceFrontend->getPages());
+        $this->assertNotContains(OctaneTargetedFrontendPage::class, $websiteFrontend->getPages());
+        $this->assertNull(Hook::getHooks('TargetedUiPlugin::booted'));
+    }
+
+    public function test_classic_ui_registration_remains_limited_to_enabled_context_plugins(): void
+    {
+        $this->makeTargetedUiPluginDirectory();
+        $manager = new PluginManager;
+        $manager->registerCorePlugins();
+        $this->app->instance('plugin', $manager);
+        Plugin::clearResolvedInstance('plugin');
+
+        $scheduledPanel = (new PanelProvider($this->app))->scheduledConferencePanel(Panel::make());
+        $scheduledFrontend = (new FrontendServiceProvider($this->app))->scheduledConferencePageGroup(PageGroup::make());
+
+        $this->assertNotContains(OctaneTargetedPanelPage::class, $scheduledPanel->getPages());
+        $this->assertNotContains(OctaneTargetedFrontendPage::class, $scheduledFrontend->getPages());
+    }
+
     public function test_default_plugin_collection_keeps_disabled_plugins_out_of_ui_registration(): void
     {
         $manager = new PluginManager;
@@ -271,4 +353,48 @@ class PluginManagerOctaneLifecycleTest extends TestCase
 
         return $directory;
     }
+
+    private function makeTargetedUiPluginDirectory(): void
+    {
+        $directory = $this->testDirectory.'/plugins/TargetedUiPlugin';
+        File::makeDirectory($directory, 0755, true);
+        File::put($directory.'/index.yaml', <<<'YAML'
+name: Targeted UI Plugin
+folder: TargetedUiPlugin
+version: 1.0.0
+targets:
+  - scheduled-conference
+YAML);
+        File::put($directory.'/index.php', <<<'PHP'
+<?php
+
+return new class extends \App\Classes\Plugin
+{
+    public function boot(): void
+    {
+        \App\Facades\Hook::add('TargetedUiPlugin::booted', fn () => false);
+    }
+
+    public function onPanel(\Filament\Panel $panel): void
+    {
+        $panel->pages([\Tests\Feature\OctaneTargetedPanelPage::class]);
+    }
+
+    public function onFrontend(\Rahmanramsi\LivewirePageGroup\PageGroup $frontend): void
+    {
+        $frontend->pages([\Tests\Feature\OctaneTargetedFrontendPage::class]);
+    }
+};
+PHP);
+    }
+}
+
+class OctaneTargetedPanelPage extends Page
+{
+    protected string $view = 'panel.administration.pages.profile';
+}
+
+class OctaneTargetedFrontendPage extends \Rahmanramsi\LivewirePageGroup\Pages\Page
+{
+    protected static string $view = 'frontend.website.pages.home';
 }
