@@ -33,10 +33,10 @@ COPY --chown=www-data:www-data . ./
 COPY --chown=www-data:www-data --from=vendor /var/www/html/vendor ./vendor
 COPY --chown=www-data:www-data --from=assets /app/public/build ./public/build
 
-RUN rm -f bootstrap/cache/*.php \
+RUN mkdir -p storage/app/local storage/app/private/files storage/app/public/media storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs \
+    && rm -f bootstrap/cache/*.php \
     && php artisan package:discover --ansi \
     && cp vendor/laravel/octane/src/Commands/stubs/frankenphp-worker.php public/frankenphp-worker.php \
-    && mkdir -p storage/app/local storage/app/private/files storage/app/public/media storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs \
     && chown -R www-data:www-data storage bootstrap/cache public
 
 ENV APP_BASE_DIR=/var/www/html
