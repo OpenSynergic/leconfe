@@ -14,6 +14,8 @@ class ScheduledConferenceScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        $builder->where($model->getTable().'.scheduled_conference_id', App::getCurrentScheduledConferenceId());
+        if ($scheduledConferenceId = App::getCurrentScheduledConferenceId()) {
+            $builder->where($model->getTable().'.scheduled_conference_id', $scheduledConferenceId);
+        }
     }
 }
