@@ -15,10 +15,23 @@ class AnnouncementBroadcastMail
 
     public function handle(Announcement $announcement)
     {
+        $modelHasRolesTable = config('permission.table_names.model_has_roles', 'model_has_roles');
+        $scheduledConference = $announcement->scheduledConference()
+            ->withoutGlobalScopes()
+            ->firstOrFail();
+
         // Filter by users subscribed to announcement emails.
         $users = User::query()
             ->with('meta')
-            ->whereDoesntHave('roles', fn ($query) => $query->where('name', UserRole::Admin->value))
+            ->whereHas('roles', fn ($query) => $query
+                ->withoutGlobalScopes()
+                ->where('roles.conference_id', $scheduledConference->conference_id)
+                ->whereIn('roles.scheduled_conference_id', [0, $scheduledConference->getKey()])
+                ->whereColumn('roles.conference_id', "{$modelHasRolesTable}.conference_id")
+                ->whereColumn('roles.scheduled_conference_id', "{$modelHasRolesTable}.scheduled_conference_id"))
+            ->whereDoesntHave('roles', fn ($query) => $query
+                ->withoutGlobalScopes()
+                ->where('roles.name', UserRole::Admin->value))
             ->whereMeta('enable_new_announcement_email', true)
             ->notBanned()
             ->lazy();

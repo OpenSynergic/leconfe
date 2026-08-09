@@ -25,6 +25,7 @@ use App\Panel\ScheduledConference\Pages\ParticipantRegistration;
 use App\Panel\ScheduledConference\Resources\SubmissionResource\Pages\ViewSubmission;
 use App\Services\Notifications\OperationalNotificationRecipients;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
@@ -277,6 +278,75 @@ class OperationalNotificationRecipientsTest extends TestCase
         Mail::assertNotQueued(
             NewAnnouncementMail::class,
             fn (NewAnnouncementMail $mail): bool => $mail->hasTo($adminManager->email)
+        );
+    }
+
+    public function test_announcement_broadcast_only_sends_to_users_in_the_scheduled_conference(): void
+    {
+        $participant = $this->userWithRole(UserRole::Participant, 'participant@example.test');
+        $otherScheduledConference = ScheduledConference::factory()->create([
+            'conference_id' => $this->conference->getKey(),
+            'path' => 'other-operational-notifications-2026',
+        ]);
+        $otherParticipantRole = Role::withoutGlobalScopes()
+            ->where('name', UserRole::Participant->value)
+            ->where('conference_id', $this->conference->getKey())
+            ->where('scheduled_conference_id', $otherScheduledConference->getKey())
+            ->firstOrFail();
+        $otherParticipant = User::factory()->create([
+            'email' => 'other-participant@example.test',
+            'password' => 'password123456',
+        ]);
+        $otherParticipant->assignRole($otherParticipantRole);
+        $announcement = Announcement::withoutGlobalScopes()->forceCreate([
+            'scheduled_conference_id' => $this->scheduledConference->getKey(),
+            'title' => 'Program update',
+        ]);
+
+        Mail::fake();
+
+        app(AnnouncementBroadcastMail::class)->handle($announcement);
+
+        Mail::assertQueued(
+            NewAnnouncementMail::class,
+            fn (NewAnnouncementMail $mail): bool => $mail->hasTo($participant->email)
+        );
+        Mail::assertNotQueued(
+            NewAnnouncementMail::class,
+            fn (NewAnnouncementMail $mail): bool => $mail->hasTo($otherParticipant->email)
+        );
+    }
+
+    public function test_announcement_broadcast_respects_the_role_assignment_scope(): void
+    {
+        $otherScheduledConference = ScheduledConference::factory()->create([
+            'conference_id' => $this->conference->getKey(),
+            'path' => 'other-role-assignment-2026',
+        ]);
+        $participantRole = $this->role(UserRole::Participant);
+        $participant = User::factory()->create([
+            'email' => 'wrongly-scoped-participant@example.test',
+            'password' => 'password123456',
+        ]);
+        DB::table('model_has_roles')->insert([
+            'role_id' => $participantRole->getKey(),
+            'conference_id' => $this->conference->getKey(),
+            'scheduled_conference_id' => $otherScheduledConference->getKey(),
+            'model_type' => User::class,
+            'model_id' => $participant->getKey(),
+        ]);
+        $announcement = Announcement::withoutGlobalScopes()->forceCreate([
+            'scheduled_conference_id' => $this->scheduledConference->getKey(),
+            'title' => 'Program update',
+        ]);
+
+        Mail::fake();
+
+        app(AnnouncementBroadcastMail::class)->handle($announcement);
+
+        Mail::assertNotQueued(
+            NewAnnouncementMail::class,
+            fn (NewAnnouncementMail $mail): bool => $mail->hasTo($participant->email)
         );
     }
 
