@@ -21,9 +21,11 @@ class OctaneFrankenPhpRuntimeConfigurationTest extends TestCase
         // When: its production Compose and Caddy configuration are read.
         // Then: they start bounded FrankenPHP workers and expose non-tenant checks.
         $compose = file_get_contents(base_path('docker-compose.octane.yml'));
+        $dockerfile = file_get_contents(base_path('Dockerfile.octane'));
         $caddyfile = file_get_contents(base_path('docker/octane/Caddyfile'));
 
         $this->assertStringContainsString('Dockerfile.octane', $compose);
+        $this->assertStringContainsString('STOPSIGNAL SIGINT', $dockerfile);
         $this->assertStringContainsString('--workers=4', $compose);
         $this->assertStringContainsString('--max-requests=500', $compose);
         $this->assertStringContainsString('healthcheck-octane', $compose);
