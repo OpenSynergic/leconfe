@@ -78,8 +78,6 @@ class SetupDefaultData
     protected function setupScheduledConference(Request $request, $currentScheduledConference)
     {
         $timezone = $currentScheduledConference->getTimezone();
-        config(['app.timezone' => $timezone]);
-        date_default_timezone_set($timezone);
 
         View::share('currentConference', app()->getCurrentConference());
         View::share('currentScheduledConference', $currentScheduledConference);

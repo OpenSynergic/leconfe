@@ -87,18 +87,24 @@ class Timeline extends Model
         return $query->where('type', $type);
     }
 
+    public function formattedFullDate(?string $timezone = null): string
+    {
+        $startDate = $timezone && $this->date ? $this->date->clone()->setTimezone($timezone) : $this->date;
+        $endDate = $timezone && $this->date_end ? $this->date_end->clone()->setTimezone($timezone) : $this->date_end;
+
+        $formattedDate = $startDate?->format(Setting::get('format_date'));
+
+        if ($endDate) {
+            $formattedDate .= ' - ' . $endDate->format(Setting::get('format_date'));
+        }
+
+        return (string) $formattedDate;
+    }
+
     protected function fullDate(): Attribute
     {
         return Attribute::make(
-            get: function () {
-                $formattedDate = $this->date->format(Setting::get('format_date'));
-
-                if ($this->date_end) {
-                    $formattedDate .= ' - '.$this->date_end->format(Setting::get('format_date'));
-                }
-
-                return $formattedDate;
-            },
+            get: fn () => $this->formattedFullDate(),
         );
     }
 }
