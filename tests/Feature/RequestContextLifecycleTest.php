@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Frontend\ScheduledConference\Pages\Login;
 use App\Http\Kernel;
 use App\Http\Middleware\DetectConferenceContext;
+use App\Http\Middleware\RestoreLivewireConferenceContext;
 use App\Http\Middleware\SetupDefaultData;
 use App\Models\Conference;
 use App\Models\NavigationMenu;
@@ -187,13 +188,58 @@ class RequestContextLifecycleTest extends TestCase
         $livewireRoutes = collect(Route::getRoutes()->getRoutes())
             ->filter(fn ($route) => str($route->getName())->endsWith('livewire.update'));
 
-        $this->assertContains(DetectConferenceContext::class, $persistentMiddleware);
+        $this->assertContains(RestoreLivewireConferenceContext::class, $persistentMiddleware);
+        $this->assertNotContains(DetectConferenceContext::class, $persistentMiddleware);
         $this->assertNotContains(
             DetectConferenceContext::class,
+            app('router')->gatherRouteMiddleware($scheduledLoginRoute),
+        );
+        $this->assertContains(
+            RestoreLivewireConferenceContext::class,
             app('router')->gatherRouteMiddleware($scheduledLoginRoute),
         );
         $this->assertSame(EndpointResolver::updatePath(), app(HandleRequests::class)->getUpdateUri());
         $this->assertCount(1, $livewireRoutes);
         $this->assertSame('default-livewire.update', $livewireRoutes->first()->getName());
+    }
+
+    public function test_scheduled_login_handles_the_rendered_livewire_update_endpoint(): void
+    {
+        $conference = Conference::query()->create([
+            'name' => 'Conference A',
+            'path' => 'conference-a',
+        ]);
+        $scheduledConference = ScheduledConference::query()->create([
+            'conference_id' => $conference->getKey(),
+            'title' => 'Scheduled A',
+            'path' => 'scheduled-a',
+        ]);
+
+        $page = $this->withoutVite()->get(route(Login::getRouteName('scheduledConference'), [
+            'conference' => $conference->path,
+            'serie' => $scheduledConference->path,
+        ]))->assertOk();
+
+        preg_match('/wire:snapshot="([^"]+)"/', $page->getContent(), $matches);
+        $snapshot = html_entity_decode($matches[1], ENT_QUOTES | ENT_HTML5);
+
+        $this->postJson(EndpointResolver::updatePath(), [
+            'components' => [[
+                'snapshot' => $snapshot,
+                'updates' => [
+                    'email' => 'invalid@example.test',
+                    'password' => 'invalid-password',
+                ],
+                'calls' => [[
+                    'method' => 'login',
+                    'params' => [],
+                    'metadata' => [],
+                ]],
+            ]],
+        ], ['X-Livewire' => '1'])
+            ->assertOk();
+
+        $this->assertSame($conference->getKey(), app()->getCurrentConferenceId());
+        $this->assertSame($scheduledConference->getKey(), app()->getCurrentScheduledConferenceId());
     }
 }
