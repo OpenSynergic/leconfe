@@ -148,21 +148,53 @@ class RequestContextLifecycleTest extends TestCase
         $this->assertContains(20, $conferenceBQuery->getBindings());
     }
 
-    public function test_scheduled_scope_only_constrains_queries_with_scheduled_context(): void
+    public function test_scheduled_scope_hides_scheduled_rows_from_conference_context(): void
     {
-        $scope = new ScheduledConferenceScope;
+        $conference = Conference::query()->create([
+            'name' => 'Conference A',
+            'path' => 'conference-a',
+        ]);
+        $scheduledConferenceA = ScheduledConference::query()->create([
+            'conference_id' => $conference->getKey(),
+            'title' => 'Scheduled A',
+            'path' => 'scheduled-a',
+        ]);
+        $scheduledConferenceB = ScheduledConference::query()->create([
+            'conference_id' => $conference->getKey(),
+            'title' => 'Scheduled B',
+            'path' => 'scheduled-b',
+        ]);
+        $conferenceMenu = NavigationMenu::query()->withoutGlobalScopes()->create([
+            'conference_id' => $conference->getKey(),
+            'scheduled_conference_id' => 0,
+            'name' => 'Conference menu',
+            'handle' => 'conference-menu',
+        ]);
+        $scheduledConferenceAMenu = NavigationMenu::query()->withoutGlobalScopes()->create([
+            'conference_id' => $conference->getKey(),
+            'scheduled_conference_id' => $scheduledConferenceA->getKey(),
+            'name' => 'Scheduled A menu',
+            'handle' => 'scheduled-a-menu',
+        ]);
+        $scheduledConferenceBMenu = NavigationMenu::query()->withoutGlobalScopes()->create([
+            'conference_id' => $conference->getKey(),
+            'scheduled_conference_id' => $scheduledConferenceB->getKey(),
+            'name' => 'Scheduled B menu',
+            'handle' => 'scheduled-b-menu',
+        ]);
 
         app()->setCurrentScheduledConferenceId(null);
-        $websiteQuery = ScheduledConference::query()->withoutGlobalScopes();
-        $scope->apply($websiteQuery, new ScheduledConference);
+        $visibleMenuIds = NavigationMenu::query()
+            ->withoutGlobalScopes()
+            ->withGlobalScope('scheduled-conference', new ScheduledConferenceScope)
+            ->whereKey([
+                $conferenceMenu->getKey(),
+                $scheduledConferenceAMenu->getKey(),
+                $scheduledConferenceBMenu->getKey(),
+            ])
+            ->pluck('id');
 
-        app()->setCurrentScheduledConferenceId(30);
-        $scheduledQuery = ScheduledConference::query()->withoutGlobalScopes();
-        $scope->apply($scheduledQuery, new ScheduledConference);
-
-        $this->assertStringNotContainsString('scheduled_conference_id', $websiteQuery->toSql());
-        $this->assertStringContainsString('scheduled_conference_id', $scheduledQuery->toSql());
-        $this->assertContains(30, $scheduledQuery->getBindings());
+        $this->assertSame([$conferenceMenu->getKey()], $visibleMenuIds->all());
     }
 
     public function test_detector_runs_before_context_consuming_global_middleware(): void
