@@ -5,16 +5,24 @@ namespace Tests\Feature;
 use App\Frontend\ScheduledConference\Pages\Login;
 use App\Http\Kernel;
 use App\Http\Middleware\DetectConferenceContext;
+use App\Http\Middleware\IdentifyConference;
+use App\Http\Middleware\IdentifyScheduledConference;
 use App\Http\Middleware\RestoreLivewireConferenceContext;
 use App\Http\Middleware\SetupDefaultData;
 use App\Models\Conference;
+use App\Models\Enums\UserRole;
 use App\Models\NavigationMenu;
+use App\Models\Role;
 use App\Models\ScheduledConference;
 use App\Models\Scopes\ConferenceScope;
 use App\Models\Scopes\ScheduledConferenceScope;
 use App\Models\Site;
+use App\Models\User;
+use App\Panel\ScheduledConference\Pages\Dashboard;
+use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Livewire\Mechanisms\HandleRequests\EndpointResolver;
 use Livewire\Mechanisms\HandleRequests\HandleRequests;
@@ -185,6 +193,8 @@ class RequestContextLifecycleTest extends TestCase
     {
         $persistentMiddleware = app(PersistentMiddleware::class)->getPersistentMiddleware();
         $scheduledLoginRoute = Route::getRoutes()->getByName(Login::getRouteName('scheduledConference'));
+        $conferenceDashboardRoute = Route::getRoutes()->getByName('filament.conference.pages.dashboard');
+        $scheduledDashboardRoute = Route::getRoutes()->getByName('filament.scheduledConference.pages.dashboard');
         $livewireRoutes = collect(Route::getRoutes()->getRoutes())
             ->filter(fn ($route) => str($route->getName())->endsWith('livewire.update'));
 
@@ -197,6 +207,16 @@ class RequestContextLifecycleTest extends TestCase
         $this->assertContains(
             RestoreLivewireConferenceContext::class,
             app('router')->gatherRouteMiddleware($scheduledLoginRoute),
+        );
+        $conferenceDashboardMiddleware = app('router')->gatherRouteMiddleware($conferenceDashboardRoute);
+        $scheduledDashboardMiddleware = app('router')->gatherRouteMiddleware($scheduledDashboardRoute);
+        $this->assertLessThan(
+            array_search(IdentifyConference::class, $conferenceDashboardMiddleware, true),
+            array_search(RestoreLivewireConferenceContext::class, $conferenceDashboardMiddleware, true),
+        );
+        $this->assertLessThan(
+            array_search(IdentifyScheduledConference::class, $scheduledDashboardMiddleware, true),
+            array_search(RestoreLivewireConferenceContext::class, $scheduledDashboardMiddleware, true),
         );
         $this->assertSame(EndpointResolver::updatePath(), app(HandleRequests::class)->getUpdateUri());
         $this->assertCount(1, $livewireRoutes);
@@ -235,6 +255,53 @@ class RequestContextLifecycleTest extends TestCase
                     'params' => [],
                     'metadata' => [],
                 ]],
+            ]],
+        ], ['X-Livewire' => '1'])
+            ->assertOk();
+
+        $this->assertSame($conference->getKey(), app()->getCurrentConferenceId());
+        $this->assertSame($scheduledConference->getKey(), app()->getCurrentScheduledConferenceId());
+    }
+
+    public function test_scheduled_panel_handles_the_rendered_livewire_update_endpoint(): void
+    {
+        $conference = Conference::query()->create([
+            'name' => 'Conference A',
+            'path' => 'conference-a',
+        ]);
+        $scheduledConference = ScheduledConference::query()->create([
+            'conference_id' => $conference->getKey(),
+            'title' => 'Scheduled A',
+            'path' => 'scheduled-a',
+        ]);
+        Role::withoutGlobalScopes()->create([
+            'name' => UserRole::Admin->value,
+            'guard_name' => 'web',
+            'conference_id' => 0,
+            'scheduled_conference_id' => 0,
+        ]);
+        $admin = User::factory()->create([
+            'password' => Hash::make('password'),
+        ]);
+        $admin->assignRole(UserRole::Admin->value);
+
+        $page = $this->actingAs($admin)->withoutVite()->get(route(Dashboard::getRouteName(Filament::getPanel('scheduledConference')), [
+            'conference' => $conference->path,
+            'serie' => $scheduledConference->path,
+        ]))->assertOk();
+
+        preg_match_all('/wire:snapshot="([^"]+)"/', $page->getContent(), $matches);
+        $snapshot = collect($matches[1])
+            ->map(fn (string $snapshot) => html_entity_decode($snapshot, ENT_QUOTES | ENT_HTML5))
+            ->first(fn (string $snapshot) => data_get(json_decode($snapshot, true), 'memo.name') === Dashboard::class);
+
+        $this->assertNotNull($snapshot);
+
+        $this->postJson(EndpointResolver::updatePath(), [
+            'components' => [[
+                'snapshot' => $snapshot,
+                'updates' => [],
+                'calls' => [],
             ]],
         ], ['X-Livewire' => '1'])
             ->assertOk();

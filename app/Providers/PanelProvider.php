@@ -2,38 +2,39 @@
 
 namespace App\Providers;
 
-use Filament\Panel;
-use Livewire\Livewire;
 use App\Facades\Plugin;
 use App\Facades\Setting;
-use App\Models\Conference;
-use Filament\Tables\Table;
-use GuzzleHttp\Psr7\MimeType;
-use App\Models\Enums\UserRole;
-use Filament\Facades\Filament;
-use Filament\Navigation\MenuItem;
-use Filament\Support\Colors\Color;
-use Filament\Support\Icons\Heroicon;
-use App\Models\ScheduledConference;
-use Filament\View\PanelsRenderHook;
 use App\Forms\Components\TinyEditor;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\ServiceProvider;
+use App\Http\Middleware\IdentifyConference;
+use App\Http\Middleware\IdentifyScheduledConference;
 use App\Http\Middleware\MustVerifyEmail;
+use App\Http\Middleware\PanelAuthenticate;
+use App\Http\Middleware\RedirectPanelIfCannotAccess;
+use App\Http\Middleware\RestoreLivewireConferenceContext;
+use App\Models\Conference;
+use App\Models\Enums\UserRole;
+use App\Models\ScheduledConference;
+use App\Panel\Administration\Pages\Profile;
 use App\Panel\Conference\Pages\Dashboard;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TimePicker;
-use App\Http\Middleware\PanelAuthenticate;
-use App\Http\Middleware\IdentifyConference;
-use App\Http\Middleware\IdentifyScheduledConference;
-use App\Panel\Administration\Pages\Profile;
-use Filament\Support\Facades\FilamentColor;
-use App\Http\Middleware\RedirectPanelIfCannotAccess;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationItem;
+use Filament\Panel;
+use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentColor;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Table;
+use Filament\View\PanelsRenderHook;
+use GuzzleHttp\Psr7\MimeType;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 
 class PanelProvider extends ServiceProvider
 {
@@ -48,19 +49,21 @@ class PanelProvider extends ServiceProvider
         $this->setupPanel($panel)
             ->id(static::PANEL_SCHEDULED_CONFERENCE)
             ->path('{conference:path}/scheduled/{serie:path}/panel')
-            ->homeUrl(fn() => app()->getCurrentScheduledConference()?->getHomeUrl())
+            ->homeUrl(fn () => app()->getCurrentScheduledConference()?->getHomeUrl())
             ->discoverResources(in: app_path('Panel/ScheduledConference/Resources'), for: 'App\\Panel\\ScheduledConference\\Resources')
             ->discoverPages(in: app_path('Panel/ScheduledConference/Pages'), for: 'App\\Panel\\ScheduledConference\\Pages')
             ->discoverWidgets(in: app_path('Panel/ScheduledConference/Widgets'), for: 'App\\Panel\\ScheduledConference\\Widgets')
             ->discoverLivewireComponents(in: app_path('Panel/ScheduledConference/Livewire'), for: 'App\\Panel\\ScheduledConference\\Livewire')
             ->renderHook(
                 PanelsRenderHook::TOPBAR_LOGO_AFTER,
-                fn() => view('panel.scheduledConference.hooks.topbar'),
+                fn () => view('panel.scheduledConference.hooks.topbar'),
             )
             ->renderHook(
                 PanelsRenderHook::SIDEBAR_NAV_START,
                 function () {
-                    if(auth()->user()?->cannot('ScheduledConference:switch')) return;
+                    if (auth()->user()?->cannot('ScheduledConference:switch')) {
+                        return;
+                    }
 
                     $currentConference = app()->getCurrentConference();
                     $currentScheduledConference = app()->getCurrentScheduledConference();
@@ -93,7 +96,7 @@ class PanelProvider extends ServiceProvider
             ->id(static::PANEL_CONFERENCE)
             ->default()
             ->path('{conference:path}/panel')
-            ->homeUrl(fn() => route('livewirePageGroup.conference.pages.home', ['conference' => app()->getCurrentConference()]))
+            ->homeUrl(fn () => route('livewirePageGroup.conference.pages.home', ['conference' => app()->getCurrentConference()]))
             ->discoverResources(in: app_path('Panel/Conference/Resources'), for: 'App\\Panel\\Conference\\Resources')
             ->discoverPages(in: app_path('Panel/Conference/Pages'), for: 'App\\Panel\\Conference\\Pages')
             ->discoverWidgets(in: app_path('Panel/Conference/Widgets'), for: 'App\\Panel\\Conference\\Widgets')
@@ -103,14 +106,14 @@ class PanelProvider extends ServiceProvider
             ])
             ->renderHook(
                 PanelsRenderHook::TOPBAR_LOGO_AFTER,
-                fn() => view('panel.conference.hooks.topbar'),
+                fn () => view('panel.conference.hooks.topbar'),
             )
             ->renderHook(
                 PanelsRenderHook::SIDEBAR_NAV_START,
                 function () {
                     $currentConference = app()->getCurrentConference();
                     $conferenceQuery = Conference::query()
-                        ->when(! auth()->user()->hasRole(UserRole::Admin), fn($query) => $query->whereHas('conferenceUsers', function ($query) {
+                        ->when(! auth()->user()->hasRole(UserRole::Admin), fn ($query) => $query->whereHas('conferenceUsers', function ($query) {
                             $query->where('model_has_roles.model_id', auth()->id());
                         }))
                         ->where('path', '!=', $currentConference->path)
@@ -123,8 +126,8 @@ class PanelProvider extends ServiceProvider
                 }
             )
             ->middleware([
-                IdentifyConference::class,
                 ...static::getMiddleware(),
+                IdentifyConference::class,
             ], true)
             ->authMiddleware(static::getAuthMiddleware(), true);
 
@@ -141,14 +144,14 @@ class PanelProvider extends ServiceProvider
             ->id(static::PANEL_ADMINISTRATION)
             ->path('panel')
             ->topNavigation(fn () => auth()->check() && ! auth()->user()->can('Administration:view'))
-            ->homeUrl(fn() => route('livewirePageGroup.website.pages.home'))
+            ->homeUrl(fn () => route('livewirePageGroup.website.pages.home'))
             ->discoverResources(in: app_path('Panel/Administration/Resources'), for: 'App\\Panel\\Administration\\Resources')
             ->discoverPages(in: app_path('Panel/Administration/Pages'), for: 'App\\Panel\\Administration\\Pages')
             ->discoverWidgets(in: app_path('Panel/Administration/Widgets'), for: 'App\\Panel\\Administration\\Widgets')
             ->discoverLivewireComponents(in: app_path('Panel/Administration/Livewire'), for: 'App\\Panel\\Administration\\Livewire')
             ->renderHook(
                 PanelsRenderHook::SIDEBAR_NAV_START,
-                fn() => view('panel.administration.hooks.sidebar-nav-start'),
+                fn () => view('panel.administration.hooks.sidebar-nav-start'),
             )
             ->middleware(static::getMiddleware(), true)
             ->authMiddleware(static::getAuthMiddleware(), true);
@@ -165,25 +168,25 @@ class PanelProvider extends ServiceProvider
         return $panel
             ->favicon(asset('favicon.ico'))
             ->maxContentWidth('full')
-            ->when(app()->isProduction(), fn(Panel $panel) => $panel->renderHook(
+            ->when(app()->isProduction(), fn (Panel $panel) => $panel->renderHook(
                 PanelsRenderHook::FOOTER,
-                fn() => Blade::render('<x-livewire-handle-error />')
+                fn () => Blade::render('<x-livewire-handle-error />')
             ))
             ->renderHook(
                 PanelsRenderHook::FOOTER,
-                fn() => Blade::render(<<<'Blade'
+                fn () => Blade::render(<<<'Blade'
                         <x-footer-platform-panel />
                     Blade)
             )
             ->renderHook(
                 PanelsRenderHook::SCRIPTS_BEFORE,
-                fn() => Blade::render(<<<'Blade'
+                fn () => Blade::render(<<<'Blade'
                         @vite(['resources/panel/js/panel.js'])
                     Blade)
             )
             ->renderHook(
                 PanelsRenderHook::STYLES_AFTER,
-                fn() => Blade::render(<<<'Blade'
+                fn () => Blade::render(<<<'Blade'
                         @vite(['resources/panel/css/panel.css'])
                     Blade)
             )
@@ -206,17 +209,17 @@ class PanelProvider extends ServiceProvider
                     ->url(fn (): string => Profile::getUrl()),
             ])
             ->navigationItems([
-                NavigationItem::make(fn() => __('general.documentation'))
-                    ->visible(fn() => auth()->user()?->hasRole(UserRole::internalRoles()))
+                NavigationItem::make(fn () => __('general.documentation'))
+                    ->visible(fn () => auth()->user()?->hasRole(UserRole::internalRoles()))
                     ->url('https://leconfe.com/docs', shouldOpenInNewTab: true)
                     ->icon('heroicon-o-document-text')
-                    ->group(fn() => __('general.support'))
+                    ->group(fn () => __('general.support'))
                     ->sort(999),
-                NavigationItem::make(fn() => __('general.forum'))
-                    ->visible(fn() => auth()->user()?->hasRole(UserRole::internalRoles()))
+                NavigationItem::make(fn () => __('general.forum'))
+                    ->visible(fn () => auth()->user()?->hasRole(UserRole::internalRoles()))
                     ->url('https://forum.leconfe.com', shouldOpenInNewTab: true)
                     ->icon('heroicon-o-chat-bubble-left-right')
-                    ->group(fn() => __('general.support'))
+                    ->group(fn () => __('general.support'))
                     ->sort(999),
             ])
             ->darkMode(false)
@@ -227,15 +230,15 @@ class PanelProvider extends ServiceProvider
     public function register(): void
     {
         Filament::registerPanel(
-            fn(): Panel => $this->scheduledConferencePanel(Panel::make()),
+            fn (): Panel => $this->scheduledConferencePanel(Panel::make()),
         );
 
         Filament::registerPanel(
-            fn(): Panel => $this->conferencePanel(Panel::make()),
+            fn (): Panel => $this->conferencePanel(Panel::make()),
         );
 
         Filament::registerPanel(
-            fn(): Panel => $this->administrationPanel(Panel::make()),
+            fn (): Panel => $this->administrationPanel(Panel::make()),
         );
 
         FilamentColor::register([
@@ -253,7 +256,7 @@ class PanelProvider extends ServiceProvider
         Blade::anonymousComponentPath(resource_path('views/panel/scheduledConference/components'), 'scheduledConference');
 
         Livewire::setScriptRoute(function ($handle) {
-            return Route::get(request()->getBaseUrl() . '/livewire/livewire.js', $handle);
+            return Route::get(request()->getBaseUrl().'/livewire/livewire.js', $handle);
         });
 
         static::setupFilamentComponent();
@@ -263,6 +266,7 @@ class PanelProvider extends ServiceProvider
     {
         return [
             'web',
+            RestoreLivewireConferenceContext::class,
             DisableBladeIconComponents::class,
             DispatchServingFilamentEvent::class,
         ];
@@ -280,7 +284,7 @@ class PanelProvider extends ServiceProvider
 
     public static function setupFilamentComponent()
     {
-        FileUpload::configureUsing(fn(FileUpload $fileUpload) => static::configureFileUpload($fileUpload));
+        FileUpload::configureUsing(fn (FileUpload $fileUpload) => static::configureFileUpload($fileUpload));
 
         DatePicker::configureUsing(function (DatePicker $datePicker): void {
             $datePicker
@@ -296,7 +300,7 @@ class PanelProvider extends ServiceProvider
             $table
                 ->defaultPaginationPageOption(10)
                 ->paginationPageOptions([5, 10, 25, 50]);
-            Table::configureUsing(fn(Table $table) => $table->defaultDateDisplayFormat(Setting::get('format_date')));
+            Table::configureUsing(fn (Table $table) => $table->defaultDateDisplayFormat(Setting::get('format_date')));
         });
 
         TinyEditor::configureUsing(function (TinyEditor $tinyEditor): void {
@@ -316,7 +320,7 @@ class PanelProvider extends ServiceProvider
             ->imageResizeUpscale(false)
             ->maxSize(config('media-library.max_file_size') / 1024)
             ->acceptedFileTypes(collect(config('media-library.accepted_file_types'))
-                ->map(fn($ext) => MimeType::fromExtension($ext) ?? $ext)
+                ->map(fn ($ext) => MimeType::fromExtension($ext) ?? $ext)
                 ->toArray());
     }
 }
