@@ -28,6 +28,7 @@
         "jackiedo/timezonelist": "^5.1",
         "laravel/framework": "^13.0",
         "laravel/horizon": "^5.24",
+        "laravel/octane": "^2.18",
         "laravel/pennant": "^1.20",
         "laravel/sanctum": "^4.0",
         "laravel/socialite": "^5.23",

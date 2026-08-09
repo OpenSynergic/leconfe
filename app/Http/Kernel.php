@@ -2,38 +2,39 @@
 
 namespace App\Http;
 
-use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Session\Middleware\StartSession;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests;
-use Illuminate\Routing\Middleware\ThrottleRequests;
-use Illuminate\Routing\Middleware\ThrottleRequestsWithRedis;
-use Illuminate\Contracts\Session\Middleware\AuthenticatesSessions;
-use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Auth\Middleware\Authorize;
-use App\Http\Middleware\TrustProxies;
-use Illuminate\Http\Middleware\HandleCors;
-use App\Http\Middleware\PreventRequestsDuringMaintenance;
-use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
-use App\Http\Middleware\TrimStrings;
-use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use App\Http\Middleware\VerifyCsrfToken;
-use App\Http\Middleware\Authenticate;
-use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
-use Illuminate\Session\Middleware\AuthenticateSession;
-use Illuminate\Http\Middleware\SetCacheHeaders;
-use App\Http\Middleware\RedirectIfAuthenticated;
-use Illuminate\Auth\Middleware\RequirePassword;
-use App\Http\Middleware\ValidateSignature;
-use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\Authenticate;
+use App\Http\Middleware\DetectConferenceContext;
 use App\Http\Middleware\InstallationMiddleware;
+use App\Http\Middleware\PreventRequestsDuringMaintenance;
+use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\SetupDefaultData;
 use App\Http\Middleware\ThemeActivator;
+use App\Http\Middleware\TrimStrings;
+use App\Http\Middleware\TrustProxies;
+use App\Http\Middleware\ValidateSignature;
+use App\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
+use Illuminate\Auth\Middleware\Authorize;
+use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
+use Illuminate\Auth\Middleware\RequirePassword;
+use Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests;
+use Illuminate\Contracts\Session\Middleware\AuthenticatesSessions;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
+use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
+use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
+use Illuminate\Http\Middleware\HandleCors;
+use Illuminate\Http\Middleware\SetCacheHeaders;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Routing\Middleware\ThrottleRequests;
+use Illuminate\Routing\Middleware\ThrottleRequestsWithRedis;
+use Illuminate\Session\Middleware\AuthenticateSession;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class Kernel extends HttpKernel
 {
@@ -72,6 +73,7 @@ class Kernel extends HttpKernel
         ValidatePostSize::class,
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
+        DetectConferenceContext::class,
         SetupDefaultData::class,
         ThemeActivator::class,
     ];
@@ -83,7 +85,7 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
-            \App\Http\Middleware\EncryptCookies::class,
+            Middleware\EncryptCookies::class,
             AddQueuedCookiesToResponse::class,
             StartSession::class,
             ShareErrorsFromSession::class,

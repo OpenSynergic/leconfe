@@ -5,8 +5,7 @@ namespace App\Providers;
 use App\Facades\Plugin;
 use App\Http\Middleware\IdentifyConference;
 use App\Http\Middleware\IdentifyScheduledConference;
-use App\Http\Middleware\RedirectToConference;
-use App\Http\Middleware\RedirectToScheduledConference;
+use App\Http\Middleware\RestoreLivewireConferenceContext;
 use App\Http\Middleware\SetLocale;
 use App\Http\Responses\Auth\LogoutResponse;
 use Illuminate\Support\Facades\Blade;
@@ -35,6 +34,7 @@ class FrontendServiceProvider extends ServiceProvider
 
             Livewire::addPersistentMiddleware([
                 'web',
+                RestoreLivewireConferenceContext::class,
                 SetLocale::class,
             ]);
 
@@ -62,6 +62,7 @@ class FrontendServiceProvider extends ServiceProvider
             ->layout('frontend.website.components.layouts.app')
             ->middleware([
                 'web',
+                RestoreLivewireConferenceContext::class,
             ], true)
             ->discoverPages(in: app_path('Frontend/Website/Pages'), for: 'App\\Frontend\\Website\\Pages');
 
@@ -78,6 +79,7 @@ class FrontendServiceProvider extends ServiceProvider
             ->layout('frontend.website.components.layouts.app')
             ->middleware([
                 'web',
+                RestoreLivewireConferenceContext::class,
                 IdentifyConference::class,
             ], true)
             ->discoverPages(in: app_path('Frontend/Conference/Pages'), for: 'App\\Frontend\\Conference\\Pages');
@@ -95,6 +97,7 @@ class FrontendServiceProvider extends ServiceProvider
             ->layout('frontend.website.components.layouts.app')
             ->middleware([
                 'web',
+                RestoreLivewireConferenceContext::class,
                 IdentifyConference::class,
                 IdentifyScheduledConference::class,
             ], true)

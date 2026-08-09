@@ -2,8 +2,6 @@
 
 namespace App;
 
-use Exception;
-use Throwable;
 use App\Actions\Site\SiteCreateAction;
 use App\Classes\Theme;
 use App\Facades\Plugin;
@@ -40,9 +38,11 @@ use App\Models\Topic;
 use App\Models\Track;
 use App\Models\UserInvitation;
 use App\Models\Version;
+use Exception;
 use Illuminate\Foundation\Application as LaravelApplication;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
+use Throwable;
 
 class Application extends LaravelApplication
 {
@@ -114,8 +114,12 @@ class Application extends LaravelApplication
         return $this->currentConferenceId ?? static::CONTEXT_WEBSITE;
     }
 
-    public function setCurrentConferenceId(int $conferenceId)
+    public function setCurrentConferenceId(?int $conferenceId): void
     {
+        if ($this->currentConferenceId !== $conferenceId) {
+            $this->currentConference = null;
+        }
+
         $this->currentConferenceId = $conferenceId;
     }
 
@@ -124,9 +128,20 @@ class Application extends LaravelApplication
         return $this->currentScheduledConferenceId;
     }
 
-    public function setCurrentScheduledConferenceId(int $scheduledConferenceId)
+    public function setCurrentScheduledConferenceId(?int $scheduledConferenceId): void
     {
+        if ($this->currentScheduledConferenceId !== $scheduledConferenceId) {
+            $this->currentScheduledConference = null;
+        }
+
         $this->currentScheduledConferenceId = $scheduledConferenceId;
+    }
+
+    public function resetCurrentContext(): void
+    {
+        $this->setCurrentConferenceId(null);
+        $this->setCurrentScheduledConferenceId(null);
+        $this->site = null;
     }
 
     public function getCurrentScheduledConference(): ?ScheduledConference

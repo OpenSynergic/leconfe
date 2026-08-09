@@ -2,20 +2,16 @@
 
 namespace App\Providers;
 
-use Throwable;
 use App\Actions\Leconfe\CheckLatestVersion;
-use App\Application;
 use App\Classes\Setting;
 use App\Console\Kernel as ConsoleKernel;
 use App\Events\UserLoggedIn;
 use App\Http\Kernel as HttpKernel;
-use App\Schemas\Schema as AppSchema;
 use App\Listeners\SubmissionEventSubscriber;
 use App\Managers\MetaTagManager;
 use App\Managers\SidebarManager;
-use App\Models\Conference;
-use App\Models\ScheduledConference;
 use App\Routing\CustomUrlGenerator;
+use App\Schemas\Schema as AppSchema;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Client\Factory as Http;
@@ -23,14 +19,13 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
-use Livewire\Livewire;
 use Laravel\Pennant\Feature;
+use Throwable;
 
 use function Illuminate\Events\queueable;
 
@@ -98,7 +93,6 @@ class AppServiceProvider extends ServiceProvider
         $this->setupStorage();
         $this->extendStr();
         $this->extendBlade();
-        $this->detectConference();
         $this->handleEvent();
         $this->forceHttps();
         $this->registerFeatureFlags();
@@ -224,58 +218,6 @@ class AppServiceProvider extends ServiceProvider
         // Create a temporary URL for a file in the local storage disk.
         Storage::disk('local')->buildTemporaryUrlsUsing($callback);
         Storage::disk('private-files')->buildTemporaryUrlsUsing($callback);
-    }
-
-    protected function detectConference(): void
-    {
-        if ($this->app->runningInConsole() || ! $this->app->isInstalled()) {
-            return;
-        }
-        $this->app->scopeCurrentConference();
-
-        $pathInfos = explode('/', request()->getPathInfo());
-        $conferencePath = $pathInfos[1] ?? null;
-
-        $isOnScheduledPath = isset($pathInfos[2]) && $pathInfos[2] == 'scheduled' && isset($pathInfos[3]) && ! blank($pathInfos[3]);
-        $scheduledConferencePath = $pathInfos[3] ?? null;
-
-        // Detect conference from URL path
-        if ($conferencePath) {
-
-            $conference = Conference::query()
-                ->with(['media', 'meta'])
-                ->where('path', $pathInfos[1])->first();
-
-            $conference ? $this->app->setCurrentConferenceId($conference->getKey()) : $this->app->setCurrentConferenceId(Application::CONTEXT_WEBSITE);
-
-            if (! $conference && $isOnScheduledPath) {
-                abort(404);
-            }
-            // Detect scheduledConference from URL path when conference is set
-            if ($conference && $isOnScheduledPath) {
-                $scheduledConference = ScheduledConference::findByConferenceAndExactPath($conference, $scheduledConferencePath);
-                if ($scheduledConference) {
-                    $this->app->setCurrentScheduledConferenceId($scheduledConference->getKey());
-                    $this->app->scopeCurrentScheduledConference();
-                } else {
-                    abort(404);
-                }
-            }
-        }
-
-        // Scope livewire update path to current conference
-        $currentConference = $this->app->getCurrentConference();
-        if ($currentConference) {
-            // Scope livewire update path to current serie
-            $currentScheduledConference = $this->app->getCurrentScheduledConference();
-            if ($isOnScheduledPath && $currentScheduledConference && $currentScheduledConference->path === $scheduledConferencePath) {
-                Livewire::setUpdateRoute(
-                    fn ($handle) => Route::post($currentConference->path.'/scheduled/'.$currentScheduledConference->path.'/livewire/update', $handle)->middleware('web')
-                );
-            } else {
-                Livewire::setUpdateRoute(fn ($handle) => Route::post($currentConference->path.'/livewire/update', $handle)->middleware('web'));
-            }
-        }
     }
 
     public function forceHttps()
