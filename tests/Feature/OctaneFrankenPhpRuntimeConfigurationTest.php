@@ -25,6 +25,7 @@ class OctaneFrankenPhpRuntimeConfigurationTest extends TestCase
         $caddyfile = file_get_contents(base_path('docker/octane/Caddyfile'));
 
         $this->assertStringContainsString('Dockerfile.octane', $compose);
+        $this->assertStringContainsString('COPY --from=vendor /var/www/html/vendor ./vendor', $dockerfile);
         $this->assertStringContainsString('STOPSIGNAL SIGINT', $dockerfile);
         $this->assertStringContainsString('HEALTHCHECK --interval=10s --timeout=3s --start-period=30s --retries=3 CMD curl --fail --silent --show-error http://127.0.0.1:8080/healthz || exit 1', $dockerfile);
         $this->assertStringContainsString('--workers=4', $compose);
