@@ -5,7 +5,9 @@ namespace App\Providers;
 // use Illuminate\Support\Facades\Gate;
 
 use App\Models\Enums\UserRole;
+use Illuminate\Auth\Access\Gate as AccessGate;
 use Illuminate\Contracts\Auth\Access\Authorizable;
+use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -22,6 +24,16 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
     ];
+
+    public function register(): void
+    {
+        parent::register();
+
+        $this->app->singleton(GateContract::class, fn ($app) => new AccessGate(
+            $app,
+            fn () => auth()->user(),
+        ));
+    }
 
     /**
      * Register any authentication / authorization services.

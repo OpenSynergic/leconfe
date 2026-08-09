@@ -20,10 +20,13 @@ use App\Models\Site;
 use App\Models\User;
 use App\Panel\ScheduledConference\Pages\Dashboard;
 use Filament\Facades\Filament;
+use Illuminate\Contracts\Auth\Access\Gate as GateContract;
+use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+use Laravel\Octane\CurrentApplication;
 use Livewire\Mechanisms\HandleRequests\EndpointResolver;
 use Livewire\Mechanisms\HandleRequests\HandleRequests;
 use Livewire\Mechanisms\PersistentMiddleware\PersistentMiddleware;
@@ -308,5 +311,40 @@ class RequestContextLifecycleTest extends TestCase
 
         $this->assertSame($conference->getKey(), app()->getCurrentConferenceId());
         $this->assertSame($scheduledConference->getKey(), app()->getCurrentScheduledConferenceId());
+    }
+
+    public function test_octane_gate_resolves_the_authenticated_user_from_the_request_sandbox(): void
+    {
+        $rootApplication = app();
+        $sandbox = clone $rootApplication;
+        $user = new User;
+        $sandbox->instance('auth', new class($user) implements AuthFactory
+        {
+            public function __construct(private User $user) {}
+
+            public function guard($name = null)
+            {
+                throw new \LogicException('The gate resolver should use the current authenticated user.');
+            }
+
+            public function shouldUse($name): void {}
+
+            public function user(): User
+            {
+                return $this->user;
+            }
+        });
+
+        $gate = $rootApplication->make(GateContract::class);
+        $gate->define('resolve-octane-sandbox-user', fn (User $resolvedUser): bool => $resolvedUser === $user);
+        $gate->setContainer($sandbox);
+        CurrentApplication::set($sandbox);
+
+        try {
+            $this->assertTrue($gate->allows('resolve-octane-sandbox-user'));
+        } finally {
+            $gate->setContainer($rootApplication);
+            CurrentApplication::set($rootApplication);
+        }
     }
 }
