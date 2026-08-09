@@ -10,11 +10,15 @@ use App\Http\Middleware\DetectConferenceContext;
 use App\Managers\PluginManager;
 use App\Models\Conference;
 use App\Providers\PluginServiceProvider;
+use App\Support\FrankenPhpWorkerReloader;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\File;
-use Laravel\Octane\FrankenPhp\ServerProcessInspector;
+use Illuminate\Support\Facades\Http;
+use Laravel\Octane\FrankenPhp\ServerStateFile;
 use Mockery;
 use ReflectionMethod;
 use Tests\TestCase;
@@ -52,43 +56,64 @@ class PluginManagerOctaneLifecycleTest extends TestCase
     public function test_install_and_update_schedule_exactly_one_reload_after_termination(): void
     {
         $_SERVER['LARAVEL_OCTANE'] = '1';
-        $inspector = Mockery::mock(ServerProcessInspector::class);
-        $inspector->shouldReceive('reloadServer')->once();
-        $this->app->instance(ServerProcessInspector::class, $inspector);
+        $reloader = Mockery::mock(FrankenPhpWorkerReloader::class);
+        $reloader->shouldReceive('reload')->once();
+        $this->app->instance(FrankenPhpWorkerReloader::class, $reloader);
         $manager = new PluginManager;
         $zip = $this->makePluginZip('LifecyclePlugin');
 
         $manager->install($zip);
         $manager->install($zip);
 
-        $inspector->shouldNotHaveReceived('reloadServer');
+        $reloader->shouldNotHaveReceived('reload');
 
         $this->app->terminate();
+    }
+
+    public function test_worker_reloader_uses_frankenphp_graceful_restart_api(): void
+    {
+        $response = Mockery::mock(Response::class);
+        $response->shouldReceive('throw')->once()->andReturnSelf();
+        $http = Mockery::mock(PendingRequest::class);
+        $http->shouldReceive('post')
+            ->once()
+            ->with('http://localhost:2099/frankenphp/workers/restart')
+            ->andReturn($response);
+        Http::swap($http);
+        $stateFile = Mockery::mock(ServerStateFile::class);
+        $stateFile->shouldReceive('read')->once()->andReturn([
+            'state' => [
+                'adminHost' => 'localhost',
+                'adminPort' => 2099,
+            ],
+        ]);
+
+        (new FrankenPhpWorkerReloader($stateFile))->reload();
     }
 
     public function test_uninstall_deletes_plugin_before_reloading_workers(): void
     {
         $_SERVER['LARAVEL_OCTANE'] = '1';
         File::makeDirectory($pluginDirectory = $this->testDirectory.'/plugins/RemovedPlugin');
-        $inspector = Mockery::mock(ServerProcessInspector::class);
-        $inspector->shouldReceive('reloadServer')
+        $reloader = Mockery::mock(FrankenPhpWorkerReloader::class);
+        $reloader->shouldReceive('reload')
             ->once()
             ->andReturnUsing(fn () => $this->assertDirectoryDoesNotExist($pluginDirectory));
-        $this->app->instance(ServerProcessInspector::class, $inspector);
+        $this->app->instance(FrankenPhpWorkerReloader::class, $reloader);
 
         (new PluginManager)->uninstall('RemovedPlugin');
 
         $this->assertDirectoryExists($pluginDirectory);
-        $inspector->shouldNotHaveReceived('reloadServer');
+        $reloader->shouldNotHaveReceived('reload');
 
         $this->app->terminate();
     }
 
     public function test_classic_php_install_does_not_reload_workers(): void
     {
-        $inspector = Mockery::mock(ServerProcessInspector::class);
-        $inspector->shouldNotReceive('reloadServer');
-        $this->app->instance(ServerProcessInspector::class, $inspector);
+        $reloader = Mockery::mock(FrankenPhpWorkerReloader::class);
+        $reloader->shouldNotReceive('reload');
+        $this->app->instance(FrankenPhpWorkerReloader::class, $reloader);
 
         (new PluginManager)->install($this->makePluginZip('ClassicPlugin'));
 
@@ -98,9 +123,9 @@ class PluginManagerOctaneLifecycleTest extends TestCase
     public function test_failed_install_does_not_schedule_a_reload(): void
     {
         $_SERVER['LARAVEL_OCTANE'] = '1';
-        $inspector = Mockery::mock(ServerProcessInspector::class);
-        $inspector->shouldNotReceive('reloadServer');
-        $this->app->instance(ServerProcessInspector::class, $inspector);
+        $reloader = Mockery::mock(FrankenPhpWorkerReloader::class);
+        $reloader->shouldNotReceive('reload');
+        $this->app->instance(FrankenPhpWorkerReloader::class, $reloader);
 
         $failed = false;
 

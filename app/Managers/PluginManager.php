@@ -7,6 +7,7 @@ use App\Classes\ManualPaymentPlugin;
 use App\Classes\Plugin as ClassesPlugin;
 use App\Events\PluginInstalled;
 use App\Models\PluginSetting;
+use App\Support\FrankenPhpWorkerReloader;
 use Exception;
 use Illuminate\Contracts\Filesystem\Filesystem as FilesystemContract;
 use Illuminate\Filesystem\Filesystem;
@@ -17,7 +18,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Laravel\Octane\FrankenPhp\ServerProcessInspector;
 use Symfony\Component\Yaml\Yaml;
 use Throwable;
 use ZipArchive;
@@ -502,7 +502,7 @@ class PluginManager
             }
 
             if (isset($_SERVER['LARAVEL_OCTANE'])) {
-                app(ServerProcessInspector::class)->reloadServer();
+                app(FrankenPhpWorkerReloader::class)->reload();
             }
         });
     }
