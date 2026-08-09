@@ -146,8 +146,6 @@ class ScheduledConference extends Model implements HasAvatar, HasMedia, HasName
     protected function getAllDefaultMeta(): array
     {
         return [
-            'timezone' => 'UTC',
-            'submission_payment' => false,
             'before_you_begin' => __('general.before_you_begin_current_scheduled', ['title' => $this->title]),
             'submission_checklist' => __('general.submission_checklist_following_requirements'),
             'review_mode' => Review::MODE_DOUBLE_ANONYMOUS,
@@ -180,6 +178,7 @@ class ScheduledConference extends Model implements HasAvatar, HasMedia, HasName
             'required_country' => false,
             'required_phone' => false,
             self::META_SUBMISSION_TOPIC_SELECTION_LIMIT => null,
+            'timezone' => config('app.timezone', 'UTC'),
         ];
     }
 
@@ -194,6 +193,34 @@ class ScheduledConference extends Model implements HasAvatar, HasMedia, HasName
         $limit = (int) $limit;
 
         return $limit > 0 ? $limit : null;
+    }
+
+    public function getTimezone(): string
+    {
+        $tz = (string) $this->getMeta('timezone', config('app.timezone', 'UTC'));
+
+        try {
+            new \DateTimeZone($tz);
+
+            return $tz;
+        } catch (\Throwable $e) {
+            return (string) config('app.timezone', 'UTC');
+        }
+    }
+
+    protected function timezoneLabel(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $tz = $this->getTimezone();
+                try {
+                    $offset = (new \DateTime('now', new \DateTimeZone($tz)))->format('P');
+                    return "{$tz} (UTC{$offset})";
+                } catch (\Throwable $e) {
+                    return $tz;
+                }
+            },
+        );
     }
 
     public function conference(): BelongsTo

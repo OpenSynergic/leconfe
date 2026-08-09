@@ -77,8 +77,12 @@ class SetupDefaultData
 
     protected function setupScheduledConference(Request $request, $currentScheduledConference)
     {
+        $timezone = $currentScheduledConference->getTimezone();
+
         View::share('currentConference', app()->getCurrentConference());
         View::share('currentScheduledConference', $currentScheduledConference);
+        View::share('currentScheduledConferenceTimezone', $timezone);
+        View::share('currentScheduledConferenceTimezoneLabel', $currentScheduledConference->timezone_label);
         View::share('homeUrl', route('livewirePageGroup.scheduledConference.pages.home'));
         View::share('headerLogo', $currentScheduledConference->getFirstMedia('logo')?->getAvailableUrl(['thumb', 'thumb-xl']));
         View::share('headerLogoAltText', $currentScheduledConference->title);

@@ -32,9 +32,16 @@ class SetupSetting extends Component implements HasForms, HasActions
     {
         $scheduledConference = app()->getCurrentScheduledConference();
 
+        $meta = $scheduledConference->getAllMeta()->toArray();
+        if (isset($meta['allowed_self_assign_roles'])) {
+            $allowed = (array) $meta['allowed_self_assign_roles'];
+            $validSetupRoles = array_keys(UserRole::selfAssignedRoleSetupNames());
+            $meta['allowed_self_assign_roles'] = array_values(array_intersect($allowed, $validSetupRoles));
+        }
+
         $this->form->fill([
             ...$scheduledConference->attributesToArray(),
-            'meta' => $scheduledConference->getAllMeta(),
+            'meta' => $meta,
         ]);
     }
 
@@ -63,10 +70,13 @@ class SetupSetting extends Component implements HasForms, HasActions
                             ->options(fn() => Country::all()->mapWithKeys(fn($country) => [$country->id => $country->flag . ' ' . $country->name]))
                             ->optionsLimit(250),
                         Select::make('meta.timezone')
+                            ->label(__('general.timezone'))
                             ->options(Timezonelist::toArray(false))
+                            ->optionsLimit(500)
                             ->selectablePlaceholder(false)
                             ->searchable()
-                            ->required(),
+                            ->required()
+                            ->rules(['timezone']),
                     ]),
                 Section::make(__('general.registration_required_fields'))
                     ->schema([

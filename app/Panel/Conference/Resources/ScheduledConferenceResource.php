@@ -16,12 +16,14 @@ use App\Models\ScheduledConference;
 use App\Panel\Conference\Resources\ScheduledConferenceResource\Pages;
 use App\Tables\Columns\IndexColumn;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Validation\Rules\Unique;
+use Jackiedo\Timezonelist\Facades\Timezonelist;
 
 class ScheduledConferenceResource extends Resource
 {
@@ -67,6 +69,15 @@ class ScheduledConferenceResource extends Resource
                             ->afterOrEqual('date_start')
                             ->placeholder(__('general.enter_the_end_date_of_the_serie')),
                     ]),
+                Select::make('meta.timezone')
+                    ->label(__('general.timezone'))
+                    ->options(Timezonelist::toArray(false))
+                    ->optionsLimit(500)
+                    ->default(config('app.timezone', 'UTC'))
+                    ->selectablePlaceholder(false)
+                    ->searchable()
+                    ->required()
+                    ->rules(['timezone']),
             ]);
     }
 

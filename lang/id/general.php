@@ -53,6 +53,7 @@ return [
     'role_description_reviewer' => 'Tinjau makalah yang dikirim dan berikan masukan terhadap kualitas riset.',
     'role_description_participant' => 'Hanya menghadiri konferensi.',
     'discover' => 'Jelajahi',
+    'timezone' => 'Zona Waktu',
     'registration' => 'Pendaftaran',
     'continue' => 'Lanjutkan',
     'edit_my_profile' => 'Edit Profil Saya',
