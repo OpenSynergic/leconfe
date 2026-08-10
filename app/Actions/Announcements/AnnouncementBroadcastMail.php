@@ -26,7 +26,13 @@ class AnnouncementBroadcastMail
             ->whereHas('roles', fn ($query) => $query
                 ->withoutGlobalScopes()
                 ->where('roles.conference_id', $scheduledConference->conference_id)
-                ->whereIn('roles.scheduled_conference_id', [0, $scheduledConference->getKey()])
+                ->where(function ($query) use ($scheduledConference) {
+                    $query->where('roles.scheduled_conference_id', $scheduledConference->getKey())
+                        ->orWhere(function ($query) {
+                            $query->where('roles.name', UserRole::ConferenceManager->value)
+                                ->where('roles.scheduled_conference_id', 0);
+                        });
+                })
                 ->whereColumn('roles.conference_id', "{$modelHasRolesTable}.conference_id")
                 ->whereColumn('roles.scheduled_conference_id', "{$modelHasRolesTable}.scheduled_conference_id"))
             ->whereDoesntHave('roles', fn ($query) => $query
