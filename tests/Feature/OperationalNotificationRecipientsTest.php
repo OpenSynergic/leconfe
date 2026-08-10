@@ -317,6 +317,35 @@ class OperationalNotificationRecipientsTest extends TestCase
         );
     }
 
+    public function test_announcement_broadcast_excludes_non_manager_conference_scoped_roles(): void
+    {
+        $conferenceScopedRole = Role::withoutGlobalScopes()->firstOrCreate([
+            'name' => 'Conference Observer',
+            'guard_name' => 'web',
+            'conference_id' => $this->conference->getKey(),
+            'scheduled_conference_id' => 0,
+        ]);
+        $participant = User::factory()->create([
+            'email' => 'conference-scoped-participant@example.test',
+            'password' => 'password123456',
+        ]);
+        $participant->assignRole($conferenceScopedRole);
+        $participant->setMeta('enable_new_announcement_email', true);
+        $announcement = Announcement::withoutGlobalScopes()->forceCreate([
+            'scheduled_conference_id' => $this->scheduledConference->getKey(),
+            'title' => 'Program update',
+        ]);
+
+        Mail::fake();
+
+        app(AnnouncementBroadcastMail::class)->handle($announcement);
+
+        Mail::assertNotQueued(
+            NewAnnouncementMail::class,
+            fn (NewAnnouncementMail $mail): bool => $mail->hasTo($participant->email)
+        );
+    }
+
     public function test_announcement_broadcast_respects_the_role_assignment_scope(): void
     {
         $otherScheduledConference = ScheduledConference::factory()->create([
