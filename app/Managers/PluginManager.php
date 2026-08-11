@@ -2,15 +2,14 @@
 
 namespace App\Managers;
 
-use App\Classes\Plugin as ClassesPlugin;
 use App\Classes\Plugin;
+use App\Classes\Plugin as ClassesPlugin;
 use App\Events\PluginInstalled;
 use App\Models\PluginSetting;
 use Exception;
 use Illuminate\Contracts\Filesystem\Filesystem as FilesystemContract;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Benchmark;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
@@ -31,13 +30,13 @@ class PluginManager
         $this->plugins = collect();
     }
 
-    public function getCurrentContextString() : string
+    public function getCurrentContextString(): string
     {
-        if(app()->isOnScheduledConference()){
+        if (app()->isOnScheduledConference()) {
             return 'scheduled-conference';
         }
 
-        if(app()->isOnConference()){
+        if (app()->isOnConference()) {
             return 'conference';
         }
 
@@ -66,18 +65,18 @@ class PluginManager
                         throw new Exception("Plugin folder name ({$pluginDir}) cannot contain spaces");
                     }
 
-                    if (! $disk->exists($pluginDir . DIRECTORY_SEPARATOR . 'index.yaml')) {
+                    if (! $disk->exists($pluginDir.DIRECTORY_SEPARATOR.'index.yaml')) {
                         throw new Exception("Plugin ({$pluginDir}) is missing index.yaml file");
                     }
 
-                    if (! $disk->exists($pluginDir . DIRECTORY_SEPARATOR . 'index.php')) {
+                    if (! $disk->exists($pluginDir.DIRECTORY_SEPARATOR.'index.php')) {
                         throw new Exception("Plugin ({$pluginDir}) is missing index.php file");
                     }
                 } catch (\Throwable $th) {
                     return false;
                 }
 
-                $informations = Yaml::parseFile($disk->path($pluginDir . DIRECTORY_SEPARATOR . 'index.yaml'));
+                $informations = Yaml::parseFile($disk->path($pluginDir.DIRECTORY_SEPARATOR.'index.yaml'));
                 $targets = Arr::get($informations, 'targets');
                 $sitewide = Arr::get($informations, 'sitewide', false);
 
@@ -85,7 +84,7 @@ class PluginManager
                     return true;
                 }
 
-                if(!empty($targets) && !in_array($context, $targets)){
+                if (! empty($targets) && ! in_array($context, $targets)) {
                     return false;
                 }
 
@@ -97,7 +96,6 @@ class PluginManager
 
                 $this->register($pluginPath, $plugin, $this->getSetting($plugin, 'enabled', false));
             });
-
 
     }
 
@@ -140,12 +138,12 @@ class PluginManager
     protected function initiatePlugin(string $pluginPath): ?ClassesPlugin
     {
         try {
-            $plugin = include $pluginPath . DIRECTORY_SEPARATOR . 'index.php';
+            $plugin = include $pluginPath.DIRECTORY_SEPARATOR.'index.php';
 
             $plugin->setPluginPath($pluginPath);
 
             if (! $plugin instanceof ClassesPlugin) {
-                throw new Exception('Plugin must return an instance of ' . ClassesPlugin::class);
+                throw new Exception('Plugin must return an instance of '.ClassesPlugin::class);
             }
         } catch (\Throwable $th) {
             throw $th;
@@ -156,7 +154,56 @@ class PluginManager
 
     public function getPlugins(bool $onlyEnabled = true)
     {
-        return $this->plugins->when($onlyEnabled, fn($plugins) => $plugins->filter(fn($plugin) => $plugin->isEnabled()));
+        return $this->plugins->when($onlyEnabled, fn ($plugins) => $plugins->filter(fn ($plugin) => $plugin->isEnabled()));
+    }
+
+    /**
+     * @return Collection<int, array{name: string, version: string, sitewide: bool, default_enabled: bool}>
+     */
+    public function getPluginsForTelemetry(): Collection
+    {
+        $plugins = $this->plugins
+            ->mapWithKeys(function (ClassesPlugin $plugin): array {
+                $name = (string) $plugin->getInfo('folder');
+
+                return $name === '' ? [] : [$name => [
+                    'name' => $name,
+                    'version' => (string) $plugin->getVersion(),
+                    'sitewide' => (bool) $plugin->getInfo('sitewide'),
+                    'default_enabled' => ! $plugin->canBeDisabled(),
+                ]];
+            });
+        $disk = $this->getDisk();
+
+        foreach ($disk->directories() as $pluginPath) {
+            $indexPath = $pluginPath.DIRECTORY_SEPARATOR.'index.yaml';
+
+            if ($plugins->has($pluginPath) || ! $disk->exists($indexPath)) {
+                continue;
+            }
+
+            try {
+                $info = Yaml::parse($disk->get($indexPath));
+                $info = is_array($info) ? $info : [];
+            } catch (\Throwable) {
+                continue;
+            }
+
+            $name = (string) Arr::get($info, 'folder', $pluginPath);
+
+            if ($name === '' || $plugins->has($name)) {
+                continue;
+            }
+
+            $plugins->put($name, [
+                'name' => $name,
+                'version' => (string) Arr::get($info, 'version', ''),
+                'sitewide' => (bool) Arr::get($info, 'sitewide', false),
+                'default_enabled' => false,
+            ]);
+        }
+
+        return $plugins->values();
     }
 
     public function getPlugin(?string $path, bool $onlyEnabled = false): ?ClassesPlugin
@@ -192,7 +239,7 @@ class PluginManager
     {
         $pluginFolder = $this->getPluginFolder($plugin);
         $sitewide = $this->isPluginSitewide($plugin);
-        
+
         if ($sitewide) {
             $conferenceId = 0;
             $scheduledConferenceId = 0;
@@ -217,7 +264,7 @@ class PluginManager
     {
         $pluginFolder = $this->getPluginFolder($plugin);
         $sitewide = $this->isPluginSitewide($plugin);
-        
+
         if ($sitewide) {
             $conferenceId = 0;
             $scheduledConferenceId = 0;
@@ -291,11 +338,11 @@ class PluginManager
             throw new Exception("Plugin folder name ({$pluginName}) cannot contain spaces");
         }
 
-        if (! file_exists($pluginPath . DIRECTORY_SEPARATOR . 'index.yaml')) {
+        if (! file_exists($pluginPath.DIRECTORY_SEPARATOR.'index.yaml')) {
             throw new Exception("Plugin ({$pluginName}) is missing index.yaml file");
         }
 
-        if (! file_exists($pluginPath . DIRECTORY_SEPARATOR . 'index.php')) {
+        if (! file_exists($pluginPath.DIRECTORY_SEPARATOR.'index.php')) {
             throw new Exception("Plugin ({$pluginName}) is missing index.php file");
         }
     }
@@ -362,7 +409,7 @@ class PluginManager
     public function uninstall(string $pluginPath): void
     {
         // Delete the plugin after response is sent
-        app()->terminating(fn() => $this->getDisk()->deleteDirectory($pluginPath));
+        app()->terminating(fn () => $this->getDisk()->deleteDirectory($pluginPath));
     }
 
     /**

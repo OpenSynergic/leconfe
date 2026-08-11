@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Actions;
+use App\Actions\Leconfe\SendTelemetry;
 use App\Actions\Submissions\RemoveDeletedDiscussion;
 use App\Models\UserInvitation;
 use Illuminate\Console\Scheduling\Schedule;
@@ -48,6 +49,10 @@ class Kernel extends ConsoleKernel
                 ->where('expires_at', '<', now())
                 ->update(['status' => 'expired']);
         })->hourly()->name('Mark expired invitations');
+
+        $schedule->call(function () {
+            SendTelemetry::dispatchOncePerDay();
+        })->daily()->name('Send Leconfe installation telemetry');
     }
 
     /**

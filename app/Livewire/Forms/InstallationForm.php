@@ -4,7 +4,6 @@ namespace App\Livewire\Forms;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 use Livewire\Attributes\Rule;
 use Livewire\Form;
 
@@ -30,6 +29,9 @@ class InstallationForm extends Form
 
     #[Rule('boolean', onUpdate: false)]
     public bool $newsletter = true;
+
+    #[Rule('boolean', onUpdate: false)]
+    public bool $telemetry_enabled = true;
 
     /**
      * Field for Database
@@ -73,7 +75,7 @@ class InstallationForm extends Form
             $this->resetErrorBag('error');
             $this->reconnectDbWithNewData();
         } catch (\Throwable $th) {
-            $this->addError('error', 'Connection failed: ' . $th->getMessage());
+            $this->addError('error', 'Connection failed: '.$th->getMessage());
 
             return false;
         }
@@ -97,7 +99,6 @@ class InstallationForm extends Form
             ]);
         }
 
-
         return $connectionArray;
     }
 
@@ -105,7 +106,7 @@ class InstallationForm extends Form
     {
         $connectionArray = $this->prepareDatabaseConnection();
 
-        Config::set("database.default", $this->db_connection);
+        Config::set('database.default', $this->db_connection);
         Config::set("database.connections.{$this->db_connection}", $connectionArray);
 
         DB::purge();
@@ -131,7 +132,7 @@ class InstallationForm extends Form
         if (in_array('other', $this->important_features) && ! empty($this->other_important_feature)) {
             $final_features[] = $this->other_important_feature;
         }
-        $final_features = array_filter($final_features, fn($feature) => $feature !== 'other');
+        $final_features = array_filter($final_features, fn ($feature) => $feature !== 'other');
 
         $data['survey_important_features'] = $final_features;
         $data['is_configure_env'] = true;

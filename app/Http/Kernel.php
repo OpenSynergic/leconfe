@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\InstallationMiddleware;
+use App\Http\Middleware\SendTelemetryAfterRequest;
 use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\SetupDefaultData;
 use App\Http\Middleware\ThemeActivator;
@@ -64,6 +65,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             InstallationMiddleware::class,
             SetLocale::class,
+            SendTelemetryAfterRequest::class,
         ],
 
         'api' => [

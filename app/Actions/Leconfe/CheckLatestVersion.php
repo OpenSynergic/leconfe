@@ -2,9 +2,6 @@
 
 namespace App\Actions\Leconfe;
 
-use App\Models\Conference;
-use App\Models\ScheduledConference;
-use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -30,31 +27,9 @@ class CheckLatestVersion
 
     public function getLatestVersion()
     {
-        $response = Http::when(config('app.beacon') && app()->isProduction(), function ($http) {
-            $admin = User::withoutGlobalScopes()->first();
-            $site = app()->getSite();
-            $meta = [
-                'php_version' => phpversion(),
-                'total_scheduled_conferences' => ScheduledConference::count(),
-                'total_conferences' => Conference::count(),
-                'newsletter' => $site->getMeta('newsletter'),
-                'survey_important_features' => $site->getMeta('survey_important_features'),
-                'survey_referral_source' => $site->getMeta('survey_referral_source'),
-            ];
-
-            if ($admin) {
-                $meta['admin_email'] = $admin->email;
-                $meta['admin_name'] = $admin->full_name;
-            }
-
-            $params = [
-                'unique_id' => app()->getUniqueIdentifier(),
-                'url' => url(''),
-                'meta' => $meta,
-            ];
-
-            $http->withQueryParameters($params);
-        })->get(app()->getApiUrl('checkversion'));
+        $response = Http::withHeaders([
+            'Leconfe-Telemetry-Client' => '1',
+        ])->get(app()->getApiUrl('checkversion'));
 
         if ($response->failed()) {
             throw new \Exception('Failed to get latest version');

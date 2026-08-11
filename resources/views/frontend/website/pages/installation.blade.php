@@ -168,6 +168,22 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="sm:col-span-6 rounded-lg border border-primary/30 bg-primary/5 p-4 space-y-3">
+                                    <h2 class="text-lg not-italic font-semibold leading-7 text-black">{{ __('general.installation_usage_telemetry') }}</h2>
+                                    <p class="text-sm leading-snug">{{ __('general.telemetry_installation_notice') }}</p>
+                                    <ul class="list-disc pl-5 text-sm leading-snug space-y-1">
+                                        <li>{{ __('general.telemetry_installation_data') }}</li>
+                                        <li>{{ __('general.telemetry_environment_data') }}</li>
+                                        <li>{{ __('general.telemetry_installation_counts') }}</li>
+                                    </ul>
+                                    <p class="text-sm leading-snug">{{ __('general.telemetry_prohibited_data') }}</p>
+                                    <label class="flex items-start gap-2 text-sm">
+                                        <input type="checkbox" value="1" wire:model="form.telemetry_enabled" class="checkbox checkbox-sm mt-0.5" />
+                                        <span>{{ __('general.telemetry_send_default_label') }}</span>
+                                    </label>
+                                    <p class="text-xs text-gray-700">{{ __('general.telemetry_first_request_notice') }}</p>
+                                    <p class="text-xs text-gray-700">{{ __('general.telemetry_settings_notice') }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>

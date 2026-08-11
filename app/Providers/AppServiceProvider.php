@@ -31,8 +31,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
-use Livewire\Livewire;
 use Laravel\Pennant\Feature;
+use Livewire\Livewire;
+use Psr\Http\Message\RequestInterface;
 
 use function Illuminate\Events\queueable;
 
@@ -86,11 +87,11 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->extend(Http::class, function ($service, $app) {
-            return $service->withHeaders([
-                'Leconfe-Version' => app()->getCodeVersion(),
-                'User-Agent' => 'Leconfe/'.app()->getCodeVersion(),
-                'Beacon' => app()->getUniqueIdentifier(),
-            ]);
+            return $service->globalRequestMiddleware(function (RequestInterface $request): RequestInterface {
+                return $request
+                    ->withHeader('Leconfe-Version', app()->getCodeVersion())
+                    ->withHeader('User-Agent', 'Leconfe/'.app()->getCodeVersion());
+            });
         });
     }
 
