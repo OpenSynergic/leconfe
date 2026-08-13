@@ -47,25 +47,7 @@
                                                     <div class="cf-speaker-affiliation text-xs text-gray-700">
                                                         {{ $speaker->getMeta('affiliation') }}</div>
                                                 @endif
-                                                @if($speaker->getMeta('scopus_url') || $speaker->getMeta('google_scholar_url') || $speaker->getMeta('orcid_url'))
-                                                    <div class="cf-committee-scholar flex flex-wrap items-center gap-1">
-                                                        @if($speaker->getMeta('orcid_url'))
-                                                        <a href="{{ $speaker->getMeta('orcid_url') }}" target="_blank">
-                                                            <x-academicon-orcid class="orcid-logo" />
-                                                        </a>
-                                                        @endif
-                                                        @if($speaker->getMeta('google_scholar_url'))
-                                                        <a href="{{ $speaker->getMeta('google_scholar_url') }}" target="_blank">
-                                                            <x-academicon-google-scholar class="google-scholar-logo" />
-                                                        </a>
-                                                        @endif
-                                                        @if($speaker->getMeta('scopus_url'))
-                                                        <a href="{{ $speaker->getMeta('scopus_url') }}" target="_blank">
-                                                            <x-academicon-scopus class="scopus-logo" />
-                                                        </a>
-                                                        @endif
-                                                    </div>
-                                                @endif
+                                                @include('frontend.scheduledConference.components.contributor-profile-links', ['person' => $speaker])
                                             </div>
                                         </div>
                                     @endforeach

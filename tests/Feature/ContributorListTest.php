@@ -29,7 +29,7 @@ class ContributorListTest extends TestCase
 
         $this->actingAs($context['user']);
 
-        Livewire::test(ContributorList::class, ['submission' => $context['submission']])
+        $component = Livewire::test(ContributorList::class, ['submission' => $context['submission']])
             ->assertFormFieldDoesNotExist('author_id')
             ->assertFormFieldExists('profile', fn ($field): bool => ! array_key_exists(
                 'x-on:update-profile-image.window',
@@ -37,6 +37,10 @@ class ContributorListTest extends TestCase
             ))
             ->assertFormFieldExists('given_name')
             ->assertFormFieldExists('email');
+
+        foreach (config('app.contributor_profile_links', []) as $profile) {
+            $component->assertFormFieldExists('meta.'.$profile['meta']);
+        }
     }
 
     public function test_speaker_and_committee_create_forms_do_not_offer_existing_person_selection(): void
@@ -46,7 +50,7 @@ class ContributorListTest extends TestCase
         $this->actingAs($context['user']);
         Gate::before(fn () => true);
 
-        Livewire::test(ManageSpeakers::class)
+        $speaker = Livewire::test(ManageSpeakers::class)
             ->mountTableAction('create')
             ->assertFormFieldDoesNotExist('speaker_id', 'mountedTableActionForm')
             ->assertFormFieldExists('profile', 'mountedTableActionForm', fn ($field): bool => ! array_key_exists(
@@ -56,7 +60,11 @@ class ContributorListTest extends TestCase
             ->assertFormFieldExists('given_name', 'mountedTableActionForm')
             ->assertFormFieldExists('email', 'mountedTableActionForm');
 
-        Livewire::test(ManageCommittee::class)
+        foreach (config('app.contributor_profile_links', []) as $profile) {
+            $speaker->assertFormFieldExists('meta.'.$profile['meta'], 'mountedTableActionForm');
+        }
+
+        $committee = Livewire::test(ManageCommittee::class)
             ->mountTableAction('create')
             ->assertFormFieldDoesNotExist('committee_id', 'mountedTableActionForm')
             ->assertFormFieldExists('profile', 'mountedTableActionForm', fn ($field): bool => ! array_key_exists(
@@ -65,6 +73,10 @@ class ContributorListTest extends TestCase
             ))
             ->assertFormFieldExists('given_name', 'mountedTableActionForm')
             ->assertFormFieldExists('email', 'mountedTableActionForm');
+
+        foreach (config('app.contributor_profile_links', []) as $profile) {
+            $committee->assertFormFieldExists('meta.'.$profile['meta'], 'mountedTableActionForm');
+        }
     }
 
     public function test_wizard_owner_can_add_themselves_as_contributor(): void

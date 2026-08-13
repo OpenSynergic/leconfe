@@ -291,6 +291,7 @@ return [
     'scholar_profile' => 'Profil Akademik',
     'orcid_id' => 'ORCID',
     'google_scholar' => 'Google Scholar',
+    'research_gate' => 'ResearchGate',
     'scopus_id' => 'Scopus',
     'phone_format_international' => 'Format internasional, misalnya +6281234567890',
     'roles' => 'Peran',

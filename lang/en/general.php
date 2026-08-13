@@ -305,6 +305,7 @@ return [
     'scholar_profile' => 'Scholar Profile',
     'orcid_id' => 'ORCID',
     'google_scholar' => 'Google Scholar',
+    'research_gate' => 'ResearchGate',
     'scopus_id' => 'Scopus',
     'phone_format_international' => 'International format, e.g. +6281234567890',
     'roles' => 'Roles',
