@@ -22,26 +22,7 @@
                                             <div class="cf-committee-affiliation text-xs text-gray-700">
                                                 {{ $committee->getMeta('affiliation') }}</div>
                                         @endif
-                                        @if ($committee->getMeta('scopus_url') || $committee->getMeta('google_scholar_url') || $committee->getMeta('orcid_url'))
-                                            <div class="cf-committee-scholar flex flex-wrap items-center gap-1">
-                                                @if ($committee->getMeta('orcid_url'))
-                                                    <a href="{{ $committee->getMeta('orcid_url') }}" target="_blank">
-                                                        <x-academicon-orcid class="orcid-logo" />
-                                                    </a>
-                                                @endif
-                                                @if ($committee->getMeta('google_scholar_url'))
-                                                    <a href="{{ $committee->getMeta('google_scholar_url') }}"
-                                                        target="_blank">
-                                                        <x-academicon-google-scholar class="google-scholar-logo" />
-                                                    </a>
-                                                @endif
-                                                @if ($committee->getMeta('scopus_url'))
-                                                    <a href="{{ $committee->getMeta('scopus_url') }}" target="_blank">
-                                                        <x-academicon-scopus class="scopus-logo" />
-                                                    </a>
-                                                @endif
-                                            </div>
-                                        @endif
+                                        @include('frontend.scheduledConference.components.contributor-profile-links', ['person' => $committee])
                                     </div>
                                 </div>
                             @endforeach

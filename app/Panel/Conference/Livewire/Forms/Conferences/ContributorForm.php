@@ -77,20 +77,14 @@ class ContributorForm extends Component
             Forms\Components\Fieldset::make(__('general.scholar_profile'))
                 ->schema([
                     Forms\Components\Grid::make(2)
-                        ->schema([
-                            Forms\Components\TextInput::make('meta.orcid_url')
-                                ->prefixIcon('academicon-orcid')
-                                ->url()
-                                ->label(__('general.orcid_id')),
-                            Forms\Components\TextInput::make('meta.google_scholar_url')
-                                ->prefixIcon('academicon-google-scholar')
-                                ->url()
-                                ->label(__('general.google_scholar')),
-                            Forms\Components\TextInput::make('meta.scopus_url')
-                                ->label(__('general.scopus_id'))
-                                ->url()
-                                ->prefixIcon('academicon-scopus-square'),
-                        ]),
+                        ->schema(
+                            collect(config('app.contributor_profile_links', []))
+                                ->map(fn (array $profile) => Forms\Components\TextInput::make('meta.'.$profile['meta'])
+                                    ->prefixIcon($profile['form_icon'] ?? $profile['icon'])
+                                    ->url()
+                                    ->label(__($profile['label'])))
+                                ->all()
+                        ),
                 ]),
         ];
     }

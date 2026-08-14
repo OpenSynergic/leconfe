@@ -288,6 +288,7 @@ return [
     'scholar_profile' => 'Научный профиль',
     'orcid_id' => 'ORCID',
     'google_scholar' => 'Google Scholar',
+    'research_gate' => 'ResearchGate',
     'scopus_id' => 'Scopus',
     'phone_format_international' => 'В международном формате, напр. +998901234567',
     'roles' => 'Роли',

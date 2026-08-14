@@ -18,6 +18,39 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Contributor Profile Links
+    |--------------------------------------------------------------------------
+    */
+    'contributor_profile_links' => [
+        'orcid' => [
+            'meta' => 'orcid_url',
+            'icon' => 'academicon-orcid',
+            'label' => 'general.orcid_id',
+            'color' => '#A1C837',
+        ],
+        'google_scholar' => [
+            'meta' => 'google_scholar_url',
+            'icon' => 'academicon-google-scholar',
+            'label' => 'general.google_scholar',
+            'color' => '#4185F4',
+        ],
+        'research_gate' => [
+            'meta' => 'research_gate_url',
+            'icon' => 'academicon-researchgate',
+            'label' => 'general.research_gate',
+            'color' => '#00CCBB',
+        ],
+        'scopus' => [
+            'meta' => 'scopus_url',
+            'icon' => 'academicon-scopus',
+            'form_icon' => 'academicon-scopus-square',
+            'label' => 'general.scopus_id',
+            'color' => '#e9711c',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Name
     |--------------------------------------------------------------------------
     |
