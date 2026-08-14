@@ -9,7 +9,6 @@ use Lorisleiva\Actions\Concerns\AsAction;
 
 use function Laravel\Prompts\alert;
 use function Laravel\Prompts\confirm;
-use function Laravel\Prompts\spin;
 
 class QuickInstall
 {
@@ -29,7 +28,7 @@ class QuickInstall
             return;
         }
 
-        if(Schema::hasTable('migrations')){
+        if (Schema::hasTable('migrations')) {
             alert('Leconfe already installed, skip process.');
 
             return;
@@ -46,6 +45,7 @@ class QuickInstall
             'given_name' => 'Admin',
             'email' => env('APP_ADMIN_EMAIL', 'admin@leconfe.com'),
             'password' => Hash::make($adminPassword),
+            'telemetry_enabled' => TelemetryNotice::chooseForInstallation($command),
         ];
 
         try {
@@ -58,7 +58,7 @@ class QuickInstall
 
     public function getCommandSignature(): string
     {
-        return 'leconfe:quick-install {--C|confirm}';
+        return 'leconfe:quick-install {--C|confirm} {--without-telemetry : Disable installation and usage telemetry}';
     }
 
     public function getCommandDescription(): string

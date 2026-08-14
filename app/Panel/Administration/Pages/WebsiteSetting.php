@@ -8,6 +8,7 @@ use App\Panel\Administration\Livewire\FeaturedScheduledConferenceTable;
 use App\Panel\Administration\Livewire\LanguageSetting;
 use App\Panel\Administration\Livewire\SetupSetting;
 use App\Panel\Administration\Livewire\SidebarSetting;
+use App\Panel\Administration\Livewire\TelemetrySetting;
 use App\Panel\Conference\Livewire\NavigationMenuSetting;
 use Filament\Infolists\Components\Livewire;
 use Filament\Infolists\Components\Tabs;
@@ -41,9 +42,7 @@ class WebsiteSetting extends Page implements HasInfolists
         return __('general.settings');
     }
 
-    public function mount()
-    {
-    }
+    public function mount() {}
 
     public static function canAccess(): bool
     {
@@ -80,6 +79,12 @@ class WebsiteSetting extends Page implements HasInfolists
                                             ->icon('heroicon-o-language')
                                             ->schema([
                                                 Livewire::make(LanguageSetting::class),
+                                            ]),
+                                        VerticalTabs\Tab::make('Telemetry')
+                                            ->label(__('general.telemetry'))
+                                            ->icon('heroicon-o-signal')
+                                            ->schema([
+                                                Livewire::make(TelemetrySetting::class),
                                             ]),
                                         VerticalTabs\Tab::make('Featured')
                                             ->icon('heroicon-o-bookmark')

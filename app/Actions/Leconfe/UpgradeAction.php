@@ -50,6 +50,8 @@ class UpgradeAction
             return;
         }
 
+        $withoutTelemetry = (bool) $command->option('without-telemetry');
+
         try {
             info('Clearing cache...');
 
@@ -58,8 +60,14 @@ class UpgradeAction
             $command->callSilently('icons:cache');
             $command->callSilently('modelCache:clear');
 
-            $upgrader = new \App\Utils\Upgrader(command: $command);
+            $upgrader = new \App\Utils\Upgrader(
+                params: $withoutTelemetry ? ['telemetry_enabled' => false] : [],
+                command: $command,
+            );
             $upgrader->run();
+
+            TelemetryNotice::showUpgrade($command, $withoutTelemetry);
+            app(\App\Services\Telemetry\TelemetrySettings::class)->markUpgradeNoticeShown();
 
             info('Success upgrade Leconfe to '.$codeVersion.'!');
         } catch (\Throwable $th) {
@@ -69,7 +77,7 @@ class UpgradeAction
 
     public function getCommandSignature(): string
     {
-        return 'leconfe:upgrade {--C|confirm}';
+        return 'leconfe:upgrade {--C|confirm} {--without-telemetry : Disable installation and usage telemetry}';
     }
 
     public function getCommandDescription(): string

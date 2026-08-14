@@ -14,10 +14,10 @@ use function Laravel\Prompts\error;
 use function Laravel\Prompts\info;
 use function Laravel\Prompts\password;
 use function Laravel\Prompts\search;
+use function Laravel\Prompts\select;
 use function Laravel\Prompts\spin;
 use function Laravel\Prompts\table;
 use function Laravel\Prompts\text;
-use function Laravel\Prompts\select;
 
 class InstallAction
 {
@@ -101,6 +101,8 @@ class InstallAction
         info('Application information');
         $data['url'] = text('What is your application url?', placeholder: 'http://localhost', required: true);
 
+        $data['telemetry_enabled'] = TelemetryNotice::chooseForInstallation($command);
+
         info('Timezone information');
         info('The timezone that application gonna use.');
         $timezones = collect(Timezonelist::splitGroup(false)->toArray(false));
@@ -117,10 +119,10 @@ class InstallAction
 
         while (true) {
             $data['db_connection'] = select(
-                label: "What is your Database ?",
+                label: 'What is your Database ?',
                 options: [
                     'mysql' => 'MySQL',
-                    'pgsql' => 'PostgreSQL'
+                    'pgsql' => 'PostgreSQL',
                 ],
                 required: true,
             );
@@ -168,7 +170,7 @@ class InstallAction
 
     private function prepareDatabaseConnection($data): array
     {
-        $connectionArray = config('database.connections.' . $data['db_connection'], []);
+        $connectionArray = config('database.connections.'.$data['db_connection'], []);
 
         return array_merge($connectionArray, [
             'driver' => $data['db_connection'],
@@ -183,7 +185,7 @@ class InstallAction
     {
         $connectionArray = $this->prepareDatabaseConnection($data);
 
-        Config::set("database.default", $data['db_connection']);
+        Config::set('database.default', $data['db_connection']);
         Config::set("database.connections.{$data['db_connection']}", $connectionArray);
 
         DB::purge();
@@ -196,7 +198,7 @@ class InstallAction
 
     public function getCommandSignature(): string
     {
-        return 'leconfe:install';
+        return 'leconfe:install {--without-telemetry : Disable installation and usage telemetry}';
     }
 
     public function getCommandDescription(): string

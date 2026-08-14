@@ -7,6 +7,7 @@ use App\Events\AppInstalled;
 use App\Models\Enums\UserRole;
 use App\Models\User;
 use App\Models\Version;
+use App\Services\Telemetry\TelemetrySettings;
 use Illuminate\Console\Command;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Filesystem\Filesystem;
@@ -87,7 +88,9 @@ class Installer
 
     private function configureEnv()
     {
-        if(!$this->readParam('is_configure_env')) return;
+        if (! $this->readParam('is_configure_env')) {
+            return;
+        }
 
         $envs = [
             'APP_DEBUG' => 'false',
@@ -175,12 +178,21 @@ class Installer
         $site->setMeta('newsletter', $this->readParam('newsletter'));
         $site->setMeta('survey_referral_source', $this->readParam('survey_referral_source'));
         $site->setMeta('survey_important_features', $this->readParam('survey_important_features'));
+        $telemetrySettings = app(TelemetrySettings::class);
+        $telemetrySettings->setEnabled(
+            (bool) ($this->readParam('telemetry_enabled') ?? true)
+            && (bool) config('app.beacon', true),
+        );
+        $site->setMeta('settings_'.TelemetrySettings::UPGRADE_NOTICE_PENDING, false);
+        $site->setMeta('settings_'.TelemetrySettings::UPGRADE_NOTICE_SHOWN, false);
         $site->save();
     }
 
     private function removeEnvFile()
     {
-        if(!$this->readParam('is_configure_env')) return;
+        if (! $this->readParam('is_configure_env')) {
+            return;
+        }
 
         $filesystem = app(Filesystem::class);
 

@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+use App\Services\Telemetry\TelemetrySettings;
 use App\Utils\Enums\UpgradeActionPriority;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
@@ -39,6 +40,17 @@ class Upgrader extends Installer
             $this->addNewApplicationVersion();
 
             $this->configureOptimization();
+            $telemetrySettings = app(TelemetrySettings::class);
+            if (array_key_exists('telemetry_enabled', $this->params)) {
+                $telemetrySettings->setEnabled((bool) $this->params['telemetry_enabled']);
+            } elseif (config('app.beacon', true) === false) {
+                $telemetrySettings->setEnabled(false);
+            }
+            // The upgrade notice is informational; telemetry stays default-on
+            // unless the legacy beacon or persisted setting opted out.
+            if (! $telemetrySettings->upgradeNoticeShown()) {
+                $telemetrySettings->queueUpgradeNotice();
+            }
         } catch (\Throwable $th) {
             throw $th;
 

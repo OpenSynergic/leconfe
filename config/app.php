@@ -105,6 +105,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Legacy Application Beacon
+    |--------------------------------------------------------------------------
+    |
+    | Existing APP_BEACON=false installations stay opted out while moving to
+    | the persisted registry and telemetry setting.
+    */
+
+    'beacon' => env('APP_BEACON', true),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
@@ -140,19 +151,6 @@ return [
         'ru' => 'Russian',
         'uz' => 'Uzbek',
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Application Beacon
-    |--------------------------------------------------------------------------
-    |
-    | This software will optionally provide Leconfe with a unique identifier for the
-    | installation and other useful information. These are to be used for statistics and
-    | security alert purposes only.
-    |
-    | If you do not want to send this information, disable by adding APP_BEACON = false to .env file.
-    */
-    'beacon' => env('APP_BEACON', true),
 
     /*
     |--------------------------------------------------------------------------
