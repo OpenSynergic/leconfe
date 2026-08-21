@@ -31,8 +31,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
-use Livewire\Livewire;
 use Laravel\Pennant\Feature;
+use Livewire\Livewire;
 
 use function Illuminate\Events\queueable;
 
@@ -239,7 +239,7 @@ class AppServiceProvider extends ServiceProvider
         }
         $this->app->scopeCurrentConference();
 
-        $pathInfos = explode('/', request()->getPathInfo());
+        $pathInfos = array_map('rawurldecode', explode('/', request()->getPathInfo()));
         $conferencePath = $pathInfos[1] ?? null;
 
         $isOnScheduledPath = isset($pathInfos[2]) && $pathInfos[2] == 'scheduled' && isset($pathInfos[3]) && ! blank($pathInfos[3]);
