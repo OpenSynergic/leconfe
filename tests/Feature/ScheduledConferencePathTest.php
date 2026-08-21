@@ -2,11 +2,15 @@
 
 namespace Tests\Feature;
 
+use App\Application;
 use App\Frontend\Website\Pages\Home as WebsiteHome;
 use App\Models\Conference;
 use App\Models\ScheduledConference;
 use App\Models\Site;
+use App\Providers\AppServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Request;
+use Mockery\MockInterface;
 use Tests\TestCase;
 
 class ScheduledConferencePathTest extends TestCase
@@ -30,6 +34,43 @@ class ScheduledConferencePathTest extends TestCase
             $scheduledConference->is(ScheduledConference::findByConferenceAndExactPath($conference, 'Conf2026'))
         );
         $this->assertNull(ScheduledConference::findByConferenceAndExactPath($conference, 'conf2026'));
+    }
+
+    public function test_scheduled_conference_is_detected_from_an_encoded_unicode_path(): void
+    {
+        $conference = Conference::query()->create([
+            'name' => 'Test Conference',
+            'path' => 'test-conference',
+        ]);
+
+        $scheduledConference = ScheduledConference::query()->create([
+            'conference_id' => $conference->getKey(),
+            'title' => 'Unicode Scheduled Conference',
+            'path' => 'YNİ2026',
+        ]);
+
+        $this->app->instance('request', Request::create('/test-conference/scheduled/YN%C4%B02026'));
+
+        $application = $this->mock(Application::class, function (MockInterface $mock) use ($conference, $scheduledConference): void {
+            $mock->shouldReceive('runningInConsole')->once()->andReturnFalse();
+            $mock->shouldReceive('isInstalled')->once()->andReturnTrue();
+            $mock->shouldReceive('scopeCurrentConference')->once();
+            $mock->shouldReceive('setCurrentConferenceId')->once()->with($conference->getKey());
+            $mock->shouldReceive('setCurrentScheduledConferenceId')->once()->with($scheduledConference->getKey());
+            $mock->shouldReceive('scopeCurrentScheduledConference')->once();
+            $mock->shouldReceive('getCurrentConference')->once()->andReturn($conference);
+            $mock->shouldReceive('getCurrentScheduledConference')->once()->andReturn($scheduledConference);
+        });
+
+        $provider = new class($application) extends AppServiceProvider
+        {
+            public function detectScheduledConference(): void
+            {
+                $this->detectConference();
+            }
+        };
+
+        $provider->detectScheduledConference();
     }
 
     public function test_scheduled_conference_lookup_stays_within_its_conference(): void
