@@ -15,4 +15,15 @@ class RoleDefaultPermissionsTest extends TestCase
             Role::getPermissionsForRole(UserRole::ScheduledConferenceEditor->value)
         );
     }
+
+    public function test_scheduled_conference_editor_can_view_but_not_manage_plugins(): void
+    {
+        $permissions = Role::getPermissionsForRole(UserRole::ScheduledConferenceEditor->value);
+
+        $this->assertContains('Plugin:viewAny', $permissions);
+        $this->assertNotContains('Plugin:install', $permissions);
+        $this->assertNotContains('PluginGallery:install', $permissions);
+        $this->assertNotContains('Plugin:update', $permissions);
+        $this->assertNotContains('Plugin:delete', $permissions);
+    }
 }

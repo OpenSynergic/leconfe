@@ -209,6 +209,7 @@ class Role extends Model
                     'Payment:update',
                     'Payment:delete',
                     'Permission:viewAny',
+                    'Plugin:viewAny',
                     'Proceeding:create',
                     'Proceeding:delete',
                     'Proceeding:update',
